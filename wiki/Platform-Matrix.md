@@ -32,5 +32,5 @@ preservation and immutable snapshot integrity are verified by the template gates
 Five case-sensitive path tests were skipped on the release-validation Mac;
 run those on a case-sensitive filesystem before claiming that lane is verified.
 
-Read [Windows Setup](Windows-Setup), [Linux Setup](Linux-Setup),
-[Quick Start](Quick-Start), and [Testing & QA](Testing-and-QA).
+Read [Windows Setup](Windows-Setup.md), [Linux Setup](Linux-Setup.md),
+[Quick Start](Quick-Start.md), and [Testing & QA](Testing-and-QA.md).

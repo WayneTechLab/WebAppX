@@ -32,7 +32,7 @@ publish a release.
 
 The current menu entry point is Bash. The Node-based app and LAN commands run
 from PowerShell when Node/npm/Git are installed, but native PowerShell and CMD
-launcher wrappers are not shipped in this revision. See [Platform Matrix](Platform-Matrix)
+launcher wrappers are not shipped in this revision. See [Platform Matrix](Platform-Matrix.md)
 for supported and experimental lanes; do not document planned wrappers as
 current tooling.
 

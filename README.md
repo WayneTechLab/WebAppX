@@ -64,10 +64,10 @@ and the [integration guide](docs/SYSTEMX-INTEGRATION.md),
 
 [WayneTechLab.com](https://WayneTechLab.com) |
 [Use This Template](https://github.com/WayneTechLab/WebAppX/generate) |
-[Read The Wiki](https://github.com/WayneTechLab/WebAppX/wiki) |
-[Production Kit](https://github.com/WayneTechLab/WebAppX/wiki/Production-Kit) |
-[Agent Mesh Standard](https://github.com/WayneTechLab/WebAppX/wiki/Agent-Mesh-and-Tooling-Standard) |
-[Update Log](https://github.com/WayneTechLab/WebAppX/wiki/Update-Log)
+[Read The Wiki](https://github.com/WayneTechLab/WebAppX/tree/main/wiki) |
+[Production Kit](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Production-Kit.md) |
+[Agent Mesh Standard](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Agent-Mesh-and-Tooling-Standard.md) |
+[Update Log](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Update-Log.md)
 
 ## Product Label
 
@@ -194,9 +194,9 @@ claim-gated Level 4 / 5 administration, and documentation-only LAN cards in
 production builds.
 
 Full documentation lives in the
-[Project Wiki](https://github.com/WayneTechLab/WebAppX/wiki).
+[Project Wiki](https://github.com/WayneTechLab/WebAppX/tree/main/wiki).
 Release history lives in the
-[Update Log](https://github.com/WayneTechLab/WebAppX/wiki/Update-Log).
+[Update Log](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Update-Log.md).
 
 ---
 
@@ -368,7 +368,7 @@ WSG-MENU
 
 > Full version pins and rationale live in
 > [`.SYSTEMX/Template/WEBAPP-STACK-G1.0.md`](.SYSTEMX/Template/WEBAPP-STACK-G1.0.md)
-> and the [wiki](https://github.com/WayneTechLab/WebAppX/wiki/Architecture-and-Stack).
+> and the [wiki](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Architecture-and-Stack.md).
 
 ## Scripts
 
@@ -462,32 +462,32 @@ bash setup.sh               # interactive — walks every step with verification
 
 ## Documentation
 
-The [**Project Wiki**](https://github.com/WayneTechLab/WebAppX/wiki) is the
+The [**Project Wiki**](https://github.com/WayneTechLab/WebAppX/tree/main/wiki) is the
 deep-dive home for:
 
-- [Quick Start](https://github.com/WayneTechLab/WebAppX/wiki/Quick-Start)
-- [Architecture & Stack](https://github.com/WayneTechLab/WebAppX/wiki/Architecture-and-Stack)
-- [Project Structure](https://github.com/WayneTechLab/WebAppX/wiki/Project-Structure)
-- [Environment Variables](https://github.com/WayneTechLab/WebAppX/wiki/Environment-Variables)
-- [Security Baseline](https://github.com/WayneTechLab/WebAppX/wiki/Security)
-- [Setup Playbook (Steps 00–12)](https://github.com/WayneTechLab/WebAppX/wiki/Setup-Playbook)
-- [Deployment](https://github.com/WayneTechLab/WebAppX/wiki/Deployment)
-- [Testing & QA](https://github.com/WayneTechLab/WebAppX/wiki/Testing-and-QA)
-- [Agent Mesh & Tooling Standard](https://github.com/WayneTechLab/WebAppX/wiki/Agent-Mesh-and-Tooling-Standard)
-- [SYSTEMX LAN Builder](https://github.com/WayneTechLab/WebAppX/wiki/SYSTEMX-LAN-Builder)
-- [LAN Builder Designer Master Plan](https://github.com/WayneTechLab/WebAppX/wiki/SYSTEMX-LAN-Builder-Designer-Master-Plan)
-- [SYSTEMX Logs and Evidence](https://github.com/WayneTechLab/WebAppX/wiki/SYSTEMX-Logs-and-Evidence)
-- [Production Kit](https://github.com/WayneTechLab/WebAppX/wiki/Production-Kit)
-- [Brand Guide Kit](https://github.com/WayneTechLab/WebAppX/wiki/Brand-Guide-Kit)
-- [Update Log](https://github.com/WayneTechLab/WebAppX/wiki/Update-Log)
-- [FAQ](https://github.com/WayneTechLab/WebAppX/wiki/FAQ)
+- [Quick Start](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Quick-Start.md)
+- [Architecture & Stack](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Architecture-and-Stack.md)
+- [Project Structure](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Project-Structure.md)
+- [Environment Variables](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Environment-Variables.md)
+- [Security Baseline](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Security.md)
+- [Setup Playbook (Steps 00–12)](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Setup-Playbook.md)
+- [Deployment](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Deployment.md)
+- [Testing & QA](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Testing-and-QA.md)
+- [Agent Mesh & Tooling Standard](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Agent-Mesh-and-Tooling-Standard.md)
+- [SYSTEMX LAN Builder](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/SYSTEMX-LAN-Builder.md)
+- [LAN Builder Designer Master Plan](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/SYSTEMX-LAN-Builder-Designer-Master-Plan.md)
+- [SYSTEMX Logs and Evidence](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/SYSTEMX-Logs-and-Evidence.md)
+- [Production Kit](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Production-Kit.md)
+- [Brand Guide Kit](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Brand-Guide-Kit.md)
+- [Update Log](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Update-Log.md)
+- [FAQ](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/FAQ.md)
 
 ## Versioning
 
 Current unified template version: **3.1.0**.
 
 README is the landing page. Release history belongs in the
-[wiki update log](https://github.com/WayneTechLab/WebAppX/wiki/Update-Log)
+[wiki update log](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Update-Log.md)
 and `.SYSTEMX/webapp-version/CHANGELOG.md`.
 
 ---

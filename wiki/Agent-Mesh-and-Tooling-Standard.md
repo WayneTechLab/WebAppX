@@ -101,4 +101,4 @@ pins that release; `SYSTEMX.sh` routes to it. Outer `GLOBAL`, `PLAN`, `WORK`,
 commands and checks to configure for the adopted project. Import receipts
 live in `.SYSTEMX/imports/`; manager runtime receipts remain ignored under
 `.SYSTEMX/.systemx/operations/`. Historical LAN status and feature evidence retain
-their original scope. See [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration).
+their original scope. See [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md).

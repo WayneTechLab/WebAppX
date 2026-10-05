@@ -5,9 +5,9 @@ for the current WebAppX. It is an implementation reference for the
 dashboard, Playwright smoke tests, approved local tooling, and future adapters.
 It is not an invitation to expose the LAN over a network.
 
-Read [SYSTEMX LAN Operations Manual](SYSTEMX-LAN-Operations-Manual) first for
+Read [SYSTEMX LAN Operations Manual](SYSTEMX-LAN-Operations-Manual.md) first for
 the operator workflow, port lifecycle, editor behavior, evidence policy, and
-stop conditions. Read [SYSTEMX LAN Builder](SYSTEMX-LAN-Builder) for the
+stop conditions. Read [SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md) for the
 architecture and roadmap.
 
 ## Contract status

@@ -32,16 +32,16 @@ deploys the public `dist/` output and does not publish LAN files.
 
 For the operator sequence, dynamic-port rules, start/end-of-day checklist,
 editor controls, evidence policy, and stop conditions, read the [SYSTEMX LAN
-Operations Manual](SYSTEMX-LAN-Operations-Manual). For the exact local read
+Operations Manual](SYSTEMX-LAN-Operations-Manual.md). For the exact local read
 and mutation contract, read the [SYSTEMX LAN API
-Reference](SYSTEMX-LAN-API-Reference).
+Reference](SYSTEMX-LAN-API-Reference.md).
 
 The public WebApp's `/login` and `/admin` routes are part of the same local
 operator flow. Start `npm run dev:systemx` to own Vite, LAN, and the Firebase
 Auth/Firestore/Storage emulators together; the supervisor auto-selects free
 ports so another project's local session is not reused. The full identity and
 claim boundary is documented in
-[Unified Login and Admin Operations](Unified-Login-and-Admin-Operations).
+[Unified Login and Admin Operations](Unified-Login-and-Admin-Operations.md).
 
 Current status: the functional G1 local-edit vertical slice is active. The
 dashboard imports the current checkout's pages, routes, components, token
@@ -64,7 +64,7 @@ This does not change the current capability claim. The G1 LAN vertical slice
 is implemented and testable today; the full LAN Builder Designer remains future
 work beyond the completed Wave 0 integration and is not complete until every
 wave gate passes. See the dedicated
-[SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan), the
+[SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan.md), the
 [implementation overlay](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/LAN/LAN-BUILDER-DESIGNER-MASTER-PLAN.md),
 and the [current status board](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/status/LAN-BUILDER-DESIGNER-MASTERPLAN.md).
 
@@ -305,7 +305,7 @@ The LAN builder records local evidence without making it public:
 - `.SYSTEMX/LAN/Temp/ingest/<run-id>/manifest.json` for inventory-only
   existing-project scans.
 
-Read the public log map in [SYSTEMX Logs and Evidence](SYSTEMX-Logs-and-Evidence).
+Read the public log map in [SYSTEMX Logs and Evidence](SYSTEMX-Logs-and-Evidence.md).
 
 ## Staff workflow
 

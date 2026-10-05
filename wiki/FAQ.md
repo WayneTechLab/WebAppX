@@ -13,7 +13,7 @@ local verification, and monitoring.
 `src/config/firebase.ts` only calls `initializeApp` when an API key + project ID
 are present. Until then, `auth`, `db`, and `storage` are `null` and the app boots
 normally (with a dev-only console warning). This lets you develop UI before
-provisioning Firebase. See **[Environment Variables](Environment-Variables)**.
+provisioning Firebase. See **[Environment Variables](Environment-Variables.md)**.
 
 ## Is the Firebase API key a secret? Should I hide it?
 
@@ -21,7 +21,7 @@ No. A Firebase web API key **identifies** your project; it does not grant
 privileged access. It's protected by **Security Rules + App Check**, not by
 secrecy. It's expected to ship in the client bundle. Real secrets (payment
 provider secret keys, webhook secrets, email API keys) belong on the server. See
-**[Security](Security)**.
+**[Security](Security.md)**.
 
 ## How do I start a new project from this?
 
@@ -29,7 +29,7 @@ provider secret keys, webhook secrets, email API keys) belong on the server. See
 gh repo create my-app --template WayneTechLab/WebAppX --private --clone
 ```
 
-…or click **“Use this template”** on the repo page. See **[Quick Start](Quick-Start)**.
+…or click **“Use this template”** on the repo page. See **[Quick Start](Quick-Start.md)**.
 
 ## How do I deploy?
 
@@ -39,7 +39,7 @@ bash .SYSTEMX/scripts/deploy.sh hosting --dry-run
 bash .SYSTEMX/scripts/deploy.sh hosting --project your-firebase-project-id
 ```
 
-Full details in **[Deployment](Deployment)**.
+Full details in **[Deployment](Deployment.md)**.
 
 ## Do I have to use payments / Cloud Functions / Sentry?
 
@@ -51,7 +51,7 @@ baseline app has none of them; enable only what your project needs.
 Yes — that's a first-class mode. Start with `.SYSTEMX`, fill the intake packet
 under `.SYSTEMX/Unified-Setup-Process/intake/`, then re-inject
 `06-AI-REINJECTION-PROMPT.md`. Use `.SYSTEMX/Template/WEBAPP-STACK-G1.0.md`
-and the `steps/` files for detailed gates. See **[Setup Playbook](Setup-Playbook)**.
+and the `steps/` files for detailed gates. See **[Setup Playbook](Setup-Playbook.md)**.
 
 ## What Node version do I need?
 
@@ -63,7 +63,7 @@ module runtime from the local workstation baseline.
 
 Add a page component under `src/pages/`, then register it in `src/router.tsx`. All
 routes render inside the shared `Layout` (Navbar + Footer). See
-**[Project Structure](Project-Structure)**.
+**[Project Structure](Project-Structure.md)**.
 
 ## What does "G One Point Zero" mean?
 
@@ -95,12 +95,12 @@ role registration does not prove that a worker is running.
 It validates blank reusable template seeds for publication. An adopted project
 should have its own context and accepted work. Use `systemx:validate` and the
 app checks, then configure/adapt the project's own release and integration gates.
-See [Testing & QA](Testing-and-QA).
+See [Testing & QA](Testing-and-QA.md).
 
 ## Does an upstream import synchronize both webapp repositories?
 
 No. It updates reviewed standalone defaults in the chosen checkout while
 preserving records and host extensions. Host governance, identical-template
 mirroring, Git publication and wiki publication are separate operations.
-See [Sync and Controlled Updates](SYSTEMX-Sync-and-Controlled-Updates) and
-[Unified Template Guide](Unified-Template-Guide).
+See [Sync and Controlled Updates](SYSTEMX-Sync-and-Controlled-Updates.md) and
+[Unified Template Guide](Unified-Template-Guide.md).

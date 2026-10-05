@@ -1,5 +1,5 @@
 > Current architecture: this unified template consumes managed standalone defaults.
-> Read [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration) first.
+> Read [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md) first.
 > The webapp-specific controls below remain host extensions; the current task
 > authority is `.SYSTEMX/WORK/TASKS.json` and selected defaults come from INSTALLATION.json.
 

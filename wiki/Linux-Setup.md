@@ -66,4 +66,4 @@ official sources. Authenticate interactively or with approved short-lived CI
 identity. Do not save tokens, service-account JSON, or private keys in the repo,
 logs, or AI context.
 
-See [One-Line Workstation Start](One-Line-Install) and [Platform Matrix](Platform-Matrix).
+See [One-Line Workstation Start](One-Line-Install.md) and [Platform Matrix](Platform-Matrix.md).

@@ -38,7 +38,7 @@ SYSTEMX is a shared Node/Vite control layer with a Bash menu and Node-based LAN
 runner. The menu surfaces setup, quality, Firebase, Git, and deployment actions.
 The Node runner detects available loopback ports and records owned processes;
 platform-specific installer wrappers remain a follow-up. Use the [One-Line
-Workstation Start](One-Line-Install) page for the tested clone path.
+Workstation Start](One-Line-Install.md) page for the tested clone path.
 
 ## 3. Establish the Firebase and Google Cloud foundation
 
@@ -56,8 +56,8 @@ Before application development proceeds, decide and document:
 - Hosting target, custom-domain ownership, DNS, monitoring, and rollback owner.
 - Cost alerts, quotas, incident contacts, and offboarding procedure.
 
-Use the detailed [Environment Variables](Environment-Variables),
-[Security](Security), and [Architecture & Stack](Architecture-and-Stack) pages
+Use the detailed [Environment Variables](Environment-Variables.md),
+[Security](Security.md), and [Architecture & Stack](Architecture-and-Stack.md) pages
 alongside the `.SYSTEMX/Template/steps/03-firebase-provision.md` and
 `07-security-rules.md` source guides.
 
@@ -67,7 +67,7 @@ Copy `.env.example` to `.env.local`; commit neither the local file nor server
 secrets. Firebase client configuration is not a secret, but it must still match
 the intended project. Keep privileged credentials, payment keys, signing keys,
 and service-account material in an approved secret-management system and out of
-the browser bundle. See [.ENV Solutions](SYSTEMX-Environment-Solutions).
+the browser bundle. See [.ENV Solutions](SYSTEMX-Environment-Solutions.md).
 
 ## 5. Build through quality gates
 
@@ -101,17 +101,17 @@ npm run deploy -- --rollback-info --project your-project-id
 
 Only an authorized operator should run a real deployment. Review the Git diff,
 release notes, rules changes, monitoring, and rollback path first. The detailed
-workflow is in [Setup & Deployment](SYSTEMX-Setup-and-Deployment).
+workflow is in [Setup & Deployment](SYSTEMX-Setup-and-Deployment.md).
 
 ## 7. Operate the product after launch
 
 Production is the start of an operating commitment: monitor errors and billing,
 review dependencies and access, test recovery, rotate credentials when needed,
-and maintain documentation. Use [Start & End of Day](SYSTEMX-Operating-Rhythm)
-for a lightweight operating cadence and [Long-Term Warnings](SYSTEMX-Long-Term-Warnings)
+and maintain documentation. Use [Start & End of Day](SYSTEMX-Operating-Rhythm.md)
+for a lightweight operating cadence and [Long-Term Warnings](SYSTEMX-Long-Term-Warnings.md)
 for risk that does not disappear after launch.
 
 ## Related standard
 
-The [SYSTEMX Standard](SYSTEMX-Standard) explains the operational model, its
+The [SYSTEMX Standard](SYSTEMX-Standard.md) explains the operational model, its
 security boundaries, the menu and packet flow, and the limits of automation.

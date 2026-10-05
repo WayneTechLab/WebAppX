@@ -86,4 +86,4 @@ bash .SYSTEMX/scripts/bootstrap.sh --check
 ```
 
 This is optional and not required to run the Node-based app and LAN commands.
-See [One-Line Workstation Start](One-Line-Install) and [Platform Matrix](Platform-Matrix).
+See [One-Line Workstation Start](One-Line-Install.md) and [Platform Matrix](Platform-Matrix.md).

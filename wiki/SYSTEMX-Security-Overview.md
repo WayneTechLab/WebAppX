@@ -29,6 +29,6 @@ npm run ci:security
 npm run sync:system:check
 ```
 
-Passing checks is evidence, not a guarantee. See [Security](Security),
-[.ENV Solutions](SYSTEMX-Environment-Solutions), and
-[Third-Party & Operator Responsibility](SYSTEMX-Third-Party-and-Operator-Responsibility).
+Passing checks is evidence, not a guarantee. See [Security](Security.md),
+[.ENV Solutions](SYSTEMX-Environment-Solutions.md), and
+[Third-Party & Operator Responsibility](SYSTEMX-Third-Party-and-Operator-Responsibility.md).

@@ -105,7 +105,7 @@ curl -sI "$URL" | grep -i content-security-policy
 - [ ] Stripe switched to **live** keys only after a passing test-mode smoke.
 - [ ] No `.env*` / secret files bundled into `dist/`.
 
-See **[Security](Security)** for the full baseline.
+See **[Security](Security.md)** for the full baseline.
 
 ## Local verification and deploys
 
@@ -113,7 +113,7 @@ Prefer running the verification gates locally, then deploying from the
 workstation to Firebase. This template intentionally does not ship GitHub
 runner-based automation, so release reproducibility comes from the versioned
 scripts and the Firebase deploy path rather than billable infrastructure. See
-[Step 09 — Verification and Deploy](Setup-Playbook).
+[Step 09 — Verification and Deploy](Setup-Playbook.md).
 
 ## Hosting config reference
 
@@ -121,5 +121,5 @@ scripts and the Firebase deploy path rather than billable infrastructure. See
 
 - `public: "dist"` — the Vite build output.
 - `rewrites: [{ "source": "**", "destination": "/index.html" }]` — SPA routing.
-- `headers` — the hardened security header set (see **[Security](Security)**).
+- `headers` — the hardened security header set (see **[Security](Security.md)**).
 - `assets/**` gets long-lived immutable caching.

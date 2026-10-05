@@ -40,7 +40,7 @@ immutable`.
 
 > When you add Stripe, extend the CSP `script-src`/`frame-src` to include
 > `https://js.stripe.com` and complete the test-mode checks in the
-> [Stripe module](Setup-Playbook).
+> [Stripe module](Setup-Playbook.md).
 
 ## Verifying headers on a live deploy
 
@@ -75,7 +75,7 @@ presence booleans, redacted error messages, and placeholder values only.
 | **Server (secret)** | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `EMAIL_API_KEY` | Functions secrets / GCP Secret Manager / local secret store |
 
 A Firebase web API key is **not** a secret — see
-**[Environment Variables](Environment-Variables)**.
+**[Environment Variables](Environment-Variables.md)**.
 
 ## Firestore / Storage rules
 
@@ -101,7 +101,7 @@ A Firebase web API key is **not** a secret — see
 - [ ] MFA required for admin roles.
 - [ ] `npm run auth:mfa:check` passes before enabling private/admin routes.
 
-See [Step 07 — Security Rules](Setup-Playbook) and [Deployment](Deployment) for
+See [Step 07 — Security Rules](Setup-Playbook.md) and [Deployment](Deployment.md) for
 the detailed gates.
 
 ## Reviewed template controls

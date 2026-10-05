@@ -10,7 +10,7 @@ research packages. Reusable project, task, focus and memory records ship blank.
 | Start locally and adopt project records | [Getting started](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GETTING-STARTED.md) |
 | Find the exact current command | [Command reference](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMMANDS.md) |
 | Maintain identical public/private templates | [Template maintenance](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-MAINTENANCE.md) |
-| Import managed defaults | [Standalone SYSTEMX integration](SYSTEMX-Standalone-Integration) |
+| Import managed defaults | [Standalone SYSTEMX integration](SYSTEMX-Standalone-Integration.md) |
 | Inspect release inputs and included capabilities | [Feature/provenance map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/UNIFIED-TEMPLATE.md) |
 | Review recorded acceptance | [Validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.1.0.md) |
 
@@ -28,7 +28,7 @@ For an adopted app with real project records, use its configured checks and
 `systemx:validate`; adapt the template-maintenance integration suite as needed.
 
 The Designer roadmap remains evidence-gated. Read its capability manifest and
-[LAN Builder Designer master plan](SYSTEMX-LAN-Builder-Designer-Master-Plan)
+[LAN Builder Designer master plan](SYSTEMX-LAN-Builder-Designer-Master-Plan.md)
 for implemented, guarded and planned capabilities.
 
 ## Security review

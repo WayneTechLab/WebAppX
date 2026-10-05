@@ -30,4 +30,4 @@ supports that control.
 
 Use separate development, staging, and production configuration. Do not copy a
 production secret into a test project for convenience. See
-[Environment Variables](Environment-Variables) and [Security](Security).
+[Environment Variables](Environment-Variables.md) and [Security](Security.md).

@@ -51,7 +51,7 @@ Every step file follows the same shape:
 - **❓ Operator prompts** — questions for the human running setup.
 - **⌨️ Commands** — copy-pasteable shell, parameterized by `${PLACEHOLDERS}`.
 - **📄 Generated files** — files this step creates/modifies.
-- **🔒 Security notes** — guardrails (map to **[Security](Security)**).
+- **🔒 Security notes** — guardrails (map to **[Security](Security.md)**).
 - **🚦 Verification gate** — the check that must pass to advance.
 
 Placeholders are `${SCREAMING_SNAKE_CASE}` and resolved from the answers captured

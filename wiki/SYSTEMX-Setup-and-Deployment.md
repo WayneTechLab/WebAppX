@@ -39,5 +39,5 @@ bash .SYSTEMX/scripts/deploy.sh --rollback-info --project your-project-id
 A real deployment is an operator-approved event. Confirm the Git branch and
 diff, identity, target project, rules, release notes, quality results, monitoring
 plan, and rollback instructions. After deployment, test the key user journey and
-record the release. See [Deployment](Deployment) and
-[WTL Standard Setup Guide](WTL-Standard-Setup-Guide).
+record the release. See [Deployment](Deployment.md) and
+[WTL Standard Setup Guide](WTL-Standard-Setup-Guide.md).

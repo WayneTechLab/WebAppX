@@ -1,7 +1,10 @@
+> WebAppX ships these pages directly in the public repository. The separate
+> GitHub Wiki has not been initialized; use these repository pages now.
+
 # Wiki source
 
 These Markdown files are the source for the
-[**GitHub Wiki**](https://github.com/WayneTechLab/WebAppX/wiki).
+[**WebAppX documentation**](https://github.com/WayneTechLab/WebAppX/tree/main/wiki).
 
 GitHub wikis are backed by a **separate git repository**
 (`WayneTechLab/WebAppX.wiki.git`). Keeping the pages here, in the main

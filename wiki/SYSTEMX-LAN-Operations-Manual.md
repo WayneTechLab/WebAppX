@@ -14,19 +14,19 @@ narrower than a finished visual site builder.
 
 ## Quick links
 
-- [SYSTEMX LAN Builder](SYSTEMX-LAN-Builder) — architecture, research overlay,
+- [SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md) — architecture, research overlay,
   editor layout, provider model, and LAN Builder Designer roadmap.
-- [SYSTEMX LAN API Reference](SYSTEMX-LAN-API-Reference) — local routes,
+- [SYSTEMX LAN API Reference](SYSTEMX-LAN-API-Reference.md) — local routes,
   session authority, request bodies, confirmations, and error boundaries.
-- [Unified Login and Admin Operations](Unified-Login-and-Admin-Operations) —
+- [Unified Login and Admin Operations](Unified-Login-and-Admin-Operations.md) —
   public WebApp login, local Auth emulator, claims, and admin-shell parity.
-- [SYSTEMX Logs and Evidence](SYSTEMX-Logs-and-Evidence) — JSONL operation
+- [SYSTEMX Logs and Evidence](SYSTEMX-Logs-and-Evidence.md) — JSONL operation
   records, backups, manifests, status files, and review rules.
-- [Testing & QA](Testing-and-QA) — repeatable local quality gates.
-- [Deployment](Deployment) — production preflight and Firebase deployment.
-- [Project Structure](Project-Structure) — root versus SYSTEMX ownership.
-- [Update Log](Update-Log) — human-readable public release history.
-- [SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan) —
+- [Testing & QA](Testing-and-QA.md) — repeatable local quality gates.
+- [Deployment](Deployment.md) — production preflight and Firebase deployment.
+- [Project Structure](Project-Structure.md) — root versus SYSTEMX ownership.
+- [Update Log](Update-Log.md) — human-readable public release history.
+- [SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan.md) —
   research-backed future Designer waves and acceptance gates.
 
 ## Status and truth rule

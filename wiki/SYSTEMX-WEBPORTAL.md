@@ -70,5 +70,5 @@ Vite or LAN ports.
 The clean-room LAN Builder Designer research overlay expands this roadmap into 13 gated
 waves. It is a research and implementation program, not a claim that the
 current LAN exposes every visual-editor feature. See
-[SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan) and the
+[SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan.md) and the
 machine-readable [capability manifest](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/LAN/Builder/contracts/capability-manifest.json).

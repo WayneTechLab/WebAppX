@@ -66,6 +66,6 @@ npm run sync:system:check
 npm run system:audit
 ```
 
-Read [Quick Start](Quick-Start), [Windows Setup](Windows-Setup), [Linux Setup](Linux-Setup),
-and [Platform Matrix](Platform-Matrix) before adding Firebase, Google Cloud, or
+Read [Quick Start](Quick-Start.md), [Windows Setup](Windows-Setup.md), [Linux Setup](Linux-Setup.md),
+and [Platform Matrix](Platform-Matrix.md) before adding Firebase, Google Cloud, or
 optional provider tooling.

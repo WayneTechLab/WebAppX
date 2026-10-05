@@ -2,8 +2,8 @@
 
 Unified webapp release **3.1.0** uses standalone SYSTEMX **1.8.6-alpha.1**.
 This wiki belongs to WayneTechLab/WebAppX; public dotSYSTEMX remains the
-universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration),
-[Quick Start](Quick-Start), and [Update Log](Update-Log).
+universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md),
+[Quick Start](Quick-Start.md), and [Update Log](Update-Log.md).
 
 The retained guides below cover the Firebase/LAN builder and production kits.
 They describe available workflows; project adoption still requires configuration
@@ -39,35 +39,35 @@ checkout while keeping production Firebase Hosting clean.
 [Use The Template](https://github.com/WayneTechLab/WebAppX/generate) |
 [Repository](https://github.com/WayneTechLab/WebAppX) |
 [WayneTechLab.com](https://WayneTechLab.com) |
-[Update Log](Update-Log)
+[Update Log](Update-Log.md)
 
 ## Start Here
 
 | If you want to... | Go to |
 | --- | --- |
-| Get a running app in minutes | **[Quick Start](Quick-Start)** |
-| Use `.SYSTEMX` from idea to production | **[User Ingest & Production Setup](User-Ingest-and-Production-Setup)** |
-| Open the local builder/control surface | **[SYSTEMX LAN Builder](SYSTEMX-LAN-Builder)** |
-| Run the LAN from start of day through handoff | **[SYSTEMX LAN Operations Manual](SYSTEMX-LAN-Operations-Manual)** |
-| Integrate with the local LAN routes and guarded actions | **[SYSTEMX LAN API Reference](SYSTEMX-LAN-API-Reference)** |
-| Connect the WebApp login, admin shell, and LAN auth contract | **[Unified Login and Admin Operations](Unified-Login-and-Admin-Operations)** |
-| Read the LAN Builder Designer master plan | **[SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan)** |
-| Read local evidence and operation logs | **[SYSTEMX Logs and Evidence](SYSTEMX-Logs-and-Evidence)** |
-| Point an LLM at approved production assets | **[Production Kit](Production-Kit)** |
-| Produce PDF brand guidelines from approved logos | **[Brand Guide Kit](Brand-Guide-Kit)** |
-| Apply the reusable four-corner site navigation standard | **[WTL Site Shell G1](WTL-Site-Shell-G1)** |
-| Understand the stack | **[Architecture & Stack](Architecture-and-Stack)** |
-| Learn the AI and browser tooling standard | **[Agent Mesh & Tooling Standard](Agent-Mesh-and-Tooling-Standard)** |
-| Know where everything lives | **[Project Structure](Project-Structure)** |
-| Configure Firebase and env files | **[Environment Variables](Environment-Variables)** |
-| Ship safely | **[Security](Security)** |
-| Deploy to Firebase | **[Deployment](Deployment)** |
-| Test locally | **[Testing & QA](Testing-and-QA)** |
-| Track template changes | **[Update Log](Update-Log)** |
+| Get a running app in minutes | **[Quick Start](Quick-Start.md)** |
+| Use `.SYSTEMX` from idea to production | **[User Ingest & Production Setup](User-Ingest-and-Production-Setup.md)** |
+| Open the local builder/control surface | **[SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md)** |
+| Run the LAN from start of day through handoff | **[SYSTEMX LAN Operations Manual](SYSTEMX-LAN-Operations-Manual.md)** |
+| Integrate with the local LAN routes and guarded actions | **[SYSTEMX LAN API Reference](SYSTEMX-LAN-API-Reference.md)** |
+| Connect the WebApp login, admin shell, and LAN auth contract | **[Unified Login and Admin Operations](Unified-Login-and-Admin-Operations.md)** |
+| Read the LAN Builder Designer master plan | **[SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan.md)** |
+| Read local evidence and operation logs | **[SYSTEMX Logs and Evidence](SYSTEMX-Logs-and-Evidence.md)** |
+| Point an LLM at approved production assets | **[Production Kit](Production-Kit.md)** |
+| Produce PDF brand guidelines from approved logos | **[Brand Guide Kit](Brand-Guide-Kit.md)** |
+| Apply the reusable four-corner site navigation standard | **[WTL Site Shell G1](WTL-Site-Shell-G1.md)** |
+| Understand the stack | **[Architecture & Stack](Architecture-and-Stack.md)** |
+| Learn the AI and browser tooling standard | **[Agent Mesh & Tooling Standard](Agent-Mesh-and-Tooling-Standard.md)** |
+| Know where everything lives | **[Project Structure](Project-Structure.md)** |
+| Configure Firebase and env files | **[Environment Variables](Environment-Variables.md)** |
+| Ship safely | **[Security](Security.md)** |
+| Deploy to Firebase | **[Deployment](Deployment.md)** |
+| Test locally | **[Testing & QA](Testing-and-QA.md)** |
+| Track template changes | **[Update Log](Update-Log.md)** |
 
 ## Managed tools and current release guides
 
-Use [the unified template guide](Unified-Template-Guide) for adoption, commands,
+Use [the unified template guide](Unified-Template-Guide.md) for adoption, commands,
 upstream imports, source parity and release provenance. `npm run systemx:status`
 checks installation integrity; `npm run systemx -- status` reads recorded tasks.
 WSG menu option 12 opens the selected managed tools. Project records ship blank.
@@ -128,7 +128,7 @@ document graph, command journal, responsive style engine, reusable component
 versions, CMS bindings, source round-trip, snapshots, publishing, plugins, and
 collaboration—remain planned until their acceptance criteria pass.
 
-Read the [SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan)
+Read the [SYSTEMX LAN Builder Designer Master Plan](SYSTEMX-LAN-Builder-Designer-Master-Plan.md)
 and the repository's [research corpus](https://github.com/WayneTechLab/WebAppX/tree/main/.SYSTEMX/LAN/Research/LAN-Builder).
 
 ## Who Benefits

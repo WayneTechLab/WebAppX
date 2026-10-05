@@ -143,8 +143,8 @@ and scripts:
 - **Firebase** is initialized once in `src/config/firebase.ts` and guarded so the
   app boots without credentials.
 - **SYSTEMX LAN** owns local builder/runtime evidence. Read
-  [SYSTEMX LAN Builder](SYSTEMX-LAN-Builder) and
-  [SYSTEMX Logs and Evidence](SYSTEMX-Logs-and-Evidence) before modifying it.
+  [SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md) and
+  [SYSTEMX Logs and Evidence](SYSTEMX-Logs-and-Evidence.md) before modifying it.
 
 ## Standalone integration in this unified template
 
@@ -155,4 +155,4 @@ pins that release; `SYSTEMX.sh` routes to it. Outer `GLOBAL`, `PLAN`, `WORK`,
 commands and checks to configure for the adopted project. Import receipts
 live in `.SYSTEMX/imports/`; manager runtime receipts remain ignored under
 `.SYSTEMX/.systemx/operations/`. Historical LAN status and feature evidence retain
-their original scope. See [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration).
+their original scope. See [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md).

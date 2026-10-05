@@ -16,7 +16,7 @@ const publicLinks = [
   {
     label: 'Template Wiki',
     description: 'Detailed setup, SYSTEMX, LAN, and contribution documentation.',
-    href: 'https://github.com/WayneTechLab/WebAppX/wiki',
+    href: 'https://github.com/WayneTechLab/WebAppX/tree/main/wiki',
     icon: BookOpen,
   },
 ]

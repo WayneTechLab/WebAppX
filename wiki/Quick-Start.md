@@ -11,8 +11,8 @@ SYSTEMX, LAN, research and kits; the separate starter folder is an app scaffold.
 - GitHub CLI optionally, to create a repository from the template.
 - Firebase CLI and its emulator Java prerequisites for `dev:systemx`.
 
-Read [Windows Setup](Windows-Setup), [Platform Matrix](Platform-Matrix), and
-[Setup Playbook](Setup-Playbook) for platform and optional tooling details.
+Read [Windows Setup](Windows-Setup.md), [Platform Matrix](Platform-Matrix.md), and
+[Setup Playbook](Setup-Playbook.md) for platform and optional tooling details.
 Managed SYSTEMX includes Bash and PowerShell launchers. The WSG lifecycle menu
 and complete template gate use Bash; the webapp/LAN supervisor uses Node.
 
@@ -47,8 +47,8 @@ npm run systemx:session:stop
 ```
 
 The stop command affects only owned session processes. `npm run systemx:lan`
-starts just the direct dashboard service. Read [LAN Operations](SYSTEMX-LAN-Operations-Manual)
-and [LAN API Reference](SYSTEMX-LAN-API-Reference) before guarded edits.
+starts just the direct dashboard service. Read [LAN Operations](SYSTEMX-LAN-Operations-Manual.md)
+and [LAN API Reference](SYSTEMX-LAN-API-Reference.md) before guarded edits.
 
 ## Configure your project's operating records
 
@@ -81,15 +81,15 @@ npm run preview
 
 Template maintainers also run `npm run ci:all` and `template:check`. These
 validate blank reusable seeds; an adopted app with active records chooses its
-own integration/release checks. See [Testing & QA](Testing-and-QA).
+own integration/release checks. See [Testing & QA](Testing-and-QA.md).
 
 ## Configure Firebase and login
 
 Copy `.env.example` to the ignored `.env.local` and add approved client
 configuration. Server secrets belong outside client variables and tracked files.
 The local Auth provider is emulator email/password; `/admin` remains claim-gated.
-See [Environment Variables](Environment-Variables) and
-[Unified Login and Admin Operations](Unified-Login-and-Admin-Operations).
+See [Environment Variables](Environment-Variables.md) and
+[Unified Login and Admin Operations](Unified-Login-and-Admin-Operations.md).
 
 ## Setup, updates and deployment
 
@@ -104,7 +104,7 @@ npm run deploy -- hosting --preflight
 ```
 
 Preflight verifies local gates without publishing hosting. Choose the Firebase
-project and authorize a deployment separately. Read [Deployment](Deployment).
+project and authorize a deployment separately. Read [Deployment](Deployment.md).
 
-The [unified template guide](Unified-Template-Guide) links the complete command,
+The [unified template guide](Unified-Template-Guide.md) links the complete command,
 adoption, mirror-maintenance and provenance references.

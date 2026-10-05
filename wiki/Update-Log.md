@@ -60,7 +60,7 @@ landing page; release history belongs here and in `.SYSTEMX/webapp-version/CHANG
   children with automatic port selection, session ownership, and cleanup so it
   cannot attach to another local project's familiar ports.
 - Added the unified-auth contract, structure/test coverage, root/.SYSTEMX docs,
-  and the [Unified Login and Admin Operations](Unified-Login-and-Admin-Operations)
+  and the [Unified Login and Admin Operations](Unified-Login-and-Admin-Operations.md)
   wiki page.
 - Added the Style inspector Font browser with a checked-in offline Google Fonts
   catalog, optional server-side Google Fonts Developer API metadata, live Vite
@@ -79,8 +79,8 @@ landing page; release history belongs here and in `.SYSTEMX/webapp-version/CHANG
 
 ## 2.4.0 - 2026-08-05
 
-- Added the full [SYSTEMX LAN Operations Manual](SYSTEMX-LAN-Operations-Manual)
-  and [SYSTEMX LAN API Reference](SYSTEMX-LAN-API-Reference), covering the
+- Added the full [SYSTEMX LAN Operations Manual](SYSTEMX-LAN-Operations-Manual.md)
+  and [SYSTEMX LAN API Reference](SYSTEMX-LAN-API-Reference.md), covering the
   dynamic session supervisor, safe ports, builder screen map, guarded writes,
   local provider lanes, ingest, evidence, security boundaries, and staff
   start/end-of-day handoff sequence.
@@ -145,7 +145,7 @@ landing page; release history belongs here and in `.SYSTEMX/webapp-version/CHANG
 - Added **Wayne Tech Lab LLC. Master Production Kit v1.0** under
   `.SYSTEMX/KIT/Production/`.
 - Added `.SYSTEMX/KIT/README.md`, `.SYSTEMX/KIT/Production/SYSTEMX-KIT-INDEX.md`,
-  and the wiki [Production Kit](Production-Kit) page.
+  and the wiki [Production Kit](Production-Kit.md) page.
 - Documented dual use: local SYSTEMX production source and standalone GitHub
   folder for LLM/SDK/CLI/MCP/browser-agent consumption.
 - Added kit integrity anchors to the SYSTEMX structure check.
@@ -180,7 +180,7 @@ landing page; release history belongs here and in `.SYSTEMX/webapp-version/CHANG
   playbooks.
 - Added `npm run ai:standard:check`, `npm run browser:install`,
   `npm run browser:codegen`, and `npm run mcp:chrome`.
-- Added the wiki page [Agent Mesh And Tooling Standard](Agent-Mesh-and-Tooling-Standard).
+- Added the wiki page [Agent Mesh And Tooling Standard](Agent-Mesh-and-Tooling-Standard.md).
 - Published tag `v2.0.0`.
 
 ## Log Policy

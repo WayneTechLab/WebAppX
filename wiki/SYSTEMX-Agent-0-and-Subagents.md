@@ -4,9 +4,9 @@ This page is the hub for the SYSTEMX coordination model.
 
 Use these pages together:
 
-- [Agent 0 Operating Model](SYSTEMX-Agent-0-Operating-Model)
-- [How Subagents Work](SYSTEMX-How-Subagents-Work)
-- [Starter Prompts and Smart Routing](SYSTEMX-Starter-Prompts-and-Smart-Routing)
+- [Agent 0 Operating Model](SYSTEMX-Agent-0-Operating-Model.md)
+- [How Subagents Work](SYSTEMX-How-Subagents-Work.md)
+- [Starter Prompts and Smart Routing](SYSTEMX-Starter-Prompts-and-Smart-Routing.md)
 
 ## Core model
 

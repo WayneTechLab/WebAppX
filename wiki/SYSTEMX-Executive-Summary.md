@@ -22,5 +22,5 @@ review every upstream change, and maintain their own compatibility, security,
 and release process. AI and subagent tooling can increase speed but also token
 use, tool use, attack surface, and coordination risk.
 
-Continue with [How Setup and Deployment Work](SYSTEMX-Setup-and-Deployment) or
-read the complete [WTL Standard Setup Guide](WTL-Standard-Setup-Guide).
+Continue with [How Setup and Deployment Work](SYSTEMX-Setup-and-Deployment.md) or
+read the complete [WTL Standard Setup Guide](WTL-Standard-Setup-Guide.md).
