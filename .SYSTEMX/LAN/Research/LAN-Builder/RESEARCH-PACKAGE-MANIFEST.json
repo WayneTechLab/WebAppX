@@ -1,0 +1,413 @@
+{
+  "schemaVersion": 1,
+  "package": "SFWA-WTL-LAN-BUILDER-DESIGNER-RESEARCH-PACKAGE-v1.0.0",
+  "version": "1.0.0",
+  "createdAt": "2026-08-31",
+  "targetRepository": "WayneTechLab/webapp-stack-g1",
+  "targetSubsystem": ".SYSTEMX/LAN",
+  "deliveryMode": "research-and-inject-overlay",
+  "repositoryMutationPerformed": false,
+  "sourceCounts": {
+    "total": 200,
+    "primaryReference": 160,
+    "standardsAndSecurity": 20,
+    "comparatorReferences": 20
+  },
+  "deliverableCounts": {
+    "researchDocuments": 29,
+    "featureRows": 91,
+    "backlogTasks": 106,
+    "roadmapWaves": 13,
+    "riskRows": 27,
+    "wikiRepairRows": 25,
+    "acceptanceCriteria": 91,
+    "proposedSchemas": 9,
+    "routeRows": 13
+  },
+  "manifestExclusions": [
+    "RESEARCH-PACKAGE-MANIFEST.json",
+    "RESEARCH-PACKAGE-SHA256SUMS.txt"
+  ],
+  "identityPolicy": {
+    "productName": "LAN Builder Designer",
+    "externalNamesAndUrlsOmitted": true,
+    "forbiddenIdentityScan": true
+  },
+  "files": [
+    {
+      "path": "00-EXECUTIVE-SUMMARY.md",
+      "size": 6304,
+      "sha256": "d014ad7be29301aa4bbba5237ebc130ff213b63be0e6ddd97fdf843242eef946"
+    },
+    {
+      "path": "01-RESEARCH-METHOD.md",
+      "size": 3864,
+      "sha256": "a35e72135d157fe8bd8a1dcd4ec21dc842c0fb015b696d4c0428f5fa1b5bae3c"
+    },
+    {
+      "path": "02-DESIGNER-SYSTEM-DECONSTRUCTION.md",
+      "size": 6944,
+      "sha256": "f8ca15315a496274fd1a7645e017ee971ff72ac1e7361c73b62c30d00bcaadcc"
+    },
+    {
+      "path": "03-DESIGNER-INTERFACE-ANATOMY.md",
+      "size": 6334,
+      "sha256": "556a29f006acf1df56a34a61f667cbb43736218a54a09c683451b5af28c4567f"
+    },
+    {
+      "path": "04-DOCUMENT-STYLE-RESPONSIVE-MODEL.md",
+      "size": 5994,
+      "sha256": "0c70e991c57aa6f56b4a52af6d3895eff5669f0ddfdea19bb80edaf4fb4a929d"
+    },
+    {
+      "path": "05-COMPONENTS-CMS-DATA-BINDING.md",
+      "size": 7193,
+      "sha256": "fb148b404c42f505e821a1153eae8fd137ad196b7db7317f03348889b65765bd"
+    },
+    {
+      "path": "06-INTERACTIONS-LOCALIZATION-COLLABORATION.md",
+      "size": 5832,
+      "sha256": "e59ec1c98484c5ceaaa96a3dcece109b5687e76d560938d1149952a79847fe72"
+    },
+    {
+      "path": "07-PUBLISHING-HOSTING-SEO-ANALYTICS.md",
+      "size": 5396,
+      "sha256": "2932b6f876a3a81661745f0658eef18bb79c23e7ab0d5aac1c534bac152cb9e8"
+    },
+    {
+      "path": "08-APPS-API-EXTENSIBILITY.md",
+      "size": 4523,
+      "sha256": "52f7ffd87ab56159486959111f916ad18ef74931957cc392602197323526808d"
+    },
+    {
+      "path": "09-SECURITY-GOVERNANCE-COMMERCIAL.md",
+      "size": 4739,
+      "sha256": "390d03a6c303bf43062cba73370a79e21ab3ac4a3e5c50f4843af46070b06c46"
+    },
+    {
+      "path": "10-LAN-CURRENT-STATE-CODE-AUDIT.md",
+      "size": 7554,
+      "sha256": "3be1b6e369ab83caf28a92219855eba48bae95f85ca9f9674fb231c530fa2225"
+    },
+    {
+      "path": "11-LAN-WIKI-DRIFT-AUDIT.md",
+      "size": 4505,
+      "sha256": "92fc77fccd6d0a1aab0001363c5b33d89c417bc6328dc036e24c8d8fc11f4696"
+    },
+    {
+      "path": "12-GAP-ANALYSIS.md",
+      "size": 3780,
+      "sha256": "042390b21b4f8203aa0192ef9ab5c6ac768659c0938f4507bb0a0c6cb32c0ba5"
+    },
+    {
+      "path": "13-TARGET-ARCHITECTURE.md",
+      "size": 6204,
+      "sha256": "6bacfa357573bf96fcb8d13838e88913bfde960fa1e446e240ee46601533952d"
+    },
+    {
+      "path": "14-EDITOR-KERNEL-AND-COMMAND-MODEL.md",
+      "size": 5646,
+      "sha256": "4c36b91bcfb52ce4974ac7582a1d595e1a18b259122d51c2c7ab0830861e7a37"
+    },
+    {
+      "path": "15-SOURCE-ROUNDTRIP-ADAPTERS.md",
+      "size": 5228,
+      "sha256": "bd7fb095fbbf4e00400bb84f07f3cda8d738ae9b009017135634056f562c02d2"
+    },
+    {
+      "path": "16-STYLE-CASCADE-TOKEN-ENGINE.md",
+      "size": 4496,
+      "sha256": "ea785740242b163db5a0830d4ec6fbcd6c25af69803f81a0a522f9e49629bc68"
+    },
+    {
+      "path": "17-CMS-COMPONENT-BINDING-MODEL.md",
+      "size": 4951,
+      "sha256": "99ce26857863609a751814ef1fd37021d6455def2e113f205e104f437132cb48"
+    },
+    {
+      "path": "18-PUBLISHING-VERSIONING-COLLABORATION.md",
+      "size": 3802,
+      "sha256": "399d855fe17a620400e1e6d0731466f12a5007568d143a80bacde249df0d3f3b"
+    },
+    {
+      "path": "19-SECURITY-THREAT-MODEL.md",
+      "size": 4718,
+      "sha256": "13f3a9e958467903d455edc9f2fc19cab967f7b88a037f436faddc9c3780afd6"
+    },
+    {
+      "path": "20-IMPLEMENTATION-MASTER-PLAN.md",
+      "size": 7400,
+      "sha256": "828d5d291ddf2619b33229289bbeedc387e7c33a866e1c76c33c97a543ba3cf1"
+    },
+    {
+      "path": "21-ROADMAP-AND-RELEASE-GATES.md",
+      "size": 3827,
+      "sha256": "b1a713d5adac45c338a765010689ffea67c0050f6bb639ceecccdc79c9b42e46"
+    },
+    {
+      "path": "22-TEST-STRATEGY.md",
+      "size": 4209,
+      "sha256": "e2f731be001ce81816ce18883228153dd6af7b124d53a78a7e09afa5f72e9fa4"
+    },
+    {
+      "path": "23-MIGRATION-PLAN.md",
+      "size": 3338,
+      "sha256": "0369c86d27961f19cedf3d16f563b9101a9b14d56e7ec98326328a7cce940c7f"
+    },
+    {
+      "path": "24-DECISION-LOG.md",
+      "size": 3092,
+      "sha256": "f4ac5c3668bfe4b0e6267b3104e69ac43a46b032af6ec0971fe0521802346ba7"
+    },
+    {
+      "path": "25-ROUTES-PANELS-INFORMATION-ARCHITECTURE.md",
+      "size": 3270,
+      "sha256": "016366a976579a3529a216d78ee8183c29dde140afd13d3dd83f5c4b3118552c"
+    },
+    {
+      "path": "26-DATA-OBJECT-AND-EVENT-CATALOG.md",
+      "size": 3269,
+      "sha256": "6cdb08bcfe5cf0c9ef64bdb4408ccd29c77d42ed7555c9f28522004de5cf9e2c"
+    },
+    {
+      "path": "27-COMPARATOR-ARCHITECTURE-LESSONS.md",
+      "size": 3636,
+      "sha256": "ee788661cd3d78e2b0e77c34b577a09ed66fca5bb60d46fb3f7ad123a8c1d93f"
+    },
+    {
+      "path": "28-FEATURE-GLOSSARY.md",
+      "size": 3833,
+      "sha256": "4c4151d30b9e806a474b71941b4915772ca65346bd77c4f1634a2b36942b1310"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/Builder/contracts/designer-cms.schema.json",
+      "size": 7883,
+      "sha256": "6fa8a46145448943f4575d327b7d758241694a8670b4516e78185aba8010ff74"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/Builder/contracts/designer-command.schema.json",
+      "size": 3424,
+      "sha256": "73b2304899db7d587b1cf8db2c7990605da3d0f8c3c4676817ffbd22634d22da"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/Builder/contracts/designer-component.schema.json",
+      "size": 3471,
+      "sha256": "63eda634cd019d65b88fc34360710ea8a68643067feef4167cd2cc47212236e7"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/Builder/contracts/designer-document.schema.json",
+      "size": 11218,
+      "sha256": "39d436b1d48dabc508b245591b226f74b96071af7622dbd978be2cd061f02f9b"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/Builder/contracts/designer-evidence.schema.json",
+      "size": 1867,
+      "sha256": "bc6ad788827d5937344289ab7df8221f7091b65bf14c50ef24f5374773944753"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/Builder/contracts/designer-plugin.schema.json",
+      "size": 2676,
+      "sha256": "45d67b182b074f883f938b9654b90196249bf8cd414efa9f0fde4fb164670e83"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/Builder/contracts/designer-presence.schema.json",
+      "size": 1518,
+      "sha256": "ed75c685f7189255e4663c7e838da10f61ed9b5f4a068a2cc27ff4b5b06db8e7"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/Builder/contracts/designer-publish-manifest.schema.json",
+      "size": 4765,
+      "sha256": "abf9cc3bbeb63bd28269cb68ba4b062370d0f954f6e5be0b196e5f54fb6b94fd"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/Builder/contracts/designer-style.schema.json",
+      "size": 5724,
+      "sha256": "d1ecbcbbee65ae9595a7c69ef22f23b11deebec41c5c0476d921865a89f04033"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/LAN/LAN-BUILDER-DESIGNER-MASTER-PLAN.md",
+      "size": 4723,
+      "sha256": "fb00ee75d02834201bf94dc657616ca0454b664fc50f91eed88047c05bcc51cc"
+    },
+    {
+      "path": "INJECT/.SYSTEMX/status/LAN-BUILDER-DESIGNER-MASTERPLAN.md",
+      "size": 2083,
+      "sha256": "a221b2b39df4fa7a911fa1c5a96709090041548c26802f721077c94cf3f1bd44"
+    },
+    {
+      "path": "INJECT/COPY-INSTRUCTIONS.md",
+      "size": 1687,
+      "sha256": "f7d063468fd88e9aefbd50a76949575da01a7b207d9608c0ff04b2fa43ef544c"
+    },
+    {
+      "path": "INJECT/PROMPT_INJECT_LAN_BUILDER_MASTERPLAN.md",
+      "size": 2563,
+      "sha256": "4fb43a69f01fe5b0aa50d8a10a0aa2d8c4120d06c246d589594ec1055341c61b"
+    },
+    {
+      "path": "INJECT/wiki/SYSTEMX-LAN-Builder-Designer-Master-Plan.md",
+      "size": 2698,
+      "sha256": "d7403c04a36f4905cf7c090d6f779d3b4204116e40fa56e01e95a3d3b57bb526"
+    },
+    {
+      "path": "Package-Schemas/designer-cms.schema.json",
+      "size": 7883,
+      "sha256": "6fa8a46145448943f4575d327b7d758241694a8670b4516e78185aba8010ff74"
+    },
+    {
+      "path": "Package-Schemas/designer-command.schema.json",
+      "size": 3424,
+      "sha256": "73b2304899db7d587b1cf8db2c7990605da3d0f8c3c4676817ffbd22634d22da"
+    },
+    {
+      "path": "Package-Schemas/designer-component.schema.json",
+      "size": 3471,
+      "sha256": "63eda634cd019d65b88fc34360710ea8a68643067feef4167cd2cc47212236e7"
+    },
+    {
+      "path": "Package-Schemas/designer-document.schema.json",
+      "size": 11218,
+      "sha256": "39d436b1d48dabc508b245591b226f74b96071af7622dbd978be2cd061f02f9b"
+    },
+    {
+      "path": "Package-Schemas/designer-evidence.schema.json",
+      "size": 1867,
+      "sha256": "bc6ad788827d5937344289ab7df8221f7091b65bf14c50ef24f5374773944753"
+    },
+    {
+      "path": "Package-Schemas/designer-plugin.schema.json",
+      "size": 2676,
+      "sha256": "45d67b182b074f883f938b9654b90196249bf8cd414efa9f0fde4fb164670e83"
+    },
+    {
+      "path": "Package-Schemas/designer-presence.schema.json",
+      "size": 1518,
+      "sha256": "ed75c685f7189255e4663c7e838da10f61ed9b5f4a068a2cc27ff4b5b06db8e7"
+    },
+    {
+      "path": "Package-Schemas/designer-publish-manifest.schema.json",
+      "size": 4765,
+      "sha256": "abf9cc3bbeb63bd28269cb68ba4b062370d0f954f6e5be0b196e5f54fb6b94fd"
+    },
+    {
+      "path": "Package-Schemas/designer-style.schema.json",
+      "size": 5724,
+      "sha256": "d1ecbcbbee65ae9595a7c69ef22f23b11deebec41c5c0476d921865a89f04033"
+    },
+    {
+      "path": "planning/ACCEPTANCE-CRITERIA.csv",
+      "size": 15141,
+      "sha256": "c29dd63682af6c98ff21845876d34c7413cc6dc9816bb390d50dda66c844d2cf"
+    },
+    {
+      "path": "planning/BACKLOG.csv",
+      "size": 27866,
+      "sha256": "e4e64fe489d0f28a1fe4238683f5414c50b2206f952acd046e47d4c25c4b52c2"
+    },
+    {
+      "path": "planning/DEPENDENCY-MAP.csv",
+      "size": 1452,
+      "sha256": "0a6614d41da540f2177e4df32ee98fef722233c4d12151e75438e962553ad1ff"
+    },
+    {
+      "path": "planning/FEATURE-MATRIX.csv",
+      "size": 19418,
+      "sha256": "9307e5f7f16f9b22df923921a06659776795a3d48be3eb244ebda594c1c2371b"
+    },
+    {
+      "path": "planning/RISK-REGISTER.csv",
+      "size": 3979,
+      "sha256": "f808bdb9c4645e14cd1716b4b1d1a5d00c449bed04a19ab5c997e2b01d23c41b"
+    },
+    {
+      "path": "planning/RISK-REGISTER.md",
+      "size": 4394,
+      "sha256": "9d48bc6a952e945b22972cfd9959ecf551692e42f1ea93fff147c4f3743da8dc"
+    },
+    {
+      "path": "planning/ROADMAP.csv",
+      "size": 2779,
+      "sha256": "136146618f1a36b07e564eec7978f283b3f80254a6e225107a8ff4924d140bde"
+    },
+    {
+      "path": "planning/ROADMAP.md",
+      "size": 2047,
+      "sha256": "042d5f3c9a79442da40a3d8d4fc0326ff7deb262b977ed4b3eb594493913a2fd"
+    },
+    {
+      "path": "planning/ROUTE-MAP.csv",
+      "size": 1331,
+      "sha256": "6b68d86cb638a5a72a5891b26e963b1931727d4f9ca60ad6c1a91bd227f1527f"
+    },
+    {
+      "path": "planning/WIKI-REPAIR-MATRIX.csv",
+      "size": 4017,
+      "sha256": "9ab0287161651b827b94670634fa8552c438adc14f6d8ad78cc8a31eae934ef6"
+    },
+    {
+      "path": "planning/WIKI-REPAIR-MATRIX.md",
+      "size": 4147,
+      "sha256": "63cf2ed2f996f20a6acf6b8d1b878ae94784d438bd10a79acae5b1e9dfcb2e4a"
+    },
+    {
+      "path": "RESEARCH-PACKAGE-CONTENTS.md",
+      "size": 1473,
+      "sha256": "b2ff387503662cd63a454b2435305e623d629716fa05209d2e64529490f0c2b1"
+    },
+    {
+      "path": "RESEARCH-PACKAGE-LICENSE-AND-NOTICE.md",
+      "size": 1082,
+      "sha256": "de2bc82c5c4cbeb22a4149b643004935fd330346c18dee162e372043bb48b7e5"
+    },
+    {
+      "path": "RESEARCH-PACKAGE-README.md",
+      "size": 3853,
+      "sha256": "71ec7af810852a3fe7219e93d27c5cf4cefbab5fbd4a0b92415e23277333fd01"
+    },
+    {
+      "path": "RESEARCH-PACKAGE-VALIDATION.md",
+      "size": 1527,
+      "sha256": "e8ad21bbec0b79e3e63e206c2a8811467a2ac9694691f3ae758cecb7828606f8"
+    },
+    {
+      "path": "SCHEMA-DECISIONS.md",
+      "size": 2345,
+      "sha256": "4b063a28722f13b3c9b27ae7a3bd7fc5c95c2243a4e97936f8b22b70f9bd9088"
+    },
+    {
+      "path": "sources/LEGACY-56-SOURCE-REGISTER.md",
+      "size": 1206,
+      "sha256": "879c26fdc019d691055fb5a4fe203d39bbb7eaba0eb56c6f845ddd3e11063fe7"
+    },
+    {
+      "path": "sources/PRIMARY-REFERENCE-SOURCES.md",
+      "size": 35448,
+      "sha256": "bc845bc991a8169819b257e13880cdca5fb26befc1f0dff6a37683f2fe7c7754"
+    },
+    {
+      "path": "sources/SOURCE-CATALOG-200.csv",
+      "size": 77684,
+      "sha256": "bf16f634b6645307c85fe7d84682d22d1351f7439a4825daedfc79293ab1799f"
+    },
+    {
+      "path": "sources/SOURCE-CATALOG-200.json",
+      "size": 129380,
+      "sha256": "6ddb217803867793b5afabc86df4a0506a45d490d6d58353976f4628b5b13fa1"
+    },
+    {
+      "path": "sources/SOURCE-MATRIX.md",
+      "size": 1975,
+      "sha256": "d952190beb4ad3d782889da599bc70b61eb487075d85f1d0f9887ad66c38573a"
+    },
+    {
+      "path": "tools/validate_package.py",
+      "size": 7258,
+      "sha256": "bf2bd0d042b0d95655e4b6bdb36aeb81dd1afa0474c7e4ec6410af390d974409"
+    },
+    {
+      "path": "WAVE-0-EVIDENCE.md",
+      "size": 2536,
+      "sha256": "14592992e3fd5e8b4c1667f5cbea01d6b678d004d8b0f410d9b4801d4d1b2ee8"
+    }
+  ]
+}

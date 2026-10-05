@@ -1,0 +1,19 @@
+{
+  "id": "consumer",
+  "name": "Consumer",
+  "description": "Standard WebApp and Commerce WebApp edition with a 50 page cap.",
+  "pageCap": 50,
+  "audience": "Consumer websites, simple storefronts, content sites, and lightweight commerce apps.",
+  "modules": [
+    "marketing-pages",
+    "commerce-standard",
+    "firebase",
+    "auth-optional",
+    "ci",
+    "security",
+    "deploy-docs"
+  ],
+  "requiredTools": ["node", "npm", "git", "firebase"],
+  "optionalTools": ["gh", "stripe", "chrome"],
+  "setupMode": "standard-or-commerce-webapp"
+}

@@ -1,0 +1,31 @@
+from,to,relationship
+Canonical document,Characterization tests,requires
+Stable IDs,Canonical document,requires
+Command journal,Canonical document,requires
+Undo/redo,Command journal,requires
+Semantic diff,Stable IDs,requires
+React editor UI,Versioned query/command API,requires
+Structural source editing,Read-only AST importer,requires
+Structural source editing,Command transactions,requires
+Style engine,CSS importer,requires
+Style inspector,Computed provenance,requires
+Variables/modes,Style graph,requires
+Components,Stable IDs,requires
+Component migrations,Command journal,requires
+CMS bindings,Collection schemas,requires
+Collection lists,Queries and bindings,requires
+Forms,Schema validation and provider adapters,requires
+Commerce,CMS + forms + provider adapters,requires
+Interactions,Stable nodes and styles,requires
+Localization,Stable objects and route model,requires
+Preview snapshot,Document/source revisions,requires
+Publish manifest,Preview snapshot and gates,requires
+Restore,Release manifest and backups,requires
+Comments,Stable IDs,requires
+Branches,Command journal and semantic diff,requires
+Presence,Session identity,requires
+Plugin SDK,Versioned query/command API,requires
+MCP mutations,Command plan approval,requires
+Analyze overlays,Publish-safe node ID mapping,requires
+AI proposals,Command schemas and semantic diff,requires
+Documentation capability claims,Test-backed capability manifest,requires

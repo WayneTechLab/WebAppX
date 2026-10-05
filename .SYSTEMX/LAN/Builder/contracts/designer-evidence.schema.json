@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/designer-evidence.schema.json",
+  "title": "SYSTEMX LAN Evidence Record",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "evidenceId",
+    "kind",
+    "createdAt",
+    "actorId",
+    "status",
+    "summary",
+    "artifacts",
+    "redaction"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "evidenceId": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actorId": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "commandId": {
+      "type": "string"
+    },
+    "transactionId": {
+      "type": "string"
+    },
+    "releaseId": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "failed",
+        "blocked",
+        "warning",
+        "completed"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "redaction": {
+      "type": "object",
+      "required": [
+        "applied"
+      ],
+      "properties": {
+        "applied": {
+          "type": "boolean"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

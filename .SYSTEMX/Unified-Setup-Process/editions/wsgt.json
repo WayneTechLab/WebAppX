@@ -1,0 +1,20 @@
+{
+  "id": "wsgt",
+  "name": "WSGT",
+  "fullName": "Web Stack Generation Edition Test",
+  "description": "Fork/test edition for validating standard tooling, MCP, setup scripts, CI, and template changes before promotion.",
+  "pageCap": 50,
+  "audience": "Template QA forks, validation repos, and release-candidate testing.",
+  "modules": [
+    "firebase",
+    "ci",
+    "mcp",
+    "security",
+    "repo-learning",
+    "dev-tooling",
+    "template-validation"
+  ],
+  "requiredTools": ["node", "npm", "git", "gh", "firebase"],
+  "optionalTools": ["gcloud", "chrome", "playwright", "mcp"],
+  "setupMode": "test-fork"
+}

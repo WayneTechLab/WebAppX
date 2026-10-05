@@ -1,0 +1,3 @@
+# Page 3 Prompt - Color Palette & Logo Anatomy
+
+Create page 3 of 6 titled `03 Color Palette & Logo Anatomy`. Show five primary swatches and six supporting/neutral swatches with concise labels and approximate HEX/RGB/CMYK values. Use the exact client logo in a central anatomy diagram with clear leader lines identifying the major components. Keep labels short enough to avoid overflow. Footer uses the exact producer logo and `3 of 6`.

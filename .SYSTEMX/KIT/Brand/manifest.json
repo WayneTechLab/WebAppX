@@ -1,0 +1,276 @@
+{
+  "package": "WTL_Brand_Guide_Standard_Template",
+  "version": "1.0",
+  "files": [
+    {
+      "path": "00_START_HERE.md",
+      "bytes": 2470,
+      "sha256": "c359fb5c98957618c63038e775d4534b7014d051eda66be09946e738cc3fefc0"
+    },
+    {
+      "path": "01_INPUT/CLIENT_INTAKE.md",
+      "bytes": 905,
+      "sha256": "3fe1d140310b33be7b0f6df69dad08637a99423fa742dc54f008220cece4ac81"
+    },
+    {
+      "path": "01_INPUT/CLIENT_LOGO_REPLACE_ME.png",
+      "bytes": 37668,
+      "sha256": "2dd9c310c7aec56d872bb4aa9ef732a6bbaa37075a9d44dd82ed0da3dde6e1a9"
+    },
+    {
+      "path": "01_INPUT/PRODUCER_LOGO_REPLACE_ME.png",
+      "bytes": 38811,
+      "sha256": "b51c23dc922cc44a7ae70aa48be8aab43cebe98d34aed358a7358b510b185aa8"
+    },
+    {
+      "path": "01_INPUT/PRODUCER_LOGO_WAYNE_TECH_LAB_EXAMPLE.png",
+      "bytes": 1543358,
+      "sha256": "80438c51bd7f196820429aa698bcbca9bdc0fc3cdae637813bfdb8125ee1ada1"
+    },
+    {
+      "path": "02_CONFIG/layout_contract.json",
+      "bytes": 2436,
+      "sha256": "c66f86a19d52c1a9ec08ce1bbe14d4eb8a6c4acc77338f22b244fd10b2622bc0"
+    },
+    {
+      "path": "02_CONFIG/output_contract.json",
+      "bytes": 893,
+      "sha256": "d8763c1c6899aa3bf70d4d1cb7fd07b2bb3850b630628e31ed1aa1744c9e6726"
+    },
+    {
+      "path": "02_CONFIG/project.blank.json",
+      "bytes": 1806,
+      "sha256": "56ab7f56b0a02c1cbddd6fa2f07e5421a891e16e662c3932fc4a1ec858f766c3"
+    },
+    {
+      "path": "02_CONFIG/project.example.bardos.json",
+      "bytes": 2094,
+      "sha256": "59b03cbd20586f53e6eaf713e76da1004896c903be3e80bc6e46ad42826c9da5"
+    },
+    {
+      "path": "03_STYLE_SYSTEM/BB_Block_Style_Reference.png",
+      "bytes": 62616,
+      "sha256": "0fd2b13b6d28e314ec723a951e22212f1a062a2cc58ae5ecc6bb411cfea557a0"
+    },
+    {
+      "path": "03_STYLE_SYSTEM/Bardos_Wordmark_Style_Reference.png",
+      "bytes": 117905,
+      "sha256": "ea95f08d5501cc73948bb0301251856c6e51edc6e1a89a22e86af5d6ba14ced9"
+    },
+    {
+      "path": "03_STYLE_SYSTEM/Brand_Guide_Style_Spec.md",
+      "bytes": 2159,
+      "sha256": "3eb6b932b8cfe84cd535e0086ac2afaac329ee5955dcdccdcfca112c8b77c1b7"
+    },
+    {
+      "path": "03_STYLE_SYSTEM/Color_Extraction_Rules.md",
+      "bytes": 768,
+      "sha256": "9e0c043b863841582bfc0452bf47637b62b24a34eeaf34b88d2a1d0df461d243"
+    },
+    {
+      "path": "03_STYLE_SYSTEM/Tagline_Sans_Style_Reference.png",
+      "bytes": 39924,
+      "sha256": "b5efa123b684c6124b1d557cd5bc92a8f9806e4716eb0b807c4bb3f26671acc4"
+    },
+    {
+      "path": "03_STYLE_SYSTEM/Typography_Mapping.md",
+      "bytes": 1199,
+      "sha256": "188aa6c57bcffea2adc15f75b0d51a695fe1d8cca56a64811581d413253c83d6"
+    },
+    {
+      "path": "03_STYLE_SYSTEM/US_Letter_300DPI_Blank_Page.png",
+      "bytes": 32886,
+      "sha256": "c38070934e3ab325ab7dc8b4ba2b4e06cd514710537b4c83039b08a27973aefd"
+    },
+    {
+      "path": "03_STYLE_SYSTEM/US_Letter_300DPI_Blank_Page.svg",
+      "bytes": 526,
+      "sha256": "3c3bf7afc309e60c364ec98e8f984477e70163b46d750c77016339267bba1fc7"
+    },
+    {
+      "path": "03_STYLE_SYSTEM/US_Letter_300DPI_Safe_Area_Guide.png",
+      "bytes": 63116,
+      "sha256": "09d7049a9b05ab9fb2b976d9e7aea26d6d53a4ef5baab08c489efbb2e416fdd0"
+    },
+    {
+      "path": "04_PAGE_PROMPTS/01_Page_Cover.md",
+      "bytes": 470,
+      "sha256": "e36bb9c34c8ab041d8955c9ff5c2b831f329a8f2f17f6cbff10496115ad79b5f"
+    },
+    {
+      "path": "04_PAGE_PROMPTS/02_Page_Brand_Overview_Typography.md",
+      "bytes": 556,
+      "sha256": "9f63463fcb95c1c7bc90704c760dad0807d02d6970b4d3d3b9d521cbee7f8a7e"
+    },
+    {
+      "path": "04_PAGE_PROMPTS/03_Page_Color_Palette_Logo_Anatomy.md",
+      "bytes": 435,
+      "sha256": "3d03409bda395fd3767fee995fc5f9cc16ddeaed9c1648940988326771c8bbb1"
+    },
+    {
+      "path": "04_PAGE_PROMPTS/04_Page_Clear_Space_Minimum_Size_Variations.md",
+      "bytes": 486,
+      "sha256": "f4b0870e0d3a9eb1bfb3862260df4aea2f17342999a1068566fd6f4d9215c9c2"
+    },
+    {
+      "path": "04_PAGE_PROMPTS/05_Page_Incorrect_Usage_Applications.md",
+      "bytes": 438,
+      "sha256": "f98c94b5bd2ad5942a13efcf7eb57bca65ff9ca19f5e70a3050a63351b5ddd24"
+    },
+    {
+      "path": "04_PAGE_PROMPTS/06_Page_Back_Cover.md",
+      "bytes": 399,
+      "sha256": "62a7f7309cab16ab8c5ec0a03441591ee350d5ab2fa01abbcd1e41639ab51698"
+    },
+    {
+      "path": "05_SCRIPTS/create_logo_variations.py",
+      "bytes": 2054,
+      "sha256": "86379fe0a609a2511de8d54293eb98d61c6daeb097e6cd04f9abe4eaafb19497"
+    },
+    {
+      "path": "05_SCRIPTS/extract_palette.py",
+      "bytes": 1273,
+      "sha256": "91196db37d26ae1f206ab7b0e63d3af48b6e374644eb566374ee35a7a74c35e2"
+    },
+    {
+      "path": "05_SCRIPTS/make_contact_sheet.py",
+      "bytes": 1028,
+      "sha256": "e6b1a849d23066edaae8e1e22bf8fcb4a577ac768096427aa86da778edc3bd29"
+    },
+    {
+      "path": "05_SCRIPTS/preflight_pages.py",
+      "bytes": 2751,
+      "sha256": "d95e6eb818ed15c168b240f8080ed260c17faa3019c1c5b9d5e615bdcb527d1e"
+    },
+    {
+      "path": "05_SCRIPTS/requirements.txt",
+      "bytes": 28,
+      "sha256": "3a97b7f8f2ee00c1ecaebe5356353e7bd8f91603165cdc48bc512ce34a1231b8"
+    },
+    {
+      "path": "05_SCRIPTS/stitch_pages.py",
+      "bytes": 1647,
+      "sha256": "76401673a0a276fe4f6b0c4884e69e0a472366c1f3e77e6638fce2228f13faeb"
+    },
+    {
+      "path": "06_OUTPUT/README.md",
+      "bytes": 182,
+      "sha256": "4464869b229bcdc425bf41d6d02d40e2677ae203de69179a9871be4e245ad6e5"
+    },
+    {
+      "path": "07_EXAMPLE/assets/Bardos_BB_Client_Logo_Example.png",
+      "bytes": 1733863,
+      "sha256": "9374c59c4276a7e565da20970364cbef3cef180c3f0323850686ce9b98d5285b"
+    },
+    {
+      "path": "07_EXAMPLE/assets/Wayne_Tech_Lab_Producer_Logo_Example.png",
+      "bytes": 1543358,
+      "sha256": "80438c51bd7f196820429aa698bcbca9bdc0fc3cdae637813bfdb8125ee1ada1"
+    },
+    {
+      "path": "07_EXAMPLE/pages/01_Cover.png",
+      "bytes": 1360517,
+      "sha256": "2bb8328d4b5c514a6dac80a478d7463d7ff12517b277d69660e4ab68d373ff35"
+    },
+    {
+      "path": "07_EXAMPLE/pages/01_Page_1.png",
+      "bytes": 1360517,
+      "sha256": "2bb8328d4b5c514a6dac80a478d7463d7ff12517b277d69660e4ab68d373ff35"
+    },
+    {
+      "path": "07_EXAMPLE/pages/02_Brand_Overview_Typography.png",
+      "bytes": 1492020,
+      "sha256": "305d83a337c73887138edc3b2e3ff98d8debec3196656f7dc2153da330dc6b9f"
+    },
+    {
+      "path": "07_EXAMPLE/pages/02_Page_2.png",
+      "bytes": 1492020,
+      "sha256": "305d83a337c73887138edc3b2e3ff98d8debec3196656f7dc2153da330dc6b9f"
+    },
+    {
+      "path": "07_EXAMPLE/pages/03_Color_Palette_Logo_Anatomy.png",
+      "bytes": 1566812,
+      "sha256": "7f723c44b339eb60d7f215404d686ab91cec8ed84e91284b7e5f2e53be5ebc11"
+    },
+    {
+      "path": "07_EXAMPLE/pages/03_Page_3.png",
+      "bytes": 1566812,
+      "sha256": "7f723c44b339eb60d7f215404d686ab91cec8ed84e91284b7e5f2e53be5ebc11"
+    },
+    {
+      "path": "07_EXAMPLE/pages/04_Clear_Space_Minimum_Size_Variations.png",
+      "bytes": 1588968,
+      "sha256": "ec9bea26240403b1fd7367f8c79edd4c6d4d62c1c4fef1d6b3e63921c7f09f5c"
+    },
+    {
+      "path": "07_EXAMPLE/pages/04_Page_4.png",
+      "bytes": 1588968,
+      "sha256": "ec9bea26240403b1fd7367f8c79edd4c6d4d62c1c4fef1d6b3e63921c7f09f5c"
+    },
+    {
+      "path": "07_EXAMPLE/pages/05_Incorrect_Usage_Applications.png",
+      "bytes": 1881606,
+      "sha256": "5c26ed60a6fe0b2fca41769b9b8978832c89dcdd33e3185438ed8b5e289c8424"
+    },
+    {
+      "path": "07_EXAMPLE/pages/05_Page_5.png",
+      "bytes": 1881606,
+      "sha256": "5c26ed60a6fe0b2fca41769b9b8978832c89dcdd33e3185438ed8b5e289c8424"
+    },
+    {
+      "path": "07_EXAMPLE/pages/06_Back_Cover.png",
+      "bytes": 1246811,
+      "sha256": "78c58513ff5f68bad4d4ad9ea4d4059f5077c170a94aa6defb39e37d902e0999"
+    },
+    {
+      "path": "07_EXAMPLE/pages/06_Page_6.png",
+      "bytes": 1246811,
+      "sha256": "78c58513ff5f68bad4d4ad9ea4d4059f5077c170a94aa6defb39e37d902e0999"
+    },
+    {
+      "path": "07_EXAMPLE/preflight_report.json",
+      "bytes": 1723,
+      "sha256": "d624dc5efcf58a72e3775993f08604f7b4d0012c3ef1b77ec1f39b164fef8dff"
+    },
+    {
+      "path": "07_EXAMPLE/preview/Bardos_BB_Brand_Guidelines_Example.pdf",
+      "bytes": 13038992,
+      "sha256": "34e3de4ea4cc1605a9fd27e86fbea7276b6b15a121f7094712b4746049b1cf64"
+    },
+    {
+      "path": "07_EXAMPLE/preview/Bardos_BB_Contact_Sheet.png",
+      "bytes": 995750,
+      "sha256": "031c45253d53cf81122a3aac31553ad6ab86c3c0d623bc1f6b4aa6790e4efe86"
+    },
+    {
+      "path": "07_EXAMPLE/preview/Bardos_BB_Rebuilt_Contact_Sheet.png",
+      "bytes": 3355002,
+      "sha256": "1bf1020966bafc7eac20e26666981beb01381a79b2d7257a5592d6ea86d215c3"
+    },
+    {
+      "path": "07_EXAMPLE/preview/Bardos_BB_Rebuilt_From_Template_Pages.pdf",
+      "bytes": 14086072,
+      "sha256": "dc43701ba2e6859651cc6ff182ef449287195be4974cc1ccd9f2f020c4aee1b1"
+    },
+    {
+      "path": "LICENSE_AND_USAGE.md",
+      "bytes": 482,
+      "sha256": "f286c72dd641ee913e1b6d16dfd82b1ef62dcc29df47a3122c2bbc55dc153f98"
+    },
+    {
+      "path": "Prompt_Ingest_Brand_Guide.md",
+      "bytes": 4814,
+      "sha256": "5d39bf5f808fc8422832c26b7080069357d201e6cf60ae5ac959039b823b9ced"
+    },
+    {
+      "path": "Pronpt_Injest_Brand_Guide.md",
+      "bytes": 4814,
+      "sha256": "d62fc5bb538b9b2fa45ba5b6c2bd6615422cf870eea825e9182923ce91ecc1b6"
+    },
+    {
+      "path": "VERSION.md",
+      "bytes": 249,
+      "sha256": "e76072a9a1bed01802f2fe1693885ffc4f81604c1f56ea120bad1827c50edc7f"
+    }
+  ]
+}

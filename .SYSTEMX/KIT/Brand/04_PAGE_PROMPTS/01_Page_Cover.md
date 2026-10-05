@@ -1,0 +1,3 @@
+# Page 1 Prompt - Cover
+
+Create page 1 of 6 for `{client_display_name}` using the exact supplied client and producer logos. Match the included example cover: warm-white page, thin inset gold double border, large centered client logo, elegant serif title `Brand Guidelines`, client full name beneath, then `Produced by {producer_name}` with the exact producer logo. Keep the page low-ink and print-safe. Footer: `1 of 6`. Do not redraw either logo. Output 2550 x 3300 px.

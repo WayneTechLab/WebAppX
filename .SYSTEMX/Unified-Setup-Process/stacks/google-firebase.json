@@ -1,0 +1,19 @@
+{
+  "id": "google-firebase",
+  "name": "Google/Firebase Stack",
+  "description": "Default WSG stack with Firebase, GCloud, React, Vite, Stripe, and Google Workspace defaults.",
+  "defaults": [
+    "firebase",
+    "gcloud",
+    "react",
+    "vite",
+    "stripe",
+    "google-workspace",
+    "github",
+    "chrome-mcp"
+  ],
+  "notes": [
+    "This is the default stack mode for WSG.",
+    "Supabase is never implied by this stack."
+  ]
+}

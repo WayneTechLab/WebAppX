@@ -1,0 +1,22 @@
+{
+  "id": "business",
+  "name": "Business",
+  "description": "Selected business-tier options with a 100 page cap.",
+  "pageCap": 100,
+  "audience": "Business sites, service portals, lead-gen systems, admin-light workflows, and commerce-ready brands.",
+  "modules": [
+    "auth",
+    "business-pages",
+    "forms",
+    "commerce-optional",
+    "firebase",
+    "ci",
+    "security",
+    "monitoring",
+    "docs",
+    "runbooks"
+  ],
+  "requiredTools": ["node", "npm", "git", "gh", "firebase"],
+  "optionalTools": ["gcloud", "stripe", "chrome", "mcp"],
+  "setupMode": "selected-business-tier"
+}

@@ -1,0 +1,14 @@
+route,surface,mode,purpose,public
+/workspace,Workspace,admin,"Repository/site summary, sessions, recent work, environments",no
+/designer/:documentId/pages/:pageId,Designer,design/edit/preview/comment/analyze/interact,"Primary canvas, Navigator, panels, source and evidence",no
+/designer/:documentId/components/:componentId,Component canvas,design/preview,"Definition focus, variants, props, slots, usage",no
+/content/:documentId,CMS,content,"Collections, fields, items, workflow, imports",no
+/assets/:documentId,Assets,content,"Media catalog, metadata, usage, transforms, providers",no
+/interactions/:documentId,Interactions,design,"Interaction library, timeline, triggers, targets",no
+/locales/:documentId,Localization,content,"Locale configuration, overrides, routes and publish policy",no
+/reviews/:documentId,Review,comment/review,"Comments, branches, approvals, semantic diffs",no
+/releases/:documentId,Release,operations,"Snapshots, gates, publish manifests, restore",no
+/integrations/:documentId,Integrations,operations,"Provider adapters, identity, emulator/test readiness",no
+/extensions,Extensions,admin,"Plugins, code components, CLI and MCP capabilities",no
+/evidence,Evidence,operations,"Journal, reports, backups, logs, operation history",no
+/settings,Settings,admin,LAN preferences and local policy,no

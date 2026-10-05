@@ -1,0 +1,53 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "color": {
+    "wtl-navy-950": {
+      "$value": "#041031",
+      "$type": "color"
+    },
+    "wtl-navy-900": {
+      "$value": "#01214A",
+      "$type": "color"
+    },
+    "wtl-navy-800": {
+      "$value": "#042D5C",
+      "$type": "color"
+    },
+    "wtl-blue-700": {
+      "$value": "#0A3977",
+      "$type": "color"
+    },
+    "wtl-blue-600": {
+      "$value": "#0B4A91",
+      "$type": "color"
+    },
+    "wtl-slate-500": {
+      "$value": "#65738F",
+      "$type": "color"
+    },
+    "wtl-slate-200": {
+      "$value": "#D9DEE8",
+      "$type": "color"
+    },
+    "wtl-white": {
+      "$value": "#FFFFFF",
+      "$type": "color"
+    }
+  },
+  "font": {
+    "display": {
+      "$value": "Inter Display, Inter, Segoe UI, Arial, sans-serif",
+      "$type": "fontFamily"
+    },
+    "body": {
+      "$value": "Inter, Segoe UI, Arial, sans-serif",
+      "$type": "fontFamily"
+    }
+  },
+  "spacing": {
+    "clearSpace": {
+      "$value": "10%",
+      "$type": "dimension"
+    }
+  }
+}

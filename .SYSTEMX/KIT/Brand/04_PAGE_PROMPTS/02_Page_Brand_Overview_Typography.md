@@ -1,0 +1,3 @@
+# Page 2 Prompt - Brand Overview & Typography
+
+Create page 2 of 6 titled `02 Brand Overview & Typography`. Use a short brand overview at the top. Below, create three horizontal typography rows: exact client wordmark artwork, exact abbreviation/block artwork, and a supporting all-caps sans sample. Use the supplied logo and style reference crops. Clearly label custom artwork versus confirmed fonts. Use the exact producer logo in the footer. Keep all copy inside the safe area. Footer: `Produced by {producer_name} for {client_display_name}` and `2 of 6`.

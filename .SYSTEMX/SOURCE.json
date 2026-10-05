@@ -1,0 +1,35 @@
+{
+  "repository": "https://github.com/WayneTechLab/SFWA-WTL-TEMPLATE",
+  "branch": "main",
+  "commit": "c3e2272efe7d9fe3fde1add3144aab3ec6e487c4",
+  "sourcePath": ".SYSTEMX",
+  "templateVersion": "1.8.6-alpha.1",
+  "license": "MIT",
+  "licenseSourcePath": "LICENSE",
+  "retainedVerbatim": [],
+  "adaptedFrom": [
+    "AI/",
+    "Standard-MD-Files/",
+    "Unified-Setup-Process/intake/",
+    "docs/",
+    "WSG-MENU.sh",
+    "scripts/"
+  ],
+  "excluded": [
+    "LAN/",
+    "KIT/",
+    "Template/starter/",
+    "provider-specific setup and deployment automation",
+    "duplicate setup packets and edition manifests",
+    "historical status, research, logs, and application releases"
+  ],
+  "note": "Host integration retains standalone source lineage. The immutable managed release preserves its original exclusions and fingerprint; this outer host additionally includes LAN, KIT, webapp starter and setup/deployment extensions. See docs/UNIFIED-TEMPLATE.md for the reviewed combined inputs.",
+  "hostExtensions": [
+    "LAN/",
+    "KIT/",
+    "Template/",
+    "Unified-Setup-Process/",
+    "deploy/",
+    "webapp-version/"
+  ]
+}

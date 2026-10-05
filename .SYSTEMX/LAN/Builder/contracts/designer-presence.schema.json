@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/designer-presence.schema.json",
+  "title": "SYSTEMX LAN Presence State",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sessionId",
+    "userId",
+    "documentId",
+    "pageId",
+    "mode",
+    "lastSeenAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "userId": {
+      "type": "string"
+    },
+    "documentId": {
+      "type": "string"
+    },
+    "pageId": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "design",
+        "edit",
+        "preview",
+        "comment",
+        "analyze",
+        "interact"
+      ]
+    },
+    "selection": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "objectType",
+          "objectId"
+        ],
+        "properties": {
+          "objectType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "objectId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "instancePath": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fieldPath": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "lastSeenAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

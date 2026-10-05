@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/designer-style.schema.json",
+  "title": "SYSTEMX LAN Style and Variable Contracts",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "breakpoints",
+    "styles",
+    "variables",
+    "modes"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "breakpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/breakpoint"
+      }
+    },
+    "styles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/style"
+      }
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/variable"
+      }
+    },
+    "modes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mode"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "jsonValue": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    },
+    "breakpoint": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "cascadeDirection",
+        "order"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "base",
+            "max-width",
+            "min-width",
+            "container"
+          ]
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unit": {
+          "enum": [
+            "px",
+            "rem"
+          ]
+        },
+        "cascadeDirection": {
+          "enum": [
+            "base",
+            "down",
+            "up",
+            "scoped"
+          ]
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "style": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "selector",
+        "rules"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "selector": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rule"
+          }
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "path",
+            "start",
+            "end",
+            "fingerprint"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "start": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "symbol": {
+              "type": "string"
+            },
+            "fingerprint": {
+              "type": "string",
+              "minLength": 8
+            },
+            "sourceRevision": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "rule": {
+      "type": "object",
+      "required": [
+        "id",
+        "breakpointId",
+        "state",
+        "declarations",
+        "order"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "breakpointId": {
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "base",
+            "hover",
+            "focus",
+            "focus-visible",
+            "active",
+            "visited",
+            "before",
+            "after"
+          ]
+        },
+        "declarations": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "order": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "variable": {
+      "type": "object",
+      "required": [
+        "id",
+        "collectionId",
+        "name",
+        "type",
+        "valuesByMode"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "collectionId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "color",
+            "length",
+            "number",
+            "font-family",
+            "font-weight",
+            "duration",
+            "cubic-bezier",
+            "string"
+          ]
+        },
+        "valuesByMode": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "status": {
+          "enum": [
+            "active",
+            "deprecated"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "mode": {
+      "type": "object",
+      "required": [
+        "id",
+        "axis",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "axis": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "inheritsFrom": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

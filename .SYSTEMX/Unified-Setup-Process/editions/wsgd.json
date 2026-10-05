@@ -1,0 +1,19 @@
+{
+  "id": "wsgd",
+  "name": "WSGD",
+  "fullName": "Dev Stack Generation Edition Dev",
+  "description": "Fork/dev edition for local development tooling, MCP automation, experiments, and staging future standards.",
+  "pageCap": 50,
+  "audience": "Development forks, local tooling experiments, and future WSG standards work.",
+  "modules": [
+    "ci",
+    "mcp",
+    "security",
+    "dev-tooling",
+    "repo-learning",
+    "experiments"
+  ],
+  "requiredTools": ["node", "npm", "git", "gh"],
+  "optionalTools": ["firebase", "gcloud", "chrome", "playwright", "mcp"],
+  "setupMode": "dev-fork"
+}

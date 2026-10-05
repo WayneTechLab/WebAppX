@@ -1,0 +1,56 @@
+{
+  "pages_dir": "/mnt/data/WTL_Brand_Guide_Standard_Template_v1.0/07_EXAMPLE/pages",
+  "errors": [],
+  "warnings": [
+    "01_Cover.png is below the preferred 300-DPI Letter resolution",
+    "02_Brand_Overview_Typography.png is below the preferred 300-DPI Letter resolution",
+    "03_Color_Palette_Logo_Anatomy.png is below the preferred 300-DPI Letter resolution",
+    "04_Clear_Space_Minimum_Size_Variations.png is below the preferred 300-DPI Letter resolution",
+    "05_Incorrect_Usage_Applications.png is below the preferred 300-DPI Letter resolution",
+    "06_Back_Cover.png is below the preferred 300-DPI Letter resolution"
+  ],
+  "pages": [
+    {
+      "file": "01_Cover.png",
+      "width": 1275,
+      "height": 1650,
+      "aspect_ratio": 0.7727272727272727,
+      "edge_dark_density": 0.0
+    },
+    {
+      "file": "02_Brand_Overview_Typography.png",
+      "width": 1275,
+      "height": 1650,
+      "aspect_ratio": 0.7727272727272727,
+      "edge_dark_density": 0.00444
+    },
+    {
+      "file": "03_Color_Palette_Logo_Anatomy.png",
+      "width": 1275,
+      "height": 1650,
+      "aspect_ratio": 0.7727272727272727,
+      "edge_dark_density": 0.00172
+    },
+    {
+      "file": "04_Clear_Space_Minimum_Size_Variations.png",
+      "width": 1275,
+      "height": 1650,
+      "aspect_ratio": 0.7727272727272727,
+      "edge_dark_density": 0.00038
+    },
+    {
+      "file": "05_Incorrect_Usage_Applications.png",
+      "width": 1275,
+      "height": 1650,
+      "aspect_ratio": 0.7727272727272727,
+      "edge_dark_density": 0.00699
+    },
+    {
+      "file": "06_Back_Cover.png",
+      "width": 1275,
+      "height": 1650,
+      "aspect_ratio": 0.7727272727272727,
+      "edge_dark_density": 0.007
+    }
+  ]
+}

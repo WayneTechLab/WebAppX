@@ -1,0 +1,92 @@
+criterion_id,feature_id,wave,criterion,evidence_required,blocking
+AC-001,FEAT-001,0,No non-loopback bind is possible; hostile Host/Origin requests fail.,Automated test report plus generated artifact/diff where applicable,yes
+AC-002,FEAT-002,0,Stopping one project never terminates an unrelated process.,Automated test report plus generated artifact/diff where applicable,yes
+AC-003,FEAT-003,1,All mutations without a current token fail; replayed approvals fail.,Automated test report plus generated artifact/diff where applicable,yes
+AC-004,FEAT-004,1,Security integration suite covers allow/deny matrix.,Automated test report plus generated artifact/diff where applicable,yes
+AC-005,FEAT-005,1,Traversal/symlink/race fixtures cannot escape approved roots.,Automated test report plus generated artifact/diff where applicable,yes
+AC-006,FEAT-006,1,Injected write failure leaves original source valid and recoverable.,Automated test report plus generated artifact/diff where applicable,yes
+AC-007,FEAT-007,0,Known credential patterns are blocked/redacted; docs contain no secret-paste instruction.,Automated test report plus generated artifact/diff where applicable,yes
+AC-008,FEAT-008,0,"Public build contains zero LAN paths, markers, tokens, or private files.",Automated test report plus generated artifact/diff where applicable,yes
+AC-009,FEAT-009,1,UI/docs cannot claim supported write capability without passing tests.,Automated test report plus generated artifact/diff where applicable,yes
+AC-010,FEAT-010,0,Broken command/path/link count is zero in release gate.,Automated test report plus generated artifact/diff where applicable,yes
+AC-011,FEAT-011,2,Stock template imports to a valid document and no-op re-import preserves IDs.,Automated test report plus generated artifact/diff where applicable,yes
+AC-012,FEAT-012,2,Formatting/no-op import retains at least 100% IDs for supported objects.,Automated test report plus generated artifact/diff where applicable,yes
+AC-013,FEAT-013,2,Indexes rebuild deterministically and match direct validation.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-014,FEAT-014,3,Invalid/unauthorized/stale commands fail before mutation.,Automated test report plus generated artifact/diff where applicable,yes
+AC-015,FEAT-015,3,Multi-object command either fully commits once or leaves no document mutation.,Automated test report plus generated artifact/diff where applicable,yes
+AC-016,FEAT-016,3,Replaying fixture journal yields expected document hash.,Automated test report plus generated artifact/diff where applicable,yes
+AC-017,FEAT-017,3,Command + undo returns semantic equivalence for reversible fixtures.,Automated test report plus generated artifact/diff where applicable,yes
+AC-018,FEAT-018,3,Reviewers can identify meaning and impact without reading source diff only.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-019,FEAT-019,3,Concurrent stale mutation is rejected with rebase information.,Automated test report plus generated artifact/diff where applicable,yes
+AC-020,FEAT-020,3,Role matrix denies every unauthorized command even when called directly.,Automated test report plus generated artifact/diff where applicable,yes
+AC-021,FEAT-021,4,Current flows pass visual and E2E parity tests.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-022,FEAT-022,2,Selecting in any projection synchronizes every other projection.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-023,FEAT-023,4,Interactions work in preview; editing commands are blocked in non-edit modes.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-024,FEAT-024,5,Click/drag insertion calls one validated transaction and selects result.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-025,FEAT-025,4,10k-node tree remains within performance budget and fully keyboard operable.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-026,FEAT-026,5,Route collision/impact is shown before commit.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-027,FEAT-027,6,Every displayed effective style/value links to origin and reset behavior.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-028,FEAT-028,4,Commands available in palette exactly match current capabilities/context.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-029,FEAT-029,4,Viewport state is deterministic and separate from document state.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-030,FEAT-030,4,Critical editor paths pass keyboard/screen-reader smoke and WCAG 2.2 AA checks.,Automated test report plus generated artifact/diff where applicable,yes
+AC-031,FEAT-031,2,Supported fixture imports are deterministic and execute no project code.,Automated test report plus generated artifact/diff where applicable,yes
+AC-032,FEAT-032,2,All stock routes/layouts are discovered from source and collision-validated.,Automated test report plus generated artifact/diff where applicable,yes
+AC-033,FEAT-033,2,No-op parse/print preserves semantic AST and expected formatting.,Automated test report plus generated artifact/diff where applicable,yes
+AC-034,FEAT-034,5,Repeated strings and expressions cannot cause ambiguous replacement.,Automated test report plus generated artifact/diff where applicable,yes
+AC-035,FEAT-035,5,Structural edit rebuilds and re-imports to intended graph with no unrelated diff.,Automated test report plus generated artifact/diff where applicable,yes
+AC-036,FEAT-036,5,Only designated generated artifacts are replaced; manual files are protected.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-037,FEAT-037,6,Supported class changes are idempotent and conflict-aware.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-038,FEAT-038,5,Plan invalidates on source drift and failed checks restore original files.,Automated test report plus generated artifact/diff where applicable,yes
+AC-039,FEAT-039,6,Selector usages and declaration provenance are queryable.,Automated test report plus generated artifact/diff where applicable,yes
+AC-040,FEAT-040,6,Effective values match browser at representative widths.,Automated test report plus generated artifact/diff where applicable,yes
+AC-041,FEAT-041,6,State previews and generated selectors are standards-valid.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-042,FEAT-042,6,Alias cycles blocked; mode resolution deterministic; rename/delete impact previewed.,Automated test report plus generated artifact/diff where applicable,yes
+AC-043,FEAT-043,6,Grid fixture output matches browser and supports undo/source round-trip.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-044,FEAT-044,6,Flex fixture output matches browser and inspector provenance.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-045,FEAT-045,6,"Heading semantics, contrast, zoom/reflow audits pass.",Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-046,FEAT-046,6,Policy violations are reproducible warnings/blocks with fix actions.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-047,FEAT-047,6,Reset returns exactly to displayed inherited value.,Automated test report plus generated artifact/diff where applicable,yes
+AC-048,FEAT-048,6,Repeated generation creates no diff; output passes type/lint/build.,Automated test report plus generated artifact/diff where applicable,yes
+AC-049,FEAT-049,7,Move/duplicate/source generation preserves definition/instance IDs.,Automated test report plus generated artifact/diff where applicable,yes
+AC-050,FEAT-050,7,Invalid prop values/bindings fail before mutation.,Automated test report plus generated artifact/diff where applicable,yes
+AC-051,FEAT-051,7,Slot edits preserve ownership and nested component focus.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-052,FEAT-052,7,All instances resolve a valid variant after definition changes.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-053,FEAT-053,7,User can see mutation target and apply global/instance change intentionally.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-054,FEAT-054,7,Upgrade impact and migration result are reviewable and reversible.,Automated test report plus generated artifact/diff where applicable,yes
+AC-055,FEAT-055,7,Library update detects conflicts and does not silently overwrite local drift.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-056,FEAT-056,11,Component renders within limits without fs/env/secrets and passes prop schema tests.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-057,FEAT-057,8,Schema validates fixtures and impact report precedes breaking change.,Automated test report plus generated artifact/diff where applicable,yes
+AC-058,FEAT-058,8,Workflow and role tests prevent unauthorized publication.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-059,FEAT-059,8,Invalid/dangling references are blocked or explicitly migrated.,Automated test report plus generated artifact/diff where applicable,yes
+AC-060,FEAT-060,8,Query/binding validates and previews empty/loading/error/item states.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-061,FEAT-061,8,Missing/incompatible field fails before preview/publish.,Automated test report plus generated artifact/diff where applicable,yes
+AC-062,FEAT-062,8,Breaking migration demonstrates counts/integrity and rollback/forward-fix plan.,Automated test report plus generated artifact/diff where applicable,yes
+AC-063,FEAT-063,8,Generated client constraints and server validation match.,Automated test report plus generated artifact/diff where applicable,yes
+AC-064,FEAT-064,8,Replay/spam fixtures do not create duplicate/unsafe records.,Automated test report plus generated artifact/diff where applicable,yes
+AC-065,FEAT-065,8,Replace/delete shows all usages and accessibility impact.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-066,FEAT-066,12,Test-mode order flow is idempotent and audited; no live secret reaches browser.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-067,FEAT-067,9,Structure changes detect broken/ambiguous targets.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-068,FEAT-068,9,Timeline plays deterministically and round-trips to runtime adapter.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-069,FEAT-069,9,No hidden content remains inaccessible; reduced-motion tests pass.,Automated test report plus generated artifact/diff where applicable,yes
+AC-070,FEAT-070,9,Fallback graph cannot cycle and route policy is deterministic.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-071,FEAT-071,9,Adding a locale does not clone the document; inheritance is visible.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-072,FEAT-072,9,Each locale snapshot has valid routes/language/canonical/search output.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-073,FEAT-073,10,Snapshot content/hash cannot change after creation.,Automated test report plus generated artifact/diff where applicable,yes
+AC-074,FEAT-074,10,Required reviewers can approve scoped changes with stale detection.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-075,FEAT-075,10,Failed required gate blocks release candidate unless authorized exception exists.,Automated test report plus generated artifact/diff where applicable,yes
+AC-076,FEAT-076,10,Release can be independently verified from manifest.,Automated test report plus generated artifact/diff where applicable,yes
+AC-077,FEAT-077,10,Wrong target/account/environment is detected before write.,Automated test report plus generated artifact/diff where applicable,yes
+AC-078,FEAT-078,10,Restore drill produces a new verified release and preserves history.,Automated test report plus generated artifact/diff where applicable,yes
+AC-079,FEAT-079,10,Published snapshot has valid unique metadata and no broken internal route references.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-080,FEAT-080,10,"Every production release has target, smoke, monitor, and rollback evidence.",Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-081,FEAT-081,11,Plugin cannot access undeclared query/command/network/storage capabilities.,Automated test report plus generated artifact/diff where applicable,yes
+AC-082,FEAT-082,1,UI/CLI/MCP receive equivalent schema-valid read results.,Automated test report plus generated artifact/diff where applicable,yes
+AC-083,FEAT-083,11,CLI uses shared services and deterministic exit codes.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-084,FEAT-084,11,MCP cannot mutate or read secrets/private unrelated files.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-085,FEAT-085,11,Mutation without exact approval fails and approved command enters journal.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-086,FEAT-086,12,Comments survive object moves and become recoverable orphans on deletion.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-087,FEAT-087,12,Presence loss does not affect durable journal and never grants authority.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-088,FEAT-088,12,Concurrent page branches merge or expose object-level conflicts deterministically.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-089,FEAT-089,12,Analytics overlay cannot mutate document or expose editor IDs publicly.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-090,FEAT-090,12,Experiment variants are reproducible and production changes are release-controlled.,Automated test report plus generated artifact/diff where applicable,policy-dependent
+AC-091,FEAT-091,11,AI cannot commit a mutation or access live secrets without explicit bounded approval.,Automated test report plus generated artifact/diff where applicable,policy-dependent

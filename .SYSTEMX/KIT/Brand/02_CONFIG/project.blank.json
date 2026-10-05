@@ -1,0 +1,56 @@
+{
+  "template_version": "1.0",
+  "client": {
+    "legal_name": "REPLACE WITH CLIENT LEGAL NAME",
+    "display_name": "REPLACE WITH BRAND DISPLAY NAME",
+    "short_name": "REPLACE WITH SHORT NAME",
+    "tagline": "REPLACE WITH TAGLINE",
+    "established_year": "YYYY",
+    "brand_overview": "Write 60-100 words describing the brand, audience, service experience, and visual character.",
+    "brand_values": [
+      "Quality",
+      "Hospitality",
+      "Consistency",
+      "Community"
+    ]
+  },
+  "producer": {
+    "name": "Wayne Tech Lab LLC.",
+    "services_line": "FinTech | Enterprise I.P. | Worldwide Branding | A.I. Automation",
+    "credit_line": "Produced by Wayne Tech Lab LLC. for {client_display_name}"
+  },
+  "assets": {
+    "client_logo": "../01_INPUT/CLIENT_LOGO_REPLACE_ME.png",
+    "producer_logo": "../01_INPUT/PRODUCER_LOGO_WAYNE_TECH_LAB_EXAMPLE.png"
+  },
+  "output": {
+    "page_size": "US Letter portrait",
+    "page_pixels": [
+      2550,
+      3300
+    ],
+    "dpi": 300,
+    "page_count": 6,
+    "background": "warm white / low ink coverage",
+    "filename": "Client_Brand_Guidelines.pdf"
+  },
+  "colors": {
+    "mode": "derive_from_client_logo_then_confirm",
+    "primary": [],
+    "neutral": [
+      "#111111",
+      "#333333",
+      "#777777",
+      "#D9D9D9",
+      "#FAFAFA",
+      "#FFFFFF"
+    ]
+  },
+  "typography": {
+    "logo_wordmark": "Use supplied logo artwork; do not retype or redraw.",
+    "logo_block_letters": "Use supplied logo artwork/reference crop; do not claim an exact font unless source files confirm it.",
+    "publication_display": "Classic high-contrast editorial serif; preferred Cormorant Garamond or Libre Baskerville; fallback Times.",
+    "supporting_sans": "Montserrat or Source Sans 3; fallback Helvetica.",
+    "minimum_body_size_pt": 10.5
+  }
+}

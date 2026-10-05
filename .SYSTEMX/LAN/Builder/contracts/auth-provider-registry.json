@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schemaVersion": 1,
+  "title": "SYSTEMX Unified Authentication Provider Registry",
+  "defaultLocalProvider": "email-password",
+  "localPolicy": {
+    "environment": "development",
+    "firebaseProject": "demo-systemx",
+    "authEmulator": "http://127.0.0.1:9099",
+    "allowedProviderIds": ["email-password"],
+    "productionFallback": "disabled",
+    "note": "The local template accepts Firebase Auth emulator email/password only."
+  },
+  "providers": [
+    {
+      "id": "email-password",
+      "label": "Email + password",
+      "firebaseApi": ["createUserWithEmailAndPassword", "signInWithEmailAndPassword"],
+      "localState": "enabled",
+      "localNote": "Primary day-one path through the Firebase Auth emulator.",
+      "productionState": "supported",
+      "productionNote": "Enable Email/Password in Firebase Authentication before production use."
+    },
+    {
+      "id": "google",
+      "label": "Google account",
+      "firebaseApi": ["GoogleAuthProvider", "signInWithPopup", "signInWithRedirect"],
+      "localState": "disabled",
+      "localNote": "OAuth browser consent is intentionally disabled in the local emulator lane.",
+      "productionState": "supported",
+      "productionNote": "Enable Google and configure authorized domains in Firebase Authentication."
+    },
+    {
+      "id": "email-link",
+      "label": "Email link / code",
+      "firebaseApi": ["sendSignInLinkToEmail", "signInWithEmailLink"],
+      "localState": "disabled",
+      "localNote": "Passwordless email requires a configured sender and authorized domain.",
+      "productionState": "supported",
+      "productionNote": "Use Firebase email-link auth; an email OTP service is a separate backend module."
+    },
+    {
+      "id": "custom-token",
+      "label": "Auth code / custom token",
+      "firebaseApi": ["signInWithCustomToken"],
+      "localState": "planned",
+      "localNote": "Only a trusted local backend or emulator seed may mint a custom token.",
+      "productionState": "supported",
+      "productionNote": "Issue short-lived Firebase custom tokens from a trusted server; never accept arbitrary browser tokens."
+    },
+    {
+      "id": "sso",
+      "label": "SSO / OIDC / SAML",
+      "firebaseApi": ["OAuthProvider", "signInWithPopup", "signInWithRedirect"],
+      "localState": "planned",
+      "localNote": "Provider-specific tenant metadata and redirect domains are required.",
+      "productionState": "supported",
+      "productionNote": "Configure an approved Firebase OIDC/SAML provider and tenant policy before enabling."
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/systemx/ingest-manifest.schema.json",
+  "title": "SYSTEMX existing project ingest manifest",
+  "type": "object",
+  "required": ["schemaVersion", "status", "mode", "project", "pages", "components", "security", "findings"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "status": { "enum": ["needs-review", "blocked", "ready"] },
+    "mode": { "const": "inventory-only" },
+    "projectRoot": { "type": "string" },
+    "project": { "type": "object" },
+    "pages": { "type": "array" },
+    "components": { "type": "array" },
+    "providers": { "type": "array" },
+    "styles": { "type": "array" },
+    "routes": { "type": "array" },
+    "tooling": { "type": "array" },
+    "security": { "type": "object", "required": ["secretsNotRead", "writeAllowed"] },
+    "findings": { "type": "array" }
+  },
+  "additionalProperties": true
+}

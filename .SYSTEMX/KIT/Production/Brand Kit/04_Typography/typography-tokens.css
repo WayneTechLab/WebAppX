@@ -1,0 +1,8 @@
+:root {
+  --wtl-font-display: "Inter Display", "Inter", "Segoe UI", Arial, sans-serif;
+  --wtl-font-body: "Inter", "Segoe UI", Arial, sans-serif;
+  --wtl-weight-display: 700;
+  --wtl-weight-label: 500;
+  --wtl-tracking-display: 0.03em;
+  --wtl-tracking-label: 0.32em;
+}

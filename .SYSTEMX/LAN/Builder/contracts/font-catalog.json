@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schemaVersion": 1,
+  "purpose": "Offline-first Google Fonts catalog for the SYSTEMX LAN font browser. Remote metadata is optional and never exposes an API key to the browser.",
+  "source": "curated-google-fonts-fallback",
+  "families": [
+    { "family": "Inter", "category": "sans-serif", "variants": ["400", "500", "600", "700"], "subsets": ["latin", "latin-ext"] },
+    { "family": "Roboto", "category": "sans-serif", "variants": ["400", "500", "700"], "subsets": ["cyrillic", "greek", "latin", "latin-ext", "vietnamese"] },
+    { "family": "Open Sans", "category": "sans-serif", "variants": ["400", "500", "600", "700"], "subsets": ["cyrillic", "greek", "hebrew", "latin", "latin-ext", "vietnamese"] },
+    { "family": "Source Sans 3", "category": "sans-serif", "variants": ["400", "500", "600", "700"], "subsets": ["latin", "latin-ext", "vietnamese"] },
+    { "family": "DM Sans", "category": "sans-serif", "variants": ["400", "500", "600", "700"], "subsets": ["latin", "latin-ext"] },
+    { "family": "Montserrat", "category": "sans-serif", "variants": ["400", "500", "600", "700"], "subsets": ["cyrillic", "latin", "latin-ext", "vietnamese"] },
+    { "family": "Poppins", "category": "sans-serif", "variants": ["400", "500", "600", "700"], "subsets": ["devanagari", "latin", "latin-ext"] },
+    { "family": "Space Grotesk", "category": "sans-serif", "variants": ["400", "500", "600", "700"], "subsets": ["latin", "latin-ext", "vietnamese"] },
+    { "family": "Playfair Display", "category": "serif", "variants": ["400", "500", "600", "700"], "subsets": ["cyrillic", "latin", "latin-ext", "vietnamese"] },
+    { "family": "Merriweather", "category": "serif", "variants": ["400", "700", "900"], "subsets": ["cyrillic-ext", "latin", "latin-ext", "vietnamese"] },
+    { "family": "IBM Plex Sans", "category": "sans-serif", "variants": ["400", "500", "600", "700"], "subsets": ["cyrillic", "latin", "latin-ext", "vietnamese"] },
+    { "family": "Fira Code", "category": "monospace", "variants": ["400", "500", "600", "700"], "subsets": ["cyrillic", "latin", "latin-ext"] },
+    { "family": "JetBrains Mono", "category": "monospace", "variants": ["400", "500", "600", "700"], "subsets": ["cyrillic", "latin", "latin-ext", "vietnamese"] },
+    { "family": "Noto Sans", "category": "sans-serif", "variants": ["400", "500", "600", "700"], "subsets": ["cyrillic", "devanagari", "greek", "latin", "latin-ext", "vietnamese"] }
+  ]
+}

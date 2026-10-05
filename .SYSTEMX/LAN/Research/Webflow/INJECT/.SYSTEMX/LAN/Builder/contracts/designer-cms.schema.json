@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/designer-cms.schema.json",
+  "title": "SYSTEMX LAN CMS, Binding, Query, and Form Contracts",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "collections",
+    "items",
+    "queries",
+    "bindings",
+    "forms"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/collection"
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    },
+    "queries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/query"
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/binding"
+      }
+    },
+    "forms": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/form"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "jsonValue": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    },
+    "field": {
+      "type": "object",
+      "required": [
+        "id",
+        "key",
+        "label",
+        "type",
+        "required",
+        "localized",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "localized": {
+          "type": "boolean"
+        },
+        "unique": {
+          "type": "boolean"
+        },
+        "defaultValue": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "validation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "reference": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "deprecated"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "collection": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "slug",
+        "providerId",
+        "version",
+        "fields"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "providerId": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/field"
+          }
+        },
+        "indexes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "workflow": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "localePolicy": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "accessPolicy": {
+          "$ref": "#/$defs/jsonValue"
+        }
+      },
+      "additionalProperties": false
+    },
+    "item": {
+      "type": "object",
+      "required": [
+        "id",
+        "collectionId",
+        "revision",
+        "status",
+        "values"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "collectionId": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "localeId": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "in-review",
+            "approved",
+            "scheduled",
+            "published",
+            "archived"
+          ]
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "query": {
+      "type": "object",
+      "required": [
+        "id",
+        "collectionId",
+        "filters",
+        "sort"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "collectionId": {
+          "type": "string"
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "sort": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "projection": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "binding": {
+      "type": "object",
+      "required": [
+        "id",
+        "target",
+        "source",
+        "path"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "target": {
+          "type": "object",
+          "required": [
+            "objectType",
+            "objectId"
+          ],
+          "properties": {
+            "objectType": {
+              "type": "string",
+              "minLength": 1
+            },
+            "objectId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "instancePath": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "fieldPath": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "targetProperty": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "page",
+            "collection-item",
+            "query-item",
+            "component-prop",
+            "locale",
+            "site-setting",
+            "runtime-context"
+          ]
+        },
+        "path": {
+          "type": "string"
+        },
+        "transform": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "fallback": {
+          "$ref": "#/$defs/jsonValue"
+        }
+      },
+      "additionalProperties": false
+    },
+    "form": {
+      "type": "object",
+      "required": [
+        "id",
+        "fields",
+        "validation",
+        "destinations",
+        "retention",
+        "abuseControls"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "validation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "destinations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "success": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "failure": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "retention": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "abuseControls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

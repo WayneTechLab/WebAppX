@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schemaVersion": 1,
+  "providers": [
+    {
+      "id": "firestore",
+      "name": "Cloud Firestore",
+      "artifactKinds": ["draft-pages", "tokens", "builder-metadata", "documents"],
+      "capabilities": {"read": true, "write": true, "list": true, "query": true, "transactions": true, "realtime": true, "signedUrls": false, "localEmulator": true},
+      "environmentRule": "emulator-first"
+    },
+    {
+      "id": "firebase-realtime-database",
+      "name": "Firebase Realtime Database",
+      "artifactKinds": ["presence", "transient-coordination"],
+      "capabilities": {"read": true, "write": true, "list": true, "query": true, "transactions": true, "realtime": true, "signedUrls": false, "localEmulator": true},
+      "environmentRule": "optional-presence-only"
+    },
+    {
+      "id": "firebase-sql-connect",
+      "name": "Firebase SQL Connect / Cloud SQL PostgreSQL",
+      "artifactKinds": ["crm", "reporting", "transactions", "relational-records"],
+      "capabilities": {"read": true, "write": true, "list": true, "query": true, "transactions": true, "realtime": false, "signedUrls": false, "localEmulator": true},
+      "environmentRule": "explicit-relational-module"
+    },
+    {
+      "id": "cloud-storage-for-firebase",
+      "name": "Cloud Storage for Firebase",
+      "artifactKinds": ["web-media", "uploads", "generated-assets"],
+      "capabilities": {"read": true, "write": true, "list": true, "query": false, "transactions": false, "realtime": false, "signedUrls": true, "localEmulator": true},
+      "environmentRule": "rules-and-content-policy"
+    },
+    {
+      "id": "google-drive",
+      "name": "Google Drive / Shared Drive",
+      "artifactKinds": ["staff-documents", "setup-packets", "brand-kits", "production-kits"],
+      "capabilities": {"read": true, "write": true, "list": true, "query": true, "transactions": false, "realtime": false, "signedUrls": false, "localEmulator": false},
+      "environmentRule": "operator-oauth-only"
+    },
+    {
+      "id": "google-cloud-storage",
+      "name": "Google Cloud Storage",
+      "artifactKinds": ["internal-archives", "large-object-storage"],
+      "capabilities": {"read": true, "write": true, "list": true, "query": false, "transactions": false, "realtime": false, "signedUrls": true, "localEmulator": false},
+      "environmentRule": "server-cli-only"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "WebAppX",
+    "description": "Reusable public webapp template. Configure project records when adopting."
+  },
+  "checks": [
+    {
+      "name": "lint",
+      "command": [
+        "npm",
+        "run",
+        "ci:lint"
+      ]
+    },
+    {
+      "name": "types",
+      "command": [
+        "npm",
+        "run",
+        "ci:typecheck"
+      ]
+    },
+    {
+      "name": "tests",
+      "command": [
+        "npm",
+        "run",
+        "ci:test"
+      ]
+    },
+    {
+      "name": "security",
+      "command": [
+        "npm",
+        "run",
+        "ci:security"
+      ]
+    },
+    {
+      "name": "documentation",
+      "command": [
+        "npm",
+        "run",
+        "docs:links"
+      ]
+    },
+    {
+      "name": "research",
+      "command": [
+        "npm",
+        "run",
+        "research:validate"
+      ]
+    },
+    {
+      "name": "integration",
+      "command": [
+        "npm",
+        "run",
+        "systemx:integration:test"
+      ]
+    }
+  ],
+  "commands": {
+    "dev": [
+      "npm",
+      "run",
+      "dev:systemx"
+    ],
+    "build": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "deploy": [
+      "npm",
+      "run",
+      "deploy"
+    ]
+  }
+}

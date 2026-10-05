@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow,noarchive" />
+    <meta name="systemx-session" content="" />
+    <title>SYSTEMX Local Control</title>
+    <style id="systemx-runtime-style" nonce=""></style>
+    <link rel="stylesheet" href="Website/dashboard.css" />
+  </head>
+  <body>
+    <div class="builder-app">
+      <header class="builder-toolbar">
+        <a class="brand-lockup" href="#command" aria-label="SYSTEMX Local Control home">
+          <span class="brand-mark">SX</span>
+          <span>
+            <strong>SYSTEMX LAN Builder</strong>
+            <small>S.F.W.A. Template Builder G1</small>
+          </span>
+        </a>
+
+        <nav class="toolbar-tabs" aria-label="Builder workspaces">
+          <a class="active" href="#canvas" title="Design workspace">Design</a>
+          <a href="#content" title="CMS and CRM workspace">CMS</a>
+          <a href="#sync" title="Evidence and insights workspace">Insights</a>
+          <a href="#command" title="SYSTEMX control workspace">SYSTEMX</a>
+        </nav>
+
+        <div class="command-palette" role="search">
+          <span aria-hidden="true">⌘K</span>
+          <input id="builder-command-input" type="search" placeholder="Route SYSTEMX menu, AGI, MCP, Firebase, GCloud, Stripe, Playwright…" autocomplete="off" />
+        </div>
+
+        <div class="toolbar-actions" aria-live="polite">
+          <span class="runtime-chip"><b id="controller-state">Loading</b><small id="controller-detail">Controller</small></span>
+          <span class="runtime-chip"><b id="vite-state">Loading</b><small id="vite-detail">Vite</small></span>
+          <a id="open-app-link" class="button button-dark" href="http://127.0.0.1:5173/" rel="noreferrer">Open app</a>
+          <button id="workspace-menu-toggle" class="hamburger-button" type="button" aria-controls="workspace-menu" aria-expanded="false" aria-label="Open SYSTEMX workspace menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </header>
+
+      <aside id="workspace-menu" class="workspace-menu-panel" aria-label="SYSTEMX workspace menu" hidden>
+        <header>
+          <div>
+            <p class="eyebrow">Workspace menu</p>
+            <h2>SYSTEMX Builder</h2>
+          </div>
+          <button id="workspace-menu-close" class="icon-button" type="button" aria-label="Close SYSTEMX workspace menu">×</button>
+        </header>
+        <nav aria-label="Workspace menu links">
+          <a href="#command">Control tower</a>
+          <a href="#pages">Pages and routes</a>
+          <a href="#canvas">Designer canvas</a>
+          <a href="#style">Style inspector</a>
+          <a href="#content">CMS collections</a>
+          <a href="#users">CRM and users</a>
+          <a href="#providers">Firebase / GCloud / SDKs</a>
+          <a href="#agi">AGI and Agent 0</a>
+          <a href="#mcp">MCP and browser tooling</a>
+          <a href="#sync">Evidence and gates</a>
+        </nav>
+        <div class="workspace-menu-note">
+          <strong>Local builder only.</strong>
+          <span>Design, data, cloud, and agent tooling remain gated through SYSTEMX logs, backups, diffs, and preflight checks.</span>
+        </div>
+      </aside>
+
+      <div class="builder-shell">
+        <aside class="workspace-rail" aria-label="SYSTEMX builder rail">
+          <button id="left-panel-toggle" class="rail-toggle" type="button" aria-label="Hide left panel" aria-expanded="true">‹</button>
+          <a class="rail-home" href="#command" data-panel-target="command" title="SYSTEMX menu · ⌘K"><span class="rail-icon">SX</span><b>Menu</b></a>
+          <a class="active" href="#canvas" data-panel-target="canvas" title="Add elements · A"><span class="rail-icon">＋</span><b>Add</b></a>
+          <a href="#pages" data-panel-target="pages" title="Pages and routes · P"><span class="rail-icon">▱</span><b>Pages</b></a>
+          <a href="#navigator" data-panel-target="navigator" title="Navigator hierarchy · Z"><span class="rail-icon">☷</span><b>Navigator</b></a>
+          <a href="#components" data-panel-target="components" title="Reusable components · ⇧A"><span class="rail-icon">◇</span><b>Components</b></a>
+          <a href="#assets" data-panel-target="assets" title="Assets library · J"><span class="rail-icon">▧</span><b>Assets</b></a>
+          <a href="#content" data-panel-target="content" title="CMS and CRM data"><span class="rail-icon">DB</span><b>CMS</b></a>
+          <a href="#providers" data-panel-target="providers" title="Firebase, GCloud, Stripe, and SDKs"><span class="rail-icon">CL</span><b>Cloud</b></a>
+          <a href="#sync" data-panel-target="sync" title="Evidence and quality gates"><span class="rail-icon">✓</span><b>Audit</b></a>
+        </aside>
+
+        <aside class="left-panel" aria-label="Site structure panel">
+          <div class="panel-context-header">
+            <div>
+              <p class="eyebrow">Workspace</p>
+              <strong id="left-panel-title">Add elements</strong>
+            </div>
+            <div class="panel-context-actions">
+              <button id="left-panel-quick-find" class="panel-quick-find" type="button" title="Focus quick find · ⌘K">⌘K</button>
+              <span id="left-panel-visibility-status" class="panel-visibility-status" data-state="auto">Auto</span>
+              <button id="left-panel-visibility" class="panel-visibility-toggle" type="button" aria-pressed="false" title="Keep the left menu open after saves">Keep open</button>
+              <button class="panel-collapse" type="button" aria-label="Collapse left panel">‹</button>
+            </div>
+          </div>
+          <nav class="panel-switcher" aria-label="Site structure tools">
+            <a href="#canvas" data-panel-target="canvas">Add</a>
+            <a href="#pages" data-panel-target="pages">Pages</a>
+            <a href="#navigator" data-panel-target="navigator">Navigator</a>
+            <a href="#assets" data-panel-target="assets">Assets</a>
+          </nav>
+
+          <section id="panel-command" class="panel-block" data-left-panel="command">
+            <div class="panel-heading">
+              <p class="eyebrow">Local command</p>
+              <h1>Control tower</h1>
+            </div>
+            <div class="mini-status-grid">
+              <article><span>Repository</span><strong id="repo-state">Loading</strong><small id="repo-detail">Reading git state</small></article>
+              <article><span>Mode</span><strong id="builder-state">Template edit</strong><small id="builder-detail">backup-diff-confirm</small></article>
+              <article><span>Target</span><strong id="active-target-state">Template</strong><small>WebApp mode comes after project setup</small></article>
+              <article><span>Authority</span><strong>Local only</strong><small>No production mutation from canvas</small></article>
+            </div>
+            <div class="workflow-stack" aria-label="SYSTEMX operating lanes">
+              <span>WTL menu</span>
+              <span>Start / End day</span>
+              <span>Agent 0 mesh</span>
+              <span>Provider preflight</span>
+              <span>Evidence logs</span>
+            </div>
+            <div class="button-row">
+              <button class="button button-dark" id="refresh-status" type="button">Refresh</button>
+              <button class="button" id="preview-app" type="button">Preview</button>
+              <button class="button" id="run-sync" type="button">Sync check</button>
+            </div>
+            <output id="command-output" class="command-output" aria-live="polite">Ready. No production connection is implied.</output>
+          </section>
+
+          <section id="panel-pages" class="panel-block" data-left-panel="pages">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Site map</p>
+              <h2>Pages</h2>
+              <span id="page-count" class="count-label">0 pages</span>
+            </div>
+            <div id="page-list" class="inventory-list"></div>
+          </section>
+
+          <section class="panel-block" data-left-panel="pages">
+            <div class="panel-heading compact">
+              <p class="eyebrow">New route</p>
+              <h2>Add page model</h2>
+            </div>
+            <form id="page-create-form" class="form-stack">
+              <label>Page name<input id="new-page-name" name="name" placeholder="Portfolio" autocomplete="off" required /></label>
+              <label>Route<input id="new-page-route" name="route" placeholder="/portfolio" pattern="/[a-z0-9/_-]*" autocomplete="off" required /></label>
+              <button class="button button-dark" type="submit">Add local page</button>
+            </form>
+          </section>
+
+          <section id="panel-canvas" class="panel-block is-active" data-left-panel="canvas">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Modules</p>
+              <h2>Palette</h2>
+              <span id="canvas-page-label" class="count-label">No page selected</span>
+            </div>
+            <div class="module-palette" aria-label="Module palette">
+              <button class="module-button" data-node-type="container" type="button">Container</button>
+              <button class="module-button" data-node-type="text" type="button">Text</button>
+              <button class="module-button" data-node-type="image" type="button">Image</button>
+              <button class="module-button" data-node-type="button" type="button">Button</button>
+              <button class="module-button" data-node-type="form" type="button">Form</button>
+              <button class="module-button" data-node-type="list" type="button">Collection list</button>
+              <button class="module-button" data-node-type="component" type="button">Reusable module</button>
+            </div>
+          </section>
+
+          <section id="panel-navigator" class="panel-block" data-left-panel="navigator">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Structure</p>
+              <h2>Navigator</h2>
+              <span class="count-label">current page</span>
+            </div>
+            <p class="panel-help">The live hierarchy follows the element selected inside the Vite preview. Choose any row to move selection without leaving the canvas.</p>
+            <div class="navigator-legend"><span>▾ container</span><span>↳ child</span><span>◎ selected</span></div>
+            <output id="preview-layer-summary" class="command-output" aria-live="polite">Select an element in the preview.</output>
+            <div id="preview-layer-tree" class="preview-layer-tree" aria-label="Live preview hierarchy"></div>
+            <a class="button button-dark panel-action" href="#canvas">Open layer tree</a>
+          </section>
+
+          <section id="panel-components" class="panel-block" data-left-panel="components">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Reusable system</p>
+              <h2>Components</h2>
+              <span id="component-count" class="count-label">0 components</span>
+            </div>
+            <p class="panel-help">Select a canvas node, name it, and save it as a responsive module. Headers, footers, containers, and sections can be tagged for reuse across the template.</p>
+            <div id="component-selection-card" class="selected-element-card">
+              <span>Selected preview target</span>
+              <strong id="component-selection-name">Nothing selected</strong>
+              <small id="component-selection-location">Click or right-click an element in the live canvas.</small>
+            </div>
+            <div id="component-list" class="component-list"><p class="empty-state">Detecting reusable source components…</p></div>
+            <form id="component-save-form" class="compact-form">
+              <label>Module name<input id="component-name" name="name" placeholder="Site Header" required /></label>
+              <label>Source path<select id="component-source" name="source"><option value="">Local canvas model</option></select></label>
+              <label>Tags<input id="component-tags" name="tags" placeholder="global, header, shell" /></label>
+              <label>Slots<input id="component-slots" name="slots" placeholder="brand, primaryNav, actions" /></label>
+              <label>Width<select id="component-width" name="width"><option value="fluid">Fluid</option><option value="contained">Contained</option><option value="fixed">Fixed</option></select></label>
+              <label>Confirmation<input id="component-confirmation" name="confirmation" placeholder="SAVE MODULE" autocomplete="off" required /></label>
+              <button class="button button-dark" type="submit">Save selected node as module</button>
+              <output id="component-output" class="command-output" aria-live="polite">No module selected.</output>
+            </form>
+            <a class="button panel-action" href="/api/builder/components/export">Export component registry</a>
+            <hr class="panel-rule" />
+            <div class="panel-heading compact">
+              <p class="eyebrow">Existing project bridge</p>
+              <h3>Inventory before install</h3>
+              <span class="count-label">read-only</span>
+            </div>
+            <p class="panel-help">Scan a local project for routes, components, styles, providers, and tooling. Secrets are not opened; no bridge files are installed.</p>
+            <form id="ingest-form" class="compact-form">
+              <label>Project root<input id="ingest-root" name="projectRoot" placeholder="path/to/project" required /></label>
+              <label>Confirmation<input id="ingest-confirmation" name="confirmation" placeholder="SCAN EXISTING PROJECT" autocomplete="off" required /></label>
+              <button class="button" type="submit">Run inventory scan</button>
+              <output id="ingest-output" class="command-output" aria-live="polite">Inventory is opt-in and produces a review manifest.</output>
+            </form>
+          </section>
+
+          <section id="panel-assets" class="panel-block" data-left-panel="assets">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Project library</p>
+              <h2>Assets</h2>
+              <span id="asset-count" class="count-label">local files</span>
+            </div>
+            <p class="panel-help">Assets stay in the template’s controlled source paths. Nothing is uploaded by this local panel.</p>
+            <div id="asset-list" class="asset-list"><span class="file-chip">.SYSTEMX/KIT/Brand</span><span class="file-chip">public/</span><span class="file-chip">src/assets/</span></div>
+            <a class="button panel-action" href="#source">Review allowlisted files</a>
+          </section>
+        </aside>
+
+        <button
+          id="left-panel-resizer"
+          class="panel-resizer panel-resizer-left"
+          type="button"
+          role="separator"
+          aria-label="Resize left builder panel"
+          aria-orientation="vertical"
+          aria-valuemin="220"
+          aria-valuemax="420"
+          aria-valuenow="280"
+        ></button>
+
+        <main class="canvas-workspace" aria-label="Current site canvas">
+          <section class="canvas-header">
+            <div class="canvas-title-row">
+              <p class="eyebrow">Current template</p>
+              <h2>S.F.W.A. visual workspace</h2>
+              <span class="canvas-save-state"><i></i> Local changes backed up</span>
+            </div>
+            <div class="canvas-actions">
+              <button class="icon-button canvas-action" type="button" aria-label="Undo last local change">↶</button>
+              <button class="icon-button canvas-action" type="button" aria-label="Redo last local change">↷</button>
+              <button class="button" id="canvas-dock-toggle" type="button" aria-expanded="false" aria-controls="canvas-model-dock">Layers</button>
+              <button class="button" id="canvas-preview" type="button">Preview</button>
+              <button class="button button-dark" id="canvas-save" type="button">Save</button>
+            </div>
+              <div class="canvas-context-row">
+              <label class="canvas-page-control" for="canvas-page-select">
+                <span>Page</span>
+                <select id="canvas-page-select" aria-label="Current page">
+                  <option value="">Loading pages…</option>
+                </select>
+              </label>
+              <nav class="breadcrumbs" aria-label="Selected element path"><a href="#pages">Pages</a><span>›</span><strong id="canvas-breadcrumb-page">Home</strong><span>›</span><strong id="canvas-breadcrumb-element">Body</strong></nav>
+              <div class="target-mode-strip" aria-label="Builder target mode">
+                <span class="mode-chip active">Template edit</span>
+                <span class="mode-chip">WebApp mode</span>
+                <span class="mode-chip locked">Production locked</span>
+              </div>
+              <div class="route-strip" id="route-list" aria-label="Detected routes"></div>
+            </div>
+          </section>
+
+          <section class="canvas-frame-shell">
+            <div class="canvas-preview-stage">
+              <div id="canvas-preview-viewport" class="canvas-preview-viewport" data-preview-mode="fixed">
+                <div id="preview-bridge-notice" class="preview-bridge-notice" hidden>
+                  <strong>Live canvas runs through the Vite bridge.</strong>
+                  <p>Open the builder from the app origin to preview and edit against the running Vite site in one frame.</p>
+                  <a id="open-bridge-link" class="button button-dark" href="http://127.0.0.1:5173/__systemx/#command" rel="noreferrer">Open live builder canvas</a>
+                </div>
+                <iframe id="app-preview-frame" title="Current Vite app preview" src="about:blank"></iframe>
+              </div>
+            </div>
+          </section>
+
+          <section id="canvas-model-dock" class="canvas-layers" aria-label="Canvas model dock">
+            <article class="wide-panel">
+              <header>
+                <h3>Layer tree</h3>
+                <span id="selected-page-state">Choose a page</span>
+              </header>
+              <div id="canvas-tree" class="canvas-tree"><p class="empty-state">Select a page to load its node tree.</p></div>
+              <output id="canvas-output" class="callout">No module change staged.</output>
+            </article>
+
+            <article class="wide-panel inspector-card">
+              <header>
+                <h3>Page inspector</h3>
+                <span>local model</span>
+              </header>
+              <form id="page-meta-form" class="form-stack">
+                <label>Page name<input id="page-name" name="name" autocomplete="off" /></label>
+                <label>Route<input id="page-route" name="route" placeholder="/about" autocomplete="off" /></label>
+                <label>Source file<input id="page-source" name="source" readonly /></label>
+                <div class="button-row">
+                  <button class="button button-dark" type="submit">Save model</button>
+                  <button class="button" id="open-page-source" type="button">Open source</button>
+                </div>
+              </form>
+            </article>
+          </section>
+        </main>
+
+        <button
+          id="right-panel-resizer"
+          class="panel-resizer panel-resizer-right"
+          type="button"
+          role="separator"
+          aria-label="Resize right inspector panel"
+          aria-orientation="vertical"
+          aria-valuemin="260"
+          aria-valuemax="480"
+          aria-valuenow="336"
+        ></button>
+
+        <aside class="right-toolbar" aria-label="Designer right toolbar">
+          <button id="right-panel-toggle" class="rail-toggle" type="button" aria-label="Hide right panel" aria-expanded="true" title="Show or hide inspector">›</button>
+          <button class="inspector-group-button active" type="button" data-inspector-group-button="design" aria-label="Open design inspector tools" title="Design and style inspector"><span>DS</span><b>Design</b></button>
+          <button class="inspector-group-button" type="button" data-inspector-group-button="data" aria-label="Open CMS and user data tools" title="CMS, CRM, and users"><span>DB</span><b>Data</b></button>
+          <button class="inspector-group-button" type="button" data-inspector-group-button="build" aria-label="Open code and provider tools" title="Code, Firebase, GCloud, and SDKs"><span>{ }</span><b>Build</b></button>
+          <button class="inspector-group-button" type="button" data-inspector-group-button="ops" aria-label="Open agent and operations tools" title="Agent 0, MCP, and quality gates"><span>A0</span><b>Ops</b></button>
+        </aside>
+
+        <aside class="right-panel" aria-label="Inspector and backend panel">
+          <div class="inspector-tabs" aria-label="Inspector context">
+            <span class="inspector-context">Inspector</span>
+            <button id="right-panel-back" class="inspector-back" type="button" aria-label="Back to canvas">← Canvas</button>
+            <span id="right-panel-visibility-status" class="panel-visibility-status" data-state="auto">Auto</span>
+            <button id="right-panel-visibility" class="panel-visibility-toggle" type="button" aria-pressed="false" title="Keep the right menu open after saves">Keep open</button>
+            <button id="right-panel-collapse" class="panel-collapse" type="button" aria-label="Collapse right panel">›</button>
+          </div>
+          <nav class="inspector-group-tabs" aria-label="Inspector tool groups">
+            <button class="active" type="button" data-inspector-group-tab="design">Design</button>
+            <button type="button" data-inspector-group-tab="data">Data</button>
+            <button type="button" data-inspector-group-tab="build">Build</button>
+            <button type="button" data-inspector-group-tab="ops">Ops</button>
+          </nav>
+          <nav class="inspector-subtabs" aria-label="Inspector tools">
+            <a class="active" href="#style" data-inspector-tab="style" data-inspector-group="design">Style</a>
+            <a href="#settings" data-inspector-tab="settings" data-inspector-group="design">Settings</a>
+            <a href="#content" data-inspector-tab="content" data-inspector-group="data">CMS</a>
+            <a href="#users" data-inspector-tab="users" data-inspector-group="data">Users</a>
+            <a href="#source" data-inspector-tab="source" data-inspector-group="build">Code</a>
+            <a href="#providers" data-inspector-tab="providers" data-inspector-group="build">Cloud</a>
+            <a href="#agi" data-inspector-tab="agi" data-inspector-group="ops">Agent 0</a>
+            <a href="#mcp" data-inspector-tab="mcp" data-inspector-group="ops">MCP</a>
+            <a href="#sync" data-inspector-tab="sync" data-inspector-group="ops">Gates</a>
+          </nav>
+
+          <section id="panel-settings" class="panel-block" data-right-panel="settings">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Selected element</p>
+              <h2>Element settings</h2>
+              <span class="count-label">local model</span>
+            </div>
+            <div class="selected-element-card">
+              <span>Selected target</span>
+              <strong id="settings-element-state">Page canvas</strong>
+              <small id="settings-element-location">Select an element in the live preview to inspect its stack location.</small>
+            </div>
+            <div class="form-stack inspector-form">
+              <label>Element label<input id="settings-element-label" value="Body" aria-label="Element label" readonly /></label>
+              <label>Semantic role<input id="settings-semantic-role" value="body" aria-label="Semantic role" readonly /></label>
+              <label>Route<input id="settings-element-route" value="/" aria-label="Selected element route" readonly /></label>
+              <label>Source<input id="settings-element-source" value="unmapped" aria-label="Selected element source" readonly /></label>
+              <label>Data binding<select aria-label="Data binding"><option>None</option><option>CMS collection</option><option>CRM record</option><option>Firebase document</option></select></label>
+            </div>
+            <div class="text-editor-card">
+              <div class="panel-heading compact">
+                <p class="eyebrow">Content</p>
+                <h3>Selected text</h3>
+                <span id="settings-text-state" class="count-label">select leaf text</span>
+              </div>
+              <label for="settings-text-editor">Text field</label>
+              <textarea id="settings-text-editor" rows="6" maxlength="2000" disabled placeholder="Select a heading, paragraph, label, button, or other leaf-text element."></textarea>
+              <div class="button-row">
+                <button id="settings-text-preview" class="button" type="button" disabled>Preview text</button>
+                <button id="settings-text-revert" class="button" type="button" disabled>Revert preview</button>
+                <button id="settings-text-source" class="button" type="button" disabled>Open source</button>
+              </div>
+              <label>Confirmation<input id="settings-text-confirmation" placeholder="SAVE TEXT CHANGE" autocomplete="off" disabled /></label>
+              <button id="settings-text-save" class="button button-dark" type="button" disabled>Save text to source</button>
+              <output id="settings-text-output" class="command-output" aria-live="polite">Text editing is available only for safe leaf-text elements with one mapped source occurrence.</output>
+            </div>
+          </section>
+
+          <section id="panel-style" class="panel-block style-inspector is-active" data-right-panel="style">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Designer</p>
+              <h2>Style inspector</h2>
+              <span class="count-label">visual + CSS</span>
+            </div>
+            <div class="selected-element-card">
+              <span>Selected target</span>
+              <strong id="selected-element-state">Page canvas</strong>
+              <small id="style-element-location">Click a text element in the live canvas to edit it here.</small>
+            </div>
+            <div class="style-edit-card">
+              <div>
+                <p class="eyebrow">Content editor</p>
+                <strong id="style-text-target">No text target selected</strong>
+                <small id="style-text-state">Select a heading, paragraph, label, button, or other leaf-text element.</small>
+              </div>
+              <button id="style-edit-text" class="button button-dark" type="button" disabled>Edit selected text</button>
+            </div>
+            <div class="style-control-grid" aria-label="Design controls roadmap">
+              <article><strong>Layout</strong><small>container, grid, flex, spacing</small></article>
+              <article><strong>Typography</strong><small>font, size, line height, tracking</small></article>
+              <article><strong>Color</strong><small>tokens, contrast, background</small></article>
+              <article><strong>Effects</strong><small>border, shadow, motion, states</small></article>
+              <article><strong>Responsive</strong><small>desktop, tablet, mobile</small></article>
+              <article><strong>Accessibility</strong><small>ADA controls, focus, labels</small></article>
+            </div>
+            <section class="font-tool-card" aria-labelledby="font-tool-title">
+              <div class="panel-heading compact">
+                <p class="eyebrow">Typography tooling</p>
+                <h3 id="font-tool-title">Font browser</h3>
+                <span id="font-catalog-state" class="count-label">Loading catalog…</span>
+              </div>
+              <p class="panel-help">Browse the checked-in Google Fonts fallback catalog or an optional server-side Google Fonts metadata connection. Preview changes stay in the local Vite frame until you explicitly save them to <code>src/index.css</code>.</p>
+              <div class="font-tool-filters">
+                <label>Search<input id="font-search" type="search" placeholder="Inter, serif, mono…" autocomplete="off" /></label>
+                <label>Category<select id="font-category"><option value="">All categories</option><option value="sans-serif">Sans serif</option><option value="serif">Serif</option><option value="monospace">Monospace</option><option value="display">Display</option><option value="handwriting">Handwriting</option></select></label>
+              </div>
+              <div class="font-preview-sample" id="font-preview-sample" aria-live="polite">The quick brown fox jumps over the lazy dog.</div>
+              <div id="font-list" class="font-list" aria-label="Available font families"><p class="empty-state">Loading font families…</p></div>
+              <div class="selected-element-card font-project-card">
+                <span>Template font source</span>
+                <strong id="project-font-family">System fallback</strong>
+                <small id="project-font-source">Checking src/index.css…</small>
+                <small id="font-loaded-state">Checking loaded fonts in the Vite canvas…</small>
+              </div>
+              <div class="font-action-row">
+                <button id="font-preview-selected" class="button" type="button" disabled>Preview selected</button>
+                <button id="font-load-selected" class="button" type="button" disabled>Load in canvas</button>
+              </div>
+              <label>Confirmation<input id="font-confirmation" placeholder="SAVE FONT CHANGE" autocomplete="off" /></label>
+              <button id="font-save-project" class="button button-dark" type="button" disabled>Save font to template</button>
+              <output id="font-status" class="command-output" aria-live="polite">Select a font to inspect its Google CSS2 request and preview it locally.</output>
+            </section>
+            <output id="style-status" class="command-output">Text content editing is active. Layout and CSS mutations remain roadmap-gated; source saves still require backup, diff, and confirmation.</output>
+          </section>
+
+          <section id="panel-source" class="panel-block source-workspace" data-right-panel="source">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Code editor</p>
+              <h2>Controlled source</h2>
+            </div>
+            <div class="source-toolbar">
+              <label>File<select id="source-file-select"></select></label>
+              <button class="button" id="load-source" type="button">Load</button>
+              <span id="source-policy" class="badge warn">backup-diff-confirm</span>
+            </div>
+            <textarea id="source-editor" spellcheck="false" aria-label="Source editor" placeholder="Choose an allowlisted source file."></textarea>
+            <div class="source-save-row">
+              <label>Confirmation<input id="source-confirmation" placeholder="SAVE LOCAL CHANGE" autocomplete="off" /></label>
+              <button class="button button-dark" id="save-source" type="button">Save</button>
+            </div>
+            <output id="source-output" class="command-output" aria-live="polite">No source file loaded.</output>
+          </section>
+
+          <section id="panel-content" class="panel-block" data-right-panel="content">
+            <div class="panel-heading compact">
+              <p class="eyebrow">CMS / CRM</p>
+              <h2>Collections</h2>
+              <span id="collection-count" class="count-label">0 collections</span>
+            </div>
+            <div id="collection-list" class="collection-list"></div>
+            <div class="panel-subhead"><strong>Records</strong><span id="record-count">0 records</span></div>
+            <div id="record-list" class="record-list"></div>
+            <form id="record-form" class="form-stack compact-form">
+              <label>Name<input id="record-name" required /></label>
+              <label>Email<input id="record-email" type="email" required /></label>
+              <label>Notes / stage<input id="record-notes" /></label>
+              <button class="button button-dark" type="submit">Add local record</button>
+            </form>
+          </section>
+
+          <section id="panel-users" class="panel-block" data-right-panel="users">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Access</p>
+              <h2>Users</h2>
+              <span id="user-count" class="count-label">0 users</span>
+            </div>
+            <div id="user-list" class="user-list"></div>
+            <form id="user-form" class="form-stack compact-form">
+              <label>Email<input id="user-email" type="email" required /></label>
+              <label>Role<select id="user-role"><option>Level 1 User</option><option>Level 2 Contributor</option><option>Level 3 Builder</option><option>Level 4 Operator</option><option>Level 5 Owner</option></select></label>
+              <button class="button button-dark" type="submit">Add local user</button>
+            </form>
+          </section>
+
+          <section id="panel-providers" class="panel-block" data-right-panel="providers">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Cloud bridge</p>
+              <h2>Providers</h2>
+            </div>
+            <article class="auth-runtime-card">
+              <div class="panel-subhead"><strong>Unified Authentication</strong><span id="auth-runtime-state" class="badge warn">checking</span></div>
+              <p id="auth-runtime-detail" class="panel-help">Checking the local Firebase Auth boundary.</p>
+              <div id="auth-provider-list" class="provider-grid"></div>
+              <a class="button button-light panel-action" href="/login" id="open-login-link">Open WebApp login</a>
+            </article>
+            <div id="provider-list" class="provider-grid"></div>
+            <div class="panel-subhead"><strong>CLI / SDK</strong><span id="tool-count">0 tools</span></div>
+            <div id="tool-list" class="tool-list"></div>
+            <ul class="endpoint-list">
+              <li><strong>SYSTEMX LAN</strong><code id="endpoint-lan">discovering</code></li>
+              <li><strong>Firebase emulators</strong><code>explicit local lane</code></li>
+              <li><strong>SQL Connect</strong><code>relational module gate</code></li>
+            </ul>
+          </section>
+
+          <section id="panel-agi" class="panel-block" data-right-panel="agi">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Agent mesh</p>
+              <h2>AGI / Agent 0</h2>
+              <span class="count-label">token aware</span>
+            </div>
+            <article class="toolchain-card">
+              <strong>Managed SYSTEMX</strong>
+              <small id="systemx-version-state">Loading selected operating tools.</small>
+              <small id="systemx-record-state">Loading project records.</small>
+              <p class="panel-help">Roles and tasks are recorded context. Use the terminal menu to act on the selected project.</p>
+              <code>npm run systemx -- menu</code>
+            </article>
+            <div class="toolchain-grid">
+              <article class="toolchain-card">
+                <strong>Agent 0</strong>
+                <small>Mission owner, checkpoint gate, task start/end auditor.</small>
+                <span class="badge warn">human approved</span>
+              </article>
+              <article class="toolchain-card">
+                <strong>Subagents</strong>
+                <small>Wave lanes for focused research, testing, docs, and code review.</small>
+                <span class="badge warn">token multiplier</span>
+              </article>
+              <article class="toolchain-card">
+                <strong>Message bus</strong>
+                <small>Local mission logs, summaries, archives, and handoff packets.</small>
+                <span class="badge ok">local first</span>
+              </article>
+            </div>
+          </section>
+
+          <section id="panel-mcp" class="panel-block" data-right-panel="mcp">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Tool routing</p>
+              <h2>MCP / Browser / SDK</h2>
+              <span class="count-label">allowlisted</span>
+            </div>
+            <div class="toolchain-grid">
+              <article class="toolchain-card">
+                <strong>Browser tooling</strong>
+                <small>Playwright and Chrome DevTools lanes for smoke tests and UI evidence.</small>
+                <span class="badge ok">local preview</span>
+              </article>
+              <article class="toolchain-card">
+                <strong>Firebase + GCloud</strong>
+                <small>CLI, SDK, emulator, hosting, Firestore, Storage, SQL, and ADC checks.</small>
+                <span class="badge warn">preflight gate</span>
+              </article>
+              <article class="toolchain-card">
+                <strong>Payments SDK</strong>
+                <small>Local/staging-safe payment provider command lane; production requires confirmation.</small>
+                <span class="badge warn">no live secrets</span>
+              </article>
+            </div>
+          </section>
+
+          <section id="panel-sync" class="panel-block" data-right-panel="sync">
+            <div class="panel-heading compact">
+              <p class="eyebrow">Evidence and release safety</p>
+              <h2>Quality gates</h2>
+              <span class="count-label">local only</span>
+            </div>
+            <div class="gate-summary-grid">
+              <article><strong>Repository</strong><small>branch, changed paths, and backup policy</small></article>
+              <article><strong>Code</strong><small>typecheck, lint, tests, and production build</small></article>
+              <article><strong>Security</strong><small>secret checks, local-only boundary, provider preflight</small></article>
+              <article><strong>Release</strong><small>version sync, evidence log, deployment confirmation</small></article>
+            </div>
+            <output id="inspector-sync-summary" class="command-output" aria-live="polite">Waiting for local evidence refresh.</output>
+            <button class="button button-dark panel-action" id="inspector-refresh-sync" type="button">Refresh local evidence</button>
+          </section>
+        </aside>
+      </div>
+
+      <footer id="sync" class="evidence-dock canvas-application-bar">
+        <div class="application-bar-start">
+          <button id="evidence-toggle" class="application-bar-button" type="button" aria-expanded="false" aria-controls="evidence-drawer">
+            <span aria-hidden="true">✓</span>
+            <b>Evidence</b>
+            <small id="evidence-count">local</small>
+          </button>
+        </div>
+
+        <div class="canvas-control-toolbar" aria-label="Responsive preview controls">
+          <div class="canvas-device-toggle" role="group" aria-label="Canvas breakpoint shortcuts">
+            <button type="button" data-preview-preset="desktop-1440" aria-label="Desktop 1440 pixels"><span aria-hidden="true">▰</span><b>Desktop</b></button>
+            <button type="button" data-preview-preset="tablet-820" aria-label="Tablet 820 pixels"><span aria-hidden="true">▯</span><b>Tablet</b></button>
+            <button type="button" data-preview-preset="mobile-landscape-667" aria-label="Mobile landscape 667 pixels"><span aria-hidden="true">▭</span><b>Landscape</b></button>
+            <button type="button" data-preview-preset="ios-393" aria-label="iOS mobile portrait 393 pixels"><span aria-hidden="true">▯</span><b>iOS</b></button>
+            <button type="button" data-preview-preset="android-412" aria-label="Android mobile portrait 412 pixels"><span aria-hidden="true">▯</span><b>Android</b></button>
+          </div>
+
+          <label class="canvas-device-select-label" for="canvas-device-select">
+            <span>Device</span>
+            <select id="canvas-device-select" aria-label="Preview device and snap point">
+              <optgroup label="Canvas">
+                <option value="fit">Fit workspace</option>
+                <option value="custom">Custom width</option>
+              </optgroup>
+              <optgroup label="Desktop and laptop">
+                <option value="desktop-1920">Large desktop · 1920px</option>
+                <option value="desktop-1440">Desktop · 1440px</option>
+                <option value="laptop-1280">Laptop · 1280px</option>
+                <option value="desktop-1024">Small desktop · 1024px</option>
+              </optgroup>
+              <optgroup label="Apple iOS and iPadOS">
+                <option value="ipad-landscape-1180">iPad landscape · 1180px</option>
+                <option value="tablet-820">iPad portrait · 820px</option>
+                <option value="ios-landscape-667">iPhone landscape · 667px</option>
+                <option value="ios-440">iPhone large portrait · 440px</option>
+                <option value="ios-393">iPhone portrait · 393px</option>
+              </optgroup>
+              <optgroup label="Android">
+                <option value="android-tablet-landscape-1280">Android tablet landscape · 1280px</option>
+                <option value="android-tablet-834">Android tablet portrait · 834px</option>
+                <option value="android-landscape-780">Android landscape · 780px</option>
+                <option value="android-412">Android phone portrait · 412px</option>
+                <option value="android-360">Android compact portrait · 360px</option>
+              </optgroup>
+            </select>
+          </label>
+
+          <label class="canvas-width-control" for="canvas-width-input">
+            <span class="sr-only">Custom canvas width</span>
+            <input id="canvas-width-input" type="number" inputmode="numeric" min="320" max="2560" step="1" value="1440" aria-label="Canvas width in pixels" />
+            <b>px</b>
+          </label>
+          <button id="canvas-fit-toggle" class="canvas-fit-toggle" type="button" aria-pressed="false">Fit</button>
+          <span id="canvas-device-status" class="canvas-device-status" aria-live="polite">Desktop · 1440px</span>
+        </div>
+
+        <div class="application-bar-end">
+          <button id="preview-inspect-toggle" class="application-bar-button inspect-toggle active" type="button" aria-pressed="true">
+            <span aria-hidden="true">◎</span>
+            <b>Inspect</b>
+          </button>
+          <code id="preview-selection-location" title="Selected element stack location">Select an element</code>
+          <code id="endpoint-vite" title="Active Vite preview endpoint">discovering</code>
+        </div>
+      </footer>
+
+      <aside id="evidence-drawer" class="evidence-drawer" aria-label="SYSTEMX evidence and controlled files" hidden>
+        <header>
+          <div>
+            <p class="eyebrow">SYSTEMX evidence</p>
+            <h2>Local gates and controlled files</h2>
+          </div>
+          <button id="evidence-close" class="icon-button" type="button" aria-label="Close evidence drawer">×</button>
+        </header>
+        <div class="evidence-drawer-grid">
+          <section>
+            <p class="eyebrow">Current evidence</p>
+            <div id="sync-summary" class="sync-summary">Waiting for workspace refresh.</div>
+            <button class="button button-dark" id="refresh-sync" type="button">Refresh evidence</button>
+            <span id="sync-state" class="badge warn">local only</span>
+          </section>
+          <section>
+            <p class="eyebrow">Next gates</p>
+            <ol class="gate-list">
+              <li>Review source backup and diff.</li>
+              <li>Run typecheck, lint, tests, and production build.</li>
+              <li>Run Firebase/GCloud/payment-provider preflight.</li>
+              <li>Deploy only through the existing SYSTEMX deploy command.</li>
+            </ol>
+          </section>
+          <section id="files">
+            <p class="eyebrow">Controlled files</p>
+            <span id="file-count" class="count-label">0 files</span>
+            <div id="file-list" class="file-list"></div>
+          </section>
+        </div>
+      </aside>
+
+      <div id="preview-context-menu" class="preview-context-menu" role="menu" aria-label="Selected preview element actions" hidden>
+        <header>
+          <strong id="preview-context-label">Element</strong>
+          <code id="preview-context-location">No stack location</code>
+        </header>
+        <button type="button" role="menuitem" data-preview-context-action="select">Select element</button>
+        <div class="preview-context-group">
+          <span>Select parent element</span>
+          <div id="preview-parent-list"></div>
+        </div>
+        <button type="button" role="menuitem" data-preview-context-action="module">Stage as reusable module</button>
+        <button type="button" role="menuitem" data-preview-context-action="component">Stage as component</button>
+        <button type="button" role="menuitem" data-preview-context-action="source">Open mapped source</button>
+        <button type="button" role="menuitem" data-preview-context-action="navigator">Open Navigator</button>
+        <button type="button" role="menuitem" data-preview-context-action="close">Close</button>
+      </div>
+    </div>
+
+    <script type="application/json" id="systemx-status-data">{}</script>
+    <script type="module" src="Website/dashboard.js?ui=20260806-v9"></script>
+  </body>
+</html>

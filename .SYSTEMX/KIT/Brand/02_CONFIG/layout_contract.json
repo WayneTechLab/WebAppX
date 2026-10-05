@@ -1,0 +1,106 @@
+{
+  "document": {
+    "page_count": 6,
+    "page_size_inches": [
+      8.5,
+      11.0
+    ],
+    "pixel_size_300_dpi": [
+      2550,
+      3300
+    ],
+    "orientation": "portrait",
+    "outer_safe_margin_inches": 0.5,
+    "border_inset_inches": 0.3,
+    "default_background": "warm white",
+    "default_alignment": "editorial grid with strong vertical rhythm"
+  },
+  "global": {
+    "title_zone": {
+      "top": 0.06,
+      "bottom": 0.16
+    },
+    "content_zone": {
+      "top": 0.17,
+      "bottom": 0.87,
+      "left": 0.075,
+      "right": 0.925
+    },
+    "footer_zone": {
+      "top": 0.89,
+      "bottom": 0.965
+    },
+    "page_number": "centered at bottom",
+    "producer_credit": "small, centered or lower-left; producer logo unmodified",
+    "body_text": "minimum 10.5 pt equivalent; left aligned; no justified rivers",
+    "edge_rule": "No text or important graphics within 0.5 inch of trim. Thin decorative border only."
+  },
+  "pages": [
+    {
+      "page": 1,
+      "name": "Cover",
+      "modules": [
+        "client logo",
+        "Brand Guidelines title",
+        "client full name",
+        "producer credit",
+        "producer logo",
+        "page number"
+      ]
+    },
+    {
+      "page": 2,
+      "name": "Brand Overview & Typography",
+      "modules": [
+        "brand overview",
+        "logo wordmark style",
+        "BB/block letter style",
+        "supporting sans style",
+        "producer footer"
+      ]
+    },
+    {
+      "page": 3,
+      "name": "Color Palette & Logo Anatomy",
+      "modules": [
+        "primary palette",
+        "secondary palette",
+        "logo anatomy callouts",
+        "producer footer"
+      ]
+    },
+    {
+      "page": 4,
+      "name": "Clear Space, Minimum Size & Approved Variations",
+      "modules": [
+        "clear space diagram",
+        "print and digital minimum size",
+        "approved variations",
+        "simplified lockups",
+        "producer footer"
+      ]
+    },
+    {
+      "page": 5,
+      "name": "Incorrect Usage & Brand Applications",
+      "modules": [
+        "six misuse examples",
+        "five application mockups",
+        "consistency statement",
+        "producer footer"
+      ]
+    },
+    {
+      "page": 6,
+      "name": "Back Cover",
+      "modules": [
+        "small client logo",
+        "closing statement",
+        "production credit",
+        "large producer logo",
+        "services line",
+        "page number"
+      ]
+    }
+  ]
+}

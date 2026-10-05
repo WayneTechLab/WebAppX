@@ -1,0 +1,26 @@
+repair_id,priority,wiki_file,finding,required_repair,verification
+WIKI-001,P0,Security.md,Instructs AI-assisted users to paste live keys/secrets into chat,"Replace with never-paste policy, secret-store workflow, and rotation procedure",security-policy
+WIKI-002,P0,One-Line-Install.md,References removed install.sh/install.ps1 paths,Replace with tested current bootstrap or mark unsupported,docs-platform
+WIKI-003,P0,Windows-Setup.md,References absent PowerShell launchers and wtl commands,Regenerate from current command/platform manifests,docs-platform
+WIKI-004,P0,Linux-Setup.md,References absent wtl commands and installer assumptions,Regenerate tested Linux/WSL command path,docs-platform
+WIKI-005,P0,Setup-Playbook.md,Links legacy/deleted Template step files and conflicting setup generations,Choose one canonical process version and publish migration map,docs-setup
+WIKI-006,P0,Deployment.md,Links deleted Step 11 and lists scripts that may not exist,Validate every path/command and remove stale operational table,docs-release
+WIKI-007,P0,Architecture-and-Stack.md,References removed bootstrap/playbook paths and optional modules as baseline,Split shipped baseline from optional roadmap and validate paths,docs-architecture
+WIKI-008,P0,SYSTEMX-Standard.md,References npm run wtl:menu absent from package.json,Generate active commands from package manifest,docs-command
+WIKI-009,P0,SYSTEMX-Sync-and-Controlled-Updates.md,References wtl:sync/wtl:agi aliases absent from current package scripts,Remove or implement/test compatibility aliases,docs-command
+WIKI-010,P0,MCP-and-Agents.md,References npm run wtl:mcp absent from package scripts,Map to current MCP command or mark planned,docs-command
+WIKI-011,P1,Quick-Start.md,Node >=20/22 guidance conflicts with Node 24 platform docs,Publish one Node baseline/support policy,docs-platform
+WIKI-012,P1,FAQ.md,Node and canonical playbook claims conflict with current repo,Update from canonical manifests,docs-general
+WIKI-013,P1,Project-Structure.md,Structure can drift from current tree,Generate tree anchors and validate existence,docs-structure
+WIKI-014,P1,SYSTEMX-WEBPORTAL.md,Calls LAN leakage guard future work though implemented,Update capability status from tests,docs-lan
+WIKI-015,P1,SYSTEMX-Root-and-Folder-Standard.md,Lists removed directories/launchers and future leakage gate,Align to current tree and implemented assertion,docs-structure
+WIKI-016,P1,Testing-and-QA.md,Describes optional test stack and commands as if active,Label shipped/planned and validate package scripts,docs-quality
+WIKI-017,P1,GitHub-Authors-and-Contribution-Notes.md,Calls npm test without guaranteeing current script,Generate contributor checks from package scripts,docs-contribution
+WIKI-018,P1,WTL-Standard-Setup-Guide.md,Calls wtl:setup/system audits that may not exist,Replace with canonical verified setup/check sequence,docs-setup
+WIKI-019,P1,SYSTEMX-Setup-and-Deployment.md,Calls absent setup/deploy package wrappers,Use verified scripts and exact targets,docs-release
+WIKI-020,P1,SYSTEMX-Operating-Rhythm.md,Calls sync/system:audit commands without current validation,Generate start/end checklist from active scripts,docs-operations
+WIKI-021,P1,Agent-Mesh-and-Tooling-Standard.md,References AI/browser commands that may not ship,Capability-label every command and validate existence,docs-ai
+WIKI-022,P1,SYSTEMX-Starter-Prompts-and-Smart-Routing.md,References wtl:bus absent from current package,Map to current message-bus command or mark future,docs-ai
+WIKI-023,P1,wiki/README.md and _Sidebar.md,Page inventory and navigation differ; hidden linked pages omitted,Generate both from one wiki manifest,docs-navigation
+WIKI-024,P1,Version/product labels,"v4.1.0, 2.4.0, G1, template labels are not consistently synchronized",Canonical version manifest and docs assertion,docs-version
+WIKI-025,P2,All wiki pages,Feature statements are manually maintained and can overstate implementation,Generate capability tables from test-backed manifest,docs-lan

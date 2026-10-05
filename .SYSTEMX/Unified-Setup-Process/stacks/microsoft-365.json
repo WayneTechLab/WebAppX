@@ -1,0 +1,18 @@
+{
+  "id": "microsoft-365",
+  "name": "Microsoft 365 Stack",
+  "description": "WSG stack mode for Microsoft 365 sender and tenant workflows while preserving Firebase and GCloud unless explicitly changed.",
+  "defaults": [
+    "firebase",
+    "gcloud",
+    "react",
+    "vite",
+    "m365",
+    "github",
+    "chrome-mcp"
+  ],
+  "notes": [
+    "Microsoft 365 affects sender, tenant, and login documentation.",
+    "Firebase and GCloud remain standard unless the project explicitly overrides them."
+  ]
+}

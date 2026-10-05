@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/WayneTechLab/SFWA-WTL-TEMPLATE/.SYSTEMX/LAN/Builder/contracts/builder-workspace.schema.json",
+  "title": "SYSTEMX LAN Builder Workspace",
+  "type": "object",
+  "required": ["schemaVersion", "target", "mode", "repository", "pages", "routes", "providers", "auth"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "target": { "const": "current-repo" },
+    "mode": { "enum": ["template-edit", "project-edit"] },
+    "repository": {
+      "type": "object",
+      "required": ["root", "branch", "writePolicy"],
+      "properties": {
+        "root": { "type": "string" },
+        "branch": { "type": "string" },
+        "writePolicy": { "const": "backup-diff-confirm" }
+      },
+      "additionalProperties": true
+    },
+    "pages": { "type": "array", "items": { "type": "object" } },
+    "routes": { "type": "array", "items": { "type": "object" } },
+    "components": { "type": "array", "items": { "type": "object" } },
+    "tokens": { "type": "object" },
+    "collections": { "type": "array", "items": { "type": "object" } },
+    "providers": { "type": "array", "items": { "type": "object" } },
+    "auth": {
+      "type": "object",
+      "required": ["mode", "environment", "localAllowedProviders", "providers"],
+      "properties": {
+        "mode": { "type": "string" },
+        "environment": { "const": "local-only" },
+        "projectId": { "type": ["string", "null"] },
+        "emulatorUrl": { "type": "string" },
+        "ports": { "type": "object" },
+        "localAllowedProviders": { "type": "array", "items": { "type": "string" } },
+        "providers": { "type": "array", "items": { "type": "object" } }
+      },
+      "additionalProperties": true
+    },
+    "evidence": { "type": "array", "items": { "type": "object" } }
+  },
+  "additionalProperties": false
+}

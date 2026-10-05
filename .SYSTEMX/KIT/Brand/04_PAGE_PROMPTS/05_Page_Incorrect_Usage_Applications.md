@@ -1,0 +1,3 @@
+# Page 5 Prompt - Incorrect Usage & Brand Applications
+
+Create page 5 of 6 titled `05 Incorrect Usage & Brand Applications`. Upper half: six concise misuse diagrams, each with a red X and short caption. Lower half: five clean brand applications such as menu cover, storefront sign, cup, shirt, and social avatar. Use duplicates for diagrams without altering the supplied master logo file. Footer uses the exact producer logo and `5 of 6`.

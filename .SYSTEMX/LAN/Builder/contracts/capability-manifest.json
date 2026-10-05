@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schemaVersion": 1,
+  "product": "SFWA-WTL-G1 SYSTEMX LAN",
+  "manifestPurpose": "Current capability truth for the local builder; planned capabilities are not release claims.",
+  "researchProgram": {
+    "name": "SFWA-WTL LAN Builder Designer Research Program",
+    "sourceCount": 200,
+    "roadmapWaves": 13,
+    "currentWave": 0,
+    "cleanRoom": true
+  },
+  "verification": {
+    "characterizationCommand": "npm test",
+    "structureCommand": "node .SYSTEMX/scripts/verify-template-structure.mjs",
+    "productionIsolationCommand": "npm run build",
+    "lastVerifiedBy": "checked-in characterization suite",
+    "claimRule": "A capability is supported only when its implementation, tests, documentation, and evidence agree."
+  },
+  "supported": [
+    {
+      "id": "lan.loopback-control",
+      "label": "Loopback-only local control service",
+      "surface": "GET /api/health",
+      "evidence": "LAN characterization test: loopback health and local-only mode"
+    },
+    {
+      "id": "lan.session-authority",
+      "label": "Session-token authority for LAN requests",
+      "surface": "X-SYSTEMX-Session",
+      "evidence": "LAN characterization test: missing and wrong tokens are rejected"
+    },
+    {
+      "id": "lan.read-models",
+      "label": "Current-template status, workspace, and tooling read models",
+      "surface": "/api/status, /api/builder/workspace, /api/tools",
+      "evidence": "LAN characterization test: read models return repository truth"
+    },
+    {
+      "id": "lan.allowlisted-source-read",
+      "label": "Allowlisted source inspection",
+      "surface": "GET /api/builder/source?path=...",
+      "evidence": "LAN characterization test: disallowed paths fail closed"
+    },
+    {
+      "id": "lan.local-fixtures",
+      "label": "Guarded local page, component, CMS/CRM, and user fixtures",
+      "surface": "/api/builder/page, /api/builder/component, /api/builder/record",
+      "evidence": "Current LAN server contracts plus explicit confirmation and operation evidence"
+    },
+    {
+      "id": "lan.public-build-isolation",
+      "label": "Production artifact rejection for LAN assets and markers",
+      "surface": "npm run build",
+      "evidence": "assert-lan-isolation.mjs"
+    },
+    {
+      "id": "lan.port-ownership",
+      "label": "Auto-selected loopback ports and owned-process stop/status",
+      "surface": "npm run dev:systemx, npm run systemx:session:status",
+      "evidence": "Current local session controller and live port probes"
+    },
+    {
+      "id": "auth.local-email-password",
+      "label": "Shared local Firebase Auth email/password contract",
+      "surface": "WebApp /login, /admin, GET /api/auth/providers",
+      "evidence": "auth-provider-registry.json, Firebase emulator connection, and LAN characterization coverage"
+    },
+    {
+      "id": "lan.font-browser",
+      "label": "Offline-first Google Fonts browser and live Vite font inventory",
+      "surface": "GET /api/fonts/catalog, GET /api/fonts/project, Style inspector Font browser",
+      "evidence": "font-catalog.json, Google CSS2 preview loading, and live document.fonts read model"
+    }
+  ],
+  "guarded": [
+    {
+      "id": "lan.source-write",
+      "label": "Source writes with backup, secret scan, atomic promotion, and confirmation",
+      "requiredConfirmation": "SAVE LOCAL CHANGE",
+      "status": "implemented-but-high-friction"
+    },
+    {
+      "id": "lan.inventory-ingest",
+      "label": "Existing-project inventory ingest without bridge installation",
+      "requiredConfirmation": "SCAN EXISTING PROJECT",
+      "status": "read-only-by-default"
+    },
+    {
+      "id": "lan.component-staging",
+      "label": "Stage a selected node as a reusable module/component",
+      "requiredConfirmation": "SAVE MODULE",
+      "status": "metadata-and-registry-stage-only"
+    },
+    {
+      "id": "lan.project-font-write",
+      "label": "Update the template font import and CSS token",
+      "requiredConfirmation": "SAVE FONT CHANGE",
+      "status": "backup-diff-secret-scan-atomic-write"
+    }
+  ],
+  "planned": [
+    {
+      "id": "designer.canonical-document",
+      "label": "Stable DesignerDocument graph and idempotent source import",
+      "wave": 2
+    },
+    {
+      "id": "designer.command-journal",
+      "label": "Transactional command journal with undo/redo and replay",
+      "wave": 3
+    },
+    {
+      "id": "designer.structural-source-editing",
+      "label": "AST-aware React/Vite structural source editing",
+      "wave": 5
+    },
+    {
+      "id": "designer.style-responsive-engine",
+      "label": "Selector, cascade, tokens, states, and responsive authoring",
+      "wave": 6
+    },
+    {
+      "id": "designer.components-cms",
+      "label": "Versioned components, bindings, CMS schemas, forms, and provider adapters",
+      "wave": 7
+    },
+    {
+      "id": "designer.publish-restore",
+      "label": "Immutable preview/publish manifests and restore drills",
+      "wave": 10
+    },
+    {
+      "id": "designer.cli-mcp-extensions",
+      "label": "Capability-scoped Designer CLI, MCP, and plugin clients",
+      "wave": 11
+    },
+    {
+      "id": "designer.collaboration",
+      "label": "Comments, presence, branches, review, and merge controls",
+      "wave": 12
+    }
+  ]
+}

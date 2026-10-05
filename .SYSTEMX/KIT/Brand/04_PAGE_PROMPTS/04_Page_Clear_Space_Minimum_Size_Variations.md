@@ -1,0 +1,3 @@
+# Page 4 Prompt - Clear Space, Minimum Size & Approved Variations
+
+Create page 4 of 6 titled `04 Clear Space, Minimum Size & Approved Variations`. Show a clear-space diagram using a repeatable unit from the logo, print and digital minimum sizes, and approved variations. Use proposed variants only when clearly labeled. Do not force detailed logo copy below legible size. Keep every rule, caption, and sample inside the print safe area. Footer uses the exact producer logo and `4 of 6`.

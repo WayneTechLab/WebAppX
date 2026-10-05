@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/designer-plugin.schema.json",
+  "title": "SYSTEMX LAN Designer Plugin Manifest",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "version",
+    "publisher",
+    "entrypoints",
+    "capabilities",
+    "network",
+    "storage",
+    "integrity",
+    "compatibility"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]+$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "publisher": {
+      "type": "string"
+    },
+    "entrypoints": {
+      "type": "object",
+      "properties": {
+        "panel": {
+          "type": "string"
+        },
+        "commands": {
+          "type": "string"
+        },
+        "renderer": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "objectTypes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "network": {
+      "type": "object",
+      "required": [
+        "mode",
+        "origins"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "deny",
+            "allowlist"
+          ]
+        },
+        "origins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "storage": {
+      "type": "object",
+      "required": [
+        "quotaBytes"
+      ],
+      "properties": {
+        "quotaBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "persistent": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "integrity": {
+      "type": "object",
+      "required": [
+        "algorithm",
+        "digest"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "compatibility": {
+      "type": "object",
+      "required": [
+        "minKernel"
+      ],
+      "properties": {
+        "minKernel": {
+          "type": "string"
+        },
+        "maxKernel": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

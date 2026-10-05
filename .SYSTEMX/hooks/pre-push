@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# .SYSTEMX/hooks/pre-push — Verify the version tracker is in sync before pushing.
+# Non-blocking: warns but never rewrites history during a push.
+set -euo pipefail
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+VERSION_JSON="$ROOT_DIR/.SYSTEMX/webapp-version/version.json"
+VERSION_FILE="$ROOT_DIR/.SYSTEMX/webapp-version/app-version.txt"
+[[ -f "$VERSION_JSON" ]] || exit 0
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+PKG_VERSION=$(node -e 'console.log(require("./package.json").version)' 2>/dev/null || cat "$VERSION_FILE" 2>/dev/null || echo "0.0.0")
+
+if node - "$VERSION_JSON" "$PKG_VERSION" <<'NODE' 2>/dev/null; then
+  const fs=require('fs');
+  const [file, version] = process.argv.slice(2);
+  const v=JSON.parse(fs.readFileSync(file,'utf8'));
+  process.exit((v?.app?.version===version) ? 0 : 1);
+NODE
+  echo "[pre-push] Version tracker verified: v$PKG_VERSION on $BRANCH"
+else
+  echo "[pre-push] Note: version tracker differs from package.json (v$PKG_VERSION)."
+  echo "[pre-push] Run .SYSTEMX/scripts/version-bump.sh or deploy.sh to sync."
+fi

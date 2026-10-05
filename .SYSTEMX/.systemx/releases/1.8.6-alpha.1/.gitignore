@@ -1,0 +1,17 @@
+# Local runtime data and credentials. Project config and project docs are tracked.
+/local/
+/logs/
+/state/
+/.systemx/update.lock
+/.systemx/last-check.json
+/.systemx/history/
+/.systemx/operations/
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.env.*
+!.env.example
+*.secrets.*
+*.pem
+*.key

@@ -1,0 +1,100 @@
+# Setup
+
+> **Alpha: use at your own risk; may change daily.** See the [release policy](RELEASE-POLICY.md).
+
+New users should start with [First-Time Setup](FIRST-RUN.md), including preview,
+local installation logs, first project facts, verification, and removal planning.
+
+## Adopt the folder
+
+Use the exact stored name `.SYSTEMX` on every platform. Review the
+[case and alias guide](EXACT-CASE.md) before copying files. The installer
+option `--lowercase-alias` and menu option 12 provide an optional local alias;
+menu option 11 checks the current layout without changing it.
+
+1. Choose [project/VS Code](../profiles/project.md), [OS directory](../profiles/directory.md),
+   [Google Drive](../profiles/drive.md), or [LLM chat](../profiles/chat.md).
+   Identify the destination working directory and inspect existing files, including
+   hidden files and local changes.
+2. Use the [additive installer](INSTALLATION.md) for a managed version and pin,
+   or copy the complete `.SYSTEMX` folder for documentation-only use. If one already
+   exists, do not copy over it. Review an installer dry run and preserve existing records.
+   Use a clean template checkout or reviewed release archive; a working project's
+   folder can contain ignored private data that ordinary filesystem copying retains.
+3. Read the [standard](../STANDARD.md) and inspect the scripts before execution.
+4. Run `bash .SYSTEMX/SYSTEMX.sh validate` and `bash .SYSTEMX/SYSTEMX.sh doctor`.
+   Python 3.9+ is required only for the command tools. Git is optional for
+   documentation use; the doctor uses it if available.
+
+For a managed project, `systemx run --target "/path/to/project" -- validate`
+uses its selected defaults even if an older root launcher was retained. New
+installations are pinned with manual updates; opt-in startup updates are configured
+separately in the installation guide. Existing root default copies remain unchanged.
+
+Before initializing a pristine distribution, `validate --template` additionally
+checks that its project seeds are blank and that only distribution files are
+present. Use ordinary `validate` after adoption. The [format contract](../FORMAT.md)
+documents these separate modes.
+
+## Record project choices
+
+Run `bash .SYSTEMX/SYSTEMX.sh init` to create `.SYSTEMX/project.json`. This creates
+only that file and never overwrites existing configuration.
+
+Create `.SYSTEMX/project/` as needed. Copy the [project brief](../templates/PROJECT-BRIEF.md)
+and [architecture](../templates/ARCHITECTURE.md) there, and replace prompts with
+project facts. Keep reusable templates blank for the next project. Describe
+unknowns as unknowns rather than making up requirements.
+
+Fill [GLOBAL/CONTEXT.md](../GLOBAL/CONTEXT.md) with approved shared context and
+create the accepted milestones in [PLAN/MASTER-PLAN.md](../PLAN/MASTER-PLAN.md).
+Use [WORK/README.md](../WORK/README.md) to create concrete tasks. The coordinator
+is `agent.0`; register other workers only as needed. Begin and end work with the
+[memory protocol](../MEMORY/README.md), keeping records specific to this project.
+
+Select the runtime, package manager, build approach, environments, integration
+owners, deployment target, and applicable quality checks. Do not install every
+tool mentioned in the documentation. Pin the selected runtime and dependency
+versions through the host project's normal files and lockfiles.
+
+## Wire commands
+
+Edit `.SYSTEMX/project.json` using the configuration contract in the
+[README](../README.md). Point each check at a real project command. Order fast
+checks before expensive ones. Add development, build, and deployment commands
+only when the host project supports those operations.
+
+Use checked-in scripts for complex workflows. Do not put credentials in command
+arrays. A docs-only project can use document validation and generation; a library
+may leave deployment unconfigured until its publish process is defined.
+
+```bash
+bash .SYSTEMX/SYSTEMX.sh doctor
+bash .SYSTEMX/SYSTEMX.sh check --dry-run
+bash .SYSTEMX/SYSTEMX.sh check
+```
+
+Read the displayed plan before running unfamiliar commands. `--dry-run` runs
+no project commands, including quality checks. Missing executable names are
+reported by `doctor`; remote authentication and service health are not tested.
+
+## Establish boundaries
+
+- Add host-project ignore rules for secrets, dependencies, caches, and artifacts.
+  `.SYSTEMX/.gitignore` protects only paths inside `.SYSTEMX`.
+- Use `.SYSTEMX/local/`, `logs/`, or `state/` for private local runtime artifacts.
+  Git ignore rules are convenience, not secret protection or access control.
+- Keep sanitized project configuration and project records in version control.
+- Configure public output allowlists so `.SYSTEMX` and private material cannot
+  be published accidentally.
+- Put any AI discovery entry point required by your tool at the host repository
+  root and link it to [START-HERE.md](../START-HERE.md). Merge the supplied
+  [entry-point template](../templates/AGENT-ENTRYPOINT.md) with existing instructions.
+  A hidden folder is not automatically discovered by every AI tool.
+
+## Ready for project work
+
+Project setup is ready when context is recorded, selected tools are available,
+configured checks pass, and local run/build instructions are reproducible.
+Production acceptance additionally requires the applicable release steps in
+[OPERATIONS.md](OPERATIONS.md). A template validation pass proves neither state.

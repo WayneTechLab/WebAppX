@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/WayneTechLab/SFWA-WTL-TEMPLATE/.SYSTEMX/LAN/Builder/contracts/builder-session.schema.json",
+  "title": "SYSTEMX LAN Builder Session",
+  "type": "object",
+  "required": ["target", "mode", "port", "writePolicy"],
+  "properties": {
+    "target": {
+      "const": "current-repo"
+    },
+    "mode": {
+      "enum": ["template-edit", "project-edit"]
+    },
+    "port": {
+      "type": "integer",
+      "minimum": 1024,
+      "maximum": 65535
+    },
+    "writePolicy": {
+      "type": "object",
+      "required": ["backupRequired", "diffRequired", "operatorApprovalRequired"],
+      "properties": {
+        "backupRequired": { "type": "boolean" },
+        "diffRequired": { "type": "boolean" },
+        "operatorApprovalRequired": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

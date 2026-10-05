@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "profile": "project",
+  "repository": "WayneTechLab/dotSYSTEMX",
+  "activeVersion": "1.8.6-alpha.1",
+  "pinnedVersion": "1.8.6-alpha.1",
+  "autoUpdate": "manual",
+  "installedAt": "2026-10-05T04:28:03.081689Z",
+  "updatedAt": "2026-10-05T04:29:07.535175Z",
+  "releases": {
+    "1.8.6-alpha.1": "8e6c3fc9488d62dd33a7d50aba6a92224df8e81f027663d8a71ae9ddc12d797d"
+  }
+}

@@ -1,0 +1,9 @@
+# The supplied LAN Builder research package intentionally preserves Markdown hard
+# breaks and its original source-file line endings/checksum material. Do not
+# reinterpret those research artifacts as source-code whitespace defects.
+/.SYSTEMX/LAN/Research/LAN-Builder/** whitespace=-trailing-space
+/.SYSTEMX/LAN/LAN-BUILDER-DESIGNER-MASTER-PLAN.md whitespace=-trailing-space
+
+# Retain Markdown hard breaks in the original public research entry points.
+/.SYSTEMX/LAN/WEB-BUILDER-UX-RESEARCH.md whitespace=-trailing-space
+/.SYSTEMX/LAN/WEBFLOW-DEEP-RESEARCH-MASTER-PLAN.md whitespace=-trailing-space

@@ -1,0 +1,86 @@
+# Maintain WebAppX and optional template mirrors
+
+WebAppX is the public template maintained by WayneTechLab. It begins with fresh
+Git history and project identity based on the reviewed SFWA-WTL-TEMPLATE release.
+No private mirror is configured for WebAppX. The workflow below is available for
+a separately selected, authorized template mirror; do not apply it to an active app.
+Compare Git tree hashes for exact parity after any intentional identity changes.
+
+## Three update paths
+
+| Path | Owner | Entry point |
+| --- | --- | --- |
+| Standalone defaults | Public dotSYSTEMX | `systemx:upstream:check` / explicit `systemx:upstream:import` |
+| Webapp and host operations | This template | App/LAN/KIT/setup changes and `sync:system:check` |
+| Public/private parity | Reviewed template maintainer | `scripts/sync-template.py` and Git publication |
+
+An upstream import does not update the other webapp repository or publish a wiki.
+Host governance sync does not import standalone defaults or mirror a repository.
+Each operation has a separate preview/check and explicit mutation boundary.
+
+## Review and validate the source
+
+Confirm the branch, remotes, live main revisions and local changes before work.
+Preserve existing changes and ignored state. Reconcile public-only and
+private-only features deliberately; keep managed releases immutable and
+research manifests consistent. Ship blank context/plan/task/memory seeds, and
+keep secrets, active project records and local runtime state outside the release.
+
+```bash
+npm ci
+npm run sync:system:check
+npm run ci:all
+npm run deploy -- hosting --preflight
+```
+
+If host generated metadata needs updating, review `npm run sync:system` changes
+and repeat the affected checks. Version the app independently of the managed
+standalone release. Documentation-only updates can retain the app version.
+The `webapp-version/` directory avoids a case-insensitive collision with
+standalone `VERSION`.
+
+Commit the reviewed source before mirroring. Use its own repository's normal
+Git workflow and publication authorization; do not import private Git history
+into the public repository.
+
+## Preview and apply the mirror
+
+```bash
+python3 -B scripts/sync-template.py --target /path/to/template-mirror
+python3 -B scripts/sync-template.py --target /path/to/template-mirror --apply
+```
+
+Both checkouts must be clean. The tool stages a tracked source archive,
+validates it, then copies tracked files only. Review the target diff and commit
+it in the target repository. The tool deliberately refuses local-only collisions
+and file/directory transitions rather than discarding those files.
+
+```bash
+npm run template:check -- --against /path/to/template-mirror
+git rev-parse 'HEAD^{tree}'
+```
+
+Parity includes paths, file contents and executable modes. It excludes `.git`,
+ignored dependencies, build output, environment files and local session state.
+Preserve those local resources under their own project policies.
+
+## Publish and verify
+
+Publish each reviewed main branch, then compare local HEAD with live remote refs
+and confirm both committed trees match. Existing histories remain intact.
+
+Run in each repository:
+
+```bash
+npm run wiki:check
+npm run wiki:sync
+```
+
+The wiki script derives its destination from that checkout's GitHub origin.
+It copies checked-in Markdown pages, preserves wiki-only material/history, and
+pushes without forcing. Verify the published pages against `wiki/` after sync.
+Source publication and wiki publication are separate from Firebase hosting.
+
+See [release provenance](UNIFIED-TEMPLATE.md),
+[managed integration](SYSTEMX-INTEGRATION.md) and the
+[3.1.0 validation receipt](VALIDATION-3.1.0.md).

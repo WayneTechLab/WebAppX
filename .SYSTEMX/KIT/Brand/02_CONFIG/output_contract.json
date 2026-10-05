@@ -1,0 +1,22 @@
+{
+  "required_outputs": [
+    "06_OUTPUT/pages/01_Cover.png",
+    "06_OUTPUT/pages/02_Brand_Overview_Typography.png",
+    "06_OUTPUT/pages/03_Color_Palette_Logo_Anatomy.png",
+    "06_OUTPUT/pages/04_Clear_Space_Minimum_Size_Variations.png",
+    "06_OUTPUT/pages/05_Incorrect_Usage_Applications.png",
+    "06_OUTPUT/pages/06_Back_Cover.png",
+    "06_OUTPUT/Client_Brand_Guidelines.pdf",
+    "06_OUTPUT/Client_Brand_Guidelines_Contact_Sheet.png",
+    "06_OUTPUT/preflight_report.json"
+  ],
+  "acceptance_tests": [
+    "Exactly six pages",
+    "All page images have the same dimensions and aspect ratio",
+    "No clipped or overflowing text",
+    "No text or critical graphics inside the outer 0.5 inch trim zone",
+    "Client and producer logos remain unmodified",
+    "The visual hierarchy matches the included example preview",
+    "The final PDF opens and renders as US Letter portrait"
+  ]
+}

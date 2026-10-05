@@ -1,0 +1,25 @@
+{
+  "id": "enterprise",
+  "name": "Enterprise",
+  "description": "All-options edition for full production systems.",
+  "pageCap": null,
+  "audience": "Enterprise products, internal platforms, SaaS, commerce, portals, and multi-role systems.",
+  "modules": [
+    "auth",
+    "commerce",
+    "firebase",
+    "functions",
+    "ci",
+    "mcp",
+    "security",
+    "monitoring",
+    "pages",
+    "docs",
+    "runbooks",
+    "repo-learning",
+    "dev-tooling"
+  ],
+  "requiredTools": ["node", "npm", "git", "gh", "gcloud", "firebase"],
+  "optionalTools": ["stripe", "chrome", "playwright", "mcp"],
+  "setupMode": "all-options"
+}

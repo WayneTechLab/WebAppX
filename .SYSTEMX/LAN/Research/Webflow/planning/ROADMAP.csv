@@ -1,0 +1,14 @@
+wave,name,milestone,objective,exit_gate
+0,"Truth, safety, and characterization",M0,"Freeze current behavior, repair P0 documentation/security drift, and generate a trustworthy baseline.",Current LAN behavior is tested; documented commands and paths exist; unsafe secret guidance is removed.
+1,Modular server and typed contracts,M0,"Split transport, policy, stores, and evidence behind versioned schemas.",Legacy UI works through modular services and all security characterization tests pass.
+2,Canonical document and read-only import,M1,"Create stable IDs, revisions, migrations, and React/router/CSS read projections.",Repeated imports are idempotent and stable without source mutation.
+3,Command journal and local mutations,M1,"Move mutations into typed transactions with undo, redo, replay, and semantic diff.",Journal replay produces the expected document hash and authorization/revision tests pass.
+4,React Designer UI migration,M1,Replace monolithic UI internals with an accessible typed React shell.,All current LAN flows operate in the new UI with keyboard and visual-regression coverage.
+5,Structural source editing,M2,Support constrained AST-backed page/node operations in the current template.,"Supported structural edits rebuild, undo, re-import, and retain stable object identity."
+6,"Style, variables, and responsive engine",M2,"Implement standards-aligned cascade, breakpoints, states, tokens, Grid, Flex, and output adapters.",Effective styles match browser fixtures and source output is deterministic and reversible.
+7,Components and libraries,M3,"Add definitions, instances, props, slots, variants, dependencies, versions, and migrations.",Component changes produce impact reports; instances round-trip and upgrade safely.
+8,"CMS, bindings, forms, and assets",M3,Build typed data-driven authoring and emulator-first provider adapters.,A CMS page and form work end-to-end through emulators with rules and accessibility tests.
+9,Interactions and localization,M4,Add trigger/target/timeline motion and sparse locale overrides.,A page/component supports reusable motion and two locales without duplicating the document.
+10,"Snapshots, publishing, backup, and restore",M4,Connect immutable preview/release manifests to existing SYSTEMX gates.,An approved snapshot publishes deterministically and a prior release restores with evidence.
+11,"Extensions, CLI, and MCP",M5,Expose bounded platform clients over the shared query/command kernel.,A sandboxed extension and read-only MCP client work; approved mutation uses the journal.
+12,"Collaboration, insights, and domain packs",M5,"Add comments, presence, branches, analytics overlays, experiments, and optional commerce.",Page branch review/merge is conflict-aware and release evidence remains complete.

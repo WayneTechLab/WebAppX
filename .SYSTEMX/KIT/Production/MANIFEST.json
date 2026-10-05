@@ -1,0 +1,1257 @@
+{
+  "package": "Generic Master Production Kit",
+  "version": "1.0",
+  "company": "[[COMPANY NAME]]",
+  "website": "https://example.com",
+  "contact": "contact@example.com",
+  "location": "[[CITY, REGION]], United States",
+  "file_count": 165,
+  "total_bytes": 24047600,
+  "files": [
+    {
+      "path": "00_Source_Locked/SOURCE_LOCK.md",
+      "bytes": 795,
+      "sha256": "6ae2ea94cd1113916a28d943c168495326438565d9c6799e1348b6815580c66a",
+      "extension": ".md"
+    },
+    {
+      "path": "00_Source_Locked/WTL_Approved_Source_1536x1024.png",
+      "bytes": 1116689,
+      "sha256": "2e91ce076c3178621d6606ab4f3dfd6dab4772ff89b639405a185fea0772bceb",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/BrandTheme.kt",
+      "bytes": 180,
+      "sha256": "0e5f414516857d5ce1047a0ba5aaaeb4e95ef1fc9299f3ee01deeb9f7d690411",
+      "extension": ".kt"
+    },
+    {
+      "path": "Android/Google_Play_Icon_512x512.png",
+      "bytes": 84058,
+      "sha256": "324937919e8793f92586579081f2694c61a7d859a7d7fd4a1d8aa6e87d5b63a3",
+      "extension": ".png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/README.md",
+      "bytes": 194,
+      "sha256": "e3ebf936678508c3c69379f1e1d67a88739c886217a0b53832ee39f91f487704",
+      "extension": ".md"
+    },
+    {
+      "path": "Android/app/src/main/res/drawable-nodpi/ic_launcher_foreground.png",
+      "bytes": 43921,
+      "sha256": "e89c7fd4ad1e5e7bc4d20624c2b6a26c2b3fc032fd615f86bc31e9b61059a273",
+      "extension": ".png",
+      "width": 432,
+      "height": 432,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Android/app/src/main/res/drawable-nodpi/wtl_brand_logo.png",
+      "bytes": 253972,
+      "sha256": "010ec8fd58f188b6faa3e4bedac66c8a6be645b6349ebeb0aa526ebe25f6dd8e",
+      "extension": ".png",
+      "width": 2400,
+      "height": 1600,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "bytes": 256,
+      "sha256": "e69f5e3fc0844cd296fc7a6334a5d060374df559412818872a412477303a32dc",
+      "extension": ".xml"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "bytes": 256,
+      "sha256": "e69f5e3fc0844cd296fc7a6334a5d060374df559412818872a412477303a32dc",
+      "extension": ".xml"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "bytes": 4148,
+      "sha256": "560a66d0e2ccb8a911760ae258eaf0800dc64b009278d0ddce5ee2f136a80cf8",
+      "extension": ".png",
+      "width": 72,
+      "height": 72,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png",
+      "bytes": 4148,
+      "sha256": "560a66d0e2ccb8a911760ae258eaf0800dc64b009278d0ddce5ee2f136a80cf8",
+      "extension": ".png",
+      "width": 72,
+      "height": 72,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "bytes": 2302,
+      "sha256": "8631531959a511cefb645f27d4af7614eeeafce8f6746e5da5653bbb999ea4f8",
+      "extension": ".png",
+      "width": 48,
+      "height": 48,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png",
+      "bytes": 2302,
+      "sha256": "8631531959a511cefb645f27d4af7614eeeafce8f6746e5da5653bbb999ea4f8",
+      "extension": ".png",
+      "width": 48,
+      "height": 48,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "bytes": 6255,
+      "sha256": "bcb027602f50bdb070f7e15adc54d041ceee3df1c1928c03f60c8f3401a46bd1",
+      "extension": ".png",
+      "width": 96,
+      "height": 96,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png",
+      "bytes": 6255,
+      "sha256": "bcb027602f50bdb070f7e15adc54d041ceee3df1c1928c03f60c8f3401a46bd1",
+      "extension": ".png",
+      "width": 96,
+      "height": 96,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "bytes": 11249,
+      "sha256": "052cc2be61936c76f3c1d8a96cfd0bff584405c63d31aaeb5a36f8a7e483bbf4",
+      "extension": ".png",
+      "width": 144,
+      "height": 144,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png",
+      "bytes": 11249,
+      "sha256": "052cc2be61936c76f3c1d8a96cfd0bff584405c63d31aaeb5a36f8a7e483bbf4",
+      "extension": ".png",
+      "width": 144,
+      "height": 144,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "bytes": 17192,
+      "sha256": "5ad84201bb83f47c945fb0b0c3be3f73c075a662b423e0b7ece7f7127e8231c2",
+      "extension": ".png",
+      "width": 192,
+      "height": 192,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png",
+      "bytes": 17192,
+      "sha256": "5ad84201bb83f47c945fb0b0c3be3f73c075a662b423e0b7ece7f7127e8231c2",
+      "extension": ".png",
+      "width": 192,
+      "height": 192,
+      "mode": "RGB"
+    },
+    {
+      "path": "Android/app/src/main/res/values/colors.xml",
+      "bytes": 240,
+      "sha256": "c34e2fc2c0cefa75eeca79055f8c7652ddb7ce051ec95a44d80331d19b72f06a",
+      "extension": ".xml"
+    },
+    {
+      "path": "Brand Kit/01_Logos/4K_Transparent/ALL Text.png",
+      "bytes": 1511525,
+      "sha256": "744559824c53f4e44d9bd8a10fc318a99e28e7207408fd0240e1519b4c8c4947",
+      "extension": ".png",
+      "width": 4096,
+      "height": 2731,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/4K_Transparent/Logo.png",
+      "bytes": 738904,
+      "sha256": "00d5f13cfc51c120f75eda7711c9a62d2a406a4c0c43aeef9a6963e7b12cafbc",
+      "extension": ".png",
+      "width": 4096,
+      "height": 2731,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/4K_Transparent/Tech Lab.png",
+      "bytes": 1131888,
+      "sha256": "bfc6fa5b5cdb6dd0c717b521c4dc7c09c9fefaf4608d29ef0951d216979ad054",
+      "extension": ".png",
+      "width": 4096,
+      "height": 2731,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/4K_Transparent/Wayne.png",
+      "bytes": 1036621,
+      "sha256": "571b57ae8bc744f120b9531e911fbe66eaba2e8db9091510651c90938b6faf2d",
+      "extension": ".png",
+      "width": 4096,
+      "height": 2731,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/4K_White/ALL Text.png",
+      "bytes": 1238097,
+      "sha256": "7919785f04a212d04e04b97ac1cd82a617f4d494e8b163adee3dfe2e9bd00aa7",
+      "extension": ".png",
+      "width": 4096,
+      "height": 2731,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/4K_White/Logo.png",
+      "bytes": 627009,
+      "sha256": "638ed526a71b492cf44bfe8b9d898c639c1e6da57f97a95972b4fb787da35305",
+      "extension": ".png",
+      "width": 4096,
+      "height": 2731,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/4K_White/Tech Lab.png",
+      "bytes": 935980,
+      "sha256": "36c818e23a677f19be8d5ebaf1af914a0b075f658fc61bd88f4eae913f5bbba6",
+      "extension": ".png",
+      "width": 4096,
+      "height": 2731,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/4K_White/Wayne.png",
+      "bytes": 863821,
+      "sha256": "63002df299d3253858db292379ec1c2e334b778950453cd2c09adf65a780440a",
+      "extension": ".png",
+      "width": 4096,
+      "height": 2731,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/Logo_Transparent.png",
+      "bytes": 139410,
+      "sha256": "b24e877e09ebe98e664f04baed19e8b34e847181f2018067b437b2772ea043d3",
+      "extension": ".png",
+      "width": 516,
+      "height": 396,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/Logo_White.png",
+      "bytes": 119459,
+      "sha256": "c67eb3564cfc51b73be3b4c6bdef477b2a94f3c39e34694bc1ae7dd21c81dc58",
+      "extension": ".png",
+      "width": 516,
+      "height": 396,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/Services_Only_Transparent.png",
+      "bytes": 74618,
+      "sha256": "791449e69e24d0a416b2acf68e19cb4f1028aba2b935c1e205726ac98f8e7701",
+      "extension": ".png",
+      "width": 1346,
+      "height": 154,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/Services_Only_White.png",
+      "bytes": 60681,
+      "sha256": "80baaf74a2306980ffcbcb56b6fc97bb71aad683888ba97c77764a0c06adc8c9",
+      "extension": ".png",
+      "width": 1346,
+      "height": 154,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/Tech_Lab_Only_Transparent.png",
+      "bytes": 19425,
+      "sha256": "e9ebea0fadf9538524e4434810cfa9b626f7b8b8497ffa80afa4553d74f46ebb",
+      "extension": ".png",
+      "width": 797,
+      "height": 59,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/Tech_Lab_Only_White.png",
+      "bytes": 15016,
+      "sha256": "6e6fc0ca0e60e20c357139a07f43e9f6dcc99ab5c1e594878af31605845f6e37",
+      "extension": ".png",
+      "width": 797,
+      "height": 59,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/WTL_Horizontal_All_Text_Transparent.png",
+      "bytes": 306314,
+      "sha256": "bcbb4fe0afd54f7cc05b8cad2c2d66164a3fec9f272527f9597ba6ecebd52809",
+      "extension": ".png",
+      "width": 1363,
+      "height": 546,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/WTL_Horizontal_Tech_Lab_2400x1600_White.png",
+      "bytes": 216111,
+      "sha256": "471f9d31b430ad69aa4d272b94eeb7e9ca663e64caff84cedc0633f371222e6f",
+      "extension": ".png",
+      "width": 2400,
+      "height": 1600,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/WTL_Horizontal_Tech_Lab_Transparent.png",
+      "bytes": 232215,
+      "sha256": "97f928755d4c8d61ce6be1cff4ae3e373cefc96989f6a49d7269b5a5c13af93c",
+      "extension": ".png",
+      "width": 1329,
+      "height": 412,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/Wayne_Text_Only_Transparent.png",
+      "bytes": 66295,
+      "sha256": "849cfa4f860059dd4b1bbd53b9b1461ecab8913ef8973ec3626633d5fa28e669",
+      "extension": ".png",
+      "width": 803,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Components/Wayne_Text_Only_White.png",
+      "bytes": 54476,
+      "sha256": "accf67780391e05fd05081880defd737aab160694db7c8c13e176cc392f20f85",
+      "extension": ".png",
+      "width": 803,
+      "height": 128,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/README.md",
+      "bytes": 652,
+      "sha256": "3c27fe503cc4b91865197597d23b94bf4cab92ac4c1e01b7d201f5ccc8a3274c",
+      "extension": ".md"
+    },
+    {
+      "path": "Brand Kit/01_Logos/SVG_Exports/ALL Text.svg",
+      "bytes": 420417,
+      "sha256": "07e4f72ab1ef1c02ab8934f0bb9b6f4202372fbb8541c11a494f946dfb0f8cb3",
+      "extension": ".svg"
+    },
+    {
+      "path": "Brand Kit/01_Logos/SVG_Exports/Logo.svg",
+      "bytes": 210621,
+      "sha256": "fe12d988706b2e50f636460cf3fdf0ae533a25f95e59e0462a500453023b5dff",
+      "extension": ".svg"
+    },
+    {
+      "path": "Brand Kit/01_Logos/SVG_Exports/Tech Lab.svg",
+      "bytes": 320573,
+      "sha256": "8795be783118937f2998ac311a1db9874104de227776fdb4b0e1912e315e854e",
+      "extension": ".svg"
+    },
+    {
+      "path": "Brand Kit/01_Logos/SVG_Exports/Wayne.svg",
+      "bytes": 296598,
+      "sha256": "7ef48912874b4768016004236aaf9b57ec13b5e040de7b5e0db9b3381897b3b8",
+      "extension": ".svg"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Square/WTL_Logo_Only_4096x4096.png",
+      "bytes": 193566,
+      "sha256": "5a6a55ee0e0dd253a7c738c6e38e3f1596613cb64fcb93d3b30899474cee29d7",
+      "extension": ".png",
+      "width": 4096,
+      "height": 4096,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/01_Logos/Square/WTL_Logo_Only_4096x4096_Transparent.png",
+      "bytes": 222400,
+      "sha256": "8484139b360b1cc3fff1a1e4eec27bb18e3544c4a11435c9ca591fa5d4c60d48",
+      "extension": ".png",
+      "width": 4096,
+      "height": 4096,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/02_Layered_Master/LAYER_MAP.md",
+      "bytes": 820,
+      "sha256": "04f38c5939455e1c77c30f403bec90b10c05595d71f0a782377328498f486951",
+      "extension": ".md"
+    },
+    {
+      "path": "Brand Kit/02_Layered_Master/Layers/Background_1536x1024.png",
+      "bytes": 8531,
+      "sha256": "74db60a9b35b0b21f8634885f8c8d2eb0549380aa15f03b3fe77e65e5374a0d0",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/02_Layered_Master/Layers/Logo_1536x1024.png",
+      "bytes": 157771,
+      "sha256": "adc943ea46926c0869237066f0b2689be15839d6a907d3c359bd3554b634e32a",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/02_Layered_Master/Layers/Services_1536x1024.png",
+      "bytes": 83554,
+      "sha256": "511338cd0b4827bc5f8c512fc930a56d40476336c6ead1f9b80594728cb33b00",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/02_Layered_Master/Layers/Tech_Lab_1536x1024.png",
+      "bytes": 28240,
+      "sha256": "e19cc63d348fd002c1a442de5d73c2ce27da759477ee73067fea180fbca48567",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/02_Layered_Master/Layers/Wayne_1536x1024.png",
+      "bytes": 77876,
+      "sha256": "e698ef9f032ea891954bba8429b085dcfc98268c84e7acc223b03f0bb777f09d",
+      "extension": ".png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Brand Kit/02_Layered_Master/WTL_Master_Layered.ora",
+      "bytes": 628376,
+      "sha256": "4fa40a316cce443ad604f35c8df3bdab71a558d41867bcf29ac671235a4508c1",
+      "extension": ".ora"
+    },
+    {
+      "path": "Brand Kit/02_Layered_Master/WTL_Master_Layered.svg",
+      "bytes": 475884,
+      "sha256": "9377b85607387486048285edee11bccea98e98a26fb0144a15040e01e181a2c9",
+      "extension": ".svg"
+    },
+    {
+      "path": "Brand Kit/02_Layered_Master/layer-map.json",
+      "bytes": 946,
+      "sha256": "ff74f9429e40d46d341aeb4cad6588078ee71c7efcd61433bd80ac2eb4790742",
+      "extension": ".json"
+    },
+    {
+      "path": "Brand Kit/03_Color/WTL_Color_Swatches_1600x900.png",
+      "bytes": 70053,
+      "sha256": "8f3de9545f23d6cf0d2b1142d6c218bf79fe949871f05e3f8bc06af4af40b943",
+      "extension": ".png",
+      "width": 1600,
+      "height": 900,
+      "mode": "RGB"
+    },
+    {
+      "path": "Brand Kit/03_Color/color-palette.css",
+      "bytes": 225,
+      "sha256": "63a205f3d4ade79628c42c31cad6799bd27888d8ac7512e48eed2603fd462924",
+      "extension": ".css"
+    },
+    {
+      "path": "Brand Kit/03_Color/color-palette.json",
+      "bytes": 296,
+      "sha256": "6f9d059585929596e092e94bb05e25bc6a5257a92ddec0db40dda8bb96a63bb3",
+      "extension": ".json"
+    },
+    {
+      "path": "Brand Kit/03_Color/color-palette.scss",
+      "bytes": 191,
+      "sha256": "8bd73c4a0685480d8a78ffde32aa530d775a9c0994a55289a2493bfc005275b5",
+      "extension": ".scss"
+    },
+    {
+      "path": "Brand Kit/03_Color/wayne-tech-lab.gpl",
+      "bytes": 246,
+      "sha256": "393196876b4eb7f1a41e0af3df864fc36317a6401be884309f04620f493eb680",
+      "extension": ".gpl"
+    },
+    {
+      "path": "Brand Kit/04_Typography/FONT_STYLE.md",
+      "bytes": 1489,
+      "sha256": "46ecd887ecf6c54aef270fa057c9b568076cc34a806da922771d351bd9bfb1f2",
+      "extension": ".md"
+    },
+    {
+      "path": "Brand Kit/04_Typography/typography-tokens.css",
+      "bytes": 270,
+      "sha256": "f36f320d8805df1a557641368c95fbbcba4a0d435b0350925d0419e957b23186",
+      "extension": ".css"
+    },
+    {
+      "path": "Brand Kit/05_Guidelines/ACCESSIBILITY.md",
+      "bytes": 383,
+      "sha256": "ddaf9ea06ffcb5c56c2a72881e3baedaad4e8c122f5a887bee2a7daa4cfaf9fb",
+      "extension": ".md"
+    },
+    {
+      "path": "Brand Kit/05_Guidelines/CHANGE_CONTROL.md",
+      "bytes": 434,
+      "sha256": "96b0067223327d9e5febda3607e45a9acbe760a5825cda16cc6c18bf2e0e1521",
+      "extension": ".md"
+    },
+    {
+      "path": "Brand Kit/05_Guidelines/DESIGN.md",
+      "bytes": 1693,
+      "sha256": "4bd612667b4bebc8572737459e17df03923e8145418cc0633de10886adda9c01",
+      "extension": ".md"
+    },
+    {
+      "path": "Brand Kit/05_Guidelines/LOGO_USAGE.md",
+      "bytes": 336,
+      "sha256": "3248f3c631047e42994bcf46ccc3ca9f934f359bc37240bb9c09f6527eb53218",
+      "extension": ".md"
+    },
+    {
+      "path": "Brand Kit/05_Guidelines/PRODUCTION_SPEC.md",
+      "bytes": 645,
+      "sha256": "66a68e92cfb63a5dafe20cfc3d2cd5f46c5713e4ab3e1678676f4033f77add36",
+      "extension": ".md"
+    },
+    {
+      "path": "Brand Kit/06_Design_Tokens/brand.tokens.json",
+      "bytes": 1059,
+      "sha256": "5f84c15ba933da9933faca33f5c97a113ffad7d7a37c84f7da83c1b090d02752",
+      "extension": ".json"
+    },
+    {
+      "path": "Brand Kit/06_Design_Tokens/tailwind.brand.extend.js",
+      "bytes": 368,
+      "sha256": "67893faba10c12bfd236b5504d5c073e5812b2a2745dabf0f3705c223b5e5576",
+      "extension": ".js"
+    },
+    {
+      "path": "Brand Kit/07_Vendor_Handoff/README.md",
+      "bytes": 437,
+      "sha256": "a7d898dfa839796e90bb04e6aa376db137148d409c0dbfe3102ba7eeeeb1e341",
+      "extension": ".md"
+    },
+    {
+      "path": "Documentation/ANYTHING_ELSE.md",
+      "bytes": 618,
+      "sha256": "e43b723267c8fdf50c885a9c421d4cf585badecea849453abadaea27c3b4ac7c",
+      "extension": ".md"
+    },
+    {
+      "path": "Documentation/ASSET_MANIFEST.md",
+      "bytes": 585,
+      "sha256": "f9360aebcc80d3bd093ea3720a717f652d4c910952d6b80d4916820b2acb5e76",
+      "extension": ".md"
+    },
+    {
+      "path": "Documentation/CSS.md",
+      "bytes": 528,
+      "sha256": "87cc9a3f1e934f8e06741b4d8626c472d70e0e29e29f49e6123bb37c0c71ba21",
+      "extension": ".md"
+    },
+    {
+      "path": "Documentation/DESIGN.md",
+      "bytes": 1693,
+      "sha256": "4bd612667b4bebc8572737459e17df03923e8145418cc0633de10886adda9c01",
+      "extension": ".md"
+    },
+    {
+      "path": "Documentation/FONT_STYLE.md",
+      "bytes": 1489,
+      "sha256": "46ecd887ecf6c54aef270fa057c9b568076cc34a806da922771d351bd9bfb1f2",
+      "extension": ".md"
+    },
+    {
+      "path": "Documentation/PLATFORM_ASSET_MATRIX.md",
+      "bytes": 625,
+      "sha256": "fb1e23a1da7695a21bf57fee485950d985bb85257d06c4d7f6a665e5a29c0a17",
+      "extension": ".md"
+    },
+    {
+      "path": "Media Kit/Email/WTL_Email_Signature_Banner_1200x360.png",
+      "bytes": 162242,
+      "sha256": "97e929ce3468aeb8eabde2c4e2e594f641b980573edfcacbd425d5c685ccfe1a",
+      "extension": ".png",
+      "width": 1200,
+      "height": 360,
+      "mode": "RGB"
+    },
+    {
+      "path": "Media Kit/Email/email-signature.html",
+      "bytes": 736,
+      "sha256": "8bdf3f1d48788cbd0da85cce47a06d48e1e2193fcb797374590a20b733e28dbc",
+      "extension": ".html"
+    },
+    {
+      "path": "Media Kit/MEDIA_KIT_README.md",
+      "bytes": 216,
+      "sha256": "b1c58893ffe0242b691c26c4bca7fcad323903b608ae637e59ddd18a0e06ee0c",
+      "extension": ".md"
+    },
+    {
+      "path": "Media Kit/Media_Kit_Index.md",
+      "bytes": 428,
+      "sha256": "8e8f22a4ef7f36503d9188f8e791f94ac10155dd230f032c72367fe65d8bd59a",
+      "extension": ".md"
+    },
+    {
+      "path": "Media Kit/Press/Company_Fact_Sheet.md",
+      "bytes": 882,
+      "sha256": "49cf8393524f62ffa77e65d2631fa3ca9260d75dc92da1c346d6ebef3e27e605",
+      "extension": ".md"
+    },
+    {
+      "path": "Media Kit/Press/Executive_Bio_Template.md",
+      "bytes": 453,
+      "sha256": "226c299f50b071c6f17841169cbd3899bc82eaf41d035219257ad3253910af3d",
+      "extension": ".md"
+    },
+    {
+      "path": "Media Kit/Press/Media_Contact.md",
+      "bytes": 125,
+      "sha256": "715b119e66495635b8cbf7386957a03c4e03029b50aab55cc104ef5ea946e5bc",
+      "extension": ".md"
+    },
+    {
+      "path": "Media Kit/Press/Press_Boilerplate.md",
+      "bytes": 388,
+      "sha256": "c3a668b10d0e7c10c4331da7b0f825a87fdd0e7067fad704019b4f3ccfd0f6b2",
+      "extension": ".md"
+    },
+    {
+      "path": "Media Kit/Social/Facebook_Cover_1640x624.png",
+      "bytes": 200347,
+      "sha256": "d453bc2d7c96e899bf8a9d41c541c608fe9f4af332ae2247fccdeab20cb6b34b",
+      "extension": ".png",
+      "width": 1640,
+      "height": 624,
+      "mode": "RGB"
+    },
+    {
+      "path": "Media Kit/Social/LinkedIn_Cover_1584x396.png",
+      "bytes": 191078,
+      "sha256": "a700071b86f98902587acce65b382df52330eabb6c9e8d2cd6447767f37f85eb",
+      "extension": ".png",
+      "width": 1584,
+      "height": 396,
+      "mode": "RGB"
+    },
+    {
+      "path": "Media Kit/Social/Open_Graph_1200x630.png",
+      "bytes": 197357,
+      "sha256": "b32026831a21cecec39008ab502ae8962b22b615df4954b6ec1f92bd7c8d529b",
+      "extension": ".png",
+      "width": 1200,
+      "height": 630,
+      "mode": "RGB"
+    },
+    {
+      "path": "Media Kit/Social/Profile_Logo_1024x1024.png",
+      "bytes": 130968,
+      "sha256": "394da2257cee267f5f24cf382cb99f31122ebdc015797755129381951f2b80e2",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "path": "Media Kit/Social/Profile_Logo_1024x1024_Transparent.png",
+      "bytes": 151718,
+      "sha256": "bbda74fd9f0c3a1d73153f72c731eff8b53cd609e1ecba2a216b7e658c34f634",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "Media Kit/Social/X_Cover_1500x500.png",
+      "bytes": 197147,
+      "sha256": "566ccf18d260a683da04fe3eb3bcd8a8c6170be995b03ed42814fd1fb9fcf3eb",
+      "extension": ".png",
+      "width": 1500,
+      "height": 500,
+      "mode": "RGB"
+    },
+    {
+      "path": "Media Kit/Social/YouTube_Banner_2560x1440.png",
+      "bytes": 215822,
+      "sha256": "96fbd03e05c9f4ed0260873dacc6642b094a57a900e06c9fbde5361e4ec70282",
+      "extension": ".png",
+      "width": 2560,
+      "height": 1440,
+      "mode": "RGB"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2067,
+      "sha256": "41887c738bc7575863d98451bbe7a3bec8aec8d02b707c82319d7d9f49cfb15a",
+      "extension": ".md"
+    },
+    {
+      "path": "RELEASE_NOTES.md",
+      "bytes": 652,
+      "sha256": "47f62b733d3780e97bc5b116ee40439b4cf45c73d327e1d928969283c9eef0b1",
+      "extension": ".md"
+    },
+    {
+      "path": "Standard Document Set/DOCX/00_Executive_Letterhead_Template.docx",
+      "bytes": 234457,
+      "sha256": "2f89b92f221cc8a7dbfbdeb7de0f11ba9b787b875a33fcd96adfafa858749729",
+      "extension": ".docx"
+    },
+    {
+      "path": "Standard Document Set/DOCX/01_Executive_Brief_Template.docx",
+      "bytes": 234673,
+      "sha256": "3a4b4cd44c0517af11e9919643e655fe4be9847adb88cdfce0de462199e15e2a",
+      "extension": ".docx"
+    },
+    {
+      "path": "Standard Document Set/DOCX/02_Client_Proposal_Template.docx",
+      "bytes": 235135,
+      "sha256": "70a281ecea346464d43fff1d2ff72af6683ea366ccab69d972886762c861b6ea",
+      "extension": ".docx"
+    },
+    {
+      "path": "Standard Document Set/DOCX/03_Statement_of_Work_Template.docx",
+      "bytes": 235416,
+      "sha256": "c13ee74392565550e7ae3b9b54ef80a97718965ee313ed55906d9b016dbcf489",
+      "extension": ".docx"
+    },
+    {
+      "path": "Standard Document Set/DOCX/04_Project_Status_Report_Template.docx",
+      "bytes": 234836,
+      "sha256": "dcdaeac1e924a6c1d68e111389fe675a90f98d63f631775aee755fe00ff3a557",
+      "extension": ".docx"
+    },
+    {
+      "path": "Standard Document Set/DOCX/05_Technical_Specification_Template.docx",
+      "bytes": 234922,
+      "sha256": "ac8b7c5cf2e185ff9554ea3b636db8895ae973625c6de1b312a40535722df801",
+      "extension": ".docx"
+    },
+    {
+      "path": "Standard Document Set/DOCX/06_Meeting_Notes_Action_Register_Template.docx",
+      "bytes": 234819,
+      "sha256": "7bbdd03c45364ee2c3f57741ef93d9cd18fc2de682a992cea16641bbabdbe975",
+      "extension": ".docx"
+    },
+    {
+      "path": "Standard Document Set/DOCX/07_Client_Deliverable_Cover_Template.docx",
+      "bytes": 234829,
+      "sha256": "6e5f041472a77cf332f38f535f44ee0edc48be50e523a801e3b8f6198768406c",
+      "extension": ".docx"
+    },
+    {
+      "path": "Standard Document Set/DOTX/00_Executive_Letterhead_Template.dotx",
+      "bytes": 234462,
+      "sha256": "3493a0f6cd13084444136ddbe3fec6e876a1e796e58d913ca94d4d5cae4117c7",
+      "extension": ".dotx"
+    },
+    {
+      "path": "Standard Document Set/DOTX/01_Executive_Brief_Template.dotx",
+      "bytes": 234678,
+      "sha256": "fe6dd77408c3bf708251bc7beef30526ddd39f56b41d2d3c5925e9b720923bc9",
+      "extension": ".dotx"
+    },
+    {
+      "path": "Standard Document Set/DOTX/02_Client_Proposal_Template.dotx",
+      "bytes": 235140,
+      "sha256": "52af817a9b6c5d42d915ad653e0d29f9b54cbdcdf4e896ca7232ac5576d364dd",
+      "extension": ".dotx"
+    },
+    {
+      "path": "Standard Document Set/DOTX/03_Statement_of_Work_Template.dotx",
+      "bytes": 235421,
+      "sha256": "bc4ed74a4aa022c9d82740fb937fece770c35c120d8e5bdcffb1f6765eb84bc4",
+      "extension": ".dotx"
+    },
+    {
+      "path": "Standard Document Set/DOTX/04_Project_Status_Report_Template.dotx",
+      "bytes": 234841,
+      "sha256": "3f730d291430673f5b89bca0f454680e9f6a38a1ddba1f8009c03acf0a9c9e89",
+      "extension": ".dotx"
+    },
+    {
+      "path": "Standard Document Set/DOTX/05_Technical_Specification_Template.dotx",
+      "bytes": 234927,
+      "sha256": "c3632b2fec825ebb31446fd63388bedff2a8e9eb482a8280ad60da6803267caa",
+      "extension": ".dotx"
+    },
+    {
+      "path": "Standard Document Set/DOTX/06_Meeting_Notes_Action_Register_Template.dotx",
+      "bytes": 234824,
+      "sha256": "1ea8964d403ea8a3a23340e4272cfa193346d147e9cafdf3cc8a9fff44a49ebb",
+      "extension": ".dotx"
+    },
+    {
+      "path": "Standard Document Set/DOTX/07_Client_Deliverable_Cover_Template.dotx",
+      "bytes": 234834,
+      "sha256": "cab7a58df7825f82f08b5c19b42cb79c563732402723f4588aa3f9ed6ff9fa66",
+      "extension": ".dotx"
+    },
+    {
+      "path": "Standard Document Set/PDF/00_Executive_Letterhead_Template.pdf",
+      "bytes": 115080,
+      "sha256": "81cdd236a82284f00732e229d0baf0d06a7a4423399ac75547390952ba2b736a",
+      "extension": ".pdf"
+    },
+    {
+      "path": "Standard Document Set/PDF/01_Executive_Brief_Template.pdf",
+      "bytes": 137806,
+      "sha256": "ab7b0fc1328a7956a981cf93a9956d77f845610083e0adcc3e5da1230ef76512",
+      "extension": ".pdf"
+    },
+    {
+      "path": "Standard Document Set/PDF/02_Client_Proposal_Template.pdf",
+      "bytes": 144719,
+      "sha256": "67ce28e63e4735c500febe38267d0a7ccace1b5fb6840922218a9b51950159e7",
+      "extension": ".pdf"
+    },
+    {
+      "path": "Standard Document Set/PDF/03_Statement_of_Work_Template.pdf",
+      "bytes": 165898,
+      "sha256": "f101933488b9d437f31986f3aecfc1eb639991bc0bd30d85c98fa71a72741b49",
+      "extension": ".pdf"
+    },
+    {
+      "path": "Standard Document Set/PDF/04_Project_Status_Report_Template.pdf",
+      "bytes": 154012,
+      "sha256": "8720878d041768d7dca71ddb236d209fbfc845eb8257f67f14799c6bd79902e7",
+      "extension": ".pdf"
+    },
+    {
+      "path": "Standard Document Set/PDF/05_Technical_Specification_Template.pdf",
+      "bytes": 139248,
+      "sha256": "1fa947a6325f48764102b82501fbb18771b13a475dc2c71105743373fa51cdb1",
+      "extension": ".pdf"
+    },
+    {
+      "path": "Standard Document Set/PDF/06_Meeting_Notes_Action_Register_Template.pdf",
+      "bytes": 150974,
+      "sha256": "b612cd8a202eca72bad193640a12434948a174e53cd52c41be1688a00bbaafbb",
+      "extension": ".pdf"
+    },
+    {
+      "path": "Standard Document Set/PDF/07_Client_Deliverable_Cover_Template.pdf",
+      "bytes": 146788,
+      "sha256": "e69ad4af82f0e429bb8d2c08d66b308549902d1ea9d03dc8605f9becfb92aacb",
+      "extension": ".pdf"
+    },
+    {
+      "path": "Standard Document Set/README.md",
+      "bytes": 737,
+      "sha256": "34f520c3840d8d1d89d5157bca425bae6d9111cf23b6a5b4c6aef142a5a80072",
+      "extension": ".md"
+    },
+    {
+      "path": "Standard Document Set/WTL_Document_Header_Logo.png",
+      "bytes": 196268,
+      "sha256": "eaa7f8720b217453672f9c4068735fd7020c99b380848558133f1ac1fd96eb62",
+      "extension": ".png",
+      "width": 1400,
+      "height": 500,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/README.md",
+      "bytes": 194,
+      "sha256": "7c968e571ae7a48dbdfa3aa5c96279244b74c6eebfbfca8e21b16b528b5d3fc3",
+      "extension": ".md"
+    },
+    {
+      "path": "WebAPP/public/brand/favicon.ico",
+      "bytes": 49008,
+      "sha256": "4f30824f791447124b923e2982dec96438672c5681d43aa3cf66f2bd5808dcc3",
+      "extension": ".ico",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-all-text.png",
+      "bytes": 316741,
+      "sha256": "701d2498461f3a2bc0094458d46aab910acbe15e746df3239013b9c3084651ac",
+      "extension": ".png",
+      "width": 1600,
+      "height": 1067,
+      "mode": "RGBA"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-all-text.svg",
+      "bytes": 420417,
+      "sha256": "07e4f72ab1ef1c02ab8934f0bb9b6f4202372fbb8541c11a494f946dfb0f8cb3",
+      "extension": ".svg"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-all-text.webp",
+      "bytes": 127906,
+      "sha256": "2a521024d6846eff0d6575bd7a5d7cd794b2de7c33765da8ac9c016904d854d2",
+      "extension": ".webp",
+      "width": 1600,
+      "height": 1067,
+      "mode": "RGBA"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-1024.png",
+      "bytes": 133971,
+      "sha256": "dc04416ebdbbe3d21de1bc1154a22115b336a721b337dabae7cd4d61b298fee0",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-128.png",
+      "bytes": 10255,
+      "sha256": "375e284b2f46178ea8433fa6d30afd21c3c340ba232d864dc4d7bfe44799e59e",
+      "extension": ".png",
+      "width": 128,
+      "height": 128,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-16.png",
+      "bytes": 443,
+      "sha256": "08bfb19796ff6b30af899af6ad3f810fce5c52d37536cf1f87df1f29f38ebee7",
+      "extension": ".png",
+      "width": 16,
+      "height": 16,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-180.png",
+      "bytes": 17029,
+      "sha256": "c55c81b4f7f907dd495dfc88bf1a6b787853b758ce8e6b77f8ac112eee0c6cea",
+      "extension": ".png",
+      "width": 180,
+      "height": 180,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-192.png",
+      "bytes": 18662,
+      "sha256": "abb5cd70406076c771b77f7062a7424ac7560fecdf60c804405c01b65f3e95ee",
+      "extension": ".png",
+      "width": 192,
+      "height": 192,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-256.png",
+      "bytes": 29071,
+      "sha256": "943643b614e76e8db33a1f20215ab0a6972ee0ca36ab4da497b273c14614f174",
+      "extension": ".png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-32.png",
+      "bytes": 1353,
+      "sha256": "b608ab8c205adde99469e722c4078ba3eac574bda4f8ba5344e378e8fd60f252",
+      "extension": ".png",
+      "width": 32,
+      "height": 32,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-48.png",
+      "bytes": 2413,
+      "sha256": "546ab9f7e8a5389b2a9a32d7c782a2b94a01d5498f192c05cc4db3cd4ab9e418",
+      "extension": ".png",
+      "width": 48,
+      "height": 48,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-512.png",
+      "bytes": 90953,
+      "sha256": "7946e57e47f8284594a65fe497fc0c238703e63fa3f168d672ae1a8e663d5851",
+      "extension": ".png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-icon-64.png",
+      "bytes": 3714,
+      "sha256": "30b6f478e862b7c58f303385cc80bce806a93dbabeaa6036a27591b306de1b3d",
+      "extension": ".png",
+      "width": 64,
+      "height": 64,
+      "mode": "RGB"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-logo.png",
+      "bytes": 158441,
+      "sha256": "c5d97def8c2abd1f40fb61d8dbfb86e1164f0d868d96d84534619b95f2a694aa",
+      "extension": ".png",
+      "width": 1600,
+      "height": 1067,
+      "mode": "RGBA"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-logo.svg",
+      "bytes": 210621,
+      "sha256": "fe12d988706b2e50f636460cf3fdf0ae533a25f95e59e0462a500453023b5dff",
+      "extension": ".svg"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-logo.webp",
+      "bytes": 49242,
+      "sha256": "6b2000b8394d3d7108c45466a8a43465274dee746aa8b500f4399f50f099a7e6",
+      "extension": ".webp",
+      "width": 1600,
+      "height": 1067,
+      "mode": "RGBA"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-tech-lab.png",
+      "bytes": 241993,
+      "sha256": "c1d14eb9023b2c6507516bf674373e7fc0d61018f8e8348f290abb62ed5561a7",
+      "extension": ".png",
+      "width": 1600,
+      "height": 1067,
+      "mode": "RGBA"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-tech-lab.svg",
+      "bytes": 320573,
+      "sha256": "8795be783118937f2998ac311a1db9874104de227776fdb4b0e1912e315e854e",
+      "extension": ".svg"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-tech-lab.webp",
+      "bytes": 83860,
+      "sha256": "d17aaac95a01954fd01adbf7b9d326b5987efab92132f87a3f161b1c968df71c",
+      "extension": ".webp",
+      "width": 1600,
+      "height": 1067,
+      "mode": "RGBA"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-wayne.png",
+      "bytes": 223806,
+      "sha256": "ef4e344a864c799d93e886a7dfbc76e82780cfc327e8e63d0bc6d68125c88fe5",
+      "extension": ".png",
+      "width": 1600,
+      "height": 1067,
+      "mode": "RGBA"
+    },
+    {
+      "path": "WebAPP/public/brand/wtl-wayne.webp",
+      "bytes": 72820,
+      "sha256": "c3ba6c61272b1897e13f5de28b0e782a73db0c69319cf016d99b908517201ce6",
+      "extension": ".webp",
+      "width": 1600,
+      "height": 1067,
+      "mode": "RGBA"
+    },
+    {
+      "path": "WebAPP/public/manifest.webmanifest",
+      "bytes": 547,
+      "sha256": "6dfc02802b6d2f198130abde956a0c5608f0ecfd87ee3ce4dfadf34a912ee2cc",
+      "extension": ".webmanifest"
+    },
+    {
+      "path": "WebAPP/src/components/WayneTechLabLogo.tsx",
+      "bytes": 459,
+      "sha256": "396c6d8426f60ad568086723e9f3bad867947f85688c67964fbd67c6708c1aa7",
+      "extension": ".tsx"
+    },
+    {
+      "path": "WebAPP/src/styles/wayne-tech-lab-brand.css",
+      "bytes": 543,
+      "sha256": "95b1b821dda796036a8a5dd64e889daa3421e8b277701b81ec77afa7c2676faa",
+      "extension": ".css"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+      "bytes": 133971,
+      "sha256": "dc04416ebdbbe3d21de1bc1154a22115b336a721b337dabae7cd4d61b298fee0",
+      "extension": ".png",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-120.png",
+      "bytes": 8709,
+      "sha256": "6ac14dfa6f60ce54f34a027912d974e3d89b1928cfc030dffe8b5f8c4661ab30",
+      "extension": ".png",
+      "width": 120,
+      "height": 120,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-152.png",
+      "bytes": 12279,
+      "sha256": "17c70d28f13b48d5905dfd8f4492142b60d154eec4a92c62aa266b67993aa15d",
+      "extension": ".png",
+      "width": 152,
+      "height": 152,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-167.png",
+      "bytes": 13973,
+      "sha256": "c1ed3eda14456cdf7dbf47913d54aee2146b0c6c7cf0ff6e96b6032ee001c924",
+      "extension": ".png",
+      "width": 167,
+      "height": 167,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-180.png",
+      "bytes": 15795,
+      "sha256": "ef5bce52eefefd810fc33f7cc897188e911540aac63b39e059ecdb7b776c226f",
+      "extension": ".png",
+      "width": 180,
+      "height": 180,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-20.png",
+      "bytes": 653,
+      "sha256": "b6e849ec2834df91c55a272fe9c9eaf57721d355c8c376444d1a498c11984002",
+      "extension": ".png",
+      "width": 20,
+      "height": 20,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-29.png",
+      "bytes": 1133,
+      "sha256": "7e720bd665ff478e1b299ec124f958e310b90821d7945ec5b56017f566a83707",
+      "extension": ".png",
+      "width": 29,
+      "height": 29,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-40.png",
+      "bytes": 1747,
+      "sha256": "6f17803232c6a100b19e23484a3e30701eadc078a16cb5f999a6a3d87d7403bf",
+      "extension": ".png",
+      "width": 40,
+      "height": 40,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-58.png",
+      "bytes": 3061,
+      "sha256": "83a65a1b224f56cd12c47e0147a85c8256a3a02449d6ba3cf95eb56346c7174c",
+      "extension": ".png",
+      "width": 58,
+      "height": 58,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-60.png",
+      "bytes": 3121,
+      "sha256": "b5052fc05a73393525605d26920dc6ba2f3e9935f7d4bf834778fd5dda3f4d8d",
+      "extension": ".png",
+      "width": 60,
+      "height": 60,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-76.png",
+      "bytes": 4445,
+      "sha256": "a6b429d30b134cf139f4b202624771dbe1762468c539ddb05e6555b39d2bef60",
+      "extension": ".png",
+      "width": 76,
+      "height": 76,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-80.png",
+      "bytes": 4812,
+      "sha256": "6b925216d891676500bffe37249f9bb20aabe5f93ffd013fc5b2f50d8143adce",
+      "extension": ".png",
+      "width": 80,
+      "height": 80,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/AppIcon-87.png",
+      "bytes": 5492,
+      "sha256": "d2149ac5c2ee811bcf3622ab01d11ec33cdbfcfad346609903f67f9c5edf1f95",
+      "extension": ".png",
+      "width": 87,
+      "height": 87,
+      "mode": "RGB"
+    },
+    {
+      "path": "iOS/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "bytes": 2197,
+      "sha256": "63b26bfc6dc09df45c5cd18abc1ff965f42b038740f6cca6b21cdad3e91aea9b",
+      "extension": ".json"
+    },
+    {
+      "path": "iOS/Assets.xcassets/BrandLogo.imageset/BrandLogo@1x.png",
+      "bytes": 61731,
+      "sha256": "ae235e11f7368f361b861b53ad17b6a51b42f479ed73a082472c0ff8ec0c9045",
+      "extension": ".png",
+      "width": 600,
+      "height": 400,
+      "mode": "RGBA"
+    },
+    {
+      "path": "iOS/Assets.xcassets/BrandLogo.imageset/BrandLogo@2x.png",
+      "bytes": 199178,
+      "sha256": "f6e732da4f80914246aae7b769b52e92e9c9ea9575f5b0b68a0dc67a96852d84",
+      "extension": ".png",
+      "width": 1200,
+      "height": 800,
+      "mode": "RGBA"
+    },
+    {
+      "path": "iOS/Assets.xcassets/BrandLogo.imageset/BrandLogo@3x.png",
+      "bytes": 245733,
+      "sha256": "c6fe1695b5aa4ecbf9e6c0303d210d3380a49e3d0b7b8da5ce1ce519197b239c",
+      "extension": ".png",
+      "width": 1800,
+      "height": 1200,
+      "mode": "RGBA"
+    },
+    {
+      "path": "iOS/Assets.xcassets/BrandLogo.imageset/Contents.json",
+      "bytes": 384,
+      "sha256": "c25a9c637e6eb268459c7d571f0870b15dd896e52fa2c1e0bd2505ce43d8a2de",
+      "extension": ".json"
+    },
+    {
+      "path": "iOS/Brand.swift",
+      "bytes": 343,
+      "sha256": "be5ed1dabac63548a83f8a29dd366c1b623c2341c68b214f8ad99ba2b2eb4670",
+      "extension": ".swift"
+    },
+    {
+      "path": "iOS/README.md",
+      "bytes": 232,
+      "sha256": "441ea4d70bf1c0b5f74084e00c076b25565325e34b261b1bf2943dbc93ef6740",
+      "extension": ".md"
+    }
+  ]
+}

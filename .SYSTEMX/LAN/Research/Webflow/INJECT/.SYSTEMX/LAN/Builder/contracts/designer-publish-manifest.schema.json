@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/designer-publish-manifest.schema.json",
+  "title": "SYSTEMX LAN Publish Manifest",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "releaseId",
+    "snapshotId",
+    "sourceCommit",
+    "documentRevision",
+    "environment",
+    "generatedAt",
+    "builderVersion",
+    "target",
+    "artifacts",
+    "routes",
+    "gateResults",
+    "approvals",
+    "rollback"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "releaseId": {
+      "type": "string"
+    },
+    "snapshotId": {
+      "type": "string"
+    },
+    "sourceCommit": {
+      "type": "string"
+    },
+    "documentRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "environment": {
+      "enum": [
+        "local",
+        "emulator",
+        "staging",
+        "production"
+      ]
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "builderVersion": {
+      "type": "string"
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "provider",
+        "projectRef"
+      ],
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "projectRef": {
+          "type": "string"
+        },
+        "domain": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/route"
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "migrationIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "gateResults": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gate"
+      }
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/approval"
+      }
+    },
+    "rollback": {
+      "$ref": "#/$defs/jsonValue"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "jsonValue": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "required": [
+        "path",
+        "sha256",
+        "size"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "contentType": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "route": {
+      "type": "object",
+      "required": [
+        "path",
+        "pageId"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "pageId": {
+          "type": "string"
+        },
+        "localeId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "gate": {
+      "type": "object",
+      "required": [
+        "id",
+        "status",
+        "evidence"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "warning",
+            "skipped",
+            "accepted-risk"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "approval": {
+      "type": "object",
+      "required": [
+        "id",
+        "actorId",
+        "scope",
+        "planHash",
+        "approvedAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "actorId": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "planHash": {
+          "type": "string"
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/designer-command.schema.json",
+  "title": "SYSTEMX LAN Designer Command",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "commandId",
+    "commandType",
+    "issuedAt",
+    "actor",
+    "context",
+    "targets",
+    "payload",
+    "idempotencyKey"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "commandId": {
+      "type": "string",
+      "pattern": "^cmd_[A-Za-z0-9_-]+$"
+    },
+    "commandType": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]+$"
+    },
+    "issuedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "userId",
+        "sessionId",
+        "roleIds"
+      ],
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "roleIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "missionId": {
+          "type": "string"
+        },
+        "waveId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "context": {
+      "type": "object",
+      "required": [
+        "documentId",
+        "expectedRevision",
+        "environment"
+      ],
+      "properties": {
+        "documentId": {
+          "type": "string"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pageId": {
+          "type": "string"
+        },
+        "localeId": {
+          "type": "string"
+        },
+        "breakpointId": {
+          "type": "string"
+        },
+        "environment": {
+          "enum": [
+            "local",
+            "emulator",
+            "staging",
+            "production"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/objectRef"
+      }
+    },
+    "payload": {
+      "$ref": "#/$defs/jsonValue"
+    },
+    "approval": {
+      "type": "string"
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 16,
+      "maxLength": 200
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "jsonValue": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    },
+    "objectRef": {
+      "type": "object",
+      "required": [
+        "objectType",
+        "objectId"
+      ],
+      "properties": {
+        "objectType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "objectId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "instancePath": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fieldPath": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

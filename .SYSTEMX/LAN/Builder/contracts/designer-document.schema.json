@@ -1,0 +1,565 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/designer-document.schema.json",
+  "title": "SYSTEMX LAN Designer Document",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "documentId",
+    "revision",
+    "site",
+    "pages",
+    "nodes",
+    "childOrder",
+    "styles",
+    "variables",
+    "components",
+    "collections",
+    "interactions",
+    "assets",
+    "ownership"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "documentId": {
+      "type": "string",
+      "pattern": "^doc_[A-Za-z0-9_-]+$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "site": {
+      "type": "object",
+      "required": [
+        "siteId",
+        "name",
+        "defaultLocaleId",
+        "rootPageIds"
+      ],
+      "properties": {
+        "siteId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "defaultLocaleId": {
+          "type": "string"
+        },
+        "rootPageIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "settings": {
+          "$ref": "#/$defs/jsonValue"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pages": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/page"
+      }
+    },
+    "nodes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "childOrder": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "uniqueItems": true
+      }
+    },
+    "styles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/styleRefRecord"
+      }
+    },
+    "variables": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/variableRefRecord"
+      }
+    },
+    "components": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/componentRefRecord"
+      }
+    },
+    "collections": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/collectionRefRecord"
+      }
+    },
+    "interactions": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/interaction"
+      }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/asset"
+      }
+    },
+    "locales": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/locale"
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/ownership"
+      }
+    },
+    "metadata": {
+      "$ref": "#/$defs/jsonValue"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "jsonValue": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    },
+    "sourceSpan": {
+      "type": "object",
+      "required": [
+        "path",
+        "start",
+        "end",
+        "fingerprint"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "symbol": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "type": "string",
+          "minLength": 8
+        },
+        "sourceRevision": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "page": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "path",
+        "rootNodeId",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "static",
+            "dynamic-template",
+            "utility",
+            "layout",
+            "redirect"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "rootNodeId": {
+          "type": "string"
+        },
+        "parentPageId": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "in-review",
+            "approved",
+            "scheduled",
+            "published",
+            "archived"
+          ]
+        },
+        "layoutPageId": {
+          "type": "string"
+        },
+        "accessPolicyId": {
+          "type": "string"
+        },
+        "seo": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "source": {
+          "$ref": "#/$defs/sourceSpan"
+        }
+      },
+      "additionalProperties": false
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "props",
+        "styleRefs",
+        "bindings",
+        "metadata"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "element",
+            "text",
+            "image",
+            "link",
+            "form",
+            "component-instance",
+            "collection-list",
+            "slot-content",
+            "code-embed",
+            "outlet"
+          ]
+        },
+        "semanticTag": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "styleRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conditional": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "interactionRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "componentId": {
+          "type": "string"
+        },
+        "componentVersion": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "source": {
+          "$ref": "#/$defs/sourceSpan"
+        }
+      },
+      "additionalProperties": false
+    },
+    "styleRefRecord": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/sourceSpan"
+        }
+      },
+      "additionalProperties": true
+    },
+    "variableRefRecord": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "componentRefRecord": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "version",
+        "rootNodeId"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "rootNodeId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "collectionRefRecord": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "interaction": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "trigger",
+        "target",
+        "timeline"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "trigger": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "target": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "timeline": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "asset": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "provider",
+        "contentHash"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "contentHash": {
+          "type": "string"
+        },
+        "metadata": {
+          "$ref": "#/$defs/jsonValue"
+        }
+      },
+      "additionalProperties": false
+    },
+    "locale": {
+      "type": "object",
+      "required": [
+        "id",
+        "tag",
+        "displayName",
+        "direction",
+        "publishingEnabled"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "ltr",
+            "rtl"
+          ]
+        },
+        "fallbackLocaleId": {
+          "type": "string"
+        },
+        "subdirectory": {
+          "type": "string"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "publishingEnabled": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ownership": {
+      "type": "object",
+      "required": [
+        "mode",
+        "adapterId",
+        "writeCapability"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "source-owned",
+            "document-owned",
+            "hybrid-controlled"
+          ]
+        },
+        "adapterId": {
+          "type": "string"
+        },
+        "writeCapability": {
+          "enum": [
+            "none",
+            "literal",
+            "style",
+            "structure",
+            "generated"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/sourceSpan"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

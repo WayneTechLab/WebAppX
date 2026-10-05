@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WSG Setup Packet Manifest",
+  "type": "object",
+  "required": [
+    "packetVersion",
+    "packetType",
+    "packetShape",
+    "projectName",
+    "generatedAt",
+    "stackMode",
+    "edition",
+    "osTarget",
+    "includedFiles",
+    "requiredDocs",
+    "optionalAssets",
+    "importTargetFolderName"
+  ],
+  "properties": {
+    "packetVersion": { "type": "string" },
+    "packetType": { "enum": ["core", "extended"] },
+    "packetShape": { "enum": ["bundle", "flat"] },
+    "projectName": { "type": "string" },
+    "generatedAt": { "type": "string" },
+    "stackMode": { "type": "string" },
+    "edition": { "type": "string" },
+    "osTarget": { "type": "string" },
+    "includedFiles": { "type": "array", "items": { "type": "string" } },
+    "requiredDocs": { "type": "array", "items": { "type": "string" } },
+    "optionalAssets": { "type": "array", "items": { "type": "string" } },
+    "importTargetFolderName": { "type": "string" }
+  }
+}

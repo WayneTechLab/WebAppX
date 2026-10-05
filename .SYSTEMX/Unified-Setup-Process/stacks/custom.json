@@ -1,0 +1,10 @@
+{
+  "id": "custom",
+  "name": "Custom Stack",
+  "description": "WSG stack mode for explicit service selection.",
+  "defaults": [],
+  "notes": [
+    "Ask the user which services to include.",
+    "Never default to Supabase. Include it only if the user explicitly selects it."
+  ]
+}

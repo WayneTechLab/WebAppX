@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/designer-component.schema.json",
+  "title": "SYSTEMX LAN Component Contracts",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "definitions",
+    "instances"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "definitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/definition"
+      }
+    },
+    "instances": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/instance"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "jsonValue": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    },
+    "definition": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "rootNodeId",
+        "version",
+        "propSchema",
+        "slotSchema",
+        "variantAxes",
+        "dependencies",
+        "migrationIds"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rootNodeId": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "propSchema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "slotSchema": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "variantAxes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "defaultVariant": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "migrationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "instance": {
+      "type": "object",
+      "required": [
+        "nodeId",
+        "componentId",
+        "componentVersion",
+        "variant",
+        "propValues",
+        "slotContent"
+      ],
+      "properties": {
+        "nodeId": {
+          "type": "string"
+        },
+        "componentId": {
+          "type": "string"
+        },
+        "componentVersion": {
+          "type": "string"
+        },
+        "variant": {
+          "$ref": "#/$defs/jsonValue"
+        },
+        "propValues": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        "slotContent": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "localStyleOverrides": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
