@@ -21,7 +21,7 @@ def git(source, *args):
 
 def sync(target, source, apply=False):
     source = source.resolve()
-    if git(source, 'rev-parse', '--show-toplevel') != str(source):
+    if Path(git(source, 'rev-parse', '--show-toplevel')).resolve() != source:
         raise ValueError('Source must be the standalone dotSYSTEMX repository root')
     remote = git(source, 'remote', 'get-url', 'origin')
     if remote.rstrip('/').removesuffix('.git') not in {

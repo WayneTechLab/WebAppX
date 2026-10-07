@@ -7,3 +7,14 @@
 # Retain Markdown hard breaks in the original public research entry points.
 /.SYSTEMX/LAN/WEB-BUILDER-UX-RESEARCH.md whitespace=-trailing-space
 /.SYSTEMX/LAN/WEBFLOW-DEEP-RESEARCH-MASTER-PLAN.md whitespace=-trailing-space
+
+# Seed fingerprints and the governance-generated README use LF on every host.
+/.SYSTEMX/GLOBAL/CONTEXT.md text eol=lf
+/.SYSTEMX/PLAN/MASTER-PLAN.md text eol=lf
+/.SYSTEMX/MEMORY/PROJECT.md text eol=lf
+/.SYSTEMX/AGENTS/agent.0/MEMORY.md text eol=lf
+/.SYSTEMX/AGENTS/REGISTRY.json text eol=lf
+/.SYSTEMX/WORK/TASKS.json text eol=lf
+/.SYSTEMX/WORK/FOCUS.json text eol=lf
+/.SYSTEMX/config/project.example.json text eol=lf
+/.SYSTEMX/README.md text eol=lf

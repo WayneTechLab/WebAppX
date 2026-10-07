@@ -6,7 +6,7 @@ import { test } from 'node:test'
 import { confinedDirectory, confinedFile } from '../../.SYSTEMX/LAN/Builder/runtime/file-boundary.mjs'
 import { parseDeploymentEnv, parseEnvData } from '../../.SYSTEMX/scripts/env-data.mjs'
 
-test('file policy permits regular files and refuses links in files or parents', () => {
+test('file policy permits regular files and refuses missing or external paths', () => {
   const base = mkdtempSync(join(tmpdir(), 'systemx-boundary-'))
   try {
     const root = join(base, 'repo')
@@ -14,15 +14,34 @@ test('file policy permits regular files and refuses links in files or parents', 
     mkdirSync(root); mkdirSync(outside)
     writeFileSync(join(root, 'regular.css'), 'body {}')
     writeFileSync(join(outside, 'data.css'), 'private fixture')
-    symlinkSync(join(outside, 'data.css'), join(root, 'linked.css'))
-    symlinkSync(outside, join(root, 'linked-directory'), 'dir')
     assert.equal(confinedFile(root, join(root, 'regular.css')), join(root, 'regular.css'))
-    assert.equal(confinedFile(root, join(root, 'linked.css')), null)
-    assert.equal(confinedFile(root, join(root, 'linked-directory/data.css')), null)
     assert.equal(confinedFile(root, join(outside, 'data.css')), null)
     assert.equal(confinedFile(root, join(root, 'missing.css')), null)
-    assert.throws(() => confinedDirectory(root, join(root, 'linked-directory/backup')), /Linked/)
     assert.equal(confinedDirectory(root, join(root, 'new/backup')), join(root, 'new/backup'))
+    assert.equal(readFileSync(join(outside, 'data.css'), 'utf8'), 'private fixture')
+  } finally { rmSync(base, { recursive: true, force: true }) }
+})
+
+test('file policy refuses links in files and parent directories', (t) => {
+  const base = mkdtempSync(join(tmpdir(), 'systemx-links-'))
+  try {
+    const root = join(base, 'repo')
+    const outside = join(base, 'outside')
+    mkdirSync(root); mkdirSync(outside)
+    writeFileSync(join(outside, 'data.css'), 'private fixture')
+    try {
+      symlinkSync(join(outside, 'data.css'), join(root, 'linked.css'))
+      symlinkSync(outside, join(root, 'linked-directory'), 'dir')
+    } catch (error) {
+      if (process.platform === 'win32' && error.code === 'EPERM') {
+        t.skip('Windows symlink creation privilege unavailable')
+        return
+      }
+      throw error
+    }
+    assert.equal(confinedFile(root, join(root, 'linked.css')), null)
+    assert.equal(confinedFile(root, join(root, 'linked-directory/data.css')), null)
+    assert.throws(() => confinedDirectory(root, join(root, 'linked-directory/backup')), /Linked/)
     assert.equal(readFileSync(join(outside, 'data.css'), 'utf8'), 'private fixture')
   } finally { rmSync(base, { recursive: true, force: true }) }
 })

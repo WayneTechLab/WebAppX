@@ -101,7 +101,12 @@ class MirrorSafety(unittest.TestCase):
     def test_tracked_target_link_is_refused_before_preview_or_apply(self):
         outside = self.base / 'outside.txt'
         outside.write_text('private fixture\n')
-        (self.target / 'new.txt').symlink_to(outside)
+        try:
+            (self.target / 'new.txt').symlink_to(outside)
+        except OSError as error:
+            if getattr(error, 'winerror', None) == 1314:
+                self.skipTest('Windows symlink creation privilege unavailable')
+            raise
         self.commit(self.target)
         for apply in (False, True):
             with self.assertRaisesRegex(ValueError, 'Symbolic link'):
