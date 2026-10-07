@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -90,7 +91,7 @@ class ImportIntegration(unittest.TestCase):
         self.assertEqual(state['activeVersion'], self.version)
         self.assertEqual(state['pinnedVersion'], self.version)
         self.assertEqual(state['autoUpdate'], 'manual')
-        check = subprocess.run(['python3', '-B', str(outer / 'manager.py'), 'status', '--target', str(self.target)], capture_output=True, text=True)
+        check = subprocess.run([sys.executable, '-B', str(outer / 'manager.py'), 'status', '--target', str(self.target)], capture_output=True, text=True)
         self.assertEqual(check.returncode, 0, check.stderr)
         self.assertEqual(json.loads(check.stdout)['integrity'], 'verified')
 
@@ -111,9 +112,9 @@ class ImportIntegration(unittest.TestCase):
             manifest = json.loads(manifest_path.read_text())
             manifest['version'] = next_version
             for name in ['VERSION', 'SOURCE.json']:
-                manifest['files'][name] = hashlib.sha256((defaults / name).read_bytes()).hexdigest()
+                manifest['files'][name] = hashlib.sha256((defaults / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
             (defaults / 'docs/new-example.md').write_text('New upstream example\n')
-            manifest['files']['docs/new-example.md'] = hashlib.sha256((defaults / 'docs/new-example.md').read_bytes()).hexdigest()
+            manifest['files']['docs/new-example.md'] = hashlib.sha256((defaults / 'docs/new-example.md').read_bytes().replace(b'\r\n', b'\n')).hexdigest()
             manifest_path.write_text(json.dumps(manifest) + '\n')
             subprocess.run(['git', '-C', str(self.source), 'add', '.SYSTEMX'], check=True)
             subprocess.run(['git', '-C', str(self.source), 'commit', '-qm', 'Next release fixture'], check=True)

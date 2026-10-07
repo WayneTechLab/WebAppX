@@ -38,7 +38,7 @@ def sync(source, target, apply=False):
     if source == target:
         raise ValueError('Source and mirror must be different repositories')
     for root in (source, target):
-        if git(root, 'rev-parse', '--show-toplevel').decode().strip() != str(root):
+        if Path(git(root, 'rev-parse', '--show-toplevel').decode().strip()).resolve() != root:
             raise ValueError('Expected a repository root: ' + str(root))
         if git(root, 'status', '--porcelain', '--untracked-files=all').strip():
             raise ValueError('Commit or preserve local changes before sync: ' + str(root))
