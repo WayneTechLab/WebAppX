@@ -14,7 +14,7 @@ two ways:
 
 | Kit | Path | Purpose |
 | --- | --- | --- |
-| Standard INC Portfolio Kit | [`.SYSTEMX/KIT/Standard-INC/`](Standard-INC/README.md) | Generic corporate and restaurant portfolio template: customization, websites, email routing, Drive layout, release checklist, and concurrent work records. All values are editable examples. |
+| Standard INC Setup Kit | [`.SYSTEMX/KIT/Standard-INC/`](Standard-INC/SYSTEMX-KIT-INDEX.md) | INC/client intake, shared email and migration, multi-business SYSTEMXP setup, blank portfolio registry, validation, and evidence/handoff contracts. Optional brand and website handoffs use existing kits. |
 | Production Kit | `.SYSTEMX/KIT/Production/` | Wayne Tech Lab LLC master production kit: brand assets, platform assets, media kit, web app brand component, mobile assets, document templates, manifests, and checksum records. |
 | Brand Guide Kit | `.SYSTEMX/KIT/Brand/` | WTL Brand Guide Standard Template v1.0: intake, layout contracts, page prompts, preflight/stitch scripts, examples, and PDF brand-guidelines production flow. |
 

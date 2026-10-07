@@ -26,6 +26,7 @@
     "sync:system": "bash .SYSTEMX/wsg-agi.sh",
     "sync:system:check": "bash .SYSTEMX/wsg-agi.sh --check",
     "docs:links": "node .SYSTEMX/scripts/validate-markdown-links.mjs",
+    "kit:inc:check": "node .SYSTEMX/KIT/Standard-INC/05_SCRIPTS/validate.mjs .SYSTEMX/KIT/Standard-INC/03_CONFIG/portfolio.blank.json --blank && node --test .SYSTEMX/KIT/Standard-INC/05_SCRIPTS/validate.test.mjs",
     "research:validate": "python3 .SYSTEMX/LAN/Research/LAN-Builder/tools/validate_package.py",
     "setup:unified:scrape:list": "node .SYSTEMX/Unified-Setup-Process/scrape/repo-manifest-scraper.mjs --list",
     "setup:unified:scrape:dry-run": "node .SYSTEMX/Unified-Setup-Process/scrape/repo-manifest-scraper.mjs --dry-run",

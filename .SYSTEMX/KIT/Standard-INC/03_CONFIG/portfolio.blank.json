@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "inc": {
+    "id": "",
+    "legalName": "",
+    "owner": "",
+    "operationsProject": ""
+  },
+  "sharedDomain": "",
+  "businesses": [],
+  "mailboxes": [],
+  "aliases": [],
+  "senders": [],
+  "websites": [],
+  "migration": {
+    "owner": "",
+    "sourceProvider": "",
+    "temporaryAdminHost": "",
+    "window": "",
+    "rollbackRef": "",
+    "approvalRef": ""
+  }
+}

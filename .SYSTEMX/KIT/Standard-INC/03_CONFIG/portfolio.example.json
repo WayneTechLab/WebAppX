@@ -1,0 +1,382 @@
+{
+  "schemaVersion": 1,
+  "inc": {
+    "id": "example-industries",
+    "legalName": "Example Industries INC.",
+    "owner": "Example owner (replace)",
+    "operationsProject": "example-industries"
+  },
+  "sharedDomain": "example.com",
+  "businesses": [
+    {
+      "id": "example-industries",
+      "name": "Example Industries INC.",
+      "kind": "business",
+      "project": "example-industries"
+    },
+    {
+      "id": "example-kitchen",
+      "name": "Example Kitchen LLC.",
+      "kind": "business",
+      "project": "example-kitchen"
+    },
+    {
+      "id": "brand-one",
+      "name": "Brand One LLC.",
+      "kind": "brand",
+      "project": "brand-one"
+    },
+    {
+      "id": "brand-two",
+      "name": "Brand Two LLC.",
+      "kind": "brand",
+      "project": "brand-two"
+    },
+    {
+      "id": "brand-three",
+      "name": "Brand Three LLC.",
+      "kind": "brand",
+      "project": "brand-three"
+    }
+  ],
+  "mailboxes": [
+    {
+      "address": "Info-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "Info",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    },
+    {
+      "address": "Chef-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "Chef",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    },
+    {
+      "address": "Info@example.com",
+      "businessId": "example-kitchen",
+      "role": "Info",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    },
+    {
+      "address": "Chef@example.com",
+      "businessId": "example-kitchen",
+      "role": "Chef",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    },
+    {
+      "address": "Info-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "Info",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    },
+    {
+      "address": "Chef-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "Chef",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    },
+    {
+      "address": "Info-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "Info",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    },
+    {
+      "address": "Chef-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "Chef",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    },
+    {
+      "address": "Info-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "Info",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    },
+    {
+      "address": "Chef-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "Chef",
+      "owner": "Example owner (replace)",
+      "provider": "Receiving provider (choose)"
+    }
+  ],
+  "aliases": [
+    {
+      "address": "Support-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "Support",
+      "forwardsTo": "Chef-Example-Industries@example.com"
+    },
+    {
+      "address": "Contact-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "Contact",
+      "forwardsTo": "Chef-Example-Industries@example.com"
+    },
+    {
+      "address": "Billing-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "Billing",
+      "forwardsTo": "Chef-Example-Industries@example.com"
+    },
+    {
+      "address": "Social-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "Social",
+      "forwardsTo": "Chef-Example-Industries@example.com"
+    },
+    {
+      "address": "Partner-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "Partner",
+      "forwardsTo": "Chef-Example-Industries@example.com"
+    },
+    {
+      "address": "Party-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "Party",
+      "forwardsTo": "Chef-Example-Industries@example.com"
+    },
+    {
+      "address": "Location-1001-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "Location-1001",
+      "forwardsTo": "Chef-Example-Industries@example.com"
+    },
+    {
+      "address": "Support@example.com",
+      "businessId": "example-kitchen",
+      "role": "Support",
+      "forwardsTo": "Chef@example.com"
+    },
+    {
+      "address": "Contact@example.com",
+      "businessId": "example-kitchen",
+      "role": "Contact",
+      "forwardsTo": "Chef@example.com"
+    },
+    {
+      "address": "Billing@example.com",
+      "businessId": "example-kitchen",
+      "role": "Billing",
+      "forwardsTo": "Chef@example.com"
+    },
+    {
+      "address": "Social@example.com",
+      "businessId": "example-kitchen",
+      "role": "Social",
+      "forwardsTo": "Chef@example.com"
+    },
+    {
+      "address": "Partner@example.com",
+      "businessId": "example-kitchen",
+      "role": "Partner",
+      "forwardsTo": "Chef@example.com"
+    },
+    {
+      "address": "Party@example.com",
+      "businessId": "example-kitchen",
+      "role": "Party",
+      "forwardsTo": "Chef@example.com"
+    },
+    {
+      "address": "Location-1001@example.com",
+      "businessId": "example-kitchen",
+      "role": "Location-1001",
+      "forwardsTo": "Chef@example.com"
+    },
+    {
+      "address": "Support-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "Support",
+      "forwardsTo": "Chef-Brand-One@example.com"
+    },
+    {
+      "address": "Contact-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "Contact",
+      "forwardsTo": "Chef-Brand-One@example.com"
+    },
+    {
+      "address": "Billing-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "Billing",
+      "forwardsTo": "Chef-Brand-One@example.com"
+    },
+    {
+      "address": "Social-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "Social",
+      "forwardsTo": "Chef-Brand-One@example.com"
+    },
+    {
+      "address": "Partner-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "Partner",
+      "forwardsTo": "Chef-Brand-One@example.com"
+    },
+    {
+      "address": "Party-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "Party",
+      "forwardsTo": "Chef-Brand-One@example.com"
+    },
+    {
+      "address": "Location-1001-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "Location-1001",
+      "forwardsTo": "Chef-Brand-One@example.com"
+    },
+    {
+      "address": "Support-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "Support",
+      "forwardsTo": "Chef-Brand-Two@example.com"
+    },
+    {
+      "address": "Contact-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "Contact",
+      "forwardsTo": "Chef-Brand-Two@example.com"
+    },
+    {
+      "address": "Billing-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "Billing",
+      "forwardsTo": "Chef-Brand-Two@example.com"
+    },
+    {
+      "address": "Social-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "Social",
+      "forwardsTo": "Chef-Brand-Two@example.com"
+    },
+    {
+      "address": "Partner-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "Partner",
+      "forwardsTo": "Chef-Brand-Two@example.com"
+    },
+    {
+      "address": "Party-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "Party",
+      "forwardsTo": "Chef-Brand-Two@example.com"
+    },
+    {
+      "address": "Location-1001-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "Location-1001",
+      "forwardsTo": "Chef-Brand-Two@example.com"
+    },
+    {
+      "address": "Support-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "Support",
+      "forwardsTo": "Chef-Brand-Three@example.com"
+    },
+    {
+      "address": "Contact-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "Contact",
+      "forwardsTo": "Chef-Brand-Three@example.com"
+    },
+    {
+      "address": "Billing-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "Billing",
+      "forwardsTo": "Chef-Brand-Three@example.com"
+    },
+    {
+      "address": "Social-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "Social",
+      "forwardsTo": "Chef-Brand-Three@example.com"
+    },
+    {
+      "address": "Partner-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "Partner",
+      "forwardsTo": "Chef-Brand-Three@example.com"
+    },
+    {
+      "address": "Party-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "Party",
+      "forwardsTo": "Chef-Brand-Three@example.com"
+    },
+    {
+      "address": "Location-1001-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "Location-1001",
+      "forwardsTo": "Chef-Brand-Three@example.com"
+    }
+  ],
+  "senders": [
+    {
+      "address": "NoReply-Example-Industries@example.com",
+      "businessId": "example-industries",
+      "role": "NoReply",
+      "owner": "Example owner (replace)",
+      "provider": "Authorized sending provider (choose)",
+      "replyTo": "Chef-Example-Industries@example.com",
+      "inboundHandling": "forward-to-chef"
+    },
+    {
+      "address": "NoReply@example.com",
+      "businessId": "example-kitchen",
+      "role": "NoReply",
+      "owner": "Example owner (replace)",
+      "provider": "Authorized sending provider (choose)",
+      "replyTo": "Chef@example.com",
+      "inboundHandling": "forward-to-chef"
+    },
+    {
+      "address": "NoReply-Brand-One@example.com",
+      "businessId": "brand-one",
+      "role": "NoReply",
+      "owner": "Example owner (replace)",
+      "provider": "Authorized sending provider (choose)",
+      "replyTo": "Chef-Brand-One@example.com",
+      "inboundHandling": "forward-to-chef"
+    },
+    {
+      "address": "NoReply-Brand-Two@example.com",
+      "businessId": "brand-two",
+      "role": "NoReply",
+      "owner": "Example owner (replace)",
+      "provider": "Authorized sending provider (choose)",
+      "replyTo": "Chef-Brand-Two@example.com",
+      "inboundHandling": "forward-to-chef"
+    },
+    {
+      "address": "NoReply-Brand-Three@example.com",
+      "businessId": "brand-three",
+      "role": "NoReply",
+      "owner": "Example owner (replace)",
+      "provider": "Authorized sending provider (choose)",
+      "replyTo": "Chef-Brand-Three@example.com",
+      "inboundHandling": "forward-to-chef"
+    }
+  ],
+  "websites": [],
+  "migration": {
+    "owner": "Example migration owner (replace)",
+    "sourceProvider": "SERVICE-PROVIDER.example.com",
+    "temporaryAdminHost": "TEMP-HOST.example.com",
+    "window": "Example only: choose date/time/timezone",
+    "rollbackRef": "Example only: adopted rollback record required",
+    "approvalRef": "Example only: adopted owner acceptance required"
+  }
+}
