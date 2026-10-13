@@ -5,6 +5,8 @@
 logs/
 !logs/
 !logs/.gitkeep
+# Role setup receipts contain host-local scope paths.
+/logs/roles/
 
 # Mutable counters (regenerated each deploy)
 webapp-version/deploy-count.txt

@@ -106,8 +106,10 @@ npm run wiki:sync
 ```
 
 The wiki script derives its destination from that checkout's GitHub origin.
-It copies checked-in Markdown pages, preserves wiki-only material/history, and
-pushes without forcing. Verify the published pages against `wiki/` after sync.
+It exports checked-in Markdown pages, preserves wiki-only material/history, and
+pushes without forcing. Local links to known wiki `.md` pages become rendered
+GitHub wiki URLs during export; source pages and code examples keep their local
+links. Verify the preview and published navigation after sync.
 Source publication and wiki publication are separate from Firebase hosting.
 
 See [release provenance](UNIFIED-TEMPLATE.md),

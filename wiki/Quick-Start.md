@@ -1,8 +1,9 @@
-# Quick Start — unified template 3.1.0
+# Quick Start — unified template 3.2.0
 
 Start with the webapp, then add the local builder and your project records.
 The app boots before Firebase is configured. The full clone includes managed
 SYSTEMX, LAN, research and kits; the separate starter folder is an app scaffold.
+The selected managed distribution is dotSYSTEMX 1.9.0-alpha.5.
 
 ## Prerequisites
 
@@ -61,11 +62,15 @@ records hold your project's accepted work.
 npm run systemx:context
 npm run systemx -- status
 npm run systemx -- menu
-npm run systemx -- roles-init  # preview Agent X/Z setup
+npm run systemx -- tools-guide
+npm run systemx -- roles-init  # preview optional Agent X/Y/Z setup
 ```
 
 WSG menu option 12 opens the managed tooling menu. Activate roles explicitly;
 registries and task records do not start workers or a scheduler.
+Follow [Agent Y setup for a new app](Agent-Y-New-App-Setup.md) to configure real
+app checks, authenticate an installed CLI, assign one bounded task and review
+its local result or explicitly opted-in draft PR.
 
 ## Verify the app
 

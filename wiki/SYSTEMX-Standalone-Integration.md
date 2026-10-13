@@ -36,6 +36,10 @@ Agent Z reviews evidence. The public registry still seeds only Agent 0. Adopted
 projects activate supported roles deliberately and select Agent Y's installed
 provider, task scope, repository/base, allowed paths and branch/PR policy per task.
 A provider exit or draft PR does not accept work or grant merge authority.
+Use [Agent Y New App Setup](Agent-Y-New-App-Setup.md) for the adopted-app sequence:
+configure project checks, preview/apply X/Y/Z roles, verify ignored private paths,
+commit the real task setup, then prepare/run a bounded CLI handoff. The examples
+keep results local unless a task explicitly opts into a draft PR.
 
 Manifest schema 2 retains LF/CRLF equivalence for reviewed text formats and
 hashes media and unknown files byte for byte. Historical schema 1 snapshots

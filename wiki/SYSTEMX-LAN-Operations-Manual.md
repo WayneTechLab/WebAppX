@@ -949,4 +949,3 @@ A local builder task is complete only when:
 
 A task can be useful without being complete. Use blocked, needs-review, or
 planned honestly rather than converting uncertainty into a green status.
-

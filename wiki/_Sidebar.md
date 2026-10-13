@@ -3,7 +3,7 @@
 **Start**
 
 - [Home](Home.md)
-- [Unified Template 3.1.0](Unified-Template-Guide.md)
+- [Unified Template 3.2.0](Unified-Template-Guide.md)
 - [Managed SYSTEMX Integration](SYSTEMX-Standalone-Integration.md)
 - [Quick Start](Quick-Start.md)
 - [One-Line Install](One-Line-Install.md)
@@ -43,6 +43,7 @@
 
 **Agents and tooling**
 
+- [Agent Y Setup for a New App](Agent-Y-New-App-Setup.md)
 - [Agent Mesh & Tooling Standard](Agent-Mesh-and-Tooling-Standard.md)
 - [MCP and Agents](MCP-and-Agents.md)
 - [Agent 0 Operating Model](SYSTEMX-Agent-0-Operating-Model.md)

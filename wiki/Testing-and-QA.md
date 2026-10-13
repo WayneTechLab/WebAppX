@@ -43,10 +43,18 @@ npm run ci:audit
 npm run build
 ```
 
-The 3.1.0 receipt records 143 standalone tests (138 passed, 5 case-sensitive
-filesystem cases skipped on the validation Mac), 12 host integration tests and
-9 LAN tests. See the [validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.1.0.md).
-Recheck the current revision instead of treating those historical counts as a new run.
+The [3.2.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.2.0.md)
+records 230 standalone tests (successful with 5 case-sensitive filesystem cases
+skipped on the validation Mac), 27 host integration tests, 8 operational controls
+and 11 app/LAN tests. The
+[3.1.0 receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.1.0.md)
+retains its historical scope. Recheck the current revision rather than treating
+a release receipt as a new run.
+
+For an Agent Y task, run the configured app checks against the returned worktree
+and record their original output and checked revision before Agent 0 acceptance.
+The controller's successful exit and an Agent Z score do not run those checks or
+accept the task. Follow [Agent Y New App Setup](Agent-Y-New-App-Setup.md).
 
 ## Unit / component tests (Vitest + Testing Library)
 

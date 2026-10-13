@@ -81,6 +81,10 @@ The access matrix and project map ship blank for your reviewed source/access
 references. The registry seeds only Agent 0. Optional Agent Y needs a selected
 installed CLI, bounded task and branch/PR policy; role setup does not start it.
 For a registered child, use `npm run systemx -- projects context --project NAME --agent agent.0`.
+
+Follow [Agent Y setup for a new app](../wiki/Agent-Y-New-App-Setup.md) for the
+complete role/provider setup, real task assignment, clean Git checkpoint,
+private prompt, handoff preview and Agent 0 acceptance workflow.
 A separately installed current CLI also supports
 `systemx projects --target "/path/to/workspace" -- context --project NAME --agent agent.0`.
 

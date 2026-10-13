@@ -19,7 +19,8 @@ for WTL_PAGE in "$WTL_ROOT"/wiki/*.md; do
     exit 1
   fi
 done
-cp "$WTL_ROOT"/wiki/*.md "$WTL_WIKI_DIR/"
+python3 -B "$WTL_ROOT/scripts/render-wiki.py" \
+  --source "$WTL_ROOT/wiki" --target "$WTL_WIKI_DIR" --origin "$WTL_ORIGIN"
 git -C "$WTL_WIKI_DIR" add '*.md'
 git -C "$WTL_WIKI_DIR" diff --cached --check
 git -C "$WTL_WIKI_DIR" diff --cached --stat

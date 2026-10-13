@@ -3,7 +3,8 @@
 Unified webapp release **3.2.0** uses standalone SYSTEMX **1.9.0-alpha.5**.
 This wiki belongs to WayneTechLab/WebAppX; public dotSYSTEMX remains the
 universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md),
-[Quick Start](Quick-Start.md), and [Update Log](Update-Log.md).
+[Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
+and [Update Log](Update-Log.md).
 
 The retained guides below cover the Firebase/LAN builder and production kits.
 They describe available workflows; project adoption still requires configuration
@@ -46,6 +47,7 @@ checkout while keeping production Firebase Hosting clean.
 | If you want to... | Go to |
 | --- | --- |
 | Get a running app in minutes | **[Quick Start](Quick-Start.md)** |
+| Delegate one adopted-app task to an installed CLI | **[Agent Y New App Setup](Agent-Y-New-App-Setup.md)** |
 | Use `.SYSTEMX` from idea to production | **[User Ingest & Production Setup](User-Ingest-and-Production-Setup.md)** |
 | Open the local builder/control surface | **[SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md)** |
 | Run the LAN from start of day through handoff | **[SYSTEMX LAN Operations Manual](SYSTEMX-LAN-Operations-Manual.md)** |
@@ -77,6 +79,10 @@ reviews under Agent 0; imports do not activate roles or start providers. New
 access/map records are blank adoption seeds. Native Windows Agent Y execution
 remains unavailable pending verified descendant-process termination; current
 macOS checks do not establish Windows x64/ARM64 or Firebase deployment acceptance.
+The [new-app guide](Agent-Y-New-App-Setup.md) covers role preview/apply, private
+prompts, real app checks, setup commits, a local-result handoff and optional
+draft PR gates. Keep the reusable template's records blank; activate roles only
+in the adopted scope.
 
 ## Included route model
 

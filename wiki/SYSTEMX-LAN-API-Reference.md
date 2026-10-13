@@ -590,4 +590,3 @@ An API change is ready for the template only when:
 - supported, guarded, and planned claims are synchronized in the capability
   manifest, README, .SYSTEMX docs, and Wiki;
 - the current Wiki source is published separately only after local review.
-

@@ -11,6 +11,13 @@
 - Include optional Agent Y CLI handoffs and branch/PR controls, the CLI/tools
   guide, explicit installed-CLI `.SYSTEMXP` routing and blank access/map seeds.
   The public registry remains Agent 0 only; this import activates no roles.
+- Add [Agent Y New App Setup](Agent-Y-New-App-Setup.md) with Bash/PowerShell role
+  previews, adopted-app check configuration, private prompt/state verification,
+  clean-repository setup checkpoints, local CLI handoffs and optional draft PR
+  gates. The examples create no active records in the reusable template.
+- Refresh README/wiki navigation, Quick Start, the platform matrix and testing
+  guidance for 3.2.0. The wiki exporter converts local page links to rendered
+  GitHub wiki URLs while preserving repository copies and code examples.
 - Verify schema 2 media and unknown files byte for byte while retaining the
   historical manifest contract for earlier snapshots.
 - Keep native Windows Agent Y execution unavailable pending verified descendant

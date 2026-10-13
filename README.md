@@ -53,6 +53,64 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
+## Current SYSTEMX features
+
+WebAppX 3.2.0 includes the pinned dotSYSTEMX 1.9.0-alpha.5 distribution. Its
+shared tools run from the verified selected release; your app's records live in
+the outer `.SYSTEMX` or an explicitly selected child `.SYSTEMXP`.
+
+| Capability | Entry point and use |
+| --- | --- |
+| Agent 0 coordination | Context, plan, canonical tasks, ownership and acceptance |
+| Agent X events | Record observed times, revisions and original evidence |
+| Agent Y CLI handoffs | Give one scoped task to an installed Codex/Copilot CLI, with a separate worktree and optional draft PR |
+| Agent Z reviews | Apply the versioned evidence questions before acceptance |
+| Access matrix and project map | Blank `GLOBAL/ACCESS-MATRIX.md` and `PLAN/MAP.md` for reviewed access and source boundaries |
+| Child projects | Explicit `.SYSTEMXP` selection through `projects ... --project NAME` |
+| CLI/tools guide | `npm run systemx -- tools-guide` |
+| Verified manual updates | Preview/import exact public source, back up recognized stock launchers, retain immutable snapshots and adopted records |
+
+## Set up Agent Y in a new app
+
+Create your own app from this template and run the following commands **inside
+that new app**. Replace `my-app` with your repository name. WebAppX ships only
+Agent 0 and blank adoption seeds; applying role setup creates the new app's
+Agent X/Y/Z records without launching a provider.
+
+```bash
+gh repo create my-app --template WayneTechLab/WebAppX --private --clone
+cd my-app
+npm ci
+npm run systemx:status
+npm run systemx:validate
+
+# Preview the role records, then apply the reviewed setup:
+npm run systemx -- roles-init
+npm run systemx -- roles-init --apply
+npm run systemx -- agent-y providers
+```
+
+Install and authenticate your chosen CLI separately; an app/IDE assistant does
+not establish a terminal CLI session. Record your app's actual context and plan,
+review `.SYSTEMX/project.json`, and adapt its template-maintenance integration
+check before filling active records. Adopted apps use `systemx:validate` and
+their configured app checks; `template:check` and `ci:all` enforce blank seeds
+when maintaining this reusable template.
+
+The [Agent Y new-app setup guide](https://github.com/WayneTechLab/WebAppX/wiki/Agent-Y-New-App-Setup)
+([repository copy](wiki/Agent-Y-New-App-Setup.md)) gives the full
+copyable workflow: create an `agent.y` task, commit its setup before preparing,
+keep the prompt and execution state ignored, preview/apply the handoff, run the
+selected CLI, check the returned revision, and record Agent 0 acceptance. Start
+with local work; add `--open-draft-pr` deliberately when preparing a task that
+may publish an owned branch and draft PR. PR readiness, merge authorization and
+cleanup are separate steps.
+
+The guide also covers registered `.SYSTEMXP` children and PowerShell setup.
+Native Windows Agent Y execution is guarded in this alpha; its setup, provider
+detection, previews and job inspection remain available. CLI scope checks and
+worktrees do not replace the provider's host-account access controls.
+
 ## Retained webapp capabilities and setup reference
 
 # WebAppX
@@ -79,7 +137,7 @@ macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
 [WayneTechLab.com](https://WayneTechLab.com) |
 [Use This Template](https://github.com/WayneTechLab/WebAppX/generate) |
-[Read The Wiki](https://github.com/WayneTechLab/WebAppX/tree/main/wiki) |
+[Read The Wiki](https://github.com/WayneTechLab/WebAppX/wiki) |
 [Production Kit](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Production-Kit.md) |
 [Agent Mesh Standard](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Agent-Mesh-and-Tooling-Standard.md) |
 [Update Log](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Update-Log.md)
@@ -209,7 +267,7 @@ claim-gated Level 4 / 5 administration, and documentation-only LAN cards in
 production builds.
 
 Full documentation lives in the
-[Project Wiki](https://github.com/WayneTechLab/WebAppX/tree/main/wiki).
+[Project Wiki](https://github.com/WayneTechLab/WebAppX/wiki).
 Release history lives in the
 [Update Log](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Update-Log.md).
 
@@ -478,7 +536,7 @@ bash setup.sh               # interactive — walks every step with verification
 
 ## Documentation
 
-The [**Project Wiki**](https://github.com/WayneTechLab/WebAppX/tree/main/wiki) is the
+The [**Project Wiki**](https://github.com/WayneTechLab/WebAppX/wiki) is the
 deep-dive home for:
 
 - [Quick Start](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Quick-Start.md)
