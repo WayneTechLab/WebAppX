@@ -1,6 +1,6 @@
 # Gusto HR and employee management
 
-The WebAppX HR extension standardizes management, employee, manager and
+The WebAppX 3.4.0 HR extension standardizes management, employee, manager and
 contractor pages around a portable `.SYSTEMX/GUSTO/` contract. The default preview
 uses fictional data and requires no Gusto account.
 
@@ -11,17 +11,57 @@ and the [portable package](https://github.com/WayneTechLab/WebAppX/tree/main/.SY
 | Surface | Entry point | Implemented boundary |
 | --- | --- | --- |
 | HR entry | `/hr` | Connection requirements and preview navigation |
-| Management preview | `/hr/demo/admin` | Employee directory, onboarding tasks, native module views, reporting and payroll previews |
-| Employee preview | `/hr/demo/employee` | Own synthetic profile, checklist, pay/documents, time and time-off requests |
-| Manager preview | `/hr/demo/manager` | Scoped team records and sample time-off approvals |
+| Management preview | `/hr/demo/admin` | Employee directory, onboarding review, read-only benefit catalog and staged fictional payroll |
+| Employee preview | `/hr/demo/employee` | Own synthetic profile, onboarding checklist, benefit election, timesheet and time-off requests |
+| Manager preview | `/hr/demo/manager` | Scoped team records, submitted timesheet review and sample time-off approvals |
 | Contractor preview | `/hr/demo/contractor` | Separate fictional profile, onboarding and payment previews |
-| Gusto SDK proof | `/hr/demo/sdk` in `npm run dev` | Actual SDK employee directory, three tab queries and wire-format fixtures |
+| Gusto SDK preview | `/hr/demo/sdk` in `npm run dev` | Genuine directory, admin onboarding and payroll components with local synthetic sessions |
 | Connected portals | `/admin/hr`, `/employee`, `/manager/hr`, `/contractor` | Guarded; live integration remains unconfigured in the reusable template |
 
-The SDK directory contract pins version 0.56.6 and API date 2026-06-15.
-The local development middleware refuses writes, credentials, unknown endpoints
-and foreign-company IDs. Payroll previews do not send payroll or transfer funds.
-Other Gusto flows require their own verified backend adapters and Demo acceptance.
+The SDK contract pins version 0.56.6 and API date 2026-06-15. The selected local
+handlers accept only supported synthetic reads/writes and refuse credentials,
+unknown endpoints and foreign-company IDs. Genuine admin onboarding data entry
+is followed by explicit mock form/new-hire confirmations and completion readback;
+SDK Summary/Done alone is not completion. Genuine payroll uses local
+prepare/calculate/poll/review/synthetic-submit transitions through its submitted
+summary and the host's **Simulated payroll processed** banner. I-9, legal signatures,
+tax filing and money movement remain outside the samples. These selected paths
+are not full SDK or provider acceptance. Benefits/time interfaces are native,
+and their state is separate from the SDK sample session.
+The [setup guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md)
+provides the verified fictional Jordan/Texas/Check onboarding sequence and an
+SDK payroll walkthrough from **Regular Hours** `80` → `8` through **Calculate
+and review → Submit**. Its separate zero-tax fixture shows `$200` gross and no
+debit; it does not use the native timesheet/benefit calculation. No real
+SSN, banking data, cookies, authentication credentials or Gusto account is needed
+for these local requests.
+
+## Native account-free workflow sequence
+
+The local host links the employee, manager and management previews:
+
+1. Review the fictional employee profile/job, complete the required onboarding
+   checklist, review the summary and confirm simulated onboarding completion.
+2. In the employee self preview, elect sample enrollment or waiver, review and
+   confirm the fictional benefit election. Management views are read-only here.
+3. Enter and submit the employee timesheet, then use its scoped manager to
+   approve it. Payroll consumes approved hours rather than a draft timesheet.
+4. Prepare the payroll preview from approved hours, calculate fictional totals,
+   review it and simulate submission. Inspect the visible mock receipt.
+
+Use an eligible fictional employee for benefits, time and payroll. The sample
+pay period is 2026-10-01 through
+2026-10-15; only active employees' approved, unpaid entries in that period qualify.
+Payroll preparation freezes approved time and confirmed enrollment choices;
+later changes require a new preparation. Receipted time entries cannot be used
+again, and completed onboarding/confirmed elections remain locked until Reset.
+
+These host workflows use browser memory. Reset or reload restores the fixture.
+Mock totals, confirmations and submission receipts do not send payroll, enroll
+benefits or establish provider acceptance. No account, provider or cloud call is
+needed. The role selector remains a synthetic fixture control. See
+[the step-by-step setup guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md)
+for the exact routes and completion checks.
 
 ## Credentials and ownership
 
@@ -42,13 +82,18 @@ implementation phases so a specification is not mistaken for a working adapter.
 
 ```bash
 npm ci
+npm run hr:test
 npm run dev
 ```
 
 Open Vite's printed URL at `/hr/demo`, then choose a synthetic portal/role.
-Preview state resets on refresh. Use `/hr/demo/sdk` to inspect the genuine SDK
-directory. Production builds retain the HR preview; the SDK mock API is local
+Native state resets on refresh. Use `/hr/demo/sdk` for the selected genuine SDK
+components; **Reset SDK samples** clears its separate local session. Production
+builds retain the native HR preview; the SDK mock API is local
 development only.
+This host workflow update keeps the selected dotSYSTEMX 1.9.0-alpha.6 release
+and portable contract fingerprints intact. The optional Firebase and real Demo
+integration gates remain separate.
 
 Follow [Gusto setup](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md)
 for checks, fixtures, optional Firebase module activation and the phased migration

@@ -1,4 +1,4 @@
-# Unified template 3.3.0 guide
+# Unified template 3.4.0 guide
 
 WebAppX combines managed dotSYSTEMX 1.9.0-alpha.6, the Firebase webapp,
 LAN builder/session controls, portable Gusto/HR contracts, production kits,
@@ -16,7 +16,7 @@ records ship blank. No private mirror is configured for WebAppX.
 | Maintain the base and an explicitly selected optional mirror | [Template maintenance](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-MAINTENANCE.md) |
 | Import managed defaults | [Standalone SYSTEMX integration](SYSTEMX-Standalone-Integration.md) |
 | Inspect release inputs and included capabilities | [Feature/provenance map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/UNIFIED-TEMPLATE.md) |
-| Review recorded source/local acceptance | [3.3.0 validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.3.0.md) |
+| Review recorded source/local acceptance | [3.4.0 validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.4.0.md) |
 
 `npm run systemx:status` reports installation integrity and the selected release.
 `npm run systemx -- status` reports task records. `npm run systemx:context`
@@ -48,13 +48,15 @@ The historical [3.2.0 receipt](https://github.com/WayneTechLab/WebAppX/blob/main
 and [3.1.0 receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.1.0.md)
 retain their original revision and platform scope.
 
-The Gusto/HR package includes synthetic `/hr/demo` portals and a genuine SDK
-0.56.6 employee directory at `/hr/demo/sdk` with development-only mock reads.
+The Gusto/HR package includes synthetic `/hr/demo` portals with functional
+onboarding, benefit election, timesheet approval and simulated payroll journeys.
+The genuine SDK 0.56.6 directory, administrative onboarding and payroll execution
+samples at `/hr/demo/sdk` use development-only isolated mock records.
 App-owned HR actions use temporary React state. Protected connected portals
 remain unconfigured, and the optional Firebase backend stays disabled by
 default. `npm run hr:test` checks the local contracts and synthetic workflows;
 `npm run hr:backend:audit` audits the isolated optional backend package.
-Those boundaries do not establish full SDK workflows or live payroll acceptance.
+Other SDK flows and real payroll acceptance require separately verified adapters.
 
 The Designer roadmap remains evidence-gated. Read its capability manifest and
 [LAN Builder Designer master plan](SYSTEMX-LAN-Builder-Designer-Master-Plan.md)

@@ -1,4 +1,4 @@
-# Getting started with template 3.3.0
+# Getting started with template 3.4.0
 
 The public WebAppX combines a React/TypeScript/Vite/Tailwind/Firebase
 webapp, managed dotSYSTEMX 1.9.0-alpha.6 tools, a guarded local LAN builder,
@@ -40,13 +40,16 @@ clone the whole template to include managed SYSTEMX, LAN, research and kits.
 
 With `npm run dev` running, open `/hr` for the capability entry points or
 `/hr/demo` for synthetic management, employee, manager and contractor portals.
-App-owned checklist, time-entry and time-off changes live in React state and
-reset on refresh. Keep real employee information out of these previews.
+Complete onboarding review, elect and confirm benefits, submit and approve
+timesheets, and prepare, review and simulate payroll receipts. These app-owned
+changes live in React state and reset on refresh. Keep real employee information
+out of these previews.
 
-`/hr/demo/sdk` uses the genuine Gusto React SDK 0.56.6 employee directory
-component against development-only local fixtures. Its read contract does not
-establish full SDK coverage or live payroll. The mock endpoint is available in
-Vite development, and is excluded from Hosting and `npm run preview`.
+`/hr/demo/sdk` uses genuine Gusto React SDK 0.56.6 directory, administrative
+onboarding and payroll execution components against an isolated local mock.
+The selected SDK journeys use synthetic reads and writes; other SDK workflows
+and real provider acceptance remain outside this coverage. The mock API is
+available in Vite development and excluded from Hosting and `npm run preview`.
 
 Connected portals require adopted Firebase identity, trusted memberships and
 server integration. The optional Firebase module stays disabled and unregistered

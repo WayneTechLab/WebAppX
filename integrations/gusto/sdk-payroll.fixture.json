@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "mode": "mock",
+  "notice": "Fictional zero-tax test arithmetic. No tax calculation, provider submission, payment or banking connection occurs.",
+  "payroll": {
+    "uuid": "00000000-0000-4000-8000-000000000301",
+    "payroll_uuid": "00000000-0000-4000-8000-000000000301",
+    "company_uuid": "00000000-0000-4000-8000-000000000001",
+    "off_cycle": false,
+    "external": false,
+    "processed": false,
+    "processed_date": null,
+    "calculated_at": null,
+    "check_date": "2026-10-23",
+    "payroll_deadline": "2026-10-19T17:00:00-07:00",
+    "pay_period": {
+      "start_date": "2026-10-05",
+      "end_date": "2026-10-18",
+      "pay_schedule_uuid": "00000000-0000-4000-8000-000000000401"
+    },
+    "employee_compensations": [
+      {
+        "employee_uuid": "00000000-0000-4000-8000-000000000101",
+        "first_name": "Avery",
+        "last_name": "Example",
+        "excluded": false,
+        "payment_method": "Direct Deposit",
+        "memo": null,
+        "version": "mock-payroll-row-1",
+        "fixed_compensations": [],
+        "hourly_compensations": [
+          {
+            "name": "Regular Hours",
+            "job_uuid": "00000000-0000-4000-8000-000000000201",
+            "flsa_status": "Nonexempt",
+            "hours": "80.000",
+            "amount": "2000.00",
+            "compensation_multiplier": 1.0
+          }
+        ],
+        "paid_time_off": [],
+        "reimbursements": [],
+        "deductions": [],
+        "gross_pay": "2000.00",
+        "net_pay": null,
+        "check_amount": null
+      }
+    ],
+    "submission_blockers": [],
+    "credit_blockers": [],
+    "processing_request": null,
+    "partner_owned_disbursement": false,
+    "payroll_status_meta": {
+      "cancellable": true,
+      "expected_check_date": "2026-10-23",
+      "initial_check_date": "2026-10-23",
+      "payroll_late": false
+    }
+  },
+  "employeeRoster": [
+    {
+      "uuid": "00000000-0000-4000-8000-000000000101",
+      "first_name": "Avery",
+      "last_name": "Example",
+      "company_uuid": "00000000-0000-4000-8000-000000000001",
+      "email": "avery@example.invalid",
+      "onboarded": true,
+      "onboarding_status": "onboarding_completed",
+      "terminated": false,
+      "payment_method": "Check",
+      "flsa_status": "Nonexempt",
+      "jobs": [
+        {
+          "uuid": "00000000-0000-4000-8000-000000000201",
+          "employee_uuid": "00000000-0000-4000-8000-000000000101",
+          "primary": true,
+          "title": "Design lead",
+          "hire_date": "2026-01-05",
+          "current_compensation_uuid": "00000000-0000-4000-8000-000000000501",
+          "compensations": [
+            {
+              "uuid": "00000000-0000-4000-8000-000000000501",
+              "job_uuid": "00000000-0000-4000-8000-000000000201",
+              "employee_uuid": "00000000-0000-4000-8000-000000000101",
+              "version": "mock-rate-v1",
+              "rate": "25.00",
+              "payment_unit": "Hour",
+              "flsa_status": "Nonexempt",
+              "effective_date": "2026-01-05"
+            }
+          ]
+        }
+      ],
+      "terminations": []
+    }
+  ],
+  "bankAccounts": [
+    {
+      "uuid": "00000000-0000-4000-8000-000000000601",
+      "name": "Synthetic company account",
+      "hidden_account_number": "\u2022\u2022\u2022\u20220000",
+      "verification_status": "verified",
+      "account_type": "Checking"
+    }
+  ],
+  "paymentConfig": {
+    "company_uuid": "00000000-0000-4000-8000-000000000001",
+    "payment_speed": "2-day",
+    "partner_owned_disbursement": false,
+    "earned_fast_ach_blockers": []
+  },
+  "paySchedule": {
+    "uuid": "00000000-0000-4000-8000-000000000401",
+    "version": "mock-schedule-1",
+    "frequency": "Every other week",
+    "custom_name": "Synthetic biweekly",
+    "anchor_pay_date": "2026-10-23",
+    "anchor_end_of_pay_period": "2026-10-18"
+  }
+}

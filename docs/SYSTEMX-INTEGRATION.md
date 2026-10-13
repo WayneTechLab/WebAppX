@@ -1,7 +1,7 @@
 # Managed SYSTEMX in the unified webapp template
 
 This repository is Wayne Tech Lab's public webapp integration template, version
-3.3.0. It consumes the public [dotSYSTEMX](https://github.com/WayneTechLab/dotSYSTEMX)
+3.4.0. It consumes the public [dotSYSTEMX](https://github.com/WayneTechLab/dotSYSTEMX)
 operating standard while retaining its React/Vite/Firebase app, local LAN builder,
 production kits and sanitized examples. It combines the public webapp and private integration features in a reusable release.
 
@@ -45,8 +45,10 @@ new media live in the selected release; existing outer project files survive.
 The selected defaults include optional `.SYSTEMX/GUSTO/` contracts: 64 route
 specifications, 33 capabilities, seven roles, synthetic fixtures and the pinned
 SDK inventory/license. Importing them installs no Gusto runtime or credentials.
-WebAppX's host code provides the account-free HR preview and development SDK
-directory; follow [Gusto setup](GUSTO-SETUP.md) and
+WebAppX's host code provides complete account-free onboarding, payroll, benefits
+and timesheet simulations plus selected development SDK workflows. These are
+host extensions; the alpha.6 distribution and its original import receipt remain
+unchanged. Follow [Gusto setup](GUSTO-SETUP.md) and
 [the optional Firebase model](GUSTO-FIREBASE.md). Preserve outer package copies
 as adopted project data during later imports. Narrow Git attributes preserve
 vendor inventory/license bytes across line-ending conversions.
@@ -175,7 +177,7 @@ collisions, and never commits or pushes. Verify parity with
 Historical source receipts remain provenance for their examined revisions.
 The reusable tree carries blank records and reviewed import provenance. See
 [the release feature map](UNIFIED-TEMPLATE.md) and the historical
-[3.1.0 validation receipt](VALIDATION-3.1.0.md); that receipt does not validate 3.3.0.
+[3.1.0 validation receipt](VALIDATION-3.1.0.md); that receipt does not validate 3.4.0.
 
 ## Dependency refresh
 

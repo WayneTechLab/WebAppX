@@ -1,7 +1,7 @@
-# Platform Matrix — unified template 3.3.0
+# Platform Matrix — unified template 3.4.0
 
 This table separates the intended platform contract from actual validation.
-Consult the [3.3.0 validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.3.0.md)
+Consult the [3.4.0 validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.4.0.md)
 for current source/local results. The historical 3.2.0 acceptance ran on macOS
 Apple Silicon; its [receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.2.0.md)
 retains that earlier scope.
@@ -10,7 +10,7 @@ availability or a launcher's presence is not evidence that every platform passed
 
 | Platform | Current entry points | Acceptance boundary |
 | --- | --- | --- |
-| macOS Apple Silicon | Node app/LAN/HR commands, Bash managed/WSG launchers, Python tools | Record current checks in the 3.3.0 receipt; historical 3.2.0 checks are separate evidence |
+| macOS Apple Silicon | Node app/LAN/HR commands, Bash managed/WSG launchers, Python tools | Record current checks in the 3.4.0 receipt; historical 3.2.0 checks are separate evidence |
 | Windows 11 x64 | Node app/LAN commands; `.SYSTEMX/SYSTEMX.ps1` managed launcher | Target platform; native Windows execution needs its own validation |
 | Windows 11 ARM64 | Same entry points; native vendor tools where supplied | Target platform; record any x64 vendor-tool emulation and verify separately |
 | Ubuntu/Linux | Node app/LAN, Python managed tools and inspected Bash flows | Experimental/compatibility path; this release has no native Linux acceptance receipt |

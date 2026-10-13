@@ -1,5 +1,19 @@
 # Update Log
 
+## 3.4.0 — 2026-10-13
+
+Complete the account-free mock journeys for employee onboarding, payroll,
+benefits and time tracking. Native HR controls now validate transitions, scope
+employee/manager actions, freeze approved payroll inputs and produce fictional
+receipts. The development SDK adapter adds isolated administrative onboarding
+and payroll execution samples. Simulated submission never contacts Gusto or
+moves funds.
+
+Read [Gusto setup](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md)
+and the [3.4.0 validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.4.0.md).
+The selected dotSYSTEMX defaults remain **1.9.0-alpha.6** with the original import
+fingerprint. Earlier release receipts, snapshots and blank seeds remain intact.
+
 ## 3.3.0 — 2026-10-13
 
 - Select managed dotSYSTEMX 1.9.0-alpha.6, including the portable

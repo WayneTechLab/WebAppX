@@ -1,6 +1,6 @@
 # WebAppX Wiki
 
-Unified webapp release **3.3.0** uses standalone SYSTEMX **1.9.0-alpha.6**.
+Unified webapp release **3.4.0** uses standalone SYSTEMX **1.9.0-alpha.6**.
 This wiki belongs to WayneTechLab/WebAppX; public dotSYSTEMX remains the
 universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md),
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
@@ -90,13 +90,15 @@ in the adopted scope.
 The portable `.SYSTEMX/GUSTO/` package provides routes, capability ownership,
 role policy and adoption contracts. In Vite development, `/hr/demo` offers
 synthetic management, employee, manager and contractor portals with app-owned
-state that resets on refresh. `/hr/demo/sdk` uses the genuine Gusto React SDK
-0.56.6 employee directory against local mock reads; its mock endpoint is absent
+state that resets on refresh. Onboarding, benefit elections, timesheet approval
+and simulated payroll receipts are functional. `/hr/demo/sdk` uses the genuine
+Gusto React SDK 0.56.6 directory, administrative onboarding and payroll execution
+components against isolated local mock records; its mock API is absent
 from Hosting and `npm run preview`.
 
 Connected portals remain unconfigured and require trusted identity/memberships
 and an adopted server integration. The optional Firebase module is disabled by
-default. No full SDK workflow or live payroll acceptance is implied. Follow
+default. Other SDK workflows and live payroll need separate acceptance. Follow
 [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md) for the
 preview, setup and validation path.
 

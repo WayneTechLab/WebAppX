@@ -1,4 +1,4 @@
-# Unified template 3.3.0
+# Unified template 3.4.0
 
 WebAppX retains the reviewed webapp, LAN, setup and kit features and incorporates
 the latest reviewed standalone SYSTEMX through a managed import. Its Git history
@@ -25,7 +25,7 @@ The earlier 1.8.6-alpha.1 and 1.9.0-alpha.5 snapshots remain retained.
 | Managed SYSTEMX | `.SYSTEMX/SYSTEMX.sh` | Context, tasks/dependencies, project memory, child workspaces, releases and lifecycle |
 | Agent mesh | `.SYSTEMX/AI/`, `.SYSTEMX/AGENTS/` | Agent 0 coordination, bounded worker packets and tool/connector/recovery contracts |
 | Standard roles | SYSTEMX `roles-init` | Explicit Agent X events, optional Agent Y CLI handoffs and Agent Z fixed-question reviews |
-| HR and Gusto | `.SYSTEMX/GUSTO/`, `src/hr/`, `integrations/gusto/` | 64 route contracts, synthetic role portals, genuine SDK directory reads and disabled optional Firebase foundations |
+| HR and Gusto | `.SYSTEMX/GUSTO/`, `src/hr/`, `integrations/gusto/` | 64 route contracts; functional synthetic onboarding/payroll/benefit/timesheet journeys; selected genuine SDK directory, onboarding and payroll mocks; disabled optional Firebase foundations |
 | Access and source boundaries | `GLOBAL/ACCESS-MATRIX.md`, `PLAN/MAP.md` in the selected scope | Blank reviewed-access and source-navigation records; no permission grants or duplicate task authority |
 | CLI and project routing | SYSTEMX `tools-guide`; installed CLI `projects --target OUTER -- ...` | Selected verified tools, explicit `.SYSTEMXP` scope and offline defaults |
 | Local LAN | `npm run dev:systemx` | Owned sessions, available loopback ports, dashboard, fixtures and guarded source writes |
@@ -57,7 +57,7 @@ x64/ARM64 runtime or Firebase deployment acceptance.
 
 ## Release checks
 
-The [3.3.0 validation receipt](VALIDATION-3.3.0.md) records the source/local
+The [3.4.0 validation receipt](VALIDATION-3.4.0.md) records the source/local
 checks for this HR integration. The [3.2.0 receipt](VALIDATION-3.2.0.md)
 retains its original integration and platform scope.
 

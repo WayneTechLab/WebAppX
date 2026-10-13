@@ -1,3 +1,15 @@
+# 3.4.0 — Complete account-free HR mock journeys — 2026-10-13
+
+- Add onboarding review/completion, benefit election/confirmation and timesheet
+  submission/approval with memory-only synthetic records and visible receipts.
+- Prepare simulated payroll from approved eligible hours and confirmed sample
+  elections; freeze inputs, review fictional totals and prevent receipt replay.
+- Extend the development-only genuine SDK adapter for administrative onboarding
+  and payroll execution, including isolated sessions, version checks, async
+  calculation/submission contracts and explicit simulated completion review.
+- Document repeatable no-account scenarios and separate SDK/native coverage from
+  Gusto Demo acceptance. Retain the immutable alpha.6 distribution and blank seeds.
+
 # 3.3.0 — Gusto and standard HR workspaces — 2026-10-13
 
 - Add portable GUSTO capability, route, role and data contracts with synthetic

@@ -1,6 +1,6 @@
 # Set up Agent Y in a new WebAppX app
 
-This guide applies to **WebAppX 3.3.0 with managed dotSYSTEMX 1.9.0-alpha.6**.
+This guide applies to **WebAppX 3.4.0 with managed dotSYSTEMX 1.9.0-alpha.6**.
 Agent Y takes one Agent 0 task into a separately installed CLI provider, works
 on a task branch in a separate Git worktree, and returns a local commit for
 review. Draft PR publication is an optional choice made when preparing that task.

@@ -80,7 +80,7 @@ export function scopedRecords(actor: HrActor, records: HrRecord[], employees: Hr
 }
 
 export function canViewCompensation(actor: HrActor, employeeId?: string) {
-  return ['employer-owner', 'payroll-admin', 'hr-admin', 'auditor'].includes(actor.role) || (actor.role === 'employee' && Boolean(actor.employeeId) && employeeId === actor.employeeId)
+  return ['employer-owner', 'payroll-admin'].includes(actor.role) || (actor.role === 'employee' && Boolean(actor.employeeId) && employeeId === actor.employeeId)
 }
 
 export function canEditEmployeeProfile(actor: HrActor, employeeId: string) {
@@ -117,6 +117,10 @@ export function canApproveTimeOff(actor: HrActor, request: HrRecord, employees: 
   if (['employer-owner', 'hr-admin'].includes(actor.role)) return true
   if (actor.role !== 'manager' || !actor.employeeId || request.employeeId === actor.employeeId) return false
   return employees.some(employee => employee.id === request.employeeId && employee.managerId === actor.employeeId)
+}
+
+export function canApproveTimeEntry(actor: HrActor, entry: HrRecord, employees: HrEmployee[]) {
+  return entry.status === 'submitted' && canApproveTimeOff(actor, { ...entry, status: 'pending' }, employees)
 }
 
 export function searchEmployees(employees: HrEmployee[], query: string, status: string) {
