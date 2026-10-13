@@ -1,7 +1,7 @@
 {
   "name": "webappx",
   "private": true,
-  "version": "3.1.0",
+  "version": "3.2.0",
   "type": "module",
   "description": "Public React/Vite/Firebase template with managed SYSTEMX tooling, agent coordination, LAN builder and production kits.",
   "scripts": {

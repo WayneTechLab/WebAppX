@@ -274,9 +274,11 @@ if [[ $DO_DEPLOY -eq 1 ]]; then
 else log "Skip deploy"; fi
 
 log "Done. version=$PKG_VERSION deploy#=$COUNT branch=$CURRENT_BRANCH log=$RUN_LOG"
+if [[ $PRECHECK_ONLY -eq 0 && $DO_DEPLOY -eq 1 ]]; then
 printf '{"timestamp":"%s","event":"deploy","runId":"%s","target":"%s","version":"%s","deployCount":%d,"branch":"%s","dryRun":%s,"log":"%s"}\n' \
   "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$RUN_ID" "$TARGET" "$PKG_VERSION" "$COUNT" "$CURRENT_BRANCH" "$([[ $DRY_RUN -eq 1 ]] && echo true || echo false)" "$RUN_LOG" \
   >> "$LOG_DIR/deploy-history.jsonl"
+fi
 [[ -n "$HOSTING_URL" ]] && log "Hosting URL: $HOSTING_URL"
 
 if [[ $OPEN_BROWSER -eq 1 && -n "$HOSTING_URL" ]]; then

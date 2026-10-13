@@ -1,16 +1,31 @@
 #!/usr/bin/env python3
 """Build the reviewed distribution inventory; never includes unlisted project files."""
 
-import hashlib
+import sys
+if __name__ == "__main__" and not sys.flags.isolated:
+    _bootstrap_os = sys.modules.get("os")
+    if _bootstrap_os is None or not sys.executable:
+        sys.exit("SYSTEMX release requires Python's initialized OS module to enter isolated mode")
+    try:
+        _bootstrap_os.execv(sys.executable, [sys.executable, "-I", "-B", __file__, *sys.argv[1:]])
+    except OSError as error:
+        sys.exit("SYSTEMX release could not enter isolated mode: " + str(error))
+
+import importlib.util
 import json
 from pathlib import Path
 import re
-import sys
 
 sys.dont_write_bytecode = True
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import systemx
+_systemx_source = Path(__file__).resolve().with_name("systemx.py")
+_systemx_spec = importlib.util.spec_from_file_location("systemx", _systemx_source)
+if _systemx_spec is None:
+    raise ImportError("Cannot load SYSTEMX release runner")
+systemx = importlib.util.module_from_spec(_systemx_spec)
+sys.modules["systemx"] = systemx
+exec(compile(_systemx_source.read_bytes(), str(_systemx_source), "exec"), systemx.__dict__)
 from versions import package_version, version_id
+manager = systemx._load_local("manager", systemx.DEFAULTS / "manager.py")
 
 
 def check_metadata(root):
@@ -39,6 +54,7 @@ def main():
     if sys.argv[1:]:
         raise ValueError("Usage: release.py [--check]")
     manifest = "config/distribution.json"
+    schema = manager.distribution_schema(version)
     files = {}
     for name in sorted(systemx.REQUIRED):
         if name == manifest:
@@ -46,8 +62,8 @@ def main():
         path = root / name
         if path.is_symlink() or not path.is_file():
             raise ValueError("Missing or non-regular distribution file: " + name)
-        files[name] = hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
-    (root / manifest).write_text(json.dumps({"schemaVersion": 1, "version": version,
+        files[name] = manager.distribution_digest(name, path.read_bytes(), schema)
+    (root / manifest).write_text(json.dumps({"schemaVersion": schema, "version": version,
                                            "files": files}, indent=2) + "\n", encoding="utf-8")
     return systemx.validate_template(distribution=True)
 

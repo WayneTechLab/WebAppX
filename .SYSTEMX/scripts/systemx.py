@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
 """Standalone SYSTEMX tools. Python standard library only; no shell evaluation."""
 
+import sys
+if __name__ == "__main__" and not sys.flags.isolated:
+    _bootstrap_os = sys.modules.get("os")
+    if _bootstrap_os is None or not sys.executable:
+        sys.exit("SYSTEMX requires Python's initialized OS module to enter isolated mode")
+    try:
+        _bootstrap_os.execv(sys.executable, [sys.executable, "-I", "-B", __file__, *sys.argv[1:]])
+    except OSError as error:
+        sys.exit("SYSTEMX could not enter isolated mode: " + str(error))
+
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -10,7 +21,6 @@ import re
 import shlex
 import shutil
 import subprocess
-import sys
 from urllib.parse import unquote, urlsplit
 
 # Inspection commands must not create bytecode files in a copied distribution.
@@ -20,7 +30,42 @@ if __name__ == "__main__":
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8")
 DEFAULTS = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(DEFAULTS))
+SCRIPTS = Path(__file__).resolve().parent
+
+
+def _load_local(name, path):
+    """Load a named source file without searching local paths or reading pyc."""
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None:
+        raise ImportError("Cannot load SYSTEMX helper: " + name)
+    module = importlib.util.module_from_spec(spec)
+    previous = sys.modules.get(name)
+    sys.modules[name] = module
+    try:
+        exec(compile(path.read_bytes(), str(path), "exec"), module.__dict__)
+    except BaseException:
+        if previous is None:
+            sys.modules.pop(name, None)
+        else:
+            sys.modules[name] = previous
+        raise
+    return module
+
+
+if __name__ == "__main__":
+    # Child workspaces import "systemx" lazily for config validation.
+    sys.modules["systemx"] = sys.modules["__main__"]
+for _name, _path in (
+        ("systemx_paths", DEFAULTS / "systemx_paths.py"),
+        ("versions", DEFAULTS / "versions.py"),
+        ("project_memory", SCRIPTS / "project_memory.py"),
+        ("agent_standards", SCRIPTS / "agent_standards.py"),
+        ("project_workspaces", SCRIPTS / "project_workspaces.py"),
+        ("agent_x", SCRIPTS / "agent_x.py"),
+        ("agent_y", SCRIPTS / "agent_y.py"),
+        ("agent_z", SCRIPTS / "agent_z.py")):
+    _load_local(_name, _path)
+
 import project_memory
 from systemx_paths import inspect_layout, lowercase_alias, record_directory
 from versions import version_id
@@ -33,6 +78,7 @@ REQUIRED = (
     ".gitignore", ".gitattributes", "README.md", "STANDARD.md", "LICENSE", "VERSION",
     "CHANGELOG.md", "SOURCE.json", "SYSTEMX.sh", "WSG-MENU.sh",
     "config/project.example.json", "docs/SETUP.md", "docs/DEVELOPMENT.md",
+    "docs/ACCESS-AND-MAP.md", "GLOBAL/ACCESS-MATRIX.md", "PLAN/MAP.md",
     "docs/SECURITY.md", "docs/QUALITY.md", "docs/OPERATIONS.md",
     "AI/README.md", "AI/AGENT-MESH-STANDARD.md", "AI/agent-mesh.schema.json",
     "AI/TOOLCALLING-AND-BROWSER-AUTOMATION.md",
@@ -42,18 +88,19 @@ REQUIRED = (
     "templates/RELEASE.md", "scripts/systemx.py", "scripts/validate.sh",
     "scripts/quality-check.sh", "tests/test_systemx.py",
     "FORMAT.md", "config/template-records.json",
-    "__init__.py", "__main__.py", "manager.py", "INSTALL.sh", "INSTALL.ps1", "SYSTEMX.ps1",
+    "__init__.py", "__main__.py", "cli.py", "manager.py", "INSTALL.sh", "INSTALL.ps1", "SYSTEMX.ps1",
     "config/distribution.json", "config/profiles.json", "scripts/release.py", "tests/test_manager.py",
     "profiles/project.md", "profiles/directory.md", "profiles/drive.md", "profiles/chat.md",
     "docs/INSTALLATION.md", "docs/LIBRARY.md", "docs/EXACT-CASE.md", "systemx_paths.py", "tests/test_paths.py",
     "lifecycle.py", "tests/test_lifecycle.py", "docs/FIRST-RUN.md", "docs/UNINSTALL.md",
     "docs/TECHNICAL-GUIDE.md", "docs/STACK-GUIDE.md", "docs/ABOUT.md", "docs/EFFICIENCY.md",
     "versions.py", "tests/test_versions.py", "docs/RELEASE-POLICY.md",
-    "docs/ONE-SHOT-PROJECT.md", "docs/SHARED-WORKSPACES.md",
+    "docs/ONE-SHOT-PROJECT.md", "docs/SHARED-WORKSPACES.md", "docs/CLI-TOOLS.md",
     "MEDIA/Infographics/chatgpt-google-drive-4k.jpg",
     "MEDIA/Infographics/codex-copilot-cli-local-4k.jpg",
     "MEDIA/Infographics/codex-github-main-4k.jpg",
     "MEDIA/Infographics/dots-codex-cloud-4k.jpg",
+    "MEDIA/Infographics/systemx-cli-projects-4k.jpg",
     "MEDIA/README.md",
     "MEDIA/Reference/ASSETS.json",
     "MEDIA/Reference/IMAGE-PROMPTS.md",
@@ -61,14 +108,18 @@ REQUIRED = (
     "MEDIA/Reference/codex-copilot-cli-local.md",
     "MEDIA/Reference/codex-github-main.md",
     "MEDIA/Reference/dots-codex-cloud.md",
+    "MEDIA/Reference/cli-projects.md",
     "MEDIA/White-Paper/SYSTEMX-White-Paper-v1.2.json",
     "MEDIA/White-Paper/SYSTEMX-White-Paper-v1.2.md",
     "MEDIA/White-Paper/SYSTEMX-White-Paper-v1.2.pdf",
+    "MEDIA/White-Paper/ERRATA.md",
 ) + project_memory.REQUIRED + project_workspaces.REQUIRED + agent_standards.REQUIRED
 BLANK_RECORDS = (
-    "GLOBAL/CONTEXT.md", "PLAN/MASTER-PLAN.md", "MEMORY/PROJECT.md",
+    "GLOBAL/CONTEXT.md", "GLOBAL/ACCESS-MATRIX.md",
+    "PLAN/MASTER-PLAN.md", "PLAN/MAP.md", "MEMORY/PROJECT.md",
     "AGENTS/agent.0/MEMORY.md", "AGENTS/REGISTRY.json", "WORK/TASKS.json",
     "WORK/FOCUS.json", "config/project.example.json",
+    "templates/project/GLOBAL/ACCESS-MATRIX.md", "templates/project/PLAN/MAP.md",
 )
 IGNORED_DIRS = {"local", "logs", "state", ".git", ".systemx", "__pycache__", "node_modules"}
 LINK = re.compile(r"\]\((?:<([^>]+)>|([^\s)]+))(?:\s+\"[^\"]*\")?\)")
@@ -179,8 +230,7 @@ def distribution_issues(files):
             issues.append("Public template must have empty work/focus and only the agent.0 role")
         if (any(config["project"].values()) or config["checks"] or any(config["commands"].values())):
             issues.append("Public template command configuration must be empty")
-        sys.path.insert(0, str(DEFAULTS))
-        import manager
+        manager = _load_local("manager", DEFAULTS / "manager.py")
         manager.read_bundle(SYSTEMX)
         if project_workspaces.Workspaces(SYSTEMX, DEFAULTS).projects:
             issues.append("Public template must have an empty project registry")
@@ -375,7 +425,7 @@ def menu():
                "11": ("paths", False), "12": ("alias-create", False),
                "13": ("setup-guide", False), "14": ("removal-guide", False),
                "15": ("projects-guide", False), "16": ("projects-list", False),
-               "17": ("standard-roles-guide", False)}
+               "17": ("standard-roles-guide", False), "18": ("tools-guide", False)}
     while True:
         print("\n.SYSTEMX\n1) Validate template\n2) Doctor\n3) Initialize config\n"
               "4) Project checks\n5) Development\n6) Build\n7) Preview deploy plan\n8) Deploy\n"
@@ -383,7 +433,8 @@ def menu():
               "11) Check exact .SYSTEMX casing and alias\n12) Enable local .systemx -> .SYSTEMX alias\n"
               "13) First-time setup guide\n14) Uninstall, restore, and cleanup guide\n"
               "15) SYSTEMX PROJECTS setup and selection\n16) List registered projects\n"
-              "17) Agent X and Agent Z setup and review guide\n0) Exit")
+              "17) Agent X, Agent Y, and Agent Z setup and review guide\n"
+              "18) CLI, tools, and .SYSTEMXP routing guide\n0) Exit")
         try:
             choice = input("Choice: ").strip()
         except EOFError:
@@ -411,8 +462,11 @@ def menu():
 
 def dispatch(action, dry_run=False):
     record_directory(SYSTEMX)
+    if action == "tools-guide":
+        print((DEFAULTS / "docs/CLI-TOOLS.md").read_text(encoding="utf-8"))
+        return 0
     if action == "standard-roles-guide":
-        for name in ("AGENT-X.md", "AGENT-Z.md"):
+        for name in ("AGENT-X.md", "AGENT-Y.md", "AGENT-Z.md"):
             print((DEFAULTS / "docs" / name).read_text(encoding="utf-8"))
         return 0
     if action == "projects-guide":
@@ -427,7 +481,7 @@ def dispatch(action, dry_run=False):
         return 0
     if action in {"paths", "alias-create"}:
         if action == "alias-create":
-            import manager
+            manager = _load_local("manager", DEFAULTS / "manager.py")
             result = manager.alias(PROJECT_ROOT, create=True)
         else:
             result = lowercase_alias(PROJECT_ROOT)
@@ -463,7 +517,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Standalone .SYSTEMX project operations (exact-case directory)")
     parser.add_argument("--root", type=Path, action=RootSelector, help="project record directory when running versioned defaults")
     subparsers = parser.add_subparsers(dest="action")
-    for action in ("validate", "doctor", "init", "menu", "help", "paths", "setup-guide", "removal-guide"):
+    for action in ("validate", "doctor", "init", "menu", "help", "paths", "setup-guide", "removal-guide", "tools-guide"):
         command_parser = subparsers.add_parser(action)
         if action == "validate":
             command_parser.add_argument("--template", action="store_true",

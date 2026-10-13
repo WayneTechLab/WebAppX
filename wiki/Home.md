@@ -1,6 +1,6 @@
 # WebAppX Wiki
 
-Unified webapp release **3.1.0** uses standalone SYSTEMX **1.8.6-alpha.1**.
+Unified webapp release **3.2.0** uses standalone SYSTEMX **1.9.0-alpha.5**.
 This wiki belongs to WayneTechLab/WebAppX; public dotSYSTEMX remains the
 universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md),
 [Quick Start](Quick-Start.md), and [Update Log](Update-Log.md).
@@ -71,6 +71,12 @@ Use [the unified template guide](Unified-Template-Guide.md) for adoption, comman
 upstream imports, source parity and release provenance. `npm run systemx:status`
 checks installation integrity; `npm run systemx -- status` reads recorded tasks.
 WSG menu option 12 opens the selected managed tools. Project records ship blank.
+Use `npm run systemx -- tools-guide` for CLI and explicit child-project routing.
+The optional Agent Y CLI lane complements Agent X event records and Agent Z
+reviews under Agent 0; imports do not activate roles or start providers. New
+access/map records are blank adoption seeds. Native Windows Agent Y execution
+remains unavailable pending verified descendant-process termination; current
+macOS checks do not establish Windows x64/ARM64 or Firebase deployment acceptance.
 
 ## Included route model
 

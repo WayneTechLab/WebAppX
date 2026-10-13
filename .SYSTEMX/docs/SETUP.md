@@ -28,7 +28,7 @@ menu option 11 checks the current layout without changing it.
 
 For a managed project, `systemx run --target "/path/to/project" -- validate`
 uses its selected defaults even if an older root launcher was retained. New
-installations are pinned with manual updates; opt-in startup updates are configured
+installations are pinned with manual updates; opt-in startup update checks are configured
 separately in the installation guide. Existing root default copies remain unchanged.
 
 Before initializing a pristine distribution, `validate --template` additionally
@@ -48,9 +48,21 @@ unknowns as unknowns rather than making up requirements.
 
 Fill [GLOBAL/CONTEXT.md](../GLOBAL/CONTEXT.md) with approved shared context and
 create the accepted milestones in [PLAN/MASTER-PLAN.md](../PLAN/MASTER-PLAN.md).
+If access decisions or multiple system boundaries matter, fill the blank
+[access matrix](../GLOBAL/ACCESS-MATRIX.md) and
+[project map](../PLAN/MAP.md) with source-backed facts. For a named child, use
+that selected `.SYSTEMXP`'s own copies. Follow the
+[access and map guide](ACCESS-AND-MAP.md); these records neither grant access
+nor replace the task ledger.
 Use [WORK/README.md](../WORK/README.md) to create concrete tasks. The coordinator
 is `agent.0`; register other workers only as needed. Begin and end work with the
 [memory protocol](../MEMORY/README.md), keeping records specific to this project.
+If a task needs a separate terminal AI provider, read [Agent Y](AGENT-Y.md) and
+select the installed provider, repository, write scope, branch, and optional
+draft-PR policy for that task. Role setup does not install or authenticate a CLI.
+App subagents and CLI processes need separate workspaces or coordinated file
+ownership. Agent 0 accepts the result after reviewing evidence; Agent X can log
+observed transitions and Agent Z can score a stable result.
 
 Select the runtime, package manager, build approach, environments, integration
 owners, deployment target, and applicable quality checks. Do not install every

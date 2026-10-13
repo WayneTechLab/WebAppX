@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/WayneTechLab/dotSYSTEMX.git",
+  "commit": "aba9620ac07c9fe27572fd37ba80df8d1deeded4",
+  "version": "1.9.0-alpha.5",
+  "files": {
+    "pyproject.toml": "cf9dcb3e63d4fdd264d397bcb81315075bdb6ccfe97f3bde175bb2dcc91f0f0e"
+  }
+}

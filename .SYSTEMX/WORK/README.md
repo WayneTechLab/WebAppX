@@ -69,9 +69,11 @@ bash .SYSTEMX/SYSTEMX.sh validate
 
 The lock coordinates CLI writes in one checkout. It is not a distributed lock,
 and direct file edits do not acquire it. Agent 0 owns shared writes. If a process
-crashes and leaves `state/coordination.lock`, establish that no writer is running
-before removing that empty lock directory. Do not delete task or agent records
-to recover a stale lock.
+crashes and leaves `state/coordination.lock`, inspect its `owner.json` for the
+recorded PID, host, and creation time. Cooperating writers wait up to one second
+before reporting contention. Confirm that the owner has stopped before manually
+removing a stale owner file and lock directory; missing or invalid metadata does
+not prove the lock is stale. Do not delete task or agent records to recover it.
 
 ## Current focus and bounded dispatch
 
@@ -110,7 +112,7 @@ blocked work for diagnosis; it does not certify dispatch readiness.
 Use the [evidence guide](../docs/EVIDENCE.md) to scope source and runtime claims
 and the [upgrade guide](../docs/UPGRADING.md) when adopting an existing layout.
 
-## Agent X events and Agent Z acceptance review
+## Agent Y delegation, Agent X events, and Agent Z review
 
 When standard roles are enabled, record meaningful observations with Agent X and
 review a task once with Agent Z at `needs_review`, or reuse a scorecard for the
@@ -118,3 +120,7 @@ same source/evidence/policy inputs. Link its report as supporting evidence; Agen
 0 or the user still accepts `done`. A score never changes task state or establishes
 production authority. An initial prompt can be reviewed on request. See
 [Agent X](../docs/AGENT-X.md) and [Agent Z](../docs/AGENT-Z.md).
+For a task assigned to `agent.y`, Agent 0 chooses a provider and explicit
+branch/PR policy; [Agent Y](../docs/AGENT-Y.md) returns a scoped CLI result.
+An open draft PR is not `done`. Ready, close, merge, and branch cleanup remain
+separate actions, and Agent Y never merges automatically.

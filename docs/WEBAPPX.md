@@ -11,11 +11,15 @@ previous repository commits and contributor history were not imported.
 Project identity, repository links and ownership documentation were adapted.
 The source template and private webapp-stack-g1 repository remain separate.
 
-The React/TypeScript/Vite/Tailwind/Firebase app, managed SYSTEMX release
-1.8.6-alpha.1, LAN builder, agent coordination, kits, setup workflows, research
-manifests and reviewed security fixes are retained. Historical validation and
+The React/TypeScript/Vite/Tailwind/Firebase app, LAN builder, agent coordination,
+kits, setup workflows, research manifests and reviewed security fixes are retained.
+Host 3.2.0 selects managed SYSTEMX 1.9.0-alpha.5 from public
+`aba9620ac07c9fe27572fd37ba80df8d1deeded4`; the original 1.8.6-alpha.1 snapshot
+remains immutable alongside it. The import preserves downstream records and
+uses backed-up recognized stock bootstrap migration. Historical validation and
 security receipts describe their original source revisions. Upstream licenses,
-notices and research attribution remain intact. Managed snapshots are immutable.
+notices and research attribution remain intact. See the
+[managed integration guide](SYSTEMX-INTEGRATION.md) for exact current provenance.
 
 ## Repository access and contribution policy
 

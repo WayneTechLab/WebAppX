@@ -19,7 +19,7 @@ def git(source, *args):
     return subprocess.check_output(['git', '-C', str(source), *args], text=True).strip()
 
 
-def sync(target, source, apply=False):
+def sync(target, source, apply=False, expected_commit=None):
     source = source.resolve()
     if git(source, 'rev-parse', '--show-toplevel') != str(source):
         raise ValueError('Source must be the standalone dotSYSTEMX repository root')
@@ -34,38 +34,54 @@ def sync(target, source, apply=False):
     live = git(source, 'ls-remote', 'origin', 'refs/heads/main').split()[0]
     if commit != live:
         raise ValueError('Source HEAD differs from public main; sync the standalone source first')
+    if expected_commit is not None and commit != expected_commit:
+        raise ValueError('Source revision differs from the reviewed expected commit; preview the new revision first')
     # Execute and import only tracked content from the exact verified revision.
     with tempfile.TemporaryDirectory(prefix='wtl-systemx-') as scratch:
         archive = subprocess.check_output(['git', '-C', str(source), 'archive', commit, '.SYSTEMX'])
         subprocess.run(['tar', '-xf', '-', '-C', scratch], input=archive, check=True)
         defaults = Path(scratch) / '.SYSTEMX'
-        sys.path.insert(0, str(defaults))
         spec = importlib.util.spec_from_file_location('systemx_import_manager', defaults / 'manager.py')
         manager = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(manager)
         bundle = manager.read_bundle(defaults)
+        if not hasattr(manager, 'bootstrap_refresh'):
+            raise ValueError('Source predates supported isolated bootstrap migration; use a reviewed current release')
         version = bundle['version']
         installed = target / '.SYSTEMX' / 'INSTALLATION.json'
         state = manager.load_state(target) if installed.exists() else None
         if state and manager.version_key(version) < manager.version_key(state['activeVersion']):
             raise ValueError('Refusing to downgrade selected defaults')
-        plan = manager.prepare(target, bundle)
+        plan = manager.prepare(target, bundle, initial=state is None)
         if plan['conflicts']:
             raise ValueError('; '.join(plan['conflicts']))
+        bootstrap = manager.bootstrap_refresh(target, source=defaults, version=version) if state else None
+        if bootstrap and bootstrap['conflicts']:
+            raise ValueError('; '.join(bootstrap['conflicts']))
         report = {
             'repository': UPSTREAM, 'commit': commit, 'version': version,
             'manifestSha256': bundle['manifestSha256'], 'applied': False,
             'add': plan['add'], 'preserve': plan['preserve'],
             'currentVersion': state['activeVersion'] if state else None,
         }
-        receipt = target / '.SYSTEMX' / 'imports' / (version + '.json')
+        if bootstrap:
+            # Keep machine paths and local backup identities out of provenance.
+            report['bootstrap'] = {name: bootstrap[name] for name in ('add', 'replace', 'applied')}
+        imports = manager.safe_path(target / '.SYSTEMX', 'imports')
+        receipt = manager.safe_path(target / '.SYSTEMX', 'imports/' + version + '.json')
+        if imports.exists() and not imports.is_dir():
+            raise ValueError('Import receipt parent must be a directory')
         if receipt.exists():
-            existing = json.loads(receipt.read_text())
+            existing = manager.decode(manager.regular_bytes(receipt))
             if (existing['commit'], existing['manifestSha256']) != (commit, bundle['manifestSha256']):
                 raise ValueError('Version receipt differs; publish a new upstream version')
         if apply:
+            backup = None
             if state:
-                manager.set_policy(target, pin='none')
+                refreshed = manager.bootstrap_refresh(target, source=defaults, version=version, apply=True)
+                report['bootstrap']['applied'] = refreshed['applied']
+                backup = refreshed.get('backup')
+                manager.set_policy(target, pin='none', auto_update='manual')
                 try:
                     manager.update(target, source=defaults, version=version)
                 finally:
@@ -74,16 +90,28 @@ def sync(target, source, apply=False):
                 manager.install(target, source=defaults, repository='WayneTechLab/dotSYSTEMX')
             report['applied'] = True
             report['importedAt'] = datetime.now(timezone.utc).isoformat()
-            receipt.parent.mkdir(parents=True, exist_ok=True)
+            manager.safe_path(target / '.SYSTEMX', 'imports/' + version + '.json')
+            imports.mkdir(parents=True, exist_ok=True)
             # Identical reimports retain their first receipt and timestamp.
             if receipt.exists():
-                existing = json.loads(receipt.read_text())
+                existing = manager.decode(manager.regular_bytes(receipt))
                 if (existing['commit'], existing['manifestSha256']) != (commit, bundle['manifestSha256']):
                     raise ValueError('Version receipt differs; publish a new upstream version')
             else:
-                temporary = receipt.with_suffix('.tmp')
-                temporary.write_text(json.dumps(report, indent=2) + '\n')
-                os.replace(temporary, receipt)
+                descriptor, temporary = tempfile.mkstemp(prefix=version + '-', suffix='.tmp', dir=imports)
+                try:
+                    with os.fdopen(descriptor, 'w', encoding='utf-8') as stream:
+                        stream.write(json.dumps(report, indent=2) + '\n')
+                        stream.flush()
+                        os.fsync(stream.fileno())
+                    manager.safe_path(target / '.SYSTEMX', 'imports/' + version + '.json')
+                    os.replace(temporary, receipt)
+                finally:
+                    if os.path.exists(temporary):
+                        os.unlink(temporary)
+            if backup:
+                # Returned for the operator; deliberately absent from the receipt.
+                report['bootstrapBackup'] = backup
         return report
 
 
@@ -92,9 +120,10 @@ def main():
     parser.add_argument('--source', type=Path, default=Path(os.environ.get('WTL_SYSTEMX_SOURCE', Path.home() / 'Documents/ChatGPT/dotSYSTEMX')))
     parser.add_argument('--target', type=Path, default=ROOT)
     parser.add_argument('--apply', action='store_true', help='append verified defaults, select and pin them, record provenance')
+    parser.add_argument('--expected-commit', help='require the exact public revision reviewed in the preview')
     args = parser.parse_args()
     try:
-        print(json.dumps(sync(args.target.resolve(), args.source, args.apply), indent=2))
+        print(json.dumps(sync(args.target.resolve(), args.source, args.apply, args.expected_commit), indent=2))
     except (ValueError, OSError, subprocess.CalledProcessError) as error:
         print('SYSTEMX import failed: ' + str(error), file=sys.stderr)
         return 1

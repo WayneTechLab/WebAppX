@@ -7,13 +7,26 @@ from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+TEXT_SUFFIXES = {'.json', '.md', '.ps1', '.py', '.sh'}
+TEXT_NAMES = {'.gitattributes', '.gitignore', 'LICENSE', 'VERSION'}
+BOOTSTRAP_FILES = ('manager.py', 'lifecycle.py', 'versions.py', 'systemx_paths.py',
+                   'SYSTEMX.sh', 'SYSTEMX.ps1', 'INSTALL.sh', 'INSTALL.ps1')
 
 
-def digest(path, upstream=False):
+def digest(path, upstream=False, *, name=None, schema=1):
     data = path.read_bytes()
-    # Follow the upstream manager manifest contract, including binary normalization.
     if upstream:
-        data = data.replace(b"\r\n", b"\n")
+        # Historical schema 1 normalized every file. Schema 2 retains that
+        # equivalence only for reviewed UTF-8 text; media/unknown types are exact.
+        if schema not in (1, 2):
+            raise ValueError('Unsupported distribution manifest schema')
+        text = schema == 1 or name in TEXT_NAMES or Path(name or '').suffix in TEXT_SUFFIXES
+        if text:
+            if schema == 2:
+                data.decode('utf-8')
+                if b'\x00' in data:
+                    raise ValueError('Distribution text contains NUL bytes: ' + str(name))
+            data = data.replace(b"\r\n", b"\n")
     return hashlib.sha256(data).hexdigest()
 
 
@@ -24,19 +37,39 @@ def validate(root):
     seeds = json.loads((system / 'config/template-records.json').read_text())['sha256']
     for rel, expected in seeds.items():
         path = system / rel
-        if not path.is_file() or digest(path) != expected:
+        if not path.is_file() or digest(path, upstream=True) != expected:
             errors.append('Reusable seed differs: ' + rel)
     state = json.loads((system / 'INSTALLATION.json').read_text())
     version = state['activeVersion']
     release = system / '.systemx/releases' / version
-    manifest_path = release / 'config/distribution.json'
-    manifest = json.loads(manifest_path.read_text())
-    if digest(manifest_path, upstream=True) != state['releases'][version]:
-        errors.append('Selected release manifest fingerprint differs')
-    for rel, expected in manifest['files'].items():
-        path = release / rel
-        if not path.is_file() or digest(path, upstream=True) != expected:
-            errors.append('Immutable upstream file differs: ' + rel)
+    for retained, fingerprint in state['releases'].items():
+        snapshot = system / '.systemx/releases' / retained
+        manifest_path = snapshot / 'config/distribution.json'
+        manifest = json.loads(manifest_path.read_text())
+        if digest(manifest_path, upstream=True) != fingerprint or manifest['version'] != retained:
+            errors.append('Release manifest fingerprint differs: ' + retained)
+        for rel, expected in manifest['files'].items():
+            path = snapshot / rel
+            try:
+                valid = (path.is_file() and not path.is_symlink() and
+                         digest(path, upstream=True, name=rel, schema=manifest['schemaVersion']) == expected)
+            except (ValueError, UnicodeError):
+                valid = False
+            if not valid:
+                errors.append('Immutable upstream file differs: ' + rel + ' (' + retained + ')')
+        listed = set(manifest['files']) | {'config/distribution.json'}
+        for path in snapshot.rglob('*'):
+            if path.is_symlink() or (path.is_file() and path.relative_to(snapshot).as_posix() not in listed):
+                errors.append('Unexpected immutable upstream path: ' + str(path.relative_to(snapshot)))
+    # Refreshed stock launchers must operate the selected manifest format.
+    if tuple(int(part) for part in version.split('-')[0].split('.')) >= (1, 8, 7):
+        selected_manifest = json.loads((release / 'config/distribution.json').read_text())
+        for rel in BOOTSTRAP_FILES:
+            path = system / rel
+            if (not path.is_file() or path.is_symlink() or
+                    digest(path, upstream=True, name=rel, schema=selected_manifest['schemaVersion']) !=
+                    selected_manifest['files'][rel]):
+                errors.append('Root bootstrap differs from selected release: ' + rel)
     if state['pinnedVersion'] != version or state['autoUpdate'] != 'manual':
         errors.append('Upstream defaults must be pinned with manual updates')
     for package in ('LAN-Builder', 'Webflow'):

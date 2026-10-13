@@ -20,22 +20,43 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 | Command | Behavior |
 | --- | --- |
 | `npm run systemx -- menu` | Managed tooling menu; WSG menu option 12 opens the same tools |
+| `npm run systemx -- tools-guide` | Selected CLI/tools, Python API and explicit child-scope guide |
 | `npm run systemx:status` | Selected release, pin/update policy and immutable integrity |
 | `npm run systemx:validate` | Validate outer project records and generated work views |
 | `npm run systemx:context` | Bounded Agent 0 resume packet |
 | `npm run systemx -- status` | Recorded task counts; separate from installation status |
 | `npm run systemx -- projects list` | Registered child-project scopes |
-| `npm run systemx -- roles-init` | Preview Agent X/Z role initialization |
+| `npm run systemx -- roles-init` | Preview optional Agent X/Y/Z role initialization; no provider starts |
+| `npm run systemx -- agent-y providers` | Read installed CLI availability without executing a task |
 | `npm run systemx:upstream:check` | Read-only preview against reviewed dotSYSTEMX public main |
-| `npm run systemx:upstream:import` | Explicit additive import and pin; retains host files and adopted records |
+| `npm run systemx:upstream:import` | Back up/refresh recognized stock bootstraps, append defaults and pin; preserve adopted records |
 
 Set `WTL_SYSTEMX_SOURCE` or use `python3 -B scripts/sync-systemx.py --source
 /path/to/dotSYSTEMX` when the standalone checkout lives elsewhere. Installation
 status is not task status, and registered roles are not observed worker processes.
+Add `-- --expected-commit <reviewed-public-main-sha>` to the npm upstream
+preview/import commands to require the exact reviewed source revision.
+Current defaults are 1.9.0-alpha.5. The registry seeds only Agent 0; an adopted
+project must activate optional roles and select Agent Y's provider, task scope
+and branch/PR policy explicitly. A draft PR does not establish task acceptance.
+
+With a separately installed current SYSTEMX CLI, route children from the outer
+directory with explicit scope:
+
+```bash
+systemx projects --target "/path/to/workspace" -- list
+systemx projects --target "/path/to/workspace" -- context --project NAME --agent agent.0
+```
+
+This uses verified selected defaults and is offline by default. The folder
+launcher also supports `npm run systemx -- projects context --project NAME --agent agent.0`.
 
 The managed launchers are `bash .SYSTEMX/SYSTEMX.sh <command>` and
 `.\.SYSTEMX\SYSTEMX.ps1 <command>` in PowerShell. The legacy WSG menu and
 full template gate use Bash; Node-based app/LAN commands remain separate.
+Native Windows Agent Y `run --apply` fails closed pending verified descendant
+process termination. Core PowerShell commands and role/job previews remain
+available. macOS checks alone do not prove Windows x64/ARM64 runtime acceptance.
 
 ## Validation and maintenance
 
@@ -57,7 +78,10 @@ full template gate use Bash; Node-based app/LAN commands remain separate.
 For adopted applications, configure appropriate checks in `.SYSTEMX/project.json`.
 The template's blank-seed release checks are for maintaining the reusable template.
 
-## Identical template mirrors
+## Optional template mirrors
+
+WebAppX has no configured private mirror. Use this workflow only for a separately
+selected reusable template target.
 
 ```bash
 # Preview changes from this clean, committed source:

@@ -1,6 +1,6 @@
 # WebAppX — SYSTEMX Forever WebApp
 
-**Unified public template 3.1.0 · managed dotSYSTEMX 1.8.6-alpha.1**
+**Unified public template 3.2.0 · managed dotSYSTEMX 1.9.0-alpha.5**
 
 A reusable React, TypeScript, Vite, Tailwind and Firebase webapp with the full
 managed SYSTEMX operating layer, a guarded local LAN builder, production and
@@ -24,19 +24,34 @@ Use `npm run systemx:session:status` and `npm run systemx:session:stop` to inspe
 and stop that session. Firebase configuration belongs to the adopted project.
 
 SYSTEMX includes project and child-workspace management, bounded Agent 0
-coordination, Agent X event records, Agent Z repeatable reviews, task/dependency
-tracking, context and memory, release management, and verified upstream imports.
-Role records and research plans do not start agents or implement future features.
-The shipped project/task/memory records are blank reusable seeds.
+coordination, Agent X event records, optional Agent Y CLI handoffs, Agent Z
+repeatable reviews, task/dependency tracking, context and memory, release
+management, and verified upstream imports. The new access matrix and project map
+are blank records for adopted projects. The registry seeds only Agent 0;
+importing the release does not activate roles or start a provider. Agent Y needs
+a selected installed CLI, a bounded task and an explicit branch/PR policy.
+The shipped project/task/memory records remain blank reusable seeds.
 
 Read the [getting-started guide](docs/GETTING-STARTED.md),
 [command reference](docs/COMMANDS.md), [template maintenance guide](docs/TEMPLATE-MAINTENANCE.md),
 and the [integration guide](docs/SYSTEMX-INTEGRATION.md),
 [adoption example](docs/examples/private-template-adoption.md),
-[release provenance and feature map](docs/UNIFIED-TEMPLATE.md), and
+[release provenance and feature map](docs/UNIFIED-TEMPLATE.md),
+[3.2.0 validation receipt](docs/VALIDATION-3.2.0.md), and
 [entry point](.SYSTEMX/START-HERE.md). Preview upstream updates with
 `npm run systemx:upstream:check`; apply reviewed updates with
 `npm run systemx:upstream:import`. The upstream distribution is immutable and pinned.
+The importer previews recognized stock bootstrap replacements, then backs up
+and refreshes them before selecting changed defaults. Original snapshots and
+adopted downstream records remain preserved. The schema 2 distribution manifest
+hashes media and unknown files byte for byte.
+
+Use `npm run systemx -- tools-guide` for the selected command guide. A separately
+installed current SYSTEMX CLI can route child records explicitly with
+`systemx projects --target "/path/to/workspace" -- context --project NAME --agent agent.0`.
+Core PowerShell launchers are included; native Windows Agent Y `run --apply`
+remains unavailable pending verified descendant-process termination. Local
+macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
 ## Retained webapp capabilities and setup reference
 
@@ -392,6 +407,7 @@ WSG-MENU
 | `npm run systemx:validate` | Validate the adopted project's records and work views |
 | `npm run systemx:context` | Load a bounded Agent 0 resume packet |
 | `npm run systemx -- menu` | Open managed project, role and workspace tools |
+| `npm run systemx -- tools-guide` | Read the selected CLI/tools and child-scope guide |
 | `npm run systemx:upstream:check` | Preview current standalone defaults |
 | `npm run systemx:upstream:import` | Explicitly import and pin reviewed defaults |
 | `npm run template:check` | Validate blank reusable-template seeds and packaged integrity |
@@ -484,7 +500,9 @@ deep-dive home for:
 
 ## Versioning
 
-Current unified template version: **3.1.0**.
+Current unified template version: **3.2.0**. Its managed defaults are pinned to
+**dotSYSTEMX 1.9.0-alpha.5**; the host application and standalone versions are
+maintained independently.
 
 README is the landing page. Release history belongs in the
 [wiki update log](https://github.com/WayneTechLab/WebAppX/blob/main/wiki/Update-Log.md)

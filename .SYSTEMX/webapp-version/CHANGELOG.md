@@ -1,3 +1,24 @@
+# 3.2.0 — Managed SYSTEMX 1.9 integration — 2026-10-12
+
+- Import public dotSYSTEMX 1.9.0-alpha.5 at
+  aba9620ac07c9fe27572fd37ba80df8d1deeded4; retain the immutable 1.8.6-alpha.1
+  snapshot and select the new release with a manual pin.
+- Include optional Agent Y CLI handoffs and draft PR workflows, explicit child
+  project CLI routing, blank access matrices and maps, and current tools guides.
+- Preview and back up recognized stock bootstrap changes before imports;
+  preserve adopted records and host extensions and support exact reviewed commits.
+- Verify schema-2 media byte for byte, retained snapshots and stock launchers;
+  expand blank-seed checks and ignore private root and child CLI runtime state.
+- Refresh reviewed stock outer guidance while retaining webapp/LAN functionality,
+  production kits, research packages and their checksums, and frozen media.
+- Patch the root and starter source-map-js locks to 1.2.2 after the strict audit
+  detected GHSA-68fv-2mgg-jv7q in 1.2.1.
+- Stage unchanged upstream tests with exact, source-bound packaging metadata in
+  temporary copies; keep Markdown validation out of private runtime folders and
+  symlink targets.
+- Keep Hosting preflight from appending deployment-history entries; preserve
+  version, changelog and deployment metadata during check modes.
+
 # 3.1.0 — Unified public and private template
 
 - Combine managed dotSYSTEMX 1.8.6-alpha.1 tooling, project/workspace lifecycle, agent records, event/review roles and reusable seeds with the Firebase webapp.

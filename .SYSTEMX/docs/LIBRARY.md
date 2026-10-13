@@ -4,6 +4,8 @@ SYSTEMX can be copied as a self-contained folder or installed as the `dotsystemx
 Python distribution, which exposes the `systemx` command and importable module.
 The package includes the same template files and uses no third-party runtime
 dependencies. A package installation does not initialize or alter any project.
+The [CLI and tools guide](CLI-TOOLS.md) compares the manager, local launchers,
+runtime commands, Python API, and Agent Y's external Git/provider tools.
 
 ## Install into a chosen Python environment
 
@@ -12,7 +14,7 @@ From the public Git repository:
 ```bash
 python3 -m venv .venv
 # Activate this environment using your platform's normal command, then:
-python -m pip install "git+https://github.com/WayneTechLab/dotSYSTEMX.git@v1.8.4-alpha.1"
+python -m pip install "git+https://github.com/WayneTechLab/dotSYSTEMX.git@v1.9.0-alpha.5"
 systemx setup --profile project
 systemx install --target "/path/to/project" --profile project
 ```
@@ -25,11 +27,18 @@ be installed with `python -m pip install /path/to/dotSYSTEMX`, or use its publis
 wheel without Git. The package is distributed through GitHub; no PyPI publication
 is implied. Select exact versions from the [release history](https://github.com/WayneTechLab/dotSYSTEMX/wiki/Versions-and-Changelog).
 
+The installed `systemx` command resolves its package before it can restart in
+isolated mode. If `PYTHONPATH` or the working directory is untrusted, invoke
+the chosen virtual environment's Python as `python -I -B -m systemx ...` from
+the initial start. Python `-I` hides user-site installs. The importable library
+inherits its caller's Python import environment; do not treat a library import
+as an isolation boundary.
+
 Upgrading the Python package only updates that tool environment. Each project's
 default version and pin remain independent. `systemx update --target ...` selects
 project defaults under the [preservation contract](INSTALLATION.md).
 
-The public release ID `1.8.4-alpha.1` is spelled `1.8.4a1` in Python package
+The public release ID `1.9.0-alpha.5` is spelled `1.9.0a5` in Python package
 metadata and wheel filenames (PEP 440). They identify the same release.
 `systemx --version` shows both; `status --target ...` shows project defaults.
 The library and CLI are alpha APIs; review [release policy](RELEASE-POLICY.md)
@@ -38,7 +47,7 @@ before upgrading integrations.
 ## Python API
 
 ```python
-from systemx import install, update, status, set_policy, export_chat, alias
+from systemx import install, update, bootstrap_refresh, status, set_policy, export_chat, alias
 
 # Plan without touching the target, using a local reviewed distribution:
 plan = install("/path/to/project", source="/path/to/template/.SYSTEMX",
@@ -48,9 +57,16 @@ plan = install("/path/to/project", source="/path/to/template/.SYSTEMX",
 result = install("/path/to/project", source="/path/to/template/.SYSTEMX")
 print(status("/path/to/project"))
 
+# A changed-release update may require a previewed root bootstrap refresh.
+new_source = "/path/to/new-template/.SYSTEMX"
+refresh_plan = bootstrap_refresh("/path/to/project", source=new_source)
+if refresh_plan["conflicts"]:
+    raise RuntimeError("Review the bootstrap conflict before updating")
+bootstrap_refresh("/path/to/project", source=new_source, apply=True)
+
 # Updates require explicit unlocking of the default pin:
 set_policy("/path/to/project", pin="none")
-update("/path/to/project", source="/path/to/new-template/.SYSTEMX", dry_run=True)
+update("/path/to/project", source=new_source, dry_run=True)
 
 # Export only to a new file; nothing is uploaded:
 export_chat("/path/to/project", "/path/to/new-session.md", agent="agent.0")
@@ -61,14 +77,62 @@ Management functions return structured dictionaries. `run` and `projects` return
 filesystem or network actions. The CLI renders management results as JSON and
 uses exit status 2 for a rejected operation. Project command execution preserves
 the underlying command's exit status. Use `systemx run --target ... -- <command>`
-to invoke the selected defaults against that project's canonical records.
+to invoke the selected defaults against that project's canonical records. The
+managed runner starts in Python isolated mode (`-I`) after verifying its selected
+release cache.
+
+`systemx run` requires a managed installation at the selected target. It does
+not fall back to running `target/.SYSTEMX/scripts/systemx.py` when
+`INSTALLATION.json` is absent. For a folder-only copy, explicitly run its local
+launcher only after reviewing and trusting that checkout. When inspecting an
+untrusted copy, use a trusted external tool for read-only `audit` or an install
+preview; do not execute that copy's launchers or Python scripts. A manifest and
+installation state stored inside an untrusted checkout are not independent proof
+of its origin. Treat managed `run` as execution of a project you trust, including
+its configuration and selected release cache.
+
+`bootstrap_refresh` is an explicit exception to normal additive updates. It
+previews by default, accepts only eight stock root bootstrap and launcher files
+when existing copies match the intended release or an intact retained release,
+and refuses customized copies. A truly absent stock file may appear in `add` only
+if no intact retained release ever contained it; otherwise its absence is a
+conflict. With `apply=True`, it creates only those absent files, stores
+byte-for-byte originals for recognized replacements under
+`.SYSTEMX/.systemx/history/bootstrap-.../`, and replaces only recognized stock
+files. Refreshed shell/PowerShell launchers invoke the manager with Python
+isolated mode (`-I`). It does not select a version, change a pin, or update user
+records. The CLI command is
+`systemx bootstrap-refresh --target PATH [--source REVIEWED_SYSTEMX] [--apply]`.
+Use a reviewed new external library or manager for this step, not an older copy
+inside the target. See [upgrade sequence](UPGRADING.md#refresh-the-root-bootstrap-before-a-changed-release).
+This library can inspect older managed state with `status`. `install` and `update`
+and `bootstrap_refresh` refuse a target release below **1.8.7-alpha.1**, where native isolated runner
+support begins. `run` can still invoke an already selected, verified older
+snapshot through an isolated compatibility shim. Its code and record behavior
+remain historical. Reselecting an older release requires a separately reviewed
+backup or legacy path, not a library rollback flag.
 
 `install` defaults to the package's bundled version. Supply `version` to fetch a
 specific GitHub release, or `source` for offline installation. `update` uses the
-installation's selected repository unless given a local source. Downloaded files
-are bounded, path-checked, and fingerprint-verified; archives are never blindly
-extracted into a project. Existing root files are opened only for inspection or
-left alone, and missing files are created exclusively.
+installation's selected repository unless given a local source. For an explicit
+remote version, `install`, `update`, and `first_run` accept
+`archive_sha256="<64-hex digest>"`; the CLI spells this `--archive-sha256`.
+Obtain the digest independently for the **exact codeload tag ZIP** that the
+manager downloads. It is checked before ZIP parsing. It cannot be supplied with
+`source` or without `version`; opted-in startup discovery only reports release
+metadata and does not fetch an archive. A checksum for a separately published
+archive or wheel is not interchangeable. The selected digest and whether it was
+explicitly pinned appear
+in `status` and manager-owned installation state. See [installation](INSTALLATION.md)
+for the trust and retry boundaries.
+
+Downloaded files are bounded, path-checked, and fingerprint-verified; archives
+are never blindly extracted into a project. The selected release cache also
+rejects unexpected physical entries before executing its runner. Existing root
+files are opened only for inspection or left alone, and missing files are
+created exclusively during ordinary install/update. Fresh adoption refuses any
+manifest-listed executable `.py`, `.sh`, or `.ps1` default that already exists
+with different bytes; it does not execute or overwrite the conflicting file.
 
 These functions are a possible future adapter boundary for MCP or other tools.
 Such an adapter would still need explicit target selection, access controls,
@@ -108,6 +172,22 @@ removal/restore from an external environment or checkout. Preserve the receipt
 and use the [cleanup guide](UNINSTALL.md) for package removal and intentional leftovers.
 
 ## SYSTEMX PROJECTS API and selected chat export
+
+The direct CLI uses the same `projects` API and defaults to offline startup:
+
+```bash
+systemx projects --target "/path/to/workspace" -- list
+systemx projects --target "/path/to/workspace" -- add Project-A --kind software
+systemx projects --target "/path/to/workspace" -- add Project-A --kind software --apply
+systemx projects --target "/path/to/workspace" -- context --project Project-A --agent agent.0
+systemx projects --target "/path/to/workspace" -- roles-init --project Project-A
+```
+
+Place optional `--offline` or `--online` before the `--` argument separator.
+`--online` permits an independently opted-in startup release check; it does not
+select a new version. The existing `systemx run --target PATH --offline --
+projects ...` form remains compatible. Both require a managed outer installation;
+a child `.SYSTEMXP` is never an installation target.
 
 ```python
 from systemx import projects, export_chat

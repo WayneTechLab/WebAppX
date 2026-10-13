@@ -1,5 +1,26 @@
 # Update Log
 
+## 3.2.0 — 2026-10-12
+
+- Select managed dotSYSTEMX 1.9.0-alpha.5 from public main
+  `aba9620ac07c9fe27572fd37ba80df8d1deeded4`, with manifest fingerprint
+  `483e564855c8f3ecd9255a06fdb7994a0df85cc23fa3a531ecd638746378cd37`.
+- Extend import preview/apply with recognized stock bootstrap migration and
+  exact local backups before selecting new defaults. Preserve original snapshots,
+  downstream records, configured commands and webapp/LAN/KIT/setup extensions.
+- Include optional Agent Y CLI handoffs and branch/PR controls, the CLI/tools
+  guide, explicit installed-CLI `.SYSTEMXP` routing and blank access/map seeds.
+  The public registry remains Agent 0 only; this import activates no roles.
+- Verify schema 2 media and unknown files byte for byte while retaining the
+  historical manifest contract for earlier snapshots.
+- Keep native Windows Agent Y execution unavailable pending verified descendant
+  process termination. Platform tests and Firebase deployment remain distinct
+  acceptance boundaries; the historical 3.1.0 receipt retains its original scope.
+
+The release gates are `npm run ci:all`, `npm run sync:system:check` and
+`npm run deploy -- hosting --preflight`. This entry describes the source change;
+it does not claim completed publication, Windows runtime tests or hosting deployment.
+
 ## 3.1.0 documentation refresh — 2026-10-04
 
 - Add getting-started, current command and identical-mirror maintenance guides.

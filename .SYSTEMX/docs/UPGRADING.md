@@ -4,14 +4,35 @@ Treat the reusable standard and an active project's records as different kinds
 of content. Review an update in the intended checkout, preserve local changes,
 and merge the standard without replacing the project's accepted plan or memory.
 Each project selects its own defaults; updates do not synchronize project memory
-or configure automatic updates in other projects.
+or configure startup update checks in other projects.
 
 ## Upgrade to the alpha series
 
 Install the new external CLI before selecting an alpha version; managers from
 1.5.0 and earlier only accept numeric final IDs. Follow the exact commands in
 [release policy](RELEASE-POLICY.md). Existing schema-1 project records and manager
-state remain supported. Alpha does not grant permission to reset or overwrite them.
+state remain supported. The manager reads schema-1 installation state and saves
+schema 2 with archive-digest receipts on its next state write; old releases receive
+`null` receipts. Task and role record schemas remain unchanged. Alpha does not
+grant permission to reset or overwrite them.
+
+The distribution manifest is separate from project records and installation
+state. Releases from `1.9.0-alpha.3` use manifest schema 2 so binary and unknown
+files have byte-exact hashes. A preserved manager that only recognizes manifest
+schema 1 cannot select those releases. Use the reviewed external manager and
+backed-up bootstrap refresh below before updating; older retained releases stay
+readable through their historical schema-1 manifests.
+
+The new manager can inspect an older selected installation with `status`, run
+its verified retained snapshot through an isolated compatibility shim, and
+perform the external bootstrap/update migration below. It cannot install or
+newly select a release older than **1.8.7-alpha.1**. That is the first release
+with native isolated runner support, and `bootstrap-refresh` requires a target
+release at or above that floor. The compatibility shim keeps the old
+selected runner available if the refresh succeeds but the update fails; the old
+code still has its historical behavior and record compatibility limits.
+Historical reselection below this floor needs a separately reviewed backup or
+legacy path, not a manager rollback flag.
 
 ## Managed installs and preserved files
 
@@ -22,13 +43,79 @@ version independently for each project. New installs are pinned with manual
 updates. The root VERSION remains the initial seed version; installation state
 identifies the currently selected defaults.
 
-An older project's launcher is preserved, too. During adoption use the installed
-`systemx run --target ... -- ...` command or the added `manager.py run` interface
-to select new defaults. Existing old shell scripts cannot be silently replaced.
+An older project's wrapper scripts are preserved by ordinary updates, too. During adoption use a
+reviewed new external `systemx` command or `manager.py` from outside the target
+to select new defaults. Existing old shell and PowerShell scripts are not
+silently replaced and might not expose new commands. The eight stock root
+bootstrap and launcher files have a narrow, explicit refresh path below.
+In particular, an older preserved root manager may still **select a release at
+startup** when `--auto on-start` is enabled. Set `--auto manual` with the reviewed
+external manager before invoking that root launcher, then follow the backed-up
+bootstrap refresh and update sequence below. Re-enable `--auto on-start` only
+after the new root manager and selected defaults are verified; in the new
+contract it reports an available release without downloading or selecting it.
 Review any custom root guidance against the selected release, and use `validate`
 to check the existing records before continuing. Adoption does not migrate or
 clear incompatible legacy ledgers, rewrite old generated views, or assert
 application readiness. Perform any needed record reconciliation explicitly.
+
+## Refresh the root bootstrap before a changed release
+
+An ordinary changed-release `update`, including its dry run, refuses a target
+whose root `manager.py`, `lifecycle.py`, `versions.py`, `systemx_paths.py`,
+`SYSTEMX.sh`, `SYSTEMX.ps1`, `INSTALL.sh`, or `INSTALL.ps1` differs from the
+intended release. This prevents a preserved old manager or launcher from quietly
+operating newer state. Use a **reviewed new tool outside the target** to preview
+and, if appropriate, refresh those eight stock files first. For an offline
+reviewed checkout, replace both paths in this sequence:
+
+```bash
+python3 -I -B "/path/to/reviewed-template/.SYSTEMX/manager.py" bootstrap-refresh \
+  --target "/path/to/project" --source "/path/to/reviewed-template/.SYSTEMX"
+python3 -I -B "/path/to/reviewed-template/.SYSTEMX/manager.py" bootstrap-refresh \
+  --target "/path/to/project" --source "/path/to/reviewed-template/.SYSTEMX" --apply
+python3 -I -B "/path/to/reviewed-template/.SYSTEMX/manager.py" policy \
+  --target "/path/to/project" --pin none --auto manual
+python3 -I -B "/path/to/reviewed-template/.SYSTEMX/manager.py" update \
+  --target "/path/to/project" --source "/path/to/reviewed-template/.SYSTEMX" --dry-run
+python3 -I -B "/path/to/reviewed-template/.SYSTEMX/manager.py" update \
+  --target "/path/to/project" --source "/path/to/reviewed-template/.SYSTEMX"
+python3 -I -B "/path/to/reviewed-template/.SYSTEMX/manager.py" policy \
+  --target "/path/to/project" --pin current
+python3 -I -B "/path/to/reviewed-template/.SYSTEMX/manager.py" run \
+  --target "/path/to/project" --offline -- validate
+```
+
+On Windows, use `py -3 -I -B` with the same external manager path. Isolated mode
+keeps the script directory and ambient Python path settings out of import lookup.
+Review the preview's `add`, `replace`, and `conflicts` fields before applying it.
+`bootstrap-refresh` accepts existing root bytes only if they match the target
+release or an **intact retained release**. It may add a stock bootstrap file only
+when the path is absent and that file was absent from every intact retained
+historical release. For example, a genuine v1.5.0 installation can gain the later
+`versions.py`. If a file existed in any retained release but is now missing, or
+if its contents are customized or unrecognized, refresh stops for manual review.
+Applying the preview creates only absent `add` files, saves byte-for-byte
+originals for `replace` files under `.SYSTEMX/.systemx/history/bootstrap-.../`,
+and records the operation. An add-only refresh has no original file to back up.
+It replaces only recognized bootstrap and launcher files, including stock
+shell/PowerShell wrappers; the refreshed launchers invoke the manager with
+Python isolated mode (`-I`). It leaves project-owned records, other root defaults,
+version selection, and the pin untouched. Keep the reported backup path with the
+upgrade evidence.
+The later `update` remains additive and selects the new default snapshot.
+`bootstrap-refresh` refuses to replace these stock files with an older release;
+do not present it as a rollback mechanism. A later supported-version selection
+can work only when stock bootstrap and launcher files already match and the
+project records remain compatible.
+
+An external `systemx bootstrap-refresh` from a newly installed library offers
+the same preview and `--apply` flow. You may use an exact remote `--version`
+with `--archive-sha256` for both refresh and update if the digest belongs to the
+exact downloaded codeload ZIP. Do not run the old root manager to perform this
+migration. Customized or unrecognized wrappers need separate manual review; the
+refresh refuses them. No command here automatically repairs custom wrappers or
+application migrations.
 
 ## Existing 1.1.0 projects
 
@@ -105,14 +192,19 @@ schemas and occupied destinations without replacing them. Preserve the original
 records, IDs, evidence, and private source references. Do not copy real project
 records into the public template or blank creation seeds.
 
-## Agent X/Z adoption
+## Agent X/Y/Z adoption
 
 Update the selected defaults to a compatible release, verify it, and keep the
 version pinned. Preview `roles-init` in each intended scope before applying it.
 An update alone preserves registries and does not activate roles. The public seed
 registry remains Agent 0 only so existing managed launchers can verify upgraded
-defaults. Once `agent.x` or `agent.z` is registered, older tool versions cannot
-interpret those IDs: review migration or restore a pre-activation backup before
-rolling back. Never delete events or review records to make a downgrade appear
-successful. Project `REVIEWS/POLICY.json` is preserved; adopt later default
+defaults. A selected tool must support every activated role ID. Agent Y requires
+defaults from 1.9.0-alpha.2 or later; an older X/Z-capable runner may reject
+`agent.y`. Review migration or restore a pre-activation backup before
+historical recovery. The current manager cannot newly select releases below its
+1.8.7-alpha.1 floor, though it can invoke an already selected verified older
+snapshot through the compatibility shim. Never delete events, CLI job records,
+or review records
+to make a downgrade
+appear successful. Project `REVIEWS/POLICY.json` is preserved; adopt later default
 questions only through an explicit versioned policy edit.

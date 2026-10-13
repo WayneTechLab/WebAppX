@@ -12,11 +12,35 @@ Compare Git tree hashes for exact parity after any intentional identity changes.
 | --- | --- | --- |
 | Standalone defaults | Public dotSYSTEMX | `systemx:upstream:check` / explicit `systemx:upstream:import` |
 | Webapp and host operations | This template | App/LAN/KIT/setup changes and `sync:system:check` |
-| Public/private parity | Reviewed template maintainer | `scripts/sync-template.py` and Git publication |
+| Optional mirror parity | Reviewed template maintainer | `scripts/sync-template.py` and Git publication |
 
-An upstream import does not update the other webapp repository or publish a wiki.
+An upstream import applies to the selected target and does not publish a wiki.
 Host governance sync does not import standalone defaults or mirror a repository.
 Each operation has a separate preview/check and explicit mutation boundary.
+
+## Managed standalone updates
+
+The 3.2.0 host selects dotSYSTEMX 1.9.0-alpha.5. Preview with
+`npm run systemx:upstream:check`, then apply the reviewed plan with
+`npm run systemx:upstream:import`. The importer verifies a clean standalone
+checkout against exact public `main`, archives that revision and uses its
+reviewed external manager. Preview includes required stock bootstrap changes.
+Apply backs up recognized manager/launcher originals under ignored local
+`.SYSTEMX/.systemx/history/` before refresh, adds the immutable snapshot and
+missing outer files, then pins the selected release with manual updates.
+The returned `bootstrapBackup` path is local evidence; tracked provenance keeps
+only relative bootstrap filenames and the import commit/fingerprint.
+Add `-- --expected-commit <reviewed-public-main-sha>` to both npm upstream
+commands to bind preview and apply to the reviewed revision.
+
+Customized bootstraps and altered retained snapshots are conflicts. Preserve
+downstream context, plans, tasks, memory, configured commands, original releases
+and host extensions. The new blank access/map seeds and optional Agent Y guides
+do not activate roles or providers. Schema 2 media hashes are byte exact; avoid
+normalizing binary bytes when verifying an import.
+For this reusable base, outer stock tooling/guidance may be reconciled only
+after matching the old retained release. That maintenance step does not add
+blanket replacement of downstream files to the importer.
 
 ## Review and validate the source
 
@@ -38,6 +62,11 @@ and repeat the affected checks. Version the app independently of the managed
 standalone release. Documentation-only updates can retain the app version.
 The `webapp-version/` directory avoids a case-insensitive collision with
 standalone `VERSION`.
+
+Core PowerShell record tools are included. Native Windows Agent Y
+`run --apply` remains unavailable pending verified descendant-process
+termination. Report the actual host and checks performed; macOS checks do not
+establish Windows x64/ARM64 or deployed Firebase acceptance.
 
 Commit the reviewed source before mirroring. Use its own repository's normal
 Git workflow and publication authorization; do not import private Git history
@@ -83,4 +112,5 @@ Source publication and wiki publication are separate from Firebase hosting.
 
 See [release provenance](UNIFIED-TEMPLATE.md),
 [managed integration](SYSTEMX-INTEGRATION.md) and the
-[3.1.0 validation receipt](VALIDATION-3.1.0.md).
+historical [3.1.0 validation receipt](VALIDATION-3.1.0.md). That receipt covers
+its examined revision and does not validate the 3.2.0 update.

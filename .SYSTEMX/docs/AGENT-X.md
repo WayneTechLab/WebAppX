@@ -14,14 +14,22 @@ bash .SYSTEMX/SYSTEMX.sh roles-init --apply
 bash .SYSTEMX/SYSTEMX.sh projects roles-init --project Project-A --apply
 ```
 
-Setup previews first. Applying it registers Agent X and Agent Z, creates their
-blank memory and records, and logs the operation. It preserves all existing files
+Setup previews first. Applying it registers Agent X, [Agent Y](AGENT-Y.md), and
+Agent Z, creates their blank memory and records, and logs the operation. Agent Y
+is an optional external CLI worker; registration does not launch a provider or
+authorize a branch or PR action. Setup preserves all existing files
 and role identities, and is idempotent. New definitions travel with the public
 template; only Agent 0 is registered in its blank distribution so older managed
-launchers can still verify a new release. Activate X/Z only with selected defaults
-that support them. Older tools cannot read activated X/Z role IDs; restore a
-pre-activation backup before a deliberate downgrade. Updates alone do not activate
-roles or rewrite an existing registry.
+launchers can still verify a new release. Activate roles only with selected
+defaults that explicitly support them. Agent Y is introduced in 1.9.0-alpha.2;
+an older X/Z-capable runner may not understand `agent.y`. Restore a
+pre-activation backup before a deliberate downgrade; switching defaults does
+not migrate or deactivate role records. The current manager cannot newly select
+releases older than 1.8.7-alpha.1, although it can run an already selected
+verified older snapshot with an isolated compatibility shim. That historical
+selection floor does not imply Agent Y compatibility. Reselection below it
+requires a separately reviewed backup or legacy path. Updates alone do not
+activate roles or rewrite an existing registry.
 
 Root records live in `.SYSTEMX`; child records live in the selected `.SYSTEMXP`.
 Use `projects agent-x COMMAND --project NAME` for a child, or `--root` for the
@@ -48,16 +56,32 @@ original evidence. References are recorded data; the command does not inspect,
 execute, or fetch them. Actor kinds are `human`, `agent`, `bot`, `automation`, and
 `system`. IDs describe observed actors; they do not authenticate them.
 
+For an [Agent Y](AGENT-Y.md) handoff, record the observed CLI run, check,
+draft-PR publication, review transition, cancellation, or cleanup only when it
+actually occurs. Reference the selected task, job/run ID, source revision, and
+original provider or GitHub evidence. A proposed PR URL or successful CLI exit
+alone is not evidence of publication, merge, deployment, or task acceptance.
+Agent Y's `JOBS.json` tracks its bounded handoff; this event ledger records
+observations and never becomes a second PR or task-state authority.
+
 Kinds are `work`, `check`, `deploy`, `runtime`, `communication`, `schedule`,
 `review`, `decision`, and `incident`. Stages are `planned`, `implemented`,
 `checked`, `deployed`, `live_verified`, `failed`, `cancelled`, and `observed`.
 A checked/deployed/live-verified claim requires an evidence reference. These are
 attested claims requiring review, not automatically proven states.
 
-Occurrence time (`at`) needs an explicit UTC `Z` or numeric offset and is stored
-in UTC. `recordedAt` is the separate time the record was written. Do not replace
-an old observation's time with the current recording time. Preserve failed runs
-and original events; record corrections as new events referring to their IDs.
+Occurrence time (`at`) and recording time (`recordedAt`) use
+`YYYY-MM-DDTHH:MM:SS[.fraction]Z` or an explicit `+HH:MM`/`-HH:MM` offset, with
+one to six fractional digits when present. Seconds and a timezone are required;
+the parser rejects looser spellings consistently across supported Python
+versions. Times are compared as instants, and occurrence times are stored in UTC.
+New `recordedAt` values include microseconds.
+Only a `planned` event may have an `at` later than `recordedAt`. Completed work,
+checks, deployments, live verification, failures, cancellations, and observations
+must have occurred by the time they are recorded. The validator applies this rule
+to existing ledgers as well as new writes. Do not replace an old observation's
+time with the current recording time. Preserve failed runs and original events;
+record corrections as new events referring to their IDs.
 A repeat with the same key and same facts reuses the original record. Reusing a
 key for different facts is refused, so retries cannot silently change history.
 
@@ -106,18 +130,28 @@ bash .SYSTEMX/SYSTEMX.sh agent-x close SCH_RETURNED_ID \
 Use `--state cancelled --note REASON` for cancelled bookkeeping. Completion needs
 evidence. Closure is immutable through the command interface; correcting a due
 time or following up creates a new item after deliberately closing/superseding
-the old one. Closing a due item does not complete a task or cancel a remote job.
+the old one. A planned `dueAt` may be far in the future, but a completed or
+cancelled item's `closedAt` must follow its creation and cannot be more than five
+minutes ahead of the validating machine's UTC clock. This bounded allowance
+handles small clock differences between machines; a larger discrepancy must be
+corrected before recording or accepting the closure. Both Agent X and global
+validation enforce this for existing records. Closing a due item does not
+complete a task or cancel a remote job.
 
 ## Keep the cycle moving
 
 Agent X records when the idea was accepted, implementation changed, checks ran,
 a revision was delivered, and the actual live state was rechecked. Every event
 keeps its scope and original revision. Agent Z can cite these records when
-reviewing the remaining delta. Neither role automatically rebuilds or repeatedly
-reviews unchanged work. See [Agent Z](AGENT-Z.md), [evidence](EVIDENCE.md), and
+reviewing the remaining delta. Agent Y may perform a selected external CLI task,
+but none of these roles automatically rebuilds or repeatedly reviews unchanged
+work. See [Agent Y](AGENT-Y.md), [Agent Z](AGENT-Z.md), [evidence](EVIDENCE.md), and
 [SYSTEMX PROJECTS](PROJECTS.md).
 
-Use one cooperating writer per scope. CLI writes use the existing local
-coordination lock; that is not a distributed lock or protection against manual
-editors. Event and schedule facts are private project data when appropriate.
+Use one cooperating writer per scope. CLI writes wait up to one second for the
+local coordination lock, then report the recorded owner process ID, host, and
+creation time. A crash can leave that directory behind. Confirm that the owner
+has stopped before manually removing a stale lock; the CLI never guesses or
+removes one automatically. This is not a distributed lock or protection against
+manual editors. Event and schedule facts are private project data when appropriate.
 Updates preserve these records; whole-installation backup/restore includes them.

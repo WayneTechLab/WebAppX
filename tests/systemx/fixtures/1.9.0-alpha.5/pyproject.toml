@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dotsystemx"
+version = "1.9.0a5"
+description = "Portable project context, coordination, and additive template version management"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = [".SYSTEMX/LICENSE"]
+dependencies = []
+keywords = ["systemx", "project-memory", "llm", "project-template"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+
+[project.scripts]
+systemx = "systemx.cli:main"
+
+[project.urls]
+Issues = "https://github.com/WayneTechLab/dotSYSTEMX/issues"
+Repository = "https://github.com/WayneTechLab/dotSYSTEMX"
+Documentation = "https://github.com/WayneTechLab/dotSYSTEMX/wiki"
+Changelog = "https://github.com/WayneTechLab/dotSYSTEMX/wiki/Versions-and-Changelog"
+
+[tool.setuptools]
+packages = ["systemx"]
+package-dir = {systemx = ".SYSTEMX"}
+include-package-data = false
+
+[tool.setuptools.package-data]
+systemx = [".gitignore", ".gitattributes", "LICENSE", "VERSION", "*.md", "*.json", "*.sh", "*.ps1",
+           "config/*.json", "AI/*.md", "AI/*.json", "GLOBAL/*.md", "PLAN/*.md",
+           "WORK/*.md", "WORK/*.json", "MEMORY/*.md", "MEMORY/sessions/*.md",
+           "AGENTS/*.md", "AGENTS/*.json", "AGENTS/agent.0/*.md", "AGENTS/agent.x/*.md", "AGENTS/agent.y/*.md", "AGENTS/agent.z/*.md", "templates/*.md",
+           "docs/*.md", "profiles/*.md", "scripts/*.py", "scripts/*.sh", "tests/*.py",
+           "MEDIA/*.md", "MEDIA/White-Paper/*.md", "MEDIA/White-Paper/*.json", "MEDIA/White-Paper/*.pdf",
+           "MEDIA/Infographics/*.jpg", "MEDIA/Reference/*.md", "MEDIA/Reference/*.json",
+           "Projects/*.md", "Projects/*.json", "templates/project/*.md", "templates/project/*.json",
+           "templates/project/GLOBAL/*.md", "templates/project/PLAN/*.md",
+           "templates/project/MEMORY/*.md", "templates/project/MEMORY/sessions/*.md",
+           "templates/project/AGENTS/*.json", "templates/project/AGENTS/agent.0/*.md",
+           "templates/project/WORK/*.md", "templates/project/WORK/*.json",
+           "templates/project/DECISIONS/*.md", "templates/project/SYNC/*.md"]

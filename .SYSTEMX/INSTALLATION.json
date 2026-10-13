@@ -1,13 +1,18 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "profile": "project",
   "repository": "WayneTechLab/dotSYSTEMX",
-  "activeVersion": "1.8.6-alpha.1",
-  "pinnedVersion": "1.8.6-alpha.1",
+  "activeVersion": "1.9.0-alpha.5",
+  "pinnedVersion": "1.9.0-alpha.5",
   "autoUpdate": "manual",
   "installedAt": "2026-10-05T04:28:03.081689Z",
-  "updatedAt": "2026-10-05T04:29:07.535175Z",
+  "updatedAt": "2026-10-13T04:38:57.364339Z",
   "releases": {
-    "1.8.6-alpha.1": "8e6c3fc9488d62dd33a7d50aba6a92224df8e81f027663d8a71ae9ddc12d797d"
+    "1.8.6-alpha.1": "8e6c3fc9488d62dd33a7d50aba6a92224df8e81f027663d8a71ae9ddc12d797d",
+    "1.9.0-alpha.5": "483e564855c8f3ecd9255a06fdb7994a0df85cc23fa3a531ecd638746378cd37"
+  },
+  "archiveDigests": {
+    "1.8.6-alpha.1": null,
+    "1.9.0-alpha.5": null
   }
 }

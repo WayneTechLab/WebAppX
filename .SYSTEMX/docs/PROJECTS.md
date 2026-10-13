@@ -14,7 +14,8 @@ The public template has an empty project registry and blank creation templates.
 workspace/
 └── .SYSTEMX/                         shared tools, standards, version policy
     ├── GLOBAL/                      workspace-wide context
-    ├── PLAN/                        workspace-wide Master Plan
+    │   └── ACCESS-MATRIX.md         blank shared access-decision record
+    ├── PLAN/                        workspace-wide Master Plan and map
     ├── WORK/                        workspace coordination tasks
     ├── AGENTS/agent.0/               workspace coordinator memory
     ├── Projects/
@@ -26,8 +27,8 @@ workspace/
     │   │       ├── START-HERE.md
     │   │       ├── AGENTS.md
     │   │       ├── CURRENT.md        generated selected focus
-    │   │       ├── GLOBAL/CONTEXT.md
-    │   │       ├── PLAN/MASTER-PLAN.md
+    │   │       ├── GLOBAL/          context and blank access matrix
+    │   │       ├── PLAN/            Master Plan and blank map
     │   │       ├── WORK/             ledger, focus, six generated state views
     │   │       ├── AGENTS/           registry and per-agent memory
     │   │       ├── MEMORY/           durable facts and dated checkpoints
@@ -54,18 +55,24 @@ transcripts or silently import sibling memory.
 ## First-time setup
 
 Install or update the outer `.SYSTEMX` using the [installation guide](INSTALLATION.md).
-Run these commands from the directory containing that outer folder:
+Use a reviewed external `systemx` CLI with `--target` pointing to the directory
+containing that outer folder. Direct `projects` runs the managed selected
+defaults and defaults to offline startup:
 
 ```bash
 # Preview without changing files, then create blank local project records.
-bash .SYSTEMX/SYSTEMX.sh projects add Project-A --kind software
-bash .SYSTEMX/SYSTEMX.sh projects add Project-A --kind software --apply
-bash .SYSTEMX/SYSTEMX.sh projects add Project-B --kind channel --apply
-bash .SYSTEMX/SYSTEMX.sh projects list
-bash .SYSTEMX/SYSTEMX.sh projects context --project Project-A --agent agent.0
+systemx projects --target "/path/to/workspace" -- add Project-A --kind software
+systemx projects --target "/path/to/workspace" -- add Project-A --kind software --apply
+systemx projects --target "/path/to/workspace" -- add Project-B --kind channel --apply
+systemx projects --target "/path/to/workspace" -- list
+systemx projects --target "/path/to/workspace" -- context --project Project-A --agent agent.0
 ```
 
-On Windows use `powershell -File .SYSTEMX/SYSTEMX.ps1` with the same arguments.
+The compatible longer form is `systemx run --target PATH --offline -- projects
+COMMAND ...`. A reviewed copied folder or managed installation also supports
+`bash .SYSTEMX/SYSTEMX.sh projects COMMAND ...` from the containing directory;
+Windows uses `& .\.SYSTEMX\SYSTEMX.ps1 projects COMMAND ...`.
+See the [CLI and tools guide](CLI-TOOLS.md) for the entry-point boundaries.
 The interactive launcher also offers **SYSTEMX PROJECTS guide** and **List projects**.
 Supported kinds are `general`, `software`, `research`, `operations`, and `channel`;
 they are descriptive labels and do not provision a stack.
@@ -85,6 +92,10 @@ coordination lock. Do not remove a lock until its owner is confirmed stopped.
 Fill the selected child's context, Master Plan, memory, and source references
 with authorized facts. Its tasks and focus start empty; Agent 0 is the only
 registered role. Parent memory is never copied into a new child.
+Its blank `GLOBAL/ACCESS-MATRIX.md` and `PLAN/MAP.md` remain unconfigured until
+the project needs reviewed access decisions or source-linked system navigation.
+See the [access and map guide](ACCESS-AND-MAP.md); neither record grants access
+or duplicates task state.
 
 ## Daily work and explicit selection
 
@@ -130,6 +141,14 @@ Workers use only the selected child's context and their assigned memory. Route
 cross-project work through the outer coordinator; do not let one worker write
 both ledgers implicitly. Subagent limits belong to the authorized session or
 shared resource budget, not a new automatic allowance for each child.
+
+If a child uses [Agent Y](AGENT-Y.md), select its registered project explicitly
+and delegate only that child's task, context, and owned working files to the
+chosen installed CLI provider. Its branch/PR target and per-task lifecycle
+policy must be explicit. The outer Agent 0 handles cross-project branch or
+repository collisions; a child role record is not a separate GitHub identity.
+The Agent Y job, Agent X events, and Agent Z review records for the result
+remain in that same selected child.
 
 Example prompt:
 
@@ -202,6 +221,14 @@ bash .SYSTEMX/SYSTEMX.sh projects build --project Project-A
 External source references do not redirect execution. Routing is not an OS sandbox;
 a configured program has the user's normal filesystem and network permissions.
 
+The same operations through the direct managed CLI are:
+
+```bash
+systemx projects --target "/path/to/workspace" -- check --project Project-A --dry-run
+systemx projects --target "/path/to/workspace" -- check --project Project-A
+systemx projects --target "/path/to/workspace" -- build --project Project-A
+```
+
 ```python
 import systemx
 
@@ -259,15 +286,19 @@ selected ledger and retain original evidence.
 
 ## Standard roles within a child
 
-Use `projects roles-init --project Project-A` to preview Agent X/Z activation,
+Use `projects roles-init --project Project-A` to preview supported role activation,
 then add `--apply`. Their records stay in the selected `.SYSTEMXP`. Examples:
 
 ```bash
-bash .SYSTEMX/SYSTEMX.sh projects agent-x due --project Project-A
-bash .SYSTEMX/SYSTEMX.sh projects agent-z policy --project Project-A
+systemx projects --target "/path/to/workspace" -- roles-init --project Project-A
+systemx projects --target "/path/to/workspace" -- roles-init --project Project-A --apply
+systemx projects --target "/path/to/workspace" -- agent-x due --project Project-A
+systemx projects --target "/path/to/workspace" -- agent-y providers --project Project-A
+systemx projects --target "/path/to/workspace" -- agent-z policy --project Project-A
 ```
 
-[Agent X](AGENT-X.md) tracks event/time/schedule facts, while
+[Agent X](AGENT-X.md) tracks event/time/schedule facts;
+[Agent Y](AGENT-Y.md) carries a bounded CLI handoff when explicitly selected;
 [Agent Z](AGENT-Z.md) uses the fixed 100-question review policy. Role IDs and
 record IDs are scoped; do not compare reports from different projects. Outer
 updates preserve each child's adopted policy and history. Merely adding new

@@ -1,17 +1,32 @@
 """Additive, versioned SYSTEMX installs. Python standard library; no shell evaluation."""
 
+# Direct script execution puts the adopted directory and PYTHONPATH ahead of
+# standard libraries. Restart in isolated mode before importing either one.
+import sys
+if __name__ == "__main__" and not __package__ and not sys.flags.isolated:
+    _bootstrap_os = sys.modules.get("os")
+    if _bootstrap_os is None or not sys.executable:
+        sys.exit("SYSTEMX manager requires Python's initialized OS module to enter isolated mode")
+    try:
+        _bootstrap_os.execv(sys.executable, [sys.executable, "-I", "-B", __file__, *sys.argv[1:]])
+    except OSError as error:
+        sys.exit("SYSTEMX manager could not enter isolated mode: " + str(error))
+
 import argparse
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
+import importlib.util
 import io
 import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import stat
 import subprocess
-import sys
 import tempfile
+import threading
+import types
 import urllib.request
 import uuid
 import zipfile
@@ -22,11 +37,43 @@ if __package__:
     from .systemx_paths import (SystemXPathError, inspect_layout, is_link, lexical_path,
                                lowercase_alias as path_alias, project_directory, record_directory)
 else:
-    sys.path.insert(0, str(Path(__file__).resolve().parent))
-    import lifecycle
-    from versions import version_id, version_key, release_channel, package_version
-    from systemx_paths import (SystemXPathError, inspect_layout, is_link, lexical_path,
-                              lowercase_alias as path_alias, project_directory, record_directory)
+    # Load only named source files. Neither import search paths nor cached
+    # bytecode from an adopted directory may select executable helpers.
+    _bootstrap_root = Path(__file__).resolve().parent
+    _bootstrap_name = "_systemx_bootstrap_" + hashlib.sha256(str(_bootstrap_root).encode()).hexdigest()[:16]
+    if _bootstrap_name not in sys.modules:
+        _bootstrap_package = types.ModuleType(_bootstrap_name)
+        _bootstrap_package.__path__ = [str(_bootstrap_root)]
+        sys.modules[_bootstrap_name] = _bootstrap_package
+
+    def _load_bootstrap(name):
+        path = _bootstrap_root / (name + ".py")
+        fullname = _bootstrap_name + "." + name
+        spec = importlib.util.spec_from_file_location(fullname, path)
+        if spec is None:
+            raise ImportError("Cannot load SYSTEMX helper: " + name)
+        module = importlib.util.module_from_spec(spec)
+        previous = sys.modules.get(fullname)
+        sys.modules[fullname] = module
+        try:
+            exec(compile(path.read_bytes(), str(path), "exec"), module.__dict__)
+        except BaseException:
+            if previous is None:
+                sys.modules.pop(fullname, None)
+            else:
+                sys.modules[fullname] = previous
+            raise
+        setattr(sys.modules[_bootstrap_name], name, module)
+        return module
+
+    _paths = _load_bootstrap("systemx_paths")
+    _versions = _load_bootstrap("versions")
+    lifecycle = _load_bootstrap("lifecycle")
+    version_id, version_key = _versions.version_id, _versions.version_key
+    release_channel, package_version = _versions.release_channel, _versions.package_version
+    SystemXPathError, inspect_layout, is_link = _paths.SystemXPathError, _paths.inspect_layout, _paths.is_link
+    lexical_path, project_directory, record_directory = _paths.lexical_path, _paths.project_directory, _paths.record_directory
+    path_alias = _paths.lowercase_alias
 
 DEFAULT_REPOSITORY = "WayneTechLab/dotSYSTEMX"
 PACKAGE = Path(__file__).resolve().parent
@@ -36,9 +83,22 @@ PROFILES = ("project", "directory", "drive", "chat")
 MAX_ARCHIVE = 32 * 1024 * 1024
 MAX_FILE = 2 * 1024 * 1024
 MAX_FILES = 1000
+SHA256 = re.compile(r"[0-9a-f]{64}")
+BYTE_EXACT_DISTRIBUTION_FLOOR = "1.9.0-alpha.3"
+# Only these reviewed text formats may treat Git's CRLF checkout conversion
+# as equivalent. Unknown paths and media are always hashed byte for byte in
+# schema 2, even when their payload happens to contain valid UTF-8 or CRLF.
+DISTRIBUTION_TEXT_SUFFIXES = frozenset({".json", ".md", ".ps1", ".py", ".sh"})
+DISTRIBUTION_TEXT_NAMES = frozenset({".gitattributes", ".gitignore", "LICENSE", "VERSION"})
 SEEDS = ("GLOBAL/CONTEXT.md", "PLAN/MASTER-PLAN.md", "MEMORY/PROJECT.md",
          "AGENTS/agent.0/MEMORY.md", "AGENTS/REGISTRY.json", "WORK/TASKS.json",
          "WORK/FOCUS.json", "config/project.example.json")
+SEEDS_FROM_1_8_9 = ("GLOBAL/ACCESS-MATRIX.md", "PLAN/MAP.md",
+                    "templates/project/GLOBAL/ACCESS-MATRIX.md", "templates/project/PLAN/MAP.md")
+BOOTSTRAP_FILES = ("manager.py", "lifecycle.py", "versions.py", "systemx_paths.py",
+                   "SYSTEMX.sh", "SYSTEMX.ps1", "INSTALL.sh", "INSTALL.ps1")
+ISOLATED_RUNNER_FLOOR = "1.8.7-alpha.1"
+STARTUP_CHECK_TIMEOUT_SECONDS = 5.0
 
 
 InstallError = SystemXPathError
@@ -85,7 +145,52 @@ def safe_path(root, relative):
 
 
 def digest(data):
+    """Hash exact bytes for snapshots, comparisons, and unknown file types."""
+    return hashlib.sha256(data).hexdigest()
+
+
+def text_digest(data):
+    """Preserve the historical LF/CRLF equivalence for reviewed text records."""
     return hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()
+
+
+def distribution_schema(version):
+    return 2 if version_key(version) >= version_key(BYTE_EXACT_DISTRIBUTION_FLOOR) else 1
+
+
+def distribution_digest(name, data, schema):
+    if schema == 1:
+        # Historical schema-1 assets were published with this normalization,
+        # including binary media. Immutable old snapshots must remain readable.
+        return text_digest(data)
+    if schema != 2:
+        raise InstallError("Unsupported distribution manifest schema")
+    if name in DISTRIBUTION_TEXT_NAMES or PurePosixPath(name).suffix in DISTRIBUTION_TEXT_SUFFIXES:
+        try:
+            data.decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise InstallError("Distribution text is not UTF-8: " + name) from error
+        if b"\x00" in data:
+            raise InstallError("Distribution text contains NUL bytes: " + name)
+        return text_digest(data)
+    return digest(data)
+
+
+def archive_digest(value):
+    if value is None:
+        return None
+    if not isinstance(value, str) or not SHA256.fullmatch(value):
+        raise InstallError("Archive SHA-256 must be exactly 64 lowercase hexadecimal characters")
+    return value
+
+
+def require_isolated_release(bundle):
+    if version_key(bundle["version"]) < version_key(ISOLATED_RUNNER_FLOOR):
+        raise InstallError("Release " + bundle["version"] + " predates isolated runner support; "
+                           "use a separately reviewed historical recovery path rather than selecting it with this manager")
+    missing = [name for name in BOOTSTRAP_FILES if name not in bundle["files"]]
+    if missing:
+        raise InstallError("Selected release lacks required bootstrap files: " + ", ".join(missing))
 
 
 def decode(data):
@@ -101,23 +206,62 @@ def decode(data):
     return json.loads(data.decode("utf-8"), object_pairs_hook=unique, parse_constant=invalid)
 
 
+def regular_bytes(path, limit=MAX_FILE):
+    """Read one bounded regular file without blocking on a replaced FIFO.
+
+    The caller still checks the path's scope. The descriptor checks close the
+    common gap between inspecting a local source and opening it; a concurrent
+    writer must stop before an install or update can be considered stable.
+    """
+    before = path.lstat()
+    if not stat.S_ISREG(before.st_mode):
+        raise InstallError("Expected a regular file: " + str(path))
+    if before.st_size > limit:
+        raise InstallError("File exceeds the read limit: " + str(path))
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0)
+    descriptor = os.open(path, flags)
+    try:
+        opened = os.fstat(descriptor)
+        if not stat.S_ISREG(opened.st_mode) or (opened.st_dev, opened.st_ino) != (before.st_dev, before.st_ino):
+            raise InstallError("File changed or is not regular: " + str(path))
+        if opened.st_size > limit:
+            raise InstallError("File exceeds the read limit: " + str(path))
+        with os.fdopen(descriptor, "rb") as stream:
+            descriptor = None
+            data = stream.read(limit + 1)
+            after = os.fstat(stream.fileno())
+        if len(data) > limit:
+            raise InstallError("File exceeds the read limit: " + str(path))
+        identity = lambda info: (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)
+        if identity(after) != identity(opened):
+            raise InstallError("File changed while being read: " + str(path))
+        return data
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+
+
 def verified_bundle(files):
     if MANIFEST not in files:
         raise InstallError("Source has no distribution manifest; use a managed-install release")
     manifest = decode(files[MANIFEST])
     if not isinstance(manifest, dict) or set(manifest) != {"schemaVersion", "version", "files"}:
         raise InstallError("Invalid distribution manifest fields")
-    if type(manifest["schemaVersion"]) is not int or manifest["schemaVersion"] != 1:
+    schema = manifest["schemaVersion"]
+    if type(schema) is not int or schema not in {1, 2}:
         raise InstallError("Unsupported distribution manifest schema")
     version_id(manifest["version"])
+    if schema < distribution_schema(manifest["version"]):
+        raise InstallError("This release requires a byte-exact schema-2 distribution manifest")
     inventory = manifest["files"]
     if not isinstance(inventory, dict) or not 1 <= len(inventory) <= MAX_FILES:
         raise InstallError("Invalid distribution inventory")
     if set(files) != set(inventory) | {MANIFEST}:
         raise InstallError("Distribution inventory does not match the supplied files")
+    seed_names = SEEDS + (SEEDS_FROM_1_8_9 if version_key(manifest["version"])[:3] >= (1, 8, 9) else ())
     required = {"VERSION", "LICENSE", "SOURCE.json", "STANDARD.md", "START-HERE.md",
                 "manager.py", "scripts/systemx.py", "scripts/project_memory.py",
-                "config/template-records.json", *SEEDS}
+                "config/template-records.json", *seed_names}
     base_version = version_key(manifest["version"])[:3]
     if base_version >= (1, 4, 0):
         required.add("systemx_paths.py")
@@ -132,6 +276,9 @@ def verified_bundle(files):
     if base_version >= (1, 8, 0):
         required.update({"scripts/agent_standards.py", "scripts/agent_x.py", "scripts/agent_z.py",
                          "config/agent-z-policy.json", "templates/AGENT-X-MEMORY.md", "templates/AGENT-Z-MEMORY.md"})
+    if base_version >= (1, 9, 0):
+        required.update({"scripts/agent_y.py", "AGENTS/agent.y/README.md", "templates/AGENT-Y-MEMORY.md",
+                         "docs/AGENT-Y.md", "tests/test_agent_y.py"})
     if not required.issubset(inventory):
         raise InstallError("Distribution is missing core files")
     folded = set()
@@ -151,16 +298,16 @@ def verified_bundle(files):
             raise InstallError("Distribution file conflicts with a directory path")
         if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected):
             raise InstallError("Invalid distribution fingerprint")
-        if len(files[name]) > MAX_FILE or digest(files[name]) != expected:
+        if len(files[name]) > MAX_FILE or distribution_digest(name, files[name], schema) != expected:
             raise InstallError("Distribution fingerprint mismatch: " + name)
     if files["VERSION"].decode().strip() != manifest["version"]:
         raise InstallError("Distribution version mismatch")
     seeds = decode(files["config/template-records.json"])
     if (not isinstance(seeds, dict) or set(seeds) != {"schemaVersion", "sha256"} or
             type(seeds["schemaVersion"]) is not int or seeds["schemaVersion"] != 1 or
-            not isinstance(seeds["sha256"], dict) or set(seeds["sha256"]) != set(SEEDS)):
+            not isinstance(seeds["sha256"], dict) or set(seeds["sha256"]) != set(seed_names)):
         raise InstallError("Invalid blank-record manifest")
-    if any(digest(files[name]) != seeds["sha256"][name] for name in SEEDS):
+    if any(text_digest(files[name]) != seeds["sha256"][name] for name in seed_names):
         raise InstallError("Distribution contains changed project seeds")
     if decode(files["WORK/TASKS.json"]) != {"schemaVersion": 1, "tasks": []}:
         raise InstallError("Distribution task ledger must be empty")
@@ -181,12 +328,16 @@ def verified_bundle(files):
             "project": {"name": "", "description": ""}, "checks": [],
             "commands": {"dev": [], "build": [], "deploy": []}}:
         raise InstallError("Distribution commands must be empty")
-    return {"version": manifest["version"], "manifestSha256": digest(files[MANIFEST]), "files": files}
+    return {"version": manifest["version"], "manifestSha256": text_digest(files[MANIFEST]), "files": files}
 
 
-def read_bundle(source):
+def read_bundle(source, *, exact=False):
     raw = lexical_path(source)
-    if raw.name.casefold() == ".systemx":
+    if exact:
+        if is_link(raw) or not raw.is_dir():
+            raise InstallError("Release snapshot must be a real directory")
+        source = raw
+    elif raw.name.casefold() == ".systemx":
         source = record_directory(raw)
     else:
         source = raw.resolve()
@@ -194,9 +345,7 @@ def read_bundle(source):
         if layout["aliasStatus"] != "not-installed":
             source = source / ".SYSTEMX"
     manifest_path = safe_path(source, MANIFEST)
-    if manifest_path.stat().st_size > MAX_FILE:
-        raise InstallError("Oversized distribution manifest")
-    raw = manifest_path.read_bytes()
+    raw = regular_bytes(manifest_path)
     manifest = decode(raw)
     if not isinstance(manifest, dict):
         raise InstallError("Distribution manifest must be an object")
@@ -206,10 +355,62 @@ def read_bundle(source):
     files = {MANIFEST: raw}
     for name in names:
         path = safe_path(source, portable_path(name))
-        if not path.is_file() or path.stat().st_size > MAX_FILE:
-            raise InstallError("Missing or oversized distribution file: " + name)
-        files[name] = path.read_bytes()
+        files[name] = regular_bytes(path)
     return verified_bundle(files)
+
+
+def snapshot_issues(snapshot, bundle, *, complete):
+    """Inspect one manager-owned release snapshot without following any links."""
+    expected_files = set(bundle["files"])
+    expected_directories = set()
+    for name in expected_files:
+        for parent in PurePosixPath(name).parents:
+            if str(parent) != ".":
+                expected_directories.add(str(parent))
+    if is_link(snapshot):
+        return ["Release snapshot is a link or junction: " + str(snapshot)]
+    if not snapshot.exists():
+        return (["Release snapshot is missing: " + str(snapshot)] if complete else [])
+    if not snapshot.is_dir():
+        return ["Release snapshot is not a directory: " + str(snapshot)]
+    issues = []
+    actual_files = set()
+    pending = [(snapshot, "")]
+    while pending:
+        folder, prefix = pending.pop()
+        try:
+            entries = list(os.scandir(folder))
+        except OSError as error:
+            issues.append("Cannot inspect release snapshot directory " + str(folder) + ": " + str(error))
+            continue
+        for entry in entries:
+            relative = entry.name if not prefix else prefix + "/" + entry.name
+            path = Path(entry.path)
+            try:
+                info = entry.stat(follow_symlinks=False)
+            except OSError as error:
+                issues.append("Cannot inspect release snapshot entry " + relative + ": " + str(error))
+                continue
+            if entry.is_symlink() or is_link(path):
+                issues.append("Release snapshot contains a link or junction: " + relative)
+            elif stat.S_ISDIR(info.st_mode):
+                if relative not in expected_directories:
+                    issues.append("Release snapshot contains an unexpected directory: " + relative)
+                else:
+                    pending.append((path, relative))
+            elif stat.S_ISREG(info.st_mode):
+                if relative not in expected_files:
+                    issues.append("Release snapshot contains an unexpected file: " + relative)
+                elif info.st_nlink > 1:
+                    issues.append("Release snapshot contains a hard-linked file: " + relative)
+                else:
+                    actual_files.add(relative)
+            else:
+                issues.append("Release snapshot contains a special entry: " + relative)
+    if complete:
+        for name in sorted(expected_files - actual_files):
+            issues.append("Release snapshot is missing a required file: " + name)
+    return issues
 
 
 def get_url(url, limit):
@@ -261,10 +462,14 @@ def latest_version(repository=DEFAULT_REPOSITORY, channel="stable"):
     raise InstallError("Release discovery limit reached; select an exact --version")
 
 
-def remote_bundle(version, repository=DEFAULT_REPOSITORY):
+def remote_bundle(version, repository=DEFAULT_REPOSITORY, expected_archive_sha256=None):
     version_id(version)
     repository_id(repository)
+    expected_archive_sha256 = archive_digest(expected_archive_sha256)
     data = get_url("https://codeload.github.com/" + repository + "/zip/refs/tags/v" + version, MAX_ARCHIVE)
+    observed_archive_sha256 = hashlib.sha256(data).hexdigest()
+    if expected_archive_sha256 is not None and observed_archive_sha256 != expected_archive_sha256:
+        raise InstallError("Remote release archive SHA-256 does not match the explicit pin")
     files = {}
     total = 0
     with zipfile.ZipFile(io.BytesIO(data)) as archive:
@@ -284,6 +489,8 @@ def remote_bundle(version, repository=DEFAULT_REPOSITORY):
     bundle = verified_bundle(files)
     if bundle["version"] != version:
         raise InstallError("Tag does not match the distribution version")
+    bundle["archiveDigest"] = {"sha256": observed_archive_sha256,
+                               "verifiedBy": "explicit-pin" if expected_archive_sha256 else "observed-only"}
     return bundle
 
 
@@ -297,10 +504,18 @@ def state_path(root):
 
 
 def load_state(root):
-    value = decode(state_path(root).read_bytes())
-    required = {"schemaVersion", "profile", "repository", "activeVersion", "pinnedVersion",
-                "autoUpdate", "installedAt", "updatedAt", "releases"}
-    if not isinstance(value, dict) or set(value) != required or type(value["schemaVersion"]) is not int or value["schemaVersion"] != 1:
+    value = decode(regular_bytes(state_path(root)))
+    old_required = {"schemaVersion", "profile", "repository", "activeVersion", "pinnedVersion",
+                    "autoUpdate", "installedAt", "updatedAt", "releases"}
+    new_required = old_required | {"archiveDigests"}
+    if not isinstance(value, dict) or type(value.get("schemaVersion")) is not int:
+        raise InstallError("Unrecognized INSTALLATION.json; it was not changed")
+    if value["schemaVersion"] == 1 and set(value) == old_required:
+        if not isinstance(value["releases"], dict):
+            raise InstallError("Invalid retained release fingerprints")
+        value = {**value, "schemaVersion": 2,
+                 "archiveDigests": {release: None for release in value["releases"]}}
+    elif value["schemaVersion"] != 2 or set(value) != new_required:
         raise InstallError("Unrecognized INSTALLATION.json; it was not changed")
     if value["profile"] not in PROFILES or value["autoUpdate"] not in {"manual", "on-start"}:
         raise InstallError("Invalid installation profile or update policy")
@@ -308,14 +523,24 @@ def load_state(root):
     version_id(value["activeVersion"])
     if value["pinnedVersion"] is not None:
         version_id(value["pinnedVersion"])
-        if value["pinnedVersion"] != value["activeVersion"] or value["autoUpdate"] != "manual":
-            raise InstallError("A pinned installation must use its pinned release and manual updates")
+        if value["pinnedVersion"] != value["activeVersion"]:
+            raise InstallError("A pinned installation must use its pinned release")
     if not isinstance(value["releases"], dict) or value["activeVersion"] not in value["releases"]:
         raise InstallError("Missing active release fingerprint")
     for release, fingerprint in value["releases"].items():
         version_id(release)
-        if not isinstance(fingerprint, str) or not re.fullmatch(r"[0-9a-f]{64}", fingerprint):
+        if not isinstance(fingerprint, str) or not SHA256.fullmatch(fingerprint):
             raise InstallError("Invalid stored release fingerprint")
+    if not isinstance(value["archiveDigests"], dict) or set(value["archiveDigests"]) != set(value["releases"]):
+        raise InstallError("Archive digest receipts must match the retained release set")
+    for receipt in value["archiveDigests"].values():
+        if receipt is None:
+            continue
+        if (not isinstance(receipt, dict) or set(receipt) != {"sha256", "verifiedBy"} or
+                not isinstance(receipt.get("sha256"), str) or
+                not SHA256.fullmatch(receipt["sha256"]) or
+                receipt.get("verifiedBy") not in {"explicit-pin", "observed-only"}):
+            raise InstallError("Invalid stored archive digest receipt")
     dates = []
     for field in ("installedAt", "updatedAt"):
         if not isinstance(value[field], str):
@@ -396,7 +621,10 @@ def release_path(root, version):
 
 def active_bundle(root, state):
     path = release_path(root, state["activeVersion"])
-    bundle = read_bundle(path)
+    bundle = read_bundle(path, exact=True)
+    issues = snapshot_issues(path, bundle, complete=True)
+    if issues:
+        raise InstallError("; ".join(issues))
     if bundle["version"] != state["activeVersion"]:
         raise InstallError("Selected version differs from the stored release")
     if bundle["manifestSha256"] != state["releases"][state["activeVersion"]]:
@@ -404,10 +632,11 @@ def active_bundle(root, state):
     return path, bundle
 
 
-def prepare(root, bundle):
+def prepare(root, bundle, *, initial=False):
     folder = root / ".SYSTEMX"
     snapshot = release_path(root, bundle["version"])
     result = {"version": bundle["version"], "target": str(root), "add": [], "preserve": [], "conflicts": []}
+    result["conflicts"].extend(snapshot_issues(snapshot, bundle, complete=False))
     for name, data in sorted(bundle["files"].items()):
         destination = safe_path(folder, name)
         cached = safe_path(snapshot, name)
@@ -417,6 +646,8 @@ def prepare(root, bundle):
             result["preserve"].append(name)
             if not destination.is_file():
                 result["conflicts"].append("A directory occupies a required file path: " + name)
+            elif initial and name.endswith((".py", ".sh", ".ps1")) and digest(destination.read_bytes()) != digest(data):
+                result["conflicts"].append("Existing executable default differs; inspect before adoption: " + name)
         else:
             result["add"].append(name)
     return result
@@ -433,7 +664,7 @@ def create_missing(path, data):
 
 
 def apply_bundle(root, bundle, state, profile, repository):
-    plan = prepare(root, bundle)
+    plan = prepare(root, bundle, initial=state is None)
     if plan["conflicts"]:
         raise InstallError("; ".join(plan["conflicts"]))
     snapshot = release_path(root, bundle["version"])
@@ -442,36 +673,160 @@ def apply_bundle(root, bundle, state, profile, repository):
         create_missing(cached, data)
         if not cached.is_file() or digest(cached.read_bytes()) != digest(data):
             raise InstallError("Concurrent change or incomplete release file: " + name)
-    # Verify the full immutable copy before selecting it or seeding any project file.
-    read_bundle(snapshot)
+    # Verify the exact immutable copy before selecting it or seeding project files.
+    completed = read_bundle(snapshot, exact=True)
+    issues = snapshot_issues(snapshot, completed, complete=True)
+    if issues:
+        raise InstallError("; ".join(issues))
     for name, data in bundle["files"].items():
         create_missing(safe_path(root / ".SYSTEMX", name), data)
     if state is None:
-        state = {"schemaVersion": 1, "profile": profile, "repository": repository,
+        state = {"schemaVersion": 2, "profile": profile, "repository": repository,
                  "activeVersion": bundle["version"], "pinnedVersion": bundle["version"],
-                 "autoUpdate": "manual", "installedAt": now(), "updatedAt": now(), "releases": {}}
+                 "autoUpdate": "manual", "installedAt": now(), "updatedAt": now(),
+                 "releases": {}, "archiveDigests": {}}
     state["activeVersion"] = bundle["version"]
     state["releases"][bundle["version"]] = bundle["manifestSha256"]
+    previous_receipt = state["archiveDigests"].get(bundle["version"])
+    new_receipt = bundle.get("archiveDigest")
+    if previous_receipt and previous_receipt["verifiedBy"] == "explicit-pin" and (
+            not new_receipt or new_receipt["verifiedBy"] == "observed-only"):
+        new_receipt = previous_receipt
+    state["archiveDigests"][bundle["version"]] = new_receipt or previous_receipt
     state["updatedAt"] = now()
     save_state(root, state)
     plan.update({"applied": True, "defaults": str(snapshot), "policy": state["autoUpdate"], "pinnedVersion": state["pinnedVersion"]})
     return plan
 
 
+def bootstrap_differences(root, bundle):
+    folder = root / ".SYSTEMX"
+    differences = []
+    for name in BOOTSTRAP_FILES:
+        path = safe_path(folder, name)
+        if not path.is_file() or digest(path.read_bytes()) != digest(bundle["files"][name]):
+            differences.append(name)
+    return differences
+
+
+def bootstrap_refresh(target, *, source=None, version=None, archive_sha256=None, apply=False):
+    """Explicitly refresh only stock bootstrap code, retaining byte-for-byte backups."""
+    if source == "":
+        raise InstallError("An explicit --source cannot be empty")
+    root = project_root(target)
+    state = load_state(root)
+    archive_sha256 = archive_digest(archive_sha256)
+    if archive_sha256 is not None and (source is not None or version is None):
+        raise InstallError("An archive SHA-256 pin requires an exact remote --version and no --source")
+    bundle = read_bundle(source if source is not None else PACKAGE) if source is not None or version is None else remote_bundle(
+        version, state["repository"], archive_sha256)
+    if version is not None and bundle["version"] != version_id(version):
+        raise InstallError("Requested version differs from the supplied source")
+    require_isolated_release(bundle)
+    if version_key(bundle["version"]) < version_key(state["activeVersion"]):
+        raise InstallError("Bootstrap rollback is not supported; restore a reviewed backup instead")
+    def plan(current):
+        trusted = {name: {digest(bundle["files"][name])} for name in BOOTSTRAP_FILES}
+        historically_present = set()
+        for release, fingerprint in current["releases"].items():
+            snapshot = release_path(root, release)
+            retained = read_bundle(snapshot, exact=True)
+            issues = snapshot_issues(snapshot, retained, complete=True)
+            if issues or retained["version"] != release or retained["manifestSha256"] != fingerprint:
+                raise InstallError("A retained bootstrap release is not intact; inspect it before refreshing")
+            for name in BOOTSTRAP_FILES:
+                if name in retained["files"]:
+                    historically_present.add(name)
+                    trusted[name].add(digest(retained["files"][name]))
+        changes, additions, conflicts = [], [], []
+        for name in BOOTSTRAP_FILES:
+            path = safe_path(root / ".SYSTEMX", name)
+            if not path.exists():
+                if name in historically_present:
+                    conflicts.append("Missing bootstrap file from a retained release: " + name)
+                else:
+                    additions.append(name)
+                continue
+            if not path.is_file():
+                conflicts.append("Bootstrap path is not a regular file: " + name)
+                continue
+            current_hash = digest(path.read_bytes())
+            if current_hash not in trusted[name]:
+                conflicts.append("Customized or unrecognized bootstrap file; preserve and review: " + name)
+            elif current_hash != digest(bundle["files"][name]):
+                changes.append(name)
+        return {"action": "bootstrap-refresh", "target": str(root), "version": bundle["version"],
+                "add": additions, "replace": changes, "conflicts": conflicts, "applied": False}
+    preview = plan(state)
+    if not apply:
+        return preview
+    if preview["conflicts"]:
+        raise InstallError("; ".join(preview["conflicts"]))
+    with update_lock(root):
+        current = load_state(root)
+        if current != state:
+            raise InstallError("Installation state changed while preparing bootstrap refresh; retry")
+        result = plan(current)
+        if result["conflicts"]:
+            raise InstallError("; ".join(result["conflicts"]))
+        if not result["replace"] and not result["add"]:
+            return result
+        with operation_log(root, "bootstrap-refresh", {"version": bundle["version"],
+                                                       "add": result["add"], "replace": result["replace"]}) as log:
+            history = safe_path(root / ".SYSTEMX", ".systemx/history")
+            history.mkdir(parents=True, exist_ok=True)
+            backup = history / ("bootstrap-" + uuid.uuid4().hex) if result["replace"] else None
+            if backup is not None:
+                backup.mkdir(mode=0o700)
+            for name in result["replace"]:
+                original = safe_path(root / ".SYSTEMX", name)
+                if not create_missing(backup / name, original.read_bytes()):
+                    raise InstallError("Cannot create exclusive bootstrap backup: " + name)
+            for name in result["add"]:
+                destination = safe_path(root / ".SYSTEMX", name)
+                if not create_missing(destination, bundle["files"][name]):
+                    raise InstallError("Bootstrap file appeared during refresh: " + name)
+                if digest(destination.read_bytes()) != digest(bundle["files"][name]):
+                    raise InstallError("Incomplete bootstrap addition: " + name)
+            for name in result["replace"]:
+                destination = safe_path(root / ".SYSTEMX", name)
+                descriptor, temporary = tempfile.mkstemp(prefix="bootstrap-", suffix=".tmp", dir=destination.parent)
+                try:
+                    os.chmod(temporary, stat.S_IMODE(destination.stat().st_mode))
+                    with os.fdopen(descriptor, "wb") as stream:
+                        stream.write(bundle["files"][name])
+                        stream.flush()
+                        os.fsync(stream.fileno())
+                    os.replace(temporary, destination)
+                finally:
+                    if os.path.exists(temporary):
+                        os.unlink(temporary)
+            result.update({"applied": True, "backup": str(backup) if backup is not None else None})
+            log["result"] = result
+            return result
+
+
 def install(target, *, source=None, version=None, profile="project", repository=DEFAULT_REPOSITORY,
-            dry_run=False, lowercase_alias=False):
+            dry_run=False, lowercase_alias=False, archive_sha256=None):
     """Create only absent files, store immutable defaults, and pin the initial release."""
+    if source == "":
+        raise InstallError("An explicit --source cannot be empty")
     root = project_root(target)
     if profile not in PROFILES:
         raise InstallError("Unknown setup profile")
     repository_id(repository)
+    archive_sha256 = archive_digest(archive_sha256)
+    if archive_sha256 is not None and (source is not None or version is None):
+        raise InstallError("An archive SHA-256 pin requires an exact remote --version and no --source")
     if state_path(root).exists():
         raise InstallError("Already managed; use update or policy")
-    bundle = read_bundle(source or PACKAGE) if version is None or source else remote_bundle(version, repository)
+    bundle = (read_bundle(source if source is not None else PACKAGE) if version is None or source is not None else
+              remote_bundle(version, repository, archive_sha256))
     if version is not None and bundle["version"] != version_id(version):
         raise InstallError("Requested version differs from the supplied source")
+    require_isolated_release(bundle)
     if dry_run:
-        return {**prepare(root, bundle), "applied": False, "profile": profile, "pinnedVersion": bundle["version"],
+        return {**prepare(root, bundle, initial=True), "applied": False, "profile": profile, "pinnedVersion": bundle["version"],
                 "pathLayout": alias(root, create=lowercase_alias, dry_run=True)}
     with update_lock(root):
         if state_path(root).exists():
@@ -497,27 +852,42 @@ def alias(target, *, create=False, dry_run=False):
         return result
 
 
-def update(target, *, source=None, version=None, dry_run=False):
+def update(target, *, source=None, version=None, dry_run=False, archive_sha256=None):
     """Append a release and missing root files; never replace or delete existing root files."""
+    if source == "":
+        raise InstallError("An explicit --source cannot be empty")
     root = project_root(target)
     state = load_state(root)
+    archive_sha256 = archive_digest(archive_sha256)
+    if archive_sha256 is not None and (source is not None or version is None):
+        raise InstallError("An archive SHA-256 pin requires an exact remote --version and no --source")
     if state["pinnedVersion"] and version not in {None, state["pinnedVersion"]}:
         raise InstallError("Version is pinned; explicitly unpin before selecting another release")
-    desired = version or (state["pinnedVersion"] if not source else None)
-    bundle = read_bundle(source) if source else remote_bundle(
-        desired or latest_version(state["repository"], channel=release_channel(state["activeVersion"])), state["repository"])
-    if not source and version is None and version_key(bundle["version"]) < version_key(state["activeVersion"]):
+    desired = version or (state["pinnedVersion"] if source is None else None)
+    bundle = read_bundle(source) if source is not None else remote_bundle(
+        desired or latest_version(state["repository"], channel=release_channel(state["activeVersion"])),
+        state["repository"], archive_sha256)
+    if source is None and version is None and version_key(bundle["version"]) < version_key(state["activeVersion"]):
         raise InstallError("Discovery would downgrade this project; select an exact --version to roll back")
     if version is not None and bundle["version"] != version_id(version):
         raise InstallError("Requested version differs from the supplied source")
+    require_isolated_release(bundle)
     if state["pinnedVersion"] and bundle["version"] != state["pinnedVersion"]:
         raise InstallError("Version is pinned; explicitly unpin before selecting another release")
+    outdated_bootstrap = bootstrap_differences(root, bundle)
+    if outdated_bootstrap:
+        raise InstallError("Root bootstrap differs from the selected release (" + ", ".join(outdated_bootstrap) +
+                           "); use bootstrap-refresh from the reviewed new tool before update")
     if dry_run:
         return {**prepare(root, bundle), "applied": False}
     with update_lock(root):
         current = load_state(root)
         if current != state:
             raise InstallError("Installation policy changed while preparing the update; retry")
+        outdated_bootstrap = bootstrap_differences(root, bundle)
+        if outdated_bootstrap:
+            raise InstallError("Root bootstrap changed while preparing the update (" +
+                               ", ".join(outdated_bootstrap) + "); review it before retrying")
         with operation_log(root, "update", {"fromVersion": state["activeVersion"], "toVersion": bundle["version"]}) as log:
             result = apply_bundle(root, bundle, state, state["profile"], state["repository"])
             log["result"] = result
@@ -525,7 +895,7 @@ def update(target, *, source=None, version=None, dry_run=False):
 
 
 def set_policy(target, *, pin=None, auto_update=None):
-    """pin='current' locks the selected release; pin='none' explicitly unlocks it."""
+    """Pin a release or opt into availability checks without selecting updates."""
     root = project_root(target)
     load_state(root)
     with update_lock(root):
@@ -538,10 +908,17 @@ def set_policy(target, *, pin=None, auto_update=None):
                 state["autoUpdate"] = "manual"
         if auto_update is not None:
             if auto_update not in {"manual", "on-start"}:
-                raise InstallError("Automatic updates must be manual or on-start")
-            if auto_update == "on-start" and state["pinnedVersion"]:
-                raise InstallError("Unpin explicitly before enabling automatic updates")
+                raise InstallError("Startup checks must be manual or on-start")
             state["autoUpdate"] = auto_update
+        if state["autoUpdate"] == "on-start":
+            # Installed shell/PowerShell launchers execute the root manager, not
+            # the package used for this policy command. An older root manager
+            # could still auto-select a release or reject pinned check-only
+            # state, so require an explicit reviewed bootstrap refresh first.
+            installed_manager = safe_path(root / ".SYSTEMX", "manager.py")
+            if (not installed_manager.is_file() or installed_manager.stat().st_size > MAX_FILE or
+                    digest(installed_manager.read_bytes()) != digest((PACKAGE / "manager.py").read_bytes())):
+                raise InstallError("Use this reviewed external tool to preview/apply bootstrap-refresh before enabling startup checks")
         state["updatedAt"] = now()
         with operation_log(root, "policy", {"pinnedVersion": state["pinnedVersion"], "autoUpdate": state["autoUpdate"]}):
             save_state(root, state)
@@ -555,34 +932,69 @@ def status(target):
     return {"target": str(root), "profile": state["profile"], "activeVersion": bundle["version"],
             "pinnedVersion": state["pinnedVersion"], "autoUpdate": state["autoUpdate"],
             "releaseChannel": release_channel(bundle["version"]),
+            "archiveDigest": state["archiveDigests"][state["activeVersion"]],
             "defaults": str(path), "retainedVersions": sorted(state["releases"], key=version_key), "integrity": "verified",
             "pathLayout": alias(root)}
 
 
 def startup_update(root):
+    """Report a newer published release without downloading or selecting its code."""
     state = load_state(root)
-    if state["autoUpdate"] != "on-start" or state["pinnedVersion"]:
+    if state["autoUpdate"] != "on-start":
         return
+
+    def announce(version):
+        new, old = version_key(version), version_key(state["activeVersion"])
+        if new > old and new[0] == old[0]:
+            print("SYSTEMX release available: " + version + " (installed " + state["activeVersion"] +
+                  "); no update applied. Review it before an explicit manual update.", file=sys.stderr)
+        elif new > old and new[0] != old[0]:
+            print("SYSTEMX release available: " + version + " (installed " + state["activeVersion"] +
+                  "); a different major release needs a manual upgrade review. No update applied.", file=sys.stderr)
+
     marker = safe_path(root / ".SYSTEMX", ".systemx/last-check.json")
     if marker.exists():
         try:
-            age = (datetime.now(timezone.utc) - datetime.fromisoformat(decode(marker.read_bytes())["at"].replace("Z", "+00:00"))).total_seconds()
+            previous = decode(regular_bytes(marker, 4096))
+            if (not isinstance(previous, dict) or
+                    set(previous) != {"at", "repository", "activeVersion", "availableVersion"} or
+                    previous["repository"] != state["repository"] or
+                    previous["activeVersion"] != state["activeVersion"] or
+                    not isinstance(previous["at"], str)):
+                raise ValueError("Stale or invalid startup check metadata")
+            checked_at = datetime.fromisoformat(previous["at"].replace("Z", "+00:00"))
+            if checked_at.tzinfo is None:
+                raise ValueError("Startup check time needs a timezone")
+            age = (datetime.now(timezone.utc) - checked_at).total_seconds()
             if 0 <= age < 86400:
+                announce(version_id(previous["availableVersion"]))
                 return
-        except (ValueError, KeyError, TypeError):
+        except (OSError, ValueError, KeyError, TypeError):
             pass
     try:
-        version = latest_version(state["repository"], channel=release_channel(state["activeVersion"]))
-        new, old = version_key(version), version_key(state["activeVersion"])
-        if new > old and new[0] == old[0]:
-            update(root, version=version)
-            print("SYSTEMX selected new defaults: " + version, file=sys.stderr)
-        elif new[0] != old[0]:
-            print("SYSTEMX: a different major release needs a manual upgrade review", file=sys.stderr)
+        # Discovery is advisory. A slow or trickling API response must never
+        # hold up the selected local runner across multiple release pages.
+        result = {}
+        def discover():
+            try:
+                result["version"] = latest_version(state["repository"], channel=release_channel(state["activeVersion"]))
+            except Exception as error:
+                result["error"] = error
+        worker = threading.Thread(target=discover, daemon=True)
+        worker.start()
+        worker.join(STARTUP_CHECK_TIMEOUT_SECONDS)
+        if worker.is_alive():
+            raise InstallError("Release metadata check timed out; run continues with installed defaults")
+        if "error" in result:
+            raise result["error"]
+        version = result["version"]
+        announce(version)
         # This is manager-owned check metadata, never a user document.
         with update_lock(root):
-            marker.write_text(json.dumps({"at": now(), "availableVersion": version}) + "\n", encoding="utf-8")
-    except (OSError, ValueError, zipfile.BadZipFile) as error:
+            lifecycle.atomic_json(marker, {"at": now(), "repository": state["repository"],
+                                           "activeVersion": state["activeVersion"],
+                                           "availableVersion": version})
+    except Exception as error:
         print("SYSTEMX update check unavailable; using verified installed defaults: " + str(error), file=sys.stderr)
 
 
@@ -595,13 +1007,28 @@ def run(target, arguments, *, offline=False, capture=False):
     if arguments and arguments[0].startswith("-") and arguments[0] not in {"-h", "--help"}:
         raise InstallError("Do not override the selected target; use run --target explicitly")
     root = project_root(target)
-    if state_path(root).exists():
-        if not offline:
-            startup_update(root)
-        defaults, _ = active_bundle(root, load_state(root))
+    if not state_path(root).exists():
+        # A trusted external manager must never cross into an arbitrary
+        # project's Python code just because it was given --target. A plain
+        # folder is not a selected, verified managed release.
+        raise InstallError("Target has no managed .SYSTEMX installation; install reviewed defaults first. "
+                           "Inspect an untrusted checkout without running its local launchers or scripts")
+    if not offline:
+        startup_update(root)
+    defaults, selected = active_bundle(root, load_state(root))
+    script = str(defaults / "scripts/systemx.py")
+    if selected is not None and version_key(selected["version"]) < version_key(ISOLATED_RUNNER_FLOOR):
+        # Historical runners depended on Python adding the script directory to
+        # sys.path. Supply only the already-verified snapshot path inside an
+        # isolated child, after importing runpy from the standard library.
+        shim = ("import runpy,sys; script=sys.argv[1]; directory=sys.argv[2]; "
+                "sys.argv=[script]+sys.argv[3:]; sys.path.insert(0,directory); "
+                "runpy.run_path(script,run_name='__main__')")
+        command = [sys.executable, "-I", "-B", "-c", shim, script,
+                   str(defaults / "scripts"), "--root", str(root / ".SYSTEMX"), *arguments]
     else:
-        defaults = root / ".SYSTEMX"
-    command = [sys.executable, "-B", str(defaults / "scripts/systemx.py"), "--root", str(root / ".SYSTEMX"), *arguments]
+        # The child must ignore PYTHONPATH and the adopted project directory.
+        command = [sys.executable, "-I", "-B", script, "--root", str(root / ".SYSTEMX"), *arguments]
     return subprocess.run(command, cwd=root, text=True, encoding="utf-8", capture_output=capture, shell=False)
 
 
@@ -610,6 +1037,10 @@ def projects(target, arguments, *, offline=True, capture=True):
     if not isinstance(arguments, (list, tuple)) or not arguments or any(
             not isinstance(value, str) or "\x00" in value for value in arguments):
         raise InstallError("Project arguments must be a nonempty string argument array")
+    if arguments[0] == "--":
+        arguments = arguments[1:]
+    if not arguments:
+        raise InstallError("Project arguments must include a projects subcommand")
     return run(target, ["projects", *arguments], offline=offline, capture=capture)
 
 
@@ -642,21 +1073,23 @@ def export_chat(target, output, *, agent="agent.0", project=None):
     return {"output": str(path), "version": bundle["version"], "uploaded": False, "project": project}
 
 
-def first_run(target, *, source=None, version=None, profile="project", lowercase_alias=False, apply=False):
+def first_run(target, *, source=None, version=None, profile="project", lowercase_alias=False,
+              archive_sha256=None, apply=False):
     """Preview or initialize a pinned installation and empty config, without running project commands."""
     root = project_root(target)
     managed = state_path(root).exists()
     if managed:
         result = status(root)
-        if source is not None or version is not None:
+        if source is not None or version is not None or archive_sha256 is not None:
             raise InstallError("Already managed; use update to select another source/version")
     else:
         result = install(root, source=source, version=version, profile=profile,
-                         lowercase_alias=lowercase_alias, dry_run=not apply)
+                         lowercase_alias=lowercase_alias, archive_sha256=archive_sha256, dry_run=not apply)
     result = {"action": "first-run", "applied": apply, "installation": result,
               "config": "preserve" if safe_path(root / ".SYSTEMX", "project.json").exists() else "create-empty",
               "nextSteps": ["Fill .SYSTEMX/GLOBAL/CONTEXT.md with approved project facts",
                             "Define outcomes and acceptance in .SYSTEMX/PLAN/MASTER-PLAN.md",
+                            "When relevant, record verified access decisions in .SYSTEMX/GLOBAL/ACCESS-MATRIX.md and source/data-flow boundaries in .SYSTEMX/PLAN/MAP.md",
                             "Configure only real project checks in .SYSTEMX/project.json",
                             "Run validate, then load context --agent agent.0"],
               "guide": "https://github.com/WayneTechLab/dotSYSTEMX/wiki/First-Time-Setup"}
@@ -687,7 +1120,7 @@ def audit(target):
         if logs.is_dir():
             for path in sorted(logs.glob("*.json")):
                 safe_path(root / ".SYSTEMX", path.relative_to(root / ".SYSTEMX"))
-                value = decode(path.read_bytes())
+                value = decode(regular_bytes(path))
                 result["operationLogs"].append({"file": str(path), "action": value.get("action"), "status": value.get("status")})
                 if value.get("status") != "complete":
                     result["issues"].append("Incomplete operation: " + path.name)
@@ -761,9 +1194,7 @@ def restore(target, *, backup, apply=False):
         raise InstallError("Restore target must be an existing containing project directory")
     destination = lifecycle.external_backup(root, backup, must_exist=True)
     receipt_path = destination / "UNINSTALL-LOG.json"
-    if is_link(receipt_path):
-        raise InstallError("Refusing a linked uninstall receipt")
-    receipt = decode(receipt_path.read_bytes())
+    receipt = decode(regular_bytes(receipt_path, MAX_ARCHIVE))
     if (not isinstance(receipt, dict) or type(receipt.get("schemaVersion")) is not int or receipt["schemaVersion"] != 1 or
             receipt.get("action") != "uninstall" or receipt.get("status") not in {"prepared", "archived", "complete", "incomplete"} or
             not isinstance(receipt.get("inventory"), dict) or type(receipt.get("aliasWasLinked")) is not bool):
@@ -815,7 +1246,10 @@ def main(argv=None):
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8")
-    parser = argparse.ArgumentParser(description=".SYSTEMX additive installation and version management")
+    parser = argparse.ArgumentParser(
+        description=".SYSTEMX additive installation and version management",
+        epilog="Use projects --target PATH -- SUBCOMMAND to route managed .SYSTEMXP records. "
+               "Select --root or --project NAME explicitly for scoped work; project routing is offline by default.")
     tool_version = version_id((PACKAGE / "VERSION").read_text(encoding="utf-8").strip())
     parser.add_argument("--version", action="version", version=".SYSTEMX " + tool_version +
                         " (" + release_channel(tool_version) + "; Python package " + package_version(tool_version) + ")")
@@ -826,6 +1260,7 @@ def main(argv=None):
     command.add_argument("--source")
     command.add_argument("--version")
     command.add_argument("--repository", default=DEFAULT_REPOSITORY)
+    command.add_argument("--archive-sha256", help="independently pin the exact remote tag ZIP before parsing it")
     command.add_argument("--dry-run", action="store_true")
     command.add_argument("--lowercase-alias", action="store_true", help="optionally create a local .systemx -> .SYSTEMX link")
     command = sub.add_parser("alias", help="check exact casing and optionally create the lowercase alias")
@@ -836,7 +1271,14 @@ def main(argv=None):
     command.add_argument("--target", required=True)
     command.add_argument("--source")
     command.add_argument("--version")
+    command.add_argument("--archive-sha256", help="independently pin the exact remote tag ZIP before parsing it")
     command.add_argument("--dry-run", action="store_true")
+    command = sub.add_parser("bootstrap-refresh", help="preview or explicitly refresh stock root bootstrap files with backups")
+    command.add_argument("--target", required=True)
+    command.add_argument("--source")
+    command.add_argument("--version")
+    command.add_argument("--archive-sha256")
+    command.add_argument("--apply", action="store_true")
     command = sub.add_parser("policy")
     command.add_argument("--target", required=True)
     command.add_argument("--pin", choices=("current", "none"))
@@ -847,6 +1289,15 @@ def main(argv=None):
     command.add_argument("--target", required=True)
     command.add_argument("--offline", action="store_true")
     command.add_argument("arguments", nargs=argparse.REMAINDER)
+    command = sub.add_parser("projects", help="route explicit .SYSTEMXP scopes using verified managed defaults",
+                             description="Forward projects commands to the selected managed .SYSTEMX installation. "
+                                         "Scoped commands require --root or --project NAME after the subcommand.")
+    command.add_argument("--target", required=True, help="outer project directory containing .SYSTEMX")
+    mode = command.add_mutually_exclusive_group()
+    mode.add_argument("--offline", dest="offline", action="store_true", help="skip startup update discovery (default)")
+    mode.add_argument("--online", dest="offline", action="store_false", help="allow the opted-in startup release check")
+    command.set_defaults(offline=True)
+    command.add_argument("arguments", nargs=argparse.REMAINDER, help="projects subcommand arguments, following --")
     command = sub.add_parser("export-chat")
     command.add_argument("--target", required=True)
     command.add_argument("--output", required=True)
@@ -859,6 +1310,7 @@ def main(argv=None):
     command.add_argument("--profile", choices=PROFILES, default="project")
     command.add_argument("--source")
     command.add_argument("--version")
+    command.add_argument("--archive-sha256", help="independently pin the exact remote tag ZIP before parsing it")
     command.add_argument("--lowercase-alias", action="store_true")
     mode = command.add_mutually_exclusive_group()
     mode.add_argument("--apply", action="store_true")
@@ -876,22 +1328,30 @@ def main(argv=None):
     try:
         if args.action == "install":
             result = install(args.target, source=args.source, version=args.version, profile=args.profile,
-                             repository=args.repository, dry_run=args.dry_run, lowercase_alias=args.lowercase_alias)
+                             repository=args.repository, dry_run=args.dry_run, lowercase_alias=args.lowercase_alias,
+                             archive_sha256=args.archive_sha256)
         elif args.action == "alias":
             result = alias(args.target, create=args.create, dry_run=args.dry_run)
         elif args.action == "update":
-            result = update(args.target, source=args.source, version=args.version, dry_run=args.dry_run)
+            result = update(args.target, source=args.source, version=args.version, dry_run=args.dry_run,
+                            archive_sha256=args.archive_sha256)
+        elif args.action == "bootstrap-refresh":
+            result = bootstrap_refresh(args.target, source=args.source, version=args.version,
+                                       archive_sha256=args.archive_sha256, apply=args.apply)
         elif args.action == "policy":
             result = set_policy(args.target, pin=args.pin, auto_update=args.auto)
         elif args.action == "status":
             result = status(args.target)
         elif args.action == "run":
             return run(args.target, args.arguments, offline=args.offline).returncode
+        elif args.action == "projects":
+            return projects(args.target, args.arguments, offline=args.offline, capture=False).returncode
         elif args.action == "export-chat":
             result = export_chat(args.target, args.output, agent=args.agent, project=args.project)
         elif args.action == "first-run":
             result = first_run(args.target, source=args.source, version=args.version, profile=args.profile,
-                               lowercase_alias=args.lowercase_alias, apply=args.apply)
+                               lowercase_alias=args.lowercase_alias, archive_sha256=args.archive_sha256,
+                               apply=args.apply)
         elif args.action == "audit":
             result = audit(args.target)
         elif args.action == "uninstall":

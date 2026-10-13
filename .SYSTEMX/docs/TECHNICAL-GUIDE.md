@@ -18,16 +18,19 @@ Host project
 └── .SYSTEMX                       exact stored directory name
     ├── GLOBAL, PLAN, MEMORY       project context, outcomes, durable facts
     ├── WORK                       canonical tasks and current focus
-    ├── AGENTS                     Agent 0, optional X/Z, and scoped worker memory
+    ├── AGENTS                     Agent 0, optional X/Y/Z, and scoped worker memory
     ├── EVENTS                     event and due ledgers after activation
     ├── REVIEWS                    policy, requests, scorecards after activation
+    ├── AGENTS/agent.y/JOBS.json    scoped CLI handoffs after activation
+    ├── state/agent-y/<Y-ID>.json    ignored, owner-only local execution state
+    ├── state/agent-y/archives/      ignored bundles after merged PR cleanup
     ├── Projects/REGISTRY.json      explicit child identities
     ├── Projects/NAME/.SYSTEMXP     isolated child records; no nested installation
     ├── project.json               explicit project command arguments
-    ├── INSTALLATION.json          selected defaults and update policy
+    ├── INSTALLATION.json          selected defaults, update policy, archive receipts
     └── .systemx                   internal manager storage
         ├── releases/<version>     retained, fingerprinted default snapshots
-        ├── history                previous installation metadata
+        ├── history                previous state and explicit bootstrap backups
         └── operations             local installation operation receipts
 ```
 
@@ -39,23 +42,39 @@ folder. It is different from the nested manager cache. Follow the
 
 | Component | Responsibility |
 | --- | --- |
-| `manager.py` | Install/update, release checks, pins, profiles, first run, audit, uninstall, restore, chat export |
+| `manager.py` | Install/update, explicit bootstrap refresh, release checks, pins, profiles, first run, audit, uninstall, restore, chat export |
 | `systemx_paths.py` | Exact stored spelling, project boundaries, case-conflict and alias checks |
 | `lifecycle.py` | File inventories, raw-byte hashes, atomic JSON receipts, backup boundaries |
 | `scripts/systemx.py` | Configuration validation, menu, doctor, explicitly configured commands |
 | `scripts/project_memory.py` | Task ledger, focus, generated views, agent records, bounded context |
 | `scripts/project_workspaces.py` | Explicit child scope routing, blank creation, scoped commands, local snapshots |
-| `scripts/agent_standards.py` | Explicit X/Z setup, safe records, common scope dispatch |
+| `scripts/agent_standards.py` | Explicit X/Y/Z setup, safe records, common scope dispatch |
 | `scripts/agent_x.py` | Event occurrence/recording time and due-item tracking |
+| `scripts/agent_y.py` | Bounded CLI handoffs, isolated task worktrees, post-run checks, and owned draft PR operations |
 | `scripts/agent_z.py` | Fixed 100-question policy, request/report validation, score math and deltas |
 | `config/distribution.json` | Explicit public file inventory with release fingerprints |
 | `config/template-records.json` | Reviewed blank seed fingerprints |
 
-The library and CLI use the same manager functions. A managed run verifies its
-selected default snapshot and invokes its runner with `--root` pointing to the
-outer project records. Old root defaults are preserved. Task state is stored once
-in `WORK/TASKS.json`; CURRENT and status pages are derived views. The
+The library and CLI use the same manager functions. Refreshed stock launchers
+invoke both managed and unmanaged tools in Python isolated mode (`-I`). Direct
+`manager.py`, `systemx.py`, and `release.py` invocations restart in isolated mode
+before importing standard libraries. The installed console entry point first
+resolves its package, then restarts before importing the manager; invoke
+`python -I -B -m systemx` from a reviewed environment when import paths are
+untrusted. Standalone entry points load only named
+local helpers from source bytes, without adding the unchecked folder to Python's
+global import path or consuming its cached bytecode. A managed run
+verifies its selected default snapshot and invokes its runner with `-I -B` and `--root`
+pointing to the outer project records. Old root guidance remains preserved;
+stock launcher updates require explicit bootstrap refresh. Task state is stored
+once in `WORK/TASKS.json`; CURRENT and status pages are derived views. The
 [format contract](https://github.com/WayneTechLab/dotSYSTEMX/wiki/Standard-Format) defines record fields and transitions.
+The current manager inspects older installation state but refuses to install or
+newly select releases before 1.8.7-alpha.1, where native isolated runner support
+begins. For an already selected, verified older snapshot, it launches an isolated
+child with a compatibility shim that adds only that verified snapshot's scripts
+directory to the child import path. The old code still runs with its historical
+behavior. Reselecting a pre-floor release requires separately reviewed recovery.
 
 ## Installation lifecycle
 
@@ -64,11 +83,41 @@ folder, pins a new installation, and creates an empty `project.json` only when
 absent. It executes no project checks or app setup commands. Existing managed
 versions and policies remain selected. Follow [first-time setup](FIRST-RUN.md).
 
-Updates add snapshots and missing root files. They do not replace project records
-or remove upstream-deleted files. Manual updates remain the default; startup
-checks are opt-in and major upgrades require review. Distribution hashes normalize
-CRLF to LF for portable text checkouts. They check consistency with the manifest;
-they are not independent release signatures.
+Ordinary updates add snapshots and missing root files. They do not replace
+project records or remove upstream-deleted files. Fresh adoption rejects a
+manifest-listed executable default whose existing contents differ from the
+reviewed distribution. A changed-release update also requires the eight root
+bootstrap and launcher files to match the destination release. A separate,
+preview-first
+`bootstrap-refresh` accepts only stock contents from the destination or intact
+retained release snapshots, stores exact backups for recognized replacements,
+and may create a missing stock file only if no retained release ever contained
+it. A file missing from the root despite its presence in a retained release is
+a conflict. It explicitly replaces only recognized files, including stock shell
+and PowerShell launchers. It does
+not update customized launchers or project-owned records. An opted-in startup
+check never selects a release. Manual updates remain the default; startup checks
+are opt-in and major upgrades require review. Existing root managers are
+preserved by ordinary updates, so refresh an older stock manager with a reviewed
+external tool before relying on this check-only startup contract.
+Schema-2 distribution hashes normalize CRLF to LF only for the explicitly
+reviewed UTF-8 text formats; binary media and unknown file types use exact-byte
+SHA-256. Schema 1 retains its historical normalization so installed older
+releases remain readable. Schema 2 is required from `1.9.0-alpha.3` onward.
+These hashes check consistency with the manifest;
+they are not independent release signatures. A selected release cache must also
+have exactly the expected files and parent directories: unlisted modules,
+packages, links, special entries, and unexpected directories are rejected before
+the cached runner executes. Partial snapshots can be resumed only when every
+present entry matches the reviewed distribution.
+
+An exact remote tag ZIP can have a separately trusted raw SHA-256 pin checked
+before archive parsing. `INSTALLATION.json` records `explicit-pin`,
+`observed-only`, or no remote digest for each selected release. Opted-in startup
+discovery reads release metadata only; it never downloads an archive or changes
+the selection. The independent digest pin applies to a later explicit manual
+update. Neither the manifest nor an observed digest makes a movable tag
+immutable. See [installation](INSTALLATION.md).
 
 Uninstall is a separate explicit operation: it inventories the complete folder,
 moves it to an external backup on the same filesystem, removes a valid local alias,
@@ -79,7 +128,11 @@ against that receipt and refuses an occupied destination. See
 
 ## Concurrency, integrity, and logs
 
-Install/update and removal use an exclusive local writer lock. Operation receipts
+Install/update and removal use an exclusive local writer lock. Task, Agent X,
+Agent Y, and Agent Z command writes use a separate per-scope coordination lock. Cooperating
+coordination writers wait up to one second; the lock records a token, PID, host,
+and creation time. On a crash it remains for manual inspection and is never
+automatically removed as "stale." Operation receipts
 record started, completed, or failed work; an abrupt process termination can leave
 a started receipt and stale lock. Check the owner before recovery. Installation
 state and lifecycle receipts are written through temporary files and atomic
@@ -98,6 +151,9 @@ The optional CLI requires Python 3.9+ and its standard library. Configured proje
 commands are explicit argument arrays and run with `shell=False` from the project
 root. Integrations should preserve that boundary and canonical records. Consult
 the [Stack Guide](STACK-GUIDE.md) and [library API](LIBRARY.md).
+Native Windows still supports the core folder and record tools, but optional
+Agent Y `run --apply` fails closed before worktree/provider execution in this
+alpha because descendant process termination is unverified there.
 
 An MCP adapter could later expose bounded read/write operations over this library.
 No MCP server, daemon, remote agent mesh, OAuth registration, or cloud sync engine
@@ -122,6 +178,12 @@ Keep any new harness or MCP adapter behind the existing project boundary:
 
 These are extension requirements, not capabilities of a shipped MCP server.
 The current integration surface is the [library and CLI](LIBRARY.md).
+The [CLI and tools guide](CLI-TOOLS.md) maps its entry points and prerequisites.
+Direct `systemx projects --target OUTER_DIRECTORY -- ...` wraps the same
+`projects()` API, defaults to offline startup, and runs the outer installation's
+verified selected defaults. Its target is never a child `.SYSTEMXP`. The existing
+`systemx run --target OUTER_DIRECTORY --offline -- projects ...` interface remains
+compatible. Local `tools-guide` and interactive menu option 18 print the guide.
 
 ## Task scale and context scale
 
@@ -159,16 +221,22 @@ outer installation. A scope selector is not an OS sandbox or distributed lock.
 
 `agent_standards.py` supplies explicit setup, exact-case contained paths, strict
 JSON reads, stable fingerprints, and common scope dispatch. `agent_x.py` owns
-append-by-command events and due-item bookkeeping. `agent_z.py` owns the fixed
+append-by-command events and due-item bookkeeping. `agent_y.py` records one
+task/provider/branch handoff at a time, verifies the chosen provider, runs it
+in an isolated worktree, checks its resulting diff against the allowed scope,
+and can publish an opted-in draft PR. `agent_z.py` owns the fixed
 policy, review requests, deterministic scoring arithmetic, immutable scorecards,
-and comparable deltas. All are Python standard-library modules with no runtime
-model, scheduler, cloud, or database dependency. Agent judgment and original
-proof remain external inputs; arithmetic and hashes do not establish their truth.
+and comparable deltas. The controller uses Python standard-library code plus
+installed external CLI/Git/GitHub tools for an explicitly run Agent Y job. Role
+setup itself has no runtime model, scheduler, cloud, or database dependency.
+Agent judgment and original proof remain external inputs; arithmetic and hashes
+do not establish their truth.
 
 `roles-init` preserves the existing registry and creates missing records only.
 The release's seed registry remains Agent 0 only for older bootstrap-manager
-compatibility. Activating named X/Z roles is an explicit record-format adoption;
-older selected tools cannot interpret those new role IDs. Shared updates keep
+compatibility. Activating named X/Y/Z roles is an explicit record-format adoption;
+selected tools must understand every activated ID; X/Z-capable older versions
+may reject Agent Y. Shared updates keep
 project-owned question policies and past reports unchanged.
 
 ## Toolchain and shared context

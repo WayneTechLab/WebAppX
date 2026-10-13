@@ -52,6 +52,43 @@ class OperationalControls(unittest.TestCase):
             self.assertNotEqual(self.run_script('deploy.sh', *args).returncode, 0)
         self.assertFalse((self.root / '.SYSTEMX/webapp-version').exists())
 
+    def test_preflight_preserves_existing_deploy_journal_and_release_metadata(self):
+        (self.root / 'package.json').write_text(json.dumps({'name': 'preflight-fixture', 'version': '3.1.0'}))
+        seeded = {
+            '.SYSTEMX/logs/deploy-history.jsonl': b'{"event":"existing","version":"3.0.0"}\n',
+            '.SYSTEMX/webapp-version/deploy-count.txt': b'Deploy count: 17\n',
+            '.SYSTEMX/webapp-version/app-version.txt': b'3.0.0\n',
+            '.SYSTEMX/webapp-version/version.json': b'{"app":{"version":"3.0.0","deployCount":17}}\n',
+            '.SYSTEMX/webapp-version/CHANGELOG.md': b'# Existing reviewed release history\n',
+            'public/version.json': b'{"version":"3.0.0","buildTime":"existing-build"}\n',
+        }
+        for name, data in seeded.items():
+            path = self.root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        npm_calls = self.base / 'npm-calls.jsonl'
+        npm = self.bin / 'npm'
+        npm.write_text('#!/usr/bin/env python3\nimport json,sys\nfrom pathlib import Path\n'
+                       + 'with Path(' + repr(str(npm_calls)) + ").open('a') as stream:\n"
+                       + "    stream.write(json.dumps(sys.argv[1:]) + '\\n')\n")
+        npm.chmod(0o755)
+        deployed = self.base / 'firebase-was-called'
+        firebase = self.bin / 'firebase'
+        firebase.write_text('#!/usr/bin/env python3\nfrom pathlib import Path\n'
+                            + 'Path(' + repr(str(deployed)) + ").write_text('unexpected deploy')\n"
+                            + 'raise SystemExit(97)\n')
+        firebase.chmod(0o755)
+
+        result = self.run_script('deploy.sh', 'hosting', '--preflight')
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('Skip deploy', result.stdout)
+        calls = [json.loads(line) for line in npm_calls.read_text().splitlines()]
+        self.assertIn(['run', '-s', 'build'], calls)
+        self.assertFalse(deployed.exists())
+        for name, data in seeded.items():
+            with self.subTest(metadata=name):
+                self.assertEqual((self.root / name).read_bytes(), data)
+
     def test_installed_launcher_keeps_path_and_arguments_literal(self):
         menu = self.root / '.SYSTEMX/WSG-MENU.sh'
         capture = self.base / 'launcher.json'

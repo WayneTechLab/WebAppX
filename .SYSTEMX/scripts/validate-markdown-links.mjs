@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, lstatSync, readdirSync, statSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { dirname, extname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -14,7 +14,12 @@ const scanRoots = [
 
 function collectMarkdown(target) {
   if (!existsSync(target)) return []
-  const stats = statSync(target)
+  const scope = relative(repoRoot, target).replaceAll('\\', '/')
+  if (/^\.SYSTEMX\/(?:local|logs|state)(?:\/|$)/.test(scope) ||
+      /^\.SYSTEMX\/\.systemx\/(?:history|operations)(?:\/|$)/.test(scope) ||
+      /^\.SYSTEMX\/Projects\/[^/]+\/\.SYSTEMXP\/(?:local|logs|state)(?:\/|$)/.test(scope)) return []
+  const stats = lstatSync(target)
+  if (stats.isSymbolicLink()) return []
   if (stats.isFile()) return extname(target).toLowerCase() === '.md' ? [target] : []
   const files = []
   for (const entry of readdirSync(target, { withFileTypes: true })) {

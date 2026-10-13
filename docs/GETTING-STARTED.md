@@ -1,7 +1,7 @@
-# Getting started with template 3.1.0
+# Getting started with template 3.2.0
 
 The public WebAppX combines a React/TypeScript/Vite/Tailwind/Firebase
-webapp, managed dotSYSTEMX 1.8.6-alpha.1 tools, a guarded local LAN builder,
+webapp, managed dotSYSTEMX 1.9.0-alpha.5 tools, a guarded local LAN builder,
 and reusable production/brand kits. Start locally, then configure your project.
 
 ## Prerequisites
@@ -12,9 +12,12 @@ The Firebase emulator session also needs Firebase CLI and the Java runtime
 required by your installed Firebase emulator tooling. Optional browser/cloud
 CLIs are installed separately through the setup playbook.
 
-macOS and Windows x64/ARM64 are target platforms. This release's recorded local
-acceptance is on macOS Apple Silicon; read the wiki platform pages for the
-available launchers and platform-specific limits.
+macOS and Windows x64/ARM64 are target platforms. Historical host verification
+was recorded on macOS Apple Silicon; use current checks for your selected
+revision. Core PowerShell launchers and record tools are included. Native Windows
+Agent Y `run --apply` remains unavailable pending verified descendant-process
+termination. Read the wiki platform pages for launcher and runtime limits;
+macOS checks do not establish Windows runtime acceptance.
 
 ## Create your app
 
@@ -67,12 +70,19 @@ populate your context and plan, then use the managed command interface:
 npm run systemx:context
 npm run systemx -- status
 npm run systemx -- menu
-# Preview event/review role setup before explicitly applying it:
+npm run systemx -- tools-guide
+# Preview optional event/CLI/review roles before explicitly applying setup:
 npm run systemx -- roles-init
 ```
 
 Keep project-specific data in your adopted repository. Upstream imports preserve
 existing records and host extensions. See [managed integration](SYSTEMX-INTEGRATION.md).
+The access matrix and project map ship blank for your reviewed source/access
+references. The registry seeds only Agent 0. Optional Agent Y needs a selected
+installed CLI, bounded task and branch/PR policy; role setup does not start it.
+For a registered child, use `npm run systemx -- projects context --project NAME --agent agent.0`.
+A separately installed current CLI also supports
+`systemx projects --target "/path/to/workspace" -- context --project NAME --agent agent.0`.
 
 ## Verify an adopted app
 

@@ -28,5 +28,11 @@ Setup-Input_MD/*
 /.systemx/last-check.json
 /.systemx/history/
 /.systemx/operations/
+# Private delegated CLI prompts, job sidecars and project coordination state.
+/local/
+/state/
+/Projects/*/.SYSTEMXP/local/
+/Projects/*/.SYSTEMXP/logs/
+/Projects/*/.SYSTEMXP/state/
 __pycache__/
 *.py[cod]

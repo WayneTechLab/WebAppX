@@ -1,6 +1,6 @@
 """Agent X: explicit event history and due-item tracking; no job execution."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import project_memory as memory
 import agent_standards as records
@@ -10,6 +10,7 @@ KINDS = ("work", "check", "deploy", "runtime", "communication", "schedule", "rev
 STAGES = ("planned", "implemented", "checked", "deployed", "live_verified", "failed", "cancelled", "observed")
 EVENTS = "EVENTS/EVENTS.json"
 SCHEDULE = "EVENTS/SCHEDULE.json"
+CLOSURE_CLOCK_SKEW = timedelta(minutes=5)
 
 
 def utc(value):
@@ -24,6 +25,13 @@ def actor(value):
     if value["kind"] not in ACTORS:
         raise ValueError("Unknown actor kind")
     memory.string(value["id"], "Actor ID")
+
+
+def event_time(event):
+    occurred = memory.timestamp(event["at"])
+    recorded = memory.timestamp(event["recordedAt"])
+    if event["stage"] != "planned" and occurred > recorded:
+        raise ValueError("Only planned events may occur after their recording time")
 
 
 def load_events(root):
@@ -43,11 +51,10 @@ def load_events(root):
         if event["id"] != "EVT-" + records.fingerprint(event["key"])[:20] or event["id"] in seen:
             raise ValueError("Duplicate or inconsistent event identity")
         seen.add(event["id"])
-        utc(event["at"])
-        utc(event["recordedAt"])
         actor(event["actor"])
         if event["kind"] not in KINDS or event["stage"] not in STAGES:
             raise ValueError("Unknown event kind or evidence stage")
+        event_time(event)
         memory.strings(event["evidence"], "Event evidence")
         memory.strings(event["tasks"], "Event tasks")
         if len(event["tasks"]) != len(set(event["tasks"])) or any(task not in known_tasks for task in event["tasks"]):
@@ -76,6 +83,9 @@ def add_event(root, args):
         for name in ("key", "summary", "revision"):
             memory.string(item[name], "Event " + name)
         actor(item["actor"])
+        if item["kind"] not in KINDS or item["stage"] not in STAGES:
+            raise ValueError("Unknown event kind or evidence stage")
+        event_time(item)
         if item["stage"] in {"checked", "deployed", "live_verified"} and not item["evidence"]:
             raise ValueError("This evidence stage requires --evidence")
         memory.strings(item["evidence"], "Event evidence")
@@ -90,6 +100,7 @@ def load_schedule(root):
     if type(data["schemaVersion"]) is not int or data["schemaVersion"] != 1 or not isinstance(data["items"], list):
         raise ValueError("Invalid schedule ledger schema")
     seen = set()
+    latest_closure = datetime.now(timezone.utc) + CLOSURE_CLOCK_SKEW
     ledger, _ = memory.load(root)
     known_tasks = {item["id"] for item in ledger["tasks"]}
     for item in data["items"]:
@@ -114,8 +125,12 @@ def load_schedule(root):
         if item["state"] == "open":
             if item["closedAt"] or item["note"] or item["evidence"]:
                 raise ValueError("Open items cannot contain closure evidence")
-        elif not item["note"].strip() or memory.timestamp(item["closedAt"]) < memory.timestamp(item["createdAt"]):
-            raise ValueError("Closed items need a reason and a valid closure timestamp")
+        else:
+            closed_at = memory.timestamp(item["closedAt"])
+            if not item["note"].strip() or closed_at < memory.timestamp(item["createdAt"]):
+                raise ValueError("Closed items need a reason and a valid closure timestamp")
+            if closed_at > latest_closure:
+                raise ValueError("Schedule closure time is beyond the allowed clock skew")
         if item["state"] == "complete" and not item["evidence"]:
             raise ValueError("Completed schedule items need evidence")
     return data

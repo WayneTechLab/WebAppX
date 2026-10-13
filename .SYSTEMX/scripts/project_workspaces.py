@@ -21,7 +21,8 @@ KINDS = ("general", "software", "research", "operations", "channel")
 SOURCES = ("repository", "directory", "drive", "chat", "document", "other")
 SEED_FILES = (
     "README.md", "START-HERE.md", "AGENTS.md", "GLOBAL/CONTEXT.md",
-    "PLAN/MASTER-PLAN.md", "MEMORY/PROJECT.md", "MEMORY/sessions/README.md",
+    "GLOBAL/ACCESS-MATRIX.md", "PLAN/MASTER-PLAN.md", "PLAN/MAP.md",
+    "MEMORY/PROJECT.md", "MEMORY/sessions/README.md",
     "AGENTS/REGISTRY.json", "AGENTS/agent.0/MEMORY.md", "WORK/README.md",
     "WORK/TASKS.json", "WORK/FOCUS.json", "DECISIONS/README.md",
     "SYNC/README.md", "SOURCES.json", "project.json",
@@ -112,7 +113,7 @@ class Workspaces:
         path = self.safe(relative)
         if not path.is_file() or path.stat().st_size > 2 * 1024 * 1024:
             raise ValueError("Workspace metadata must be a regular file of at most 2 MiB: " + relative)
-        return json.loads(path.read_text(encoding="utf-8"))
+        return project_memory.read_json(self.root, relative)
 
     def select(self, name=None, root=False):
         if bool(root) == (name is not None):

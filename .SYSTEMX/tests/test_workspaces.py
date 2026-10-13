@@ -73,6 +73,19 @@ class WorkspaceTests(unittest.TestCase):
         self.assertEqual(self.cli("add", "Project-B", "--apply").returncode, 2)
         self.assertEqual(before, self.files())
 
+    def test_child_registry_and_config_reject_duplicate_json_fields(self):
+        registry = self.systemx / "Projects/REGISTRY.json"
+        registry.write_text('{"schemaVersion":1,"projects":[],"projects":[]}')
+        self.assertEqual(self.cli("validate").returncode, 2)
+        registry.write_text('{"schemaVersion":1,"projects":[]}')
+        records = self.add()
+        config = records / "project.json"
+        config.write_text('{"schemaVersion":1,"project":{"name":"","description":""},'
+                          '"checks":[],"commands":{"dev":[],"build":[],"deploy":[]},'
+                          '"commands":{"dev":[],"build":[],"deploy":[]}}')
+        self.assertEqual(self.cli("check", "--project", "Project-A").returncode, 2)
+        self.assertEqual(self.cli("validate").returncode, 2)
+
     def test_tasks_roles_focus_and_acceptance_are_isolated(self):
         a = self.add()
         b = self.add("Project-B")
@@ -241,8 +254,10 @@ class WorkspaceTests(unittest.TestCase):
         provenance["templateVersion"] = version
         (source / "SOURCE.json").write_text(json.dumps(provenance))
         (source / "templates/project/README.md").write_text("# Changed future seed\n")
-        manifest = {"schemaVersion": 1, "version": version, "files": {
-            p.relative_to(source).as_posix(): manager.digest(p.read_bytes())
+        schema = manager.distribution_schema(version)
+        manifest = {"schemaVersion": schema, "version": version, "files": {
+            p.relative_to(source).as_posix():
+            manager.distribution_digest(p.relative_to(source).as_posix(), p.read_bytes(), schema)
             for p in source.rglob("*") if p.is_file() and p.relative_to(source).as_posix() != manager.MANIFEST}}
         (source / manager.MANIFEST).write_text(json.dumps(manifest))
         manager.set_policy(target, pin="none")

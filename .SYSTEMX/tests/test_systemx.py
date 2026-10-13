@@ -1,13 +1,18 @@
 """Isolated behavior checks. No real project commands or cloud accounts are used."""
 
+import hashlib
 import json
+import importlib.util
+import marshal
 import os
 from pathlib import Path
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 SOURCE = Path(__file__).resolve().parents[1]
 
@@ -62,6 +67,64 @@ class SystemxTests(unittest.TestCase):
         self.assert_ok(self.run_cli("validate", "--template"))
         self.assertFalse((self.systemx / "project.json").exists())
 
+    def test_tools_guide_and_menu_option_are_read_only(self):
+        before = {p.relative_to(self.systemx).as_posix(): p.read_bytes()
+                  for p in self.systemx.rglob("*") if p.is_file()}
+        guide = (self.systemx / "docs/CLI-TOOLS.md").read_text(encoding="utf-8")
+        result = self.run_cli("tools-guide")
+        self.assert_ok(result)
+        self.assertEqual(result.stdout, guide + "\n")
+        menu = self.run_cli("menu", input_text="18\n0\n")
+        self.assert_ok(menu)
+        self.assertIn("18) CLI, tools, and .SYSTEMXP routing guide", menu.stdout)
+        self.assertIn(guide, menu.stdout)
+        after = {p.relative_to(self.systemx).as_posix(): p.read_bytes()
+                 for p in self.systemx.rglob("*") if p.is_file()}
+        self.assertEqual(before, after)
+
+    @unittest.skipUnless(shutil.which("pwsh"), "PowerShell launcher requires pwsh")
+    def test_powershell_folder_launcher_matches_bash_without_managed_state(self):
+        result = subprocess.run([shutil.which("pwsh"), "-NoProfile", "-File",
+                                 str(self.systemx / "SYSTEMX.ps1"), "validate", "--template"],
+                                cwd=self.temp.name, text=True, capture_output=True, timeout=15)
+        self.assert_ok(result)
+        self.assertFalse((self.systemx / "INSTALLATION.json").exists())
+        self.assertFalse((self.systemx / "project.json").exists())
+
+    def test_launchers_refuse_malformed_installation_markers_without_fallback(self):
+        commands = []
+        if shutil.which("bash"):
+            commands.append([shutil.which("bash"), str(self.systemx / "SYSTEMX.sh")])
+        if shutil.which("pwsh"):
+            commands.append([shutil.which("pwsh"), "-NoProfile", "-File", str(self.systemx / "SYSTEMX.ps1")])
+        if not commands:
+            self.skipTest("Launcher tests require Bash or PowerShell")
+        state = self.systemx / "INSTALLATION.json"
+        marker = self.root / "UNMANAGED-FALLBACK-EXECUTED"
+        self.runner.write_text("from pathlib import Path\nPath(" + repr(str(marker)) +
+                               ").write_text('executed')\n")
+        for kind in ("file", "directory", "dangling-link"):
+            if kind == "file":
+                state.write_text("malformed managed state\n")
+            elif kind == "directory":
+                state.mkdir()
+            else:
+                try:
+                    state.symlink_to(self.root / "absent-state")
+                except (NotImplementedError, OSError):
+                    continue
+            for command in commands:
+                with self.subTest(kind=kind, command=command[0]):
+                    result = subprocess.run([*command, "status"], cwd=self.temp.name,
+                                            text=True, capture_output=True, timeout=15)
+                    self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+                    self.assertFalse(marker.exists())
+                    self.assertTrue(state.exists() or state.is_symlink())
+            if kind == "directory":
+                state.rmdir()
+            else:
+                state.unlink()
+
     def test_public_template_rejects_populated_project_records_without_affecting_normal_use(self):
         memory = self.systemx / "MEMORY/PROJECT.md"
         memory.write_text(memory.read_text() + "\nProject-specific fixture fact\n")
@@ -82,6 +145,93 @@ class SystemxTests(unittest.TestCase):
             path.unlink()
         self.assert_ok(self.run_cli("init"))
         self.assertIn("extra files", self.run_cli("validate", "--template").stderr)
+
+    def test_unlisted_socket_module_cannot_run_before_template_validation(self):
+        marker = self.root / "socket-module-executed"
+        for relative in ("scripts/socket.py", "socket.py"):
+            with self.subTest(relative=relative):
+                planted = self.systemx / relative
+                planted.write_text("from pathlib import Path\nPath(" + repr(str(marker)) +
+                                   ").write_text('executed')\n")
+                result = self.run_cli("validate", "--template")
+                self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+                self.assertIn("extra files", result.stderr)
+                self.assertFalse(marker.exists())
+                planted.unlink()
+        if shutil.which("bash"):
+            planted = self.systemx / "scripts/socket.py"
+            planted.write_text("from pathlib import Path\nPath(" + repr(str(marker)) +
+                               ").write_text('executed')\n")
+            result = subprocess.run(["bash", str(self.systemx / "SYSTEMX.sh"), "validate", "--template"],
+                                    cwd=self.temp.name, text=True, capture_output=True, timeout=15)
+            self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+            self.assertIn("extra files", result.stderr)
+            self.assertFalse(marker.exists())
+
+    def test_unlisted_matching_bytecode_cannot_replace_named_helper(self):
+        helper = self.systemx / "scripts/project_memory.py"
+        marker = self.root / "bytecode-executed"
+        code = compile("from pathlib import Path\nPath(" + repr(str(marker)) +
+                       ").write_text('executed')\n", str(helper), "exec")
+        cache_prefix = self.root / "python-cache"
+        with patch.object(sys, "pycache_prefix", str(cache_prefix)):
+            cache = Path(importlib.util.cache_from_source(str(helper)))
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        cache.write_bytes(importlib.util.MAGIC_NUMBER +
+                          struct.pack("<III", 0, int(helper.stat().st_mtime), helper.stat().st_size) +
+                          marshal.dumps(code))
+        result = subprocess.run([sys.executable, "-I", "-B", "-X", "pycache_prefix=" + str(cache_prefix),
+                                 str(self.runner), "validate", "--template"],
+                                cwd=self.temp.name, text=True, capture_output=True, timeout=15)
+        self.assert_ok(result)
+        self.assertFalse(marker.exists())
+
+    def test_release_check_rejects_unlisted_module_without_executing_it(self):
+        marker = self.root / "release-module-executed"
+        planted = self.systemx / "scripts/socket.py"
+        planted.write_text("from pathlib import Path\nPath(" + repr(str(marker)) +
+                           ").write_text('executed')\n")
+        release = self.systemx / "scripts/release.py"
+        result = subprocess.run([sys.executable, "-B", str(release), "--check"],
+                                cwd=self.temp.name, text=True, capture_output=True, timeout=15)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("extra files", result.stderr)
+        self.assertFalse(marker.exists())
+
+    def test_release_can_regenerate_manifest_from_a_copied_template(self):
+        release = self.systemx / "scripts/release.py"
+        result = subprocess.run([sys.executable, "-B", str(release)], cwd=self.temp.name,
+                                text=True, capture_output=True, timeout=15)
+        self.assert_ok(result)
+        result = subprocess.run([sys.executable, "-B", str(release), "--check"], cwd=self.temp.name,
+                                text=True, capture_output=True, timeout=15)
+        self.assert_ok(result)
+
+    def test_release_manifest_schema_two_uses_raw_binary_hashes(self):
+        version = "1.9.0-alpha.3"
+        (self.systemx / "VERSION").write_text(version + "\n")
+        source = self.systemx / "SOURCE.json"
+        provenance = json.loads(source.read_text())
+        provenance["templateVersion"] = version
+        source.write_text(json.dumps(provenance))
+        metadata = self.root / "pyproject.toml"
+        if metadata.is_file():
+            old_version = (SOURCE / "VERSION").read_text().strip().replace("-alpha.", "a")
+            metadata.write_text(metadata.read_text().replace('version = "' + old_version + '"',
+                                                          'version = "1.9.0a3"'))
+        release = self.systemx / "scripts/release.py"
+        result = subprocess.run([sys.executable, "-B", str(release)], cwd=self.temp.name,
+                                text=True, capture_output=True, timeout=15)
+        self.assert_ok(result)
+        manifest = json.loads((self.systemx / "config/distribution.json").read_text())
+        self.assertEqual(manifest["schemaVersion"], 2)
+        binary = "MEDIA/White-Paper/SYSTEMX-White-Paper-v1.2.pdf"
+        raw = (self.systemx / binary).read_bytes()
+        self.assertIn(b"\r\n", raw)
+        self.assertEqual(manifest["files"][binary], hashlib.sha256(raw).hexdigest())
+        result = subprocess.run([sys.executable, "-B", str(release), "--check"], cwd=self.temp.name,
+                                text=True, capture_output=True, timeout=15)
+        self.assert_ok(result)
 
     def test_public_template_manifest_requires_all_seed_hashes(self):
         path = self.systemx / "config/template-records.json"
