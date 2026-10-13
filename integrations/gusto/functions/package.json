@@ -1,0 +1,17 @@
+{
+  "name": "webappx-gusto-functions",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.mjs",
+  "engines": { "node": "22" },
+  "scripts": {
+    "test": "node --test ../../../tests/hr/gusto-backend.test.mjs",
+    "test:rules": "node scripts/test-rules.mjs",
+    "check": "node --check src/index.mjs && node --check src/backend.mjs && node --check src/security.mjs && node --check src/webhooks.mjs && node --check src/projections.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "14.5.0",
+    "firebase-functions": "7.4.0"
+  }
+}

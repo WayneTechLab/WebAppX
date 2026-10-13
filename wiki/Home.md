@@ -1,12 +1,12 @@
 # WebAppX Wiki
 
-Unified webapp release **3.2.0** uses standalone SYSTEMX **1.9.0-alpha.5**.
+Unified webapp release **3.3.0** uses standalone SYSTEMX **1.9.0-alpha.6**.
 This wiki belongs to WayneTechLab/WebAppX; public dotSYSTEMX remains the
 universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md),
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
-The retained guides below cover the Firebase/LAN builder and production kits.
+The retained guides below cover Firebase, the LAN builder, Gusto/HR and production kits.
 They describe available workflows; project adoption still requires configuration
 and scoped verification. Public derivatives are reviewed and published separately.
 
@@ -47,6 +47,7 @@ checkout while keeping production Firebase Hosting clean.
 | If you want to... | Go to |
 | --- | --- |
 | Get a running app in minutes | **[Quick Start](Quick-Start.md)** |
+| Preview synthetic HR portals and the genuine SDK directory | **[Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md)** |
 | Delegate one adopted-app task to an installed CLI | **[Agent Y New App Setup](Agent-Y-New-App-Setup.md)** |
 | Use `.SYSTEMX` from idea to production | **[User Ingest & Production Setup](User-Ingest-and-Production-Setup.md)** |
 | Open the local builder/control surface | **[SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md)** |
@@ -83,6 +84,21 @@ The [new-app guide](Agent-Y-New-App-Setup.md) covers role preview/apply, private
 prompts, real app checks, setup commits, a local-result handoff and optional
 draft PR gates. Keep the reusable template's records blank; activate roles only
 in the adopted scope.
+
+## Gusto and HR workspace
+
+The portable `.SYSTEMX/GUSTO/` package provides routes, capability ownership,
+role policy and adoption contracts. In Vite development, `/hr/demo` offers
+synthetic management, employee, manager and contractor portals with app-owned
+state that resets on refresh. `/hr/demo/sdk` uses the genuine Gusto React SDK
+0.56.6 employee directory against local mock reads; its mock endpoint is absent
+from Hosting and `npm run preview`.
+
+Connected portals remain unconfigured and require trusted identity/memberships
+and an adopted server integration. The optional Firebase module is disabled by
+default. No full SDK workflow or live payroll acceptance is implied. Follow
+[Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md) for the
+preview, setup and validation path.
 
 ## Included route model
 

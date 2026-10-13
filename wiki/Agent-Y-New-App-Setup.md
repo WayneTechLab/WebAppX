@@ -1,6 +1,6 @@
 # Set up Agent Y in a new WebAppX app
 
-This guide applies to **WebAppX 3.2.0 with managed dotSYSTEMX 1.9.0-alpha.5**.
+This guide applies to **WebAppX 3.3.0 with managed dotSYSTEMX 1.9.0-alpha.6**.
 Agent Y takes one Agent 0 task into a separately installed CLI provider, works
 on a task branch in a separate Git worktree, and returns a local commit for
 review. Draft PR publication is an optional choice made when preparing that task.
@@ -16,9 +16,9 @@ Examples below create records only when you run them in that adopted app.
 | Agent Y | Execute one bounded CLI handoff and the explicitly allowed task branch/PR lifecycle. |
 | Agent Z | Review the same versioned evidence questions at the acceptance boundary. A score does not accept or merge work. |
 
-The [selected Agent Y manual](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/.systemx/releases/1.9.0-alpha.5/docs/AGENT-Y.md)
+The [selected Agent Y manual](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/.systemx/releases/1.9.0-alpha.6/docs/AGENT-Y.md)
 defines the exact alpha.5 commands. The
-[CLI/tools guide](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/.systemx/releases/1.9.0-alpha.5/docs/CLI-TOOLS.md)
+[CLI/tools guide](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/.systemx/releases/1.9.0-alpha.6/docs/CLI-TOOLS.md)
 covers installed CLI routing and working directories. Read
 [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md) for update ownership.
 
@@ -39,7 +39,7 @@ git remote get-url origin
 ```
 
 Check that `origin` names **your app**, and that installation status selects
-`1.9.0-alpha.5`, pinned with manual updates. Read the outer
+`1.9.0-alpha.6`, pinned with manual updates. Read the outer
 `.SYSTEMX/START-HERE.md` and `INSTALLATION.json`, then the selected release's
 `STANDARD.md` and `START-HERE.md`. Keep managed snapshots under
 `.SYSTEMX/.systemx/releases/` immutable, including the retained original release.

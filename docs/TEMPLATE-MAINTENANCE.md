@@ -20,7 +20,7 @@ Each operation has a separate preview/check and explicit mutation boundary.
 
 ## Managed standalone updates
 
-The 3.2.0 host selects dotSYSTEMX 1.9.0-alpha.5. Preview with
+The 3.3.0 host selects dotSYSTEMX 1.9.0-alpha.6. Preview with
 `npm run systemx:upstream:check`, then apply the reviewed plan with
 `npm run systemx:upstream:import`. The importer verifies a clean standalone
 checkout against exact public `main`, archives that revision and uses its
@@ -115,4 +115,4 @@ Source publication and wiki publication are separate from Firebase hosting.
 See [release provenance](UNIFIED-TEMPLATE.md),
 [managed integration](SYSTEMX-INTEGRATION.md) and the
 historical [3.1.0 validation receipt](VALIDATION-3.1.0.md). That receipt covers
-its examined revision and does not validate the 3.2.0 update.
+its examined revision and does not validate the 3.3.0 update.

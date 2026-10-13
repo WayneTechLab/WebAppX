@@ -1,0 +1,10 @@
+{
+  "functions": [{ "source": "functions", "codebase": "gusto-hr", "runtime": "nodejs22", "ignore": ["node_modules", ".git", "*.log", ".runtime", ".env*"] }],
+  "firestore": { "rules": "firestore.rules", "indexes": "firestore.indexes.json" },
+  "emulators": {
+    "functions": { "host": "127.0.0.1", "port": 5501 },
+    "firestore": { "host": "127.0.0.1", "port": 8580 },
+    "auth": { "host": "127.0.0.1", "port": 9599 },
+    "singleProjectMode": true
+  }
+}

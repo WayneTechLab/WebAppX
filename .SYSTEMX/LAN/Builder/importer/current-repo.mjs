@@ -7,6 +7,7 @@ const routeByPage = {
   ServicesPage: '/services',
   DocsPage: '/docs',
   LoginPage: '/login',
+  HrPage: '/hr',
   ContactPage: '/contact',
   NotFoundPage: '*',
 }

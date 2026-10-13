@@ -1,4 +1,4 @@
-# Unified template 3.2.0
+# Unified template 3.3.0
 
 WebAppX retains the reviewed webapp, LAN, setup and kit features and incorporates
 the latest reviewed standalone SYSTEMX through a managed import. Its Git history
@@ -11,11 +11,11 @@ Project records are blank adoption seeds. No private mirror is configured.
 | --- | --- | --- |
 | Public SFWA-WTL-TEMPLATE | c3e2272efe7d9fe3fde1add3144aab3ec6e487c4 | Webapp, LAN and original Webflow research |
 | Private webapp-stack-g1 | 2d3d5afa02db66a19ff55b755deec22771bea05a | Newer integration, dependencies, sanitized kits and LAN Builder research |
-| Public dotSYSTEMX | aba9620ac07c9fe27572fd37ba80df8d1deeded4 | Selected 1.9.0-alpha.5 operating tools and managed defaults |
+| Public dotSYSTEMX | 7f0d82b7ba8531ac04d897209d8c1ed263ee29cb | Selected 1.9.0-alpha.6 operating tools and managed defaults |
 
 The selected distribution manifest fingerprint is
-`483e564855c8f3ecd9255a06fdb7994a0df85cc23fa3a531ecd638746378cd37`.
-The earlier 1.8.6-alpha.1 import and its immutable snapshot remain retained.
+`009e6b6c2f1359fa4c88e3961164d28cc89f65cea2a6682200fb2953caf326e3`.
+The earlier 1.8.6-alpha.1 and 1.9.0-alpha.5 snapshots remain retained.
 
 ## Included capabilities
 
@@ -25,6 +25,7 @@ The earlier 1.8.6-alpha.1 import and its immutable snapshot remain retained.
 | Managed SYSTEMX | `.SYSTEMX/SYSTEMX.sh` | Context, tasks/dependencies, project memory, child workspaces, releases and lifecycle |
 | Agent mesh | `.SYSTEMX/AI/`, `.SYSTEMX/AGENTS/` | Agent 0 coordination, bounded worker packets and tool/connector/recovery contracts |
 | Standard roles | SYSTEMX `roles-init` | Explicit Agent X events, optional Agent Y CLI handoffs and Agent Z fixed-question reviews |
+| HR and Gusto | `.SYSTEMX/GUSTO/`, `src/hr/`, `integrations/gusto/` | 64 route contracts, synthetic role portals, genuine SDK directory reads and disabled optional Firebase foundations |
 | Access and source boundaries | `GLOBAL/ACCESS-MATRIX.md`, `PLAN/MAP.md` in the selected scope | Blank reviewed-access and source-navigation records; no permission grants or duplicate task authority |
 | CLI and project routing | SYSTEMX `tools-guide`; installed CLI `projects --target OUTER -- ...` | Selected verified tools, explicit `.SYSTEMXP` scope and offline defaults |
 | Local LAN | `npm run dev:systemx` | Owned sessions, available loopback ports, dashboard, fixtures and guarded source writes |
@@ -56,12 +57,14 @@ x64/ARM64 runtime or Firebase deployment acceptance.
 
 ## Release checks
 
-The [3.2.0 validation receipt](VALIDATION-3.2.0.md) records the completed local
-gates, preservation checks and platform limits for this integration.
+The [3.3.0 validation receipt](VALIDATION-3.3.0.md) records the source/local
+checks for this HR integration. The [3.2.0 receipt](VALIDATION-3.2.0.md)
+retains its original integration and platform scope.
 
 `npm run ci:all` covers blank seed validation, selected snapshot integrity,
 research checksums, governance, standalone tools, import/mirror regressions,
-types, lint, LAN characterization, strict dependency audit and app build isolation.
+types, lint, LAN characterization, HR mock/backend tests, strict root/backend
+dependency audits and app build isolation.
 `npm run deploy -- hosting --preflight` exercises the retained deployment gates
 without publishing to hosting. Run those gates before publishing a new host
 release. The [3.1.0 validation receipt](VALIDATION-3.1.0.md) remains evidence for

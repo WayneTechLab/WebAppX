@@ -14,6 +14,7 @@ import {
   Share2,
   ShieldCheck,
   Sparkles,
+  Users,
   X,
   type LucideIcon,
 } from 'lucide-react'
@@ -37,6 +38,7 @@ const primaryLinks: NavigationItem[] = [
 ]
 
 const publicPageLinks: NavigationItem[] = [
+  { to: '/hr', label: 'People & HR', description: 'Standard portals and synthetic Gusto preview', icon: Users },
   { to: '/services', label: 'Services', description: 'Template services and capabilities', icon: BriefcaseBusiness },
   { to: '/features', label: 'Features', description: 'Template capabilities', icon: Sparkles },
   { to: '/docs', label: 'Docs', description: 'Setup and operating guides', icon: BookOpen },
@@ -46,6 +48,10 @@ const publicPageLinks: NavigationItem[] = [
 ]
 
 const staffLinks: NavigationItem[] = [
+  { to: '/admin/hr', label: 'HR Management', description: 'Protected HR adoption and provider boundary', icon: Users },
+  { to: '/employee', label: 'Employee Portal', description: 'Authenticated employee self-service boundary', icon: Users },
+  { to: '/manager/hr', label: 'Manager Portal', description: 'Authenticated team management boundary', icon: Users },
+  { to: '/contractor', label: 'Contractor Portal', description: 'Authenticated contractor self-service boundary', icon: Users },
   {
     to: '/admin',
     label: 'Admin Dashboard',

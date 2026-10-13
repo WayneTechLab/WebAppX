@@ -1,5 +1,28 @@
 # Update Log
 
+## 3.3.0 — 2026-10-13
+
+- Select managed dotSYSTEMX 1.9.0-alpha.6, including the portable
+  `.SYSTEMX/GUSTO/` route, role, ownership, capability and adoption package.
+- Add `/hr` entry points and synthetic `/hr/demo` management, employee,
+  manager and contractor workspaces. App-owned checklist, time and time-off
+  actions use local React state that resets on refresh.
+- Integrate genuine Gusto React SDK 0.56.6 employee directory reads at
+  `/hr/demo/sdk` against development-only local wire-format fixtures. The mock
+  endpoint is absent from Hosting and `npm run preview`.
+- Add an optional isolated Firebase HR/Gusto backend foundation, disabled and
+  unregistered by default. Protected connected portals remain unconfigured;
+  trusted memberships, provider access and enabled live workflows need adoption.
+- Add `npm run hr:test` and `npm run hr:backend:audit`, and document the
+  preview/setup path in [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md).
+- Preserve blank reusable coordination seeds, immutable earlier snapshots,
+  research package bytes and host extensions. The historical 3.2.0 and 3.1.0
+  receipts keep their original revisions and results.
+
+The [3.3.0 validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.3.0.md)
+records actual source/local checks. Directory mocks and synthetic workflows do
+not establish full SDK support, live payroll or production Firebase acceptance.
+
 ## 3.2.0 — 2026-10-12
 
 - Select managed dotSYSTEMX 1.9.0-alpha.5 from public main

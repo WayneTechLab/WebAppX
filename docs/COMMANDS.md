@@ -15,6 +15,22 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 | `npm run build` | TypeScript/Vite build plus LAN artifact-isolation check |
 | `npm run preview` | Preview the built app |
 
+## Gusto and HR previews
+
+| Command or route | Behavior |
+| --- | --- |
+| `npm run dev` then `/hr/demo` | Synthetic HR portals and app-owned actions; React state resets on refresh |
+| `/hr/demo/sdk` under Vite development | Genuine Gusto SDK 0.56.6 directory reads against local fixtures; no provider credentials or writes |
+| `npm run hr:test` | Synthetic HR workflows, local SDK request/response contract and backend authorization/projection tests |
+| `npm run hr:backend:audit` | Dependency audit for the isolated optional Gusto Firebase functions package |
+
+Read [Gusto setup](GUSTO-SETUP.md) and
+[HR and employee management](../wiki/Gusto-HR-and-Employee-Management.md).
+The development SDK mock is absent from Hosting and `npm run preview`.
+Protected connected portals remain unconfigured, and the optional backend is
+disabled by default. These previews and tests do not establish full SDK workflow
+coverage, live provider access or payroll execution.
+
 ## Managed SYSTEMX and agent coordination
 
 | Command | Behavior |
@@ -36,7 +52,7 @@ Set `WTL_SYSTEMX_SOURCE` or use `python3 -B scripts/sync-systemx.py --source
 status is not task status, and registered roles are not observed worker processes.
 Add `-- --expected-commit <reviewed-public-main-sha>` to the npm upstream
 preview/import commands to require the exact reviewed source revision.
-Current defaults are 1.9.0-alpha.5. The registry seeds only Agent 0; an adopted
+Current defaults are 1.9.0-alpha.6. The registry seeds only Agent 0; an adopted
 project must activate optional roles and select Agent Y's provider, task scope
 and branch/PR policy explicitly. A draft PR does not establish task acceptance.
 

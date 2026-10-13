@@ -1,6 +1,6 @@
 # WebAppX — SYSTEMX Forever WebApp
 
-**Unified public template 3.2.0 · managed dotSYSTEMX 1.9.0-alpha.5**
+**Unified public template 3.3.0 · managed dotSYSTEMX 1.9.0-alpha.6**
 
 A reusable React, TypeScript, Vite, Tailwind and Firebase webapp with the full
 managed SYSTEMX operating layer, a guarded local LAN builder, production and
@@ -37,7 +37,7 @@ Read the [getting-started guide](docs/GETTING-STARTED.md),
 and the [integration guide](docs/SYSTEMX-INTEGRATION.md),
 [adoption example](docs/examples/private-template-adoption.md),
 [release provenance and feature map](docs/UNIFIED-TEMPLATE.md),
-[3.2.0 validation receipt](docs/VALIDATION-3.2.0.md), and
+[3.3.0 validation receipt](docs/VALIDATION-3.3.0.md), and
 [entry point](.SYSTEMX/START-HERE.md). Preview upstream updates with
 `npm run systemx:upstream:check`; apply reviewed updates with
 `npm run systemx:upstream:import`. The upstream distribution is immutable and pinned.
@@ -55,7 +55,7 @@ macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
 ## Current SYSTEMX features
 
-WebAppX 3.2.0 includes the pinned dotSYSTEMX 1.9.0-alpha.5 distribution. Its
+WebAppX 3.3.0 includes the pinned dotSYSTEMX 1.9.0-alpha.6 distribution. Its
 shared tools run from the verified selected release; your app's records live in
 the outer `.SYSTEMX` or an explicitly selected child `.SYSTEMXP`.
 
@@ -69,6 +69,53 @@ the outer `.SYSTEMX` or an explicitly selected child `.SYSTEMXP`.
 | Child projects | Explicit `.SYSTEMXP` selection through `projects ... --project NAME` |
 | CLI/tools guide | `npm run systemx -- tools-guide` |
 | Verified manual updates | Preview/import exact public source, back up recognized stock launchers, retain immutable snapshots and adopted records |
+| HR and Gusto | Portable `.SYSTEMX/GUSTO/` page/role/data contracts, synthetic HR portals and a pinned SDK directory preview |
+
+## Gusto, employees and management
+
+The new [Gusto setup guide](docs/GUSTO-SETUP.md) and
+[HR wiki guide](https://github.com/WayneTechLab/WebAppX/wiki/Gusto-HR-and-Employee-Management)
+standardize management, employee, manager and contractor pages. The portable
+package lives under [`.SYSTEMX/GUSTO/`](.SYSTEMX/GUSTO/README.md), with subfolders
+for documentation, schemas, SDK inventory, synthetic fixtures, webhook contracts
+and connector examples. React and Firebase runtime adapters remain host code.
+
+```bash
+npm ci
+npm run dev
+# Open Vite's printed URL at /hr/demo
+# Genuine local SDK directory preview: /hr/demo/sdk
+npm run hr:test
+```
+
+The account-free HR preview includes fictional employee search/profile records,
+onboarding checklists, time entries and time-off requests/approvals, policy and
+training acknowledgements, and payroll/contractor payment previews. Its state
+resets on refresh. Page specifications cover company setup, benefits, reports,
+documents and native HR modules, with adapter requirements shown on each page.
+Connected portals remain guarded until an adopted app supplies trusted HR
+memberships and its authorized backend integration.
+
+The template pins **Gusto React SDK 0.56.6 / API 2026-06-15**. The genuine SDK
+employee directory uses a development-only mock for Active, Onboarding and
+Dismissed reads. It refuses credentials, writes and unsupported endpoints;
+this directory proof does not establish full SDK or payroll readiness.
+The optional [Firebase module](docs/GUSTO-FIREBASE.md) includes organization
+data contracts, restricted rules, callable foundations and webhook tests, with
+live provider transport disabled by default.
+
+**There is no documented shared/public Gusto test key.** A real Demo integration
+requires a Developer Portal account and application-specific credentials.
+Gusto's [hosted Flows showcase](https://docs.gusto.com/embedded-payroll/docs/try-it-now)
+can be viewed without API keys. Use the local mock to build the template before
+obtaining a sandbox connection; see [Gusto's setup requirements](https://docs.gusto.com/embedded-payroll/docs/getting-started).
+
+Gusto owns payroll, tax/bank and provider document workflows. The app owns
+tenant membership, source mappings and native HR capabilities such as recruiting,
+policies, assets, access, training and performance. The feature/page contracts
+distinguish specifications, working mock controls and live-gated provider actions.
+The full repository supplies this HR extension; the standalone starter folder
+remains a smaller app scaffold.
 
 ## Set up Agent Y in a new app
 
@@ -558,8 +605,8 @@ deep-dive home for:
 
 ## Versioning
 
-Current unified template version: **3.2.0**. Its managed defaults are pinned to
-**dotSYSTEMX 1.9.0-alpha.5**; the host application and standalone versions are
+Current unified template version: **3.3.0**. Its managed defaults are pinned to
+**dotSYSTEMX 1.9.0-alpha.6**; the host application and standalone versions are
 maintained independently.
 
 README is the landing page. Release history belongs in the

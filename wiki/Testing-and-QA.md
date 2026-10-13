@@ -1,6 +1,6 @@
 # Testing & QA
 
-The baseline ships a Node characterization suite for SYSTEMX LAN, plus
+The baseline ships Node suites for SYSTEMX LAN and Gusto/HR contracts, plus
 TypeScript, ESLint, build, audit, and security gates. Vitest/Testing Library
 and Playwright are optional playbook additions that projects enable when their
 application needs them.
@@ -11,7 +11,8 @@ application needs them.
 ## What ships in the baseline vs. the playbook
 
 - **Baseline (repo root):** LAN characterization, selected standalone-tool tests,
-  import/mirror regressions, TypeScript, ESLint, strict dependency audit, research
+  import/mirror regressions, synthetic HR/SDK/backend contract tests, TypeScript,
+  ESLint, strict dependency audit, research
   validation, documentation links, immutable integrity and build isolation.
 - **Playbook (Step 10):** adds Vitest, Playwright, and a11y/security audits.
 
@@ -39,11 +40,14 @@ npm run systemx:validate
 npm run ci:lint
 npm run ci:typecheck
 npm test
+npm run hr:test
 npm run ci:audit
 npm run build
 ```
 
-The [3.2.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.2.0.md)
+Consult the [3.3.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.3.0.md)
+for the current checked revision and actual results. The historical
+[3.2.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.2.0.md)
 records 230 standalone tests (successful with 5 case-sensitive filesystem cases
 skipped on the validation Mac), 27 host integration tests, 8 operational controls
 and 11 app/LAN tests. The
@@ -55,6 +59,28 @@ For an Agent Y task, run the configured app checks against the returned worktree
 and record their original output and checked revision before Agent 0 acceptance.
 The controller's successful exit and an Agent Z score do not run those checks or
 accept the task. Follow [Agent Y New App Setup](Agent-Y-New-App-Setup.md).
+
+## Gusto and HR checks
+
+```bash
+npm run hr:test
+npm run hr:backend:audit
+```
+
+`hr:test` exercises synthetic native HR state, route/resource guards, the SDK
+directory mock's request/response contract, and backend membership, projection
+and webhook foundation boundaries. It uses local fixtures and app/backend code;
+it does not contact Gusto or establish Firebase deployment acceptance.
+`hr:backend:audit` audits the isolated optional functions package's dependencies.
+
+For a browser check, run Vite development and open `/hr/demo` and `/hr/demo/sdk`.
+The SDK 0.56.6 directory preview uses genuine components with development-only
+mock reads. The mock endpoint is absent from Hosting and `npm run preview`.
+Native HR actions use synthetic React state and reset on refresh. Full SDK
+workflows, authorized Demo integration, protected connected portals and live
+payroll require their own evidence. The optional Firebase adapter is disabled by
+default. See [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md)
+and [Gusto setup](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md).
 
 ## Unit / component tests (Vitest + Testing Library)
 

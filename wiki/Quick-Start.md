@@ -1,9 +1,10 @@
-# Quick Start — unified template 3.2.0
+# Quick Start — unified template 3.3.0
 
 Start with the webapp, then add the local builder and your project records.
 The app boots before Firebase is configured. The full clone includes managed
 SYSTEMX, LAN, research and kits; the separate starter folder is an app scaffold.
-The selected managed distribution is dotSYSTEMX 1.9.0-alpha.5.
+The selected managed distribution is dotSYSTEMX 1.9.0-alpha.6, including portable
+Gusto/HR contracts in `.SYSTEMX/GUSTO/`.
 
 ## Prerequisites
 
@@ -30,6 +31,29 @@ npm run dev
 
 Alternatively, clone `https://github.com/WayneTechLab/WebAppX.git`
 into your chosen directory, then run the same commands. Open Vite's printed URL.
+
+## Preview HR and the Gusto directory
+
+While Vite development is running, use:
+
+| Route | Preview |
+| --- | --- |
+| `/hr` | HR entry points and connection requirements |
+| `/hr/demo` | Synthetic management, employee, manager and contractor portals |
+| `/hr/demo/sdk` | Genuine Gusto React SDK 0.56.6 employee directory with local mock reads |
+
+The native HR actions change synthetic React state and reset on refresh.
+The SDK mock is development-only; it is absent from Hosting and `npm run preview`.
+Full SDK workflows and live payroll remain separate adoption work. Connected
+portals require trusted identity/memberships and an adopted backend. The optional
+Firebase module is disabled by default. Read
+[Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md) and
+[the setup guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md).
+
+```bash
+npm run hr:test
+npm run hr:backend:audit
+```
 
 ## Open the integrated local builder
 

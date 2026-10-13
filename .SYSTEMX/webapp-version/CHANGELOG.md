@@ -1,3 +1,16 @@
+# 3.3.0 — Gusto and standard HR workspaces — 2026-10-13
+
+- Add portable GUSTO capability, route, role and data contracts with synthetic
+  fixtures, source attribution and the pinned SDK endpoint inventory.
+- Add management, employee, manager and contractor HR previews with scoped
+  fictional records, checklists, time requests and payroll/payment previews.
+- Render the genuine Gusto SDK employee directory using a development-only,
+  credential-free mock API; deny unknown operations and all writes.
+- Add an optional disabled Firebase Functions foundation, tenant data model,
+  rules and tests; keep real provider transport and payroll execution gated.
+- Document account requirements, provider/native ownership and migration to
+  verified Demo/production. Preserve prior immutable SYSTEMX snapshots.
+
 # 3.2.0 — Managed SYSTEMX 1.9 integration — 2026-10-12
 
 - Import public dotSYSTEMX 1.9.0-alpha.5 at

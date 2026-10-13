@@ -12,12 +12,16 @@ import { AdminDashboardPage } from '@/pages/AdminDashboardPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { StandardPage, type StandardPageKey } from '@/pages/StandardPage'
 import { SystemStatePage } from '@/pages/SystemStatePage'
+import { HrPage } from '@/pages/HrPage'
 
 function getPathname() {
   return normalizePath(window.location.pathname)
 }
 
 function renderPage(pathname: string) {
+  if (pathname === '/hr' || pathname.startsWith('/hr/demo') || pathname === '/admin/hr' || pathname.startsWith('/admin/hr/') || pathname === '/employee' || pathname.startsWith('/employee/') || pathname === '/manager/hr' || pathname.startsWith('/manager/hr/') || pathname === '/contractor' || pathname.startsWith('/contractor/')) {
+    return <HrPage pathname={pathname} />
+  }
   switch (pathname) {
     case '/':
       return <HomePage />

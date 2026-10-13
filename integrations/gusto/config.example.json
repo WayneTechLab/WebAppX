@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "mode": "disabled",
+  "sdkVersion": "0.56.6",
+  "apiVersion": "2026-06-15",
+  "providerProxyImplemented": false,
+  "payrollExecutionEnabled": false,
+  "webhookApproved": false,
+  "webhookSignatureEncoding": "unverified",
+  "reconciliationWorkerImplemented": false,
+  "membershipAuthority": "organizations/{orgId}/hr_memberships/{firebaseUid}",
+  "secretStore": "GCP Secret Manager; never Firestore client documents",
+  "comment": "Reference contract only. Functions reads explicit runtime environment variables; copying this file does not activate or deploy anything."
+}

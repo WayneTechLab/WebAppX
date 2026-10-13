@@ -1,0 +1,437 @@
+# Changelog
+
+The public release history is maintained in the
+[Versions and changelog wiki](https://github.com/WayneTechLab/dotSYSTEMX/wiki/Versions-and-Changelog).
+This copy travels with the folder for offline use.
+
+## 1.9.0-alpha.6 — Optional portable Gusto HR contracts
+
+- Added optional `.SYSTEMX/GUSTO/` with 64 employer/employee/manager/contractor
+  page contracts, 33 provider/native/shared capabilities and seven reference roles.
+- Added authored adoption, account setup, permission, architecture, page and
+  migration guidance plus a proposed WebAppX/Firebase host mapping. Product
+  runtime, credentials and infrastructure remain host-owned.
+- Added synthetic account-free host fixtures and a bounded SDK employee-list
+  wire sample. They do not create an account or prove real sandbox behavior.
+- Pinned the reviewed `@gusto/embedded-react-sdk` 0.56.6 package provenance,
+  its API alias/version and exact exported endpoint inventory (106 blocks,
+  22 flows, 25 hooks), with Apache 2.0 attribution for third-party material.
+- Added portable contract integrity tests and wheel inventory declarations.
+  Existing core context/plan/task/memory/project seeds remain blank.
+
+The connector defaults disabled. A real demo API needs a developer application
+and environment-specific credentials; hosted-flow demonstrations do not provide
+a public API key. Native HR features require a host implementation and their own
+acceptance. No Gusto account, Firebase service, payroll or production connection
+is created by this release. Existing retained releases remain immutable; imports
+continue to preserve adopted records and custom files.
+
+## 1.9.0-alpha.5 — CLI tools and explicit .SYSTEMXP routing
+
+- Added direct installed-CLI project routing:
+  `systemx projects --target OUTER -- SUBCOMMAND ...`. It uses the selected
+  verified managed defaults, requires explicit scope where applicable, preserves
+  output and command exit status, and defaults offline. `--online` permits only
+  the configured startup notice; it does not select/download new defaults.
+- Added a versioned CLI/tools guide, a `tools-guide` command, and menu option
+  18. Documented management commands, operational commands, Python API,
+  external provider/Git tools, and exact child execution directories.
+- Restored reviewed folder-only PowerShell launcher operation. Both Bash and
+  PowerShell treat any installation marker as managed state and refuse invalid
+  files, directories, or dangling links without falling back to local code.
+- Revised the full-system infographic with prominent CLI examples and a
+  Project-A/Project-B `.SYSTEMXP` tree. The new portable graphic and companion
+  use new filenames so ordinary managed updates add them without overwriting
+  earlier local media. Only the latest map ships in the new template; tagged
+  alpha.4 artwork and existing users' files remain available.
+- Updated the README, wiki, setup examples, project guide, and library examples
+  for the new outer-target CLI. Project records remain blank and independent;
+  Agent 0/X/Y/Z responsibilities and gated PR authority are unchanged.
+
+Existing managed projects need a reviewed external alpha.5 tool and an explicit
+backed-up bootstrap refresh for recognized stock manager/launcher changes
+before selecting these defaults. Ordinary updates remain additive; do not
+replace customized bootstraps or user records. See the release report for
+actual local, package, and public-tag evidence and inherited platform limits.
+
+## 1.9.0-alpha.4 — Agent Y visual and manual refresh
+
+- Replaced the public full-system poster with the current Agent 0/X/Y/Z
+  workflow, including separate app/IDE subagents and per-task external CLI
+  work, event records, fixed reviews, and Agent 0 acceptance.
+- Added one latest 4K full-system JPEG and its accessible guide to the portable
+  media library. The public web PNG is also 3840 × 2160; metadata records the
+  native 1672 × 941 generation, resize method, and exact-byte hashes. Removed
+  the duplicate web 4K file. Earlier artwork remains in tagged history.
+- Refreshed the README, technical diagrams, current wiki guidance, and workflow
+  guides for optional draft PR creation, separate ready/close actions, and
+  merged-and-accepted archival cleanup. Agent Y has no merge command.
+- Corrected configured-provider guidance to describe preparation-time
+  executable path/SHA-256/file-identity binding and launch-time checks. Reviewed
+  run arguments and interpreter/dependency trust remain separate.
+- Updated exact-version setup examples. The four earlier workflow cards and
+  white-paper edition 1.2 retain their examined baseline and original bytes;
+  current four-role material is clearly identified alongside them.
+
+This release updates documentation and media plus their distribution inventory;
+it does not change Agent Y execution or PR semantics. Updates stay additive and
+preserve existing user files and older local media. Prior alpha.3 test/security
+evidence remains tied to that reviewed source; see this release's review report
+for its actual publication checks and inherited limits.
+
+## 1.9.0-alpha.3 — Distribution and delegation hardening
+
+- Distribution manifest schema 2 hashes binary and unknown files byte for byte
+  while retaining LF/CRLF equivalence for reviewed UTF-8 text. New 1.9.0-alpha.3
+  bundles cannot downgrade to the older schema. The installer also refuses a
+  1.9 release missing Agent Y's core files, even if its manifest was recomputed.
+  Historical schema-1 releases remain readable; published alpha.2 assets are
+  immutable and were not changed.
+- Agent X rejects a completed or cancelled due item with a closure time far in
+  the future. A future planned due time remains valid.
+- Agent Y cleanup detects ignored material as well as tracked and untracked
+  files before removing its worktree. PR readiness refuses a base branch that
+  moved since the handoff was prepared. Git-backed local sidecars and cleanup
+  archives must be effectively ignored and untracked before Agent Y writes them.
+- Agent Y binds a selected CLI executable's canonical path, SHA-256, and file
+  identity at preparation, then checks it before launch. Older unrun handoffs
+  without that binding cannot start a provider; `agent-y abandon` retires a
+  genuinely unrun handoff so Agent 0 can prepare a reviewed replacement.
+  Already-run older jobs remain readable for their gated PR lifecycle.
+- The trusted external manager refuses `run` against an unmanaged target rather
+  than executing that target's local Python. An untrusted target's own managed
+  state is still not an independent authenticity anchor.
+- Clarified the private original-template provenance, added Windows setup
+  examples, and published a separate erratum for the frozen white-paper edition
+  1.2 release-report link. The original PDF and media bytes were preserved.
+
+This is an alpha hardening release, not production certification. Agent Y's
+provider runs with the host account's effective access; its path and PR rules
+do not isolate credentials or external writes. An optional remote archive pin
+must come from an independently trusted source. See [security](docs/SECURITY.md),
+[release policy](docs/RELEASE-POLICY.md), and the public release report for the
+verified local and remote boundaries.
+
+## 1.9.0-alpha.2 — Optional Agent Y CLI and PR lane
+
+The earlier `v1.9.0-alpha.1` tag was withdrawn before a release was published:
+its source archive failed the distribution fingerprint check for a test file.
+Do not install that tag. This corrected release regenerates the manifest from
+the final source and verifies the exact public tag archive through a pinned
+remote install before publication.
+
+- Added Agent Y (`agent.y`) as an opt-in, per-task CLI handoff under Agent 0.
+  The public template still seeds only Agent 0; role activation creates blank
+  Agent Y records without starting a worker or changing an adopted project.
+- Added preview-first task packets with an explicit project task, selected
+  installed CLI provider, repository/base, allowed paths, and PR policy.
+  Agent Y runs separately from app/IDE subagents, so it must receive context
+  explicitly and return recorded source revision and evidence.
+- Added a task-owned Git worktree and branch path for CLI work. Successful,
+  authorized runs can push and open a **draft** GitHub PR when the task opted in.
+  Agent 0 acceptance, Agent Z review, Agent X events, PR readiness, cancellation,
+  merge, and branch cleanup remain separate facts and transitions. No model
+  output or score grants merge authority; GitHub Actions remains disabled.
+- Extended role validation, tests, public instructions, and the wiki for the
+  four-role coordination loop. The historical white-paper edition 1.2 and 4K
+  images remain frozen at their earlier Agent 0/X/Z baseline; current Agent Y
+  guidance lives in the manual.
+
+## 1.8.9-alpha.1 — Template records and local safety
+
+- Added blank, project-owned `GLOBAL/ACCESS-MATRIX.md` and `PLAN/MAP.md` to the
+  root format and each new `.SYSTEMXP` child. The matrix records reviewed access
+  intent and gaps; the map points to sources, interfaces, and boundaries. They
+  do not grant permissions, scan infrastructure, or replace `WORK/TASKS.json`
+  as the task authority. Existing project files remain preserved during updates.
+- Management reads now require bounded regular files for distribution inputs,
+  installation state, operation logs, and restore receipts. Explicit empty or
+  whitespace target paths and empty `--source` values are rejected rather than
+  silently selecting the current directory or bundled source.
+- The opt-in, check-only startup notice waits at most five seconds for release
+  metadata discovery. On timeout it warns and runs the selected local defaults;
+  no archive is fetched or new release selected. A timed-out metadata request
+  may finish in a daemon thread but cannot write the check record.
+- White-paper and narration tools validate HTTPS links more strictly, keep
+  output operations anchored to reviewed directories, and refuse writing the
+  reserved published PDF path. The existing paper and 4K media are unchanged.
+- Reorganized the public README around a preview-first setup and verification
+  path, with the detailed manual and high-resolution visual gallery linked
+  separately. The alpha and evidence limits remain explicit.
+- On the upstream GitHub repository, secret scanning, secret-scanning push
+  protection, and Dependabot vulnerability alerts are enabled. Automated
+  Dependabot security updates remain disabled. A repository ruleset blocks
+  deletion and force-pushes on `main` and `Alpha1`. GitHub Actions remains
+  disabled. These repository settings do not transfer into projects created
+  from this template.
+
+## 1.8.8-alpha.1 — Check-only startup release notices
+
+- Opt-in `--auto on-start` now reads release metadata and reports an available
+  version without downloading its archive, selecting defaults, or changing
+  project-owned files. Checks are cached for up to 24 hours after success;
+  malformed or stale check metadata is retried safely.
+- A pinned installation may enable the startup notice while keeping its pin.
+  Choosing another version still requires an explicit unpin and manual update;
+  an independently obtained `--archive-sha256` remains available for the exact
+  remote ZIP before parsing it.
+- Enabling startup checks refuses an older preserved root manager until its
+  stock bootstrap has been explicitly refreshed with a reviewed external tool.
+  Existing installations should switch old startup selection to manual policy
+  before that migration. Tests cover the notice, cache, pin, migration guard,
+  and digest-pinned update path on Python 3.9 and 3.14.
+
+## 1.8.7-alpha.1 — Release integrity and coordination hardening
+
+- Reject unlisted files, packages, links, and other unexpected entries in a
+  retained default snapshot before its Python runner can execute. A partial
+  interrupted update can still be retried without replacing or deleting local
+  project files.
+- Isolated direct `manager.py` imports from an adopted `.SYSTEMX` root so a
+  project-owned module cannot shadow Python standard-library imports. Fresh
+  adoption now refuses a manifest-listed executable default whose existing
+  bytes differ from the reviewed distribution.
+- Direct Python entry points restart in isolated mode before importing
+  application or standard-library modules. The installed console command
+  restarts before importing the manager, after Python resolves the package.
+  Standalone validation and release maintenance load only named local helpers
+  from source bytes, so unlisted modules or matching cached bytecode cannot
+  execute before inventory checks. The optional white-paper tools also enter
+  isolated mode before imports, reject unapproved PDF link schemes and linked
+  figure roots, and anchor output replacements to an opened directory. Text
+  output cannot follow symlinks or overwrite hardlinked sources. A frozen PDF
+  edition cannot be rebuilt in place; choose a separate draft output.
+- Added preview-first `bootstrap-refresh` for eight stock root bootstrap and
+  launcher files: four Python helpers and four shell/PowerShell entry points. It
+  accepts only recognized contents from intact retained releases, saves the
+  original bytes of replacements under local history, and explicitly replaces
+  those files. It may create a missing stock file absent from every intact
+  retained historical release (such as v1.5.0's missing `versions.py`); a file
+  previously present but now missing is a conflict. A changed-release update
+  refuses an older bootstrap or launcher until this
+  reviewed refresh is complete. Refreshed launchers and the selected runner use
+  Python isolated mode (`-I`); customized wrappers require manual review.
+- The current manager refuses installation and new selection of releases older
+  than 1.8.7-alpha.1, the native isolated runner floor. It can inspect and run
+  an already selected verified older snapshot through an isolated compatibility
+  shim during external migration; the old code keeps its historical behavior.
+  Historical reselection needs a separate reviewed backup or legacy path.
+- Added an optional `--archive-sha256` pin for an exact remote tag ZIP. The
+  digest is checked before archive parsing and its verification mode is recorded
+  with the installation. Automatic startup discovery remains opt-in and does not
+  supply an independent archive pin.
+- Agent X now rejects future occurrence times for every non-`planned` event and
+  validates the same rule when reading existing ledgers. Timestamp spelling is
+  consistent across supported Python versions.
+- Coordination writers wait briefly for a local lock. The lock records process,
+  host, and creation time to support manual stale-lock inspection; it is not a
+  distributed lock and is never removed automatically after a crash.
+- Agent Z default policy 1.1.0 asks for independent corroboration of decisive
+  claims and proof that decisive checks can fail on relevant bad inputs. Report
+  comparison rejects reversed time order and evidence-stage regressions, and
+  marks any per-question applicability change as a scope change rather than
+  progress. Distinct reports with equal timestamps return an unverified order
+  instead of a misleading improvement or regression label.
+- Enabled immutable GitHub releases for subsequently published versions,
+  disabled repository GitHub Actions, and removed the workflow. Maintainers run
+  documented validation, tests, package, and release checks locally.
+- The selected-release cache guard and new metadata are manager-owned. Ordinary
+  updates still preserve existing project records and root files; the separate,
+  explicit bootstrap refresh is the limited exception for eight stock files.
+  Agent Z policy copies, task history, and update pins remain preserved.
+
+## 1.8.6-alpha.1 — Curated media library
+
+- Organized the current white paper and four 4K workflow cards into
+  `MEDIA/White-Paper` and `MEDIA/Infographics`, with editing references in
+  `MEDIA/Reference`. Older editions and original images remain available in
+  prior release history.
+
+## 1.8.5-alpha.1 — Illustrated paper and publication format
+
+- Published the illustrated edition 1.2 research paper with a reusable
+  publication template, source bibliography, linked figures, and updated PDF
+  builder. The media edition and template release have separate version IDs.
+
+## 1.8.4-alpha.1 - Expanded white paper and audio companion
+
+- Added edition 1.1 as a 50-page implementation reference with 29 chapters,
+  exact record contracts, the complete 100-question policy, command families,
+  source inventory, coordination mechanics and recovery boundaries.
+- Added an executable disposable walkthrough that verifies failed/corrected
+  checks, state transitions, stable event replay, review deltas and acceptance.
+- Retained edition 1.0 unchanged; added numbered PDF contents and a separate
+  synthetic audio companion in the release, outside the portable file bundle.
+- Updated public README/wiki discovery and package inventory. Runtime behavior
+  and record schemas are unchanged.
+
+## 1.8.3-alpha.1 — Public white paper
+
+- Added a 17-page white paper and editable Markdown in `.SYSTEMX/MEDIA`, with
+  document provenance, raw-byte checksums and a repository PDF builder.
+- Described architecture, Agent 0/X/Z, scoring, project isolation, execution
+  environments, additive lifecycle, efficiency hypotheses and an evaluation method.
+- Included a worked web-app plan, an adoption prompt, pinned implementation
+  references and external primary sources; distinguished implemented features,
+  illustrative examples and future directions.
+- Added public README/wiki discovery and included the paper in folder/wheel
+  distributions. Runtime behavior and record schemas are unchanged.
+
+## 1.8.2-alpha.1 — Portable use-case media library
+
+- Added `.SYSTEMX/MEDIA` with four standalone cards for ChatGPT + Google Drive,
+  Codex + GitHub/main, Dots / Codex Cloud, and Codex / Copilot CLI + local drive.
+- Retained native imagegen PNGs and added separate 3840 × 2160 JPEG exports,
+  accessible text guides, exact prompts, dimensions and raw-byte checksums.
+- Added README/wiki galleries and explicit access, execution, acceptance and
+  persistence boundaries for each workflow and Agent 0/X/Z.
+- Included all media in the portable inventory and Python wheel. File sizes stay
+  within existing installer limits; updates still preserve user-owned files.
+- No runtime, task/review schema, scheduler or update-policy behavior change.
+
+## 1.8.1-alpha.1 — Complete-project and shared-workspace manual
+
+- Added a deep-research-to-completion guide with a 20-page web app matrix,
+  toolchain mapping, phases/milestones/tasks/waves, and reusable super prompts.
+- Added repository/portfolio/hybrid, Drive, cloud snapshot, multi-chat, bot,
+  physical-machine, and VM patterns with explicit record authority and persistence.
+- Updated the public README, portable entry instructions, manual navigation,
+  Agent 0/X/Z feedback explanations, and current editable infographics.
+- Corrected the command reference's unpinned alpha discovery description and
+  documented all existing menu guide entries and transport boundaries.
+- No runtime behavior, project-record schema, or adopted review-policy change.
+  Existing project files and selected pins remain preserved.
+
+## 1.8.0-alpha.1 — Agent X and Agent Z
+
+- Added explicit standard-role activation with preserved registries and setup receipts.
+- Added Agent X event/time tracking, stable retry keys, bounded event views,
+  due-item bookkeeping, and clear external-scheduler boundaries.
+- Added Agent Z's fixed 100-question/10-category policy, evidence-backed answer
+  records, advisory scorecards, frozen policy versions, and comparable deltas.
+- Reused unchanged review inputs; kept task acceptance and execution with the
+  coordinator/user rather than automatic score-driven work loops.
+- Hardened workspace argument selection, malformed/ambiguous JSON handling,
+  root record link boundaries, and child-configuration error reporting.
+- Removed repeated sibling-directory scans from child record guards and exported
+  the documented `run` library entry point.
+- Added regression checks and updated public guides, upgrade/rollback boundaries,
+  and generic activation templates. No scheduler, cloud service, or agent runtime
+  is installed; public work/event/review histories remain empty.
+
+## 1.7.0-alpha.1 — SYSTEMX PROJECTS
+
+- Added generic `Projects/NAME/.SYSTEMXP` child records with a blank project
+  registry, per-project context/plan/tasks/focus, sources, decisions, and Agent 0 memory.
+- Added preview-first creation receipts, explicit scope selection, scoped task and
+  agent commands, local status snapshots, and project working-directory execution.
+- Reused ledger validation and acceptance rules while keeping root and siblings
+  isolated; rejected case conflicts, linked records, and nested installations.
+- Added a library routing function and selected-project chat export.
+- Preserved child records/code through shared version updates and reversible
+  uninstall/restore; documented explicit migration of custom registries.
+- Expanded README, portable guides, and wiki with generic setup and subagent examples.
+  The public template still ships no adopted projects or private project history.
+
+## 1.6.0-alpha.1 — Alpha1
+
+- Consolidated all existing template branches into `Alpha1`, retaining `main`
+  as the default public branch and preserving branch history.
+- Declared alpha maturity, use-at-own-risk status, and possible daily changes
+  across public entry points; immutable release IDs distinguish reviewed snapshots.
+- Added strict alpha IDs, numeric prerelease ordering, stable-channel isolation,
+  alpha discovery, final-release graduation, and implicit-downgrade refusal.
+- Added `systemx --version`, selected release-channel reporting, Python alpha
+  package metadata, and documented migration from pre-alpha managers.
+- Added discoverable licensing, contribution/support/security reporting paths,
+  bug-report templates, and release/compatibility guidance for public adopters.
+- Kept pins/manual updates by default, additive preservation, operation receipts,
+  exact casing, reversible removal, and blank reusable project records.
+
+## 1.5.0
+
+- Added honest token/cost/time guidance, a measurement approach, and new Technical,
+  Stack, About, First-Time Setup, and Uninstall guides.
+- Added preview-first `first-run` with explicit apply, empty configuration seeding,
+  preservation of existing settings, and clear remaining setup steps.
+- Added local install/update/policy/alias/first-run operation receipts and an
+  offline audit of the selected project's installation footprint.
+- Added reversible uninstall to a new external same-filesystem backup, including
+  user records, file inventories, raw-byte hashes, alias handling, and an external log.
+- Added verified restore with conflict refusal and failure/recovery receipts;
+  package removal and manual integrations have separate logged cleanup instructions.
+- Kept updates additive, new installs pinned/manual, reusable records blank,
+  exact-case path guards active, and all existing host files protected.
+
+## 1.4.0
+
+- Standardized the public name and canonical folder spelling as `.SYSTEMX`.
+- Added shared exact-case guards for installers, updates, library calls, local
+  sources, remote archives, and direct project commands, including mixed-case conflicts.
+- Added an opt-in relative `.systemx -> .SYSTEMX` alias through setup, CLI,
+  menu, and library. Case-insensitive filesystems need no extra directory entry.
+- Added path diagnostics, conflict recovery guidance, explicit LLM and chat
+  naming rules, and portable alias checks across Linux, macOS, and Windows.
+- Preserved all project records, version pins, earlier snapshots, root defaults,
+  and the compatible nested manager cache. No case-conflict data is merged or deleted.
+
+## 1.3.0
+
+- Added setup profiles for project roots/VS Code, OS directories, local Google
+  Drive folders, and LLM chats, using one canonical template and record format.
+- Added a Python library and CLI, Bash and PowerShell installation entry points,
+  exact version selection, per-project pins, and manual updates by default.
+- Added immutable default snapshots and an additive updater that preserves all
+  existing project files, directories, and prior releases, including upstream removals.
+- Added opt-in startup updates with an offline override and manual major-version
+  changes; no background OS scheduler or automatic user-record migration.
+- Added a fingerprinted distribution inventory, local writer locking, state
+  history, dry-run planning, and local chat packet export without uploads.
+
+## 1.2.0
+
+- Added a compact focus record and generated CURRENT.md, linked to existing
+  task state and optional dated checkpoints. Focus changes preserve task history.
+- Added advisory dependency-ready task selection and bounded worker packets
+  with explicit source-revision provenance and selected-owner memory.
+- Prioritized focus tasks in resume context; retained bounded loading and
+  independent historical checkpoints.
+- Added evidence categories, compact worker reports, live-job ownership and
+  changed-condition retry guidance, and a record-preserving upgrade guide.
+- Applied reusable lessons from existing SYSTEMX deployments without importing
+  their project records, provider configuration, domain rules, or agent runtime.
+- Added a canonical format contract and `validate --template` for blank public
+  distributions, including seed fingerprints and an explicit file inventory.
+- Replaced source-specific component restrictions with the public distribution
+  inventory; adopted projects can add their own linked supporting documents.
+- Standardized task-note terminology and instruction-precedence guidance;
+  aligned the optional message schema with its documented evidence requirements.
+- Enforced chronological history and consistent current fields, and replaced
+  recursive dependency traversal so long task chains remain valid.
+
+## 1.1.0
+
+- Added an LLM start/resume entry point, global project context, master plan,
+  shared project memory, and session checkpoint templates.
+- Added Agent 0 coordination, a worker registry, and per-agent memory files.
+- Added one canonical task ledger with generated TODO, WORKING-ON, BLOCKED,
+  REVIEW, DONE, and CANCELLED pages.
+- Added work/status/context commands, dependency and acceptance checks,
+  transition history, and guarded local writes.
+- Kept all project records empty in the reusable template. Role registration
+  does not start agent processes, and context loading does not sync global memory.
+
+## 1.0.0
+
+- Extracted a standalone operations standard from the upstream `.SYSTEMX` folder.
+- Consolidated overlapping setup and instruction packets into one standard,
+  one setup guide, and reusable project templates.
+- Removed the local builder, asset collections, embedded application starter,
+  provider-specific provisioning, automatic Git hooks, and historical project state.
+- Added explicit project command configuration, a portable launcher, local
+  validation, and regression checks. No app or cloud provider is preconfigured.
+- Retained the upstream MIT notice and recorded the exact source revision in
+  [SOURCE.json](SOURCE.json).
+
+This version belongs to the operations template. Downstream products own their
+application versions and release histories separately.

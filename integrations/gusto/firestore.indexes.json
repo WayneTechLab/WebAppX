@@ -1,0 +1,11 @@
+{
+  "indexes": [
+    { "collectionGroup": "hr_people", "queryScope": "COLLECTION", "fields": [{ "fieldPath": "employmentStatus", "order": "ASCENDING" }, { "fieldPath": "displayName", "order": "ASCENDING" }] },
+    { "collectionGroup": "hr_time_off_requests", "queryScope": "COLLECTION", "fields": [{ "fieldPath": "firebaseUid", "order": "ASCENDING" }, { "fieldPath": "createdAt", "order": "DESCENDING" }] },
+    { "collectionGroup": "hr_time_off_requests", "queryScope": "COLLECTION", "fields": [{ "fieldPath": "status", "order": "ASCENDING" }, { "fieldPath": "startDate", "order": "ASCENDING" }] },
+    { "collectionGroup": "hr_webhook_inbox", "queryScope": "COLLECTION", "fields": [{ "fieldPath": "state", "order": "ASCENDING" }, { "fieldPath": "receivedAtSeconds", "order": "ASCENDING" }] }
+  ],
+  "fieldOverrides": [
+    { "collectionGroup": "hr_time_off_requests", "fieldPath": "note", "indexes": [] }
+  ]
+}

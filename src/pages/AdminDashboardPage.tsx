@@ -176,6 +176,15 @@ export function AdminDashboardPage() {
             </a>
           </div>
 
+          <div className="mt-8 rounded-xl border border-emerald-200 bg-emerald-50 p-6">
+            <h2 className="text-xl font-semibold text-neutral-950">People operations · Gusto / HR</h2>
+            <p className="mt-3 text-sm leading-6 text-neutral-700">Standard management, employee, manager and contractor pages ship with a credential-free synthetic preview. Live HR records require trusted membership and a reviewed server adapter.</p>
+            <div className="mt-5 flex flex-wrap gap-4 text-sm font-semibold">
+              <AppLink to="/admin/hr" className="underline underline-offset-4">Open protected HR management</AppLink>
+              <AppLink to="/hr/demo" className="underline underline-offset-4">Explore synthetic preview</AppLink>
+            </div>
+          </div>
+
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {adminSurfaces.map((surface) => {
               const readiness = getSurfaceReadiness(surface.id, localStatus.status)

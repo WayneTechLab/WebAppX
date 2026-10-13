@@ -1,8 +1,9 @@
-# Getting started with template 3.2.0
+# Getting started with template 3.3.0
 
 The public WebAppX combines a React/TypeScript/Vite/Tailwind/Firebase
-webapp, managed dotSYSTEMX 1.9.0-alpha.5 tools, a guarded local LAN builder,
-and reusable production/brand kits. Start locally, then configure your project.
+webapp, managed dotSYSTEMX 1.9.0-alpha.6 tools, a guarded local LAN builder,
+portable Gusto/HR contracts and reusable production/brand kits. Start locally,
+then configure your project.
 
 ## Prerequisites
 
@@ -34,6 +35,23 @@ You can also clone `https://github.com/WayneTechLab/WebAppX.git`.
 `npm run dev` starts the webapp without requiring Firebase configuration.
 Use the URL printed by Vite. The standalone `starter/` copy contains the app;
 clone the whole template to include managed SYSTEMX, LAN, research and kits.
+
+## Try the HR workspace without an account
+
+With `npm run dev` running, open `/hr` for the capability entry points or
+`/hr/demo` for synthetic management, employee, manager and contractor portals.
+App-owned checklist, time-entry and time-off changes live in React state and
+reset on refresh. Keep real employee information out of these previews.
+
+`/hr/demo/sdk` uses the genuine Gusto React SDK 0.56.6 employee directory
+component against development-only local fixtures. Its read contract does not
+establish full SDK coverage or live payroll. The mock endpoint is available in
+Vite development, and is excluded from Hosting and `npm run preview`.
+
+Connected portals require adopted Firebase identity, trusted memberships and
+server integration. The optional Firebase module stays disabled and unregistered
+by default. Follow [Gusto setup](GUSTO-SETUP.md) and the
+[HR wiki guide](../wiki/Gusto-HR-and-Employee-Management.md) before adoption.
 
 ## Start the integrated local workspace
 
@@ -95,6 +113,7 @@ npm run systemx:validate
 npm run ci:lint
 npm run ci:typecheck
 npm test
+npm run hr:test
 npm run ci:audit
 npm run build
 ```

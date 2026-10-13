@@ -3,7 +3,7 @@
 **Start**
 
 - [Home](Home.md)
-- [Unified Template 3.2.0](Unified-Template-Guide.md)
+- [Unified Template 3.3.0](Unified-Template-Guide.md)
 - [Managed SYSTEMX Integration](SYSTEMX-Standalone-Integration.md)
 - [Quick Start](Quick-Start.md)
 - [One-Line Install](One-Line-Install.md)
@@ -19,6 +19,10 @@
 - [Platform Matrix](Platform-Matrix.md)
 - [Windows Setup](Windows-Setup.md)
 - [Linux Setup](Linux-Setup.md)
+
+**HR and Gusto**
+
+- [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md)
 
 **SYSTEMX**
 

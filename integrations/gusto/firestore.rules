@@ -1,0 +1,90 @@
+rules_version = '2';
+// OPTIONAL HR reference rules. Not loaded by the root Firebase configuration.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function membershipPath(orgId) {
+      return /databases/$(database)/documents/organizations/$(orgId)/hr_memberships/$(request.auth.uid);
+    }
+    function member(orgId) {
+      return signedIn() && exists(membershipPath(orgId))
+        && get(membershipPath(orgId)).data.uid == request.auth.uid
+        && get(membershipPath(orgId)).data.orgId == orgId
+        && get(membershipPath(orgId)).data.status == 'active'
+        && get(membershipPath(orgId)).data.roles is list
+        && get(membershipPath(orgId)).data.roles.size() > 0
+        && get(membershipPath(orgId)).data.roles.hasOnly(['employer-owner', 'payroll-admin', 'hr-admin', 'manager', 'employee', 'contractor', 'auditor']);
+    }
+    function roles(orgId, permitted) {
+      return member(orgId) && get(membershipPath(orgId)).data.roles is list
+        && get(membershipPath(orgId)).data.roles.hasAny(permitted);
+    }
+    function validPersonId(personId) {
+      return personId is string && personId.matches('^[A-Za-z0-9][A-Za-z0-9_-]{0,95}$');
+    }
+    function ownPerson(orgId, personId) {
+      return member(orgId) && validPersonId(personId)
+        && validPersonId(get(membershipPath(orgId)).data.get('personId', ''))
+        && get(membershipPath(orgId)).data.get('personId', '') == personId;
+    }
+    function directoryAdmin(orgId) { return roles(orgId, ['employer-owner', 'hr-admin', 'payroll-admin', 'auditor']); }
+    function restrictedAdmin(orgId) { return roles(orgId, ['employer-owner', 'hr-admin', 'payroll-admin', 'auditor']); }
+    function ownRecord(orgId) { return resource.data.orgId == orgId && ownPerson(orgId, resource.data.personId); }
+    function managerDirectory(orgId) {
+      return roles(orgId, ['manager']) && resource.data.orgId == orgId
+        && validPersonId(get(membershipPath(orgId)).data.get('personId', ''))
+        && validPersonId(resource.data.get('managerPersonId', ''))
+        && resource.data.get('managerPersonId', '') == get(membershipPath(orgId)).data.get('personId', '');
+    }
+    function safeTimeOffCreate(orgId, requestId) {
+      let data = request.resource.data;
+      let policy = /databases/$(database)/documents/organizations/$(orgId)/hr_time_off_policies/$(data.policyId);
+      return roles(orgId, ['employee', 'manager', 'hr-admin', 'payroll-admin', 'employer-owner'])
+        && data.keys().hasOnly(['orgId', 'requestId', 'personId', 'firebaseUid', 'policyId', 'startAt', 'endAt', 'hours', 'note', 'status', 'source', 'createdAt'])
+        && data.keys().hasAll(['orgId', 'requestId', 'personId', 'firebaseUid', 'policyId', 'startAt', 'endAt', 'hours', 'note', 'status', 'source', 'createdAt'])
+        && data.orgId == orgId && data.requestId == requestId
+        && data.personId is string && data.personId.matches('^[A-Za-z0-9][A-Za-z0-9_-]{0,95}$')
+        && data.firebaseUid == request.auth.uid && ownPerson(orgId, data.personId)
+        && data.policyId is string && data.policyId.matches('^[A-Za-z0-9][A-Za-z0-9_-]{0,95}$')
+        && exists(policy) && get(policy).data.orgId == orgId && get(policy).data.status == 'active'
+        && data.startAt is timestamp && data.endAt is timestamp
+        && data.endAt >= data.startAt && data.endAt - data.startAt <= duration.value(29, 'd')
+        && data.hours is number && data.hours > 0 && data.hours <= 240
+        && data.note is string && data.note.size() <= 500
+        && data.status == 'requested' && data.source == 'systemx'
+        && data.createdAt == request.time;
+    }
+
+    match /{document=**} { allow read, write: if false; }
+    match /organizations/{orgId}/hr_memberships/{uid} {
+      allow read, write: if false;
+    }
+    match /organizations/{orgId}/hr_people/{personId} {
+      allow read: if member(orgId) && resource.data.orgId == orgId && validPersonId(resource.data.get('personId', ''))
+        && (directoryAdmin(orgId) || ownPerson(orgId, personId) || managerDirectory(orgId));
+      allow write: if false;
+    }
+    match /organizations/{orgId}/{collection}/{recordId} {
+      // Separate documents avoid exposing secret fields in a directory read.
+      allow read: if collection in ['hr_compensation', 'hr_restricted_profiles', 'hr_employment']
+        && member(orgId) && resource.data.orgId == orgId && (restrictedAdmin(orgId) || ownRecord(orgId));
+      allow read: if collection in ['hr_departments', 'hr_locations', 'hr_jobs', 'hr_time_off_policies', 'hr_policies', 'hr_training']
+        && member(orgId) && resource.data.orgId == orgId;
+      allow read: if collection in ['hr_payroll_runs', 'hr_contractor_payments', 'hr_reports']
+        && resource.data.orgId == orgId && roles(orgId, ['employer-owner', 'payroll-admin', 'auditor']);
+      allow read: if collection in ['hr_tasks', 'hr_assets', 'hr_asset_assignments', 'hr_certifications', 'hr_policy_acknowledgements', 'hr_reviews', 'hr_documents']
+        && member(orgId) && resource.data.orgId == orgId && (restrictedAdmin(orgId) || ownRecord(orgId));
+      allow write: if false;
+    }
+    match /organizations/{orgId}/hr_time_off_requests/{requestId} {
+      allow read: if member(orgId) && resource.data.orgId == orgId
+        && (resource.data.firebaseUid == request.auth.uid || roles(orgId, ['employer-owner', 'hr-admin']));
+      allow create: if safeTimeOffCreate(orgId, requestId);
+      // Decisions, cancellations and edits use authorized transactional Functions.
+      allow update, delete: if false;
+    }
+    // integrations, hr_external_ids, hr_sync_state, hr_webhook_inbox,
+    // hr_idempotency, hr_audit_events, hr_payroll_secrets and token vault data
+    // match only the deny-default rule. No browser has access, including owners.
+  }
+}

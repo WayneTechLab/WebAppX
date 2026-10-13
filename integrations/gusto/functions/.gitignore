@@ -1,0 +1,8 @@
+node_modules/
+lib/
+build/
+.runtime/
+.env
+.env.*
+!.env.example
+*.log

@@ -1,7 +1,7 @@
 {
   "name": "webappx",
   "private": true,
-  "version": "3.2.0",
+  "version": "3.3.0",
   "type": "module",
   "description": "Public React/Vite/Firebase template with managed SYSTEMX tooling, agent coordination, LAN builder and production kits.",
   "scripts": {
@@ -62,9 +62,13 @@
     "template:check": "python3 -B scripts/validate-template.py",
     "template:sync": "python3 -B scripts/sync-template.py",
     "systemx:tools:test": "python3 -B scripts/test-systemx-tools.py",
-    "ci:all": "bash scripts/check-template.sh"
+    "ci:all": "bash scripts/check-template.sh",
+    "hr:test": "node --test tests/hr/gusto-sdk-mock.test.mjs tests/hr/mock-workflows.test.mjs tests/hr/gusto-backend.test.mjs",
+    "hr:backend:audit": "npm --prefix integrations/gusto/functions audit --audit-level=high"
   },
   "dependencies": {
+    "@gusto/embedded-react-sdk": "0.56.6",
+    "@tanstack/react-query": "5.104.2",
     "firebase": "^12.19.0",
     "lucide-react": "^0.484.0",
     "react": "^19.2.4",
