@@ -63,9 +63,9 @@
     "template:sync": "python3 -B scripts/sync-template.py",
     "systemx:tools:test": "python3 -B scripts/test-systemx-tools.py",
     "ci:all": "bash scripts/check-template.sh",
-    "hr:test": "node --test tests/hr/gusto-sdk-mock.test.mjs tests/hr/mock-workflows.test.mjs tests/hr/gusto-backend.test.mjs tests/hr/people-operations.test.mjs tests/hr/insights.test.mjs tests/hr/service-desk.test.mjs tests/hr/linked-operations.test.mjs tests/hr/recruiting.test.mjs tests/hr/recruiting-link.test.mjs tests/hr/performance.test.mjs tests/hr/surveys.test.mjs",
+    "hr:test": "node --test tests/hr/gusto-sdk-mock.test.mjs tests/hr/mock-workflows.test.mjs tests/hr/gusto-backend.test.mjs tests/hr/people-operations.test.mjs tests/hr/insights.test.mjs tests/hr/service-desk.test.mjs tests/hr/linked-operations.test.mjs tests/hr/recruiting.test.mjs tests/hr/recruiting-link.test.mjs tests/hr/performance.test.mjs tests/hr/surveys.test.mjs tests/hr/persistence.test.mjs",
     "hr:backend:audit": "npm --prefix integrations/gusto/functions audit --audit-level=high",
-    "portals:test": "node --test tests/portals/cms.test.mjs tests/portals/crm.test.mjs"
+    "portals:test": "node --test tests/portals/cms.test.mjs tests/portals/crm.test.mjs tests/portals/storage.test.mjs tests/portals/persistence.test.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

@@ -3,8 +3,10 @@
 This host extension builds on WebAppX 3.4.0 and the portable
 [`.SYSTEMX/GUSTO` contracts](../.SYSTEMX/GUSTO/README.md). It is a working
 synthetic portal for developing and testing people workflows without a Gusto
-account. Native React state remains in one browser session; refresh or **Reset
-sample changes** restores the fixture. Use fictional information only.
+account. Native HR saves domain actions to a versioned browser-local snapshot
+so they survive refresh at the same origin. **Reset sample changes** clears only
+HR’s saved snapshot and restores its fixtures. Use fictional information only;
+preview role projections do not secure data saved in this browser.
 
 ## Implemented native workflows
 
@@ -41,14 +43,23 @@ insurance calculations.
 
 Start with `/hr/demo`. Switch portals through the links at the top; switch the
 fictional employee or management role with its selector. Portal navigation keeps
-the current session data. The shared `/portals`, `/hr/demo`, `/cms/demo` and
-`/crm/demo` area preserves each module while navigating between demos. Reset
-affects only the selected module; a new tab, full reload or leaving the demo
-area starts fresh state. No HR records are copied into CMS or CRM. See
-[Template Portals](TEMPLATE-PORTALS.md) for their separate module roles.
-The existing `/hr/demo/sdk` route is an exception: it swaps out and resets
-native HR, and returning creates fresh native state. Its independent SDK preview
-session is not preserved by the native portal links.
+saved native data. HR, CMS and CRM use separate versioned `localStorage`
+snapshots. Refresh, leaving the demo area and returning, and opening another
+tab at the same origin restore each module’s last successful saved state.
+**Reset** affects only the selected module. No HR records are copied into CMS
+or CRM. See [Template Portals](TEMPLATE-PORTALS.md) for their separate roles
+and the [persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) for the
+current checked behavior.
+
+The `/hr/demo/sdk` route still has an independent SDK sample session. Returning
+to native HR restores its saved snapshot; native actions never modify SDK state.
+Only saved domain actions are persisted: unsaved form edits and active timers
+are not guaranteed to survive remounts. Visible workspace notices identify
+storage failure or rejected malformed/unsupported snapshots. Blocked/full
+storage falls back to memory. Browser/site-data clearing, private browsing, or
+a different hostname/port can lose or hide samples. Tabs do not live-merge; the
+last successful write wins. Anyone with access to the browser can inspect its
+saved data, regardless of selected preview role.
 
 | Portal | Useful routes |
 | --- | --- |
@@ -61,16 +72,28 @@ navigation entries. The 64 imported portable route definitions remain unchanged;
 five additional host routes provide employee/manager requests and activity for
 management, employees and managers.
 
+## Current persistence browser checkpoint — 2026-10-14
+
+The [current receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) records successful
+same-origin refresh checks for Casey’s hire/four-person directory, completed
+onboarding, eight submitted hours, prepared payroll and submitted
+`MOCK-PAYROLL-0003`: $240 gross, $48 illustrative withholding, $0 benefits and
+$192 net. Avery’s confirmed health election, 40% goal progress, saved self-review
+draft, and saved/submitted identified survey answers restored as well. Native
+HR restored after SDK preview and About/back. HR Reset followed by refresh
+restored HR fixtures while preserving separately saved CMS/CRM markers; their
+own Reset checks likewise left HR’s saved people/payroll records intact.
+
 ## Recruiting, performance and identified feedback
 
 These modules use native fictional records. The earlier portal QA receipt and
 its 70-test checkpoint remain historical. The
-[talent/CMS/CRM QA record](HR-TALENT-QA-2026-10-14.md) records this wave's separate
+[talent/CMS/CRM QA record](HR-TALENT-QA-2026-10-14.md) records that earlier wave's separate
 browser and automated acceptance evidence.
-The model suites currently pass **109 HR** and **20 CMS/CRM tests** (10 each);
-these automated results do not substitute for the separate browser run.
+That talent checkpoint passed **109 HR** and **20 CMS/CRM tests** (10 each);
+those results do not substitute for the current persistence or browser checks.
 
-The current browser check verified Casey's native hire/directory/onboarding
+The earlier talent browser check verified Casey's native hire/directory/onboarding
 connection through completion, private self/manager review drafts through publication and employee
 acknowledgment, and identified survey results from two submitted ratings (5 and
 3), mean 4, closed with `MOCK-SURVEY-0007`. Saved survey drafts contributed no
@@ -179,7 +202,7 @@ reviewed privacy and retention design before adoption.
 | [performance.ts](../src/hr/performance.ts) | Author-specific goals/review stages and scoped comment privacy |
 | [surveys.ts](../src/hr/surveys.ts) | Identified feedback lifecycle, own answer drafts and submitted-only results |
 | [insights.ts](../src/hr/insights.ts) | Scoped reports, actionable counts and submitted employee pay statements |
-| [HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | Shared session state, role selection and routing |
+| [HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | Native state, browser-local snapshot restoration, role selection and routing |
 
 The genuine SDK preview at `/hr/demo/sdk` uses its separate development-only mock
 API sessions. Native operations do not modify SDK fixtures or provider state.

@@ -1,4 +1,4 @@
-/** Account-free CRM: synthetic records in memory. No outbound/provider operations. */
+/** Account-free CRM: synthetic records; optional browser persistence belongs to the demo UI. No outbound/provider operations. */
 export type CrmRole = 'owner' | 'sales-manager' | 'sales-rep' | 'auditor'
 export type CrmActor = { id: string; role: CrmRole; label: string }
 export type CrmCompany = { id: string; name: string; ownerId: string }

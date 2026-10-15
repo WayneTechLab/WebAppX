@@ -44,8 +44,10 @@ Open the URL printed by Vite and visit:
 | `/hr/demo/sdk` | Genuine SDK directory, admin onboarding and payroll flows with local synthetic sessions |
 
 Demo roles apply only to synthetic preview data and do not alter Firebase claims.
-Native HR preview changes live in React state and reset on refresh. Do not enter
-real employee information. Connected routes such as `/admin/hr`, `/employee`,
+Saved native HR domain changes persist in this browser’s versioned local storage
+at the same origin. **Reset sample changes** clears HR’s saved snapshot and
+restores its fixtures. Do not enter real employee information. Connected routes
+such as `/admin/hr`, `/employee`,
 `/manager/hr` and `/contractor` require Firebase sign-in and an adopted server
 integration; the reusable template keeps their live data/actions unavailable.
 
@@ -89,10 +91,34 @@ deduction $25 and simulated net $167. Review, simulate submission and inspect
 the receipt. Jordan's onboarding can be completed separately to verify its
 active directory readback. Reset clears receipts and restores the original fixture.
 
-Reset or reload restores the synthetic fixture. The flows do not persist to
-Firestore, contact Gusto, send invitations or create provider/cloud accounts.
+Refreshing restores the last successfully saved native HR snapshot. **Reset
+sample changes** clears only HR’s saved state and restores its synthetic fixture.
+The flows do not write to Firestore, contact Gusto, send invitations or create
+provider/cloud accounts.
+
+The workspace shows storage status. If storage is blocked or full, it visibly
+falls back to memory; malformed or unsupported saved snapshots are rejected
+and fresh fixtures load with a notice. Unsaved form fields and active timers
+are not guaranteed to survive refresh. Private browsing, clearing browser/site
+data, or changing hostname/port may lose or hide samples. Tabs do not merge
+live changes; the last successful write wins. Saved data is accessible to the
+browser user, so role selectors do not make it confidential. Keep every name,
+address and free-text field fictional. Read the
+[persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) for current verification.
 The optional Firebase module retains its separately documented implementation
 and adoption gates; completing a native demo does not enable that module.
+
+### Current refresh verification — 2026-10-14
+
+The [persistence browser receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) verified
+Casey’s hire, completed onboarding, submitted eight hours and prepared payroll
+through refresh checkpoints. Submitted `MOCK-PAYROLL-0003` restored $240 gross,
+$48 illustrative withholding, $0 benefits and $192 net. Avery’s confirmed health
+enrollment, 40% goal progress/self-review draft and saved/submitted survey answers
+also restored. Native HR returned after SDK preview and About/back. Reset then
+refresh restored only the chosen module’s fixtures, preserving the other two
+modules’ saved markers. The receipt also records CMS revision/publication and
+CRM lead-to-won refresh checks separately from earlier QA history.
 
 ## Recruiting, performance and identified feedback
 
@@ -114,13 +140,14 @@ local workflow transition, not legal signing, employee agreement, pay-setting,
 external recruitment or provider acceptance. Questions/audiences lock on survey
 publication, and future hires are not invited automatically.
 
-This wave's new test total and browser evidence are separate from the earlier
+The earlier talent wave’s test total and browser evidence are separate from the
 70-test portal checkpoint; read the
 [talent/CMS/CRM QA record](HR-TALENT-QA-2026-10-14.md). No production service or
 SDK fixture is activated. The [Template Portals guide](TEMPLATE-PORTALS.md)
 describes independent CMS/CRM roles and state alongside the native HR module.
-Current model checks pass **109 HR tests** and **20 CMS/CRM tests** (10 each).
-The new browser run has a separate acceptance scope in that receipt.
+The earlier talent checkpoint passed **109 HR tests** and **20 CMS/CRM tests**
+(10 each). That browser run has its own acceptance scope in the receipt and
+does not establish current refresh-persistence behavior.
 
 The verified talent paths include Casey's hire into the native directory and
 completed onboarding, performance draft privacy through employee acknowledgment, and an
@@ -140,8 +167,10 @@ single conversion, record scopes held, and CMS Reset preserved HR/CRM state.
 The additional portal workflows use the same synthetic native session as
 onboarding, time, benefits and payroll. WebAppX adds employee/manager request
 routes and employee/manager/admin activity routes without changing the portable
-SYSTEMX **64-page** contract. Reset or refresh clears native operations, request
-activity and simulated statements. The selected native paths passed the
+SYSTEMX **64-page** contract. Saved operations, request activity and simulated
+statements survive refresh at the same origin. **Reset sample changes** clears
+HR’s saved snapshot and restores its fixtures. The selected native paths passed
+the
 [portal browser verification](HR-PORTAL-QA-2026-10-14.md); the earlier
 [October 14 QA receipt](GUSTO-BROWSER-QA-2026-10-14.md) retains its original
 onboarding/time/benefit/payroll scope and 41-test checkpoint.
@@ -271,10 +300,10 @@ tax documents; native state never feeds the separate SDK fixture.
 
 ## Genuine SDK preview boundary
 
-The SDK preview is outside native HR/CMS/CRM state preservation. Opening it
-unmounts and clears native HR; returning creates a fresh native session. SDK
-state is independent and disappears when that preview unmounts. Use separate
-tabs when comparing a native journey with the SDK sample.
+The SDK preview has its own independent sample state. Opening it can unmount
+native HR, but returning restores HR’s last successfully saved browser-local
+snapshot. SDK state disappears when its preview unmounts; it is not saved by
+the native HR/CMS/CRM persistence adapter. Native records never feed SDK payroll.
 
 The SDK preview pins `@gusto/embedded-react-sdk` **0.56.6**, its published API
 dependency **0.3.1** and API date **2026-06-15**. Start `/hr/demo/sdk` in Vite

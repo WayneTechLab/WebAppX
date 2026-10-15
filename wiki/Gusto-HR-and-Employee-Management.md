@@ -56,7 +56,9 @@ Payroll preparation freezes approved time and confirmed enrollment choices;
 later changes require a new preparation. Receipted time entries cannot be used
 again, and completed onboarding/confirmed elections remain locked until Reset.
 
-These host workflows use browser memory. Reset or reload restores the fixture.
+These native host workflows save domain actions in a versioned browser-local
+snapshot. Refresh restores that saved state at the same origin; **Reset sample
+changes** clears only HR’s saved snapshot and restores its fixtures.
 Mock totals, confirmations and submission receipts do not send payroll, enroll
 benefits or establish provider acceptance. No account, provider or cloud call is
 needed. The role selector remains a synthetic fixture control. See
@@ -65,7 +67,7 @@ for the exact routes and completion checks.
 
 ## Additional native portal workflows
 
-These native workflows extend the browser-memory host preview. The selected
+These native workflows extend the browser-local host preview. The selected
 paths passed the portal browser verification below; the earlier core-flow
 receipt retains its original scope.
 
@@ -85,8 +87,9 @@ receipt retains its original scope.
 New `/hr/demo/employee/requests`, `/hr/demo/manager/requests` and scoped activity
 routes belong to WebAppX. The portable SYSTEMX **64-page** contract and managed
 alpha.6 fingerprints remain unchanged. Requests, balances, activity and statements
-reset with the native session; they neither call Gusto nor feed the separate SDK
-fixture. Read the [native portal walkthrough and production gaps](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md#native-people-operations-and-service-desk)
+persist with HR’s saved native snapshot until its Reset or site-data clearing;
+they neither call Gusto nor feed the separate SDK fixture. Read the
+[native portal walkthrough and production gaps](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md#native-people-operations-and-service-desk)
 and [HR portal guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL.md)
 for actor scopes and step-by-step use. Auditors use scoped activity, reports and
 payroll metadata without compensation amounts. Real staff use still needs authenticated
@@ -102,14 +105,15 @@ must complete explicit native onboarding before appearing Active. Owner/HR can
 administer performance cycles but cannot impersonate either review author.
 Survey feedback is **identified, not anonymous**; saved answer drafts stay
 private in projections, and submitted-only counts/means do not establish a
-confidential-feedback design. This wave's browser evidence and new test totals
+confidential-feedback design. The earlier talent browser evidence and test totals
 are recorded in the [talent/CMS/CRM QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md),
 separately from the historical portal checkpoint below. Use
 [Template Portals](Template-Portals.md) for the independent HR, CMS and CRM demo
 navigation, module resets and production boundaries.
-The current model suites pass **109 HR** plus **20 CMS/CRM tests** (10 each).
-The existing `/hr/demo/sdk` preview is outside native state preservation:
-opening it resets native HR; returning starts a fresh native session.
+The earlier talent checkpoint passed **109 HR** plus **20 CMS/CRM tests** (10
+each). Read the [persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
+for current refresh and reset checks. Opening `/hr/demo/sdk` leaves its sample
+state independent; returning restores the saved native HR snapshot.
 
 The selected talent browser paths verified Casey's hire/directory/onboarding
 connection and performance privacy through employee acknowledgment. An
@@ -194,9 +198,17 @@ npm run dev
 ```
 
 Open Vite's printed URL at `/hr/demo`, then choose a synthetic portal/role.
-Native state resets on refresh. Use `/hr/demo/sdk` for the selected genuine SDK
-components; **Reset SDK samples** clears its separate local session. Production
-builds retain the native HR preview; the SDK mock API is local
+Saved native HR actions survive refresh in the same browser and origin.
+**Reset sample changes** clears only native HR’s saved snapshot. Storage status
+is visible: blocked/full storage falls back to memory, and malformed or
+unsupported snapshots start fresh fixtures with a notice. Unsaved form fields
+and active timers are not guaranteed to restore. Browser/site-data clearing,
+private browsing or a changed hostname/port may remove or hide samples. Tabs do
+not live-merge; the last successful write wins. Preview roles do not protect
+saved data from the browser user, so use fictional data only.
+
+Use `/hr/demo/sdk` for the selected genuine SDK components; **Reset SDK samples**
+clears its separate local session. Production builds retain the native HR preview; the SDK mock API is local
 development only.
 This host workflow update keeps the selected dotSYSTEMX 1.9.0-alpha.6 release
 and portable contract fingerprints intact. The optional Firebase and real Demo

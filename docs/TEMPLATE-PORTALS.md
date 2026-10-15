@@ -6,7 +6,10 @@ the source inventory and proposed adoption architecture as of October 14, 2026.
 The account-free HR talent workflows, CMS editorial core and CRM relationship
 workspace are implemented in this update. The broader adoption architecture
 and shared backend described below remain proposed. Browser and repository
-verification are recorded in the [talent and portals QA receipt](HR-TALENT-QA-2026-10-14.md). No live
+checks from the earlier talent wave are recorded in the
+[talent and portals QA receipt](HR-TALENT-QA-2026-10-14.md). Current browser-local
+persistence checks are recorded in the
+[persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md). No live
 business portal is activated by the HR preview or an administrator signing in.
 
 ## What exists today
@@ -16,8 +19,8 @@ business portal is activated by the HR preview or an administrator signing in.
 | Public website | [App router](../src/router.tsx), public pages and shared layout | React/Vite routes; no CMS-backed publication pipeline |
 | Demo portal directory | [Template portal shell](../src/pages/TemplatePortalsPage.tsx) | Account-free navigation between separately scoped HR, CMS and CRM samples; keeps modules mounted while switching demo portals |
 | Staff entry | [Admin dashboard](../src/pages/AdminDashboardPage.tsx) | Firebase sign-in and trusted Level 4/5 claim gate; readiness cards link to local tools |
-| HR workspaces | [HR portal](HR-PORTAL.md) and host-owned `src/hr/` | Working synthetic employee/manager/management workflows; browser session state, separate protected live boundary |
-| CMS workspace | [CMS demo](../src/cms/CmsDemo.tsx), [CMS transitions](../src/cms/model.ts), [CMS tests](../tests/portals/cms.test.mjs) | Working account-free draft/review/publish/retire core with frozen in-app public projection; no network publishing or durable storage |
+| HR workspaces | [HR portal](HR-PORTAL.md) and host-owned `src/hr/` | Working synthetic employee/manager/management workflows; versioned browser-local snapshot, separate protected live boundary |
+| CMS workspace | [CMS demo](../src/cms/CmsDemo.tsx), [CMS transitions](../src/cms/model.ts), [CMS tests](../tests/portals/cms.test.mjs) | Working account-free draft/review/publish/retire core with frozen in-app public projection; browser-local snapshot persistence, no network publishing or server storage |
 | CRM workspace | [CRM demo](../src/crm/CrmDemo.tsx), [CRM transitions](../src/crm/model.ts), [CRM tests](../tests/portals/crm.test.mjs) | Working account-free companies/contacts, lead conversion, opportunity pipeline and tasks; owner-scoped records and local receipts, no messaging or external sales operations |
 | CMS and CRM local fixtures | [LAN server](../.SYSTEMX/LAN/server.mjs), [LAN guide](../.SYSTEMX/LAN/README.md) | Guarded local record editing in the developer control plane; not a deployed business portal |
 | Page/source editing | [LAN stack contract](../.SYSTEMX/LAN/UNIFIED-AUTH-AND-STACK-CONTRACT.md) | Local source/page/metadata operations with backup, diff and confirmation controls |
@@ -28,6 +31,72 @@ business portal is activated by the HR preview or an administrator signing in.
 The LAN is a developer/operator control plane. Deployed CMS and CRM portals
 should be application routes with their own scoped services and records.
 Keep LAN routes and source-edit capabilities outside production bundles.
+
+## Browser-local persistence
+
+Native HR, CMS and CRM each save a separate versioned `localStorage` snapshot.
+Saved domain actions survive refresh, leaving the demo area and returning, and
+native HR remounts after visiting `/hr/demo/sdk`. The SDK sample keeps its own
+independent state and is not persisted by this adapter. Modules do not copy
+records or identities into one another.
+
+| Module | Browser-local key |
+| --- | --- |
+| Native HR | `webappx.demo.hr` |
+| CMS | `webappx.demo.cms` |
+| CRM | `webappx.demo.crm` |
+
+Each saved JSON envelope contains `schemaVersion: 1`, its `module` and `data`.
+The adapter accepts at most 2,000,000 serialized characters per snapshot;
+browser quota can impose a lower limit. Initial fixtures are not automatically
+saved. Domain state updates save synchronously during the action, so an
+immediate refresh does not wait for a React effect. Reset removes that module’s
+key rather than storing another fixture snapshot.
+
+The visible **Browser save.** notice distinguishes ready, saved, restored and
+reset states. **Browser save needs attention.** reports unavailable storage or
+a recovered incompatible/damaged save. If removing a saved snapshot fails,
+Reset still restores fixtures in memory but warns that the previous save may
+return after refresh; allow storage and Reset again. A rejected old snapshot
+is replaced by the next successfully saved action or removed by Reset.
+
+- Use the same browser profile and origin: scheme, hostname and port identify
+  the storage location. A different port or `localhost` versus `127.0.0.1` opens
+  a separate set of samples.
+- Use each module’s **Reset** to clear only that saved snapshot and restore its
+  fixtures. Clearing site data or ending some private-browsing sessions can
+  remove all saved samples for that origin.
+- Save the domain action before refreshing. Unsaved form fields, active timers
+  and transient UI messages are not guaranteed to restore.
+- Inspect the visible storage status. Read/write failures fall back to memory.
+  Malformed or unsupported snapshots are rejected and fresh fixtures load with
+  a notice, rather than trusting incompatible saved records.
+- Multiple tabs do not merge changes live. Each tab works on its own loaded
+  snapshot; the last successful write wins. Avoid concurrent edits while testing.
+- Browser storage is inspectable by the browser user and same-origin scripts.
+  Preview role selectors demonstrate projections; they do not secure saved
+  data. Use fictional names, `.invalid` addresses and synthetic free text only.
+  Never enter real employee/customer information, credentials or secrets.
+
+No login, Firebase emulator, cloud storage, provider key or external service is
+required. Local storage does not implement trusted memberships, server rules,
+backups, encryption, retention or production authorization. Read the
+[persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) for checked browser
+paths and their limits; earlier QA receipts retain their original behavior.
+
+### Current browser checkpoint — 2026-10-14
+
+Selected same-origin refresh checks passed in all three native modules. HR
+restored hire/onboarding, approved-time/payroll stages, confirmed benefits,
+performance progress/review drafts and saved/submitted survey answers. CMS
+restored an editable revision 3 while retaining published revision 2 and
+`MOCK-CMS-0004`. CRM restored one converted lead and a $1,500 won opportunity,
+with $6,500 open pipeline, three companies, three contacts and six actions.
+Native HR also restored after SDK preview and About/back. All three Reset then
+refresh checks restored only the chosen module and preserved the other modules’
+saved markers. The [current receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) retains
+exact figures and separates these UI observations from automated gates and
+production/provider acceptance.
 
 ## Shared shell and separate module permissions
 
@@ -117,10 +186,11 @@ The implemented CMS mock supports **pages and articles**, collection/title/slug
 search, a plain-text content editor, draft/review/publish/retire states,
 deterministic activity receipts and a frozen local public projection. Use
 `/cms/demo` and switch its fictional author, reviewer, publisher and read-only
-viewer identities. All controls act on synthetic browser memory. The shared
+viewer identities. Controls act on fictional browser-local records. The shared
 demo shell preserves each module when switching among HR, CMS, CRM and the
-portal directory. Refresh or leaving the demo area clears the session; **Reset
-CMS samples** resets only CMS. The model enforces permissions independently of
+portal directory. Saved records also survive refresh or leaving and returning
+at the same browser origin; **Reset CMS samples** clears only CMS’s saved
+snapshot and restores its fixtures. The model enforces permissions independently of
 visible buttons.
 
 An author saves a revision and requests review. A separate reviewer approves
@@ -224,17 +294,19 @@ when durable storage is adopted.
 1. Ship fictional fixtures and deterministic transition functions in each host
    module. No provider keys, login, billing, email delivery or cloud services
    are required for the mock route family.
-2. Keep each mock session in browser memory with a visible synthetic label and
-   reset action. The implemented demo shell preserves state during portal
-   navigation; refresh begins clean samples. Provide at least two organizations for cross-tenant negative
-   tests once organization selection is implemented.
+2. Save fictional domain state to separate versioned browser-local snapshots,
+   with visible storage status and module-specific Reset. The implemented demos
+   restore saved actions after refresh or returning to the same origin. Browser
+   persistence is not server durability, confidential storage or authentication.
+   Provide at least two organizations for cross-tenant negative tests once
+   organization selection is implemented.
 3. Validate state transitions and role scope in shared domain functions used by
    the UI. Test direct calls with unknown IDs, foreign assignments and repeated
    actions, as well as happy paths.
 4. Keep mock state separate from LAN fixtures and optional emulator records.
    Mock publish means an in-app published projection; mock CRM activity means a
    local receipt. Neither crosses into the operator control plane or provider.
-5. Add durable storage behind an explicit adapter only after mock acceptance.
+5. Add tenant-scoped server storage behind an explicit adapter only after mock acceptance.
    Re-run workflow and permission checks through trusted server endpoints and
    storage rules before connecting real data.
 
@@ -242,7 +314,7 @@ when durable storage is adopted.
 
 | Phase | Concrete deliverable | Acceptance evidence |
 | --- | --- | --- |
-| Portal foundation, implemented local shell | Shared demo catalog and navigation; independent module records/reset | Portal navigation preserves each mounted demo; production organization/membership contract remains proposed |
+| Portal foundation, implemented local shell | Shared demo catalog/navigation, separate versioned browser snapshots and independent Reset | Navigation and same-origin refresh restore saved domain records; production organization/membership contract remains proposed |
 | CMS mock core, implemented | Page/article editor, separate exact-revision review, frozen local preview and publish/retire receipts | Ten domain tests cover transitions, permissions, stale revisions, slug uniqueness and public-field projection; release browser evidence must separately verify the UI |
 | CMS expanded mock, proposed | Asset metadata, locale variants, full revision history and review queue | Locale and asset references remain scoped; each variant has independent review/publication state |
 | CRM mock core, implemented | Contacts/companies, lead conversion, opportunity stages, tasks/activities and dashboard | Browser qualifies/converts once, advances and closes a sample opportunity, completes a task; foreign-owner actions and duplicate conversion are refused |

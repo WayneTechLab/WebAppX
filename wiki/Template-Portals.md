@@ -1,7 +1,7 @@
 # Template Portals — HR, CMS and CRM
 
 WebAppX 3.4.0 includes independent native business-workspace demos. They use
-fictional browser-memory records and require no Gusto account, Firebase sign-in,
+fictional browser-local records and require no Gusto account, Firebase sign-in,
 provider credentials or external service. Use sample names/content and `.invalid`
 addresses; validation does not remove personal information from free text.
 
@@ -23,18 +23,39 @@ Open Vite's printed URL and choose **Template Portals**:
 | `/cms/demo` | Content authoring, separate review and simulated publication |
 | `/crm/demo` | Companies, contacts, lead conversion, opportunities and follow-up tasks |
 
-Navigation inside this demo area preserves each module's independent state.
-**Reset** restores only that module's fixture. A full reload or navigation to a
-normal public/live page unmounts the demo area and resets all three. A new tab
-starts a separate session. The modules do not automatically share identities,
-HR records, customer information or content.
-The existing `/hr/demo/sdk` route is separate: opening it unmounts and resets
-native HR, and returning creates a fresh native session. Its SDK fixture state
-does not share the native preservation rule.
+Each native module saves domain actions to its own versioned `localStorage`
+snapshot. Refreshing or leaving and returning restores the last successfully
+saved records in the same browser and origin. **Reset** clears only that
+module’s saved snapshot and restores its fixtures. The modules do not
+automatically share identities, HR records, customer information or content.
+Opening `/hr/demo/sdk` may unmount native HR; returning restores the saved native
+HR snapshot. The SDK’s independent sample state is not saved by this adapter.
+
+### What is saved and how to reset it
+
+Save or complete the displayed domain action before refreshing. Onboarding,
+elections, approved time, payroll receipts, talent records, CMS revisions and
+CRM relationship/pipeline changes are native domain state. Unsaved form fields,
+active timers and transient messages are not guaranteed to restore.
+
+- The same browser profile and **origin** are required. A different hostname,
+  scheme or port uses separate storage; `localhost` and `127.0.0.1` differ.
+- A module’s **Reset** clears only its saved snapshot. Clearing site data or
+  ending private-browsing sessions can remove saved samples.
+- The workspace shows storage status. Blocked/full storage visibly falls back
+  to memory; malformed or unsupported snapshots load fresh fixtures with a notice.
+- Tabs do not merge live edits. Each tab starts from its loaded snapshot and the
+  last successful write wins. Avoid concurrent editing in multiple tabs.
+- Saved records are accessible to the browser user and same-origin scripts.
+  Fictional role projections do not secure browser storage. Use fictional data
+  only; never enter real employee/customer information, credentials or secrets.
+
+Read the [persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
+for the current checked paths. Earlier receipts retain their original scope.
 
 Preview identities are module-specific test controls. They do not authenticate
 staff, modify Firebase claims or grant real organization memberships. Production
-role services and durable storage remain separate adoption work.
+role services and tenant-scoped server storage remain separate adoption work.
 
 ## HR: people operations and talent
 
@@ -117,15 +138,33 @@ Local activity describes record-owner-scoped actions, without a complete audit
 identity of who acted. No outbound messages, provider synchronization or HR
 record import is performed.
 
+## Current refresh verification — 2026-10-14
+
+The [persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
+records the selected browser checks, which passed for all three native portals:
+
+| Workspace | Records restored after refresh |
+| --- | --- |
+| HR | Casey’s hire/four-person directory, completed onboarding `MOCK-ONBOARDING-0001`, submitted eight hours and prepared payroll, then submitted `MOCK-PAYROLL-0003` at $240 gross/$48 illustrative withholding/$0 benefits/$192 net. Avery’s confirmed health enrollment, 40% goal progress, saved self-review draft and saved/submitted survey answers also restored. |
+| CMS | Saved revision 2 and its separately approved publication `MOCK-CMS-0004`; saved draft revision 3 restored without replacing published revision 2. |
+| CRM | A new fictional lead, one conversion and its $1,500 won opportunity, with $6,500 open pipeline, three companies, three contacts and six successful actions. |
+
+Native HR also restored after the SDK preview and About/back. Each module’s
+Reset followed by refresh restored its own fixtures and preserved saved markers
+in the other two modules. These are account-free local UI results; no provider
+execution, external publication, real staff/customer records or production
+storage was enabled.
+
 ## Evidence and production adoption
 
-The current model suites pass **129 tests**: **109 HR**, **10 CMS** and **10 CRM**.
+The earlier talent checkpoint passed **129 model tests**: **109 HR**, **10 CMS**
+and **10 CRM**. Current persistence evidence is recorded in the separate receipt above.
 The earlier HR portal receipt's **70 tests** and browser results remain historical.
-This talent/CMS/CRM wave has separately scoped browser evidence; the presence of
+That talent/CMS/CRM wave has separately scoped browser evidence; the presence of
 source code or a passing model test does not establish browser, provider or
 production acceptance.
 Read the [talent and business-portal QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md)
-for this wave's separate checked results.
+for that earlier wave's separate checked results.
 
 | Selected browser path — 2026-10-14 | Observed result |
 | --- | --- |

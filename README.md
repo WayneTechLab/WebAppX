@@ -98,8 +98,10 @@ The account-free HR workspace supports four linked synthetic journeys:
 | Benefits | In the employee self preview, elect sample enrollment or waiver, review it and confirm the fictional election. |
 
 Use the [step-by-step account-free guide](docs/GUSTO-SETUP.md) for the role and
-route sequence. All four native journeys use browser memory and reset on refresh
-or Reset; no Gusto account, provider request or cloud service is needed. Mock
+route sequence. Native HR saves completed domain actions in this browser’s local
+storage, so onboarding, benefits, time and payroll survive refresh at the same
+origin. **Reset sample changes** clears only HR’s saved snapshot and restores its
+fixtures; no Gusto account, provider request or cloud service is needed. Mock
 payroll totals and receipts do not establish payroll accuracy or payment execution.
 
 **Earlier browser verification — 2026-10-14:** the linked native mock was checked through
@@ -119,7 +121,7 @@ separate SDK UI or establish provider acceptance.
 | Jordan — confirmed retirement enrollment | $240 | $48 | $25 | $167 |
 | Avery — confirmed health waiver | $240 | $48 | $0 | $192 |
 
-The native portal extension also provides these browser-memory previews:
+The native portal extension also provides these account-free previews:
 
 | Area | Native mock workflow |
 | --- | --- |
@@ -146,12 +148,13 @@ with compensation unconfigured. Performance authorship stays with the employee
 and assigned manager. Survey results are **identified**, with submitted names
 and answers visible to owner/HR and the read-only auditor. Saved drafts remain
 with their author; employee views exclude other people's answers. The
-[talent/CMS/CRM QA record](docs/HR-TALENT-QA-2026-10-14.md) records this wave's
+[talent/CMS/CRM QA record](docs/HR-TALENT-QA-2026-10-14.md) records that earlier wave's
 browser acceptance and test totals separately from the earlier portal checkpoint.
 
-The current model suites pass **129 tests**: **109 HR**, **10 CMS** and **10 CRM**.
-These automated checks remain separate from the new browser run and from real
-provider or production acceptance.
+The earlier talent checkpoint passed **129 model tests**: **109 HR**, **10 CMS**
+and **10 CRM**. These historical checks remain separate from the
+[current persistence verification](docs/PORTAL-PERSISTENCE-QA-2026-10-14.md) and
+from real provider or production acceptance.
 
 | Selected talent/CMS browser check — 2026-10-14 | Observed native result |
 | --- | --- |
@@ -224,22 +227,52 @@ Use the **Template Portals** entry to move between the native workspaces:
 | `/cms/demo` | Plain-text draft → separate revision review → approval → simulated publication/retirement |
 | `/crm/demo` | Owned companies/contacts, lead qualification/conversion, opportunity stages, follow-up tasks and pipeline totals |
 
-Each module has its own fictional records and preview identities. Shared portal
-links preserve native HR, CMS and CRM records; a module's Reset affects only
-that module. Reloading or leaving the demo area for normal public/live pages
-resets the demo session. The separate `/hr/demo/sdk` preview is an exception:
-opening it unmounts and resets native HR; returning starts fresh native state.
-Preview roles do not grant Firebase claims, and no HR
-records or personal data are automatically shared with CMS/CRM.
+Each module saves its fictional domain records in a separate, versioned
+`localStorage` snapshot. Refreshing, leaving the demo area and returning, or
+visiting `/hr/demo/sdk` preserves saved native HR, CMS and CRM records in the
+same browser and origin. A module’s **Reset** clears only that module’s saved
+snapshot and restores its fixtures. SDK sample state stays separate. Preview
+roles do not grant Firebase claims, and no HR records or personal data are
+automatically shared with CMS/CRM.
+
+Storage status is visible in each workspace. Blocked or full browser storage
+falls back to memory; malformed or unsupported snapshots start fresh fixtures
+with a visible notice. Unsaved form fields and running timers are not guaranteed
+to survive refresh. Private browsing, clearing site data, or changing hostname
+or port can remove or hide saved samples. Multiple tabs do not merge live
+changes: the last successful write wins. Use fictional data only; preview roles
+are not browser security, and anyone with access to this browser can inspect
+its saved records. See the [persistence QA receipt](docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
+for the current checked paths.
 
 The CMS viewer is a read-only editorial identity; only the published-sample
 projection excludes draft content. A simulated CMS publication does not update
 the actual website. CRM won amounts are sample pipeline values, not revenue or
 payments. See [Template Portals](wiki/Template-Portals.md) and the
 [portal architecture and adoption guide](docs/TEMPLATE-PORTALS.md) for the
-separate role and data boundaries. This wave's new test/browser results are
+separate role and data boundaries. Earlier talent test/browser results are
 recorded in the [talent and business-portal QA receipt](docs/HR-TALENT-QA-2026-10-14.md),
 separately from the earlier HR receipts.
+
+### Browser persistence verification — 2026-10-14
+
+Automated verification: **116 HR tests and 36 portal/storage tests passed**
+(152 total).
+
+All three native portals passed the selected same-origin refresh and isolated
+Reset checks. The [current QA receipt](docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
+keeps these results separate from the earlier memory-only checkpoints.
+
+| Current browser path | Observed after refresh |
+| --- | --- |
+| HR hire, onboarding and payroll | Casey remained the fourth person after hiring; completed onboarding restored `MOCK-ONBOARDING-0001`. Eight submitted hours, manager approval and prepared payroll survived their checkpoints. Submitted `MOCK-PAYROLL-0003` retained $240 gross/$48 illustrative withholding/$0 benefits/$192 net. |
+| HR benefits and talent | Avery’s confirmed health enrollment (`MOCK-BENEFIT-0004`), 40% goal progress and saved self-review draft restored. Saved survey rating 4/text restored; after submission, `MOCK-SURVEY-0003` restored with answers locked. |
+| CMS | Revision 2 restored after save and after separate review/approval/publication (`MOCK-CMS-0004`). A saved revision 3 draft then restored while the published projection retained revision 2. |
+| CRM | A created fictional lead restored, converted once and advanced to won. Refresh retained $1,500 won/$6,500 open, three companies, three contacts and six successful actions. |
+| Leaving and Reset | Native HR restored after SDK preview and About/back. Each module’s Reset persisted after refresh and preserved the other modules’ saved markers; CMS/CRM resets retained HR’s four people and payroll receipt. |
+
+These are local fictional-data results. They do not establish provider
+execution, server authorization or production storage.
 
 ## Set up Agent Y in a new app
 

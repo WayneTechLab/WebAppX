@@ -19,7 +19,7 @@ function HrEntry() {
         <article className="rounded-xl border border-emerald-200 bg-emerald-50 p-6">
           <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">Account-free preview</p>
           <h2 className="mt-3 text-2xl font-semibold">Try the HR demo</h2>
-          <p className="mt-3 text-sm leading-6 text-neutral-700">Recruit a fictional employee, complete onboarding, conduct a performance review and run an identified feedback survey. Explore benefits, timesheets, leave, assignments and HR requests, then inspect simulated payroll and employee pay statements. Changes stay in memory and disappear on refresh.</p>
+          <p className="mt-3 text-sm leading-6 text-neutral-700">Recruit a fictional employee, complete onboarding, conduct a performance review and run an identified feedback survey. Explore benefits, timesheets, leave, assignments and HR requests, then inspect simulated payroll and employee pay statements. Saved sample actions stay in this browser across refresh; Reset removes only HR’s saved sample.</p>
           <AppLink to="/hr/demo" className="mt-6 inline-flex rounded-md bg-neutral-950 px-4 py-3 text-sm font-semibold text-white">Open synthetic demo</AppLink>
         </article>
         <article className="rounded-xl border border-neutral-200 p-6">

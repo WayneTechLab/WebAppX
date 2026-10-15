@@ -1,6 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { AppLink } from '@/components/navigation/AppLink'
+import { useDemoPersistence } from '@/portals/useDemoPersistence'
+import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
 import { cmsActors, cmsCollections, cmsPublishedEntries, createCmsState, transitionCms, type CmsActor, type CmsEntry, type CmsEvent } from './model'
+import { isCmsState } from './persistence'
 
 const field = 'mt-2 block min-h-11 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-700'
 const button = 'inline-flex min-h-11 items-center justify-center rounded-md bg-neutral-950 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500'
@@ -21,7 +24,7 @@ function ContentFields({ entry, prefix }: { entry?: CmsEntry; prefix: string }) 
 }
 
 export function CmsDemo() {
-  const [state, setState] = useState(createCmsState)
+  const { state, setState, reset: resetSavedState, status: storageStatus } = useDemoPersistence('cms', createCmsState, isCmsState)
   const [actor, setActor] = useState<CmsActor>(cmsActors[0])
   const [selectedId, setSelectedId] = useState('cms-article-001')
   const [collection, setCollection] = useState('all')
@@ -54,12 +57,12 @@ export function CmsDemo() {
     if (act({ type: 'create-entry', collectionId: String(data.get('collectionId')), ...contentFromForm(form) })) form.reset()
   }
   function reset() {
-    setState(createCmsState())
+    resetSavedState()
     setActor(cmsActors[0])
     setSelectedId('cms-article-001')
     setCollection('all')
     setQuery('')
-    setMessage('Sample CMS reset. The original draft and published page have been restored.')
+    setMessage('The original CMS draft and published page are restored in this view. HR and CRM samples are unchanged.')
     setError('')
     setGeneration(value => value + 1)
   }
@@ -67,10 +70,11 @@ export function CmsDemo() {
   return <div className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:py-12">
     <header className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 sm:p-7">
       <p className="text-xs font-semibold uppercase tracking-wider text-indigo-800">Account-free CMS · fictional content only</p>
-      <div className="mt-3 flex flex-wrap items-start justify-between gap-5"><div className="max-w-3xl"><h1 className="text-3xl font-bold tracking-tight text-neutral-950">Content publishing workspace</h1><p className="mt-3 text-sm leading-6 text-neutral-700">Create a draft, request a separate review, then simulate publication. The published sample freezes the approved revision. Switching demo portals preserves changes in browser memory. Refresh clears all demos; Reset CMS samples restores this module. Leaving the demo area also clears the session. No public website is published.</p></div><button className={secondary} type="button" onClick={reset}>Reset CMS samples</button></div>
+      <div className="mt-3 flex flex-wrap items-start justify-between gap-5"><div className="max-w-3xl"><h1 className="text-3xl font-bold tracking-tight text-neutral-950">Content publishing workspace</h1><p className="mt-3 text-sm leading-6 text-neutral-700">Create a draft, request a separate review, then simulate publication. The published sample freezes the approved revision. Saved actions stay in this browser across refresh and portal navigation when local storage is available. Unsaved form edits are temporary. Reset CMS samples clears only this module. Use fictional content only; no public website is published.</p></div><button className={secondary} type="button" onClick={reset}>Reset CMS samples</button></div>
       <nav aria-label="Business portals" className="mt-5 flex flex-wrap gap-3 text-sm font-semibold"><AppLink to="/portals" className={secondary}>All portals</AppLink><AppLink to="/hr/demo" className={secondary}>HR workspace</AppLink><AppLink to="/crm/demo" className={secondary}>CRM workspace</AppLink></nav>
       <label className="mt-5 block max-w-sm text-sm font-medium">CMS preview identity<select className={field} value={actor.id} onChange={event => { setActor(cmsActors.find(person => person.id === event.target.value)!); setMessage(''); setError('') }}>{cmsActors.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label><p className="mt-2 text-xs text-neutral-600">The author writes, a separate reviewer approves, the publisher publishes or retires, and the viewer reads. These fictional identities do not grant real account permissions.</p>
     </header>
+    <DemoStorageNotice status={storageStatus} />
     {(message || error) && <div role={error ? 'alert' : 'status'} className={`rounded-lg border p-4 text-sm ${error ? 'border-red-200 bg-red-50 text-red-900' : 'border-emerald-200 bg-emerald-50 text-emerald-900'}`}>{error || message}</div>}
     <section aria-label="CMS metrics" className="grid grid-cols-2 gap-3 lg:grid-cols-4">{[['Drafts', state.entries.filter(entry => entry.status === 'draft').length], ['Awaiting review', state.entries.filter(entry => entry.status === 'in-review').length], ['Approved revisions', state.entries.filter(entry => entry.status === 'approved').length], ['Published samples', published.length]].map(([title, value]) => <div key={title} className={panel}><p className="text-xs font-medium text-neutral-500">{title}</p><p className="mt-2 text-3xl font-semibold text-neutral-950">{value}</p></div>)}</section>
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">

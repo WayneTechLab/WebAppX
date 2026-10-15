@@ -1,5 +1,28 @@
 # Update Log
 
+## 3.4.0 browser-local portal persistence — 2026-10-14
+
+Save native HR, CMS and CRM domain state to separate versioned `localStorage`
+snapshots. Saved records restore after same-origin refresh, leaving and
+returning, and native HR remounts after the SDK preview. Each module’s Reset
+clears only its saved snapshot and restores fixtures; SDK sample state remains
+independent. Storage failure visibly falls back to memory, while malformed or
+unsupported snapshots load fresh fixtures with a notice.
+
+Only saved domain actions are covered; unsaved fields and active timers are not
+guaranteed to restore. Browser clearing/private browsing or changing origin may
+lose or hide samples. Tabs do not merge live changes; the last successful write
+wins. Role selectors do not secure saved browser data, so use fictional data
+only. No login, cloud or provider account is introduced.
+
+Read [Template Portals](Template-Portals.md) and the
+[persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
+for the current behavior and verification. Selected browser refresh checks
+passed for HR hire/onboarding/time/payroll, confirmed benefits, performance and
+surveys; CMS draft/publication revisions; and CRM lead conversion/won pipeline.
+Each module’s Reset followed by refresh preserved the other modules’ saves.
+Version remains 3.4.0. Earlier entries and test counts retain their original scope.
+
 ## 3.4.0 HR talent, CMS and CRM portals — 2026-10-14
 
 Add recruiting through employee onboarding, goals/performance review cycles and
@@ -11,7 +34,7 @@ memory; no provider accounts, external publication or messages are created.
 Read [Template Portals](Template-Portals.md), the
 [architecture guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md)
 and the [browser verification receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md).
-The current model suites pass 109 HR and 20 CMS/CRM tests. Version remains 3.4.0;
+That checkpoint passed 109 HR and 20 CMS/CRM tests. Version remains 3.4.0;
 the preceding 70-test receipt is preserved as historical evidence.
 
 ## 3.4.0 connected HR portal — 2026-10-14

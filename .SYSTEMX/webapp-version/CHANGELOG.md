@@ -1,3 +1,19 @@
+# 3.4.0 follow-up — Browser-local HR, CMS and CRM persistence — 2026-10-14
+
+- Save native HR, CMS and CRM domain actions in separate versioned browser-local
+  snapshots; restore at the same origin after refresh or leaving and returning.
+- Restore native HR after SDK preview remounts while keeping SDK state separate.
+- Clear only the selected module’s saved snapshot on Reset and restore fixtures.
+- Surface storage failure as a visible memory fallback; reject malformed or
+  unsupported snapshots into fresh fixtures with a notice.
+- Document origin/private-browser limits, saved-action scope, inspectable
+  fictional data and the absence of live merging between tabs.
+- Verify browser restoration of HR hire/onboarding/time/payroll, benefits,
+  performance and surveys; CMS draft/publication revisions; and CRM lead-to-won
+  pipeline, plus isolated module Reset followed by refresh.
+- Record current verification in the [persistence QA receipt](../../docs/PORTAL-PERSISTENCE-QA-2026-10-14.md);
+  preserve earlier receipts and managed SYSTEMX/research fingerprints.
+
 # 3.4.0 follow-up — HR talent, CMS and CRM portals — 2026-10-14
 
 - Add account-free recruiting through native employee onboarding, goals and

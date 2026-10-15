@@ -91,7 +91,8 @@ in the adopted scope.
 The portable `.SYSTEMX/GUSTO/` package provides routes, capability ownership,
 role policy and adoption contracts. In Vite development, `/hr/demo` offers
 synthetic management, employee, manager and contractor portals with app-owned
-state that resets on refresh. Native source includes onboarding, benefit elections,
+state saved to a versioned browser-local snapshot across same-origin refresh.
+Native source includes onboarding, benefit elections,
 timesheet approval, simulated payroll/pay statements, leave balances and decisions,
 assignments/acknowledgments, asset returns, scoped activity, dashboards/reports and
 an employee-to-manager/HR service desk. New talent module source adds owner/HR
@@ -129,17 +130,26 @@ content revisions; CRM links owned leads, companies, contacts, opportunities and
 tasks. Each module has independent sample records and role selection, with no
 automatic HR/customer data sharing or Firebase permission grants.
 
-Demo navigation preserves all modules; Reset is local to one module. Reloading
-or leaving the demo area resets the session. The separate `/hr/demo/sdk` route
-resets native HR rather than preserving it. CMS publication is an in-app sample,
+Native HR, CMS and CRM each save domain actions to a separate versioned
+`localStorage` snapshot. Refresh, leaving and returning, and native HR remounts
+after `/hr/demo/sdk` restore saved records at the same browser origin. Reset
+clears only its module’s saved snapshot and restores fixtures. The SDK sample
+state stays independent. Storage failures visibly fall back to memory; malformed
+or unsupported snapshots start fresh fixtures with a notice. Unsaved form
+fields and active timers are not guaranteed to restore. Private browsing,
+clearing site data, or changing hostname/port may lose or hide samples. Tabs do
+not live-merge; the last successful write wins. Use fictional data only; anyone
+with browser access can inspect the saved records. CMS publication is an in-app
+sample,
 and CRM pipeline/won amounts establish no external publication or payments.
 Read [Template Portals](Template-Portals.md) and the
 [architecture/adoption guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md)
-for workflows, scopes and remaining production work. New browser/test evidence
+for workflows, scopes and remaining production work. Earlier talent browser/test evidence
 is recorded in the [talent/CMS/CRM QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md),
 separately from the historical HR portal receipts.
-Current model suites pass **129 tests**: 109 HR, 10 CMS and 10 CRM. The new
-browser run is recorded separately from those automated checks.
+The earlier talent checkpoint passed **129 model tests**: 109 HR, 10 CMS and
+10 CRM. Current refresh/reset evidence is recorded separately in the
+[persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md).
 Selected browser checks verified native hire/onboarding, performance review
 privacy/acknowledgment, survey 2/2 submitted responses with mean 4, and CMS
 return/review/publication/retirement with exact revision gates. These are local

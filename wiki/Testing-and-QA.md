@@ -77,6 +77,51 @@ and webhook foundation boundaries. It uses local fixtures and app/backend code;
 it does not contact Gusto or establish Firebase deployment acceptance.
 `hr:backend:audit` audits the isolated optional functions package's dependencies.
 
+### Native HR, CMS and CRM persistence checks
+
+Automated verification: **116 HR tests and 36 portal/storage tests passed**
+(152 total).
+
+Read the [persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
+for this update’s browser and automated results. The older talent, connected-HR
+and four-flow receipts below preserve their own checkpoints.
+
+**Selected browser results — 2026-10-14:** all three native portals passed
+same-origin refresh and isolated Reset checks.
+
+| Area | Observed result |
+| --- | --- |
+| HR hire/onboarding/payroll | Refresh restored Casey as the fourth person, then completed onboarding `MOCK-ONBOARDING-0001`. Submitted eight hours and prepared payroll restored at their checkpoints; submitted `MOCK-PAYROLL-0003` restored $240 gross/$48 illustrative withholding/$0 benefits/$192 net. |
+| HR benefits/performance/survey | Refresh restored Avery’s health enrollment `MOCK-BENEFIT-0004`, goal progress 40% and saved self-review draft. A saved survey rating 4/text restored; submitted `MOCK-SURVEY-0003` remained locked after refresh. |
+| CMS | Saved revision 2 restored, then separate review/approval/publication `MOCK-CMS-0004` restored. Saved draft revision 3 restored while the published projection stayed at revision 2. |
+| CRM | Created lead restored; qualification/conversion and the $1,500 won deal restored with $6,500 open pipeline, three companies, three contacts and six successful actions. |
+| Navigation and reset isolation | HR restored after SDK preview and About/back. All three module Reset→refresh checks restored only the chosen fixtures and preserved the other modules’ saved records. |
+
+These observed UI paths do not replace the separate malformed-save,
+storage-failure and direct domain tests. Follow the current receipt for the
+final gate totals and scope.
+
+Verify each native module at the same browser origin:
+
+1. Complete saved domain actions, record their IDs/counts, refresh, and confirm
+   the corresponding records and workflow stage return. Unsaved form fields and
+   active timers are outside the restoration guarantee.
+2. Leave for an ordinary page and return; for HR also visit `/hr/demo/sdk` and
+   return. Native data should restore independently of SDK sample state.
+3. Reset one module, refresh, and verify only that module returns to fixtures;
+   the other two retain their saved domain changes.
+4. Verify visible fallback/recovery notices for blocked/unavailable storage and
+   malformed or unsupported snapshot versions. A failed write must not make a
+   claim that changes were saved across refresh.
+5. Verify that changing role projections does not grant real authentication or
+   provider access. All local saved data remains inspectable by the browser user.
+
+Storage is versioned and separate per module. Private browsing, site-data
+clearing and a different scheme/hostname/port can remove or hide saved samples.
+Multiple tabs do not merge updates live; the last successful write wins. Test
+with fictional data only. No local persistence result establishes production
+server storage, membership enforcement, backup/retention or provider execution.
+
 ### Talent wave verification
 
 The recruiting, performance and survey modules have their own test and
@@ -85,11 +130,11 @@ onboarding, self/direct-manager review authorship, private draft projections,
 identified submitted-only survey results, duplicate/final-state guards and
 role-scoped dashboard counts. Use fictional `.invalid` candidate emails and
 feedback. Do not infer this wave's test total or browser acceptance from the
-historical 70-test checkpoint below. The current
+historical 70-test checkpoint below. The earlier talent
 [talent/CMS/CRM QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md)
 records the separate results.
 
-Current model suites pass **129 tests**:
+The earlier talent checkpoint passed **129 model tests**:
 
 | Suite | Tests |
 | --- | ---: |
@@ -101,7 +146,7 @@ The HR total includes the earlier 70 checks plus four talent insight cases,
 eight recruiting, six hire-to-HR integration, ten performance and 11 survey
 cases. Browser results remain separately scoped in the QA receipt.
 
-Selected browser results now include:
+That earlier talent browser checkpoint included:
 
 - Casey's mock hire connected to native directory/onboarding.
 - Private self/manager review drafts stayed behind their projection gates before
@@ -211,7 +256,8 @@ For a browser check, run Vite development and open `/hr/demo` and `/hr/demo/sdk`
 The SDK 0.56.6 preview uses genuine directory, administrative onboarding and
 payroll execution components with development-only mock reads and writes.
 The mock API is absent from Hosting and `npm run preview`.
-Native HR actions use synthetic React state and reset on refresh. Other SDK
+Saved native HR actions restore from the versioned browser-local snapshot
+after same-origin refresh; the SDK sample state remains independent. Other SDK
 workflows, authorized Demo integration, protected connected portals and live
 payroll require their own evidence. The optional Firebase adapter is disabled by
 default. See [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md)
