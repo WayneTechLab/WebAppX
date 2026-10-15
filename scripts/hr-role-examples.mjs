@@ -9,6 +9,31 @@ const root = fileURLToPath(new URL('../', import.meta.url))
 const fixturePath = resolve(root, 'tests/fixtures/hr-capability-examples.json')
 const outputPath = resolve(root, 'docs/HR-ROLE-EXAMPLES.md')
 const roles = ['employer-owner', 'payroll-admin', 'hr-admin', 'manager', 'employee', 'contractor', 'auditor']
+// These authority, transaction and complete-export boundaries are part of the
+// reviewed fixture. Keep this source-only bound separate from ordinary lists.
+const requiredSources = [
+  'docs/PORTAL-CAPABILITIES.md', 'src/hr/model.ts', 'src/hr/mock-workflows.ts',
+  'src/hr/performance.ts', 'src/hr/surveys.ts', 'src/hr/persistence.ts',
+  'src/portals/backup.ts', 'src/portals/combined-backup.ts',
+  'src/portals/DemoWorkspaceBackup.tsx', 'src/portals/CombinedWorkspaceBackup.tsx',
+  'src/hr/components/HrWorkspace.tsx', '.SYSTEMX/GUSTO/mock/fixtures/demo-company.json',
+  'src/portals/unsaved-work-core.ts', 'src/portals/unsaved-work.tsx',
+  'src/lib/navigation.ts', 'src/router.tsx', 'src/hr/components/useHrFormDraft.ts',
+  'src/hr/components/PeopleOperations.tsx', 'src/hr/components/HrServiceDesk.tsx',
+  'src/hr/components/HrRecruiting.tsx', 'src/hr/components/HrPerformance.tsx',
+  'src/hr/components/HrSurveys.tsx', 'src/cms/model.ts', 'src/cms/CmsDemo.tsx',
+  'src/cms/editor-recovery.ts', 'src/portals/PortalWorkspaceProvider.tsx',
+  'src/portals/useDemoPersistence.ts', 'src/portals/recovery-preferences.ts',
+  'src/portals/replacement-recovery.ts', 'src/portals/DemoWorkspaceReset.tsx',
+  'src/portals/RecoveryCheckpointPreview.tsx', 'src/portals/restore-points.ts',
+  'src/portals/RestorePointHistory.tsx', 'src/portals/restore-workspaces.ts',
+  'src/portals/workspace-inspection.ts', 'src/portals/WorkspaceInspection.tsx',
+  'src/crm/CrmDemo.tsx', 'src/hr/lifecycle-types.ts', 'src/hr/lifecycle.ts',
+  'src/hr/components/HrDirectoryCorrections.tsx', 'src/hr/components/HrEmploymentLifecycle.tsx',
+  'src/cms/release-types.ts', 'src/cms/release-bundles.ts', 'src/crm/ownership.ts',
+  'src/hr/linked-operations.ts', 'src/hr/recruiting.ts', 'src/hr/recruiting-link.ts',
+  'src/cms/persistence.ts', 'src/crm/model.ts', 'src/crm/persistence.ts',
+]
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value)
 function fields(value, expected, label) {
   if (!object(value) || Object.keys(value).length !== expected.length || !expected.every(key => Object.hasOwn(value, key))) throw new Error(`${label}: missing or unknown fields`)
@@ -50,7 +75,7 @@ export function validateHrRoleExamples(fixture) {
   fields(review, ['proposalId', 'criterion', 'sourceRevision', 'canonicalDocument', 'hashMode', 'reviewedSources'], 'Review basis')
   if (review.proposalId !== 'WX-0908' || review.canonicalDocument !== 'docs/PORTAL-CAPABILITIES.md' || review.hashMode !== 'utf8-lf-sha256' || typeof review.sourceRevision !== 'string' || !/^[0-9a-f]{40}$/.test(review.sourceRevision)) throw new Error('Use the reviewed WX-0908 source and canonical capability document')
   text(review.criterion, 'Acceptance criterion')
-  list(review.reviewedSources, 'Reviewed sources')
+  list(review.reviewedSources, 'Reviewed sources', { maximum: 56 })
   const sources = new Set()
   for (const source of review.reviewedSources) {
     fields(source, ['path', 'sha256'], 'Reviewed source')
@@ -58,7 +83,7 @@ export function validateHrRoleExamples(fixture) {
     if (isAbsolute(source.path) || /[\\?#:]/.test(source.path) || !/\.(?:ts|tsx|json|md)$/.test(source.path) || source.path.split('/').some(part => ['', '.', '..'].includes(part)) || typeof source.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(source.sha256) || sources.has(source.path)) throw new Error('Reviewed sources require unique contained text paths and SHA256 digests')
     sources.add(source.path)
   }
-  if (!sources.has(review.canonicalDocument) || !sources.has('src/hr/model.ts') || !sources.has('src/hr/mock-workflows.ts') || !sources.has('src/portals/backup.ts')) throw new Error('Review the canonical matrix, HR model/transitions and complete backup boundary')
+  if (requiredSources.some(path => !sources.has(path))) throw new Error('Review every required canonical, authority, transaction and complete backup source boundary')
   list(fixture.roles, 'Roles', { maximum: 7 })
   if (fixture.roles.length !== 7 || fixture.roles.some((row, index) => row?.role !== roles[index])) throw new Error('Cover the seven exact HR roles once in canonical order')
   for (const row of fixture.roles) {

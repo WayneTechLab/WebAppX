@@ -6,9 +6,10 @@ import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
 import { DemoWorkspaceBackup } from '@/portals/DemoWorkspaceBackup'
 import { DemoWorkspaceReset } from '@/portals/DemoWorkspaceReset'
 import { useUnsavedWork, useVolatileSlot } from '@/portals/unsaved-work'
-import { cmsActors, cmsCollections, cmsDraftIsDirty, cmsPublishedEntries, transitionCms, validateCmsDraft, type CmsActor, type CmsContent, type CmsDraftField, type CmsDraftIssue, type CmsEvent } from './model'
+import { cmsActors, cmsCollections, cmsDraftIsDirty, cmsPublishedEntries, transitionCms, validateCmsDraft, type CmsActor, type CmsContent, type CmsDraftField, type CmsDraftIssue, type CmsEvent, type CmsState } from './model'
 import { compareCmsEditor, createCmsEditorBuffer, resolveCmsEditor, type CmsEditorBuffer } from './editor-recovery'
 import { isCmsState } from './persistence'
+import { activateCmsReleaseBundle, prepareCmsReleaseBundle, previewCmsReleaseBundle, type CmsReleasePreview } from './release-bundles'
 
 const field = 'mt-2 block min-h-11 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-700'
 const button = 'inline-flex min-h-11 items-center justify-center rounded-md bg-neutral-950 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500'
@@ -47,6 +48,70 @@ function ContentFields({ value, onChange, errors, prefix }: { value: CmsContent;
 function FeedbackRegistration({ entryId, read, discard, focus }: { entryId: string; read: () => string; discard: () => void; focus: () => void }) {
   useUnsavedWork({ id: `cms:feedback:${entryId}`, portal: 'cms', label: `CMS review feedback for ${entryId}`, isDirty: () => !!read().trim(), discard, focus })
   return null
+}
+
+const emptyReleaseDraft = () => ({ name: '', entryIds: [] as string[] })
+
+function ReleaseBundles({ state, actor, focusDraft, onCommit }: { state: CmsState; actor: CmsActor; focusDraft: () => void; onCommit: (operation: (current: CmsState) => { state: CmsState; message: string }) => void }) {
+  const [draft, setDraft, draftRef] = useImmediateState(emptyReleaseDraft)
+  const [error, setError] = useState('')
+  const [preview, setPreview] = useState<{ id: string; report: CmsReleasePreview; snapshot: string; actorId: string } | null>(null)
+  const outOfDate = !!preview && (preview.snapshot !== JSON.stringify(state) || preview.actorId !== actor.id)
+  useUnsavedWork({ id: 'cms:release-draft', portal: 'cms', label: 'CMS new release form', isDirty: () => !!draftRef.current.name.trim() || !!draftRef.current.entryIds.length, discard: () => { setDraft(emptyReleaseDraft()); setError('') }, focus: focusDraft })
+  function prepare(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    try {
+      onCommit(current => {
+        const next = prepareCmsReleaseBundle(current, draftRef.current, actor)
+        return { state: next, message: `Release draft “${next.releaseBundles!.at(-1)!.name}” saved. Included publications and publication receipts are unchanged.` }
+      })
+      setDraft(emptyReleaseDraft())
+      setError('')
+      setPreview(null)
+    } catch (failure) {
+      setError(failure instanceof Error ? failure.message : 'The release draft could not be prepared.')
+      document.getElementById(draftRef.current.name.trim() ? 'cms-release-members' : 'cms-release-name')?.focus()
+    }
+  }
+  function openPreview(id: string) {
+    setPreview({ id, report: previewCmsReleaseBundle(state, id, actor), snapshot: JSON.stringify(state), actorId: actor.id })
+    setError('')
+  }
+  function activate() {
+    if (!preview) return
+    try {
+      onCommit(current => ({ state: activateCmsReleaseBundle(current, preview.id, actor, preview.report.confirmation ?? ''), message: `Release “${preview.report.bundle!.name}” activated locally. All ${preview.report.bundle!.members.length} frozen publications changed together. No website or provider was changed.` }))
+      setPreview(null)
+      setError('')
+    } catch (failure) { setError(failure instanceof Error ? failure.message : 'No release entries were activated.') }
+  }
+  return <section className={panel} aria-label="Local release bundles">
+    <h2 className="text-xl font-semibold text-neutral-950">Local release bundles</h2>
+    <p className="mt-3 text-sm leading-6 text-neutral-600">Collect at least two separately approved entries into a named draft. Preparation saves snapshots without publishing them. Preview every member, then explicitly confirm one atomic local activation. Previous frozen snapshots remain captured in the release.</p>
+    {actor.role === 'publisher' ? <form noValidate className="mt-5 space-y-4" onSubmit={prepare}>
+      <label className="block text-sm font-medium" htmlFor="cms-release-name">Release name<input id="cms-release-name" className={field} maxLength={100} value={draft.name} onChange={event => setDraft(previous => ({ ...previous, name: event.target.value }))} placeholder="Fictional autumn release" /></label>
+      <fieldset id="cms-release-members" tabIndex={-1} className="space-y-3 rounded-lg border border-neutral-200 p-4"><legend className="px-1 text-sm font-semibold">Approved release entries</legend>
+        {state.entries.filter(entry => entry.status === 'approved' || draft.entryIds.includes(entry.id)).map(entry => <label key={entry.id} className="flex min-h-11 items-start gap-3 text-sm"><input type="checkbox" className="mt-1 size-5 shrink-0" checked={draft.entryIds.includes(entry.id)} onChange={event => setDraft(previous => ({ ...previous, entryIds: event.target.checked ? [...previous.entryIds, entry.id] : previous.entryIds.filter(id => id !== entry.id) }))} /><span>{entry.title} · {entry.collectionId}/{entry.slug} · revision {entry.revision}<span className="mt-1 block text-xs">{entry.id} · {entry.status === 'approved' ? 'Approved' : 'Approval changed; remove or obtain a fresh approval'}</span></span></label>)}
+        {!state.entries.some(entry => entry.status === 'approved') && <p className="text-sm text-neutral-600">No approved entries are available. The author and separate reviewer must prepare at least two entries first.</p>}
+      </fieldset>
+      <button type="submit" className={button}>Prepare release draft</button>
+    </form> : <p className="mt-4 text-sm text-neutral-600">Select the publisher preview to prepare or activate a release. Existing release snapshots remain readable below.</p>}
+    {error && <p role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">{error}</p>}
+    <div className="mt-5 space-y-4">{state.releaseBundles?.map(bundle => <article key={bundle.id} data-release-id={bundle.id} className="rounded-lg border border-neutral-200 p-4">
+      <h3 className="font-semibold">{bundle.name}</h3><p className="mt-2 text-sm"><strong>Release status: {bundle.status === 'draft' ? 'Draft' : 'Activated'}</strong> · {bundle.id} · {bundle.members.length} captured entries</p>
+      <ul className="mt-3 space-y-2 text-sm">{bundle.members.map((member, index) => <li key={member.entryId}>{member.entryId} · {member.collectionId}/{member.slug} · captured revision {member.revision}<span className="block text-xs text-neutral-600">Approval {member.approval.receipt} · Previous publication: {member.previousPublication ? `${member.previousPublication.receipt} (revision ${member.previousPublication.revision})` : 'None'}{bundle.activatedPublications && ` · Activated publication: ${bundle.activatedPublications[index].publication.receipt}`}</span></li>)}</ul>
+      {bundle.status === 'draft' && <button type="button" className={secondary + ' mt-4'} onClick={() => openPreview(bundle.id)}>Preview release {bundle.name}</button>}
+    </article>)}{!state.releaseBundles?.length && <p className="text-sm text-neutral-600">No local release bundles have been prepared.</p>}</div>
+    {preview && <section role="region" aria-label="CMS release activation preview" className="mt-5 space-y-4 rounded-lg border border-indigo-300 bg-indigo-50 p-4">
+      <h3 className="text-lg font-semibold">Release activation preview · {preview.report.bundle?.name ?? preview.id}</h3>
+      <p role="status" className="text-sm font-semibold">{outOfDate ? 'Preview out of date' : preview.report.issues.length ? 'Validation failed' : 'Ready to activate'}</p>
+      {outOfDate && <p className="text-sm">The workspace or preview identity changed. Refresh this preview before confirming. No entries have been activated.</p>}
+      {preview.report.issues.length > 0 && <ul aria-label="Release validation issues" className="list-disc space-y-2 pl-5 text-sm">{preview.report.issues.map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>}
+      {preview.report.bundle && <div className="overflow-x-auto"><table className="w-full min-w-[32rem] text-left text-sm"><caption className="sr-only">Release captured snapshots and current approval</caption><thead><tr>{['Entry and route', 'Captured approval', 'Previous frozen publication', 'Current draft'].map(label => <th key={label} scope="col" className="border-b border-indigo-200 p-2">{label}</th>)}</tr></thead><tbody>{preview.report.bundle.members.map(member => { const current = state.entries.find(entry => entry.id === member.entryId); return <tr key={member.entryId} data-record-id={member.entryId}><th scope="row" className="p-2 align-top">{member.title}<span className="block font-normal">{member.collectionId}/{member.slug}<br />{member.entryId}</span></th><td className="p-2 align-top">Revision {member.revision}<br />{member.approval.receipt}</td><td className="p-2 align-top">{member.previousPublication ? `Revision ${member.previousPublication.revision} · ${member.previousPublication.receipt}` : 'None'}</td><td className="p-2 align-top">{current ? `Revision ${current.revision} · ${current.status} · ${current.approval?.receipt ?? 'No approval'}` : 'Entry missing'}</td></tr> })}</tbody></table></div>}
+      <p className="text-sm">Confirmation replaces all included frozen publications together and records their publication receipts in one saved CMS state. Cancel keeps the complete workspace unchanged.</p>
+      <div className="flex flex-wrap gap-3"><button type="button" className={button} disabled={outOfDate || !!preview.report.issues.length || !preview.report.confirmation} onClick={activate}>Confirm activate release</button><button type="button" className={secondary} onClick={() => setPreview(null)}>Cancel release activation</button><button type="button" className={secondary} onClick={() => openPreview(preview.id)}>Refresh release preview</button></div>
+    </section>}
+  </section>
 }
 
 export function CmsDemo() {
@@ -214,7 +279,7 @@ export function CmsDemo() {
       <label className="mt-5 block max-w-sm text-sm font-medium">CMS preview identity<select className={field} value={actor.id} onChange={event => { setActor(cmsActors.find(person => person.id === event.target.value)!); setMessage(''); setError('') }}>{cmsActors.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label><p className="mt-2 text-xs text-neutral-600">The author writes, a separate reviewer approves, the publisher publishes or retires, and the viewer reads. These fictional identities do not grant real account permissions.</p>
     </header>
     <DemoStorageNotice status={storageStatus} />
-    <DemoWorkspaceBackup key={generation} module="cms" recovery={recovery} state={state} validate={isCmsState} summarize={value => `${value.entries.length} content records · ${value.entries.filter(entry => entry.published).length} published snapshots · ${value.activity.length} actions`} onImport={(value, confirmation) => {
+    <DemoWorkspaceBackup key={`backup:${generation}`} module="cms" recovery={recovery} state={state} validate={isCmsState} summarize={value => `${value.entries.length} content records · ${value.entries.filter(entry => entry.published).length} published snapshots · ${value.activity.length} actions`} onImport={(value, confirmation) => {
       const result = importState(value, confirmation)
       if (result.ok) { setActor(cmsActors[0]); setSelectedId(value.entries.find(entry => entry.id === editDraft?.entryId)?.id ?? value.entries.find(entry => entry.id === 'cms-article-001')?.id ?? value.entries[0]?.id ?? ''); setCollection('all'); setQuery(''); setGeneration(previous => previous + 1); setMessage(result.status.message); setError(''); clearForms(true) }
       return result
@@ -231,6 +296,14 @@ export function CmsDemo() {
     </section>}
     {pendingEntryId && <section role="region" aria-label="Unsaved CMS draft" className="rounded-lg border border-amber-300 bg-amber-50 p-5 text-amber-950"><h2 className="text-lg font-semibold">Discard unsaved changes?</h2><p className="mt-2 text-sm">Your changes to {editDraft?.baseline.title ?? selected?.title} have not been saved. Keep editing this draft or discard its changes and open {state.entries.find(entry => entry.id === pendingEntryId)?.title}.</p><div className="mt-4 flex flex-wrap gap-3"><button type="button" className={secondary} onClick={() => { setPendingEntryId(null); if (editDraft && state.entries.some(entry => entry.id === editDraft.entryId)) setSelectedId(editDraft.entryId); setActor(cmsActors[0]); setFocusRequest({ id: needsEditorRecovery ? 'cms-editor-recovery-heading' : 'edit-title' }) }}>Keep editing</button><button type="button" className={button} onClick={() => switchEntry(pendingEntryId)}>Discard changes and switch</button></div></section>}
     <section aria-label="CMS metrics" className="grid grid-cols-2 gap-3 lg:grid-cols-4">{[['Drafts', state.entries.filter(entry => entry.status === 'draft').length], ['Awaiting review', state.entries.filter(entry => entry.status === 'in-review').length], ['Approved revisions', state.entries.filter(entry => entry.status === 'approved').length], ['Published samples', published.length]].map(([title, value]) => <div key={title} className={panel}><p className="text-xs font-medium text-neutral-500">{title}</p><p className="mt-2 text-3xl font-semibold text-neutral-950">{value}</p></div>)}</section>
+    <ReleaseBundles key={`release:${generation}`} state={state} actor={actor} focusDraft={() => { setActor(cmsActors[2]); setFocusRequest({ id: 'cms-release-name' }) }} onCommit={operation => {
+      let detail = ''
+      // The persistence handle invokes this once, synchronously against its latest
+      // accepted snapshot. A thrown refusal exits before any provider save.
+      setState(current => { const result = operation(current); detail = result.message; return result.state })
+      setMessage(detail)
+      setError('')
+    }} />
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
       <div className="space-y-6">
         <section className={panel}><h2 className="text-xl font-semibold text-neutral-950">Editorial collection</h2><div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium">Collection<select className={field} value={collection} onChange={event => setCollection(event.target.value)}><option value="all">All collections</option>{cmsCollections.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label className="text-sm font-medium">Search content<input className={field} type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Title or slug" /></label></div><div className="mt-5 space-y-3">{visible.map(entry => <button key={entry.id} type="button" onClick={() => selectEntry(entry.id)} aria-pressed={entry.id === selectedId} className={`block min-h-11 w-full rounded-lg border p-4 text-left ${entry.id === selectedId ? 'border-indigo-500 bg-indigo-50' : 'border-neutral-200 hover:bg-neutral-50'}`}><span className="block font-semibold text-neutral-950">{entry.title}</span><span className="mt-1 block text-xs text-neutral-600">{entry.collectionId} / {entry.slug} · revision {entry.revision} · {entry.status.replace('-', ' ')}{entry.published ? ` · public sample v${entry.published.revision}` : ''}</span></button>)}{!visible.length && <p className="text-sm text-neutral-600">No sample content matches this collection and search.</p>}</div></section>

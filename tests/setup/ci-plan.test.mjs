@@ -29,6 +29,40 @@ test('reads all current required gates in the existing shell order', async () =>
   assert.ok(renderCiPlan(report).includes(`Required stages (${report.stages.length}, existing sequential order)`))
 })
 
+test('required lifecycle suites run once without replacing existing recovery or browser journeys', async () => {
+  const [shellSource, packageText] = await Promise.all([
+    readFile(new URL('../../scripts/check-template.sh', import.meta.url), 'utf8'),
+    readFile(new URL('../../package.json', import.meta.url), 'utf8'),
+  ])
+  const packageJson = JSON.parse(packageText)
+  const scripts = packageJson.scripts
+  const names = parseGateOrder(shellSource)
+  const report = buildCiPlan({ shellSource, packageJson })
+  const required = {
+    'hr:test': ['tests/hr/lifecycle.test.mjs', 'tests/hr/employment-lifecycle-ui.test.mjs', 'tests/hr/directory-corrections-ui.test.mjs'],
+    'portals:test': ['tests/portals/cms-releases.test.mjs', 'tests/portals/cms-release-callbacks.test.mjs', 'tests/portals/crm-ownership.test.mjs', 'tests/portals/lifecycle-inspection.test.mjs'],
+    'maturity:test': ['tests/portals/workspace-inspection.test.mjs'],
+    'safety:test': ['tests/portals/domain-differences.test.mjs'],
+  }
+  const testFiles = report.stages.flatMap(stage => stage.commands).flatMap(command => scripts[command.script].startsWith('node --test ') ? scripts[command.script].slice('node --test '.length).split(/\s+/) : [])
+  assert.equal(report.unknown, false, 'every required command retains a reviewed side-effect classification')
+  for (const [name, files] of Object.entries(required)) {
+    assert.equal(names.filter(stage => stage === name).length, 1, name)
+    const ownFiles = scripts[name].slice('node --test '.length).split(/\s+/)
+    for (const file of files) {
+      assert.ok(ownFiles.includes(file), `${file} must stay in ${name}`)
+      assert.equal(testFiles.filter(candidate => candidate === file).length, 1, `${file} must execute once in the required gate list`)
+    }
+  }
+  assert.equal(scripts['browser:lifecycles'], 'node scripts/browser-lifecycles.mjs', 'the earlier CMS/CRM journey remains required')
+  assert.equal(scripts['browser:portal-lifecycle'], 'node scripts/browser-portal-lifecycle.mjs')
+  for (const name of ['browser:lifecycles', 'browser:portal-lifecycle']) assert.equal(names.filter(stage => stage === name).length, 1, name)
+  assert.equal(names.indexOf('browser:portal-lifecycle'), names.indexOf('browser:lifecycles') + 1)
+  const browserStage = report.stages.find(stage => stage.name === 'browser:portal-lifecycle')
+  assert.deepEqual(browserStage.mutations, ['temporary-files-or-processes'])
+  assert.deepEqual(browserStage.workspaces, ['webappx'])
+})
+
 test('changed gate ordering and repeated gates are reflected without a duplicated inventory', () => {
   const report = plan({ alpha: 'eslint . --max-warnings=0', beta: 'vite build' }, ['beta', 'alpha', 'beta'])
   assert.deepEqual(report.stages.map(stage => stage.name), ['beta', 'alpha', 'beta'])

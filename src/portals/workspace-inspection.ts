@@ -51,15 +51,65 @@ function revision(value: unknown): number {
   if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 1) return failure('invalid content revision metadata')
   return value
 }
+function savedCounter(value: unknown): number {
+  if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0) return failure('invalid saved sequence metadata')
+  return value
+}
 function stateChoice(value: unknown, allowed: readonly string[]): string {
   if (typeof value !== 'string' || !allowed.includes(value)) return failure('invalid workflow state metadata')
   return value
 }
 const optionalId = (record: JsonRecord, key: string) => Object.hasOwn(record, key) ? token(record[key]) : null
+const nullableId = (value: unknown) => value === null ? null : token(value)
+const nullableDate = (value: unknown) => value === null ? null : tokenDate(value)
+const hrRoles = ['employer-owner', 'payroll-admin', 'hr-admin', 'manager', 'employee', 'contractor', 'auditor']
+const ownershipGroups = ['companies', 'contacts', 'leads', 'opportunities', 'tasks'] as const
+function actorMetadata(value: unknown): StructuredRecordMetadata {
+  const actor = object(value)
+  return { actorRole: stateChoice(actor.role, hrRoles), actorEmployeeId: optionalId(actor, 'employeeId'), actorContractorId: optionalId(actor, 'contractorId') }
+}
+function publicationMetadata(value: unknown): StructuredRecordMetadata {
+  const publication = value === null ? null : object(value)
+  return { publicationRevision: publication ? revision(publication.revision) : null, publicationReceiptId: publication ? token(publication.receipt) : null }
+}
 
 /** Only allowlisted structured metadata leaves the comparison index. Complete
  * hidden payload fingerprints still determine the existing change categories. */
 function annotateRecord(module: DemoModule, key: string, value: unknown): RecordAnnotation | undefined {
+  if (module === 'hr' && ['workflow.lifecycle.instances', 'workflow.lifecycle.instances.initial', 'workflow.lifecycle.instances.current', 'workflow.lifecycle.events', 'workflow.lifecycle.directoryHistory', 'workflow.lifecycle.corrections', 'workflow.lifecycle.corrections.outcome', 'workflow.lifecycle.offboardingAssignments', 'operations.records.tasks'].includes(key)) {
+    const entry = object(value)
+    if (key === 'workflow.lifecycle.instances') return { metadata: {
+      employeeId: token(entry.employeeId), previousInstanceId: optionalId(entry, 'previousInstanceId'),
+      startDate: nullableDate(entry.startDate), endDate: nullableDate(entry.endDate),
+      templateVersion: token(entry.templateVersion), taskCount: array(entry.tasks).length,
+    } }
+    if (['workflow.lifecycle.instances.initial', 'workflow.lifecycle.instances.current'].includes(key)) return { metadata: {
+      employmentStatus: stateChoice(entry.status, ['active', 'onboarding', 'on-leave', 'terminated']), managerId: nullableId(entry.managerId),
+    } }
+    if (key === 'workflow.lifecycle.events') return { metadata: {
+      sequence: revision(entry.sequence), eventKind: stateChoice(entry.kind, ['transfer', 'leave', 'return', 'terminate', 'rehire', 'onboarding-complete', 'select-template', 'hire', 'set-simulation-date']),
+      employeeId: optionalId(entry, 'employeeId'), instanceId: optionalId(entry, 'instanceId'), effectiveDate: nullableDate(entry.effectiveDate), ...actorMetadata(entry.actor),
+    } }
+    if (key === 'workflow.lifecycle.directoryHistory') return { metadata: {
+      sequence: revision(entry.sequence), employeeId: token(entry.employeeId), field: stateChoice(entry.field, ['workEmail']),
+      origin: stateChoice(entry.origin, ['direct', 'correction']), correctionId: optionalId(entry, 'correctionId'), ...actorMetadata(entry.actor),
+    } }
+    if (key === 'workflow.lifecycle.corrections') return { metadata: {
+      sequence: revision(entry.sequence), employeeId: token(entry.employeeId), instanceId: token(entry.instanceId),
+      field: stateChoice(entry.field, ['workEmail']), correctionStatus: stateChoice(entry.status, ['pending', 'accepted', 'rejected']), ...actorMetadata(entry.actor),
+    } }
+    if (key === 'workflow.lifecycle.corrections.outcome') return { metadata: { sequence: revision(entry.sequence), ...actorMetadata(entry.actor) } }
+    if (key === 'workflow.lifecycle.offboardingAssignments') return { metadata: {
+      employeeId: token(entry.employeeId), instanceId: token(entry.instanceId), transitionId: token(entry.transitionId),
+      assignmentKind: stateChoice(entry.kind, ['asset', 'access', 'handover']), assignmentStatus: stateChoice(entry.status, ['assigned']),
+    } }
+    if (key === 'operations.records.tasks' && Object.hasOwn(entry, 'lifecycleTransitionId')) return { metadata: {
+      employeeId: token(entry.employeeId), employmentInstanceId: token(entry.employmentInstanceId), sourceId: token(entry.sourceId),
+      lifecycleTransitionId: token(entry.lifecycleTransitionId), offboardingKind: stateChoice(entry.offboardingKind, ['asset', 'access', 'handover']),
+      assignmentStatus: stateChoice(entry.status, ['pending', 'completed']),
+    } }
+    return undefined
+  }
   if (module === 'cms' && key === 'entries') {
     const entry = object(value)
     const approval = entry.approval === null ? null : object(entry.approval)
@@ -77,6 +127,36 @@ function annotateRecord(module: DemoModule, key: string, value: unknown): Record
       },
       projections: { draft: fingerprint(draft), approval: approval ? fingerprint(approval) : null, publication: published ? fingerprint(published) : null },
     }
+  }
+  if (module === 'cms' && key === 'releaseBundles') {
+    const bundle = object(value)
+    return { metadata: {
+      workflowStatus: stateChoice(bundle.status, ['draft', 'activated']), createdBy: token(bundle.createdBy),
+      preparedAtSequence: savedCounter(bundle.preparedAtSequence), activatedAtSequence: bundle.activatedAtSequence === null ? null : revision(bundle.activatedAtSequence),
+      memberCount: array(bundle.members).length, activatedPublicationCount: bundle.activatedPublications === null ? 0 : array(bundle.activatedPublications).length,
+    } }
+  }
+  if (module === 'cms' && key === 'releaseBundles.members') {
+    const member = object(value); const approval = object(member.approval)
+    return { metadata: {
+      entryId: token(member.entryId), collectionId: token(member.collectionId), authorId: token(member.authorId), draftRevision: revision(member.revision),
+      approvalRevision: revision(approval.revision), approvalReviewerId: token(approval.reviewerId), approvalReceiptId: token(approval.receipt),
+      ...publicationMetadata(member.previousPublication),
+    } }
+  }
+  if (module === 'cms' && key === 'releaseBundles.members.approval') {
+    const approval = object(value)
+    return { metadata: { approvalRevision: revision(approval.revision), approvalReviewerId: token(approval.reviewerId), approvalReceiptId: token(approval.receipt) } }
+  }
+  if (module === 'cms' && key === 'releaseBundles.members.previousPublication') return { metadata: publicationMetadata(value) }
+  if (module === 'cms' && key === 'releaseBundles.activatedPublications') return { metadata: { entryId: token(object(value).entryId), ...publicationMetadata(object(value).publication) } }
+  if (module === 'crm' && (key === 'activity.ownershipChange' || key === 'activity' && Object.hasOwn(object(value), 'ownershipChange'))) {
+    const change = object(key === 'activity' ? object(value).ownershipChange : value); const affected = object(change.affected)
+    return { metadata: {
+      actorId: token(change.actorId), fromOwnerId: token(change.fromOwnerId), toOwnerId: token(change.toOwnerId), recordId: token(change.recordId),
+      affectedCompanies: array(affected.companies).length, affectedContacts: array(affected.contacts).length, affectedLeads: array(affected.leads).length,
+      affectedOpportunities: array(affected.opportunities).length, affectedTasks: array(affected.tasks).length,
+    } }
   }
   if (module !== 'crm' || !['companies', 'contacts', 'leads', 'opportunities'].includes(key)) return undefined
   const entry = object(value)
@@ -102,7 +182,10 @@ function recordDifference(before: IndexedEntry | undefined, after: IndexedEntry 
       const change: ProjectionDifference = left === null && right === null ? 'absent' : left === null ? 'added' : right === null ? 'removed' : left === right ? 'unchanged' : 'changed'
       return [key, change]
     })) as Record<CmsProjection, ProjectionDifference> : undefined
-  return { identifier: (after ?? before)!.identifier, before: annotations.before?.metadata ?? null, after: annotations.after?.metadata ?? null, ...(projections ? { projections } : {}) }
+  // A legacy record can share a collection with newer annotated records. An
+  // empty allowlisted metadata object means present without such metadata;
+  // null continues to mean that the entire record is absent on that side.
+  return { identifier: (after ?? before)!.identifier, before: before ? annotations.before?.metadata ?? {} : null, after: after ? annotations.after?.metadata ?? {} : null, ...(projections ? { projections } : {}) }
 }
 
 /** Inspect only JSON data properties. Accessors/cycles/unsupported values are
@@ -242,16 +325,62 @@ function inventory(states: Partial<DemoWorkspaces>, modules: DemoModule[]): Map<
         return { parts: [key], value: state[key] }
       }))
       sequences([['workflow', workflow.sequence], ['operations', operations.sequence], ['serviceDesk', desk.sequence], ['recruiting', recruiting.sequence], ['performance', performance.sequence], ['surveys', surveys.sequence]])
+      // Optional durable extensions are inspected only when actually captured.
+      // Reading legacy saves never projects fixture defaults into the report.
+      if (Object.hasOwn(workflow, 'lifecycle')) {
+        const lifecycle = object(workflow.lifecycle); const instances = records(lifecycle.instances)
+        if (lifecycle.schemaVersion !== 1) return failure('unsupported lifecycle schema')
+        primary('workflow.lifecycle.instances', 'Employment instances', instances, instance => ({ ...instance, tasks: by(array(instance.tasks), task => [id(task)]) }))
+        for (const field of ['initial', 'current']) add(`workflow.lifecycle.instances.${field}`, `${field === 'initial' ? 'Initial' : 'Current'} employment snapshots`, 'nested', 'One captured snapshot per employment instance ID', instances.map(instance => ({ parts: [id(instance)], value: object(instance[field]) })))
+        add('workflow.lifecycle.instances.tasks', 'Captured onboarding template tasks', 'nested', 'Employment instance ID + task ID; captured template items, not fixture defaults', instances.flatMap(instance => records(instance.tasks).map(task => ({ parts: [id(instance), id(task)], value: task }))))
+        const archived = instances.filter(instance => Object.hasOwn(instance, 'archivedOnboarding'))
+        add('workflow.lifecycle.instances.archivedOnboarding', 'Archived onboarding snapshots', 'nested', 'One present archived onboarding snapshot per superseded instance ID', archived.map(instance => ({ parts: [id(instance)], value: object(instance.archivedOnboarding) })))
+        add('workflow.lifecycle.instances.archivedOnboarding.tasks', 'Archived onboarding checklist flags', 'nested', 'Employment instance ID + archived checklist map key', archived.flatMap(instance => Object.entries(object(object(instance.archivedOnboarding).tasks)).map(([task, complete]) => {
+          if (typeof complete !== 'boolean') return failure('invalid archived onboarding checklist value')
+          return { parts: [id(instance), task], value: complete }
+        })))
+        add('workflow.lifecycle.activeInstances', 'Active employment instance links', 'nested', 'Employee map key; value is an instance ID reference, excluded from primary totals', Object.entries(object(lifecycle.activeInstances)).map(([employee, instance]) => ({ parts: [employee], value: token(instance) })))
+        const events = records(lifecycle.events)
+        primary('workflow.lifecycle.events', 'Employment lifecycle events', events)
+        for (const field of ['previous', 'proposed']) add(`workflow.lifecycle.events.${field}`, `${field === 'previous' ? 'Previous' : 'Proposed'} lifecycle transition values`, 'nested', 'One present captured transition value per event ID; null counts zero', events.filter(event => event[field] !== null).map(event => ({ parts: [id(event)], value: event[field] })))
+        primary('workflow.lifecycle.directoryHistory', 'Directory change history', lifecycle.directoryHistory)
+        const corrections = records(lifecycle.corrections)
+        primary('workflow.lifecycle.corrections', 'Directory correction requests', corrections)
+        add('workflow.lifecycle.corrections.outcome', 'Directory correction outcomes', 'nested', 'One present outcome per correction request ID; outcome sequence is metadata', corrections.filter(correction => Object.hasOwn(correction, 'outcome')).map(correction => ({ parts: [id(correction)], value: object(correction.outcome) })))
+        primary('workflow.lifecycle.offboardingAssignments', 'Captured offboarding assignments', lifecycle.offboardingAssignments)
+        add('workflow.lifecycle.metadata', 'Lifecycle saved metadata', 'metadata', 'Schema, simulation date, sequence and selected template; excluded from entity totals', [
+          { parts: ['schemaVersion'], value: revision(lifecycle.schemaVersion) }, { parts: ['simulationDate'], value: nullableDate(lifecycle.simulationDate) },
+          { parts: ['sequence'], value: revision(lifecycle.sequence) }, { parts: ['selectedTemplateVersion'], value: token(lifecycle.selectedTemplateVersion) },
+        ])
+      }
+      if (Object.hasOwn(state, 'selectedManager')) add('preview.selectedManager', 'Saved manager preview selection', 'metadata', 'One present selected manager field; excluded from entity totals', [{ parts: ['selectedManager'], value: token(state.selectedManager) }])
     } else if (module === 'cms') {
       const entries = records(state.entries)
       primary('entries', 'Content entries', entries)
       primary('activity', 'Editorial activity', state.activity, undefined, 'receipt')
       for (const [field, label] of [['approval', 'Exact-revision approvals'], ['published', 'Frozen published snapshots']]) add(`entries.${field}`, label, 'nested', 'One present snapshot per content entry ID; null counts zero', entries.filter(entry => entry[field] !== null).map(entry => ({ parts: [id(entry)], value: object(entry[field]) })))
       sequences([['sequence', state.sequence]])
+      if (Object.hasOwn(state, 'releaseBundles')) {
+        const bundles = records(state.releaseBundles)
+        primary('releaseBundles', 'Captured release bundles', bundles, bundle => ({ ...bundle, members: by(array(bundle.members), member => [id(member, 'entryId')]), activatedPublications: bundle.activatedPublications === null ? null : by(array(bundle.activatedPublications), publication => [id(publication, 'entryId')]) }))
+        const members = bundles.flatMap(bundle => records(bundle.members).map(member => ({ parts: [id(bundle), id(member, 'entryId')], value: member })))
+        add('releaseBundles.members', 'Captured release members (approved snapshots)', 'nested', 'Release bundle ID + entry ID; complete approved content remains hidden', members)
+        add('releaseBundles.members.approval', 'Captured release approval snapshots', 'nested', 'Release bundle ID + entry ID; one approval per captured member', members.map(member => ({ parts: member.parts, value: object(member.value.approval) })))
+        add('releaseBundles.members.previousPublication', 'Release prior publication snapshots', 'nested', 'Release bundle ID + entry ID; null prior publications count zero', members.filter(member => member.value.previousPublication !== null).map(member => ({ parts: member.parts, value: object(member.value.previousPublication) })))
+        add('releaseBundles.activatedPublications', 'Release activated publication snapshots', 'nested', 'Release bundle ID + entry ID; publication receipt is metadata, not another record', bundles.flatMap(bundle => bundle.activatedPublications === null ? [] : records(bundle.activatedPublications).map(publication => ({ parts: [id(bundle), id(publication, 'entryId')], value: publication }))))
+        add('releaseBundles.metadata', 'Release extension presence', 'metadata', 'One present optional release collection field, including an empty collection; excluded from entity totals', [{ parts: ['present'], value: true }])
+      }
     } else {
       for (const [key, label] of [['companies', 'Companies'], ['contacts', 'Contacts'], ['leads', 'Leads'], ['opportunities', 'Opportunities'], ['tasks', 'Follow-up tasks']]) primary(key, label, state[key])
-      primary('activity', 'Sales activity', state.activity, undefined, 'receipt')
+      const normalizeOwnership = (change: JsonRecord) => ({ ...change, affected: { ...object(change.affected), ...Object.fromEntries(ownershipGroups.map(group => [group, by(array(object(change.affected)[group]), entry => [token(entry)])])) } })
+      const activities = records(state.activity)
+      primary('activity', 'Sales activity', activities, activity => Object.hasOwn(activity, 'ownershipChange') ? { ...activity, ownershipChange: normalizeOwnership(object(activity.ownershipChange)) } : activity, 'receipt')
       sequences([['sequence', state.sequence]])
+      const ownership = activities.filter(activity => Object.hasOwn(activity, 'ownershipChange'))
+      if (ownership.length) {
+        add('activity.ownershipChange', 'Recorded ownership change metadata', 'nested', 'One present ownership snapshot per activity receipt; excluded from primary totals', ownership.map(activity => ({ parts: [id(activity, 'receipt')], value: normalizeOwnership(object(activity.ownershipChange)) })))
+        for (const group of ownershipGroups) add(`activity.ownershipChange.affected.${group}`, `Ownership affected ${group} references`, 'nested', 'Activity receipt + affected record ID; ID references, not additional workspace records', ownership.flatMap(activity => array(object(object(activity.ownershipChange).affected)[group]).map(reference => ({ parts: [id(activity, 'receipt'), token(reference)], value: reference }))))
+      }
     }
     result.set(module, collections)
   }
@@ -282,11 +411,22 @@ export function compareWorkspaces(current: Partial<DemoWorkspaces>, target: Part
   const modules = modulesFor(selected); const limit = limitFor(options)
   const before = inventory(current, modules); const after = inventory(target, modules)
   return { schemaVersion: 1, modules: modules.map(module => {
-    const collections = before.get(module)!.map((left, index): WorkspaceCollectionDifference => {
-      const right = after.get(module)![index]
+    const previousCollections = before.get(module)!; const nextCollections = after.get(module)!
+    const previousByKey = new Map(previousCollections.map(collection => [collection.key, collection]))
+    const nextByKey = new Map(nextCollections.map(collection => [collection.key, collection]))
+    const extension = (key: string) => key.startsWith('workflow.lifecycle.') || key === 'preview.selectedManager' || key.startsWith('releaseBundles') || key.startsWith('activity.ownershipChange')
+    const keys = [...new Set([...previousByKey.keys(), ...nextByKey.keys()])]
+    // Legacy rows retain their established order; optional extension rows have
+    // the same order in both comparison directions, even if a field is absent.
+    const orderedKeys = [...keys.filter(key => !extension(key)), ...keys.filter(extension).sort(compare)]
+    const collections = orderedKeys.map((key): WorkspaceCollectionDifference => {
+      const descriptor = nextByKey.get(key) ?? previousByKey.get(key)!
+      const left = previousByKey.get(key) ?? { ...descriptor, entries: new Map<string, IndexedEntry>() }
+      const right = nextByKey.get(key) ?? { ...descriptor, entries: new Map<string, IndexedEntry>() }
       const ids = { added: [] as string[], removed: [] as string[], changed: [] as string[] }; let unchanged = 0
       const records: Record<ChangeKind, WorkspaceRecordDifference[]> = { added: [], removed: [], changed: [] }
       const hasRecordDetails = module === 'cms' && left.key === 'entries' || module === 'crm' && ['companies', 'contacts', 'leads', 'opportunities'].includes(left.key)
+        || [...left.entries.values(), ...right.entries.values()].some(entry => entry.annotation)
       function change(kind: ChangeKind, previous: IndexedEntry | undefined, next: IndexedEntry | undefined) {
         ids[kind].push((next ?? previous)!.identifier)
         if (hasRecordDetails && records[kind].length < limit) records[kind].push(recordDifference(previous, next))

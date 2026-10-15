@@ -1,3 +1,4 @@
+import type { HrLifecycleState } from './lifecycle-types'
 import { canApproveTimeEntry, canEditEmployeeProfile, validateTimeEntry, type HrActor, type HrFixture, type HrRecord } from './model'
 
 export type MockOnboarding = { profileReviewed: boolean; jobReviewed: boolean; tasks: Record<string, boolean>; stage: 'draft' | 'reviewed' | 'complete'; receipt?: string }
@@ -16,11 +17,11 @@ export type MockPayroll = {
   employeeTotals: MockPayrollEmployeeTotal[];
   hours: number; grossCents: number; illustrativeWithholdingCents: number; benefitDeductionCents: number; netCents: number; receipt?: string;
 }
-export type MockHrState = { onboarding: Record<string, MockOnboarding>; profileEmails: Record<string, string>; employeeStatuses: Record<string, string>; timeEntries: MockTimeEntry[]; benefitElections: MockBenefitElection[]; payroll: MockPayroll; payrollHistory: MockPayroll[]; sequence: number; sampleRates?: Record<string, MockSampleRate[]> }
+export type MockHrState = { onboarding: Record<string, MockOnboarding>; profileEmails: Record<string, string>; employeeStatuses: Record<string, string>; timeEntries: MockTimeEntry[]; benefitElections: MockBenefitElection[]; payroll: MockPayroll; payrollHistory: MockPayroll[]; sequence: number; sampleRates?: Record<string, MockSampleRate[]>; lifecycle?: HrLifecycleState }
 export type MockHrEvent =
-  | { type: 'review-profile' | 'review-job' | 'review-onboarding' | 'complete-onboarding'; employeeId: string }
+  | { type: 'review-profile' | 'review-job' | 'review-onboarding' | 'complete-onboarding'; employeeId: string; instanceId?: string }
   | { type: 'change-profile'; employeeId: string; workEmail: string }
-  | { type: 'check-task'; employeeId: string; taskId: string; complete: boolean }
+  | { type: 'check-task'; employeeId: string; taskId: string; complete: boolean; instanceId?: string }
   | { type: 'add-time'; date: string; hours: number; source: 'manual' | 'timer' }
   | { type: 'submit-time'; entryIds: string[] }
   | { type: 'approve-time'; entryId: string }
@@ -126,6 +127,23 @@ export function stopMockTimer(timer: MockTimer, actor: HrActor, stoppedAt: numbe
   return { type: 'add-time', date: timer.date, hours: elapsedMockHours(timer.startedAt, stoppedAt), source: 'timer' }
 }
 
+/** One projection supplies current native HR display and authorization facts. */
+export function effectiveWorkflowFixture(state: MockHrState, fixture: HrFixture): HrFixture {
+  return { ...fixture, employees: fixture.employees.map(employee => {
+    const instance = state.lifecycle?.instances.find(item => item.id === state.lifecycle!.activeInstances[employee.id])
+    return { ...employee, ...(instance ? { department: instance.current.department, jobTitle: instance.current.jobTitle, managerId: instance.current.managerId, employmentInstanceId: instance.id, onboardingTemplateVersion: instance.templateVersion, onboarding: instance.tasks.map(task => ({ ...task, status: state.onboarding[employee.id].tasks[task.id] ? 'complete' : 'pending' })) } : {}), workEmail: state.profileEmails[employee.id] ?? employee.workEmail, employmentStatus: state.employeeStatuses[employee.id] ?? employee.employmentStatus, onboardingStatus: state.onboarding[employee.id]?.stage === 'complete' ? 'simulated-complete' : employee.onboardingStatus }
+  }) }
+}
+
+/** Materialize only for an accepted action; unknown legacy dates remain null. */
+export function createHrLifecycle(state: MockHrState, fixture: HrFixture, simulationDate: string | null): HrLifecycleState {
+  const instances = fixture.employees.map(employee => {
+    const initial = { status: state.employeeStatuses[employee.id], department: employee.department, jobTitle: employee.jobTitle, managerId: employee.managerId }
+    return { id: `employment-${employee.id}-1`, employeeId: employee.id, startDate: null, endDate: null, initial, current: { ...initial }, templateVersion: `legacy-${employee.id}`, tasks: employee.onboarding.map(task => ({ id: task.id, title: task.title })) }
+  })
+  return { schemaVersion: 1, simulationDate, sequence: 1, selectedTemplateVersion: 'sample-v1', instances, activeInstances: Object.fromEntries(instances.map(instance => [instance.employeeId, instance.id])), events: [], directoryHistory: [], corrections: [], offboardingAssignments: [] }
+}
+
 export function createMockHrState(fixture: HrFixture): MockHrState {
   return {
     onboarding: Object.fromEntries(fixture.employees.map(employee => [employee.id, {
@@ -161,8 +179,15 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     if (!fixture.employees.some(employee => employee.id === event.employeeId) || !canEditEmployeeProfile(actor, event.employeeId)) throw new Error('This demo role cannot change that employee profile.')
     const workEmail = event.workEmail.trim()
     if (!workEmail) throw new Error('A synthetic work email is required.')
+    if (workEmail.length > 160 || Array.from(workEmail).some(character => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127)) throw new Error('Use no more than 160 printable characters for the synthetic work email.')
     if (next.profileEmails[event.employeeId] !== workEmail) {
+      next.lifecycle ??= createHrLifecycle(state, fixture, null)
+      const oldValue = next.profileEmails[event.employeeId]
       next.profileEmails[event.employeeId] = workEmail
+      if (next.lifecycle) {
+        const sequence = next.lifecycle.sequence++
+        next.lifecycle.directoryHistory.push({ id: `directory-${sequence}`, sequence, employeeId: event.employeeId, field: 'workEmail', oldValue, newValue: workEmail, actor: { ...actor }, origin: 'direct' })
+      }
       const onboarding = next.onboarding[event.employeeId]
       // Completed receipts describe an accepted historical sample. Later contact
       // edits must not revoke employment; pending onboarding must be reviewed anew.
@@ -176,6 +201,7 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
   if (['review-profile', 'review-job', 'check-task', 'review-onboarding', 'complete-onboarding'].includes(event.type)) {
     const change = event as Extract<MockHrEvent, { employeeId: string }>
     requireOnboardingAccess(actor, change.employeeId, fixture)
+    if (next.lifecycle && (('instanceId' in change && change.instanceId !== undefined) ? change.instanceId !== next.lifecycle.activeInstances[change.employeeId] : next.lifecycle.activeInstances[change.employeeId] !== `employment-${change.employeeId}-1`)) throw new Error('Review the current employment instance before changing onboarding.')
     const onboarding = next.onboarding[change.employeeId]
     if (!onboarding || onboarding.stage === 'complete') throw new Error('Completed sample onboarding is locked until the demo is reset.')
     if (change.type === 'review-profile') { onboarding.profileReviewed = true; onboarding.stage = 'draft' }
@@ -191,6 +217,14 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     if (change.type === 'complete-onboarding') {
       if (onboarding.stage !== 'reviewed') throw new Error('Review sample onboarding before confirming completion.')
       onboarding.stage = 'complete'; onboarding.receipt = receipt('ONBOARDING'); next.employeeStatuses[change.employeeId] = 'active'
+      if (next.lifecycle) {
+        const instance = next.lifecycle.instances.find(item => item.id === next.lifecycle!.activeInstances[change.employeeId])!
+        if (instance.current.status === 'terminated' || instance.current.status === 'on-leave') throw new Error('This employment instance cannot complete onboarding in its current state.')
+        const previous = { ...instance.current }
+        instance.current.status = 'active'
+        const sequence = next.lifecycle.sequence++
+        next.lifecycle.events.push({ id: `lifecycle-${sequence}`, sequence, kind: 'onboarding-complete', employeeId: change.employeeId, instanceId: instance.id, effectiveDate: next.lifecycle.simulationDate, actor: { ...actor }, reason: 'Sample onboarding confirmed', previous, proposed: { ...instance.current } })
+      }
     }
     return next
   }

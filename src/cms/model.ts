@@ -1,3 +1,5 @@
+import type { CmsReleaseBundle } from './release-types'
+
 export type CmsRole = 'author' | 'reviewer' | 'publisher' | 'viewer'
 export type CmsActor = { id: string; role: CmsRole; name: string }
 export type CmsContent = { title: string; slug: string; body: string }
@@ -12,7 +14,7 @@ export type CmsEntry = CmsContent & {
   published: CmsPublication | null; feedback: string;
 }
 export type CmsActivity = { receipt: string; entryId: string; revision: number; actorId: string; action: string }
-export type CmsState = { entries: CmsEntry[]; activity: CmsActivity[]; sequence: number }
+export type CmsState = { entries: CmsEntry[]; activity: CmsActivity[]; sequence: number; releaseBundles?: CmsReleaseBundle[] }
 type EntryEvent = { entryId: string; expectedRevision: number }
 export type CmsEvent =
   | ({ type: 'create-entry'; collectionId: string } & CmsContent)

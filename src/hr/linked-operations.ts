@@ -28,6 +28,7 @@ export function applyLinkedPeopleOperation(workflow: MockHrState, operations: Pe
     const employee = fixture.employees.find(person => person.id === link.employeeId)
     const source = nextOperations.records[link.module].find(record => record.id === event.recordId)
     const task = nextOperations.records.tasks.find(record => sourceId(record) === link.taskId && record.employeeId === link.employeeId)
+    if (workflow.lifecycle && workflow.lifecycle.activeInstances[link.employeeId] !== `employment-${link.employeeId}-1`) continue
     if (!employee || !source || sourceId(source) !== link.sourceId || source.employeeId !== link.employeeId || !task) continue
     if (!fixtureAssignment(fixture.native[link.module] ?? [], link.sourceId, link.employeeId) || !fixtureAssignment(fixture.native.tasks ?? [], link.taskId, link.employeeId)) continue
 
@@ -35,7 +36,7 @@ export function applyLinkedPeopleOperation(workflow: MockHrState, operations: Pe
     if (link.onboardingTaskId && employee.onboarding.some(item => item.id === link.onboardingTaskId)) {
       const onboarding = nextWorkflow.onboarding[link.employeeId]
       if (onboarding && onboarding.stage !== 'complete' && Object.hasOwn(onboarding.tasks, link.onboardingTaskId) && !onboarding.tasks[link.onboardingTaskId]) {
-        nextWorkflow = transitionMockHr(nextWorkflow, actor, { type: 'check-task', employeeId: link.employeeId, taskId: link.onboardingTaskId, complete: true }, fixture)
+        nextWorkflow = transitionMockHr(nextWorkflow, actor, { type: 'check-task', employeeId: link.employeeId, taskId: link.onboardingTaskId, complete: true, ...(nextWorkflow.lifecycle ? { instanceId: nextWorkflow.lifecycle.activeInstances[link.employeeId] } : {}) }, fixture)
       }
     }
   }

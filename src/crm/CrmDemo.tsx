@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { AppLink } from '@/components/navigation/AppLink'
 import { portalDirectoryHref, portalRegistry } from '@/portals/registry'
 import { usePortalWorkspace } from '@/portals/PortalWorkspaceProvider'
@@ -6,15 +6,16 @@ import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
 import { DemoWorkspaceBackup } from '@/portals/DemoWorkspaceBackup'
 import { DemoWorkspaceReset } from '@/portals/DemoWorkspaceReset'
 import { useUnsavedTransition, useUnsavedWork } from '@/portals/unsaved-work'
-import { canWriteCrm, crmActors, crmDashboard, scopedCrmState, transitionCrm, type CrmActor, type CrmEvent, type CrmLead, type CrmOpportunity, type CrmState } from './model'
+import { canManageCrmOwnership, canWriteCrm, crmActors, crmDashboard, scopedCrmState, transitionCrm, type CrmActor, type CrmEvent, type CrmLead, type CrmOpportunity, type CrmState } from './model'
 import { isCrmState } from './persistence'
+import { applyCrmOwnership, previewCrmOwnership, type CrmOwnershipPreview, type CrmOwnershipSelection } from './ownership'
 
 const field = 'mt-2 block min-h-11 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 focus:outline-2 focus:outline-offset-2 focus:outline-sky-700'
 const button = 'inline-flex min-h-11 items-center justify-center rounded-md bg-sky-800 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-900 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500'
 const secondary = 'inline-flex min-h-11 items-center justify-center rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 hover:bg-neutral-50'
 const money = (cents: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(cents / 100)
 const ownerName = (id: string) => crmActors.find(actor => actor.id === id)?.label.split(' · ')[0] ?? 'Sample owner'
-const tabs = [{ id: 'overview', label: 'Dashboard' }, { id: 'leads', label: 'Leads' }, { id: 'pipeline', label: 'Pipeline' }, { id: 'contacts', label: 'Companies & contacts' }, { id: 'tasks', label: 'Follow-up tasks' }, { id: 'activity', label: 'Activity' }] as const
+const tabs = [{ id: 'overview', label: 'Dashboard' }, { id: 'leads', label: 'Leads' }, { id: 'pipeline', label: 'Pipeline' }, { id: 'contacts', label: 'Companies & contacts' }, { id: 'tasks', label: 'Follow-up tasks' }, { id: 'ownership', label: 'Ownership' }, { id: 'activity', label: 'Activity' }] as const
 type Tab = typeof tabs[number]['id']
 type Run = (event: CrmEvent) => boolean
 
@@ -27,7 +28,7 @@ function Status({ children }: { children: ReactNode }) { return <span className=
 /** CRM inputs are temporary buffers. Accepted domain actions rebase only the
  * submitted form, including when persistence is unavailable for this browser.
  */
-function useCrmDraft<T extends Record<string, string>>(id: string, label: string, initial: T, normalize: (value: T) => T = value => value) {
+function useCrmDraft<T extends Record<string, string>>(id: string, label: string, initial: T, normalize: (value: T) => T = value => value, onDiscard?: () => void) {
   const [draft, setRenderedDraft] = useState(initial)
   const current = useRef(initial)
   const baseline = useRef(initial)
@@ -46,7 +47,7 @@ function useCrmDraft<T extends Record<string, string>>(id: string, label: string
       const values = normalize(current.current), accepted = normalize(baseline.current)
       return Object.keys(accepted).some(key => values[key] !== accepted[key])
     },
-    discard: () => reset(),
+    discard: () => { reset(); onDiscard?.() },
     focus: () => formRef.current?.querySelector<HTMLElement>('input, select, textarea, button')?.focus(),
   })
   return { draft, setDraft, reset, formRef }
@@ -109,6 +110,44 @@ function Directory({ state, writable, run }: { state: CrmState; writable: boolea
   return <div className="space-y-5">{writable && <div className="grid items-start gap-5 xl:grid-cols-2"><CreateCompany run={run} /><CreateContact state={state} run={run} /></div>}<Panel title="Companies and their contacts" note="Only records within this preview identity’s scope are included."><div className="space-y-4">{state.companies.map(company => <article key={company.id} className="rounded-lg border border-neutral-200 p-4"><h3 className="font-semibold text-neutral-950">{company.name}</h3><p className="mt-1 text-xs text-neutral-500">{company.id} · Owner: {ownerName(company.ownerId)}</p><ul className="mt-4 space-y-2">{state.contacts.filter(contact => contact.companyId === company.id).map(contact => <li key={contact.id} className="rounded-md bg-neutral-50 p-3 text-sm"><span className="font-medium text-neutral-950">{contact.name}</span><span className="mt-1 block break-all text-neutral-600">{contact.email}</span></li>)}</ul>{!state.contacts.some(contact => contact.companyId === company.id) && <p className="mt-3 text-sm text-neutral-500">No sample contacts yet.</p>}</article>)}{!state.companies.length && <Empty>No companies are visible to this identity.</Empty>}</div></Panel></div>
 }
 
+type CommitOwnership = (selection: CrmOwnershipSelection, confirmation: string) => { ok: boolean; message: string }
+
+function OwnershipForm({ kind, state, actor, commit }: { kind: CrmOwnershipSelection['kind']; state: CrmState; actor: CrmActor; commit: CommitOwnership }) {
+  const leadAssignment = kind === 'lead-assignment'
+  const records = leadAssignment ? state.leads.filter(lead => lead.status !== 'converted').map(lead => ({ id: lead.id, label: lead.name, ownerId: lead.ownerId })) : state.companies.map(company => ({ id: company.id, label: company.name, ownerId: company.ownerId }))
+  const [preview, setPreview] = useState<CrmOwnershipPreview | null>(null)
+  const [notice, setNotice] = useState<{ error: boolean; message: string } | null>(null)
+  const { draft, setDraft, reset, formRef } = useCrmDraft(`ownership:${kind}`, leadAssignment ? 'CRM lead assignment selection' : 'CRM account ownership transfer selection', { recordId: '', newOwnerId: '' }, value => value, () => { setPreview(null); setNotice(null) })
+  const selection: CrmOwnershipSelection = leadAssignment ? { kind: 'lead-assignment', leadId: draft.recordId, newOwnerId: draft.newOwnerId } : { kind: 'account-transfer', companyId: draft.recordId, newOwnerId: draft.newOwnerId }
+  const title = leadAssignment ? 'Reassign an unconverted lead' : 'Transfer a sample account'
+  const previewLabel = leadAssignment ? 'Lead assignment preview' : 'Account ownership transfer preview'
+  function select(fieldName: 'recordId' | 'newOwnerId', value: string) { setDraft({ ...draft, [fieldName]: value }); setPreview(null); setNotice(null) }
+  function review(event: FormEvent<HTMLFormElement>) { event.preventDefault(); setNotice(null); setPreview(previewCrmOwnership(state, actor, selection)) }
+  function confirm() {
+    if (!preview?.ok) return
+    const result = commit(selection, preview.confirmation)
+    setNotice(null); setPreview(null)
+    if (result.ok) reset(draft)
+  }
+  return <Panel title={title} note={leadAssignment ? 'Owner and sales manager previews can assign one new or qualified lead to another fictional assignee.' : 'Review every linked record before moving an account. A confirmation accepts the complete graph together.'}>
+    <form ref={formRef} aria-label={title} className="grid gap-4 sm:grid-cols-2" onSubmit={review}>
+      <label className="text-sm font-medium">{leadAssignment ? 'Lead to reassign' : 'Account to transfer'}<select className={field} required value={draft.recordId} onChange={event => select('recordId', event.target.value)}><option value="">Choose a sample {leadAssignment ? 'lead' : 'account'}</option>{records.map(record => <option key={record.id} value={record.id}>{record.label} · {record.id} · {ownerName(record.ownerId)}</option>)}</select></label>
+      <label className="text-sm font-medium">{leadAssignment ? 'New lead assignee' : 'New account owner'}<select className={field} required value={draft.newOwnerId} onChange={event => select('newOwnerId', event.target.value)}><option value="">Choose a fictional assignee</option>{crmActors.filter(candidate => candidate.role !== 'auditor').map(candidate => <option key={candidate.id} value={candidate.id}>{candidate.label}</option>)}</select></label>
+      <button className={button + ' justify-self-start sm:col-span-2'} disabled={!records.length} type="submit">{leadAssignment ? 'Preview lead assignment' : 'Preview account transfer'}</button>
+    </form>
+    {preview && !preview.ok && <p role="alert" className="mt-4 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-900">{preview.message}</p>}
+    {preview?.ok && <section role="region" aria-label={previewLabel} className="mt-5 space-y-4 rounded-lg border border-amber-300 bg-amber-50 p-4">
+      <h3 className="font-semibold text-neutral-950">Ownership preview ready</h3>
+      <p role="status" className="text-sm font-semibold text-neutral-900">{leadAssignment ? 'Ready to assign this unconverted lead.' : 'Ready to transfer this complete linked account.'} Current assignee: {ownerName(preview.fromOwnerId)}. New assignee: {ownerName(preview.toOwnerId)}.</p>
+      <p className="text-sm text-neutral-700">Affected records: {preview.affected.companies.length} companies · {preview.affected.contacts.length} contacts · {preview.affected.leads.length} leads · {preview.affected.opportunities.length} opportunities · {preview.affected.tasks.length} follow-ups. Every affected record is listed below.</p>
+      <div className="overflow-x-auto"><table className="w-full text-left text-sm"><caption className="mb-2 text-left font-semibold">Complete affected record list</caption><thead><tr>{['Record type', 'Identifier', 'Record', 'Current assignee', 'New assignee'].map(label => <th className="border-b border-amber-300 p-2" key={label} scope="col">{label}</th>)}</tr></thead><tbody>{preview.rows.map(row => <tr key={`${row.kind}:${row.id}`}><td className="p-2">{row.kind}</td><td className="break-all p-2">{row.id}</td><td className="p-2">{row.label}</td><td className="p-2">{ownerName(row.fromOwnerId)}</td><td className="p-2">{ownerName(row.toOwnerId)}</td></tr>)}</tbody></table></div>
+      <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-neutral-700">{preview.warnings.map(warning => <li key={warning}>{warning}</li>)}</ul>
+      <div className="flex flex-wrap gap-3"><button className={button} type="button" onClick={confirm}>{leadAssignment ? 'Confirm lead assignment' : 'Confirm account transfer'}</button><button className={secondary} type="button" onClick={() => { setPreview(null); setNotice({ error: false, message: 'Preview canceled. CRM records are unchanged. Your selection is still temporary.' }) }}>{leadAssignment ? 'Cancel lead assignment preview' : 'Cancel account transfer preview'}</button></div>
+    </section>}
+    {notice && <p role={notice.error ? 'alert' : 'status'} className={`mt-4 rounded-md border p-4 text-sm ${notice.error ? 'border-red-200 bg-red-50 text-red-900' : 'border-emerald-200 bg-emerald-50 text-emerald-900'}`}>{notice.message}</p>}
+  </Panel>
+}
+
 function CreateTask({ state, run }: { state: CrmState; run: Run }) {
   const open = state.opportunities.filter(opportunity => !['won', 'lost'].includes(opportunity.stage))
   const defaults = { title: '', opportunityId: open[0]?.id ?? '' }
@@ -130,12 +169,31 @@ export function CrmDemo() {
   const [feedback, setFeedback] = useState<{ message: string; error: boolean } | null>(null)
   const [generation, setGeneration] = useState(0)
   const actor = crmActors.find(candidate => candidate.id === actorId) as CrmActor
+  const latestActor = useRef(actor)
+  useLayoutEffect(() => { latestActor.current = actor }, [actor])
   const visible = scopedCrmState(state, actor)
   const dashboard = crmDashboard(state, actor)
   const writable = canWriteCrm(actor)
   function run(event: CrmEvent) {
     try { const next = transitionCrm(state, actor, event); setState(next); setFeedback({ message: `${next.activity[0].receipt} · ${next.activity[0].description}`, error: false }); return true }
     catch (error) { setFeedback({ message: error instanceof Error ? error.message : 'Sample action failed.', error: true }); return false }
+  }
+  const commitOwnership: CommitOwnership = (selection, confirmation) => {
+    let message = ''
+    try {
+      setState(current => {
+        const result = applyCrmOwnership(current, latestActor.current, selection, confirmation)
+        if (!result.ok) throw new Error(result.message)
+        message = `${result.receipt} · ${result.state.activity[0].description}`
+        return result.state
+      })
+      setFeedback({ message, error: false })
+      return { ok: true, message }
+    } catch (cause) {
+      message = cause instanceof Error ? cause.message : 'The entire ownership change was refused. No records changed.'
+      setFeedback({ message, error: true })
+      return { ok: false, message }
+    }
   }
   function changeTab(next: Tab) { if (next !== tab) requestTransition({ portal: 'crm', label: `Open CRM ${tabs.find(item => item.id === next)?.label ?? 'page'}` }, () => setTab(next)) }
   function reset(confirmation?: string) {
@@ -154,6 +212,7 @@ export function CrmDemo() {
     {tab === 'pipeline' && <>{writable && <CreateOpportunity state={visible} run={run} />}<Panel title="Sample opportunity pipeline" note="Stages: discovery → proposal → negotiation → won. An open opportunity can also be marked lost. All amounts are fictional USD."><div className="grid items-start gap-4 xl:grid-cols-2">{visible.opportunities.map(opportunity => <OpportunityCard key={opportunity.id} opportunity={opportunity} state={visible} writable={writable} run={run} />)}{!visible.opportunities.length && <Empty>No sample opportunities in this scope.</Empty>}</div></Panel></>}
     {tab === 'contacts' && <Directory state={visible} writable={writable} run={run} />}
     {tab === 'tasks' && <Tasks state={visible} writable={writable} run={run} />}
+    {tab === 'ownership' && (canManageCrmOwnership(actor) ? <><OwnershipForm kind="lead-assignment" state={state} actor={actor} commit={commitOwnership} /><OwnershipForm kind="account-transfer" state={state} actor={actor} commit={commitOwnership} /></> : <p role="status" className="rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">Ownership changes are available only to owner and sales manager previews. No account graph is exposed in this identity.</p>)}
     {tab === 'activity' && <Panel title="Sample CRM activity" note="Successful state changes create receipts. Rejected actions do not create activity. These receipts never contact a provider."><ol className="space-y-3">{visible.activity.map(activity => <li className="rounded-lg border border-neutral-200 p-4" key={activity.receipt}><p className="text-xs font-semibold text-sky-900">{activity.receipt}</p><p className="mt-2 text-sm text-neutral-700">{activity.description}</p><p className="mt-2 text-xs text-neutral-500">Record owner: {ownerName(activity.ownerId)}</p></li>)}</ol>{!visible.activity.length && <Empty>No sample actions yet. Qualify a lead or complete a follow-up to begin.</Empty>}</Panel>}
   </div></section>
 }

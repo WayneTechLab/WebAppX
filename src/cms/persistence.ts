@@ -11,11 +11,12 @@ const actionActors: Record<string, string> = {
   'Simulated publication': 'cms-publisher',
   'Retired sample publication': 'cms-publisher',
 }
-function record(value: unknown, keys: string[]): value is RecordValue {
-  return value !== null && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).every(key => keys.includes(key)) && keys.every(key => Object.hasOwn(value, key))
+function record(value: unknown, keys: string[], optional: string[] = []): value is RecordValue {
+  return value !== null && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).every(key => keys.includes(key) || optional.includes(key)) && keys.every(key => Object.hasOwn(value, key))
 }
 function text(value: unknown, minimum: number, maximum: number): value is string { return typeof value === 'string' && value.length >= minimum && value.length <= maximum && value.trim() === value }
 function integer(value: unknown, minimum = 1): value is number { return typeof value === 'number' && Number.isSafeInteger(value) && value >= minimum }
+function hasControlCharacter(value: string) { return [...value].some(character => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127) }
 function content(value: RecordValue) {
   return text(value.title, 3, 100) && text(value.slug, 1, 80) && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.slug) && text(value.body, 10, 8000)
 }
@@ -23,7 +24,7 @@ function receipt(value: unknown) { return typeof value === 'string' && /^(?:MOCK
 
 /** Restore only a complete native CMS workspace, never form fields or arbitrary storage data. */
 export function isCmsState(value: unknown): value is CmsState {
-  if (!record(value, ['entries', 'activity', 'sequence']) || !integer(value.sequence, 0) || !Array.isArray(value.entries) || !Array.isArray(value.activity) || value.activity.length !== value.sequence) return false
+  if (!record(value, ['entries', 'activity', 'sequence'], ['releaseBundles']) || !integer(value.sequence, 0) || !Array.isArray(value.entries) || !Array.isArray(value.activity) || value.activity.length !== value.sequence) return false
   const entries = new Map<string, RecordValue>()
   for (const entry of value.entries) {
     if (!record(entry, ['id', 'collectionId', 'authorId', 'revision', 'status', 'approval', 'published', 'feedback', 'title', 'slug', 'body']) || !text(entry.id, 1, 100) || entries.has(entry.id) || !['pages', 'articles'].includes(String(entry.collectionId)) || entry.authorId !== 'cms-author' || !integer(entry.revision) || !entryStatuses.includes(String(entry.status)) || !text(entry.feedback, 0, 500) || !content(entry)) return false
@@ -59,6 +60,45 @@ export function isCmsState(value: unknown): value is CmsState {
       if (String(nested.receipt).startsWith('MOCK-CMS-')) {
         if (!value.activity.some(activity => activity.receipt === nested.receipt && activity.entryId === entry.id && activity.revision === nested.revision && activity.action === expectedAction)) return false
       } else if (entry.id !== 'cms-page-001' || nested.revision !== 1 || nested.receipt !== (key === 'approval' ? 'SEED-CMS-REVIEW' : 'SEED-CMS-PUBLICATION')) return false
+    }
+  }
+  if (Object.hasOwn(value, 'releaseBundles')) {
+    if (!Array.isArray(value.releaseBundles)) return false
+    const activityRecords = value.activity as RecordValue[]
+    // Historical captures are checked against immutable receipt evidence, not current
+    // eligibility. Editing/reviewing/publishing later must not invalidate a saved draft.
+    const historicalReceipt = (nested: RecordValue, entryId: string, action: string, maximum: number, seed: string) => {
+      if (String(nested.receipt).startsWith('MOCK-CMS-')) return activityRecords.some((item, index) => index < maximum && item.receipt === nested.receipt && item.entryId === entryId && item.revision === nested.revision && item.action === action)
+      return entryId === 'cms-page-001' && nested.revision === 1 && nested.receipt === seed
+    }
+    const publication = (nested: unknown, entryId: string, maximumRevision: number, maximumSequence: number): nested is RecordValue => record(nested, ['title', 'slug', 'body', 'revision', 'receipt']) && content(nested) && integer(nested.revision) && nested.revision <= maximumRevision && receipt(nested.receipt) && historicalReceipt(nested, entryId, 'Simulated publication', maximumSequence, 'SEED-CMS-PUBLICATION')
+    let previousPreparedSequence = 0
+    for (const [index, bundle] of value.releaseBundles.entries()) {
+      if (!record(bundle, ['id', 'name', 'status', 'createdBy', 'preparedAtSequence', 'members', 'activatedAtSequence', 'activatedPublications']) || bundle.id !== `cms-release-${String(index + 1).padStart(4, '0')}` || !text(bundle.name, 1, 100) || hasControlCharacter(bundle.name) || !['draft', 'activated'].includes(String(bundle.status)) || bundle.createdBy !== 'cms-publisher' || !integer(bundle.preparedAtSequence, 0) || bundle.preparedAtSequence < previousPreparedSequence || bundle.preparedAtSequence > value.sequence || !Array.isArray(bundle.members) || bundle.members.length < 2) return false
+      previousPreparedSequence = bundle.preparedAtSequence
+      const ids = new Set<string>()
+      const routes = new Set<string>()
+      for (const member of bundle.members) {
+        if (!record(member, ['entryId', 'collectionId', 'authorId', 'revision', 'title', 'slug', 'body', 'approval', 'previousPublication']) || !text(member.entryId, 1, 100) || ids.has(member.entryId) || !['pages', 'articles'].includes(String(member.collectionId)) || member.authorId !== 'cms-author' || !integer(member.revision) || !content(member) || !record(member.approval, ['revision', 'reviewerId', 'receipt']) || member.approval.revision !== member.revision || member.approval.reviewerId !== 'cms-reviewer' || !receipt(member.approval.receipt) || !historicalReceipt(member.approval, member.entryId, 'Approved exact draft revision', bundle.preparedAtSequence, 'SEED-CMS-REVIEW')) return false
+        const capturedEntry = entries.get(member.entryId)
+        if (!capturedEntry || capturedEntry.collectionId !== member.collectionId || capturedEntry.authorId !== member.authorId) return false
+        if (member.previousPublication !== null && !publication(member.previousPublication, member.entryId, member.revision, bundle.preparedAtSequence)) return false
+        const route = `${member.collectionId}:${member.slug}`
+        if (routes.has(route)) return false
+        routes.add(route)
+        ids.add(member.entryId)
+      }
+      if (bundle.status === 'draft') {
+        if (bundle.activatedAtSequence !== null || bundle.activatedPublications !== null) return false
+      } else {
+        if (!integer(bundle.activatedAtSequence) || bundle.activatedAtSequence > value.sequence || !Array.isArray(bundle.activatedPublications) || bundle.activatedPublications.length !== bundle.members.length || bundle.activatedAtSequence - bundle.members.length < bundle.preparedAtSequence) return false
+        for (const [memberIndex, activated] of bundle.activatedPublications.entries()) {
+          const member = bundle.members[memberIndex]
+          if (!record(activated, ['entryId', 'publication']) || activated.entryId !== member.entryId || !publication(activated.publication, member.entryId, member.revision, bundle.activatedAtSequence)) return false
+          const capturedPublication = activated.publication
+          if (capturedPublication.revision !== member.revision || ['title', 'slug', 'body'].some(key => capturedPublication[key] !== member[key]) || capturedPublication.receipt !== `MOCK-CMS-${String(bundle.activatedAtSequence - bundle.members.length + memberIndex + 1).padStart(4, '0')}`) return false
+        }
+      }
     }
   }
   return true

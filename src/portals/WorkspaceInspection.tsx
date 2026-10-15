@@ -54,6 +54,18 @@ const metadataLabels: Record<string, string> = {
   publicationRevision: 'Published revision', publicationReceiptId: 'Publication receipt ID',
   ownerId: 'Owner ID', companyId: 'Company ID', contactId: 'Contact ID', opportunityId: 'Opportunity ID',
   leadState: 'Lead state', opportunityStage: 'Opportunity stage', leadId: 'Lead ID',
+  employeeId: 'Employee ID', instanceId: 'Employment instance ID', previousInstanceId: 'Previous employment instance ID',
+  managerId: 'Manager ID', startDate: 'Start date', endDate: 'End date', templateVersion: 'Captured template version', taskCount: 'Captured task count',
+  employmentStatus: 'Employment status', sequence: 'Saved sequence', effectiveDate: 'Effective date', eventKind: 'Lifecycle event kind',
+  actorId: 'Acting preview ID', actorRole: 'Acting preview role', actorEmployeeId: 'Acting employee ID', actorContractorId: 'Acting contractor ID',
+  correctionId: 'Correction request ID', origin: 'Directory change origin', field: 'Directory field', correctionStatus: 'Correction request status',
+  transitionId: 'Lifecycle transition ID', assignmentKind: 'Offboarding assignment kind', assignmentStatus: 'Assignment status',
+  employmentInstanceId: 'Employment instance ID', sourceId: 'Source assignment ID', lifecycleTransitionId: 'Lifecycle transition ID', offboardingKind: 'Offboarding task kind',
+  entryId: 'Content entry ID', authorId: 'Author ID', createdBy: 'Release creator ID', preparedAtSequence: 'Prepared at sequence', activatedAtSequence: 'Activated at sequence',
+  memberCount: 'Captured member count', activatedPublicationCount: 'Activated publication count',
+  fromOwnerId: 'Previous owner ID', toOwnerId: 'Target owner ID', recordId: 'Ownership source record ID',
+  affectedCompanies: 'Affected company ID references', affectedContacts: 'Affected contact ID references', affectedLeads: 'Affected lead ID references',
+  affectedOpportunities: 'Affected opportunity ID references', affectedTasks: 'Affected task ID references',
 }
 function RecordMetadata({ metadata, side, identifier }: { metadata: StructuredRecordMetadata | null; side: string; identifier: string }) {
   return <div className="min-w-0 rounded-md bg-neutral-50 p-3">

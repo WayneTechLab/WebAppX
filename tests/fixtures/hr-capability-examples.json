@@ -4,7 +4,7 @@
   "review": {
     "proposalId": "WX-0908",
     "criterion": "A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.",
-    "sourceRevision": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+    "sourceRevision": "61d39c9c855fb3f56913cb7c2f8010a6a485b746",
     "canonicalDocument": "docs/PORTAL-CAPABILITIES.md",
     "reviewedSources": [
       {
@@ -17,7 +17,7 @@
       },
       {
         "path": "src/hr/mock-workflows.ts",
-        "sha256": "373b8a8ce4d34250d306095d0c6247d38e6a03646ddf708e00c5a6bf3b529659"
+        "sha256": "98251e7ff60deceb7b504972a10e64752a0f0579dd3d8fb628f8025b984f0f25"
       },
       {
         "path": "src/hr/performance.ts",
@@ -29,7 +29,7 @@
       },
       {
         "path": "src/hr/persistence.ts",
-        "sha256": "42c45c2e3cf714d30129b44705fd9fb2c98a4b35d05f43c7710fe75239d91a01"
+        "sha256": "4ec2c8e543e6b25fa2a955761f95e164563cb6f5db7e67ce8337bc6fc4d1c5f5"
       },
       {
         "path": "src/portals/backup.ts",
@@ -49,7 +49,7 @@
       },
       {
         "path": "src/hr/components/HrWorkspace.tsx",
-        "sha256": "09f094455796da1879b82d9e8e9daf86800c16a24617a34f7396965e90a089ba"
+        "sha256": "297f4fb063ca37a98a22566a67ec3fe64d92c392931d15d2691261aeba96c9fb"
       },
       {
         "path": ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json",
@@ -97,11 +97,11 @@
       },
       {
         "path": "src/cms/model.ts",
-        "sha256": "b5281fea82aa168a5dc9262353e7d5cd45255915ceaf2db54282dd5ba8c64e7f"
+        "sha256": "2bd7580d3fd0e42a27810fe65ccf04aae0e3a2a69ac01df05a7acc9c7cf28bbf"
       },
       {
         "path": "src/cms/CmsDemo.tsx",
-        "sha256": "e242a252a724f8ac36ea7f7612016da4ed2372c25fcb22f386b85c7c3d573ee6"
+        "sha256": "c44c65a9250f5263eb5c671418794225a0c10b446597dce15c5f72669b32a10d"
       },
       {
         "path": "src/cms/editor-recovery.ts",
@@ -145,15 +145,67 @@
       },
       {
         "path": "src/portals/workspace-inspection.ts",
-        "sha256": "93359bb84b035a6415ae53540f274ec9b9f12ba6564d6fb1c1c0c39986c1bbd3"
+        "sha256": "fff4347a1b37c46686324ba654873ca2ff650935da885a8331ad45f9c35fcc1f"
       },
       {
         "path": "src/portals/WorkspaceInspection.tsx",
-        "sha256": "c9daf24e7fd319f0fceb9543dc69b2b8424044e812bae6b02a188fc6d97013f5"
+        "sha256": "2822bc6b015e9dd3da199a83699565d7cf4b15e1dd19735de58e8e18f985fbac"
       },
       {
         "path": "src/crm/CrmDemo.tsx",
-        "sha256": "40fb0275d100fb788f8ca77f1d458d8419b2316db99c9a4f8fc20db8b06c6221"
+        "sha256": "5d2703a94ce2bcb75c1d72d68ae8d64c14df77e2d48b57ac95c7699c8b85501c"
+      },
+      {
+        "path": "src/hr/lifecycle-types.ts",
+        "sha256": "a8b94591da083b3de34951e019b740121d0439023153d0bb8eb4b6bd988c650a"
+      },
+      {
+        "path": "src/hr/lifecycle.ts",
+        "sha256": "89d2c31ea8fd5f6a86016bd7d57ace18a02b2c7605df9558ad86923e066087b4"
+      },
+      {
+        "path": "src/hr/components/HrDirectoryCorrections.tsx",
+        "sha256": "84b456d3d44cf83b2cedbf2d253a932a11522beb29e31e71510572d8779e953c"
+      },
+      {
+        "path": "src/hr/components/HrEmploymentLifecycle.tsx",
+        "sha256": "bc9c99cba0b2dc9ffd7f8d8c399bc9be4d5c5ca946366d46264139e23f0db699"
+      },
+      {
+        "path": "src/cms/release-types.ts",
+        "sha256": "9b14e7617331c5c02752fa4232348b16fead327528c1b6c9d73d32ac9ba46360"
+      },
+      {
+        "path": "src/cms/release-bundles.ts",
+        "sha256": "ed159266af4cf6346cc49506d8e55d80e5c090e48c67c0001e718bad96c9ab24"
+      },
+      {
+        "path": "src/crm/ownership.ts",
+        "sha256": "513a052d85d9f3107869b71ed4fd8c71b35da484111fd44f7a123da045ed6ab0"
+      },
+      {
+        "path": "src/hr/linked-operations.ts",
+        "sha256": "2e66e04000c9fd1dec82d8afcd4079a9daaaa238c0fbf0f9574290d70b7cf4ab"
+      },
+      {
+        "path": "src/hr/recruiting.ts",
+        "sha256": "e49f25772d6b07cfde7293d9aa29d4c75bf8332770b7dcf9391f4023bc5c939b"
+      },
+      {
+        "path": "src/hr/recruiting-link.ts",
+        "sha256": "1995589d100b58fc2db37629f9dfe0feed730b6ce89b65c3b2e2b24e49c01839"
+      },
+      {
+        "path": "src/cms/persistence.ts",
+        "sha256": "ba4c010799c4af240382936308a8a946ffc3ecd1600a8626417d7f44ffa4e430"
+      },
+      {
+        "path": "src/crm/model.ts",
+        "sha256": "fbef9b656e5e286d3a6a22a93487a905e7909482b64972a33c5c90d86e91bed8"
+      },
+      {
+        "path": "src/crm/persistence.ts",
+        "sha256": "1b4e2dcc0e4c44c5ac65b2256e49e5159f4580cc4d381dcb352717078b4c2170"
       }
     ],
     "hashMode": "utf8-lf-sha256"
@@ -869,11 +921,13 @@
     "description": "Every preview role can export the complete saved module workspace; the shared backup codecs take complete state and no actor argument. Combined export includes all three complete workspaces without a preview identity.",
     "included": [
       "Saved HR performance self-review and manager drafts, survey draft answers, fictional rate timelines, chosen payroll periods, time-return reasons, payroll snapshots and mock receipts where present.",
-      "Unpublished CMS drafts and review metadata; CRM records belonging to other representatives."
+      "Unpublished CMS drafts and review metadata, captured release members with exact approval and previous/activated publication snapshots; CRM records belonging to other representatives and saved ownership-change metadata.",
+      "Saved HR employment instances, captured checklist versions and archived onboarding receipts, explicit simulation dates, lifecycle events, directory old/new history, correction requests/outcomes and instance-bound offboarding assignments where present."
     ],
     "excluded": [
       "Unsaved form inputs, running timers, restore-point history and the separate SDK mock session.",
-      "Retained navigation drafts, the volatile CMS editor/recovery buffer and origin-local checkpoint preferences; these are not saved domain records."
+      "Retained navigation drafts, the volatile CMS editor/recovery buffer and origin-local checkpoint preferences; these are not saved domain records.",
+      "Unconfirmed HR lifecycle, CMS release and CRM ownership preview comparisons; their volatile confirmation values are not saved authority records."
     ],
     "authority": "Readable JSON backups and synthetic role choices do not authenticate a person, grant Firebase claims or tenant membership, or authorize provider access. Dirty-form choices and required destination checkpoints protect local editing/replacement but grant no role permission. Production export needs its own trusted actor, resource and field policy."
   }

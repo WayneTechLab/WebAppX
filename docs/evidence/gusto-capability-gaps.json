@@ -3,7 +3,7 @@
   "kind": "webappx-gusto-capability-gaps",
   "reviewedOn": "2026-10-15",
   "reviewBase": {
-    "revision": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+    "revision": "61d39c9c855fb3f56913cb7c2f8010a6a485b746",
     "provenance": "integration-baseline-supplied-by-agent-0"
   },
   "evidenceScope": "source-review",
@@ -86,7 +86,7 @@
     {
       "path": "src/hr/components/HrWorkspace.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "09f094455796da1879b82d9e8e9daf86800c16a24617a34f7396965e90a089ba"
+      "sha256": "297f4fb063ca37a98a22566a67ec3fe64d92c392931d15d2691261aeba96c9fb"
     },
     {
       "path": "src/hr/components/HrInsights.tsx",
@@ -106,7 +106,7 @@
     {
       "path": "src/hr/mock-workflows.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "373b8a8ce4d34250d306095d0c6247d38e6a03646ddf708e00c5a6bf3b529659"
+      "sha256": "98251e7ff60deceb7b504972a10e64752a0f0579dd3d8fb628f8025b984f0f25"
     },
     {
       "path": "src/hr/model.ts",
@@ -126,12 +126,12 @@
     {
       "path": "src/hr/recruiting-link.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "c501fd44e4e352a9b6e1aff37842fa50b0f3fda69db4f848907a4e6fbcf6bf04"
+      "sha256": "1995589d100b58fc2db37629f9dfe0feed730b6ce89b65c3b2e2b24e49c01839"
     },
     {
       "path": "src/hr/recruiting.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "e5840b4c45ce7972db40b424aa85bd47173f15a8d63cdf78ff0bfe2369c9bb2f"
+      "sha256": "e49f25772d6b07cfde7293d9aa29d4c75bf8332770b7dcf9391f4023bc5c939b"
     },
     {
       "path": "src/hr/service-desk.ts",
@@ -232,6 +232,46 @@
       "path": "src/portals/RecoveryCheckpointPreview.tsx",
       "hashMode": "utf8-lf-sha256",
       "sha256": "537ac122bab47679253afe068c4af1aa3c158903bc13c7a9a501a7b3a9b7c71d"
+    },
+    {
+      "path": "src/hr/lifecycle-types.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "a8b94591da083b3de34951e019b740121d0439023153d0bb8eb4b6bd988c650a"
+    },
+    {
+      "path": "src/hr/lifecycle.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "89d2c31ea8fd5f6a86016bd7d57ace18a02b2c7605df9558ad86923e066087b4"
+    },
+    {
+      "path": "src/hr/components/HrDirectoryCorrections.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "84b456d3d44cf83b2cedbf2d253a932a11522beb29e31e71510572d8779e953c"
+    },
+    {
+      "path": "src/hr/components/HrEmploymentLifecycle.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "bc9c99cba0b2dc9ffd7f8d8c399bc9be4d5c5ca946366d46264139e23f0db699"
+    },
+    {
+      "path": "src/hr/persistence.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "4ec2c8e543e6b25fa2a955761f95e164563cb6f5db7e67ce8337bc6fc4d1c5f5"
+    },
+    {
+      "path": "src/hr/linked-operations.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "2e66e04000c9fd1dec82d8afcd4079a9daaaa238c0fbf0f9574290d70b7cf4ab"
+    },
+    {
+      "path": "src/portals/workspace-inspection.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "fff4347a1b37c46686324ba654873ca2ff650935da885a8331ad45f9c35fcc1f"
+    },
+    {
+      "path": "src/portals/WorkspaceInspection.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "2822bc6b015e9dd3da199a83699565d7cf4b15e1dd19735de58e8e18f985fbac"
     }
   ],
   "capabilities": [
@@ -241,10 +281,12 @@
       "capabilitySha256": "f840107a03e252fbb4d73ccada5039264577c06a7ce93fe55bda5c83c63f861c",
       "native": {
         "coverage": "read-only-mock",
-        "behavior": "Role-scoped dashboards derive fictional headcount, onboarding, approvals, assignments and talent counts; no provider aggregate is loaded.",
+        "behavior": "Role-scoped dashboards derive fictional headcount, onboarding, approvals, assignments and talent counts from the same current employee projection used by native action checks. Accepted lifecycle status and reporting changes reach that projection; no provider aggregate is loaded.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/insights.ts"
+          "src/hr/insights.ts",
+          "src/hr/lifecycle.ts",
+          "src/hr/mock-workflows.ts"
         ]
       },
       "sdk": {
@@ -488,11 +530,14 @@
       "title": "Employee directory",
       "capabilitySha256": "2ce9aa934ed8dfc31a213e83f9a1acca4e4562b97130a620f124769413f7828a",
       "native": {
-        "coverage": "read-only-mock",
-        "behavior": "Search and status filters show fictional employees within the preview role scope; onboarding changes are reflected in the native roster.",
+        "coverage": "partial-mock",
+        "behavior": "Search and status filters show fictional employees within the preview role scope. The management directory also hosts owner/HR employment previews with an explicit simulation date: transfers, leave/return, termination and rehire. Current email, status, assignment and reporting relationships come from one effective fixture; managers see their current scope and can propose only their own email correction.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/model.ts"
+          "src/hr/model.ts",
+          "src/hr/lifecycle.ts",
+          "src/hr/components/HrEmploymentLifecycle.tsx",
+          "src/hr/components/HrDirectoryCorrections.tsx"
         ]
       },
       "sdk": {
@@ -534,10 +579,12 @@
       "capabilitySha256": "f7661e491423a3748ebc08c4a5d2a4fdf01e9131f985bbf996f54fe6b5afb766",
       "native": {
         "coverage": "partial-mock",
-        "behavior": "Profiles display fictional job, department and status; eligible preview actors can edit synthetic work email. Its temporary email form has a normalized dirty baseline; accepted in-memory Save clears that group, while failed validation retains it. Sensitive identity, tax and bank values are omitted.",
+        "behavior": "Profiles show current fictional job, department and status. Eligible actors retain the existing synthetic work-email Save; meaningful accepted edits append old/new values, actor preview and sequence without revoking completed onboarding receipts. Bound employees/managers can propose their own .invalid email correction; owner/HR preview and accept or reject it with a recorded reason. Acceptance rechecks the captured instance/value and applies email/history/outcome together. Independent normalized form groups retain refused input; sensitive identity, tax and bank values are omitted.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/mock-workflows.ts",
+          "src/hr/lifecycle.ts",
+          "src/hr/components/HrDirectoryCorrections.tsx",
           "src/hr/components/useHrFormDraft.ts"
         ]
       },
@@ -577,10 +624,14 @@
       "capabilitySha256": "eb5f8177036a8832ac3432a297fed9be20f03ff42ffaba904406b7635f2af986",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Profile/job review, checklist, summary review and confirmation produce a MOCK onboarding receipt and activate the fictional employee.",
+        "behavior": "Profile/job review, captured checklist, summary review and confirmation produce a MOCK onboarding receipt for the intended employment instance. Owner/HR select immutable sample checklist versions for subsequent hires/rehires; existing captured tasks and receipts keep their original version. Rehire retains directory identity and archives the prior onboarding payload before creating a new incomplete checklist. Legacy start dates remain explicitly unknown; stale instance controls are refused.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/mock-workflows.ts"
+          "src/hr/mock-workflows.ts",
+          "src/hr/lifecycle.ts",
+          "src/hr/recruiting.ts",
+          "src/hr/persistence.ts",
+          "src/hr/components/HrEmploymentLifecycle.tsx"
         ]
       },
       "sdk": {
@@ -796,10 +847,11 @@
       "capabilitySha256": "f53e17ed9033aaf0ee4d9509b712e4f827cf834b7f466217c0f39c9b626eb217",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/payroll previews choose a 1–366-day sample period and configure explicit fictional rates for all otherwise eligible employee/work dates. Independent rate/period form groups track unsaved inputs. Preparation freezes approved unpaid hours, dated rates and confirmed benefit choices; the table explains exclusions. Changed inputs, eligibility or selected period block calculation, review and submission until intentional repreparation; receipted runs remain frozen.",
+        "behavior": "Owner/payroll previews choose a 1–366-day sample period and configure explicit fictional rates for all otherwise eligible employee/work dates. Independent rate/period form groups track unsaved inputs. Preparation freezes approved unpaid hours, dated rates and confirmed benefit choices; the table explains exclusions. Changed inputs, current lifecycle eligibility or selected period block calculation, review and submission until intentional repreparation. Rehire retains rate timelines and balances without inferring compensation; submitted inputs, totals and receipts remain frozen.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/mock-workflows.ts",
+          "src/hr/lifecycle.ts",
           "src/hr/components/useHrFormDraft.ts"
         ]
       },
@@ -1108,10 +1160,11 @@
       "capabilitySha256": "bf42917dfd2e53b83ba8d21e8f274e1bf3c912e798a2e125e194ae09924928c4",
       "native": {
         "coverage": "read-only-mock",
-        "behavior": "Derived workforce, workflow, payroll, assignment and talent summaries respect native preview projections. Payroll-ready counts require explicit effective rates and use the saved chosen period after preparation; own statements retain submitted period/rate inputs. Sensitive amounts and private draft text remain role limited.",
+        "behavior": "Derived workforce, workflow, payroll, assignment and talent summaries use the current effective employee and manager projection under native preview scopes. Payroll-ready counts require explicit effective rates and the saved chosen period after preparation; own statements retain submitted period/rate inputs. Lifecycle changes do not rewrite submitted payroll receipts. Sensitive amounts and private draft text remain role limited.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/insights.ts"
+          "src/hr/insights.ts",
+          "src/hr/lifecycle.ts"
         ]
       },
       "sdk": {
@@ -1149,10 +1202,11 @@
       "capabilitySha256": "1d8cfa9a6e375dbfaa1869edf4b1fa2d385a2d7d0c985f13bbb00f15e1806b30",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/HR create, edit, publish and close fictional jobs; candidates move through screening/interview/offer/hire or rejection, and accepted sample hires enter native onboarding. Job and candidate inputs have independent dirty groups. Closing the candidate form’s selected published job is guarded before the job changes, and successful creation clears only its completed form.",
+        "behavior": "Owner/HR create, edit, publish and close fictional jobs; candidates move through screening/interview/offer/hire or rejection. An accepted hire atomically initializes its directory, workflow and balances, capturing the selected onboarding version when the lifecycle extension is present; old calls retain their legacy checklist. Current manager relationships supply action checks. Job/candidate forms have independent dirty groups, and closing the candidate form’s selected published job is guarded first.",
         "refs": [
           "src/hr/recruiting.ts",
           "src/hr/recruiting-link.ts",
+          "src/hr/lifecycle.ts",
           "src/hr/components/HrRecruiting.tsx",
           "src/hr/components/useHrFormDraft.ts"
         ]
@@ -1189,11 +1243,14 @@
       "title": "Organization and teams",
       "capabilitySha256": "0b9578357a6c46cdf27e55c6f68d5c23e65c24cc391b76f1ba65821ceb09b7f6",
       "native": {
-        "coverage": "read-only-mock",
-        "behavior": "Department lists are derived from fictional employees; manager/team scope affects visible people, while department/location administration is not implemented.",
+        "coverage": "partial-mock",
+        "behavior": "Department lists and manager scopes derive from current fictional employees. Owner/HR can preview and confirm department/manager transfers with prior/proposed facts and affected report IDs. The full proposed reporting graph refuses self-management or cycles and lists the affected IDs; import validates historical and current graphs too. Explicit simulation/effective dates have no background scheduler. General department/location administration is absent.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/model.ts"
+          "src/hr/model.ts",
+          "src/hr/lifecycle.ts",
+          "src/hr/persistence.ts",
+          "src/hr/components/HrEmploymentLifecycle.tsx"
         ]
       },
       "sdk": {
@@ -1228,10 +1285,13 @@
       "capabilitySha256": "7f13a360efebb3b8b19d9d15d3cf55999a90064e2e7c541568e50450047bef8b",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Scoped fictional task assignments can be completed and append people-operation receipts; they are separate from SYSTEMX agent TASK records.",
+        "behavior": "Scoped fictional tasks can be completed with people-operation receipts. Confirmed fictional termination creates asset-return, access-review and handover tasks plus captured offboarding assignments bound to the terminating employment instance. These local records neither change external accounts/assets nor create SYSTEMX workers. Complete saved-state validation and recovery inspection include their links without counting reference rows as extra primary records.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/people-operations.ts"
+          "src/hr/people-operations.ts",
+          "src/hr/lifecycle.ts",
+          "src/hr/persistence.ts",
+          "src/portals/workspace-inspection.ts"
         ]
       },
       "sdk": {
@@ -1266,10 +1326,11 @@
       "capabilitySha256": "e41f860cacdb4d6a5cb2d1289a54a95e01140160e90b686e6810cacf4526fcf5",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Eligible employees acknowledge assigned fictional policy records with activity receipts; policy authoring, edition rollout and legally accepted signatures are absent.",
+        "behavior": "Eligible employees acknowledge assigned fictional policy records with activity receipts. Explicit bundled links can complete legacy onboarding tasks, but old instance assignments cannot satisfy a later rehire checklist. Policy authoring, edition rollout and legally accepted signatures are absent.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/people-operations.ts"
+          "src/hr/people-operations.ts",
+          "src/hr/linked-operations.ts"
         ]
       },
       "sdk": {
@@ -1382,10 +1443,11 @@
       "capabilitySha256": "fc356e13f30c18d3bb43853625d8e95ab01c753d363c167ed3b079daa824e1d9",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Scoped sample training assignments can be completed with people-operation receipts; no hosted course delivery or certification validation is provided.",
+        "behavior": "Scoped sample training assignments can be completed with people-operation receipts. Explicit bundled links remain attached to their legacy employment instance and cannot satisfy later rehire onboarding. Hosted course delivery and certification validation are absent.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/people-operations.ts"
+          "src/hr/people-operations.ts",
+          "src/hr/linked-operations.ts"
         ]
       },
       "sdk": {
@@ -1420,10 +1482,11 @@
       "capabilitySha256": "12729b8d6bbb8863f7ffebf063fe6a4c898ec883150a12b1f08143b8fbd6aee0",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Goals and private self-review drafts progress through self submission, assigned manager publication and employee acknowledgment under native relationship checks. Goal/cycle creation, progress and self/manager text use independent temporary form groups. Saving accepts only that group’s baseline; self submission and manager publication require current text to be saved first. Saved private domain drafts remain distinct from unsaved inputs.",
+        "behavior": "Goals and private self-review drafts progress through self submission, assigned manager publication and employee acknowledgment under current native relationship checks. Independent goal/cycle/progress/self/manager form groups require current text to be saved before submission/publication. A transfer or rehire that changes an unfinished review’s direct manager is refused until that review is acknowledged; captured comments, manager identity and published content are not rewritten.",
         "refs": [
           "src/hr/performance.ts",
           "src/hr/model.ts",
+          "src/hr/lifecycle.ts",
           "src/hr/components/HrPerformance.tsx",
           "src/hr/components/useHrFormDraft.ts"
         ]

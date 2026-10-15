@@ -29,7 +29,11 @@ const requiredBindings = [CAPABILITIES_PATH, INVENTORY_PATH, PIN_PATH, SDK_PATH,
   'src/portals/PortalWorkspaceProvider.tsx', 'src/portals/useDemoPersistence.ts',
   'src/portals/recovery-preferences.ts', 'src/portals/replacement-recovery.ts',
   'src/portals/DemoWorkspaceBackup.tsx', 'src/portals/DemoWorkspaceReset.tsx',
-  'src/portals/RecoveryCheckpointPreview.tsx']
+  'src/portals/RecoveryCheckpointPreview.tsx',
+  'src/hr/lifecycle-types.ts', 'src/hr/lifecycle.ts',
+  'src/hr/components/HrDirectoryCorrections.tsx', 'src/hr/components/HrEmploymentLifecycle.tsx',
+  'src/hr/persistence.ts', 'src/hr/linked-operations.ts',
+  'src/portals/workspace-inspection.ts', 'src/portals/WorkspaceInspection.tsx']
 const shaPattern = /^[0-9a-f]{64}$/
 const nativeCoverage = ['interactive-mock', 'read-only-mock', 'partial-mock', 'not-implemented']
 const exact = (record, keys) => !!record && typeof record === 'object' && !Array.isArray(record)

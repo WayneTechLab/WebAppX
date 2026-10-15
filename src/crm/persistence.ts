@@ -2,7 +2,7 @@ import type { CrmState } from './model'
 
 type RecordValue = Record<string, unknown>
 const owners = ['crm-owner', 'crm-manager', 'sales-riley', 'sales-sam']
-const actions = ['create-company', 'create-contact', 'create-lead', 'qualify-lead', 'convert-lead', 'create-opportunity', 'advance-opportunity', 'create-task', 'complete-task']
+const actions = ['create-company', 'create-contact', 'create-lead', 'qualify-lead', 'convert-lead', 'create-opportunity', 'advance-opportunity', 'create-task', 'complete-task', 'assign-lead', 'transfer-account']
 function record(value: unknown, required: string[], optional: string[] = []): value is RecordValue {
   return value !== null && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).every(key => required.includes(key) || optional.includes(key)) && required.every(key => Object.hasOwn(value, key))
 }
@@ -74,7 +74,28 @@ export function isCrmState(value: unknown): value is CrmState {
   }
   for (const task of tables.tasks.values()) if (tables.opportunities.get(String(task.opportunityId))?.ownerId !== task.ownerId) return false
   for (const [index, activity] of arrays.activity.entries()) {
-    if (!record(activity, ['receipt', 'ownerId', 'action', 'description']) || activity.receipt !== `MOCK-CRM-${String(value.sequence - index - 1).padStart(4, '0')}` || !choice(activity.ownerId, owners) || !choice(activity.action, actions) || !text(activity.description, 500)) return false
+    if (!record(activity, ['receipt', 'ownerId', 'action', 'description'], ['ownershipChange']) || activity.receipt !== `MOCK-CRM-${String(value.sequence - index - 1).padStart(4, '0')}` || !choice(activity.ownerId, owners) || !choice(activity.action, actions) || !text(activity.description, 500)) return false
+    if (activity.action !== 'assign-lead' && activity.action !== 'transfer-account') {
+      if (Object.hasOwn(activity, 'ownershipChange')) return false
+      continue
+    }
+    const change = activity.ownershipChange
+    if (!record(change, ['actorId', 'fromOwnerId', 'toOwnerId', 'recordId', 'affected']) || !choice(change.actorId, ['crm-owner', 'crm-manager']) || !choice(change.fromOwnerId, owners) || !choice(change.toOwnerId, owners) || change.fromOwnerId === change.toOwnerId || activity.ownerId !== change.toOwnerId || !text(change.recordId, 100)) return false
+    const affected = change.affected
+    if (!record(affected, ['companies', 'contacts', 'leads', 'opportunities', 'tasks'])) return false
+    for (const kind of ['companies', 'contacts', 'leads', 'opportunities', 'tasks']) {
+      const ids = affected[kind]
+      if (!Array.isArray(ids) || new Set(ids).size !== ids.length || ids.some(id => !text(id, 100) || !tables[kind].has(id))) return false
+    }
+    if (activity.action === 'assign-lead') {
+      if (JSON.stringify(affected.leads) !== JSON.stringify([change.recordId]) || ['companies', 'contacts', 'opportunities', 'tasks'].some(kind => (affected[kind] as unknown[]).length)) return false
+    } else {
+      if (JSON.stringify(affected.companies) !== JSON.stringify([change.recordId])) return false
+      for (const id of affected.contacts as string[]) if (tables.contacts.get(id)?.companyId !== change.recordId) return false
+      for (const id of affected.leads as string[]) if (tables.leads.get(id)?.companyId !== change.recordId) return false
+      for (const id of affected.opportunities as string[]) if (tables.opportunities.get(id)?.companyId !== change.recordId) return false
+      for (const id of affected.tasks as string[]) if (tables.opportunities.get(String(tables.tasks.get(id)?.opportunityId))?.companyId !== change.recordId) return false
+    }
   }
   return true
 }

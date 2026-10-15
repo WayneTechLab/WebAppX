@@ -1,5 +1,17 @@
 import type { HrActor, HrEmployee, HrFixture } from './model'
 
+const onboardingTemplates = [
+  { version: 'sample-v1', title: 'Sample welcome checklist v1', tasks: [{ id: 'profile', title: 'Complete own profile' }, { id: 'policy', title: 'Review sample welcome checklist' }] },
+  { version: 'sample-v2', title: 'Sample welcome checklist v2', tasks: [{ id: 'profile', title: 'Complete own profile' }, { id: 'policy', title: 'Review sample welcome checklist' }, { id: 'security', title: 'Review fictional access and security guidance' }] },
+] as const
+export const HR_ONBOARDING_TEMPLATES = Object.freeze(onboardingTemplates.map(template => Object.freeze({ ...template, tasks: Object.freeze(template.tasks.map(task => Object.freeze({ ...task }))) })))
+
+export function hrOnboardingTemplate(version: string) {
+  const template = HR_ONBOARDING_TEMPLATES.find(item => item.version === version)
+  if (!template) throw new Error('Choose a supported sample onboarding template version.')
+  return { version: template.version, title: template.title, tasks: template.tasks.map(task => ({ ...task })) }
+}
+
 export type RecruitingJobStatus = 'draft' | 'published' | 'closed'
 export type RecruitingStage = 'applied' | 'screening' | 'interview' | 'offer' | 'hired' | 'rejected'
 export type RecruitingActivity = { receipt: string; action: string; actorRole: HrActor['role'] }
@@ -58,7 +70,7 @@ function text(value: string, label: string, min: number, max: number) {
   return result
 }
 
-export function transitionRecruiting(state: RecruitingState, actor: HrActor, event: RecruitingEvent, fixture: HrFixture): RecruitingState {
+export function transitionRecruiting(state: RecruitingState, actor: HrActor, event: RecruitingEvent, fixture: HrFixture, templateVersion?: string): RecruitingState {
   if (!canManageRecruiting(actor)) throw new Error('Only the owner or HR administrator preview can manage recruiting.')
   const next = structuredClone(state)
   const activity = (record: RecruitingJob | RecruitingCandidate, action: string) => {
@@ -124,7 +136,8 @@ export function transitionRecruiting(state: RecruitingState, actor: HrActor, eve
       id: employeeId, firstName: candidate.firstName, lastName: candidate.lastName, workEmail: candidate.workEmail,
       department: job.department, jobTitle: job.title, employmentStatus: 'onboarding', managerId: job.managerId,
       payCents: 0, compensationStatus: 'unconfigured-synthetic', compensationConfigured: false,
-      onboarding: [{ id: 'profile', title: 'Complete own profile', status: 'pending' }, { id: 'policy', title: 'Review sample welcome checklist', status: 'pending' }],
+      onboarding: (templateVersion ? hrOnboardingTemplate(templateVersion).tasks : [{ id: 'profile', title: 'Complete own profile' }, { id: 'policy', title: 'Review sample welcome checklist' }]).map(task => ({ ...task, status: 'pending' })),
+      ...(templateVersion ? { onboardingTemplateVersion: templateVersion } : {}),
     })
     candidate.employeeId = employeeId
   }

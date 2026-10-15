@@ -8,13 +8,16 @@ export const crmStages = ['discovery', 'proposal', 'negotiation', 'won', 'lost']
 export type CrmStage = typeof crmStages[number]
 export type CrmOpportunity = { id: string; title: string; companyId: string; contactId: string; ownerId: string; amountCents: number; stage: CrmStage; leadId?: string }
 export type CrmTask = { id: string; title: string; ownerId: string; opportunityId: string; status: 'open' | 'done' }
-export type CrmActivity = { receipt: string; ownerId: string; action: string; description: string }
+export type CrmOwnershipAffected = { companies: string[]; contacts: string[]; leads: string[]; opportunities: string[]; tasks: string[] }
+export type CrmOwnershipChange = { actorId: string; fromOwnerId: string; toOwnerId: string; recordId: string; affected: CrmOwnershipAffected }
+export type CrmActivity = { receipt: string; ownerId: string; action: string; description: string; ownershipChange?: CrmOwnershipChange }
 export type CrmState = { companies: CrmCompany[]; contacts: CrmContact[]; leads: CrmLead[]; opportunities: CrmOpportunity[]; tasks: CrmTask[]; activity: CrmActivity[]; sequence: number }
 export type CrmEvent =
   | { type: 'create-company'; name: string }
   | { type: 'create-contact'; name: string; email: string; companyId: string }
   | { type: 'create-lead'; name: string; email: string; companyName: string }
   | { type: 'qualify-lead'; leadId: string }
+  | { type: 'assign-lead'; leadId: string; newOwnerId: string; expectedOwnerId: string }
   | { type: 'convert-lead'; leadId: string; amountCents: number }
   | { type: 'create-opportunity'; title: string; companyId: string; contactId: string; amountCents: number }
   | { type: 'advance-opportunity'; opportunityId: string; stage: CrmStage }
@@ -40,8 +43,9 @@ export function createCrmState(): CrmState {
   }
 }
 
-function validActor(actor: CrmActor) { return crmActors.some(candidate => candidate.id === actor.id && candidate.role === actor.role) }
+function validActor(actor: CrmActor) { return Boolean(actor && typeof actor === 'object' && crmActors.some(candidate => candidate.id === actor.id && candidate.role === actor.role)) }
 export function canWriteCrm(actor: CrmActor) { return validActor(actor) && actor.role !== 'auditor' }
+export function canManageCrmOwnership(actor: CrmActor) { return validActor(actor) && (actor.role === 'owner' || actor.role === 'sales-manager') }
 function canRead(actor: CrmActor, record: { ownerId: string }) { return validActor(actor) && (actor.role !== 'sales-rep' || record.ownerId === actor.id) }
 function canWrite(actor: CrmActor, record: { ownerId: string }) { return canWriteCrm(actor) && canRead(actor, record) }
 
@@ -93,11 +97,13 @@ function requireRecord<T extends { id: string; ownerId: string }>(records: T[], 
 
 export function transitionCrm(current: CrmState, actor: CrmActor, event: CrmEvent): CrmState {
   if (!canWriteCrm(actor)) throw new Error('This preview identity has no CRM write permission.')
+  if (event.type === 'assign-lead' && !canManageCrmOwnership(actor)) throw new Error('Only an owner or sales manager preview can change CRM ownership.')
   const state = structuredClone(current)
   const receipt = `MOCK-CRM-${String(state.sequence).padStart(4, '0')}`
   const id = (kind: string) => `${kind}-${String(state.sequence).padStart(4, '0')}`
   let ownerId = actor.id
   let description = ''
+  let ownershipChange: CrmOwnershipChange | undefined
   switch (event.type) {
     case 'create-company': {
       const name = text(event.name, 'Company name')
@@ -130,6 +136,22 @@ export function transitionCrm(current: CrmState, actor: CrmActor, event: CrmEven
       if (lead.status !== 'new') throw new Error('Only a new sample lead can be qualified.')
       lead.status = 'qualified'; ownerId = lead.ownerId
       description = `Qualified ${lead.name}; conversion is now available.`
+      break
+    }
+    case 'assign-lead': {
+      if (!canManageCrmOwnership(actor)) throw new Error('Only an owner or sales manager preview can change CRM ownership.')
+      const lead = requireRecord(state.leads, event.leadId, actor)
+      if (!['new', 'qualified'].includes(lead.status) || ['companyId', 'contactId', 'opportunityId'].some(key => Object.hasOwn(lead, key))) throw new Error('Only an unconverted lead can be reassigned; use account ownership transfer for converted records.')
+      if (lead.ownerId !== event.expectedOwnerId) throw new Error('The lead assignment changed. Review a fresh preview before confirming.')
+      const nextOwner = crmActors.find(candidate => candidate.id === event.newOwnerId && candidate.role !== 'auditor')
+      if (!nextOwner || nextOwner.id === lead.ownerId) throw new Error('Choose a different supported fictional assignee.')
+      const fromOwnerId = lead.ownerId
+      const fromName = crmActors.find(candidate => candidate.id === fromOwnerId)?.label.split(' · ')[0]
+      if (!fromName) throw new Error('The current fictional assignee is unavailable.')
+      lead.ownerId = nextOwner.id; ownerId = nextOwner.id
+      ownershipChange = { actorId: actor.id, fromOwnerId, toOwnerId: nextOwner.id, recordId: lead.id,
+        affected: { companies: [], contacts: [], leads: [lead.id], opportunities: [], tasks: [] } }
+      description = `Reassigned unconverted lead ${lead.name} from ${fromName} to ${nextOwner.label.split(' · ')[0]}.`
       break
     }
     case 'convert-lead': {
@@ -186,7 +208,7 @@ export function transitionCrm(current: CrmState, actor: CrmActor, event: CrmEven
     }
     default: throw new Error('Unsupported sample CRM action.')
   }
-  state.activity.unshift({ receipt, ownerId, action: event.type, description })
+  state.activity.unshift({ receipt, ownerId, action: event.type, description, ...(ownershipChange ? { ownershipChange } : {}) })
   state.sequence += 1
   return state
 }

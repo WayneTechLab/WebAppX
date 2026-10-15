@@ -4,7 +4,7 @@ These are concrete synthetic examples from the reviewed fixture. Use the
 [canonical cross-portal capability matrix](PORTAL-CAPABILITIES.md) for the complete vocabulary, role scopes and provider boundary.
 A role example is an actor, resource, action and current state; opening a route does not establish permission for its domain transitions.
 
-Review basis: ` 532cc4ad63d18a4fe911b0a9b18e258b85ef3416 ` and proposal ` WX-0908 `.
+Review basis: ` 61d39c9c855fb3f56913cb7c2f8010a6a485b746 ` and proposal ` WX-0908 `.
 Original criterion: A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.
 
 The [reviewed fixture](../tests/fixtures/hr-capability-examples.json) supplies each action, prerequisite and literal expected result.
@@ -333,9 +333,11 @@ Exact refusal: ` Approval requires a submitted entry within this role and team s
 Every preview role can export the complete saved module workspace; the shared backup codecs take complete state and no actor argument. Combined export includes all three complete workspaces without a preview identity.
 
 - Included: Saved HR performance self-review and manager drafts, survey draft answers, fictional rate timelines, chosen payroll periods, time-return reasons, payroll snapshots and mock receipts where present.
-- Included: Unpublished CMS drafts and review metadata; CRM records belonging to other representatives.
+- Included: Unpublished CMS drafts and review metadata, captured release members with exact approval and previous/activated publication snapshots; CRM records belonging to other representatives and saved ownership-change metadata.
+- Included: Saved HR employment instances, captured checklist versions and archived onboarding receipts, explicit simulation dates, lifecycle events, directory old/new history, correction requests/outcomes and instance-bound offboarding assignments where present.
 - Excluded: Unsaved form inputs, running timers, restore-point history and the separate SDK mock session.
 - Excluded: Retained navigation drafts, the volatile CMS editor/recovery buffer and origin-local checkpoint preferences; these are not saved domain records.
+- Excluded: Unconfirmed HR lifecycle, CMS release and CRM ownership preview comparisons; their volatile confirmation values are not saved authority records.
 
 An HR contractor or auditor can therefore export saved private draft content that is absent from their visible pages. A CMS viewer export contains unpublished content, and a CRM representative export contains other representatives’ saved records.
 The module and combined codecs validate complete fictional graphs and file compatibility; they receive no actor and apply no role or field filtering. A portal selection during restore does not narrow the export.
@@ -350,15 +352,15 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | --- | --- |
 | [docs/PORTAL-CAPABILITIES.md](../docs/PORTAL-CAPABILITIES.md) | ` 145d912322bd3d4e9ffce7a8ca45131c1fd557f8801ef9d36ed348934368f6cd ` |
 | [src/hr/model.ts](../src/hr/model.ts) | ` 32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e ` |
-| [src/hr/mock-workflows.ts](../src/hr/mock-workflows.ts) | ` 373b8a8ce4d34250d306095d0c6247d38e6a03646ddf708e00c5a6bf3b529659 ` |
+| [src/hr/mock-workflows.ts](../src/hr/mock-workflows.ts) | ` 98251e7ff60deceb7b504972a10e64752a0f0579dd3d8fb628f8025b984f0f25 ` |
 | [src/hr/performance.ts](../src/hr/performance.ts) | ` e4dd5404f9c826a162981904fbc0417588b64252998fa4ac1ca7c0477c8c716f ` |
 | [src/hr/surveys.ts](../src/hr/surveys.ts) | ` 5bc231e4a19c62c3a2b7520e93026f885d1f0f636e89306ccfa76d0a7f0a2b85 ` |
-| [src/hr/persistence.ts](../src/hr/persistence.ts) | ` 42c45c2e3cf714d30129b44705fd9fb2c98a4b35d05f43c7710fe75239d91a01 ` |
+| [src/hr/persistence.ts](../src/hr/persistence.ts) | ` 4ec2c8e543e6b25fa2a955761f95e164563cb6f5db7e67ce8337bc6fc4d1c5f5 ` |
 | [src/portals/backup.ts](../src/portals/backup.ts) | ` b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a ` |
 | [src/portals/combined-backup.ts](../src/portals/combined-backup.ts) | ` 186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726 ` |
 | [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | ` 2b173d5d158281d0f1b390215a39047981b2949cf5c5a6c43dd8be6bad6f5aed ` |
 | [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` 8c8a26fad535f26760e3d206912523d59ca77c1adc9cbe27506eca187587afb0 ` |
-| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` 09f094455796da1879b82d9e8e9daf86800c16a24617a34f7396965e90a089ba ` |
+| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` 297f4fb063ca37a98a22566a67ec3fe64d92c392931d15d2691261aeba96c9fb ` |
 | [.SYSTEMX/GUSTO/mock/fixtures/demo-company.json](../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json) | ` 14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3 ` |
 | [src/portals/unsaved-work-core.ts](../src/portals/unsaved-work-core.ts) | ` ee9abc498ae015df8554e2056d1526dfc2d5b534bc1e47284242c7134d8c5a59 ` |
 | [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | ` 5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316 ` |
@@ -370,8 +372,8 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/hr/components/HrRecruiting.tsx](../src/hr/components/HrRecruiting.tsx) | ` f2f4b25642cecddd1433d23c6a3fb2f4c1fb109b890ed5763169aec5457e7857 ` |
 | [src/hr/components/HrPerformance.tsx](../src/hr/components/HrPerformance.tsx) | ` 7c27e5b9a36dc02f69725c101e21568661b9820b613bca0fe44e781f81090357 ` |
 | [src/hr/components/HrSurveys.tsx](../src/hr/components/HrSurveys.tsx) | ` ba28cb8d4bdc1d5a3e313be89f4272bbd340dedbb3d1d9008609a48b71a794ef ` |
-| [src/cms/model.ts](../src/cms/model.ts) | ` b5281fea82aa168a5dc9262353e7d5cd45255915ceaf2db54282dd5ba8c64e7f ` |
-| [src/cms/CmsDemo.tsx](../src/cms/CmsDemo.tsx) | ` e242a252a724f8ac36ea7f7612016da4ed2372c25fcb22f386b85c7c3d573ee6 ` |
+| [src/cms/model.ts](../src/cms/model.ts) | ` 2bd7580d3fd0e42a27810fe65ccf04aae0e3a2a69ac01df05a7acc9c7cf28bbf ` |
+| [src/cms/CmsDemo.tsx](../src/cms/CmsDemo.tsx) | ` c44c65a9250f5263eb5c671418794225a0c10b446597dce15c5f72669b32a10d ` |
 | [src/cms/editor-recovery.ts](../src/cms/editor-recovery.ts) | ` 0806b91c571018ebb5735130a670a5cf0fcd9d5d00227e9b6f425a49a982ac27 ` |
 | [src/portals/PortalWorkspaceProvider.tsx](../src/portals/PortalWorkspaceProvider.tsx) | ` 186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa ` |
 | [src/portals/useDemoPersistence.ts](../src/portals/useDemoPersistence.ts) | ` 7ea3895df10dc73752ee5fb622f3fed08957f0a4d031485d09b1a2747fda05ed ` |
@@ -382,6 +384,19 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/portals/restore-points.ts](../src/portals/restore-points.ts) | ` d80d770440de2db847fd5cd933a960fbe2cc88adb4f80d9bd9ae13e97ce89e1b ` |
 | [src/portals/RestorePointHistory.tsx](../src/portals/RestorePointHistory.tsx) | ` 883a619f1e6f78db5ffee7302b48b36b6f88823ddfe706699a0395ee6505183d ` |
 | [src/portals/restore-workspaces.ts](../src/portals/restore-workspaces.ts) | ` 1e84b45222b119e9d02e75efa1ba251584353ef0ff2142db5350f009e2797cce ` |
-| [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | ` 93359bb84b035a6415ae53540f274ec9b9f12ba6564d6fb1c1c0c39986c1bbd3 ` |
-| [src/portals/WorkspaceInspection.tsx](../src/portals/WorkspaceInspection.tsx) | ` c9daf24e7fd319f0fceb9543dc69b2b8424044e812bae6b02a188fc6d97013f5 ` |
-| [src/crm/CrmDemo.tsx](../src/crm/CrmDemo.tsx) | ` 40fb0275d100fb788f8ca77f1d458d8419b2316db99c9a4f8fc20db8b06c6221 ` |
+| [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | ` fff4347a1b37c46686324ba654873ca2ff650935da885a8331ad45f9c35fcc1f ` |
+| [src/portals/WorkspaceInspection.tsx](../src/portals/WorkspaceInspection.tsx) | ` 2822bc6b015e9dd3da199a83699565d7cf4b15e1dd19735de58e8e18f985fbac ` |
+| [src/crm/CrmDemo.tsx](../src/crm/CrmDemo.tsx) | ` 5d2703a94ce2bcb75c1d72d68ae8d64c14df77e2d48b57ac95c7699c8b85501c ` |
+| [src/hr/lifecycle-types.ts](../src/hr/lifecycle-types.ts) | ` a8b94591da083b3de34951e019b740121d0439023153d0bb8eb4b6bd988c650a ` |
+| [src/hr/lifecycle.ts](../src/hr/lifecycle.ts) | ` 89d2c31ea8fd5f6a86016bd7d57ace18a02b2c7605df9558ad86923e066087b4 ` |
+| [src/hr/components/HrDirectoryCorrections.tsx](../src/hr/components/HrDirectoryCorrections.tsx) | ` 84b456d3d44cf83b2cedbf2d253a932a11522beb29e31e71510572d8779e953c ` |
+| [src/hr/components/HrEmploymentLifecycle.tsx](../src/hr/components/HrEmploymentLifecycle.tsx) | ` bc9c99cba0b2dc9ffd7f8d8c399bc9be4d5c5ca946366d46264139e23f0db699 ` |
+| [src/cms/release-types.ts](../src/cms/release-types.ts) | ` 9b14e7617331c5c02752fa4232348b16fead327528c1b6c9d73d32ac9ba46360 ` |
+| [src/cms/release-bundles.ts](../src/cms/release-bundles.ts) | ` ed159266af4cf6346cc49506d8e55d80e5c090e48c67c0001e718bad96c9ab24 ` |
+| [src/crm/ownership.ts](../src/crm/ownership.ts) | ` 513a052d85d9f3107869b71ed4fd8c71b35da484111fd44f7a123da045ed6ab0 ` |
+| [src/hr/linked-operations.ts](../src/hr/linked-operations.ts) | ` 2e66e04000c9fd1dec82d8afcd4079a9daaaa238c0fbf0f9574290d70b7cf4ab ` |
+| [src/hr/recruiting.ts](../src/hr/recruiting.ts) | ` e49f25772d6b07cfde7293d9aa29d4c75bf8332770b7dcf9391f4023bc5c939b ` |
+| [src/hr/recruiting-link.ts](../src/hr/recruiting-link.ts) | ` 1995589d100b58fc2db37629f9dfe0feed730b6ce89b65c3b2e2b24e49c01839 ` |
+| [src/cms/persistence.ts](../src/cms/persistence.ts) | ` ba4c010799c4af240382936308a8a946ffc3ecd1600a8626417d7f44ffa4e430 ` |
+| [src/crm/model.ts](../src/crm/model.ts) | ` fbef9b656e5e286d3a6a22a93487a905e7909482b64972a33c5c90d86e91bed8 ` |
+| [src/crm/persistence.ts](../src/crm/persistence.ts) | ` 1b4e2dcc0e4c44c5ac65b2256e49e5159f4580cc4d381dcb352717078b4c2170 ` |

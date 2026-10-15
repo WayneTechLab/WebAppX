@@ -23,6 +23,9 @@ import { performanceSummary, transitionPerformance, type PerformanceEvent } from
 import { HrPerformance } from './HrPerformance'
 import { surveySummary, transitionSurveys, type SurveysEvent } from '../surveys'
 import { HrSurveys } from './HrSurveys'
+import { HrEmploymentLifecycle } from './HrEmploymentLifecycle'
+import { HrDirectoryCorrections } from './HrDirectoryCorrections'
+import { effectiveHrFixture } from '../lifecycle'
 import { isHrDemoState, type HrDemoState } from '../persistence'
 import { usePortalWorkspace } from '@/portals/PortalWorkspaceProvider'
 import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
@@ -111,9 +114,10 @@ function OnboardingJourney({ employee, state, onAction }: { employee: HrEmployee
   const focusClass = 'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700'
   const actionClass = `${buttonClass} ${focusClass}`
   const ready = state.profileReviewed && state.jobReviewed && Object.values(state.tasks).every(Boolean)
-  function act(event: MockHrEvent) {
+  function act(event: Extract<MockHrEvent, { type: 'review-profile' | 'review-job' | 'review-onboarding' | 'complete-onboarding' | 'check-task' }>) {
     advanceFocus.current = true
-    if (!onAction(event)) advanceFocus.current = false
+    const instanceId = typeof employee.employmentInstanceId === 'string' ? employee.employmentInstanceId : undefined
+    if (!onAction(instanceId ? { ...event, instanceId } : event)) advanceFocus.current = false
   }
   useLayoutEffect(() => {
     if (!advanceFocus.current) return
@@ -129,6 +133,7 @@ function OnboardingJourney({ employee, state, onAction }: { employee: HrEmployee
     next?.focus()
   }, [employee.onboarding, state])
   return <Panel title={`Complete sample onboarding · ${employee.firstName}`} note="A complete app-owned simulation. Review fictional profile/job details, finish the checklist, review the summary and confirm. No tax, bank, legal signature or Gusto acceptance is established.">
+    {typeof employee.employmentInstanceId === 'string' && <p className="mb-4 break-words text-sm text-neutral-600">Employment instance: {employee.employmentInstanceId} · Captured checklist: {String(employee.onboardingTemplateVersion)}</p>}
     <div className="grid gap-4 sm:grid-cols-2"><article className="rounded-lg bg-neutral-50 p-4"><h3 className="text-sm font-semibold">1 · Profile review</h3><p className="mt-2 text-sm text-neutral-600">{employee.firstName} {employee.lastName}<br />{employee.workEmail}</p><button ref={profileReview} type="button" className={actionClass + ' mt-4'} disabled={state.profileReviewed || state.stage === 'complete'} onClick={() => act({ type: 'review-profile', employeeId: employee.id })}>{state.profileReviewed ? 'Profile reviewed' : 'Review sample profile'}</button></article><article className="rounded-lg bg-neutral-50 p-4"><h3 className="text-sm font-semibold">2 · Job review</h3><p className="mt-2 text-sm text-neutral-600">{employee.jobTitle}<br />{employee.department}</p><button ref={jobReview} type="button" className={actionClass + ' mt-4'} disabled={state.jobReviewed || state.stage === 'complete'} onClick={() => act({ type: 'review-job', employeeId: employee.id })}>{state.jobReviewed ? 'Job reviewed' : 'Review sample job'}</button></article></div>
     <h3 className="mt-6 text-sm font-semibold">3 · App-owned checklist</h3><div className="mt-3 grid gap-3">{employee.onboarding.map(task => <button ref={element => { if (element) taskButtons.current.set(task.id, element); else taskButtons.current.delete(task.id) }} type="button" key={task.id} aria-pressed={Boolean(state.tasks[task.id])} disabled={state.stage === 'complete'} onClick={() => act({ type: 'check-task', employeeId: employee.id, taskId: task.id, complete: !state.tasks[task.id] })} className={`flex min-h-14 items-center gap-3 rounded-lg border border-neutral-200 p-4 text-left text-sm disabled:cursor-default ${focusClass}`}>{state.tasks[task.id] ? <CheckCircle2 className="h-5 w-5 text-emerald-700" aria-hidden="true" /> : <Circle className="h-5 w-5 text-neutral-400" aria-hidden="true" />}<span className="flex-1 font-medium">{task.title}</span><span className="text-xs text-neutral-500">{state.tasks[task.id] ? 'Complete' : 'Mark complete'}</span></button>)}</div>
     <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4"><h3 className="text-sm font-semibold">4 · Review and confirm</h3><p className="mt-2 text-sm text-neutral-600">Profile: {state.profileReviewed ? 'reviewed' : 'pending'} · Job: {state.jobReviewed ? 'reviewed' : 'pending'} · Checklist: {Object.values(state.tasks).filter(Boolean).length}/{Object.keys(state.tasks).length}</p><div className="mt-4 flex flex-wrap gap-3"><button ref={summaryReview} type="button" className={actionClass} disabled={!ready || state.stage !== 'draft'} onClick={() => act({ type: 'review-onboarding', employeeId: employee.id })}>Review onboarding summary</button><button ref={confirmation} type="button" className={actionClass} disabled={state.stage !== 'reviewed'} onClick={() => act({ type: 'complete-onboarding', employeeId: employee.id })}>Confirm simulated onboarding</button></div><p ref={completionStatus} role="status" aria-label="Onboarding completion status" tabIndex={-1} className={`mt-4 text-sm font-semibold text-emerald-800 ${focusClass}`}>{state.stage === 'complete' ? `Simulated onboarding completed · ${state.receipt}. Demo directory status is now active.` : `Sample status: ${state.stage}`}</p></div>
@@ -276,21 +281,31 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
   const request = useUnsavedTransition()
   const resolution = resolveHrPath(pathname === '/hr/demo' ? '/hr/demo/admin' : pathname)
   const portal = resolution?.portal ?? 'admin'
-  const { state, setState, reset: resetStoredState, status: storageStatus, importState, replacementEpoch, recovery } = usePortalWorkspace('hr')
+  const { state, setState: setStoredState, reset: resetStoredState, status: storageStatus, importState, replacementEpoch, recovery } = usePortalWorkspace('hr')
+  function setState(update: HrDemoState | ((current: HrDemoState) => HrDemoState)) {
+    setStoredState(current => {
+      const next = typeof update === 'function' ? update(current) : update
+      if (!isHrDemoState(next, hrFixture)) throw new Error('The proposed HR workspace is invalid; no sample change was saved.')
+      return next
+    })
+  }
   const { recruiting, performance, surveys, operations, serviceDesk, workflow, managementRole, selectedEmployee } = state
-  const fixture = recruitingFixture(hrFixture, recruiting)
-  const defaultManager = fixture.employees.find(employee => fixture.employees.some(report => report.managerId === employee.id)) ?? fixture.employees[0]
+  const baseFixture = recruitingFixture(hrFixture, recruiting)
+  const fixture = effectiveHrFixture(state, baseFixture)
+  const managerCandidates = fixture.employees.filter(record => record.employmentStatus === 'active')
+  const defaultManager = managerCandidates.find(employee => fixture.employees.some(report => report.managerId === employee.id)) ?? managerCandidates[0]
+  const selectedManager = managerCandidates.find(record => record.id === state.selectedManager) ?? defaultManager
   const completed = new Set(state.completed)
   const acknowledgements = new Set(state.acknowledgements)
   function setPart<K extends keyof HrDemoState>(key: K, value: HrDemoState[K]) { setState(previous => ({ ...previous, [key]: value })) }
   const [workflowMessage, setWorkflowMessage] = useState('')
   const [workflowError, setWorkflowError] = useState(false)
   const resetGeneration = replacementEpoch
-  const actor: HrActor = { role: portal === 'admin' ? managementRole : portalRoles[portal], employeeId: portal === 'manager' ? defaultManager?.id : portal === 'employee' ? selectedEmployee : undefined, contractorId: portal === 'contractor' ? fixture.contractors[0]?.id : undefined }
+  const actor: HrActor = { role: portal === 'admin' ? managementRole : portalRoles[portal], employeeId: portal === 'manager' ? selectedManager?.id : portal === 'employee' ? selectedEmployee : undefined, contractorId: portal === 'contractor' ? fixture.contractors[0]?.id : undefined }
   const selected = resolution && matchHrRoute(resolution.canonical, hrRoutes)
   const route = selected?.route
   const employeeId = selected?.parameters.employeeId ?? actor.employeeId
-  const demoEmployees = fixture.employees.map(record => ({ ...record, workEmail: workflow.profileEmails[record.id] ?? record.workEmail, employmentStatus: workflow.employeeStatuses[record.id] ?? record.employmentStatus, onboardingStatus: workflow.onboarding[record.id]?.stage === 'complete' ? 'simulated-complete' : record.onboardingStatus }))
+  const demoEmployees = fixture.employees
   const employee = demoEmployees.find(record => record.id === employeeId)
   const contractor = fixture.contractors.find(record => record.id === (selected?.parameters.contractorId ?? actor.contractorId))
   const employees = scopedEmployees(actor, demoEmployees)
@@ -309,7 +324,7 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
   }
   function runAction(event: MockHrEvent) {
     try {
-      setPart('workflow', transitionMockHr(workflow, actor, event, fixture))
+      setState(current => ({ ...current, workflow: transitionMockHr(current.workflow, actor, event, effectiveHrFixture(current, recruitingFixture(hrFixture, current.recruiting))) }))
       setWorkflowMessage('Simulated change recorded in this preview only. No provider call or money movement occurred.')
       setWorkflowError(false)
       return true
@@ -321,8 +336,10 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
   }
   function runPeopleAction(event: PeopleOperationsEvent) {
     try {
-      const next = applyLinkedPeopleOperation(workflow, operations, event, actor, fixture)
-      setState(previous => ({ ...previous, operations: next.operations, workflow: next.workflow }))
+      setState(current => {
+        const next = applyLinkedPeopleOperation(current.workflow, current.operations, event, actor, effectiveHrFixture(current, recruitingFixture(hrFixture, current.recruiting)))
+        return { ...current, operations: next.operations, workflow: next.workflow }
+      })
       setWorkflowMessage('Sample people operation recorded. Dashboards and scoped activity reflect this session.')
       setWorkflowError(false)
       return true
@@ -330,7 +347,7 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
   }
   function runServiceAction(event: HrServiceDeskEvent) {
     try {
-      setPart('serviceDesk', transitionHrServiceDesk(serviceDesk, actor, event, fixture))
+      setState(current => ({ ...current, serviceDesk: transitionHrServiceDesk(current.serviceDesk, actor, event, effectiveHrFixture(current, recruitingFixture(hrFixture, current.recruiting))) }))
       setWorkflowMessage('Fictional HR request updated in this session.')
       setWorkflowError(false)
       return true
@@ -340,22 +357,38 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
   const operationsSummary = peopleOperationsSummary(operations, actor, fixture)
   function runRecruitingAction(event: RecruitingEvent) {
     try {
-      const next = applyRecruitingToHr(recruiting, workflow, operations, actor, event, hrFixture)
-      setState(previous => ({ ...previous, recruiting: next.recruiting, workflow: next.workflow, operations: next.operations }))
+      setState(current => {
+        const next = applyRecruitingToHr(current.recruiting, current.workflow, current.operations, actor, event, hrFixture)
+        return { ...current, recruiting: next.recruiting, workflow: next.workflow, operations: next.operations }
+      })
       setWorkflowMessage('Sample recruiting updated. Hired candidates appear in the employee directory and onboarding preview.'); setWorkflowError(false); return true
     } catch (error) { setWorkflowMessage(error instanceof Error ? error.message : 'The sample recruiting action failed.'); setWorkflowError(true); return false }
   }
   function runPerformanceAction(event: PerformanceEvent) {
     try {
-      setPart('performance', transitionPerformance(performance, actor, event, fixture))
+      setState(current => ({ ...current, performance: transitionPerformance(current.performance, actor, event, effectiveHrFixture(current, recruitingFixture(hrFixture, current.recruiting))) }))
       setWorkflowMessage('Sample performance workflow saved in this session.'); setWorkflowError(false); return true
     } catch (error) { setWorkflowMessage(error instanceof Error ? error.message : 'The sample review action failed.'); setWorkflowError(true); return false }
   }
   function runSurveyAction(event: SurveysEvent) {
     try {
-      setPart('surveys', transitionSurveys(surveys, actor, event, fixture))
+      setState(current => ({ ...current, surveys: transitionSurveys(current.surveys, actor, event, effectiveHrFixture(current, recruitingFixture(hrFixture, current.recruiting))) }))
       setWorkflowMessage('Sample survey workflow saved in this session.'); setWorkflowError(false); return true
     } catch (error) { setWorkflowMessage(error instanceof Error ? error.message : 'The sample survey action failed.'); setWorkflowError(true); return false }
+  }
+  function runLifecycleAction(update: (current: HrDemoState) => HrDemoState) {
+    try {
+      // Persistence evaluates this once against its synchronous current value;
+      // a stale preview throws before any save or accepted state update.
+      setState(update)
+      setWorkflowMessage('Fictional HR lifecycle action recorded in this workspace. No provider or account access was changed.')
+      setWorkflowError(false)
+      return true
+    } catch (error) {
+      setWorkflowMessage(error instanceof Error ? error.message : 'The sample HR lifecycle action was refused.')
+      setWorkflowError(true)
+      return false
+    }
   }
   const recruitingCounts = recruitingSummary(recruiting, actor)
   const talent = {
@@ -368,8 +401,8 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
     if (selected?.parameters.employeeId && !employee) return <Panel title="Fictional employee not found"><p className="text-sm text-neutral-600">The requested ID is not in the synthetic fixture. No provider record is queried.</p></Panel>
     if (selected?.parameters.contractorId && !contractor) return <Panel title="Fictional contractor not found"><p className="text-sm text-neutral-600">The requested ID is not in the synthetic fixture.</p></Panel>
     if (selected?.parameters.payrollId && !fixture.payrolls.some(record => record.id === selected.parameters.payrollId)) return <Panel title="Fictional payroll not found"><p className="text-sm text-neutral-600">The requested payroll ID is not in the synthetic fixture.</p></Panel>
-    if (route.capabilityId === 'employee-directory' || module === 'people' || module === 'team') return <EmployeeDirectory employees={employees} portal={portal} canOpenProfile={hrRoutes.some(item => item.portal === 'admin' && item.capabilityId === 'employee-profile' && canViewRoute(actor, item))} />
-    if (['employee-profile', 'employee-compensation'].includes(route.capabilityId) && employee) return <div className="grid gap-5"><EmployeeProfile key={`${actor.role}:${employee.id}:${resetGeneration}`} employee={employee} actor={actor} email={workflow.profileEmails[employee.id]} onEmail={value => runAction({ type: 'change-profile', employeeId: employee.id, workEmail: value })} />{portal === 'admin' && <div className="flex flex-wrap gap-4 text-sm font-semibold"><AppLink to={`/hr/demo/admin/employees/${employee.id}/onboarding`} className="underline underline-offset-4">Onboarding checklist</AppLink>{canViewCompensation(actor, employee.id) && <AppLink to={`/hr/demo/admin/employees/${employee.id}/compensation`} className="underline underline-offset-4">Compensation specification</AppLink>}</div>}</div>
+    if (route.capabilityId === 'employee-directory' || module === 'people' || module === 'team') return <div className="grid min-w-0 grid-cols-1 gap-5"><EmployeeDirectory employees={employees} portal={portal} canOpenProfile={hrRoutes.some(item => item.portal === 'admin' && item.capabilityId === 'employee-profile' && canViewRoute(actor, item))} />{portal === 'admin' && <HrEmploymentLifecycle key={`${actor.role}:${resetGeneration}`} state={state} actor={actor} baseFixture={baseFixture} onAction={runLifecycleAction} />}{portal === 'manager' && <HrDirectoryCorrections key={`${actor.role}:${actor.employeeId ?? 'none'}:${resetGeneration}`} state={state} actor={actor} baseFixture={baseFixture} onAction={runLifecycleAction} />}</div>
+    if (['employee-profile', 'employee-compensation'].includes(route.capabilityId) && employee) return <div className="grid min-w-0 grid-cols-1 gap-5"><EmployeeProfile key={`${actor.role}:${employee.id}:${resetGeneration}`} employee={employee} actor={actor} email={workflow.profileEmails[employee.id]} onEmail={value => runAction({ type: 'change-profile', employeeId: employee.id, workEmail: value })} />{portal === 'admin' && <div className="flex flex-wrap gap-4 text-sm font-semibold"><AppLink to={`/hr/demo/admin/employees/${employee.id}/onboarding`} className="underline underline-offset-4">Onboarding checklist</AppLink><AppLink to="/hr/demo/admin/employees#hr-employment-lifecycle" className="underline underline-offset-4">Employment lifecycle and transfers</AppLink>{canViewCompensation(actor, employee.id) && <AppLink to={`/hr/demo/admin/employees/${employee.id}/compensation`} className="underline underline-offset-4">Compensation specification</AppLink>}</div>}<HrDirectoryCorrections key={`corrections:${actor.role}:${employee.id}:${resetGeneration}`} state={state} actor={actor} baseFixture={baseFixture} employeeId={employee.id} onAction={runLifecycleAction} /></div>
     if (route.capabilityId === 'employee-onboarding' && employee) return <OnboardingJourney employee={employee} state={workflow.onboarding[employee.id]} onAction={runAction} />
     if (route.capabilityId === 'contractor-profile' && contractor) return <Panel title="Fictional contractor profile" note="Contractors have their own identity and payment domain. No employee compensation or private employee record is included."><RecordTable records={[contractor]} empty="No contractor in scope." columns={['name', 'email', 'type', 'onboardingStatus']} />{portal === 'admin' && <AppLink className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4" to={`/hr/demo/admin/contractors/${contractor.id}/onboarding`}>Review contractor checklist</AppLink>}</Panel>
     if (route.capabilityId === 'contractor-onboarding' && contractor) return <Onboarding employee={{ id: contractor.id, firstName: String(contractor.name), onboarding: contractor.onboarding as HrEmployee['onboarding'] ?? [] }} completed={completed} onToggle={toggle} />
@@ -393,7 +426,7 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
     if (route.capabilityId === 'pay-schedules') return <Panel title="Sample pay schedules" note="Illustrative cadence only. Provider assignment and processing deadlines remain live-gated."><RecordTable records={fixture.paySchedules ?? []} empty="No sample schedules." columns={['title', 'frequency', 'status']} /></Panel>
     if (['company-taxes', 'company-banking'].includes(route.capabilityId)) return <Panel title={route.title} note="Sensitive values are intentionally omitted from the template. Use the authorized Gusto flow through the reviewed server proxy."><p className="text-sm leading-6 text-neutral-600">{route.capabilityId === 'company-banking' ? 'Bank account connection, account verification and employer funding authorization are unavailable in mock mode.' : 'Federal and state tax identifiers, registrations and filing setup are unavailable in mock mode.'}</p></Panel>
     if (module === 'company' || module === 'setup') return <Panel title="Fictional company setup" note="Provider onboarding gates are specifications until a Gusto Demo connection is authorized."><RecordTable records={[fixture.company]} empty="No company fixture." columns={['name', 'status']} /><dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2"><div><dt className="text-neutral-500">Operating mode</dt><dd className="mt-1 font-semibold">Mock · no credentials</dd></div><div><dt className="text-neutral-500">Payroll authorization</dt><dd className="mt-1 font-semibold">Disabled</dd></div></dl></Panel>
-    if (module === 'departments' || module === 'organization' || module === 'locations' || module === 'pay-schedules') return <Panel title={route.title} note="Derived fictional organization data. Department and location administration remain adapter specifications."><RecordTable records={[...new Set(employees.map(record => record.department))].map((name, index) => ({ id: `department-${index}`, title: name, status: 'sample' }))} empty="No departments in scope." /></Panel>
+    if (module === 'departments' || module === 'organization' || module === 'locations' || module === 'pay-schedules') return <div className="grid gap-5"><Panel title={route.title} note="Derived fictional organization data. Labeled employment sample controls below update only this workspace."><RecordTable records={[...new Set(employees.map(record => record.department))].map((name, index) => ({ id: `department-${index}`, title: name, status: 'sample' }))} empty="No departments in scope." /></Panel>{portal === 'admin' && <HrEmploymentLifecycle key={`${actor.role}:${resetGeneration}`} state={state} actor={actor} baseFixture={baseFixture} onAction={runLifecycleAction} />}</div>
     if (module === 'integrations' || module === 'sync' || module === 'audit' || module === 'requests' || module === 'support') return <Panel title={route.title} note="The portable package defines the provider and server contracts. This browser workspace has no Gusto connection or cloud write path."><dl className="grid gap-5 text-sm sm:grid-cols-2"><div><dt className="text-neutral-500">Gusto</dt><dd className="mt-1 font-semibold">Mock preview · disconnected</dd></div><div><dt className="text-neutral-500">Firestore projection</dt><dd className="mt-1 font-semibold">Not provisioned</dd></div><div><dt className="text-neutral-500">Webhook verification</dt><dd className="mt-1 font-semibold">Specification only</dd></div><div><dt className="text-neutral-500">Shared test key</dt><dd className="mt-1 font-semibold">None embedded</dd></div></dl></Panel>
     if (!module) return portal === 'contractor' ? <Panel title="Your fictional contractor record"><RecordTable records={fixture.contractors.filter(record => record.id === actor.contractorId)} empty="No contractor in scope." columns={['name', 'type', 'onboardingStatus']} /></Panel> : <HrDashboard actor={actor} portal={portal} fixture={fixture} state={workflow} requests={operations.ptoRequests} operations={operationsSummary} openOperations={operationsSummary.openCount} openServiceRequests={openServiceRequests} talent={talent} />
     return <Panel title={route.title}><p className="text-sm leading-6 text-neutral-600">This module has a page specification and navigation contract. Its application adapter is not implemented in this first mock phase.</p></Panel>
@@ -410,7 +443,7 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
     <div className="mt-7 flex flex-wrap items-start justify-between gap-5"><div><p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">{label(fixture.company.name)} · {portalLabels[portal]} preview</p><h1 className="mt-3 text-3xl font-bold tracking-tight">{route?.title ?? 'HR preview'}</h1><p className="mt-3 max-w-3xl text-sm leading-6 text-neutral-600">{route?.description ?? 'Choose a standard people portal.'}</p></div><DemoWorkspaceReset module="hr" recovery={recovery} onReset={reset}><RefreshCcw className="h-4 w-4" aria-hidden="true" />Reset sample changes</DemoWorkspaceReset></div>
     {workflowMessage && <p role={workflowError ? 'alert' : 'status'} className={`mt-4 rounded-md px-4 py-3 text-sm ${workflowError ? 'bg-rose-50 text-rose-800' : 'bg-emerald-50 text-emerald-800'}`}>{workflowMessage}</p>}
     <nav aria-label="Demo portals" className="mt-6 flex flex-wrap gap-2">{(Object.keys(portalRoots) as HrPortal[]).map(value => <AppLink key={value} to={`/hr/demo/${value}`} aria-current={portal === value ? 'page' : undefined} className={`inline-flex min-h-11 items-center rounded-md px-4 py-2 text-sm font-semibold ${portal === value ? 'bg-neutral-950 text-white' : 'border border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>{portalLabels[value]}</AppLink>)}<AppLink to="/hr/demo/sdk" className="inline-flex min-h-11 items-center rounded-md border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-800">Gusto SDK preview</AppLink></nav>
-    <div className="mt-5 rounded-lg bg-neutral-50 p-4">{portal === 'admin' ? <label className="flex flex-wrap items-center gap-3 text-sm font-medium">Synthetic management role<select className="min-h-11 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm" value={managementRole} onChange={event => { const role = event.target.value as HrRole; request({ portal: 'hr', label: 'Change management role' }, () => setPart('managementRole', role)) }}><option value="employer-owner">Employer owner</option><option value="payroll-admin">Payroll admin</option><option value="hr-admin">HR admin</option><option value="auditor">Auditor</option></select><span className="text-xs font-normal text-neutral-500">Changes demo navigation only; never Firebase claims.</span></label> : portal === 'employee' ? <label className="flex flex-wrap items-center gap-3 text-sm font-medium">Synthetic employee identity<select className="min-h-11 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm" value={selectedEmployee} onChange={event => { const employeeId = event.target.value; request({ portal: 'hr', label: 'Change employee identity' }, () => setPart('selectedEmployee', employeeId)) }}>{fixture.employees.map(record => <option key={record.id} value={record.id}>{record.firstName} {record.lastName}</option>)}</select><span className="text-xs font-normal text-neutral-500">Own records only; fictional identity preview.</span></label> : <p className="flex items-center gap-2 text-sm text-neutral-600"><Users className="h-4 w-4" aria-hidden="true" />{portal === 'contractor' ? label(fixture.contractors[0]?.name) : `${defaultManager?.firstName} ${defaultManager?.lastName}`} · {portalRoles[portal]} · fictional identity</p>}</div>
+    <div className="mt-5 rounded-lg bg-neutral-50 p-4">{portal === 'admin' ? <label className="flex flex-wrap items-center gap-3 text-sm font-medium">Synthetic management role<select className="min-h-11 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm" value={managementRole} onChange={event => { const role = event.target.value as HrRole; request({ portal: 'hr', label: 'Change management role' }, () => setPart('managementRole', role)) }}><option value="employer-owner">Employer owner</option><option value="payroll-admin">Payroll admin</option><option value="hr-admin">HR admin</option><option value="auditor">Auditor</option></select><span className="text-xs font-normal text-neutral-500">Changes demo navigation only; never Firebase claims.</span></label> : portal === 'employee' ? <label className="flex flex-wrap items-center gap-3 text-sm font-medium">Synthetic employee identity<select className="min-h-11 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm" value={selectedEmployee} onChange={event => { const employeeId = event.target.value; request({ portal: 'hr', label: 'Change employee identity' }, () => setPart('selectedEmployee', employeeId)) }}>{fixture.employees.map(record => <option key={record.id} value={record.id}>{record.firstName} {record.lastName}</option>)}</select><span className="text-xs font-normal text-neutral-500">Own records only; fictional identity preview.</span></label> : portal === 'manager' ? <label className="flex flex-wrap items-center gap-3 text-sm font-medium">Synthetic manager identity<select className="min-h-11 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm" value={selectedManager?.id ?? ''} disabled={!managerCandidates.length} onChange={event => { const managerId = event.target.value; request({ portal: 'hr', label: 'Change manager identity' }, () => setPart('selectedManager', managerId)) }}>{!managerCandidates.length && <option value="">No active fictional manager identity</option>}{managerCandidates.map(record => <option key={record.id} value={record.id}>{record.firstName} {record.lastName}</option>)}</select><span className="text-xs font-normal text-neutral-500">Current direct-report scope only; fictional identity preview.</span></label> : <p className="flex items-center gap-2 text-sm text-neutral-600"><Users className="h-4 w-4" aria-hidden="true" />{label(fixture.contractors[0]?.name)} · {portalRoles[portal]} · fictional identity</p>}</div>
     <div className="mt-7 grid items-start gap-6 lg:grid-cols-[14rem_1fr]"><aside className="rounded-xl border border-neutral-200 bg-white p-3 lg:sticky lg:top-20 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto"><nav aria-label={`${portalLabels[portal]} HR pages`} className="hidden gap-1 lg:grid">{navRoutes.map(item => <AppLink key={item.id} to={demoPath(item.path, portal)} aria-current={item.id === route?.id ? 'page' : undefined} className={`flex min-h-11 items-center rounded-md px-3 py-2 text-sm ${item.id === route?.id ? 'bg-emerald-50 font-semibold text-emerald-900' : 'text-neutral-600 hover:bg-neutral-50'}`}>{item.title}</AppLink>)}</nav><details className="lg:hidden"><summary className="min-h-11 cursor-pointer rounded-md px-3 py-3 text-sm font-semibold">Browse {portalLabels[portal].toLowerCase()} pages</summary><nav aria-label={`${portalLabels[portal]} mobile HR pages`} className="mt-2 grid gap-1 sm:grid-cols-2">{navRoutes.map(item => <AppLink key={item.id} to={demoPath(item.path, portal)} aria-current={item.id === route?.id ? 'page' : undefined} className={`flex min-h-11 items-center rounded-md px-3 py-2 text-sm ${item.id === route?.id ? 'bg-emerald-50 font-semibold text-emerald-900' : 'text-neutral-600 hover:bg-neutral-50'}`}>{item.title}</AppLink>)}</nav></details><AppLink to="/hr" className="mt-4 block border-t border-neutral-200 px-3 pt-4 text-xs font-semibold text-neutral-500">About live HR adoption</AppLink></aside><div className="min-w-0 space-y-5">{content()}{route && canViewRoute(actor, route) && <Specification route={route} />}</div></div>
   </section>
 }
