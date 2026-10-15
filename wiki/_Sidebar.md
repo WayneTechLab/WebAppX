@@ -6,6 +6,7 @@
 - [Unified Template 3.4.0](Unified-Template-Guide.md)
 - [Managed SYSTEMX Integration](SYSTEMX-Standalone-Integration.md)
 - [Quick Start](Quick-Start.md)
+- [Template Portals — HR, CMS and CRM](Template-Portals.md)
 - [One-Line Install](One-Line-Install.md)
 - [WTL Standard Setup Guide](WTL-Standard-Setup-Guide.md)
 - [Setup Playbook](Setup-Playbook.md)

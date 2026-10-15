@@ -171,3 +171,91 @@ test('assignment inbox links each kind to its own permitted portal module', () =
   const unknown = insights.projectHrInsights({ actor: { role: 'unknown' }, fixture, state, operations, openOperations: 10 })
   assert.equal(unknown.actions.length, 0)
 })
+
+const sampleTalent = {
+  recruiting: { publishedJobs: 2, activeCandidates: 3, hires: 1 },
+  performance: { goals: 4, completedGoals: 1, openReviews: 2, selfReviewsDue: 2, managerReviewsDue: 1, acknowledgmentsDue: 1 },
+  surveys: { draft: 1, published: 2, closed: 1, assigned: 3, unsubmitted: 2, submittedResponses: 1 },
+}
+
+test('talent projections guard module access even when unauthorized counts are supplied', () => {
+  const state = workflow.createMockHrState(fixture)
+  const expectedModules = [
+    [owner, ['recruiting', 'performance', 'surveys']],
+    [{ role: 'hr-admin' }, ['recruiting', 'performance', 'surveys']],
+    [manager, ['performance']],
+    [avery, ['performance', 'surveys']],
+    [{ role: 'payroll-admin' }, []],
+    [{ role: 'auditor' }, []],
+    [{ role: 'contractor', contractorId: 'contractor-001' }, []],
+    [{ role: 'employee' }, []],
+    [{ role: 'manager', employeeId: 'missing' }, []],
+    [{ role: 'unknown' }, []],
+  ]
+  for (const [actor, modules] of expectedModules) {
+    const projection = insights.projectHrInsights({ actor, fixture, state, talent: sampleTalent })
+    const visibleModules = Object.keys(projection.talent).filter(key => projection.talent[key] !== undefined)
+    assert.deepEqual(visibleModules, modules, actor.role)
+    if (!modules.length) assert.equal(projection.actions.some(action => action.id.startsWith('talent-')), false, actor.role)
+  }
+})
+
+test('talent inbox actions resolve to permitted canonical routes for owner, HR, manager and employee', async () => {
+  const model = await import(modelUrl)
+  const routes = JSON.parse(readFileSync(new URL('../../.SYSTEMX/GUSTO/ROUTES.json', import.meta.url), 'utf8')).routes
+  const state = workflow.createMockHrState(fixture)
+  for (const actor of [owner, { role: 'hr-admin' }, manager, avery]) {
+    const projection = insights.projectHrInsights({ actor, fixture, state, talent: sampleTalent })
+    const actions = projection.actions.filter(action => action.id.startsWith('talent-'))
+    assert.ok(actions.length > 0)
+    for (const action of actions) {
+      const resolution = model.resolveHrPath(action.to)
+      const match = model.matchHrRoute(resolution.canonical, routes)
+      assert.ok(match, action.to)
+      assert.equal(model.canViewRoute(actor, match.route), true, `${actor.role}: ${action.to}`)
+    }
+    if (actor.role === 'manager') assert.ok(actions.every(action => action.to === '/hr/demo/manager/performance'))
+    if (actor.role === 'employee') assert.ok(actions.every(action => ['/hr/demo/employee/performance', '/hr/demo/employee/surveys'].includes(action.to)))
+  }
+})
+
+test('talent counts and due actions update while private text and invalid counts are discarded', () => {
+  const state = workflow.createMockHrState(fixture)
+  const supplied = structuredClone(sampleTalent)
+  supplied.performance.privateSelfReview = 'DO NOT PROJECT THIS SELF REVIEW'
+  supplied.performance.privateManagerReview = 'DO NOT PROJECT THIS MANAGER REVIEW'
+  supplied.surveys.privateResponses = ['DO NOT PROJECT THIS ANSWER']
+  const initial = insights.projectHrInsights({ actor: avery, fixture, state, talent: supplied })
+  assert.equal(initial.talent.performance.openReviews, 2)
+  assert.equal(initial.actions.find(action => action.id === 'talent-self-reviews').count, 2)
+  assert.equal(initial.actions.find(action => action.id === 'talent-review-acknowledgments').count, 1)
+  assert.equal(initial.actions.find(action => action.id === 'talent-survey-responses').count, 2)
+  assert.equal(JSON.stringify(initial).includes('DO NOT PROJECT'), false)
+  supplied.performance.completedGoals = 4
+  supplied.performance.selfReviewsDue = 0
+  supplied.performance.acknowledgmentsDue = 0
+  supplied.surveys.unsubmitted = 0
+  supplied.surveys.submittedResponses = 3
+  const complete = insights.projectHrInsights({ actor: avery, fixture, state, talent: supplied })
+  assert.equal(complete.talent.surveys.submittedResponses, 3)
+  assert.deepEqual(complete.actions.filter(action => action.id.startsWith('talent-')), [])
+  const invalid = insights.projectHrInsights({ actor: owner, fixture, state, talent: { recruiting: { publishedJobs: -2, activeCandidates: Number.NaN, hires: Number.POSITIVE_INFINITY }, surveys: { ...sampleTalent.surveys, assigned: 2.8 } } })
+  assert.deepEqual(invalid.talent.recruiting, { publishedJobs: 0, activeCandidates: 0, hires: 0 })
+  assert.equal(invalid.talent.surveys.assigned, 2)
+})
+
+test('workforce and self projections use the passed dynamic hire fixture', () => {
+  const expanded = structuredClone(fixture)
+  const hire = { ...structuredClone(fixture.employees[2]), id: 'employee-hired-001', firstName: 'Casey', lastName: 'Fiction', department: 'Operations', managerId: manager.employeeId, employmentStatus: 'onboarding' }
+  expanded.employees.push(hire)
+  const state = workflow.createMockHrState(expanded)
+  const company = insights.projectHrInsights({ actor: owner, fixture: expanded, state, talent: sampleTalent })
+  assert.equal(company.people, fixture.employees.length + 1)
+  assert.ok(company.workforce.some(employee => employee.id === hire.id))
+  assert.ok(company.actions.some(action => action.to === `/hr/demo/admin/employees/${hire.id}/onboarding`))
+  const own = insights.projectHrInsights({ actor: { role: 'employee', employeeId: hire.id }, fixture: expanded, state, talent: { performance: sampleTalent.performance, surveys: sampleTalent.surveys } })
+  assert.deepEqual(own.workforce.map(employee => employee.id), [hire.id])
+  assert.equal(own.talent.performance.goals, 4)
+  const team = insights.projectHrInsights({ actor: manager, fixture: expanded, state })
+  assert.ok(team.workforce.some(employee => employee.id === hire.id))
+})

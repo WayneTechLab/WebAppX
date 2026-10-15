@@ -48,6 +48,7 @@ checkout while keeping production Firebase Hosting clean.
 | --- | --- |
 | Get a running app in minutes | **[Quick Start](Quick-Start.md)** |
 | Preview native HR portal workflows and selected genuine SDK flows | **[Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md)** |
+| Explore independent HR, CMS and CRM runtime demos | **[Template Portals](Template-Portals.md)** |
 | Delegate one adopted-app task to an installed CLI | **[Agent Y New App Setup](Agent-Y-New-App-Setup.md)** |
 | Use `.SYSTEMX` from idea to production | **[User Ingest & Production Setup](User-Ingest-and-Production-Setup.md)** |
 | Open the local builder/control surface | **[SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md)** |
@@ -93,7 +94,10 @@ synthetic management, employee, manager and contractor portals with app-owned
 state that resets on refresh. Native source includes onboarding, benefit elections,
 timesheet approval, simulated payroll/pay statements, leave balances and decisions,
 assignments/acknowledgments, asset returns, scoped activity, dashboards/reports and
-an employee-to-manager/HR service desk. The portable 64-page contract remains
+an employee-to-manager/HR service desk. New talent module source adds owner/HR
+recruiting-to-onboarding, scoped goals/performance review and identified employee
+feedback surveys. These use native state; the earlier portal receipt below
+retains its own verification scope. The portable 64-page contract remains
 unchanged; request/activity routes are host extensions. `/hr/demo/sdk` uses the genuine
 Gusto React SDK 0.56.6 directory, administrative onboarding and payroll execution
 components against isolated local mock records; its mock API is absent
@@ -105,7 +109,7 @@ default. Other SDK workflows and live payroll need separate acceptance. Follow
 [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md) for the
 preview, setup and validation path.
 
-The current automated HR suite passes **70 tests** across native workflows,
+The earlier portal checkpoint passed **70 HR tests** across native workflows,
 people/linked operations, insights, service desk, SDK-client mocks and backend
 boundaries. The [HR portal guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL.md)
 and [portal QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md)
@@ -116,6 +120,35 @@ gross/$48 illustrative withholding/$25 benefit/$167 net; other employee and
 auditor views retained their scope. This did not rerun the separate SDK UI or
 establish provider acceptance. The earlier October 14
 41-test receipt and October 13 39-test release receipt remain historical.
+
+## HR, CMS and CRM portal demos
+
+`/portals` opens the account-free directory for `/hr/demo`, `/cms/demo` and
+`/crm/demo`. CMS separates author, reviewer and publisher actions over exact
+content revisions; CRM links owned leads, companies, contacts, opportunities and
+tasks. Each module has independent sample records and role selection, with no
+automatic HR/customer data sharing or Firebase permission grants.
+
+Demo navigation preserves all modules; Reset is local to one module. Reloading
+or leaving the demo area resets the session. The separate `/hr/demo/sdk` route
+resets native HR rather than preserving it. CMS publication is an in-app sample,
+and CRM pipeline/won amounts establish no external publication or payments.
+Read [Template Portals](Template-Portals.md) and the
+[architecture/adoption guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md)
+for workflows, scopes and remaining production work. New browser/test evidence
+is recorded in the [talent/CMS/CRM QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md),
+separately from the historical HR portal receipts.
+Current model suites pass **129 tests**: 109 HR, 10 CMS and 10 CRM. The new
+browser run is recorded separately from those automated checks.
+Selected browser checks verified native hire/onboarding, performance review
+privacy/acknowledgment, survey 2/2 submitted responses with mean 4, and CMS
+return/review/publication/retirement with exact revision gates. These are local
+synthetic results; no external publication or provider acceptance occurred.
+Final CRM checks verified single lead conversion, the $1,500 discovery-to-won
+journey, completed follow-ups and representative/auditor scopes. Shared navigation
+preserved a CMS draft, HR's four people and CRM's won value; resetting CMS left
+the other modules intact. Casey's native new-hire payroll/own statement matched
+$240 gross/$48 illustrative withholding/$0 benefit/$192 net.
 
 ## Included route model
 

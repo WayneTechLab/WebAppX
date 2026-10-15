@@ -1,3 +1,15 @@
+# 3.4.0 follow-up — HR talent, CMS and CRM portals — 2026-10-14
+
+- Add account-free recruiting through native employee onboarding, goals and
+  private staged reviews, and identified employee survey programs.
+- Connect role-scoped talent counts and action links to HR dashboards/reports.
+- Add `/portals`, `/cms/demo` and `/crm/demo` with independent roles, records,
+  receipts and Reset controls; preserve module state across shared navigation.
+- Add CMS exact-revision review, frozen publication previews and retirement.
+- Add CRM companies/contacts, lead conversion, opportunity stages and follow-ups.
+- Record 109 HR and 20 CMS/CRM model tests plus the [browser verification](../../docs/HR-TALENT-QA-2026-10-14.md).
+- Preserve native/SDK separation and the protected live-provider boundary.
+
 # 3.4.0 follow-up — Connected HR portal — 2026-10-14
 
 - Add role-scoped dashboards, actionable assignment inboxes and live mock reports.

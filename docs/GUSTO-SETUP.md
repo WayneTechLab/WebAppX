@@ -37,6 +37,9 @@ Open the URL printed by Vite and visit:
 | `/hr/demo/employee/activity`, `/hr/demo/manager/activity`, `/hr/demo/admin/activity` | People-operation activity in the selected role's scope |
 | `/hr/demo/admin/reports` | Derived native workforce and workflow report with role-gated amounts |
 | `/hr/demo/employee/paystubs` | Own simulated statements from submitted native payroll receipts |
+| `/hr/demo/admin/recruiting` | Owner/HR sample job and candidate pipeline, ending in a native onboarding employee |
+| `/hr/demo/admin/performance`, `/hr/demo/employee/performance`, `/hr/demo/manager/performance` | Scoped goals and self-review/manager-publication/employee-acknowledgment cycle |
+| `/hr/demo/admin/surveys`, `/hr/demo/employee/surveys` | Identified employee feedback with draft, publish, own answer, submit and close stages |
 | `/hr/demo/admin/payroll` | Approved hours through fictional payroll calculation, review and simulated submission |
 | `/hr/demo/sdk` | Genuine SDK directory, admin onboarding and payroll flows with local synthetic sessions |
 
@@ -91,6 +94,47 @@ Firestore, contact Gusto, send invitations or create provider/cloud accounts.
 The optional Firebase module retains its separately documented implementation
 and adoption gates; completing a native demo does not enable that module.
 
+## Recruiting, performance and identified feedback
+
+The talent modules use the native session and role projections. Read the
+[talent walkthrough](HR-PORTAL.md#recruiting-performance-and-identified-feedback)
+for the exact authoring sequence, privacy gates and mock hire connection.
+
+| Module | Sequence and scope |
+| --- | --- |
+| Recruiting | Owner/HR creates and publishes a sample job, adds a unique fictional `.invalid` candidate and advances applied → screening → interview → offer → hired. The hire begins native onboarding with unconfigured compensation; it is not an active employee or an executed offer. |
+| Performance | The employee updates own goals and saves/submits own self-review. Only the assigned direct manager saves/publishes manager feedback; the employee acknowledges it. Owner/HR can assign goals/open cycles but cannot impersonate either author. |
+| Surveys | Owner/HR drafts questions and audience, saves and publishes. Each assigned employee saves own 1–5 rating/text answers before submitting once. Owner/HR closes the survey. Submitted names/answers are visible to owner/HR/auditor; results are identified, never anonymous. |
+
+Saved survey answers stay out of other role projections and submitted-only
+aggregates. Performance self-review drafts stay private until submission;
+manager drafts stay with the assigned manager until publication. Auditors see
+performance metadata without review comments. Publication/acknowledgment is a
+local workflow transition, not legal signing, employee agreement, pay-setting,
+external recruitment or provider acceptance. Questions/audiences lock on survey
+publication, and future hires are not invited automatically.
+
+This wave's new test total and browser evidence are separate from the earlier
+70-test portal checkpoint; read the
+[talent/CMS/CRM QA record](HR-TALENT-QA-2026-10-14.md). No production service or
+SDK fixture is activated. The [Template Portals guide](TEMPLATE-PORTALS.md)
+describes independent CMS/CRM roles and state alongside the native HR module.
+Current model checks pass **109 HR tests** and **20 CMS/CRM tests** (10 each).
+The new browser run has a separate acceptance scope in that receipt.
+
+The verified talent paths include Casey's hire into the native directory and
+completed onboarding, performance draft privacy through employee acknowledgment, and an
+identified survey with two submitted ratings (5 and 3), mean 4 and closure
+`MOCK-SURVEY-0007`. Saved answer drafts contributed zero submitted results.
+The CMS browser path also verified returned feedback, exact revision approval,
+published-snapshot preservation during edits and retirement. These local
+results do not enable a provider or production backend.
+In the final native session, Casey's eight October 15 hours were approved by
+Morgan and consumed by `MOCK-PAYROLL-0003`: $240 gross, $48 illustrative
+withholding, no benefit deduction and $192 net. Own pay history matched.
+CMS/CRM/shared-portal checks also passed: a $1,500 opportunity reached won after
+single conversion, record scopes held, and CMS Reset preserved HR/CRM state.
+
 ## Native people operations and service desk
 
 The additional portal workflows use the same synthetic native session as
@@ -103,14 +147,14 @@ activity and simulated statements. The selected native paths passed the
 onboarding/time/benefit/payroll scope and 41-test checkpoint.
 Read the [HR portal guide](HR-PORTAL.md) for the detailed capability and scope map.
 
-### Current automated checks
+### Earlier portal automated checks
 
-`npm run hr:test` passes **70 tests**: 17 native workflow, 9 people operations,
+At that checkpoint, `npm run hr:test` passed **70 tests**: 17 native workflow, 9 people operations,
 7 insights, 7 linked operations, 5 service desk, 11 SDK-client mock and 14 optional
 backend boundary checks. This establishes the automated model/contract coverage.
 The earlier 41-test checkpoint is historical.
 
-### Portal browser verification — 2026-10-14
+### Earlier portal browser verification — 2026-10-14
 
 The [portal QA receipt](HR-PORTAL-QA-2026-10-14.md) records a fresh native session
 after full reload, with Firebase initialization disabled and fictional data only:
@@ -226,6 +270,11 @@ these session totals. These are browser previews, not provider paystub PDFs or
 tax documents; native state never feeds the separate SDK fixture.
 
 ## Genuine SDK preview boundary
+
+The SDK preview is outside native HR/CMS/CRM state preservation. Opening it
+unmounts and clears native HR; returning creates a fresh native session. SDK
+state is independent and disappears when that preview unmounts. Use separate
+tabs when comparing a native journey with the SDK sample.
 
 The SDK preview pins `@gusto/embedded-react-sdk` **0.56.6**, its published API
 dependency **0.3.1** and API date **2026-06-15**. Start `/hr/demo/sdk` in Vite

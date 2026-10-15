@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { ArrowUpRight, ClipboardList, FileCheck2, Users } from 'lucide-react'
 import { AppLink } from '@/components/navigation/AppLink'
-import { canViewCompensation, formatMoney, scopedRecords, type HrPortal } from '../model'
-import { projectEmployeePayStatements, projectHrInsights, type HrInsightProps } from '../insights'
+import { canViewCompensation, formatMoney, scopedRecords, type HrPortal, type HrRole } from '../model'
+import { projectEmployeePayStatements, projectHrInsights, type HrInsightProps, type HrTalentCounts } from '../insights'
 
 function Panel({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
   return <section className="rounded-xl border border-neutral-200 bg-white p-5 sm:p-6"><h2 className="text-lg font-semibold text-neutral-950">{title}</h2>{note && <p className="mt-2 text-sm leading-6 text-neutral-600">{note}</p>}<div className="mt-5">{children}</div></section>
@@ -14,17 +14,31 @@ function NumberList({ rows }: { rows: [string, ReactNode][] }) {
   return <dl className="divide-y divide-neutral-100">{rows.map(([title, value]) => <div key={title} className="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0"><dt className="text-sm text-neutral-600">{title}</dt><dd className="text-right text-sm font-semibold tabular-nums text-neutral-950">{value}</dd></div>)}</dl>
 }
 
+function TalentPanels({ talent, role }: { talent: HrTalentCounts; role: HrRole }) {
+  const own = role === 'employee'
+  const portal = own ? 'employee' : role === 'manager' ? 'manager' : 'admin'
+  const base = `/hr/demo/${portal}`
+  const linkClass = 'mt-5 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-emerald-800 underline underline-offset-4'
+  if (!talent.recruiting && !talent.performance && !talent.surveys) return null
+  return <div className="grid gap-5 xl:grid-cols-3">
+    {talent.recruiting && <Panel title="Recruiting pipeline" note="Follow fictional jobs, active candidates and completed hires in this session."><NumberList rows={[["Published jobs", talent.recruiting.publishedJobs], ["Active candidates", talent.recruiting.activeCandidates], ["Completed sample hires", talent.recruiting.hires]]} /><AppLink to={`${base}/recruiting`} className={linkClass}>Open recruiting<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></AppLink></Panel>}
+    {talent.performance && <Panel title={own ? 'Your goals and reviews' : role === 'manager' ? 'Team goals and reviews' : 'Goals and review cycles'} note="Progress and review counts follow your selected preview scope."><NumberList rows={[["Goals", talent.performance.goals], ["Completed goals", talent.performance.completedGoals], ["Open reviews", talent.performance.openReviews], ...(own ? [["Your self reviews due", talent.performance.selfReviewsDue], ["Shared reviews to acknowledge", talent.performance.acknowledgmentsDue]] as [string, ReactNode][] : role === 'manager' ? [["Manager reviews due", talent.performance.managerReviewsDue]] as [string, ReactNode][] : [["Self reviews due", talent.performance.selfReviewsDue], ["Manager reviews due", talent.performance.managerReviewsDue], ["Acknowledgments due", talent.performance.acknowledgmentsDue]] as [string, ReactNode][])]} /><AppLink to={`${base}/performance`} className={linkClass}>Open performance<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></AppLink></Panel>}
+    {talent.surveys && <Panel title={own ? 'Your assigned surveys' : 'Survey programs'} note={own ? 'Respond to the published sample surveys assigned to your employee identity.' : 'Follow sample publication and response counts through survey closure.'}><NumberList rows={own ? [["Assigned surveys", talent.surveys.assigned], ["Responses still due", talent.surveys.unsubmitted], ["Submitted sample responses", talent.surveys.submittedResponses]] : [["Draft surveys", talent.surveys.draft], ["Published surveys", talent.surveys.published], ["Closed surveys", talent.surveys.closed], ["Employee assignments", talent.surveys.assigned], ["Submitted sample responses", talent.surveys.submittedResponses]]} /><AppLink to={`${base}/surveys`} className={linkClass}>Open surveys<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></AppLink></Panel>}
+  </div>
+}
+
 export function HrDashboard(props: HrInsightProps & { portal: HrPortal }) {
   const insight = projectHrInsights(props)
   const own = props.portal === 'employee'
   return <div className="grid gap-5">
-    <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 sm:p-6"><div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-emerald-900"><ClipboardList className="h-4 w-4" aria-hidden="true" />Your HR workspace</div><p className="mt-3 text-2xl font-semibold tracking-tight text-neutral-950">{own ? 'Your next steps, all in one place.' : props.portal === 'contractor' ? 'Your contractor workspace.' : 'Keep the people work moving.'}</p><p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-700">These numbers update as you complete onboarding, approve hours, confirm elections and simulate payroll. Everything uses fictional records in this browser session.</p></div>
+    <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 sm:p-6"><div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-emerald-900"><ClipboardList className="h-4 w-4" aria-hidden="true" />Your HR workspace</div><p className="mt-3 text-2xl font-semibold tracking-tight text-neutral-950">{own ? 'Your next steps, all in one place.' : props.portal === 'contractor' ? 'Your contractor workspace.' : 'Keep the people work moving.'}</p><p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-700">These numbers update as you complete onboarding, approve hours, confirm elections, simulate payroll and continue the talent workflows. Everything uses fictional records in this browser session.</p></div>
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <Metric title={own ? 'Your onboarding' : 'People in scope'} value={own ? insight.onboardingIncomplete ? 'In progress' : 'Complete' : insight.people} detail={own ? 'Profile, job and checklist review' : `${insight.active} active · ${insight.onboardingIncomplete} unfinished sample checklists`} />
       <Metric title="Time awaiting approval" value={insight.time.submitted} detail={`${insight.time.draft} draft entries · ${insight.time.approvedUnpaid} approved and unpaid`} />
       <Metric title="Benefit elections" value={`${insight.benefits.enrolled + insight.benefits.waived}/${insight.benefits.available}`} detail={`${insight.benefits.enrolled} enroll · ${insight.benefits.waived} waive · confirmed`} />
       <Metric title="Submitted payroll receipts" value={insight.payroll.submittedRuns} detail="Simulated submission only · no money moved" />
     </div>
+    <TalentPanels talent={insight.talent} role={props.actor.role} />
     <Panel title="Action inbox" note="Open an item to continue the linked workflow. Actions follow the selected identity and role.">
       {insight.actions.length ? <ul className="grid gap-3">{insight.actions.map(action => <li key={action.id}><AppLink to={action.to} className="group flex min-h-16 items-center gap-4 rounded-lg border border-neutral-200 p-4 hover:border-emerald-400 hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"><span className="flex h-9 min-w-9 items-center justify-center rounded-full bg-neutral-100 text-sm font-semibold tabular-nums text-neutral-900">{action.count}</span><span className="min-w-0 flex-1"><span className="block text-sm font-semibold text-neutral-950">{action.title}</span><span className="mt-1 block text-xs leading-5 text-neutral-600">{action.detail}</span></span><ArrowUpRight className="h-5 w-5 shrink-0 text-neutral-500 group-hover:text-emerald-800" aria-hidden="true" /></AppLink></li>)}</ul> : <p className="rounded-lg bg-neutral-50 p-4 text-sm leading-6 text-neutral-600">No open action in this role's current scope. Browse the portal navigation to review the available synthetic records.</p>}
     </Panel>
@@ -38,10 +52,11 @@ export function HrDashboard(props: HrInsightProps & { portal: HrPortal }) {
 export function HrReports(props: HrInsightProps) {
   const insight = projectHrInsights(props)
   return <div className="grid gap-5">
-    <Panel title="Live mock workforce report" note="Calculated from this browser session. Changing onboarding, time, benefit elections, absence requests or payroll updates these reports immediately.">
+    <Panel title="Live mock workforce report" note="Calculated from this browser session. Changing onboarding, time, benefit elections, absence requests, payroll or talent workflows updates these reports immediately.">
       <div className="grid gap-4 sm:grid-cols-3"><Metric title="People in scope" value={insight.people} detail={`${insight.active} active employees`} /><Metric title="Onboarding remaining" value={insight.onboardingIncomplete} detail="Sample checklists without a completion receipt" /><Metric title="Submitted payrolls" value={insight.payroll.submittedRuns} detail="Frozen simulated submissions" /></div>
       {insight.workforce.length ? <div className="mt-5 overflow-x-auto"><table className="w-full min-w-[34rem] text-left text-sm"><caption className="sr-only">Role scoped workforce and onboarding status</caption><thead><tr className="border-b border-neutral-200">{['Employee', 'Department', 'Job', 'Employment', 'Onboarding'].map(title => <th key={title} scope="col" className="px-3 py-3 font-semibold text-neutral-500">{title}</th>)}</tr></thead><tbody>{insight.workforce.map(employee => <tr key={employee.id} className="border-b border-neutral-100 last:border-0"><th scope="row" className="px-3 py-4 font-medium text-neutral-950">{employee.name}</th><td className="px-3 py-4 text-neutral-700">{employee.department}</td><td className="px-3 py-4 text-neutral-700">{employee.jobTitle}</td><td className="px-3 py-4 capitalize text-neutral-700">{employee.status}</td><td className="px-3 py-4 capitalize text-neutral-700">{employee.onboarding}</td></tr>)}</tbody></table></div> : <p className="mt-5 text-sm text-neutral-600">No employee records in this identity's scope.</p>}
     </Panel>
+    <TalentPanels talent={insight.talent} role={props.actor.role} />
     <div className="grid gap-5 xl:grid-cols-2">
       <Panel title="Time pipeline"><NumberList rows={[["Draft entries", insight.time.draft], ["Submitted entries", insight.time.submitted], ["Approved and unpaid entries", insight.time.approvedUnpaid], ["Eligible approved hours in sample period", insight.time.readyHours.toFixed(2)], ["Entries included in submitted payroll", insight.time.paid]]} /></Panel>
       <Panel title="Benefits and absence"><NumberList rows={[["Available employee plan elections", insight.benefits.available], ["Confirmed enrollments", insight.benefits.enrolled], ["Confirmed waivers", insight.benefits.waived], ["Unconfirmed elections", insight.benefits.unconfirmed], ["Pending time off", insight.requests.pending], ["Approved / rejected / cancelled time off", `${insight.requests.approved} / ${insight.requests.rejected} / ${insight.requests.cancelled}`]]} /></Panel>

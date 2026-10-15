@@ -19,6 +19,9 @@ sample changes** restores the fixture. Use fictional information only.
 | Time off | Request, approve, reject, cancel, balance reservations and overlap checks | Pending and approved leave reserve the synthetic balance; decisions update dashboards and activity |
 | People assignments | Tasks, policy/document acknowledgments, training and asset return tracking | Role-scoped status changes, assignment counts and deterministic activity receipts |
 | HR help desk | Employee request, assignment, start, resolution and reopen | Employee, direct-report manager and management views read the same request state |
+| Recruiting | Draft/publish job, candidate stages and mock hire | A fictional hire creates native onboarding requirements and directory identity |
+| Performance | Goals and a self-review/manager-publication/employee-acknowledgment cycle | Private drafts and author-specific transitions feed scoped progress counts |
+| Surveys | Draft/publish identified feedback, own answer draft/submission and close | Submitted-only aggregates; employee views contain only their own assigned feedback |
 | Reports | Current workforce, department, time pipeline, election and absence totals | Payroll amounts follow compensation permissions and submitted receipts |
 
 The synthetic absence policy starts each employee at **40 vacation hours** and
@@ -38,18 +41,116 @@ insurance calculations.
 
 Start with `/hr/demo`. Switch portals through the links at the top; switch the
 fictional employee or management role with its selector. Portal navigation keeps
-the current session data. A new tab or full reload starts a separate session.
+the current session data. The shared `/portals`, `/hr/demo`, `/cms/demo` and
+`/crm/demo` area preserves each module while navigating between demos. Reset
+affects only the selected module; a new tab, full reload or leaving the demo
+area starts fresh state. No HR records are copied into CMS or CRM. See
+[Template Portals](TEMPLATE-PORTALS.md) for their separate module roles.
+The existing `/hr/demo/sdk` route is an exception: it swaps out and resets
+native HR, and returning creates fresh native state. Its independent SDK preview
+session is not preserved by the native portal links.
 
 | Portal | Useful routes |
 | --- | --- |
-| Management | `/hr/demo/admin`, `/hr/demo/admin/reports`, `/hr/demo/admin/cases`, `/hr/demo/admin/activity` |
-| Employee | `/hr/demo/employee`, `/hr/demo/employee/paystubs`, `/hr/demo/employee/time-off`, `/hr/demo/employee/requests`, `/hr/demo/employee/activity` |
-| Manager | `/hr/demo/manager`, `/hr/demo/manager/time-off`, `/hr/demo/manager/requests`, `/hr/demo/manager/activity` |
+| Management | `/hr/demo/admin`, `/hr/demo/admin/reports`, `/hr/demo/admin/cases`, `/hr/demo/admin/recruiting`, `/hr/demo/admin/performance`, `/hr/demo/admin/surveys`, `/hr/demo/admin/activity` |
+| Employee | `/hr/demo/employee`, `/hr/demo/employee/paystubs`, `/hr/demo/employee/time-off`, `/hr/demo/employee/requests`, `/hr/demo/employee/performance`, `/hr/demo/employee/surveys`, `/hr/demo/employee/activity` |
+| Manager | `/hr/demo/manager`, `/hr/demo/manager/time-off`, `/hr/demo/manager/requests`, `/hr/demo/manager/performance`, `/hr/demo/manager/activity` |
 
 Tasks, training, policies, documents and assets have their own applicable portal
 navigation entries. The 64 imported portable route definitions remain unchanged;
 five additional host routes provide employee/manager requests and activity for
 management, employees and managers.
+
+## Recruiting, performance and identified feedback
+
+These modules use native fictional records. The earlier portal QA receipt and
+its 70-test checkpoint remain historical. The
+[talent/CMS/CRM QA record](HR-TALENT-QA-2026-10-14.md) records this wave's separate
+browser and automated acceptance evidence.
+The model suites currently pass **109 HR** and **20 CMS/CRM tests** (10 each);
+these automated results do not substitute for the separate browser run.
+
+The current browser check verified Casey's native hire/directory/onboarding
+connection through completion, private self/manager review drafts through publication and employee
+acknowledgment, and identified survey results from two submitted ratings (5 and
+3), mean 4, closed with `MOCK-SURVEY-0007`. Saved survey drafts contributed no
+results. The full receipt preserves the exact scope of those local observations.
+Casey's eight October 15 hours, approved by Morgan, then produced
+`MOCK-PAYROLL-0003`: $240 gross, $48 illustrative withholding, $0 benefit and
+$192 net, matching own pay history. The final dashboard reflected four people,
+one hire, one active candidate, one completed goal, Jordan's remaining open
+review and the closed survey's two submitted responses. Shared CMS/CRM
+navigation preserved those native records; Reset CMS left HR intact.
+
+### Recruiting to native onboarding
+
+1. As owner or HR administrator, open `/hr/demo/admin/recruiting`. Create a draft
+   sample job with a fictional title/department and an active sample manager,
+   then publish it. Publishing changes only this browser's state.
+2. Add a fictional candidate to the published job, using a unique email such as
+   `alex.candidate@example.invalid`. The application starts **applied**.
+3. Use **Begin screening → Move to interview → Prepare sample offer → Hire into
+   mock onboarding**. Stages must be completed in order. An active application
+   may instead be rejected; hired/rejected applications are locked.
+4. The native hire starts **onboarding**, with pending requirements and
+   compensation marked **unconfigured**. Open the directory or select that
+   employee in the employee preview, review profile/job, finish the checklist,
+   review the summary and explicitly confirm simulated onboarding. A hire alone
+   does not complete that review or configure real pay. The unconfigured marker
+   describes provider adoption; it does not block the deliberately fixed $30/hour
+   native fictional calculator once the employee meets its other sample gates.
+5. A published job can close only after all of its candidates are hired or
+   rejected. Closed jobs and terminal applications have no reopening path.
+
+Recruiting records are restricted to owner/HR, including exclusion from manager
+and auditor views. No public application, job-board publication, invitation,
+offer document, compensation agreement, background check or provider account is
+created. Native onboarding and sample leave balances belong to the host session.
+
+### Goals and performance review
+
+1. Open the applicable **Performance** page. The employee, direct manager or
+   owner/HR can create a goal; only that employee updates whole-number progress
+   from 0–100. Use **Save sample progress** or **Complete sample goal**.
+   Completed goals are locked.
+2. Owner/HR or the employee's direct manager opens a review cycle with a separate
+   assigned manager. Only one unfinished cycle per employee is allowed.
+3. As that employee, write fictional feedback, **Save self-review draft**, then
+   **Submit sample self-review**. Save the current text before submitting.
+4. As the assigned direct manager, **Save manager review draft**, then **Publish
+   sample review**. Save the current text before publishing.
+5. Return to the employee and **Acknowledge sample review**. Acknowledgment records
+   receipt, not agreement, a performance score or a compensation decision.
+
+The stages are draft → self-submitted → manager-review → published → acknowledged.
+Self-review draft text is excluded from other role projections until submission.
+Unpublished manager text stays with that manager, including exclusion from
+owner/HR views. Owner/HR can administer cycles but cannot write/submit another
+person's self-review or publish the manager's feedback. Managers cannot review
+themselves. Auditor projections omit both kinds of review comments; payroll and
+contractor roles have no performance records.
+
+### Identified employee feedback
+
+1. As owner/HR, open **Surveys**, choose the employee audience and edit the rating
+   and short-text questions. **Create sample survey draft**, or edit an existing
+   draft and **Save sample survey draft**, before **Publish saved sample survey**.
+   Publication freezes the saved audience and questions.
+2. As an assigned employee, open `/hr/demo/employee/surveys`. Choose a whole rating
+   from 1–5 and fictional text, then **Save my sample answers**. The saved draft
+   remains in that employee's projection and is excluded from submitted results.
+3. Use **Submit my sample response** once. Submission shares the employee's name,
+   rating and text with owner/HR and the read-only auditor. Submitted responses
+   are locked; other employees see only their own answers.
+4. Owner/HR can inspect submitted response counts, mean rating and rating
+   distribution, then **Close sample survey**. Closing prevents further answers;
+   there is no reopening path. New hires are not added to an existing audience.
+
+This is **identified feedback**, with no anonymous collection, anonymization or
+minimum response threshold. Managers, payroll admins and contractors receive no
+survey records. Neither publication nor submission sends messages or changes
+the separate SDK fixture. Real confidential feedback needs an independently
+reviewed privacy and retention design before adoption.
 
 ## Permission boundaries
 
@@ -74,6 +175,9 @@ management, employees and managers.
 | [people-operations.ts](../src/hr/people-operations.ts) | Absence balances, assignments, records and scoped activity |
 | [linked-operations.ts](../src/hr/linked-operations.ts) | Explicit links between sample policy/training assignments and onboarding/tasks |
 | [service-desk.ts](../src/hr/service-desk.ts) | Role-checked request lifecycle and receipts |
+| [recruiting.ts](../src/hr/recruiting.ts), [recruiting-link.ts](../src/hr/recruiting-link.ts) | Owner/HR pipeline and atomic mock-hire connection to native onboarding/leave balances |
+| [performance.ts](../src/hr/performance.ts) | Author-specific goals/review stages and scoped comment privacy |
+| [surveys.ts](../src/hr/surveys.ts) | Identified feedback lifecycle, own answer drafts and submitted-only results |
 | [insights.ts](../src/hr/insights.ts) | Scoped reports, actionable counts and submitted employee pay statements |
 | [HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | Shared session state, role selection and routing |
 
@@ -83,8 +187,10 @@ See [Gusto setup](GUSTO-SETUP.md) for that boundary.
 
 ## Work remaining toward a production HR portal
 
-Recruiting/candidate pipelines, performance reviews, surveys, access provisioning
-and automation remain specification or fixture previews. Contractor onboarding
+Access provisioning and automation remain specification or fixture previews.
+Real candidate intake, external recruiting messages/offers, production review
+governance and confidential or anonymous feedback require separate accepted
+adapters and policies. Contractor onboarding
 and payments remain their separately labeled previews. A complete adopted app
 also needs durable tenant-scoped storage, trusted server authorization for each
 mutation, audit retention, secure document transport, notification delivery,

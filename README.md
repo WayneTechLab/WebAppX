@@ -129,6 +129,9 @@ The native portal extension also provides these browser-memory previews:
 | Dashboards and reports | Derive workforce, onboarding, time, benefit, absence and submitted-payroll views from the selected role's native state. |
 | Employee pay history | Read own simulated statements from submitted native payroll receipts; per-employee deductions are capped to that employee's available sample pay and reconcile to run totals. |
 | HR help desk | Employee creates a fictional equipment, app-access or general HR request; a scoped manager or HR assigns, starts, resolves and can reopen it. |
+| Recruiting | Owner/HR publishes a draft sample job and moves fictional candidates through applied, screening, interview, offer and mock hire into native onboarding. |
+| Performance | Own goal progress and self-review, assigned manager feedback/publication, then employee acknowledgment, with private draft projections. |
+| Identified feedback | Owner/HR drafts and publishes a survey; assigned employees save/submit their own answers; submitted identified results feed scoped counts before closure. |
 
 The added request/activity routes belong to WebAppX; the portable **64-page**
 SYSTEMX contract remains unchanged. The earlier browser receipt above retains
@@ -137,12 +140,34 @@ its original checkpoint. See the
 and [HR portal guide](docs/HR-PORTAL.md) for the synthetic policy, actor scopes
 and remaining production work.
 
-**Portal wave checks:** `npm run hr:test` now passes **70 tests**: 17 native
+The [talent workflow guide](docs/HR-PORTAL.md#recruiting-performance-and-identified-feedback)
+describes the new module APIs and role gates. A mock hire starts in onboarding
+with compensation unconfigured. Performance authorship stays with the employee
+and assigned manager. Survey results are **identified**, with submitted names
+and answers visible to owner/HR and the read-only auditor. Saved drafts remain
+with their author; employee views exclude other people's answers. The
+[talent/CMS/CRM QA record](docs/HR-TALENT-QA-2026-10-14.md) records this wave's
+browser acceptance and test totals separately from the earlier portal checkpoint.
+
+The current model suites pass **129 tests**: **109 HR**, **10 CMS** and **10 CRM**.
+These automated checks remain separate from the new browser run and from real
+provider or production acceptance.
+
+| Selected talent/CMS browser check — 2026-10-14 | Observed native result |
+| --- | --- |
+| Recruiting and new-hire pay | Casey completed native onboarding, submitted eight October 15 hours and received Morgan's approval. `MOCK-PAYROLL-0003` and own pay history matched $240 gross/$48 illustrative withholding/$0 benefit/$192 net. |
+| Performance | Private self/manager drafts, publication and employee acknowledgment followed their role gates. |
+| Identified survey | Two submitted ratings, 5 and 3, produced 2/2 responses and mean 4. Private drafts contributed no results; closure produced `MOCK-SURVEY-0007`. |
+| CMS | Returned revision 2 for changes; separately approved/published revision 3 (`MOCK-CMS-0007`). Editing revision 4 retained public revision 3 until new approval/publication; retirement removed the article. Viewer mutation controls were absent; duplicate slugs were refused. |
+| CRM | Qualified/converted a lead once, advanced its $1,500 opportunity to won and completed follow-ups. Riley's dashboard showed $2,500 open/$1,500 won/0 follow-ups; foreign-owner records and auditor mutation controls were absent. |
+| Portal preservation and Reset | A CMS draft, HR's four people and CRM's $1,500 won value survived shared navigation. Reset CMS removed only its draft; HR and CRM values stayed intact. |
+
+**Earlier portal wave checks:** at that checkpoint, `npm run hr:test` passed **70 tests**: 17 native
 workflow, 9 people operations, 7 insights, 7 linked operations, 5 service desk,
 11 SDK-client mock and 14 backend boundary checks. After a full reload, the
 selected native portal paths also passed browser verification:
 
-| Current portal check — 2026-10-14 | Observed native mock result |
+| Earlier portal check — 2026-10-14 | Observed native mock result |
 | --- | --- |
 | Linked assignments and assets | Avery's policy updated her task/checklist; Jordan's training updated his task without completing onboarding. Employee asset return required Morgan's confirmation. |
 | Leave | October 19–20 recorded 16 weekday hours; overlap was refused. Scoped rejection/approval and employee cancellation restored Avery's 40-hour vacation balance. |
@@ -187,6 +212,34 @@ policies, assets, access, training and performance. The feature/page contracts
 distinguish specifications, working mock controls and live-gated provider actions.
 The full repository supplies this HR extension; the standalone starter folder
 remains a smaller app scaffold.
+
+## Account-free business portals
+
+Use the **Template Portals** entry to move between the native workspaces:
+
+| Route | Runtime preview |
+| --- | --- |
+| `/portals` | HR, CMS and CRM directory |
+| `/hr/demo` | People operations, talent workflows and simulated employee pay |
+| `/cms/demo` | Plain-text draft → separate revision review → approval → simulated publication/retirement |
+| `/crm/demo` | Owned companies/contacts, lead qualification/conversion, opportunity stages, follow-up tasks and pipeline totals |
+
+Each module has its own fictional records and preview identities. Shared portal
+links preserve native HR, CMS and CRM records; a module's Reset affects only
+that module. Reloading or leaving the demo area for normal public/live pages
+resets the demo session. The separate `/hr/demo/sdk` preview is an exception:
+opening it unmounts and resets native HR; returning starts fresh native state.
+Preview roles do not grant Firebase claims, and no HR
+records or personal data are automatically shared with CMS/CRM.
+
+The CMS viewer is a read-only editorial identity; only the published-sample
+projection excludes draft content. A simulated CMS publication does not update
+the actual website. CRM won amounts are sample pipeline values, not revenue or
+payments. See [Template Portals](wiki/Template-Portals.md) and the
+[portal architecture and adoption guide](docs/TEMPLATE-PORTALS.md) for the
+separate role and data boundaries. This wave's new test/browser results are
+recorded in the [talent and business-portal QA receipt](docs/HR-TALENT-QA-2026-10-14.md),
+separately from the earlier HR receipts.
 
 ## Set up Agent Y in a new app
 

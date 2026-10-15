@@ -46,7 +46,7 @@ npm run build
 ```
 
 Consult the [HR portal QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md)
-for the current portal wave's source, test and browser evidence boundaries. The
+for the earlier portal wave's source, test and browser evidence boundaries. The
 earlier [2026-10-14 browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-BROWSER-QA-2026-10-14.md)
 retains the native HR fixes and historical 41-test checkpoint. The original
 [3.4.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.4.0.md)
@@ -77,9 +77,69 @@ and webhook foundation boundaries. It uses local fixtures and app/backend code;
 it does not contact Gusto or establish Firebase deployment acceptance.
 `hr:backend:audit` audits the isolated optional functions package's dependencies.
 
-### Current portal automated checks
+### Talent wave verification
 
-`npm run hr:test` passes **70 tests**:
+The recruiting, performance and survey modules have their own test and
+browser evidence. Review sequential candidate stages and atomic hire-to-native
+onboarding, self/direct-manager review authorship, private draft projections,
+identified submitted-only survey results, duplicate/final-state guards and
+role-scoped dashboard counts. Use fictional `.invalid` candidate emails and
+feedback. Do not infer this wave's test total or browser acceptance from the
+historical 70-test checkpoint below. The current
+[talent/CMS/CRM QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md)
+records the separate results.
+
+Current model suites pass **129 tests**:
+
+| Suite | Tests |
+| --- | ---: |
+| HR, including talent and hire integration | 109 |
+| CMS | 10 |
+| CRM | 10 |
+
+The HR total includes the earlier 70 checks plus four talent insight cases,
+eight recruiting, six hire-to-HR integration, ten performance and 11 survey
+cases. Browser results remain separately scoped in the QA receipt.
+
+Selected browser results now include:
+
+- Casey's mock hire connected to native directory/onboarding.
+- Private self/manager review drafts stayed behind their projection gates before
+  publication and employee acknowledgment.
+- Identified survey ratings 5 and 3 produced 2/2 submissions and mean 4; private
+  drafts contributed zero results and closure produced `MOCK-SURVEY-0007`.
+- CMS returned revision 2 for feedback, approved/published revision 3
+  (`MOCK-CMS-0007`), preserved that publication while revision 4 changed, required
+  new review before replacement publication, and removed the retired article.
+  Viewer mutation controls were absent and duplicate slugs were refused.
+- CRM qualified/converted a lead once, advanced $1,500 through discovery,
+  proposal and negotiation to won, and completed follow-ups. Riley's dashboard
+  showed $2,500 open/$1,500 won/0 follow-ups. Owner conversion reused a compatible
+  company; representatives could not see foreign-owner records and auditor
+  mutation controls were absent.
+- Shared navigation preserved a CMS draft, HR's four people and CRM's $1,500 won
+  value. Reset CMS removed only its draft, leaving HR and CRM intact.
+- Casey completed native onboarding and the eight-hour October 15 payroll
+  journey: `MOCK-PAYROLL-0003` and own statement matched $240 gross, $48
+  illustrative withholding, $0 benefit and $192 net.
+
+These observations do not establish real staff review, anonymous feedback,
+external publication, provider execution or production acceptance.
+
+Run the independent CMS/CRM model suites with:
+
+```bash
+npm run portals:test
+```
+
+These cover exact CMS revision/approval/publication and CRM owner/relationship
+scope, conversion, opportunity stages and task transitions. Browser acceptance
+must also verify cross-portal record preservation, isolated Reset and full
+reload behavior. Read [Template Portals](Template-Portals.md) for the workflows.
+
+### Earlier portal automated checks
+
+At that checkpoint, `npm run hr:test` passed **70 tests**:
 
 | Group | Tests |
 | --- | ---: |
@@ -98,9 +158,9 @@ acceptance is recorded independently in the
 [portal QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md);
 an automated pass is not evidence of provider execution or deployment.
 
-### Portal browser verification — 2026-10-14
+### Earlier portal browser verification — 2026-10-14
 
-The current [portal QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md)
+The earlier [portal QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md)
 records the native combined run after a full reload, using fictional data with
 Firebase initialization disabled:
 

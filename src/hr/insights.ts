@@ -4,6 +4,12 @@ import {
 } from './model'
 import { MOCK_PAY_PERIOD, type MockHrState } from './mock-workflows'
 
+export type HrTalentCounts = {
+  recruiting?: { publishedJobs: number; activeCandidates: number; hires: number }
+  performance?: { goals: number; completedGoals: number; openReviews: number; selfReviewsDue: number; managerReviewsDue: number; acknowledgmentsDue: number }
+  surveys?: { draft: number; published: number; closed: number; assigned: number; unsubmitted: number; submittedResponses: number }
+}
+
 export type HrInsightProps = {
   actor: HrActor
   fixture: HrFixture
@@ -12,6 +18,7 @@ export type HrInsightProps = {
   openOperations?: number
   openServiceRequests?: number
   operations?: Partial<Record<'tasks' | 'policies' | 'training' | 'assets' | 'documents', number>>
+  talent?: HrTalentCounts
 }
 export type HrInsightAction = { id: string; title: string; detail: string; to: string; count: number }
 export type HrPayStatement = {
@@ -52,7 +59,29 @@ export function projectEmployeePayStatements(actor: HrActor, fixture: HrFixture,
   }).reverse()
 }
 
-export function projectHrInsights({ actor, fixture, state, requests = fixture.timeOffRequests, openOperations = 0, openServiceRequests = 0, operations }: HrInsightProps) {
+function count(value: number) { return Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0 }
+
+/** Reconstruct count-only summaries; never forward private review or survey data. */
+function scopedTalentCounts(actor: HrActor, fixture: HrFixture, talent?: HrTalentCounts): HrTalentCounts {
+  const administrative = ['employer-owner', 'hr-admin'].includes(actor.role)
+  const boundEmployee = Boolean(actor.employeeId && fixture.employees.some(employee => employee.id === actor.employeeId))
+  const performanceAllowed = administrative || ['manager', 'employee'].includes(actor.role) && boundEmployee
+  const surveysAllowed = administrative || actor.role === 'employee' && boundEmployee
+  const recruiting = administrative && talent?.recruiting ? {
+    publishedJobs: count(talent.recruiting.publishedJobs), activeCandidates: count(talent.recruiting.activeCandidates), hires: count(talent.recruiting.hires),
+  } : undefined
+  const performance = performanceAllowed && talent?.performance ? {
+    goals: count(talent.performance.goals), completedGoals: count(talent.performance.completedGoals), openReviews: count(talent.performance.openReviews),
+    selfReviewsDue: count(talent.performance.selfReviewsDue), managerReviewsDue: count(talent.performance.managerReviewsDue), acknowledgmentsDue: count(talent.performance.acknowledgmentsDue),
+  } : undefined
+  const surveys = surveysAllowed && talent?.surveys ? {
+    draft: count(talent.surveys.draft), published: count(talent.surveys.published), closed: count(talent.surveys.closed),
+    assigned: count(talent.surveys.assigned), unsubmitted: count(talent.surveys.unsubmitted), submittedResponses: count(talent.surveys.submittedResponses),
+  } : undefined
+  return { recruiting, performance, surveys }
+}
+
+export function projectHrInsights({ actor, fixture, state, requests = fixture.timeOffRequests, openOperations = 0, openServiceRequests = 0, operations, talent }: HrInsightProps) {
   const employees = scopedEmployees(actor, fixture.employees)
   const ids = new Set(employees.map(employee => employee.id))
   const time = scopedRecords(actor, state.timeEntries, fixture.employees)
@@ -71,6 +100,7 @@ export function projectHrInsights({ actor, fixture, state, requests = fixture.ti
   const isAdmin = ['employer-owner', 'payroll-admin', 'hr-admin', 'auditor'].includes(actor.role)
   const portal: HrPortal = isAdmin ? 'admin' : actor.role === 'manager' ? 'manager' : actor.role === 'contractor' ? 'contractor' : 'employee'
   const base = `/hr/demo/${portal}`
+  const talentCounts = scopedTalentCounts(actor, fixture, talent)
   const actions: HrInsightAction[] = []
   const add = (id: string, title: string, detail: string, to: string, count: number) => { if (count > 0) actions.push({ id, title, detail, to, count }) }
   if (actor.role === 'employee') add('onboarding', 'Finish your onboarding', 'Review your profile, job and checklist before confirming.', `${base}/onboarding`, unfinished.length)
@@ -97,6 +127,24 @@ export function projectHrInsights({ actor, fixture, state, requests = fixture.ti
   } else if (['employer-owner', 'hr-admin', 'employee', 'manager', 'contractor'].includes(actor.role)) add('operations', 'Review open HR assignments', 'Start with your task list, then review other modules in the portal navigation.', `${base}/tasks`, Math.max(0, openOperations))
   if (['employer-owner', 'hr-admin', 'manager', 'employee'].includes(actor.role)) add('service-requests', actor.role === 'employee' ? 'Follow your HR service requests' : 'Review employee service requests', 'Follow up on open requests in the synthetic HR service desk.', `${base}/${isAdmin ? 'cases' : 'requests'}`, Math.max(0, openServiceRequests))
   if (actor.role === 'auditor') add('receipts', 'Review simulated payroll history', 'Receipt counts are available without compensation amounts.', `${base}/payroll/history`, state.payrollHistory.filter(payroll => payroll.stage === 'submitted' && Boolean(payroll.receipt)).length)
+  if (talentCounts.recruiting) add('talent-recruiting', 'Review the recruiting pipeline', `${talentCounts.recruiting.publishedJobs} published sample jobs · ${talentCounts.recruiting.hires} completed sample hires.`, `${base}/recruiting`, talentCounts.recruiting.activeCandidates)
+  if (talentCounts.performance) {
+    const performance = talentCounts.performance
+    const unfinishedGoals = Math.max(0, performance.goals - performance.completedGoals)
+    add('talent-goals', actor.role === 'employee' ? 'Update your goal progress' : 'Review goal progress', 'Continue the fictional goals visible to this role.', `${base}/performance`, unfinishedGoals)
+    if (actor.role === 'employee') {
+      add('talent-self-reviews', 'Complete your sample self reviews', 'Save and submit your own review before it can be shared.', `${base}/performance`, performance.selfReviewsDue)
+      add('talent-review-acknowledgments', 'Acknowledge shared sample feedback', 'Read the review shared with you and record a sample acknowledgment.', `${base}/performance`, performance.acknowledgmentsDue)
+    } else if (actor.role === 'manager') add('talent-manager-reviews', 'Complete direct-report sample reviews', 'Continue the manager reviews assigned within your team scope.', `${base}/performance`, performance.managerReviewsDue)
+    else add('talent-open-reviews', 'Follow up on open performance reviews', 'Review cycle progress without exposing private draft review text.', `${base}/performance`, performance.openReviews)
+  }
+  if (talentCounts.surveys) {
+    if (actor.role === 'employee') add('talent-survey-responses', 'Answer your assigned sample surveys', 'Only your assigned, published surveys are available for a response.', `${base}/surveys`, talentCounts.surveys.unsubmitted)
+    else {
+      add('talent-draft-surveys', 'Prepare draft sample surveys', 'Review audience and questions before publishing a fictional survey.', `${base}/surveys`, talentCounts.surveys.draft)
+      add('talent-published-surveys', 'Review published sample surveys', 'Follow response counts and close a sample survey when ready.', `${base}/surveys`, talentCounts.surveys.published)
+    }
+  }
   const departmentNames = [...new Set(employees.map(employee => employee.department))].sort()
   const payrollRuns = new Set(state.payrollHistory.filter(payroll => payroll.stage === 'submitted' && Boolean(payroll.receipt) && payroll.inputs.some(input => ids.has(input.employeeId))).map(payroll => payroll.receipt)).size
   const totals = isPayroll || actor.role === 'employee' && employees.length > 0 ? statements.reduce((sum, statement) => ({
@@ -113,6 +161,6 @@ export function projectHrInsights({ actor, fixture, state, requests = fixture.ti
     benefits: { available: benefits.length, unconfirmed: unconfirmedBenefits.length, enrolled: elections.filter(election => election.stage === 'confirmed' && election.election === 'enroll').length, waived: elections.filter(election => election.stage === 'confirmed' && election.election === 'waive').length },
     requests: { pending: pendingPto.length, approved: pto.filter(request => request.status === 'approved').length, rejected: pto.filter(request => request.status === 'rejected').length, cancelled: pto.filter(request => request.status === 'cancelled').length },
     payroll: { submittedRuns: payrollRuns, statements: statements.length, totals },
-    openOperations: Math.max(0, openOperations), openServiceRequests: Math.max(0, openServiceRequests), actions,
+    openOperations: Math.max(0, openOperations), openServiceRequests: Math.max(0, openServiceRequests), talent: talentCounts, actions,
   }
 }

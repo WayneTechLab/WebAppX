@@ -78,6 +78,9 @@ receipt retains its original scope.
 | Dashboards/reports | Derive workforce and native workflow counts for the selected role. Compensation amounts stay with owner/payroll admin or an employee's own pay. |
 | Pay statements | After native simulated submission, `/hr/demo/employee/paystubs` projects own receipt-linked approved hours and employee totals. Benefit deductions are capped to that employee's available sample pay and reconcile to run totals. Historical fixture statements are separate. |
 | Service desk | Employee creates an equipment/access/general HR request. A direct-report manager or owner/HR assigns, starts, resolves and can reopen it; employees read their own status. The cases page is not exposed to auditors. |
+| Recruiting | Owner/HR publishes sample jobs and advances candidates through applied, screening, interview, offer and hire. A mock hire begins native onboarding with compensation unconfigured. |
+| Performance | Own goal progress and self-review, assigned direct-manager publication, then employee acknowledgment. Self and manager drafts have separate visibility gates; auditors see metadata without review comments. |
+| Identified feedback | Owner/HR drafts/publishes/closes surveys; assigned employees save and submit own answers. Submitted names/rating/text are visible to owner/HR/auditor; other employees' answers and unsent drafts stay out of employee results. |
 
 New `/hr/demo/employee/requests`, `/hr/demo/manager/requests` and scoped activity
 routes belong to WebAppX. The portable SYSTEMX **64-page** contract and managed
@@ -90,7 +93,38 @@ payroll metadata without compensation amounts. Real staff use still needs authen
 server authorization, persistent records, actual leave policies, controlled
 documents/fulfillment and accepted provider payroll integrations.
 
-### Current portal verification — 2026-10-14
+### Talent workflow scope
+
+Read the [recruiting, performance and identified-feedback walkthrough](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL.md#recruiting-performance-and-identified-feedback)
+for the new module APIs and exact save/submit/publish order. Recruiting is
+owner/HR-only; it does not execute offers or create provider accounts. A hire
+must complete explicit native onboarding before appearing Active. Owner/HR can
+administer performance cycles but cannot impersonate either review author.
+Survey feedback is **identified, not anonymous**; saved answer drafts stay
+private in projections, and submitted-only counts/means do not establish a
+confidential-feedback design. This wave's browser evidence and new test totals
+are recorded in the [talent/CMS/CRM QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md),
+separately from the historical portal checkpoint below. Use
+[Template Portals](Template-Portals.md) for the independent HR, CMS and CRM demo
+navigation, module resets and production boundaries.
+The current model suites pass **109 HR** plus **20 CMS/CRM tests** (10 each).
+The existing `/hr/demo/sdk` preview is outside native state preservation:
+opening it resets native HR; returning starts a fresh native session.
+
+The selected talent browser paths verified Casey's hire/directory/onboarding
+connection and performance privacy through employee acknowledgment. An
+identified survey produced 2/2 submitted responses, ratings 5 and 3, mean 4 and
+closure `MOCK-SURVEY-0007`; private drafts contributed no results. CMS separately
+verified exact revision approval, retained publication during edits and
+retirement. See the current QA receipt for the bounded local proof.
+The final new-hire run also verified Casey's completed onboarding, eight
+manager-approved October 15 hours and `MOCK-PAYROLL-0003`/own statement at
+$240 gross, $48 illustrative withholding, $0 benefit and $192 net. HR retained
+four people while navigating CMS/CRM, and CMS Reset did not clear HR or CRM.
+CRM's verified $1,500 won opportunity and ownership/auditor boundaries remain
+separate from employee/payroll records.
+
+### Earlier portal verification — 2026-10-14
 
 After a full reload, the native browser check verified policy/task/onboarding
 links, non-tax document acknowledgment, training and manager-confirmed asset
@@ -105,7 +139,7 @@ inputs; Jordan saw no statement. Owner reports reconciled the receipt and leave
 decisions. Auditor reports/history showed metadata without currency amounts or
 mutation controls.
 
-The current automated HR suite passes **70 tests**: 17 native workflow,
+At that checkpoint, the automated HR suite passed **70 tests**: 17 native workflow,
 9 people operations, 7 insights, 7 linked operations, 5 service desk,
 11 SDK-client mock and 14 backend boundary checks. Read the
 [portal QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md)

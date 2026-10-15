@@ -1,5 +1,19 @@
 # Update Log
 
+## 3.4.0 HR talent, CMS and CRM portals — 2026-10-14
+
+Add recruiting through employee onboarding, goals/performance review cycles and
+identified surveys, with scoped HR dashboard actions and counts. Add shared
+account-free portal navigation plus CMS draft/review/publication/retirement and
+CRM directory/lead/pipeline/task workflows. Records stay separate in browser
+memory; no provider accounts, external publication or messages are created.
+
+Read [Template Portals](Template-Portals.md), the
+[architecture guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md)
+and the [browser verification receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md).
+The current model suites pass 109 HR and 20 CMS/CRM tests. Version remains 3.4.0;
+the preceding 70-test receipt is preserved as historical evidence.
+
 ## 3.4.0 connected HR portal — 2026-10-14
 
 Extend the account-free native portal with scoped dashboards and reports,

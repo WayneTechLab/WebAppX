@@ -38,6 +38,7 @@ const primaryLinks: NavigationItem[] = [
 ]
 
 const publicPageLinks: NavigationItem[] = [
+  { to: '/portals', label: 'Template Portals', description: 'Account-free HR, CMS and CRM workspaces', icon: BriefcaseBusiness },
   { to: '/hr', label: 'People & HR', description: 'Standard portals and synthetic Gusto preview', icon: Users },
   { to: '/services', label: 'Services', description: 'Template services and capabilities', icon: BriefcaseBusiness },
   { to: '/features', label: 'Features', description: 'Template capabilities', icon: Sparkles },
