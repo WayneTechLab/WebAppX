@@ -175,7 +175,29 @@ including private drafts and mock receipts; preview roles do not filter exports.
 Unsaved edits, running timers and the separate SDK session are excluded. Read
 [Template Portals](Template-Portals.md#back-up-restore-or-move-a-workspace) for the
 steps and the [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md)
-for this update’s verified scope.
+for the earlier per-portal verification.
+
+### One backup for all three, with selective restore
+
+On `/portals`, choose **Export all workspaces** for one JSON file containing the
+complete current HR, CMS and CRM states; untouched portals contribute their
+initial sample. Move it to another browser and use **Import combined backup**
+on the directory. The entire file must validate before its three summaries and
+unchecked selection boxes appear. Select one, two or all three complete portals,
+then choose **Restore selected workspaces**, or **Cancel combined restore**.
+
+Only selected portals are replaced and saved, with their unsaved forms/timers
+reset. Unselected memory and browser saves stay untouched. The app attempts to
+roll back selected saved bytes on a write failure and keeps old memory; a failed
+rollback explicitly warns that browser storage may be partial. Export current
+memory before refreshing, restore storage access/capacity, and retry or Reset
+affected portals. Multi-key browser storage is not an atomic transaction.
+
+Individual portal files keep their existing controls. Both formats contain
+plain-text fictional drafts and mock receipts; no account, upload, cloud or
+provider action occurs. Read [Template Portals](Template-Portals.md#combined-backup-and-selective-restore)
+and the [combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md)
+for the current workflow and checked scope.
 
 ## Included route model
 

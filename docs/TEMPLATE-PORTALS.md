@@ -11,7 +11,9 @@ checks from the earlier talent wave are recorded in the
 persistence checks are recorded in the
 [persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md). Portable file backup
 checks are recorded separately in the
-[backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md). No live
+[per-portal backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md). Combined files and
+selective restores are recorded in the
+[combined backup QA receipt](COMBINED-BACKUP-QA-2026-10-14.md). No live
 business portal is activated by the HR preview or an administrator signing in.
 
 ## What exists today
@@ -20,6 +22,7 @@ business portal is activated by the HR preview or an administrator signing in.
 | --- | --- | --- |
 | Public website | [App router](../src/router.tsx), public pages and shared layout | React/Vite routes; no CMS-backed publication pipeline |
 | Demo portal directory | [Template portal shell](../src/pages/TemplatePortalsPage.tsx) | Account-free navigation between separately scoped HR, CMS and CRM samples; keeps modules mounted while switching demo portals |
+| Combined mock backups | [Directory controls](../src/portals/CombinedWorkspaceBackup.tsx), [bundle codec](../src/portals/combined-backup.ts), [restore adapter](../src/portals/restore-workspaces.ts) | One validated local file, explicit selective whole-portal restore and rollback attempts; no cloud/account or atomic multi-key transaction |
 | Staff entry | [Admin dashboard](../src/pages/AdminDashboardPage.tsx) | Firebase sign-in and trusted Level 4/5 claim gate; readiness cards link to local tools |
 | HR workspaces | [HR portal](HR-PORTAL.md) and host-owned `src/hr/` | Working synthetic employee/manager/management workflows; versioned browser-local snapshot, separate protected live boundary |
 | CMS workspace | [CMS demo](../src/cms/CmsDemo.tsx), [CMS transitions](../src/cms/model.ts), [CMS tests](../tests/portals/cms.test.mjs) | Working account-free draft/review/publish/retire core with frozen in-app public projection; browser-local snapshot persistence, no network publishing or server storage |
@@ -97,7 +100,8 @@ leaves the current records intact. No login, upload or server is involved.
 ### Move a workspace to another browser
 
 1. Complete or save domain actions in the source portal. Export HR, CMS and CRM
-   separately if all three are needed; each file contains only its named module.
+   separately for individual files, or use the combined directory controls below.
+   Each individual file contains only its named module.
 2. Copy the file to the destination browser/computer. Open the matching native
    portal at any origin running the compatible app version.
 3. Export the destination’s current workspace if you want to retain it. Import
@@ -137,8 +141,63 @@ Validation checks supported structure, not the truth or provenance of editable
 file contents. Import cannot grant Firebase permissions, execute payroll, publish
 a website or create an account.
 
-Read the [backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md) for this update’s
-checks. Earlier refresh-only and talent receipts retain their historical scope.
+Read the [per-portal backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md) for that
+feature’s earlier checks. The combined receipt below records the current scope;
+earlier refresh-only and talent receipts retain their historical scope.
+
+### Combined backup and selective restore
+
+The `/portals` directory adds **Export all workspaces** and **Import combined
+backup**. Export reads the complete current HR, CMS and CRM domain states,
+including initial fixtures for a portal that has not yet created a browser save.
+It downloads one file without saving new fixture snapshots or contacting a server.
+The existing individual portal controls and file format remain available.
+
+1. Save/complete the domain actions you want to retain, then choose **Export all
+   workspaces** on `/portals`.
+2. Copy that file to the destination browser/computer. Export its current data
+   first if it must be retained, then choose **Import combined backup**.
+3. The importer validates the entire envelope and all three complete module
+   schemas before offering a preview. Review its file, export time and HR/CMS/CRM
+   record summaries. Even a broken module you intend to leave unselected rejects
+   the file before selection.
+4. HR, CMS and CRM selection boxes start unchecked. Select at least one complete
+   portal to enable **Restore selected workspaces**, or choose **Cancel combined restore**.
+5. Confirming replaces the selected portals’ full domain states and saves them
+   locally for refresh. Unselected in-memory states and exact saved browser bytes
+   stay untouched. No merge, record-level selection or ongoing sync occurs.
+
+Selected modules remount after a successful restore, clearing their unsaved
+forms, active timers and transient interface messages. Unselected modules retain
+those interface states. The independent SDK preview is outside the bundle.
+
+A combined file uses `format: "webappx-mock-workspaces"`, `schemaVersion: 1`,
+`exportedAt` (UTC ISO timestamp) and `workspaces: { hr, cms, crm }`. It is distinct
+from the singular `webappx-mock-workspace` format. Import each type through its
+matching controls. Combined imports reject files over 24,008,192 bytes before
+reading and text over 6,002,048 decoded characters before parsing. Each resulting
+module browser-save envelope retains the 2,000,000-character limit. Browser
+storage quota may be smaller; the bundle does not change the existing three
+local-storage keys or their schema.
+
+Immediately before applying, the app revalidates the selected snapshots, captures
+the selected keys’ previous exact bytes, and attempts all selected writes before
+changing any in-memory workspace. A failed write triggers a rollback attempt for
+the selected keys and leaves prior in-memory records active. `localStorage` does
+not support an atomic multi-key transaction: if rollback also fails, the warning
+explicitly says browser storage may be partially changed. In that case, export
+the current in-memory data before refreshing, restore storage access/capacity,
+and retry the restore or Reset the affected modules. Unselected keys are never
+written. Concurrent browser tabs still use last-write-wins behavior; avoid edits
+in other tabs while restoring.
+
+The complete bundle is plain-text fictional data, including private review and
+survey drafts, feedback and mock receipts independent of preview roles. No
+authentication credentials, unsaved fields, running timers or SDK state belong
+in it. Structural validation does not authenticate editable records or prove a
+provider action. No account, upload, Firebase/Gusto connection, cloud restore or
+production publication is introduced. See the
+[combined backup QA receipt](COMBINED-BACKUP-QA-2026-10-14.md) for tested scope.
 
 ### Earlier persistence browser checkpoint — 2026-10-14
 
@@ -354,7 +413,8 @@ when durable storage is adopted.
    with visible storage status and module-specific Reset. The implemented demos
    restore saved actions after refresh or returning to the same origin. Browser
    persistence is not server durability, confidential storage or authentication.
-   Use per-module JSON export/import for manual fictional-workspace backups and
+   Use per-module JSON export/import or a combined HR/CMS/CRM backup with
+   selective whole-portal restore for manual fictional-workspace backups and
    browser transfer, with validation and explicit replacement confirmation.
    Provide at least two organizations for cross-tenant negative tests once
    organization selection is implemented.
@@ -372,7 +432,7 @@ when durable storage is adopted.
 
 | Phase | Concrete deliverable | Acceptance evidence |
 | --- | --- | --- |
-| Portal foundation, implemented local shell | Shared demo catalog/navigation, separate versioned browser snapshots, independent Reset and per-module JSON export/import | Navigation and same-origin refresh restore saved domain records; validated confirmed imports replace only their module; production organization/membership contract remains proposed |
+| Portal foundation, implemented local shell | Shared demo catalog/navigation, separate versioned browser snapshots, independent Reset, per-module JSON files and combined backups/selective restore | Navigation and same-origin refresh restore saved domain records; validated confirmed imports replace only selected full modules; production organization/membership contract remains proposed |
 | CMS mock core, implemented | Page/article editor, separate exact-revision review, frozen local preview and publish/retire receipts | Ten domain tests cover transitions, permissions, stale revisions, slug uniqueness and public-field projection; release browser evidence must separately verify the UI |
 | CMS expanded mock, proposed | Asset metadata, locale variants, full revision history and review queue | Locale and asset references remain scoped; each variant has independent review/publication state |
 | CRM mock core, implemented | Contacts/companies, lead conversion, opportunity stages, tasks/activities and dashboard | Browser qualifies/converts once, advances and closes a sample opportunity, completes a task; foreign-owner actions and duplicate conversion are refused |

@@ -200,8 +200,8 @@ workspace export includes private review/survey drafts regardless of preview rol
 Open native HR in the destination browser, choose **Import workspace**, select
 the HR file and inspect its module/export time/file preview. Choose **Replace HR
 workspace** to replace all native HR records, or **Cancel import**. Export the destination
-first if you want to retain a copy. Each portal needs its own file; there is no
-combined bundle, merge or live synchronization. Success saves only HR locally
+first if you want to retain a copy. Each individual file has its own matching
+portal; there is no merge or live synchronization. Success saves only HR locally
 for refresh; CMS and CRM records remain unchanged.
 
 The importer validates size, format/version, module and the full nested schema
@@ -210,6 +210,30 @@ the prior workspace and report an error. Files are read locally without account
 or upload. Use fictional data only; files are not encrypted, trusted memberships
 or provider execution proof. See [Template Portals](Template-Portals.md#back-up-restore-or-move-a-workspace)
 and the [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md).
+
+## HR in a combined backup
+
+The `/portals` directory offers **Export all workspaces** for a single JSON file
+with current HR, CMS and CRM records, including fixtures for untouched portals.
+At the destination choose **Import combined backup**. The entire file and all
+three module schemas must validate before summaries and unchecked selection
+boxes appear. Select HR alone, or any combination of full portals, then choose
+**Restore selected workspaces**. **Cancel combined restore** leaves records untouched.
+Only selected portals are replaced and saved; unselected memory and saved bytes
+remain unchanged. Selected unsaved forms/timers reset after success.
+
+All selected writes precede memory changes. Failed saves attempt rollback to
+previous selected-key bytes and keep old memory. A rollback failure reports
+possibly partial browser storage; export current memory before refresh, restore
+storage access/capacity, and retry or Reset affected portals. Browser storage
+cannot guarantee an atomic multi-key transaction. Individual HR files continue
+to use native HR’s separate import controls.
+
+Bundles are local plain-text fictional data, including private drafts and mock
+receipts. They exclude unsaved fields/timers, authentication data and SDK state.
+No Gusto/Firebase account, upload or provider action is required. Read
+[Template Portals](Template-Portals.md#combined-backup-and-selective-restore)
+and the [combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md).
 
 ## Start locally
 

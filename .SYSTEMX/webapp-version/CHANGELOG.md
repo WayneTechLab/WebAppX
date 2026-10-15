@@ -1,3 +1,19 @@
+# 3.4.0 follow-up — Combined backups and selective restore — 2026-10-14
+
+- Add directory-level combined HR/CMS/CRM JSON export, including current fixtures
+  for untouched portals, alongside the unchanged individual backup formats.
+- Validate the complete bundle before showing summaries and unchecked module
+  selections; require at least one full portal and explicit restore confirmation.
+- Replace/save only selected portals, preserving unselected memory and exact
+  saved bytes; reset selected forms/timers only after a successful restore.
+- Revalidate before apply, attempt all selected writes before changing memory,
+  and attempt prior-byte rollback on failure. Keep old memory and warn explicitly
+  about potentially partial storage if rollback fails; no multi-key atomic claim.
+- Document recovery, combined size/schema limits, whole-workspace private mock
+  contents, and absence of merging, uploads, accounts or provider authority.
+- Record the current checks in the [combined QA receipt](../../docs/COMBINED-BACKUP-QA-2026-10-14.md).
+  Preserve earlier receipts, managed releases/research fingerprints and blank seeds.
+
 # 3.4.0 follow-up — Portable mock workspace backups — 2026-10-14
 
 - Export native HR, CMS and CRM separately as validated plain-text JSON snapshots.

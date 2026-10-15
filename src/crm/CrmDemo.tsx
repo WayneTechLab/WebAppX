@@ -1,9 +1,9 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { AppLink } from '@/components/navigation/AppLink'
-import { useDemoPersistence } from '@/portals/useDemoPersistence'
+import { usePortalWorkspace } from '@/portals/PortalWorkspaceProvider'
 import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
 import { DemoWorkspaceBackup } from '@/portals/DemoWorkspaceBackup'
-import { canWriteCrm, createCrmState, crmActors, crmDashboard, scopedCrmState, transitionCrm, type CrmActor, type CrmEvent, type CrmLead, type CrmOpportunity, type CrmState } from './model'
+import { canWriteCrm, crmActors, crmDashboard, scopedCrmState, transitionCrm, type CrmActor, type CrmEvent, type CrmLead, type CrmOpportunity, type CrmState } from './model'
 import { isCrmState } from './persistence'
 
 const field = 'mt-2 block min-h-11 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 focus:outline-2 focus:outline-offset-2 focus:outline-sky-700'
@@ -64,7 +64,7 @@ function Tasks({ state, writable, run }: { state: CrmState; writable: boolean; r
 }
 
 export function CrmDemo() {
-  const { state, setState, reset: resetSavedState, status: storageStatus, importState } = useDemoPersistence('crm', createCrmState, isCrmState)
+  const { state, setState, reset: resetSavedState, status: storageStatus, importState } = usePortalWorkspace('crm')
   const [actorId, setActorId] = useState('crm-owner')
   const [tab, setTab] = useState<Tab>('overview')
   const [feedback, setFeedback] = useState<{ message: string; error: boolean } | null>(null)

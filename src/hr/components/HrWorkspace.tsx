@@ -23,8 +23,8 @@ import { performanceSummary, transitionPerformance, type PerformanceEvent } from
 import { HrPerformance } from './HrPerformance'
 import { surveySummary, transitionSurveys, type SurveysEvent } from '../surveys'
 import { HrSurveys } from './HrSurveys'
-import { createHrDemoState, isHrDemoState, type HrDemoState } from '../persistence'
-import { useDemoPersistence } from '@/portals/useDemoPersistence'
+import { isHrDemoState, type HrDemoState } from '../persistence'
+import { usePortalWorkspace } from '@/portals/PortalWorkspaceProvider'
 import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
 import { DemoWorkspaceBackup } from '@/portals/DemoWorkspaceBackup'
 
@@ -193,7 +193,7 @@ function Specification({ route }: { route: HrRoute }) {
 export function HrWorkspace({ pathname }: { pathname: string }) {
   const resolution = resolveHrPath(pathname === '/hr/demo' ? '/hr/demo/admin' : pathname)
   const portal = resolution?.portal ?? 'admin'
-  const { state, setState, reset: resetStoredState, status: storageStatus, importState } = useDemoPersistence('hr', () => createHrDemoState(hrFixture), value => isHrDemoState(value, hrFixture))
+  const { state, setState, reset: resetStoredState, status: storageStatus, importState } = usePortalWorkspace('hr')
   const { recruiting, performance, surveys, operations, serviceDesk, workflow, managementRole, selectedEmployee } = state
   const fixture = recruitingFixture(hrFixture, recruiting)
   const defaultManager = fixture.employees.find(employee => fixture.employees.some(report => report.managerId === employee.id)) ?? fixture.employees[0]

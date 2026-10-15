@@ -257,7 +257,8 @@ separately from the earlier HR receipts.
 ### Back up or move a mock workspace
 
 Each native workspace has **Export workspace** and **Import workspace** controls.
-Use one JSON file per portal; there is no combined HR/CMS/CRM bundle.
+Use a separate JSON file for one portal, or use **Export all workspaces** on
+`/portals` to download HR, CMS and CRM together.
 
 1. Save the domain actions you want to keep, then choose **Export workspace** in
    HR, CMS or CRM. The browser downloads that module’s validated current snapshot.
@@ -282,10 +283,67 @@ currently selected preview role. Unsaved form edits, running timers, most UI
 selections and the independent SDK sample are excluded; native HR retains its
 saved role/employee choice. A file is not encrypted, authenticated provider data
 or proof that payroll/publication occurred. Use fictional information only.
-The [backup QA receipt](docs/PORTAL-BACKUP-QA-2026-10-14.md) records this update’s
-browser and automated checks.
+The [per-portal backup QA receipt](docs/PORTAL-BACKUP-QA-2026-10-14.md) records
+that feature’s earlier browser and automated checks.
 
-### Browser backup verification — 2026-10-14
+### Back up all three and restore selected workspaces
+
+Open `/portals` and choose **Export all workspaces**. One JSON file contains the
+complete current HR, CMS and CRM domain snapshots; an untouched portal contributes
+its initial sample even if it has no saved browser snapshot yet.
+
+1. Move the combined file to the destination browser/computer and open `/portals`.
+   Export the destination first if its current records need a backup.
+2. Choose **Import combined backup** and select the local JSON file. The whole
+   file, including all three module schemas, must validate before the preview opens.
+3. Review its file, export time and three record summaries. All HR/CMS/CRM boxes
+   start unchecked. Select one, two or all three complete workspaces.
+4. Choose **Restore selected workspaces**, or **Cancel combined restore** to keep the destination.
+   Selected portals are replaced in full and saved for refresh; unselected portals
+   keep their current records and browser saves. No records are merged.
+
+Restoring resets selected portals’ unsaved forms and active timers. The selected
+snapshots are revalidated and all their browser saves are attempted before their
+in-memory workspaces change. On a storage-write failure, the app attempts to
+restore the selected keys’ previous bytes and keeps the prior in-memory records.
+If that rollback also fails, an explicit warning reports potentially partial
+browser storage: export current in-memory workspaces before refreshing, allow
+storage, and retry the restore or Reset the affected portals. `localStorage`
+provides no atomic transaction across three keys. Unselected keys are never written.
+
+Combined files and individual portal files have separate formats and matching
+import controls. Both are plain-text fictional records with private drafts and
+mock receipts, and exclude unsaved fields, running timers, authentication data
+and the independent SDK session. They require no account, upload or provider.
+Read the [combined backup guide](docs/TEMPLATE-PORTALS.md#combined-backup-and-selective-restore)
+and [combined QA receipt](docs/COMBINED-BACKUP-QA-2026-10-14.md) for the feature’s
+verification scope. Earlier per-portal results follow separately.
+
+### Combined backup browser verification — 2026-10-14
+
+Full `npm run ci:all` passed, including **116 HR + 79 portal/storage/backup
+tests (195 total)**, production build and LAN isolation.
+
+The combined download and selective restores passed between independent
+`127.0.0.1` and `localhost` storage areas in the same in-app browser. The preview
+started with all three boxes unchecked and Restore disabled. Cancel followed by
+re-export preserved the complete destination payload exactly.
+
+| Selection/check | Verified result |
+| --- | --- |
+| HR only | HR matched the source backup exactly, including submitted `MOCK-PAYROLL-0002`: $240 gross/$48 illustrative withholding/$25 benefit/$167 net. CMS/CRM matched their destination payloads, and an unselected CMS unsaved field stayed intact. HR’s receipt returned after refresh. |
+| CMS + CRM | Both matched the source; destination HR’s changed role stayed intact. CMS’s selected unsaved field cleared. Refresh/re-export preserved those exact states. |
+| All three | After restore and refresh, the entire re-exported `workspaces` object matched the source bundle exactly: HR’s payroll receipt, CMS `Portable CMS sample backup` revision 3, and CRM’s three companies/leads/opportunities with $1,500 won. |
+| Invalid files | A corrupt CRM graph, version 999, malformed JSON, a single-portal file and a 24,008,193-byte file were rejected before restore controls appeared. Re-export confirmed all destination payloads were unchanged. |
+| Existing controls | Individual CMS export retained its singular format; CMS Reset affected only CMS, and individual import/refresh restored a combined payload matching the source again. |
+
+**79 portal/storage/backup tests passed**, including 12 new combined-codec cases
+and 13 selective-restore cases. Storage rollback failures are covered by automated
+tests; browser storage permissions were not changed for these checks. Read the
+[current combined QA receipt](docs/COMBINED-BACKUP-QA-2026-10-14.md) for exact
+scope and repository gates. This is not multiple-browser-engine certification.
+
+### Earlier per-portal backup verification — 2026-10-14
 
 Automated verification: **116 HR tests + 54 portal/storage/backup tests passed**
 (**170 total**, including 18 new backup/import cases). Full `npm run ci:all`

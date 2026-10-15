@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState, type Dispatch, type SetStateAction } from 'react'
-import { clearDemoState, loadDemoState, saveDemoState, type DemoModule } from './persistence'
+import { clearDemoState, loadDemoState, saveDemoState, type DemoModule, type DemoStorageStatus } from './persistence'
 import { replaceDemoState } from './import-state'
 
 export function useDemoPersistence<T>(module: DemoModule, create: () => T, validate: (value: unknown) => value is T) {
@@ -28,5 +28,11 @@ export function useDemoPersistence<T>(module: DemoModule, create: () => T, valid
     }
     return { ok: result.ok, status: result.status }
   }, [module, validate])
-  return { state: snapshot.state, setState, reset, importState, status: snapshot.status }
+  // The portal coordinator calls this only after the selected browser saves
+  // have all succeeded. It must not write those slots a second time.
+  const acceptStoredState = useCallback((value: T, status: DemoStorageStatus) => {
+    current.current = value
+    setSnapshot({ state: value, status })
+  }, [])
+  return { state: snapshot.state, setState, reset, importState, acceptStoredState, status: snapshot.status }
 }

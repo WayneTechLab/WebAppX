@@ -88,12 +88,35 @@ if you want to retain it. The importer checks size, format/version, module and
 the complete nested schema. Invalid/incompatible files preserve current records;
 a storage write failure preserves the prior workspace and reports an error.
 A successful import saves locally, survives refresh and leaves CMS/CRM unchanged.
-Each portal has a separate backup file; there is no merge or automatic browser sync.
+Individual portal files remain separate; there is no merge or automatic browser sync.
 
 File transfer needs no account or upload, and can bridge origins/browsers. It
 does not grant trusted employee membership or execute provider operations.
 Read the [backup guide](TEMPLATE-PORTALS.md#export-and-import-without-an-account)
 and [backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md) for scope and verification.
+
+## Combined backups with selective HR restore
+
+Use **Export all workspaces** on `/portals` for one full HR/CMS/CRM JSON bundle.
+Untouched portals contribute their initial fixtures. In another compatible
+browser, **Import combined backup** checks the entire envelope and all three
+module schemas before showing summaries and unchecked HR/CMS/CRM boxes. Select
+at least one complete portal and choose **Restore selected workspaces**, or
+**Cancel combined restore**. Selecting only HR replaces its whole domain state; CMS/CRM
+memory and saved bytes remain untouched. The individual HR file format and
+controls remain available alongside this distinct combined format.
+
+Successful restore resets selected portals’ unsaved fields/timers and saves their
+snapshots for refresh. Writes are attempted before memory changes; a failed write
+attempts to roll back previous selected-key bytes and keeps old memory. If rollback
+fails too, the visible warning reports possibly partial browser storage. Export
+current in-memory records before refreshing, allow storage, then retry or Reset
+the affected portals. Browser storage cannot guarantee a multi-key atomic restore.
+
+The plain-text bundle contains private fictional drafts and mock receipts, not
+trusted identities or provider evidence. No account/upload/cloud action is needed.
+Read the [combined backup guide](TEMPLATE-PORTALS.md#combined-backup-and-selective-restore)
+and [combined QA receipt](COMBINED-BACKUP-QA-2026-10-14.md) for details.
 
 ## Earlier persistence browser checkpoint — 2026-10-14
 

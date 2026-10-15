@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { AppLink } from '@/components/navigation/AppLink'
-import { useDemoPersistence } from '@/portals/useDemoPersistence'
+import { usePortalWorkspace } from '@/portals/PortalWorkspaceProvider'
 import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
 import { DemoWorkspaceBackup } from '@/portals/DemoWorkspaceBackup'
-import { cmsActors, cmsCollections, cmsPublishedEntries, createCmsState, transitionCms, type CmsActor, type CmsEntry, type CmsEvent } from './model'
+import { cmsActors, cmsCollections, cmsPublishedEntries, transitionCms, type CmsActor, type CmsEntry, type CmsEvent } from './model'
 import { isCmsState } from './persistence'
 
 const field = 'mt-2 block min-h-11 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-700'
@@ -25,7 +25,7 @@ function ContentFields({ entry, prefix }: { entry?: CmsEntry; prefix: string }) 
 }
 
 export function CmsDemo() {
-  const { state, setState, reset: resetSavedState, status: storageStatus, importState } = useDemoPersistence('cms', createCmsState, isCmsState)
+  const { state, setState, reset: resetSavedState, status: storageStatus, importState } = usePortalWorkspace('cms')
   const [actor, setActor] = useState<CmsActor>(cmsActors[0])
   const [selectedId, setSelectedId] = useState('cms-article-001')
   const [collection, setCollection] = useState('all')

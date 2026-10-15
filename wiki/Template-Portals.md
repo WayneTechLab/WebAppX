@@ -60,8 +60,8 @@ role services and tenant-scoped server storage remain separate adoption work.
 ## Back up, restore or move a workspace
 
 Use **Export workspace** in HR, CMS or CRM to download that portal’s validated
-current domain snapshot as a JSON file. Export all three separately if needed;
-there is no combined bundle. Save/complete domain actions before exporting.
+current domain snapshot as a JSON file. Use separate files or the combined
+directory controls below. Save/complete domain actions before exporting.
 Unsaved fields, running timers, most interface selections and the SDK preview’s
 independent session are excluded. Native HR retains its saved role/employee choice.
 
@@ -93,7 +93,75 @@ are independent files and are not removed by the portal’s Reset.
 Read the [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md)
 and [detailed backup/adoption guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#export-and-import-without-an-account).
 
-### Browser backup checkpoint — 2026-10-14
+### Combined backup and selective restore
+
+Open `/portals` and choose **Export all workspaces** to download one file with
+the full current HR, CMS and CRM domain states. A portal without a browser save
+contributes its initial sample. Export does not create an account or upload data.
+
+1. Copy the file to the destination browser/computer and open `/portals`. Export
+   its current workspaces first if you need a copy.
+2. Choose **Import combined backup**. The whole file and all three full module
+   schemas must pass validation, even if you intend to restore only one module.
+3. Inspect the file, export time and three record summaries. HR/CMS/CRM selection
+   boxes all start unchecked. Select at least one complete portal.
+4. Choose **Restore selected workspaces** to replace and save only those portals,
+   or **Cancel combined restore**. Unselected memory and exact browser-save bytes remain
+   untouched. Restore replaces whole portals; it does not merge records.
+5. Check the result and refresh. Successful restores clear selected portals’
+   unsaved forms/timers; unselected portal interface state remains active.
+
+Before changing memory, the app revalidates selected snapshots and attempts all
+selected browser writes. A failed write attempts to restore prior selected-key
+bytes and leaves old memory active. If rollback also fails, an explicit warning
+reports potentially partial browser storage. Export current memory before
+refreshing, restore storage access/capacity and retry, or Reset affected portals.
+Browser storage has no atomic transaction across all three keys. Unselected keys
+are never written; avoid simultaneous edits from another tab during restore.
+
+The combined format is `webappx-mock-workspaces`, schema 1, with `exportedAt` and
+`workspaces: { hr, cms, crm }`. The single-portal format remains
+`webappx-mock-workspace`; each requires its matching import controls. Combined
+files are limited to 24,008,192 bytes and 6,002,048 decoded characters; each module
+retains its 2,000,000-character browser-save limit. Browser quota can be smaller.
+
+Bundles are plain-text fictional workspaces including private drafts, survey
+answers and mock receipts, independent of preview role. Unsaved fields, running
+timers, authentication data and the SDK session are excluded. Validation does
+not grant trusted membership or prove payroll/publication. No cloud, account,
+upload or live provider action is involved. Read the
+[combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md)
+and [detailed guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#combined-backup-and-selective-restore).
+
+### Combined browser checkpoint — 2026-10-14
+
+The source downloaded a combined file carrying HR’s submitted
+`MOCK-PAYROLL-0002` ($240 gross/$48 illustrative withholding/$25 benefit/$167 net),
+CMS `Portable CMS sample backup` revision 3 and CRM’s three companies/leads/
+opportunities with $1,500 won. Tests used independent numeric-loopback and
+`localhost` origins in the same in-app browser.
+
+- Preview boxes began unchecked and Restore was disabled. Cancel and re-export
+  preserved all destination payloads exactly.
+- HR-only restore matched source HR and retained destination CMS/CRM exactly,
+  including an unselected CMS unsaved field; HR’s receipt returned after refresh.
+- CMS+CRM restore matched both source states and preserved destination HR’s changed
+  role. Selected CMS’s unsaved field cleared. Refresh/re-export confirmed the states.
+- All-three restore, refresh and re-export reproduced the complete source
+  `workspaces` payload exactly.
+- A corrupt CRM graph rejected the entire file before any selection, as did
+  version 999, malformed JSON, a single-portal file and a 24,008,193-byte file.
+  Re-export confirmed all existing workspaces remained unchanged.
+- Individual CMS export kept its singular format. CMS-only Reset and individual
+  import/refresh restored a full combined payload matching the source again.
+
+The portal suite passed **79 tests**, including 12 combined-codec and 13 selective-
+restore cases. Rollback/storage failures are automated-test evidence; browser
+permissions were not changed. Read the
+[current combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md)
+for gate results and limits; other browser engines were not certified.
+
+### Earlier per-portal backup checkpoint — 2026-10-14
 
 HR, CMS and CRM each passed a real JSON download, file-picker import, preview,
 explicit replacement, refresh and re-export. The final exported `data` matched

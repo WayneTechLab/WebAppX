@@ -1,5 +1,40 @@
 # Update Log
 
+## 3.4.0 combined mock backups and selective restore — 2026-10-14
+
+Add **Export all workspaces** and **Import combined backup** on `/portals`.
+One local JSON file carries complete current HR, CMS and CRM states, including
+initial samples for untouched portals. The entire file validates before a preview
+shows file/export time, module summaries and initially unchecked selection boxes.
+Select one, two or all three complete portals, then explicitly **Restore selected
+workspaces**, or cancel. Selected portals replace and save in full; unselected
+memory and saved bytes remain untouched. Selected forms/timers reset on success.
+Individual file formats/controls and the three browser snapshot keys stay intact.
+
+Revalidate before apply and attempt all selected writes before changing memory.
+Failed writes trigger rollback attempts to the selected keys’ previous bytes and
+preserve old memory. A rollback failure explicitly warns about potentially partial
+browser storage; export current memory before refresh, restore storage access and
+retry or Reset affected portals. `localStorage` has no atomic multi-key transaction.
+
+Files remain plain-text fictional records with private drafts and mock receipts.
+No account, upload, cloud, authentication authority or provider action is added.
+Read [Template Portals](Template-Portals.md#combined-backup-and-selective-restore)
+and the [combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md)
+for setup, current verification and recovery details. Earlier receipts remain
+historical. Browser checks passed combined file download/preview, initially empty
+selection, Cancel, HR-only, CMS+CRM and all-three restores between independent
+loopback/localhost origins in the same in-app browser. Selected payloads matched
+source, unselected payloads matched destination, and all-three refresh/re-export
+matched the entire source `workspaces` object. Selected CMS dirty fields cleared;
+unselected dirty fields remained. Invalid nested CRM, version, JSON, singular
+file and oversized file preserved all states. Existing individual CMS controls
+also passed a Reset/import/refresh round trip. The portal suite passed 79 cases,
+including 12 combined-codec and 13 selective-restore cases; rollback-failure paths
+are automated evidence, without browser permission changes. Version stays 3.4.0;
+managed SYSTEMX snapshots/research fingerprints and blank adoption seeds remain
+unchanged.
+
 ## 3.4.0 portable mock workspace backups — 2026-10-14
 
 Add **Export workspace** and **Import workspace** to native HR, CMS and CRM.
@@ -8,7 +43,8 @@ without uploading, preview their module/export time/file, and require an explici
 named replacement confirmation. Cancel, invalid/incompatible files and failed
 replacement saves preserve current records. Successful imports replace only the
 matching portal and save locally for refresh. Existing local-storage formats stay
-unchanged; there is no combined bundle, merge or live cross-browser sync.
+unchanged. At this earlier checkpoint there was no combined bundle; the follow-up
+above adds combined files. There is still no merge or live cross-browser sync.
 
 Files can move fictional workspaces between browser profiles or origins without
 an account. They are plain text and include the whole workspace’s private drafts

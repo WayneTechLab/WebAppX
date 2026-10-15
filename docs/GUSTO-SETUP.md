@@ -121,7 +121,7 @@ HR JSON file. Inspect the module, export time and file, then choose **Replace HR
 workspace** or **Cancel import**. Import replaces the full HR sample, not selected
 employees or a merge. Export the destination first if it needs a backup.
 Success saves the replacement to that browser’s storage for refresh; CMS and
-CRM remain unchanged. Each portal needs its own backup file.
+CRM remain unchanged. Each individual portal file has its own matching import.
 
 Size, envelope version, module and full nested schema checks run before import.
 Invalid/wrong-module files preserve current records, and a failed browser save
@@ -135,6 +135,28 @@ filter the export. Keep real personal information and credentials out; a receipt
 inside an editable backup is not provider execution proof. See the
 [portal backup guide](TEMPLATE-PORTALS.md#export-and-import-without-an-account)
 and [backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md).
+
+### Include HR in a combined backup
+
+On `/portals`, **Export all workspaces** downloads HR, CMS and CRM together,
+including initial samples for untouched portals. **Import combined backup**
+validates the entire file and all three module schemas, then previews its export
+time, file and per-portal record summaries. HR/CMS/CRM selection boxes start
+unchecked; select at least one and choose **Restore selected workspaces**, or
+**Cancel combined restore**. Select only HR to replace the complete native HR state while
+preserving CMS/CRM memory and saved bytes, or select other whole portals too.
+Combined files use the directory’s controls; individual HR files still use HR’s
+**Import workspace**. Restore does not merge employees or transfer SDK sessions.
+
+Selected forms/timers reset after successful restore. The app attempts all
+selected browser writes before changing their in-memory states, and attempts to
+roll back prior saved bytes if any write fails. A second failure during rollback
+produces an explicit potentially-partial-storage warning; export current memory
+before refresh, restore storage access/capacity, and retry or Reset the affected
+portals. Browser storage has no atomic multi-key transaction. See the
+[combined backup guide](TEMPLATE-PORTALS.md#combined-backup-and-selective-restore)
+and [combined QA receipt](COMBINED-BACKUP-QA-2026-10-14.md). This account-free,
+local-file flow requires no Gusto/Firebase credentials or upload.
 
 ### Earlier refresh verification — 2026-10-14
 

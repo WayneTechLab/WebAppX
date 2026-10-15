@@ -77,7 +77,78 @@ and webhook foundation boundaries. It uses local fixtures and app/backend code;
 it does not contact Gusto or establish Firebase deployment acceptance.
 `hr:backend:audit` audits the isolated optional functions package's dependencies.
 
-### Native workspace export/import checks
+### Combined backup and selective restore checks
+
+Full `npm run ci:all` passed, including **116 HR + 79 portal/storage/backup
+tests (195 total)**, production build and LAN isolation.
+
+Use `/portals` for **Export all workspaces** and **Import combined backup**.
+This feature downloads one complete HR/CMS/CRM file and restores only the full
+portals selected in the validated preview. Initial selection is empty; at least
+one portal must be selected to enable **Restore selected workspaces**.
+The [combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md)
+records this feature’s actual browser results and automated gates separately
+from the earlier individual-file receipts below.
+
+**Browser checkpoint — 2026-10-14:** actual combined download, preview,
+Cancel, HR-only restore, CMS+CRM restore, all-three restore, refresh and re-export
+passed between independent `127.0.0.1` and `localhost` origins in the same in-app
+browser. Initially unchecked boxes kept Restore disabled. Cancel preserved all
+destination domain payloads exactly. Each selective restore matched selected
+source payloads and unselected destination payloads exactly; unselected CMS
+unsaved text stayed intact, selected CMS text cleared, and the changed destination
+HR role survived the CMS+CRM restore. All-three restore followed by refresh and
+re-export matched the entire source `workspaces` payload exactly.
+
+Source markers included HR’s submitted `MOCK-PAYROLL-0002` at $240 gross/$48
+illustrative withholding/$25 benefit/$167 net; CMS `Portable CMS sample backup`
+revision 3; and CRM’s three companies/leads/opportunities with $1,500 won.
+Corrupt CRM graph, version 999, malformed JSON, a singular portal file and a
+24,008,193-byte file were rejected before restore controls appeared. Re-export
+confirmed unchanged states after rejection. Individual CMS export, CMS-only
+Reset and individual import/refresh also passed, ending with all three combined
+payloads equal to source.
+
+**79 portal/storage/backup tests passed:** the earlier 54 plus 12 combined-codec
+and 13 selective-restore cases. Rollback failures are covered by those automated
+storage tests; no browser permission changes were made. These UI checks do not
+certify other browser engines or production/provider operations. Follow the
+[current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md)
+for the complete verification and repository gates.
+
+For a release check, use fictional records and verify:
+
+1. Export a combined file after saving identifiable HR, CMS and CRM changes.
+   Confirm complete module records are present and an untouched portal still
+   exports its initial sample. Export itself must not create saved fixture keys.
+2. Import at an independent browser/origin. Check the file/export time/three
+   record summaries, unchecked boxes and disabled Restore button. Cancel must
+   preserve all destination records and saved bytes.
+3. Select one, then two, then all three portals in separate checks. Confirm full
+   replacement of selected modules and refresh restoration. Unselected current
+   records, saved bytes and active interface state must remain unchanged.
+4. Verify selected unsaved forms/timers reset only after successful replacement,
+   and the separate SDK session remains outside the bundle.
+5. Reject malformed JSON, unsupported format/version, missing/invalid nested
+   modules and oversize files. A damaged unselected module must reject the entire
+   file before selection. Individual files belong in their portal’s import
+   controls; combined files belong in the directory’s controls.
+6. Exercise save failures and rollback in automated storage-adapter tests. Old
+   memory must remain active; prior selected-key bytes should restore. A second
+   failure during rollback must warn explicitly that browser storage may be
+   partial, without claiming an atomic multi-key transaction.
+7. Re-export restored selected states and compare full domain payloads with the
+   original bundle. Preview roles do not filter private drafts/answers/receipts;
+   unsaved fields, active timers, auth data and SDK state are excluded.
+
+After a rollback warning, export current in-memory workspaces before refreshing,
+allow browser storage/capacity, and retry the restore or Reset affected modules.
+The flow does not merge records, synchronize browsers, upload files, authenticate
+memberships or execute provider actions. See
+[Template Portals](Template-Portals.md#combined-backup-and-selective-restore)
+for user-facing steps, limits and recovery behavior.
+
+### Earlier per-portal export/import checks
 
 Automated verification: **116 HR tests + 54 portal/storage/backup tests passed**
 (**170 total**, including 18 new backup/import cases). Full `npm run ci:all`
@@ -85,7 +156,7 @@ passed with production build and LAN isolation.
 
 HR, CMS and CRM each export/import a separate JSON file without an account or
 upload. The [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md)
-records this update’s browser evidence, automated totals and gate results.
+records the earlier per-portal browser evidence, automated totals and gate results.
 Earlier persistence and talent results below retain their original checkpoints.
 
 **Browser checkpoint — 2026-10-14:** all three native portals passed actual
