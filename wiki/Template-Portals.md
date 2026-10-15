@@ -57,6 +57,66 @@ Preview identities are module-specific test controls. They do not authenticate
 staff, modify Firebase claims or grant real organization memberships. Production
 role services and tenant-scoped server storage remain separate adoption work.
 
+## Back up, restore or move a workspace
+
+Use **Export workspace** in HR, CMS or CRM to download that portal’s validated
+current domain snapshot as a JSON file. Export all three separately if needed;
+there is no combined bundle. Save/complete domain actions before exporting.
+Unsaved fields, running timers, most interface selections and the SDK preview’s
+independent session are excluded. Native HR retains its saved role/employee choice.
+
+1. Copy the exported file to the destination browser/computer and open the
+   matching native portal. A different scheme, hostname or port is supported
+   through the file transfer; storage at each origin remains independent.
+2. Export the destination first if its current records need a backup. Choose
+   **Import workspace** and select the local JSON file; nothing is uploaded.
+3. Inspect the preview’s module, export time and file, then choose **Replace HR
+   workspace**, **Replace CMS workspace** or **Replace CRM workspace**. Choose
+   **Cancel import** to preserve current records. Import replaces the whole matching
+   portal; it does not merge or synchronize workspaces.
+4. Check the save status and refresh. A successful import restores from that
+   browser’s own storage. The other two portals and SDK session are unchanged.
+
+Size, format/version, module and full nested schema checks run before replacement.
+Invalid/incompatible or wrong-module files preserve current records. If browser
+storage cannot save the import, the prior workspace remains active with a visible
+error. Existing browser-storage snapshots retain their format; create portable
+files with **Export workspace** rather than copying local-storage JSON.
+
+Files are plain text containing the whole fictional workspace, including private
+review/survey drafts, feedback and mock receipts. The active preview role does
+not filter exports. The files are not encrypted or signed; validation cannot
+prove editable file contents are true, and an imported receipt is not evidence
+of provider payroll or publication. Use fictional data only. Downloaded backups
+are independent files and are not removed by the portal’s Reset.
+
+Read the [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md)
+and [detailed backup/adoption guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#export-and-import-without-an-account).
+
+### Browser backup checkpoint — 2026-10-14
+
+HR, CMS and CRM each passed a real JSON download, file-picker import, preview,
+explicit replacement, refresh and re-export. The final exported `data` matched
+the source payload exactly in all three portals. Source `127.0.0.1` and target
+`localhost` used independent storage areas in the same in-app browser; other
+browser engines and operating systems were not certified.
+
+- **HR:** retained Avery’s confirmed health plan, eight approved hours and
+  submitted `MOCK-PAYROLL-0002`: $240 gross, $48 illustrative withholding,
+  $25 benefit and $167 net.
+- **CMS:** restored `Portable CMS sample backup` revision 3, two content records,
+  one publication and two actions. Cancel preserved target revision 1; confirmed
+  import cleared a target unsaved edit.
+- **CRM:** restored three companies/contacts/leads/opportunities, six actions,
+  $1,500 won and $6,500 open. Reimport removed a target-only lead, preserving
+  the source payload and demonstrating replacement.
+- **Rejection:** wrong portal, malformed JSON, unsupported version 999 and an
+  oversized file preserved CMS revision 3. An invalid HR employee/time link was
+  rejected without losing the submitted payroll receipt after refresh.
+
+The [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md)
+keeps these observations separate from automated storage-failure checks.
+
 ## HR: people operations and talent
 
 Use the management, employee and manager portals for onboarding, submitted
@@ -138,7 +198,7 @@ Local activity describes record-owner-scoped actions, without a complete audit
 identity of who acted. No outbound messages, provider synchronization or HR
 record import is performed.
 
-## Current refresh verification — 2026-10-14
+## Earlier refresh verification — 2026-10-14
 
 The [persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
 records the selected browser checks, which passed for all three native portals:

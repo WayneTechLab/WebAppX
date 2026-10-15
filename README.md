@@ -254,7 +254,60 @@ separate role and data boundaries. Earlier talent test/browser results are
 recorded in the [talent and business-portal QA receipt](docs/HR-TALENT-QA-2026-10-14.md),
 separately from the earlier HR receipts.
 
-### Browser persistence verification — 2026-10-14
+### Back up or move a mock workspace
+
+Each native workspace has **Export workspace** and **Import workspace** controls.
+Use one JSON file per portal; there is no combined HR/CMS/CRM bundle.
+
+1. Save the domain actions you want to keep, then choose **Export workspace** in
+   HR, CMS or CRM. The browser downloads that module’s validated current snapshot.
+2. Copy the file to your other browser or computer and open the matching portal.
+   Choose **Import workspace** and select the local JSON file. Nothing is uploaded.
+3. Inspect the module, export time and file in the preview. Choose **Replace HR
+   workspace**, **Replace CMS workspace** or **Replace CRM workspace** to confirm,
+   or **Cancel import** to keep the current workspace. Import replaces the entire matching
+   module; it does not merge records. Export the destination first to keep a copy.
+4. The imported workspace saves to that browser’s own storage. Refresh to check
+   it restored; the other two portals keep their separate records.
+
+The importer checks the file size, backup format/version, module and full nested
+record schema before replacing anything. Invalid, incompatible or wrong-module
+files preserve existing records. If the browser cannot save the replacement,
+import keeps the prior workspace and shows an error. Existing local-storage
+snapshots retain their format; use **Export workspace** to create a portable file.
+
+Files are plain-text JSON containing the whole fictional workspace, including
+private review/survey drafts, feedback and mock receipts, regardless of the
+currently selected preview role. Unsaved form edits, running timers, most UI
+selections and the independent SDK sample are excluded; native HR retains its
+saved role/employee choice. A file is not encrypted, authenticated provider data
+or proof that payroll/publication occurred. Use fictional information only.
+The [backup QA receipt](docs/PORTAL-BACKUP-QA-2026-10-14.md) records this update’s
+browser and automated checks.
+
+### Browser backup verification — 2026-10-14
+
+Automated verification: **116 HR tests + 54 portal/storage/backup tests passed**
+(**170 total**, including 18 new backup/import cases). Full `npm run ci:all`
+passed with production build and LAN isolation.
+
+All three portals passed **Export → actual JSON download → local file picker →
+preview → explicit replacement → refresh → re-export**. Source and final
+re-exported `data` matched exactly. The destination used `localhost` while the
+source used `127.0.0.1`, exercising independent storage areas in the same
+in-app browser; this does not certify Safari, Firefox or Windows.
+
+| Imported workspace | Verified after refresh |
+| --- | --- |
+| HR | Avery’s confirmed health plan, eight approved hours and submitted `MOCK-PAYROLL-0002` retained $240 gross/$48 illustrative withholding/$25 benefit/$167 net. |
+| CMS | `Portable CMS sample backup` returned at revision 3, with two content records, one publication and two actions. Cancel preserved the destination’s original revision 1; confirmed replacement cleared an unsaved target edit. |
+| CRM | Three companies, three contacts, three leads, three opportunities and six actions returned, with $1,500 won/$6,500 open. Reimport removed a target-only lead and retained source records, confirming replacement rather than merge. |
+| Rejections | CMS rejected an HR file, malformed JSON, version 999 and an 8,002,049-byte file while preserving revision 3. HR rejected a broken employee/time reference and retained its payroll receipt after refresh. |
+
+The [full backup receipt](docs/PORTAL-BACKUP-QA-2026-10-14.md) separates browser
+results from automated storage-failure checks and final repository gates.
+
+### Earlier browser persistence verification — 2026-10-14
 
 Automated verification: **116 HR tests and 36 portal/storage tests passed**
 (152 total).

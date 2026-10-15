@@ -189,6 +189,28 @@ recruiting, policies, assets, training, performance and access workflows.
 The package records page sections, role permissions, empty/error states and
 implementation phases so a specification is not mistaken for a working adapter.
 
+## Native HR export/import
+
+**Export workspace** downloads one complete native HR snapshot as plain-text
+JSON, including saved hires/onboarding, benefits, time/payroll receipts, people
+operations, requests, performance, surveys and the saved role/employee choice.
+It excludes unsaved fields, running timers and the separate SDK session. Whole
+workspace export includes private review/survey drafts regardless of preview role.
+
+Open native HR in the destination browser, choose **Import workspace**, select
+the HR file and inspect its module/export time/file preview. Choose **Replace HR
+workspace** to replace all native HR records, or **Cancel import**. Export the destination
+first if you want to retain a copy. Each portal needs its own file; there is no
+combined bundle, merge or live synchronization. Success saves only HR locally
+for refresh; CMS and CRM records remain unchanged.
+
+The importer validates size, format/version, module and the full nested schema
+before replacement. Invalid/wrong-module files and failed browser saves preserve
+the prior workspace and report an error. Files are read locally without account
+or upload. Use fictional data only; files are not encrypted, trusted memberships
+or provider execution proof. See [Template Portals](Template-Portals.md#back-up-restore-or-move-a-workspace)
+and the [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md).
+
 ## Start locally
 
 ```bash

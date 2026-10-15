@@ -72,7 +72,30 @@ navigation entries. The 64 imported portable route definitions remain unchanged;
 five additional host routes provide employee/manager requests and activity for
 management, employees and managers.
 
-## Current persistence browser checkpoint — 2026-10-14
+## Native HR workspace files
+
+Use **Export workspace** to download native HR’s full validated domain state as
+plain-text JSON. It includes saved onboarding, benefits, time/payroll and
+receipts, people operations, service requests, talent records and HR’s saved
+role/employee choice. Unsaved form fields, running timers and the independent
+SDK sample are excluded. The file includes private review/survey drafts;
+export is not limited to the current role projection. Use fictional data only.
+
+To restore here or in another browser, open native HR, choose **Import workspace**
+and select the HR file. Inspect its preview and choose **Replace HR workspace**
+to replace all native HR records, or **Cancel import**. Export the destination first
+if you want to retain it. The importer checks size, format/version, module and
+the complete nested schema. Invalid/incompatible files preserve current records;
+a storage write failure preserves the prior workspace and reports an error.
+A successful import saves locally, survives refresh and leaves CMS/CRM unchanged.
+Each portal has a separate backup file; there is no merge or automatic browser sync.
+
+File transfer needs no account or upload, and can bridge origins/browsers. It
+does not grant trusted employee membership or execute provider operations.
+Read the [backup guide](TEMPLATE-PORTALS.md#export-and-import-without-an-account)
+and [backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md) for scope and verification.
+
+## Earlier persistence browser checkpoint — 2026-10-14
 
 The [current receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) records successful
 same-origin refresh checks for Casey’s hire/four-person directory, completed

@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState, type Dispatch, type SetStateAction } from 'react'
 import { clearDemoState, loadDemoState, saveDemoState, type DemoModule } from './persistence'
+import { replaceDemoState } from './import-state'
 
 export function useDemoPersistence<T>(module: DemoModule, create: () => T, validate: (value: unknown) => value is T) {
   const [snapshot, setSnapshot] = useState(() => loadDemoState(module, create, validate))
@@ -17,5 +18,15 @@ export function useDemoPersistence<T>(module: DemoModule, create: () => T, valid
     current.current = value
     setSnapshot({ state: value, status: clearDemoState(module) })
   }, [module, create])
-  return { state: snapshot.state, setState, reset, status: snapshot.status }
+  const importState = useCallback((value: unknown) => {
+    const result = replaceDemoState(module, value, validate)
+    if (result.ok) {
+      current.current = result.state
+      setSnapshot({ state: result.state, status: result.status })
+    } else {
+      setSnapshot({ state: current.current, status: result.status })
+    }
+    return { ok: result.ok, status: result.status }
+  }, [module, validate])
+  return { state: snapshot.state, setState, reset, importState, status: snapshot.status }
 }

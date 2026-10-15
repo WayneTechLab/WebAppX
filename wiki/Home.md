@@ -160,6 +160,23 @@ preserved a CMS draft, HR's four people and CRM's won value; resetting CMS left
 the other modules intact. Casey's native new-hire payroll/own statement matched
 $240 gross/$48 illustrative withholding/$0 benefit/$192 net.
 
+### Portable mock workspace files
+
+Each native portal has **Export workspace** and **Import workspace** for its own
+JSON file. Download the current validated domain state, move the file to another
+browser and import it into the matching portal. A preview and explicit
+**Replace HR/CMS/CRM workspace** confirmation precede full replacement; there
+is no merge. Invalid, wrong-module or unsupported files preserve current records.
+A failed browser save also preserves the prior workspace. Success saves only
+that module in the destination browser; the other two portals stay unchanged.
+
+No account or upload is required. Files are plain-text fictional records,
+including private drafts and mock receipts; preview roles do not filter exports.
+Unsaved edits, running timers and the separate SDK session are excluded. Read
+[Template Portals](Template-Portals.md#back-up-restore-or-move-a-workspace) for the
+steps and the [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md)
+for this update’s verified scope.
+
 ## Included route model
 
 The current template ships with a fuller public route baseline:

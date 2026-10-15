@@ -1,3 +1,17 @@
+# 3.4.0 follow-up — Portable mock workspace backups — 2026-10-14
+
+- Export native HR, CMS and CRM separately as validated plain-text JSON snapshots.
+- Read imports locally without account/upload, preview their module/time/file and
+  require explicit replacement confirmation; Cancel leaves current records intact.
+- Validate file size, backup format/version, module and complete nested records.
+  Invalid files or replacement-save failure preserve the prior workspace.
+- Persist successful replacement only for the named portal; preserve other modules,
+  existing local-storage formats and the independent SDK sample.
+- Document manual browser/origin transfer, whole-workspace private draft contents,
+  saved-action scope and absence of merging, encryption or provider authority.
+- Record this update’s verification in the [backup QA receipt](../../docs/PORTAL-BACKUP-QA-2026-10-14.md).
+  Preserve earlier receipts, managed releases/research fingerprints and blank seeds.
+
 # 3.4.0 follow-up — Browser-local HR, CMS and CRM persistence — 2026-10-14
 
 - Save native HR, CMS and CRM domain actions in separate versioned browser-local

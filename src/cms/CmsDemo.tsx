@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { AppLink } from '@/components/navigation/AppLink'
 import { useDemoPersistence } from '@/portals/useDemoPersistence'
 import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
+import { DemoWorkspaceBackup } from '@/portals/DemoWorkspaceBackup'
 import { cmsActors, cmsCollections, cmsPublishedEntries, createCmsState, transitionCms, type CmsActor, type CmsEntry, type CmsEvent } from './model'
 import { isCmsState } from './persistence'
 
@@ -24,7 +25,7 @@ function ContentFields({ entry, prefix }: { entry?: CmsEntry; prefix: string }) 
 }
 
 export function CmsDemo() {
-  const { state, setState, reset: resetSavedState, status: storageStatus } = useDemoPersistence('cms', createCmsState, isCmsState)
+  const { state, setState, reset: resetSavedState, status: storageStatus, importState } = useDemoPersistence('cms', createCmsState, isCmsState)
   const [actor, setActor] = useState<CmsActor>(cmsActors[0])
   const [selectedId, setSelectedId] = useState('cms-article-001')
   const [collection, setCollection] = useState('all')
@@ -75,6 +76,11 @@ export function CmsDemo() {
       <label className="mt-5 block max-w-sm text-sm font-medium">CMS preview identity<select className={field} value={actor.id} onChange={event => { setActor(cmsActors.find(person => person.id === event.target.value)!); setMessage(''); setError('') }}>{cmsActors.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label><p className="mt-2 text-xs text-neutral-600">The author writes, a separate reviewer approves, the publisher publishes or retires, and the viewer reads. These fictional identities do not grant real account permissions.</p>
     </header>
     <DemoStorageNotice status={storageStatus} />
+    <DemoWorkspaceBackup key={generation} module="cms" state={state} validate={isCmsState} summarize={value => `${value.entries.length} content records · ${value.entries.filter(entry => entry.published).length} published snapshots · ${value.activity.length} actions`} onImport={value => {
+      const result = importState(value)
+      if (result.ok) { setActor(cmsActors[0]); setSelectedId('cms-article-001'); setCollection('all'); setQuery(''); setGeneration(previous => previous + 1); setMessage(result.status.message); setError('') }
+      return result
+    }} />
     {(message || error) && <div role={error ? 'alert' : 'status'} className={`rounded-lg border p-4 text-sm ${error ? 'border-red-200 bg-red-50 text-red-900' : 'border-emerald-200 bg-emerald-50 text-emerald-900'}`}>{error || message}</div>}
     <section aria-label="CMS metrics" className="grid grid-cols-2 gap-3 lg:grid-cols-4">{[['Drafts', state.entries.filter(entry => entry.status === 'draft').length], ['Awaiting review', state.entries.filter(entry => entry.status === 'in-review').length], ['Approved revisions', state.entries.filter(entry => entry.status === 'approved').length], ['Published samples', published.length]].map(([title, value]) => <div key={title} className={panel}><p className="text-xs font-medium text-neutral-500">{title}</p><p className="mt-2 text-3xl font-semibold text-neutral-950">{value}</p></div>)}</section>
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">

@@ -108,7 +108,35 @@ address and free-text field fictional. Read the
 The optional Firebase module retains its separately documented implementation
 and adoption gates; completing a native demo does not enable that module.
 
-### Current refresh verification — 2026-10-14
+### Back up or transfer native HR
+
+Save the domain actions you want to keep, then choose **Export workspace** in
+native HR. The download contains the whole native HR snapshot: recruiting/hires,
+onboarding, benefits, time/payroll, people operations, service requests,
+performance and surveys, plus HR’s saved role/employee choice. It excludes
+unsaved form edits, running timers and the independent SDK preview session.
+
+In another browser, open `/hr/demo`, choose **Import workspace**, and select the
+HR JSON file. Inspect the module, export time and file, then choose **Replace HR
+workspace** or **Cancel import**. Import replaces the full HR sample, not selected
+employees or a merge. Export the destination first if it needs a backup.
+Success saves the replacement to that browser’s storage for refresh; CMS and
+CRM remain unchanged. Each portal needs its own backup file.
+
+Size, envelope version, module and full nested schema checks run before import.
+Invalid/wrong-module files preserve current records, and a failed browser save
+keeps the prior workspace with a visible error. Files are read locally without
+an upload, login, Firebase or Gusto key. A file can move between origins, but
+subsequent saves in each browser remain independent.
+
+Backups are plain-text fictional data, including private review and survey
+answer drafts and mock payroll receipts. The current preview role does not
+filter the export. Keep real personal information and credentials out; a receipt
+inside an editable backup is not provider execution proof. See the
+[portal backup guide](TEMPLATE-PORTALS.md#export-and-import-without-an-account)
+and [backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md).
+
+### Earlier refresh verification — 2026-10-14
 
 The [persistence browser receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) verified
 Casey’s hire, completed onboarding, submitted eight hours and prepared payroll

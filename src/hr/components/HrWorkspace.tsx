@@ -26,6 +26,7 @@ import { HrSurveys } from './HrSurveys'
 import { createHrDemoState, isHrDemoState, type HrDemoState } from '../persistence'
 import { useDemoPersistence } from '@/portals/useDemoPersistence'
 import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
+import { DemoWorkspaceBackup } from '@/portals/DemoWorkspaceBackup'
 
 const fieldClass = 'mt-2 block min-h-11 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 focus:outline-2 focus:outline-offset-2 focus:outline-emerald-700'
 const buttonClass = 'inline-flex min-h-11 items-center justify-center rounded-md bg-neutral-950 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500'
@@ -192,7 +193,7 @@ function Specification({ route }: { route: HrRoute }) {
 export function HrWorkspace({ pathname }: { pathname: string }) {
   const resolution = resolveHrPath(pathname === '/hr/demo' ? '/hr/demo/admin' : pathname)
   const portal = resolution?.portal ?? 'admin'
-  const { state, setState, reset: resetStoredState, status: storageStatus } = useDemoPersistence('hr', () => createHrDemoState(hrFixture), value => isHrDemoState(value, hrFixture))
+  const { state, setState, reset: resetStoredState, status: storageStatus, importState } = useDemoPersistence('hr', () => createHrDemoState(hrFixture), value => isHrDemoState(value, hrFixture))
   const { recruiting, performance, surveys, operations, serviceDesk, workflow, managementRole, selectedEmployee } = state
   const fixture = recruitingFixture(hrFixture, recruiting)
   const defaultManager = fixture.employees.find(employee => fixture.employees.some(report => report.managerId === employee.id)) ?? fixture.employees[0]
@@ -316,6 +317,11 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
   return <section className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
     <div className="rounded-xl border border-amber-300 bg-amber-50 px-5 py-4 text-amber-950"><p className="text-sm font-semibold">Synthetic HR demo · no account or credentials required</p><p className="mt-1 text-xs leading-5">Fictional records only. Saved sample changes use this browser’s local storage and survive refresh when storage is available. No Firebase or Gusto connection is used. Do not enter real employee information.</p></div>
     <DemoStorageNotice status={storageStatus} />
+    <DemoWorkspaceBackup key={resetGeneration} module="hr" state={state} validate={value => isHrDemoState(value, hrFixture)} summarize={value => `${hrFixture.employees.length + value.recruiting.hiredEmployees.length} people · ${value.workflow.payrollHistory.length} payroll receipts · ${value.surveys.surveys.length} surveys`} onImport={value => {
+      const result = importState(value)
+      if (result.ok) { setResetGeneration(previous => previous + 1); setWorkflowMessage(result.status.message); setWorkflowError(false) }
+      return result
+    }} />
     <div className="mt-7 flex flex-wrap items-start justify-between gap-5"><div><p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">{label(fixture.company.name)} · {portalLabels[portal]} preview</p><h1 className="mt-3 text-3xl font-bold tracking-tight">{route?.title ?? 'HR preview'}</h1><p className="mt-3 max-w-3xl text-sm leading-6 text-neutral-600">{route?.description ?? 'Choose a standard people portal.'}</p></div><button type="button" onClick={reset} className="inline-flex min-h-11 items-center gap-2 rounded-md border border-neutral-300 px-3 py-2 text-sm font-semibold"><RefreshCcw className="h-4 w-4" aria-hidden="true" />Reset sample changes</button></div>
     {workflowMessage && <p role={workflowError ? 'alert' : 'status'} className={`mt-4 rounded-md px-4 py-3 text-sm ${workflowError ? 'bg-rose-50 text-rose-800' : 'bg-emerald-50 text-emerald-800'}`}>{workflowMessage}</p>}
     <nav aria-label="Demo portals" className="mt-6 flex flex-wrap gap-2">{(Object.keys(portalRoots) as HrPortal[]).map(value => <AppLink key={value} to={`/hr/demo/${value}`} aria-current={portal === value ? 'page' : undefined} className={`inline-flex min-h-11 items-center rounded-md px-4 py-2 text-sm font-semibold ${portal === value ? 'bg-neutral-950 text-white' : 'border border-neutral-200 text-neutral-600 hover:bg-neutral-50'}`}>{portalLabels[value]}</AppLink>)}<AppLink to="/hr/demo/sdk" className="inline-flex min-h-11 items-center rounded-md border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-800">Gusto SDK preview</AppLink></nav>

@@ -9,7 +9,9 @@ and shared backend described below remain proposed. Browser and repository
 checks from the earlier talent wave are recorded in the
 [talent and portals QA receipt](HR-TALENT-QA-2026-10-14.md). Current browser-local
 persistence checks are recorded in the
-[persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md). No live
+[persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md). Portable file backup
+checks are recorded separately in the
+[backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md). No live
 business portal is activated by the HR preview or an administrator signing in.
 
 ## What exists today
@@ -80,11 +82,65 @@ is replaced by the next successfully saved action or removed by Reset.
 
 No login, Firebase emulator, cloud storage, provider key or external service is
 required. Local storage does not implement trusted memberships, server rules,
-backups, encryption, retention or production authorization. Read the
+managed backup schedules, encryption, retention or production authorization. Read the
 [persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) for checked browser
 paths and their limits; earlier QA receipts retain their original behavior.
 
-### Current browser checkpoint — 2026-10-14
+## Export and import without an account
+
+**Export workspace** downloads one native portal’s complete current domain
+snapshot as a JSON file. **Import workspace** reads a file locally, previews its
+module/export time/file, and asks for an explicit **Replace HR workspace**,
+**Replace CMS workspace** or **Replace CRM workspace** confirmation. **Cancel import**
+leaves the current records intact. No login, upload or server is involved.
+
+### Move a workspace to another browser
+
+1. Complete or save domain actions in the source portal. Export HR, CMS and CRM
+   separately if all three are needed; each file contains only its named module.
+2. Copy the file to the destination browser/computer. Open the matching native
+   portal at any origin running the compatible app version.
+3. Export the destination’s current workspace if you want to retain it. Import
+   the source file, inspect the preview and confirm the named replacement.
+4. Check the visible save status, inspect the imported records and refresh.
+   The destination now owns an independent browser-local save. Editing either
+   browser does not update the other; repeat export/import to transfer again.
+
+Import is full replacement, not merging, deduplication or synchronization.
+The selected file must pass size, backup-envelope version, module and full nested
+schema checks. A wrong-module or incompatible/damaged file cannot replace records.
+Replacement commits only after browser storage accepts the imported snapshot;
+if saving fails, prior records remain active and a visible error explains the
+failure. Importing HR cannot change CMS/CRM or the independent SDK sample.
+The browser’s existing `schemaVersion: 1` local-storage envelopes remain unchanged;
+portable files use their own backup envelope and must come from **Export workspace**.
+A backup uses `format: "webappx-mock-workspace"`, `schemaVersion: 1`, `module`,
+`exportedAt` (UTC ISO timestamp) and `data`. The file picker rejects files above
+8,002,048 bytes before reading; parsing also limits decoded text to 2,000,512
+characters and the resulting browser-save envelope to 2,000,000 characters.
+Browser quota may be lower, in which case replacement is refused without changing
+the current records. Newer unsupported formats are rejected; no migration is inferred.
+
+Only saved-action domain state is portable. Unsaved fields, running timers and
+most interface selections are excluded; native HR’s saved role/employee choice
+is included. The SDK preview’s separate session is excluded. Reset still clears
+only the chosen browser-local module, leaving files already downloaded intact.
+
+### File contents and trust boundary
+
+The JSON is plain text and contains the whole fictional workspace, including
+review drafts, unsent survey answers, employee/customer records and activity or
+payroll/publication receipts. Export is not filtered by the currently selected
+preview role. Anyone holding the file can read those records. Use fictional data
+only; files are not encrypted, signed or trusted identity/provider records.
+Validation checks supported structure, not the truth or provenance of editable
+file contents. Import cannot grant Firebase permissions, execute payroll, publish
+a website or create an account.
+
+Read the [backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md) for this update’s
+checks. Earlier refresh-only and talent receipts retain their historical scope.
+
+### Earlier persistence browser checkpoint — 2026-10-14
 
 Selected same-origin refresh checks passed in all three native modules. HR
 restored hire/onboarding, approved-time/payroll stages, confirmed benefits,
@@ -298,6 +354,8 @@ when durable storage is adopted.
    with visible storage status and module-specific Reset. The implemented demos
    restore saved actions after refresh or returning to the same origin. Browser
    persistence is not server durability, confidential storage or authentication.
+   Use per-module JSON export/import for manual fictional-workspace backups and
+   browser transfer, with validation and explicit replacement confirmation.
    Provide at least two organizations for cross-tenant negative tests once
    organization selection is implemented.
 3. Validate state transitions and role scope in shared domain functions used by
@@ -314,7 +372,7 @@ when durable storage is adopted.
 
 | Phase | Concrete deliverable | Acceptance evidence |
 | --- | --- | --- |
-| Portal foundation, implemented local shell | Shared demo catalog/navigation, separate versioned browser snapshots and independent Reset | Navigation and same-origin refresh restore saved domain records; production organization/membership contract remains proposed |
+| Portal foundation, implemented local shell | Shared demo catalog/navigation, separate versioned browser snapshots, independent Reset and per-module JSON export/import | Navigation and same-origin refresh restore saved domain records; validated confirmed imports replace only their module; production organization/membership contract remains proposed |
 | CMS mock core, implemented | Page/article editor, separate exact-revision review, frozen local preview and publish/retire receipts | Ten domain tests cover transitions, permissions, stale revisions, slug uniqueness and public-field projection; release browser evidence must separately verify the UI |
 | CMS expanded mock, proposed | Asset metadata, locale variants, full revision history and review queue | Locale and asset references remain scoped; each variant has independent review/publication state |
 | CRM mock core, implemented | Contacts/companies, lead conversion, opportunity stages, tasks/activities and dashboard | Browser qualifies/converts once, advances and closes a sample opportunity, completes a task; foreign-owner actions and duplicate conversion are refused |

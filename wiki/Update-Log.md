@@ -1,5 +1,34 @@
 # Update Log
 
+## 3.4.0 portable mock workspace backups — 2026-10-14
+
+Add **Export workspace** and **Import workspace** to native HR, CMS and CRM.
+Each portal downloads its own validated JSON snapshot; imports read local files
+without uploading, preview their module/export time/file, and require an explicit
+named replacement confirmation. Cancel, invalid/incompatible files and failed
+replacement saves preserve current records. Successful imports replace only the
+matching portal and save locally for refresh. Existing local-storage formats stay
+unchanged; there is no combined bundle, merge or live cross-browser sync.
+
+Files can move fictional workspaces between browser profiles or origins without
+an account. They are plain text and include the whole workspace’s private drafts
+and mock receipts, independent of preview role. Unsaved fields, running timers
+and the separate SDK session are excluded. Validation is not proof of trusted
+identity or provider execution. No cloud/provider operation is introduced.
+
+Read [Template Portals](Template-Portals.md#back-up-restore-or-move-a-workspace)
+and the [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md)
+for setup, browser verification and gate evidence. Actual file downloads and
+file-picker imports passed for all three portals between independent numeric
+loopback/localhost origins. After explicit replacement and refresh, re-exported
+data matched each source payload exactly. HR retained confirmed benefits and
+$240/$48/$25/$167 submitted payroll; CMS retained revision 3/publication records;
+CRM retained $1,500 won/$6,500 open. Cancel/rejected files preserved target
+records, and a repeat CRM import removed a target-only lead rather than merging.
+These checks used the same in-app browser, not multiple browser engines.
+Version remains 3.4.0; managed SYSTEMX snapshots, research fingerprints and blank
+adoption seeds stay intact.
+
 ## 3.4.0 browser-local portal persistence — 2026-10-14
 
 Save native HR, CMS and CRM domain state to separate versioned `localStorage`

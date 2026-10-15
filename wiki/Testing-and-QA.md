@@ -77,7 +77,59 @@ and webhook foundation boundaries. It uses local fixtures and app/backend code;
 it does not contact Gusto or establish Firebase deployment acceptance.
 `hr:backend:audit` audits the isolated optional functions package's dependencies.
 
-### Native HR, CMS and CRM persistence checks
+### Native workspace export/import checks
+
+Automated verification: **116 HR tests + 54 portal/storage/backup tests passed**
+(**170 total**, including 18 new backup/import cases). Full `npm run ci:all`
+passed with production build and LAN isolation.
+
+HR, CMS and CRM each export/import a separate JSON file without an account or
+upload. The [backup QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-BACKUP-QA-2026-10-14.md)
+records this update’s browser evidence, automated totals and gate results.
+Earlier persistence and talent results below retain their original checkpoints.
+
+**Browser checkpoint — 2026-10-14:** all three native portals passed actual
+Export workspace downloads and file-picker imports from numeric loopback into
+`localhost`, followed by preview, explicit replacement, refresh and re-export.
+Every final `data` payload matched its source file exactly. These are two
+independent storage areas in the same in-app browser, not a certification of
+Safari, Firefox, Windows or another browser engine.
+
+| Area | Observed result |
+| --- | --- |
+| HR | Confirmed Avery health plan, approved eight hours and submitted `MOCK-PAYROLL-0002` retained $240 gross/$48 illustrative withholding/$25 benefit/$167 net after import and refresh. |
+| CMS | `Portable CMS sample backup` revision 3 restored with two content records, one publication and two actions. Cancel preserved target revision 1, and confirmed replacement cleared an unsaved target field. |
+| CRM | Three companies, contacts, leads and opportunities plus six actions restored with $1,500 won/$6,500 open. Reimport removed a target-only lead and retained the source records. |
+| Rejected files | CMS rejected an HR file, malformed JSON, version 999 and an 8,002,049-byte file without changing revision 3. HR rejected a broken time-entry employee reference; its submitted payroll receipt survived refresh. |
+
+Storage-denial/write-failure preservation is covered by automated tests; browser
+permissions were not changed for these checks. Read the receipt for final gate
+results and the separate automated scope.
+
+Use fictional data and verify each module independently:
+
+1. Save identifiable domain changes, export the workspace and retain the file.
+   Verify saved workflow stages/linked receipts are included and unsaved edits,
+   running timers and the independent SDK session are excluded.
+2. Change or Reset that module, import its file, inspect the preview and cancel.
+   Verify cancellation preserved the destination. Import again and explicitly
+   confirm the named replacement; refresh and verify the backed-up records return.
+3. Repeat at another browser/origin to verify file portability, independent
+   destination saving and absence of account/server requests.
+4. Give one portal another module’s file, malformed JSON, unsupported envelope
+   versions, invalid nested records and an oversized file. Each rejection must
+   preserve current records and display the failure.
+5. Verify a replacement save failure preserves the prior in-memory workspace
+   and browser snapshot. Successful import must not change the other two portals.
+6. Inspect plain-text exports with the expectation that the complete fictional
+   workspace includes private drafts/answers/receipts, independent of the current
+   role projection. Schema acceptance does not prove provider execution.
+
+Import performs full replacement, not merging. Export the destination first if
+its records must be retained. See [Template Portals](Template-Portals.md#back-up-restore-or-move-a-workspace)
+for the user-facing steps and portability limits.
+
+### Earlier native HR, CMS and CRM persistence checks
 
 Automated verification: **116 HR tests and 36 portal/storage tests passed**
 (152 total).
@@ -120,7 +172,7 @@ Storage is versioned and separate per module. Private browsing, site-data
 clearing and a different scheme/hostname/port can remove or hide saved samples.
 Multiple tabs do not merge updates live; the last successful write wins. Test
 with fictional data only. No local persistence result establishes production
-server storage, membership enforcement, backup/retention or provider execution.
+server storage, membership enforcement, managed backup/retention or provider execution.
 
 ### Talent wave verification
 
