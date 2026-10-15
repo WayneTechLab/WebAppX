@@ -42,45 +42,44 @@
       "id": "portal-state-contract",
       "guide": {
         "path": "docs/PORTAL-STATE-CONTRACT.md",
-        "sha256": "085a1b93e6c0939c9746106981df30afeec370166717613067fb05f8465bb6f6"
+        "sha256": "7b5895c200a3babb81dd9cf6b990612efc6fcbc7ef2e6340c86c0d0dd786b9ec"
       },
-      "examinedRevision": "917a49129918ca3cf55cc9cc794741ea3c42a6f7",
+      "examinedRevision": "61d39c9c855fb3f56913cb7c2f8010a6a485b746",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review of the revised state guide and implementation at this committed revision: session return, controlled CMS buffers, explicit payroll period/rates, time corrections, named history, bounded inspection/differences and exact-point Undo. Historical receipts retain their original dates and starting source bases. The new maturity receipt separately qualifies working-tree native observations and the exact committed-source adoption recheck; this mapping performs no execution."
+        "scope": "Source-only review at this committed implementation revision: protected temporary HR/CMS/CRM forms, disclosed dirty-history current-slot behavior, CMS restored-editor Reload/Reapply, independent opt-in import/Reset checkpoints, bounded domain differences, and separate fictional SDK receipt handling. The safety QA receipt separately records frozen-runtime browser observations and integrated gates. Existing receipts retain their original dates and starting-source qualifications; this mapping executes no tests."
       },
       "proposalIds": [
         "WX-0060",
         "WX-0601",
-        "WX-0056",
-        "WX-0151",
-        "WX-0152",
-        "WX-0153",
-        "WX-0154",
-        "WX-0155",
-        "WX-0156",
-        "WX-0157",
-        "WX-0158",
-        "WX-0280",
-        "WX-0282",
-        "WX-0397",
-        "WX-0453",
-        "WX-0454",
-        "WX-0457",
-        "WX-0458"
+        "WX-0059",
+        "WX-0285",
+        "WX-0455",
+        "WX-0456",
+        "WX-0459",
+        "WX-0460",
+        "WX-0655",
+        "WX-0720",
+        "WX-0722",
+        "WX-0756",
+        "WX-0757",
+        "WX-0775",
+        "WX-0847",
+        "WX-0860"
       ],
       "sourceScopes": [
         "src/portals",
-        "src/hr/persistence.ts",
-        "src/hr/mock-workflows.ts",
-        "src/hr/insights.ts",
-        "src/hr/components/HrWorkspace.tsx",
-        "src/hr/components/HrInsights.tsx",
-        "src/cms/persistence.ts",
-        "src/cms/model.ts",
-        "src/cms/CmsDemo.tsx",
-        "src/crm/persistence.ts",
-        "src/pages/TemplatePortalsPage.tsx"
+        "src/hr",
+        "src/cms",
+        "src/crm",
+        "src/lib/navigation.ts",
+        "src/router.tsx",
+        "src/pages/TemplatePortalsPage.tsx",
+        "src/components/navigation",
+        "src/components/shell/PageSnapMenu.tsx",
+        "scripts/browser-preview-process.mjs",
+        "scripts/browser-preview-worker.mjs",
+        "integrations/gusto"
       ],
       "receipts": [
         {
@@ -99,7 +98,7 @@
           "observedOn": "2026-10-15",
           "observationRevision": "950f9ba0c4e48faaa65056f504f105201838e3ec",
           "revisionBasis": "receipt-source-base",
-          "scope": "Current maturity receipt records native browser execution on the changed working tree above its stated starting source base, plus a separately identified exact committed-source HR-disabled adoption recheck. It does not relabel historical browser observations as execution at the guide review revision."
+          "scope": "Historical maturity receipt records native browser execution on its changed working tree above the stated starting source base, plus a separately identified exact committed-source HR-disabled adoption recheck. Its observations are not relabeled as execution at the current guide review revision; the current safety receipt separately records new behavior and verification."
         }
       ]
     }

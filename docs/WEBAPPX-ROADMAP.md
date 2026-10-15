@@ -30,9 +30,11 @@ Read the [implementation plan](PORTAL-SAFETY-IMPLEMENTATION-PLAN.md),
 publication gates separately from local criteria acceptance. All earlier totals
 below retain their historical scope; query the canonical catalog for current status.
 
-The [next HR employment lifecycle plan](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-assigns WX-0101–WX-0110 for proposed implementation. Those ten remain TODO;
-the plan preserves their original criteria and dependencies. The full goal
+The [next parallel implementation plan](PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+assigns **WX-0101–WX-0110, WX-0314–WX-0316 and WX-0379–WX-0381** for HR
+employment lifecycle, CMS release bundles and CRM ownership transfers. All
+sixteen remain TODO. The [detailed HR plan](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+and parallel plan preserve original criteria and dependencies. The full goal
 remains active until all 1,000 original criteria have accepted evidence.
 
 ## Open the list

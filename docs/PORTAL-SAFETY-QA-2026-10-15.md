@@ -4,8 +4,9 @@
 The canonical catalog now records **91 done / 909 remaining**: **82 P1, 670 P2
 and 157 P3**, with **742 local, 127 operator and 40 provider** gates remaining.
 Original acceptance definitions and dependencies are unchanged. The all-1,000
-goal remains active. Full integrated CI and Hosting preflight remain pending;
-local acceptance does not establish publication or production acceptance.
+goal remains active. **All 61 configured CI stages, 160 browser checks/check
+groups and Hosting preflight passed.** Production deployment remains outside
+this local acceptance.
 
 ## Starting source and frozen runtime
 
@@ -31,8 +32,10 @@ Source bindings retain their supplied-baseline qualification and hash modes.
 The owned verification worker uses `watch: null` and `hmr: false` with its
 owned connection/error WebSocket retained. This prevents unrelated generated
 files and Tailwind updates from replacing a measured DOM during frozen-source
-verification. The passing final reports observed no mid-run page reload.
-These runs verify frozen source; they do not test ordinary development hot reload.
+verification. The final native quality run recorded zero unexpected reloads
+during its measured scenes; explicit reload steps in the other suites remain
+ordinary test actions. These runs verify frozen source; they do not test
+ordinary development hot reload.
 
 ## Original criteria and accepted evidence
 
@@ -145,6 +148,9 @@ Native quality manifest SHA-256:
 `0fe4c7a72289b38dacb9ab3f9b2017d0e1b3f1bdc29d12b228903ac49e9426a2`.
 SDK quality manifest SHA-256:
 `55badd6795064af4661a7ef23561ff1efdc768c2903f163a71a9a183ea790f0b`.
+Agent 0 verified the complete native manifest's four source and 279 artifact
+entries and the SDK manifest's seven source and 133 artifact entries against
+their exact file fingerprints.
 
 Independent visual review inspected the native contact sheets and bounded
 witnesses, **all 44 final SDK witnesses**, all 12 safety scenes and all three
@@ -218,15 +224,95 @@ promoted to final acceptance evidence.
   The exact fictional response and explicit mock copy are now independently
   checked through the selected genuine SDK components.
 
+### Integrated regression diagnostic
+
+The first full CI attempt reached stage 38 (`portals:test`) and failed the existing
+reduced-motion navigation fixture because its simulated browser omitted
+`window.location` and `document.getElementById`. The fixture now supplies a real
+fictional URL and an explicit missing-hash-target lookup. Its original navigation,
+event and reduced-motion scroll assertions are retained; all **129 portal tests**
+pass. Verification commit `fb59cd5ba6ab12220ece2c30242fcd60ad69d6ce` changes only that
+fixture. The second attempt passed that stage and reached stage 50
+(`browser:maturity`), where the older journey left an intentionally unprepared
+payroll period without answering the new unsaved-work decision.
+
+The maturity harness now declares exactly two expected draft decisions—
+**Chosen payroll period** and the intentionally invalid **CMS new content form**—
+and asserts every saved byte stays unchanged. Every other navigation refuses
+an unexpected dialog. Download wait/click now share `Promise.all`, allowing
+ordinary error reporting and cleanup instead of an unhandled rejected promise.
+All original complete-export, literal payroll, focus, rate-history, CRM,
+inspection and Undo assertions remain; the standalone final run
+`webappx-browser-maturity-2zvwkl` passed **13/13** with owned child 20976 exited 0,
+both resources closed and four traces without source-triggered reload.
+The diagnostic `webappx-browser-maturity-X6QPpl` retains its failed report/trace
+and successful cleanup. Verification commit `acd8201ca5fb94fb698cf8f49035395bb5a926dd` changes only the
+maturity harness. Both full-CI failure logs are retained; the entire configured
+61-stage command subsequently passed in full. All application runtime fingerprints
+remain unchanged from the implementation commit.
+
 ## Integrated publication gates
 
-| Required gate | Current status |
+| Required gate | Result |
 | --- | --- |
-| Implementation commit and full configured **61-stage** `npm run ci:all` | **Pending Agent 0's implementation-commit run.** A source-derived plan describes stages; it executes no gate. |
-| `npm run deploy -- hosting --preflight` | **Pending Agent 0.** No production deployment was requested or performed by this receipt. |
-| Final drift/template/identity/publication checks | **Pending Agent 0's integration record.** |
+| Full configured `npm run ci:all` | **61/61 stages passed**, terminal exit 0, on verification commit `acd8201ca5fb94fb698cf8f49035395bb5a926dd`. All application, integration and test code matched that commit; only final evidence, roadmap and freshness documentation remained pending. |
+| `npm run deploy -- hosting --preflight` | **Passed** on implementation commit `61d39c9c855fb3f56913cb7c2f8010a6a485b746`; application/runtime fingerprints match the final verification commit. Typecheck, lint, production build and LAN isolation passed. Version remains 3.4.0 / deployment count 0; push and deploy were skipped. |
+| SYSTEMX drift and template preservation | **Passed**: selected release, research fingerprints, versions, managed README block and blank reusable records verified. |
+| Catalog, execution plan, links and source evidence | **Passed** in full CI and in final documentation checks: 1,000 ordered criteria, exact generated views, current plan, 734 Markdown files, host drift and template preservation. |
+| GitHub source/wiki publication | Uses separate final repository identity and native-wiki synchronization checks; Git commit IDs identify the published result without a self-referential receipt hash. |
 
-PENDING_CURRENT_SAFETY_GATES
+The twelve common-runner suites below account for **146** browser checks/check
+groups. Every report passed and recorded its exact child exiting 0 plus browser
+and server cleanup. The separate committed-source HR-disabled adoption adds
+**8**, and the owned LAN work-status suite adds **6**: **160 total**. These are
+configured checks/groups, not a count of individual assertions or all possible
+user interactions.
+
+| Common-runner retained report | Passed checks/groups |
+| --- | --- |
+| `webappx-browser-smoke-B0eWAw` | 7 |
+| `webappx-browser-keyboard-0iVsTM` | 9 |
+| `webappx-browser-foundation-fytStl` | 10 |
+| `webappx-browser-state-contract-cfH7Fr` | 13 |
+| `webappx-browser-lifecycles-hiaE8n` | 12 |
+| `webappx-browser-payroll-tfzAAl` | 8 |
+| `webappx-browser-evaluators-FqqSyX` | 25 |
+| `webappx-browser-maturity-ijm9b0` | 13 |
+| `webappx-browser-safety-ipxg6F` | 30 |
+| `webappx-browser-quality-OluoTx` | 6 |
+| `webappx-browser-sdk-quality-hdJ9XE` | 5 |
+| `webappx-browser-recovery-drill-bq2o8f` | 8 |
+
+The HR-disabled rehearsal captured **98 public app files** from exact committed
+verification source `acd8201ca5fb94fb698cf8f49035395bb5a926dd`, with source manifest
+`ebeecfc0c50d2fa0c4b8b07c849328d49519c1ec23a588aa9d459e221e433b5f`.
+Its six explicit adaptation overrides, 40 emitted modules, HR/Gusto runtime
+exclusion, real CMS/CRM persistence and eight checks passed. Old HR/recovery
+slots remained unread and unchanged. This qualifies the adapted temporary app;
+it does not relabel that app as the unchanged native template.
+The LAN report is `webappx-work-status-browser-jn2fHw` (six checks passed).
+
+Documentation freshness now binds the state guide to implementation source
+`61d39c9c855fb3f56913cb7c2f8010a6a485b746` and appends review
+`DFR-008b13f6ae7b92c4`. Both earlier review decisions and historical receipt
+bytes/dates/source bases are preserved. The later verification commits change
+test fixtures only; they do not alter that reviewed application contract.
+
+Creating the isolated next-wave worktree enabled the app-managed Git
+`extensions.worktreeconfig` setting. The primary checkout's final freshness
+comparison conservatively refused that unsupported layout, as designed. No Git
+configuration or checker restriction was changed. An owned, independent local
+clone without hardlinks captured exact verification source
+`acd8201ca5fb94fb698cf8f49035395bb5a926dd` and the two pending freshness JSON
+records. Its supported-layout comparison passed: two guides, zero source or
+definition reviews required, three historical source-base receipts and three
+review decisions. The temporary clone was removed. This qualifies that exact
+source-and-record capture; it does not claim native worktree-layout support.
+
+The [next parallel assignment](PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md) covers
+sixteen still-TODO criteria across HR employment lifecycle, CMS release bundles
+and CRM ownership. Its isolated source work is separate from this accepted
+fourteen-criterion checkpoint.
 
 ## Evidence limits
 

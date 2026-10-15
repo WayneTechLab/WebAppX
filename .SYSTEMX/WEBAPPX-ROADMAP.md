@@ -47,9 +47,12 @@ with **742 local, 127 operator and 40 provider** gates remaining. Read the
 [status inventory](../docs/PORTAL-STATUS-INVENTORY.md) for exact local scope and
 separate integrated publication gates.
 
-The [next HR lifecycle plan](../docs/HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-assigns WX-0101–WX-0110 as proposed implementation. All ten remain TODO; no
-provider/operator acceptance or reusable task record is created by the plan.
+The [next parallel implementation plan](../docs/PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+assigns WX-0101–WX-0110, WX-0314–WX-0316 and WX-0379–WX-0381 for HR lifecycle,
+CMS releases and CRM ownership. All sixteen remain TODO; the
+[detailed HR plan](../docs/HR-LIFECYCLE-IMPLEMENTATION-PLAN.md) retains its
+compatibility contract. No provider/operator acceptance or reusable task record
+is created by either plan.
 
 The following checkpoints retain their historical dates and totals.
 

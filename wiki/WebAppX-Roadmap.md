@@ -41,7 +41,12 @@ Acceptance records link actual reviewed evidence in the canonical catalog.
 
 Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
 
-Focused and browser verification passed. The required **61-stage integrated CI and Hosting preflight are pending** before publication; their final results belong in the current safety QA receipt.
+**Integrated verification passed: all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** The current safety QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed.
+
+The [next parallel implementation plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+assigns sixteen still-TODO criteria: WX-0101–WX-0110, WX-0314–WX-0316 and
+WX-0379–WX-0381. HR lifecycle, CMS releases and CRM ownership work is isolated
+from this verified source checkpoint and requires its own browser/integration evidence.
 
 ## Historical portal maturity implementation — 2026-10-15
 

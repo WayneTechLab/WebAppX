@@ -1,6 +1,6 @@
 # Update Log
 
-## 3.4.0 portal safety wave — local criteria verified, 2026-10-15
+## 3.4.0 portal safety wave — verified, 2026-10-15
 
 Start from published base `532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. Add
 [registered dirty-form navigation and recovery](Portal-Safety-and-Recovery.md),
@@ -27,7 +27,7 @@ cleanup. Read the [state contract](https://github.com/WayneTechLab/WebAppX/blob/
 
 Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
 
-Focused and browser verification passed. The required **61-stage integrated CI and Hosting preflight are pending** before publication; their final results belong in the current safety QA receipt.
+**Integrated verification passed: all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** The current safety QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed.
 
 Prior maturity/evaluator receipts below retain their original dates, source
 bases and observed results. They do not establish this wave's final gates.

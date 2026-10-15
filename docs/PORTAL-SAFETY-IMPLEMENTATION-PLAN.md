@@ -1,6 +1,6 @@
 # Portal safety and recovery implementation — 2026-10-15
 
-Status: **fourteen original local criteria accepted; integrated publication gates pending**. This assignment follows the accepted
+Status: **fourteen original local criteria accepted; all 61 CI stages and Hosting preflight passed**. This assignment follows the accepted
 [16-item maturity wave](PORTAL-MATURITY-QA-2026-10-15.md), under the active
 [all-1,000 execution plan](WEBAPPX-EXECUTION-PLAN.md). Read-only planning examined
 published starting base `950f9ba0c4e48faaa65056f504f105201838e3ec` plus the
@@ -74,9 +74,10 @@ The [current QA receipt](PORTAL-SAFETY-QA-2026-10-15.md) collects actual
 verification and independent review. Agent 0 accepted all fourteen original local criteria after independent review
 and completed model/browser/importer evidence. The catalog records **91 done /
 909 remaining**, including **82 P1, 670 P2 and 157 P3**; remaining gates are
-**742 local, 127 operator and 40 provider**. Full publication CI/preflight must
-pass before GitHub push. The all-1,000 goal remains active.
+**742 local, 127 operator and 40 provider**. All **61 CI stages, 160 browser checks/check groups and Hosting preflight
+passed**; the QA receipt records original failed diagnostics and final results. The all-1,000 goal remains active.
 
-The [next HR employment lifecycle plan](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-assigns WX-0101–WX-0110 as proposed implementation. All ten remain TODO; its
-engineering order changes none of their original dependencies.
+The [next parallel implementation plan](PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+assigns sixteen TODO criteria across HR lifecycle, CMS release bundles and CRM
+ownership transfers. The [detailed HR contract](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+retains its original ten criteria; engineering order changes no dependencies.

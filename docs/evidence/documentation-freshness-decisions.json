@@ -27,6 +27,19 @@
       "scopeSha256": "2fb18512b722ebff2f3258403094554586b28efc57037bf2d338e9d96ad53eea",
       "decision": "retain",
       "rationale": "Retain the original historical receipt within its recorded starting-source-base scope. The revised guide and mapped implementation were reviewed at this target commit; the new maturity receipt separately qualifies working-tree native browser observations and an exact committed-source adoption recheck. This source review does not rerun or promote prior browser evidence."
+    },
+    {
+      "id": "DFR-008b13f6ae7b92c4",
+      "guideId": "portal-state-contract",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "61d39c9c855fb3f56913cb7c2f8010a6a485b746",
+      "reportDigest": "7a6aa4c9227bfe8c978a7b37a887ed491e39faa998703bc2ed2b754b0beec36e",
+      "mappingSha256": "7d1d814131b9577da69e3a0fa496136f9c9e809ef70e19a6213016c76c714e54",
+      "inputsSha256": "d8c1b9cebe2e08f23fe12636dee85a5110aac772ffa4a4582938d6db9ae0e887",
+      "scopeSha256": "2013cb68983a8f673f986c7c780edca9b0add59046b046eca7c1ec7e01c90c2e",
+      "decision": "retain",
+      "rationale": "Retain the historical receipts within their literal starting-source and observation scopes. The reviewed safety implementation has its own frozen-runtime browser proof and current QA receipt; historical evidence is not relabeled as execution at the new implementation revision."
     }
   ]
 }
