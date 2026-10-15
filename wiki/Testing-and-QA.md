@@ -45,8 +45,10 @@ npm run ci:audit
 npm run build
 ```
 
-Consult the [3.4.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.4.0.md)
-for the current checked revision and actual results. The historical
+Consult the [2026-10-14 browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-BROWSER-QA-2026-10-14.md)
+for the native HR fixes and their checked results. The original
+[3.4.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.4.0.md)
+retains its October 13 revision and historical 39-test HR result. The historical
 [3.2.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.2.0.md)
 records 230 standalone tests (successful with 5 case-sensitive filesystem cases
 skipped on the validation Mac), 27 host integration tests, 8 operational controls
@@ -72,6 +74,32 @@ directory/onboarding/payroll mock's request/response contracts, and backend memb
 and webhook foundation boundaries. It uses local fixtures and app/backend code;
 it does not contact Gusto or establish Firebase deployment acceptance.
 `hr:backend:audit` audits the isolated optional functions package's dependencies.
+
+### Native browser verification — 2026-10-14
+
+The dated receipt records **41 passing HR tests**: 16 native model/workflow,
+11 SDK-client mock and 14 optional backend boundary tests. On macOS Apple
+Silicon, the native browser check verified:
+
+- Jordan's approved eight hours remain excluded until onboarding is completed
+  and the directory reads Active. A changed work email invalidates pending
+  profile/summary review.
+- Unconfirmed retirement elections are ignored. Confirming after preparation
+  preserves the frozen $192 net; preparing again captures the confirmed plan,
+  producing $240 gross, $48 illustrative withholding, $25 benefit deduction and
+  $167 net in `MOCK-PAYROLL-0004`.
+- Avery's confirmed waiver and approved eight hours produce $192 net in
+  `MOCK-PAYROLL-0007`, excluding Jordan's receipted hours and enrollment.
+- Timers bind their employee, role and original date. Identity/role changes and
+  Reset cancel them; a normal stop retains the original work date.
+
+Model regression checks also cover unchanged profile saves and contact edits
+after completed hiring, preserving accepted history in both cases.
+These are linked native mock results with Firebase initialization disabled.
+The SDK sample retains separate state; its onboarding/payroll UI was not
+retested in this session. The historical October 13 39-test receipt remains
+unchanged. Neither receipt establishes real provider, tax, benefits or production
+acceptance, and this update retains version **3.4.0**.
 
 For a browser check, run Vite development and open `/hr/demo` and `/hr/demo/sdk`.
 The SDK 0.56.6 preview uses genuine directory, administrative onboarding and

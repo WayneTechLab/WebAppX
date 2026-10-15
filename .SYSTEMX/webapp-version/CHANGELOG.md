@@ -1,3 +1,14 @@
+# 3.4.0 follow-up — Gusto browser fixes — 2026-10-14
+
+- Invalidate pending onboarding profile/summary review after a changed work
+  email; preserve accepted employment and historical receipts after hiring.
+- Bind sample timers to their original employee, role and work date. Identity
+  changes and Reset cancel the timer and clear stale local form values.
+- Verify onboarding eligibility, confirmed enrollment/waiver deductions,
+  approved-time inclusion, frozen payroll inputs and receipt replay guards in
+  an isolated browser session. Retain the 41-test HR regression result and
+  [dated browser QA receipt](../../docs/GUSTO-BROWSER-QA-2026-10-14.md).
+
 # 3.4.0 — Complete account-free HR mock journeys — 2026-10-13
 
 - Add onboarding review/completion, benefit election/confirmation and timesheet

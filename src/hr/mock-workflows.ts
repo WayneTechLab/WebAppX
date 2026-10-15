@@ -1,17 +1,19 @@
-import { canApproveTimeEntry, validateTimeEntry, type HrActor, type HrFixture, type HrRecord } from './model'
+import { canApproveTimeEntry, canEditEmployeeProfile, validateTimeEntry, type HrActor, type HrFixture, type HrRecord } from './model'
 
 export type MockOnboarding = { profileReviewed: boolean; jobReviewed: boolean; tasks: Record<string, boolean>; stage: 'draft' | 'reviewed' | 'complete'; receipt?: string }
 export type MockTimeEntry = HrRecord & { employeeId: string; date: string; hours: number; status: 'draft' | 'submitted' | 'approved'; source: 'manual' | 'timer' | 'fixture'; payrollReceipt?: string }
 export type MockBenefitElection = { employeeId: string; planId: string; election: 'enroll' | 'waive'; stage: 'draft' | 'reviewed' | 'confirmed'; receipt?: string }
+export type MockTimer = { employeeId: string; role: HrActor['role']; date: string; startedAt: number }
 export type MockPayroll = {
   stage: 'idle' | 'prepared' | 'calculated' | 'reviewed' | 'submitted';
   inputs: { entryId: string; employeeId: string; hours: number; rateCents: number }[];
   benefitInputs: { employeeId: string; planId: string; deductionCents: number }[];
   hours: number; grossCents: number; illustrativeWithholdingCents: number; benefitDeductionCents: number; netCents: number; receipt?: string;
 }
-export type MockHrState = { onboarding: Record<string, MockOnboarding>; employeeStatuses: Record<string, string>; timeEntries: MockTimeEntry[]; benefitElections: MockBenefitElection[]; payroll: MockPayroll; payrollHistory: MockPayroll[]; sequence: number }
+export type MockHrState = { onboarding: Record<string, MockOnboarding>; profileEmails: Record<string, string>; employeeStatuses: Record<string, string>; timeEntries: MockTimeEntry[]; benefitElections: MockBenefitElection[]; payroll: MockPayroll; payrollHistory: MockPayroll[]; sequence: number }
 export type MockHrEvent =
   | { type: 'review-profile' | 'review-job' | 'review-onboarding' | 'complete-onboarding'; employeeId: string }
+  | { type: 'change-profile'; employeeId: string; workEmail: string }
   | { type: 'check-task'; employeeId: string; taskId: string; complete: boolean }
   | { type: 'add-time'; date: string; hours: number; source: 'manual' | 'timer' }
   | { type: 'submit-time'; entryIds: string[] }
@@ -34,12 +36,27 @@ export function elapsedMockHours(startedAt: number, stoppedAt: number) {
   return hours
 }
 
+export function startMockTimer(actor: HrActor, date: string, startedAt: number, fixture: HrFixture): MockTimer {
+  const employeeId = requireOwnEmployee(actor, fixture)
+  const validation = validateTimeEntry(date, 1)
+  if (!validation.valid) throw new Error(validation.error)
+  if (!Number.isFinite(startedAt)) throw new Error('The sample timer requires a valid start time.')
+  return { employeeId, role: actor.role, date, startedAt }
+}
+
+export function stopMockTimer(timer: MockTimer, actor: HrActor, stoppedAt: number, fixture: HrFixture): Extract<MockHrEvent, { type: 'add-time' }> {
+  const employeeId = requireOwnEmployee(actor, fixture)
+  if (timer.employeeId !== employeeId || timer.role !== actor.role) throw new Error('The sample timer belongs to another preview identity. Start a new timer.')
+  return { type: 'add-time', date: timer.date, hours: elapsedMockHours(timer.startedAt, stoppedAt), source: 'timer' }
+}
+
 export function createMockHrState(fixture: HrFixture): MockHrState {
   return {
     onboarding: Object.fromEntries(fixture.employees.map(employee => [employee.id, {
       profileReviewed: false, jobReviewed: false, stage: 'draft',
       tasks: Object.fromEntries((employee.onboarding ?? []).map(task => [task.id, ['complete', 'completed'].includes(task.status)])),
     }])),
+    profileEmails: Object.fromEntries(fixture.employees.map(employee => [employee.id, employee.workEmail])),
     employeeStatuses: Object.fromEntries(fixture.employees.map(employee => [employee.id, employee.employmentStatus])),
     timeEntries: fixture.timeEntries.map(entry => ({ ...entry, employeeId: String(entry.employeeId), date: String(entry.date), hours: Number(entry.hours), status: ['draft', 'submitted', 'approved'].includes(String(entry.status)) ? entry.status as MockTimeEntry['status'] : 'draft', source: 'fixture' })),
     benefitElections: [], payroll: blankPayroll(), payrollHistory: [], sequence: 1,
@@ -64,6 +81,22 @@ function requirePayrollRole(actor: HrActor) {
 export function transitionMockHr(state: MockHrState, actor: HrActor, event: MockHrEvent, fixture: HrFixture): MockHrState {
   const next = structuredClone(state)
   const receipt = (kind: string) => `MOCK-${kind}-${String(next.sequence++).padStart(4, '0')}`
+  if (event.type === 'change-profile') {
+    if (!fixture.employees.some(employee => employee.id === event.employeeId) || !canEditEmployeeProfile(actor, event.employeeId)) throw new Error('This demo role cannot change that employee profile.')
+    const workEmail = event.workEmail.trim()
+    if (!workEmail) throw new Error('A synthetic work email is required.')
+    if (next.profileEmails[event.employeeId] !== workEmail) {
+      next.profileEmails[event.employeeId] = workEmail
+      const onboarding = next.onboarding[event.employeeId]
+      // Completed receipts describe an accepted historical sample. Later contact
+      // edits must not revoke employment; pending onboarding must be reviewed anew.
+      if (onboarding && onboarding.stage !== 'complete') {
+        onboarding.profileReviewed = false
+        onboarding.stage = 'draft'
+      }
+    }
+    return next
+  }
   if (['review-profile', 'review-job', 'check-task', 'review-onboarding', 'complete-onboarding'].includes(event.type)) {
     const change = event as Extract<MockHrEvent, { employeeId: string }>
     requireOnboardingAccess(actor, change.employeeId, fixture)

@@ -63,6 +63,29 @@ needed. The role selector remains a synthetic fixture control. See
 [the step-by-step setup guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md)
 for the exact routes and completion checks.
 
+## Browser verification — 2026-10-14
+
+The [full browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-BROWSER-QA-2026-10-14.md)
+records the linked native mock on macOS Apple Silicon, with Firebase
+initialization disabled and no Gusto account, provider call or financial action.
+Version remains **3.4.0** for these fixes.
+
+| Native check | Observed result |
+| --- | --- |
+| Pending onboarding | Jordan's new eight hours were approved by Morgan but excluded from payroll while Jordan remained onboarding. Changing the reviewed work email cleared pending profile/summary review. Reviewing again and confirming made Jordan Active and those approved hours eligible. |
+| Unconfirmed election | A reviewed but unconfirmed retirement enrollment produced no benefit deduction: $240 fictional gross, $48 illustrative withholding and $192 net. |
+| Frozen preparation | Confirming retirement after preparation kept that run at $192 net. Preparing again captured one confirmed plan: $240 gross, $48 withholding, $25 benefit deduction and $167 net. Review/submission produced `MOCK-PAYROLL-0004`. |
+| Waiver and employee isolation | Avery's confirmed health waiver and approved eight hours produced $192 net and `MOCK-PAYROLL-0007`. Jordan's receipted hours and enrollment were excluded from Avery's run; both receipts remained visible. |
+| Timer ownership | Timers retain their original employee, role and work date. Identity/role changes or Reset cancel them; stopping with the original identity keeps the starting date even if the date field changed. |
+
+`npm run hr:test` passed **41 tests**: 16 native model/workflow, 11 SDK-client
+mock and 14 optional backend boundary tests. Model regressions also verify that
+unchanged profile saves preserve review and later contact edits preserve completed
+hiring and its historical receipt. The October 13 release receipt's
+39-test result remains historical. Native timesheets and elections stay separate
+from the SDK fixture; this session did not retest the SDK onboarding/payroll UI,
+deploy Firebase or establish provider, tax, benefits or production acceptance.
+
 ## Credentials and ownership
 
 Gusto documents application-specific credentials through a Developer Portal

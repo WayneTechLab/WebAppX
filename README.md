@@ -101,6 +101,24 @@ Use the [step-by-step account-free guide](docs/GUSTO-SETUP.md) for the role and
 route sequence. All four native journeys use browser memory and reset on refresh
 or Reset; no Gusto account, provider request or cloud service is needed. Mock
 payroll totals and receipts do not establish payroll accuracy or payment execution.
+
+**Browser verification — 2026-10-14:** the linked native mock was checked through
+onboarding, approved hours, retirement enrollment, payroll submission and a
+separate employee's waiver. A changed work email now invalidates pending
+onboarding review; sample timers retain their starting employee, role and date,
+and cancel on identity changes or Reset. Payroll keeps prepared inputs until a
+new preparation and excludes hours already linked to a receipt. The current HR suite
+passes **41 tests** (16 native, 11 SDK-client mock and 14 backend). Read the
+[dated browser QA receipt](docs/GUSTO-BROWSER-QA-2026-10-14.md) for exact values,
+receipts and boundaries. The October 13 release receipt's 39 tests remain
+historical; this update keeps version **3.4.0** and does not retest the
+separate SDK UI or establish provider acceptance.
+
+| Native mock result | Fictional gross | Illustrative withholding | Sample benefit | Simulated net |
+| --- | --- | --- | --- | --- |
+| Jordan — confirmed retirement enrollment | $240 | $48 | $25 | $167 |
+| Avery — confirmed health waiver | $240 | $48 | $0 | $192 |
+
 Employee search/profile records, time-off requests/approvals, policy/training
 acknowledgements and contractor previews remain available. Page specifications
 cover additional company, reporting, document and native HR modules, with

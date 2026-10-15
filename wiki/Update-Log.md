@@ -1,5 +1,31 @@
 # Update Log
 
+## 3.4.0 browser fixes — 2026-10-14
+
+- Keep pending onboarding review consistent with profile edits. A changed work
+  email invalidates profile/summary review; unchanged saves and later contact
+  changes after completed hiring preserve accepted history.
+- Bind sample timers to their original employee, role and work date. Changing
+  preview identity/role or using Reset cancels the timer and clears stale inputs.
+- Verify Jordan's approved eight hours stay excluded while onboarding, then
+  become payroll eligible after completion and Active directory readback.
+  Unconfirmed retirement is ignored; confirming after preparation leaves the
+  frozen $192 net until a new preparation captures the plan. The resulting
+  $240 gross/$48 illustrative withholding/$25 benefit/$167 net run produces
+  `MOCK-PAYROLL-0004`.
+- Verify Avery's confirmed waiver produces $192 net in `MOCK-PAYROLL-0007`,
+  excluding Jordan's receipted hours and enrollment from the new run.
+- Record **41 passing HR tests**: 16 native, 11 SDK-client mock and 14 optional
+  backend boundary checks. Preserve the October 13 release receipt and its
+  historical 39-test result.
+
+Read the [2026-10-14 browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-BROWSER-QA-2026-10-14.md)
+for exact steps and results. This is a fixes/documentation update to **3.4.0**,
+not a new tagged release. It verifies linked native mock state; the separate SDK
+UI was not retested, and no provider, Firebase deployment or financial acceptance
+is implied. Managed dotSYSTEMX **1.9.0-alpha.6**, immutable snapshots and blank
+adoption seeds remain unchanged.
+
 ## 3.4.0 — 2026-10-13
 
 Complete the account-free mock journeys for employee onboarding, payroll,
