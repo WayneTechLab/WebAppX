@@ -14,12 +14,37 @@ the named environment. Activation and deployment remain specific operator
 acceptance steps. Reusable SYSTEMX adoption seeds stay blank; the host execution
 plan records this public template's work.
 
-## Current lifecycle checkpoint — locally accepted
+## Current confirmation checkpoint — locally accepted
+
+Agent 0 accepted **WX-0708**, then its dependent **WX-0717**, for reversible-action
+scope/effect/cancel previews and predictable Undo preview keyboard navigation
+with exact opener focus return. Read the [confirmation QA receipt](PORTAL-CONFIRMATION-QA-2026-10-15.md)
+and [state contract](PORTAL-STATE-CONTRACT.md) for the actual controls,
+complete-record preservation checks and evidence limits.
+
+**All 62 CI stages passed with terminal exit 0** on committed source
+`998674759f11e17765c6724edfe2dae3d1c58c5a`. Independent stage/report review
+confirmed **183 actual browser checks/check groups**: **169 common, 8 HR-disabled
+and 6 owned LAN**. Hosting preflight passed on the same commit. App **3.4.0**
+retains **deploy count 0**; no deployment occurred.
+
+The canonical catalog now records **111 done / 889 remaining**: **69 P1, 664 P2
+and 156 P3**, with **722 local, 127 operator and 40 provider** gates remaining.
+The full 1,000-item goal remains active. Source and wiki publication require
+separate direct remote parity checks. These local results establish no provider,
+production or manual screen-reader acceptance.
+
+Recruiting lifecycle work is **IN DEVELOPMENT** in an isolated worktree. Its
+original **WX-0201–WX-0210 plus WX-0951 remain TODO**; the
+[recruiting plan](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) supplies planning context,
+without acceptance or publication of that development work.
+
+## Historical lifecycle checkpoint — locally accepted
 
 The [lifecycle guide](PORTAL-LIFECYCLE.md),
 [implementation plan](PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md),
 [detailed HR contract](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md) and
-[current QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) cover HR employment
+[dated lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) cover HR employment
 instances/transfers/offboarding/rehire/corrections/templates, CMS release bundles
 and CRM ownership. App source is integrated at `458a045`, followed by harness-only
 `fdf6012`. Run `npm run browser:portal-lifecycle` after normal setup.
@@ -28,19 +53,18 @@ The standalone native result is **20/20 checks/check groups**, with a separate
 inventory of **46 new status meanings, 22 accessible-name audits, 129 control
 boxes, 20 literal input-value probes and 22 Tab probes**. Targeted keyboard
 **9/9** and quality **6/6** checks passed after documented harness corrections.
-**Current verification is complete: all 62 CI stages and 180 browser
+**At that historical lifecycle checkpoint, all 62 CI stages and 180 browser
 checks/check groups passed** on committed source
 `fdf60124e49659e9c33d30db59e45ff8369a38e1`, with terminal CI exit 0. Hosting
 preflight passed on the same final runtime before the harness-only commit;
 deployment was skipped. Agent 0 accepted **WX-0101–WX-0110, WX-0314–WX-0316,
 WX-0379–WX-0381 and audited WX-0467/WX-0487**, eighteen original local criteria.
-The canonical catalog records **109 done / 891 remaining**: **70 P1, 665 P2 and
+At that lifecycle checkpoint, the canonical catalog recorded
+**109 done / 891 remaining**: **70 P1, 665 P2 and
 156 P3**, with **724 local, 127 operator and 40 provider** gates remaining.
-Source and wiki publication require separate direct remote parity checks.
-
-The [next recruiting plan](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) proposes
-WX-0201–WX-0210; their implementation has not begun. Source, standalone execution,
-integrated gates and catalog acceptance remain separate.
+The later confirmation checkpoint and current recruiting development status are
+recorded above. Original dated receipts retain their source, observation and
+acceptance scope.
 
 ## Historical accepted checkpoint — portal safety and recovery
 
@@ -58,7 +82,7 @@ Read the [implementation plan](PORTAL-SAFETY-IMPLEMENTATION-PLAN.md),
 publication gates separately from local criteria acceptance. All earlier totals
 below retain their historical scope; query the canonical catalog for current status.
 
-The current lifecycle section above supplies that subsequent wave's accepted
+The historical lifecycle section above supplies that subsequent wave's accepted
 local verification boundary. The full goal remains active until all 1,000 original
 criteria have accepted evidence.
 
@@ -256,7 +280,9 @@ The [foundation QA receipt](EXECUTION-FOUNDATION-QA-2026-10-15.md) records the
 seventeen newly accepted IDs, runtime/environment contracts, isolated mock
 startup, portal shell behavior, source-derived CI report and dependency graph.
 The [existing-feature acceptance review](EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md)
-closes four exact baseline criteria and leaves WX-0717 pending its prerequisite.
+closed four exact baseline criteria and left WX-0717 pending its prerequisite
+at that earlier checkpoint. The confirmation checkpoint above now records its
+accepted prerequisite and original keyboard criterion.
 The execution plan and checklist derive their current twenty-area counts and
 next dependency-ready candidates from the same JSON. The full goal remains
 active; a published wave does not finish the other 976 criteria.

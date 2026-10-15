@@ -9190,12 +9190,18 @@
       "area": "design",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Create a reversible-action confirmation pattern",
       "acceptance": "Restore and destructive previews consistently show selected scope, effect and a clearly labeled cancel action.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7a582ed4a5396d54aa94e3ca780667d1b07f179e",
+        "evidence": "docs/PORTAL-CONFIRMATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0709",
@@ -9303,14 +9309,20 @@
       "area": "design",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add undo preview focus containment",
       "acceptance": "Opening and canceling an Undo preview keeps keyboard navigation predictable and returns focus to its launching control.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
       "dependsOn": [
         "WX-0708"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7a582ed4a5396d54aa94e3ca780667d1b07f179e",
+        "evidence": "docs/PORTAL-CONFIRMATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0718",

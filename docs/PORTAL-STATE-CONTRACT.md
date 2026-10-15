@@ -488,3 +488,12 @@ source and observation scope; updating this guide does not refresh a historical
 browser observation or establish provider adoption. The documentation freshness
 mapping and dated review decision must be deliberately rebound by the maintainer
 to a reviewed source revision and this guide's digest.
+
+The later [confirmation and focus receipt](PORTAL-CONFIRMATION-QA-2026-10-15.md)
+records a test-only checkpoint at
+`998674759f11e17765c6724edfe2dae3d1c58c5a`: the same 100 application sources,
+all 62 CI stages and 183 browser checks/groups, plus Hosting preflight. It
+directly verifies consistent scope/effect/cancel and exact-opener focus with
+complete saved-record preservation. Agent 0 accepted WX-0708 before its
+dependent WX-0717. This adds current evidence without changing the state
+contract above or relabeling earlier dated observations.

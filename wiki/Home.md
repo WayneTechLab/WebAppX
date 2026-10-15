@@ -6,13 +6,38 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
-## Current lifecycle workflows — locally accepted
+## Current confirmation checkpoint — locally accepted
+
+Agent 0 accepted **WX-0708**, then its dependent **WX-0717**, for reversible-action
+scope/effect/cancel previews and predictable Undo preview keyboard navigation
+with exact opener focus return. Read the [confirmation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-CONFIRMATION-QA-2026-10-15.md)
+and [state contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md) for the actual controls,
+complete-record preservation checks and evidence limits.
+
+**All 62 CI stages passed with terminal exit 0** on committed source
+`998674759f11e17765c6724edfe2dae3d1c58c5a`. Independent stage/report review
+confirmed **183 actual browser checks/check groups**: **169 common, 8 HR-disabled
+and 6 owned LAN**. Hosting preflight passed on the same commit. App **3.4.0**
+retains **deploy count 0**; no deployment occurred.
+
+The canonical catalog now records **111 done / 889 remaining**: **69 P1, 664 P2
+and 156 P3**, with **722 local, 127 operator and 40 provider** gates remaining.
+The full 1,000-item goal remains active. Source and wiki publication require
+separate direct remote parity checks. These local results establish no provider,
+production or manual screen-reader acceptance.
+
+Recruiting lifecycle work is **IN DEVELOPMENT** in an isolated worktree. Its
+original **WX-0201–WX-0210 plus WX-0951 remain TODO**; the
+[recruiting plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) supplies planning context,
+without acceptance or publication of that development work.
+
+## Historical lifecycle workflows — locally accepted
 
 [Portal Lifecycle](Portal-Lifecycle.md) covers HR employment instances,
 transfers/reasons/offboarding/rehire, directory corrections and checklist
 versions, CMS release bundles and CRM ownership updates. Read the
 [source guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE.md)
-and [current lifecycle QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-QA-2026-10-15.md).
+and [dated lifecycle QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-QA-2026-10-15.md).
 Run `npm run browser:portal-lifecycle` after normal setup. App source is
 integrated at `458a045`, followed by harness-only `fdf6012`.
 
@@ -21,18 +46,16 @@ status meanings, 22 accessible-name audits, 129 control boxes, 20 literal value
 probes and 22 Tab probes**. Targeted keyboard **9/9** and quality **6/6** runs
 passed after documented native-picker/history harness corrections.
 
-**Current verification is complete: all 62 CI stages and 180 browser
+**At that historical lifecycle checkpoint, all 62 CI stages and 180 browser
 checks/check groups passed** on `fdf60124e49659e9c33d30db59e45ff8369a38e1`,
 with terminal CI exit 0. Hosting preflight passed on the same final runtime
 before the harness-only commit; no deployment occurred. Agent 0 accepted the
 sixteen feature criteria and audited **WX-0467/WX-0487**, eighteen local criteria.
-The catalog records **109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**,
-with **724 local, 127 operator and 40 provider** gates remaining. Source and wiki publication require separate direct remote parity checks.
-The
-[next recruiting plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-is a proposal for ten later criteria; implementation has not begun. Provider,
-manual screen-reader, native Windows and production acceptance retain their
-separate evidence requirements.
+At that lifecycle checkpoint, the catalog recorded
+**109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**,
+with **724 local, 127 operator and 40 provider** gates remaining. The later confirmation checkpoint and current recruiting development status are
+recorded above. Original dated receipts retain their source, observation and
+acceptance scope.
 
 ## Historical portal safety wave
 
@@ -52,7 +75,7 @@ provider and production gates retain their separate acceptance requirements.
 
 At that historical safety checkpoint, Agent 0 accepted **14 original local criteria** and the catalog recorded **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
 
-**That safety checkpoint passed all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** Its dated QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed. The current lifecycle result is recorded separately above.
+**That safety checkpoint passed all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** Its dated QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed. The historical lifecycle result is recorded separately above.
 
 ## Historical adoption and recorded-work checkpoint
 
@@ -142,8 +165,9 @@ for synthetic role checks and complete demo backup contents. Run
 `npm run browser:state-contract` for the isolated browser journey. The
 [evidence index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-EVIDENCE.md)
 attaches scoped reviews to stable catalog IDs without changing completion;
-`npm run backlog:evidence -- --id WX-0717` demonstrates historical evidence on
-pending work. Actual verification is recorded in the
+`npm run backlog:evidence -- --id WX-0717` retains evidence originally attached
+while the item was pending. Its later acceptance is recorded above. Historical
+session verification is recorded in the
 [session/contracts QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SESSION-CONTRACTS-QA-2026-10-15.md).
 
 At the historical accepted session/contracts checkpoint, the catalog reached **33 completed

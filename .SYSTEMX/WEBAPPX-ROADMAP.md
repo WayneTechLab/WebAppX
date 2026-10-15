@@ -35,12 +35,37 @@ only read local catalog data. They do not dispatch agents, import task records,
 contact providers or change acceptance. `backlog:plan:render` explicitly writes
 the generated plan; `backlog:plan:check` verifies it without rewriting.
 
-### Current lifecycle checkpoint — locally accepted
+### Current confirmation checkpoint — locally accepted
+
+Agent 0 accepted **WX-0708**, then its dependent **WX-0717**, for reversible-action
+scope/effect/cancel previews and predictable Undo preview keyboard navigation
+with exact opener focus return. Read the [confirmation QA receipt](../docs/PORTAL-CONFIRMATION-QA-2026-10-15.md)
+and [state contract](../docs/PORTAL-STATE-CONTRACT.md) for the actual controls,
+complete-record preservation checks and evidence limits.
+
+**All 62 CI stages passed with terminal exit 0** on committed source
+`998674759f11e17765c6724edfe2dae3d1c58c5a`. Independent stage/report review
+confirmed **183 actual browser checks/check groups**: **169 common, 8 HR-disabled
+and 6 owned LAN**. Hosting preflight passed on the same commit. App **3.4.0**
+retains **deploy count 0**; no deployment occurred.
+
+The canonical catalog now records **111 done / 889 remaining**: **69 P1, 664 P2
+and 156 P3**, with **722 local, 127 operator and 40 provider** gates remaining.
+The full 1,000-item goal remains active. Source and wiki publication require
+separate direct remote parity checks. These local results establish no provider,
+production or manual screen-reader acceptance.
+
+Recruiting lifecycle work is **IN DEVELOPMENT** in an isolated worktree. Its
+original **WX-0201–WX-0210 plus WX-0951 remain TODO**; the
+[recruiting plan](../docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) supplies planning context,
+without acceptance or publication of that development work.
+
+### Historical lifecycle checkpoint — locally accepted
 
 Read the [lifecycle guide](../docs/PORTAL-LIFECYCLE.md),
 [wiki walkthrough](../wiki/Portal-Lifecycle.md),
 [implementation plan](../docs/PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md) and
-[current QA receipt](../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md). App source
+[dated lifecycle QA receipt](../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md). App source
 `458a045` and harness-only `fdf6012` cover HR employment lifecycle, CMS releases
 and CRM ownership. Run `npm run browser:portal-lifecycle` after normal setup.
 
@@ -48,15 +73,16 @@ The standalone native journey passed **20/20 checks/check groups** on the final
 100-file runtime freeze, with **46 new status meanings, 22 accessible-name
 audits, 129 control boxes, 20 literal value probes and 22 Tab probes**.
 Targeted keyboard **9/9** and quality **6/6** runs passed after documented
-harness corrections. **Current verification is complete: all 62 CI stages and
+harness corrections. **At that historical lifecycle checkpoint, all 62 CI stages and
 180 browser checks/check groups passed** on committed source
 `fdf60124e49659e9c33d30db59e45ff8369a38e1`, with terminal CI exit 0. Hosting
 preflight passed on the same final runtime before that harness-only commit;
 no deployment occurred. Agent 0 accepted the sixteen feature criteria plus
-audited **WX-0467/WX-0487**, eighteen local criteria in total. The catalog records
+audited **WX-0467/WX-0487**, eighteen local criteria in total. At that lifecycle checkpoint, the catalog recorded
 **109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**, with **724 local,
-127 operator and 40 provider** gates remaining. Source and wiki publication require separate direct remote parity checks. The [next recruiting plan](../docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-is a design proposal for ten later criteria; implementation has not begun.
+127 operator and 40 provider** gates remaining. The later confirmation checkpoint and current recruiting development status are
+recorded above. Original dated receipts retain their source, observation and
+acceptance scope.
 
 ### Historical portal safety and recovery — 2026-10-15
 
@@ -70,7 +96,7 @@ with **742 local, 127 operator and 40 provider** gates remaining. Read the
 [status inventory](../docs/PORTAL-STATUS-INVENTORY.md) for exact local scope and
 separate integrated publication gates.
 
-The current lifecycle section above records the subsequent integrated source
+The historical lifecycle section above records the subsequent integrated source
 and its accepted local scope. The [detailed HR plan](../docs/HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
 retains its original compatibility contract. These host records create no
 provider/operator acceptance or reusable task records.

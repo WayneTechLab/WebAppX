@@ -66,6 +66,32 @@
       "scopeSha256": "8ee4bd60762b9589c14023c2eda1b2ec3d38077638c329f82b4aba781e38c9b3",
       "decision": "retain",
       "rationale": "Retain historical receipt dates and source qualifications. Current contracts and this exact commit were reviewed separately; the lifecycle receipt records current committed-harness CI and browser observations plus equivalent-runtime standalone evidence. This decision performs no tests and grants no provider or deployment acceptance."
+    },
+    {
+      "id": "DFR-4ff6645db3350d73",
+      "guideId": "portal-state-contract",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "998674759f11e17765c6724edfe2dae3d1c58c5a",
+      "reportDigest": "0368667d8da68b461953a5f22cdbd57b5738ab3aec49c6bb471544fd4b575a09",
+      "mappingSha256": "b37ed6c20e083b3b0cf727e9dc0b468330c74838dbca86ce96a911e51c8e4565",
+      "inputsSha256": "cdf7ff63b8a9c8f7034204f9de12f424c9a37fee382702a7f04475805b0b00d9",
+      "scopeSha256": "9a6e96bbefe08ce003b6ec58b5660edc3eb0216d2652f5de93dee71d78775cd6",
+      "decision": "retain",
+      "rationale": "Retain historical receipt dates and source qualifications. Current contracts and this exact commit were reviewed separately; the lifecycle receipt records current committed-harness CI and browser observations plus equivalent-runtime standalone evidence. This decision performs no tests and grants no provider or deployment acceptance."
+    },
+    {
+      "id": "DFR-0937abf042149c18",
+      "guideId": "portal-lifecycle",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "998674759f11e17765c6724edfe2dae3d1c58c5a",
+      "reportDigest": "0368667d8da68b461953a5f22cdbd57b5738ab3aec49c6bb471544fd4b575a09",
+      "mappingSha256": "b37ed6c20e083b3b0cf727e9dc0b468330c74838dbca86ce96a911e51c8e4565",
+      "inputsSha256": "cdf7ff63b8a9c8f7034204f9de12f424c9a37fee382702a7f04475805b0b00d9",
+      "scopeSha256": "6d2246cd57e4dc842dc7e7e321d47f8df5068561274863490dac865c697461fb",
+      "decision": "retain",
+      "rationale": "Retain historical receipt dates and source qualifications. Current contracts and this exact commit were reviewed separately; the lifecycle receipt records current committed-harness CI and browser observations plus equivalent-runtime standalone evidence. This decision performs no tests and grants no provider or deployment acceptance."
     }
   ]
 }

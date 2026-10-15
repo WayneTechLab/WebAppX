@@ -42,12 +42,12 @@
       "id": "portal-state-contract",
       "guide": {
         "path": "docs/PORTAL-STATE-CONTRACT.md",
-        "sha256": "150d932e20ed1f386685785adfd78074fbe202523e7cd54b3a9d1cdacbaa9abb"
+        "sha256": "d465fa1ba863032740a8de09b74007131b5bc7d36d9a344f3f1519ae3935e910"
       },
-      "examinedRevision": "fdf60124e49659e9c33d30db59e45ff8369a38e1",
+      "examinedRevision": "998674759f11e17765c6724edfe2dae3d1c58c5a",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review of the current native state contract: optional HR employment/correction history, CMS releases, CRM ownership and complete recovery/inspection retention. The unchanged historical receipts retain their original starting-source qualifications; this review executes no tests. Current committed-harness lifecycle and full-CI observations are separately bound by the lifecycle guide and dated receipt."
+        "scope": "Source-only review of unchanged native state behavior plus current destructive-preview scope/effect/cancel and exact-opener focus evidence. Three harness files add independent assertions without changing the 100 application sources. Historical receipts retain original dates and qualifications; the current confirmation receipt separately binds full CI and targeted browser observations. Mapping review runs no tests."
       },
       "proposalIds": [
         "WX-0060",
@@ -67,7 +67,9 @@
         "WX-0847",
         "WX-0860",
         "WX-0467",
-        "WX-0487"
+        "WX-0487",
+        "WX-0708",
+        "WX-0717"
       ],
       "sourceScopes": [
         "src/portals",
@@ -101,6 +103,15 @@
           "observationRevision": "950f9ba0c4e48faaa65056f504f105201838e3ec",
           "revisionBasis": "receipt-source-base",
           "scope": "Historical maturity receipt records native browser execution on its changed working tree above the stated starting source base, plus a separately identified exact committed-source HR-disabled adoption recheck. Its observations are not relabeled as execution at the current guide review revision; the current safety receipt separately records new behavior and verification."
+        },
+        {
+          "path": "docs/PORTAL-CONFIRMATION-QA-2026-10-15.md",
+          "sha256": "7f68d31f43828f132d5657aa00aaada4a7e59ffb4abb2c9c8d23d802d6384a59",
+          "category": "browser",
+          "observedOn": "2026-10-15",
+          "observationRevision": "998674759f11e17765c6724edfe2dae3d1c58c5a",
+          "revisionBasis": "examined-source",
+          "scope": "Current 62-stage CI and 183 browser checks/groups on the committed three-file confirmation harness, with unchanged 100-file runtime; targeted executions preceded the commit on exactly matching reviewed bytes. Actual keyboard Keep and Undo focus, distinct-payload import cancellation and enabled Reset scope/effect/cancel preserve complete independent records and saved bytes. Hosting preflight passed on this commit; no provider or production acceptance."
         }
       ]
     },
@@ -110,10 +121,10 @@
         "path": "docs/PORTAL-LIFECYCLE.md",
         "sha256": "bd41b495ff37635074e351b940d041d62b8894326304ca5106c25910c41528bc"
       },
-      "examinedRevision": "fdf60124e49659e9c33d30db59e45ff8369a38e1",
+      "examinedRevision": "998674759f11e17765c6724edfe2dae3d1c58c5a",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source review of effective employment instances/templates/corrections, atomic CMS releases and complete CRM ownership transfers, with strict optional persistence/inspection and scoped actor/latest-state refusal. The dated receipt distinguishes final-runtime standalone observations, equivalent current committed-harness browser execution and the separate preflight working tree; mapping review performs no new execution."
+        "scope": "Source-only follow-up after three confirmation harness files changed: the 100-file HR/CMS/CRM lifecycle runtime, imported quality audit/render helpers and user contracts remain unchanged. The dated lifecycle receipt retains its exact earlier committed-harness observations and standalone source qualifications. Current confirmation CI has a separate receipt on the state contract; no old execution is relabeled and this mapping performs no tests."
       },
       "proposalIds": [
         "WX-0101",

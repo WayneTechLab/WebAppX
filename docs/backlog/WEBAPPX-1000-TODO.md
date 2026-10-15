@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 891 TODO · 109 done · 20 areas · 50 items per area.**
+**1000 catalog items · 889 TODO · 111 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 70 · P2: 665 · P3: 156.
+Remaining TODO priorities: P1: 69 · P2: 664 · P3: 156.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -3035,10 +3035,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · foundation · local
   - Acceptance: The shell shows saved, memory-only and pending-form states without collapsing distinct storage errors into success.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0708 — Create a reversible-action confirmation pattern**
+- [x] **WX-0708 — Create a reversible-action confirmation pattern**
   - P2 · foundation · local
   - Acceptance: Restore and destructive previews consistently show selected scope, effect and a clearly labeled cancel action.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-15 · Source base: `7a582ed4a5396d54aa94e3ca780667d1b07f179e` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-CONFIRMATION-QA-2026-10-15.md](../../docs/PORTAL-CONFIRMATION-QA-2026-10-15.md)
 - [ ] **WX-0709 — Add long-label responsive fixtures**
   - P2 · portal-maturity · local
   - Acceptance: Portal cards and navigation remain usable with doubled label lengths at documented narrow and wide viewports.
@@ -3071,10 +3072,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local · Depends on: WX-0707
   - Acceptance: A successful selective restore announces affected portals and places focus on its result without touching unselected forms.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0717 — Add undo preview focus containment**
+- [x] **WX-0717 — Add undo preview focus containment**
   - P1 · portal-maturity · local · Depends on: WX-0708
   - Acceptance: Opening and canceling an Undo preview keeps keyboard navigation predictable and returns focus to its launching control.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-15 · Source base: `7a582ed4a5396d54aa94e3ca780667d1b07f179e` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-CONFIRMATION-QA-2026-10-15.md](../../docs/PORTAL-CONFIRMATION-QA-2026-10-15.md)
 - [ ] **WX-0718 — Create a keyboard-only portal walkthrough**
   - P2 · portal-maturity · local
   - Acceptance: A recorded local browser run completes a lead conversion, CMS review and HR time approval without pointer input.

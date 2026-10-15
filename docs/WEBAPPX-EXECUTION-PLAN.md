@@ -10,9 +10,9 @@ The separate [review index](BACKLOG-EVIDENCE.md) attaches scoped historical
 receipts with examined and observation revisions. It does not accept work
 or convert an earlier browser result into a current execution.
 
-Current verified progress: **109 done / 891 remaining**.
-Remaining priorities: **70 P1 · 665 P2 · 156 P3**.
-Remaining acceptance gates: **724 local · 40 provider · 127 operator**.
+Current verified progress: **111 done / 889 remaining**.
+Remaining priorities: **69 P1 · 664 P2 · 156 P3**.
+Remaining acceptance gates: **722 local · 40 provider · 127 operator**.
 
 ## Execution and acceptance
 
@@ -64,7 +64,7 @@ coverage ships with each slice rather than waiting for the quality area.
 | Firebase data, functions and rules | WX-0551–WX-0600 | 0 | 50 |
 | Security and privacy | WX-0601–WX-0650 | 2 | 48 |
 | Testing, quality and accessibility | WX-0651–WX-0700 | 9 | 41 |
-| Design, responsiveness and interaction | WX-0701–WX-0750 | 2 | 48 |
+| Design, responsiveness and interaction | WX-0701–WX-0750 | 4 | 46 |
 | Observability, support and operations | WX-0751–WX-0800 | 7 | 43 |
 | CI, delivery and infrastructure | WX-0801–WX-0850 | 5 | 45 |
 | SYSTEMX and agent workflows | WX-0851–WX-0900 | 10 | 40 |
@@ -81,7 +81,7 @@ Domain waves (the dependency graph overrides this order):
 | Human resources | hr-onboarding, hr-payroll, hr-talent | 18 | 132 |
 | Content | cms-authoring, cms-publishing | 6 | 94 |
 | Customer relationships | crm-contacts, crm-sales | 4 | 96 |
-| Quality and design | quality, design | 11 | 89 |
+| Quality and design | quality, design | 13 | 87 |
 | Operations and delivery | operations, delivery | 12 | 88 |
 | Adoption | adoption | 11 | 39 |
 | Connected extensions | firebase, integrations | 0 | 100 |

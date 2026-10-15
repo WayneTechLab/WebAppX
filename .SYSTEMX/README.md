@@ -11,11 +11,36 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
-## Current host lifecycle extension — locally accepted
+## Current confirmation checkpoint — locally accepted
+
+Agent 0 accepted **WX-0708**, then its dependent **WX-0717**, for reversible-action
+scope/effect/cancel previews and predictable Undo preview keyboard navigation
+with exact opener focus return. Read the [confirmation QA receipt](../docs/PORTAL-CONFIRMATION-QA-2026-10-15.md)
+and [state contract](../docs/PORTAL-STATE-CONTRACT.md) for the actual controls,
+complete-record preservation checks and evidence limits.
+
+**All 62 CI stages passed with terminal exit 0** on committed source
+`998674759f11e17765c6724edfe2dae3d1c58c5a`. Independent stage/report review
+confirmed **183 actual browser checks/check groups**: **169 common, 8 HR-disabled
+and 6 owned LAN**. Hosting preflight passed on the same commit. App **3.4.0**
+retains **deploy count 0**; no deployment occurred.
+
+The canonical catalog now records **111 done / 889 remaining**: **69 P1, 664 P2
+and 156 P3**, with **722 local, 127 operator and 40 provider** gates remaining.
+The full 1,000-item goal remains active. Source and wiki publication require
+separate direct remote parity checks. These local results establish no provider,
+production or manual screen-reader acceptance.
+
+Recruiting lifecycle work is **IN DEVELOPMENT** in an isolated worktree. Its
+original **WX-0201–WX-0210 plus WX-0951 remain TODO**; the
+[recruiting plan](../docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) supplies planning context,
+without acceptance or publication of that development work.
+
+## Historical host lifecycle checkpoint — locally accepted
 
 Read the [lifecycle source guide](../docs/PORTAL-LIFECYCLE.md),
 [wiki walkthrough](../wiki/Portal-Lifecycle.md) and
-[current lifecycle QA receipt](../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md) for HR
+[dated lifecycle QA receipt](../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md) for HR
 employment instances, transfers/offboarding/rehire/corrections/templates, CMS
 release bundles, CRM ownership updates and complete recovery inspection. Run
 `npm run browser:portal-lifecycle` after normal dependency/Chromium setup;
@@ -28,18 +53,17 @@ Targeted keyboard **9/9** and quality **6/6** runs passed after harness-only
 native-picker and literal-history corrections. App source is `458a045`, followed
 by harness-only `fdf6012`; the QA receipt binds the full source/evidence scope.
 
-**Current verification is complete: all 62 CI stages passed with terminal exit
+**At that historical lifecycle checkpoint, all 62 CI stages passed with terminal exit
 0 on `fdf60124e49659e9c33d30db59e45ff8369a38e1`.** Independent report review
 confirmed **180 actual browser checks/check groups**. Hosting preflight passed on
 the same final runtime before the harness-only commit; no deployment occurred.
 Agent 0 accepted the sixteen feature criteria plus audited **WX-0467/WX-0487**,
-eighteen local criteria in total. The catalog records **109 done / 891 remaining**:
+eighteen local criteria in total. At that lifecycle checkpoint, the catalog recorded
+**109 done / 891 remaining**:
 **70 P1, 665 P2 and 156 P3**, with **724 local, 127 operator and 40 provider**
-gates remaining. Source and wiki publication require separate direct remote parity checks.
-The
-[recruiting lifecycle plan](../docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-is a proposal for the next ten, not implementation. These host extensions retain
-blank reusable records and immutable selected releases.
+gates remaining. The later confirmation checkpoint and current recruiting development status are
+recorded above. Original dated receipts retain their source, observation and
+acceptance scope.
 
 ## Historical host safety checkpoint
 
@@ -55,7 +79,7 @@ setup. That receipt records the historical accepted local scope and integrated g
 
 At that historical safety checkpoint, Agent 0 accepted **14 original local criteria** and the catalog recorded **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
 
-**That safety checkpoint passed all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** Its dated QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed; the current lifecycle result is recorded separately above.
+**That safety checkpoint passed all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** Its dated QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed; the historical lifecycle result is recorded separately above.
 
 Earlier host portal maturity extensions provide [chosen payroll periods and fictional
 rate timelines, corrected time, CMS editing, strict CRM imports and named recovery](../docs/PORTAL-MATURITY.md).
