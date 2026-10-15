@@ -1,3 +1,26 @@
+# 3.4.0 follow-up — P1 portal registry and restore storage-budget preview — 2026-10-14
+
+- Implement WX-0051 with typed HR/CMS/CRM metadata shared by the directory,
+  navigation, cross-links and backup/restore module validation.
+- Implement WX-0451 with a read-only storage-budget preview before combined
+  selective restore and Undo: selected serialized workspace sizes, new recovery
+  point, current normalized history and projected retained/pruned history.
+- Preserve the existing per-workspace and history character limits. Refuse
+  invalid/oversized plans while retaining current records and history; estimates
+  do not measure browser quota, reserve space or replace confirmation-time checks.
+- Retain successful recovery-point saves before overwrite, rollback attempts on
+  write failures and explicit warnings when browser storage may be partial.
+- Link the two stable catalog IDs' completion evidence without changing the
+  1,000-item count, blank adoption seeds or immutable upstream snapshots.
+- Complete WX-0051 and WX-0451: 998 records remain, including 164 P1. Local
+  browser checks passed navigation/scope, preview cancellation, selective restore,
+  Undo after refresh, projected retention/pruning and oversized recovery-point
+  refusal with full exported-payload preservation. Focused checks passed 114
+  portal and 13 backlog cases; final publication gates remain in the QA receipt.
+- Update README/wiki and host guidance. See
+  [the P1 QA receipt](../../docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md) for actual
+  browser checks and repository gates. Version 3.4.0/deploy count 0 remain unchanged.
+
 # 3.4.0 follow-up — SYSTEMX refresh and 1,000-item roadmap — 2026-10-14
 
 - Verify public dotSYSTEMX main still provides alpha.6 with an identical complete

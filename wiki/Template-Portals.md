@@ -31,6 +31,16 @@ automatically share identities, HR records, customer information or content.
 Opening `/hr/demo/sdk` may unmount native HR; returning restores the saved native
 HR snapshot. The SDK’s independent sample state is not saved by this adapter.
 
+### Shared portal registry
+
+The [typed registry](https://github.com/WayneTechLab/WebAppX/blob/main/src/portals/registry.ts)
+owns the HR, CMS and CRM module identities, labels, descriptions and demo entry
+routes. Directory cards, shared navigation and portal cross-links consume this
+metadata, and backup/restore validation use the same known module identities.
+This keeps route/display choices aligned with accepted files. Adding metadata
+does not grant access, share records or create a complete new portal; its state,
+validators, persistence, routes and tests still need explicit implementation.
+
 ### What is saved and how to reset it
 
 Save or complete the displayed domain action before refreshing. Onboarding,
@@ -104,7 +114,8 @@ contributes its initial sample. Export does not create an account or upload data
 2. Choose **Import combined backup**. The whole file and all three full module
    schemas must pass validation, even if you intend to restore only one module.
 3. Inspect the file, export time and three record summaries. HR/CMS/CRM selection
-   boxes all start unchecked. Select at least one complete portal.
+   boxes all start unchecked. Select at least one complete portal and inspect the
+   [storage-budget preview](#restore-storage-budget-preview).
 4. Choose **Restore selected workspaces** to replace and save only those portals,
    or **Cancel combined restore**. Unselected memory and exact browser-save bytes remain
    untouched. Restore replaces whole portals; it does not merge records.
@@ -133,6 +144,52 @@ upload or live provider action is involved. Read the
 [combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md)
 and [detailed guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#combined-backup-and-selective-restore).
 
+### Restore storage-budget preview
+
+Before **Restore selected workspaces** or **Confirm undo**, the **Storage budget
+preview** shows the selected operation's estimated serialized character counts:
+
+| Value | App limit or meaning |
+| --- | --- |
+| Each selected workspace | Complete browser-save envelope, maximum 2,000,000 characters per portal |
+| Selected total | Sum of selected workspace envelopes; not a shared quota allowance |
+| New restore point | Current in-memory records in the selected scope, captured to recover from this restore or Undo |
+| Current history | Existing validated, normalized history at this browser origin |
+| Projected history | History after adding the point and pruning oldest entries; at most five points within 2,000,000 characters |
+
+The preview updates with the selected scope, current domain records and loaded
+history. **Refresh storage preview** rereads history from this browser origin
+without applying the operation. Avoid simultaneous edits in another tab; there
+is no live history merge or locking. Undo's scope is fixed to the chosen point.
+An empty combined selection prompts
+for a portal; rejected history, invalid data or an oversized new point prevents
+confirmation. Viewing or cancelling the preview changes neither workspaces nor
+history. The retention calculation identifies points that would be pruned by a
+successful confirmed operation.
+
+Character counts are app estimates, not available browser quota, file bytes or
+disk allocation. Previewing does not reserve space or probe storage with writes.
+The browser can reject a smaller write. Confirmation revalidates current records
+and reads history again; the new recovery point must save before workspaces are
+overwritten. Existing rollback attempts and partial-storage warnings still apply.
+
+Read the [detailed guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#restore-storage-budget-preview)
+and [P1 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
+for the checked revision and separation of browser checks from automated faults.
+
+**Local browser checkpoint — 2026-10-14:** HR/CMS/CRM directory and cross-links
+passed, including HR nested payroll and rejection of `/hr/demo-other`. Complete
+exported payloads confirmed preview/cancel preservation, HR-only restore with
+CMS/CRM intact, Undo recovery after refresh, CMS+CRM restore with HR intact and
+all-three restore. Confirmed history matched each projected size; a sixth
+operation pruned one old point and retained five.
+
+A valid 1,994,127-character CMS save was imported. A small incoming all-three
+restore totaled 7,073 characters, but its recovery point was 2,000,440 characters
+and projected history 2,000,471. The preview disabled Restore; cancellation
+preserved every exported workspace payload. This verifies the separate recovery
+budget against current records. It does not establish available browser quota.
+
 ### Automatic restore points and Undo
 
 Before a combined selective restore overwrites records, it saves a browser-local
@@ -141,8 +198,9 @@ under **Restore points & Undo** on `/portals` survives refresh on the same brows
 profile and origin. Points appear newest first; **Refresh restore points** reads
 this browser address’s latest history (`webappx.demo.restore-points`).
 
-1. Choose **Undo…** for a point and inspect its time, affected portals and record
-   summaries. Its scope is fixed to the portals captured before that restore.
+1. Choose **Undo…** for a point and inspect its time, affected portals, record
+   summaries and storage-budget preview. Its scope is fixed to the portals
+   captured before that restore.
 2. Choose **Confirm undo**, or **Cancel undo** to leave records/history intact.
    Undo replaces later saved changes in the captured portals too.
 3. Undo first saves a new point of those portals’ current states. Use the newer

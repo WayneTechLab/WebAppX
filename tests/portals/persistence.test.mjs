@@ -5,7 +5,12 @@ import ts from 'typescript'
 
 async function load(path) {
   const source = readFileSync(new URL(path, import.meta.url), 'utf8')
-  const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
+  let compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
+  if (path.endsWith('/portals/persistence.ts')) {
+    const registrySource = readFileSync(new URL('../../src/portals/registry.ts', import.meta.url), 'utf8')
+    const registry = ts.transpileModule(registrySource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
+    compiled = compiled.replace("'./registry'", JSON.stringify(`data:text/javascript;base64,${Buffer.from(registry).toString('base64')}`))
+  }
   return import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`)
 }
 const [cms, crm, cmsValidation, crmValidation, storage] = await Promise.all([

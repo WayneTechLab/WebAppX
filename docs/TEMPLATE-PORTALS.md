@@ -15,7 +15,9 @@ checks are recorded separately in the
 selective restores are recorded in the
 [combined backup QA receipt](COMBINED-BACKUP-QA-2026-10-14.md). Automatic local
 restore-point and Undo checks are recorded in the
-[restore-point QA receipt](RESTORE-POINTS-QA-2026-10-14.md). No live
+[restore-point QA receipt](RESTORE-POINTS-QA-2026-10-14.md). The shared registry
+and restore storage-budget preview have their own
+[P1 QA receipt](PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md). No live
 business portal is activated by the HR preview or an administrator signing in.
 
 ## What exists today
@@ -24,6 +26,7 @@ business portal is activated by the HR preview or an administrator signing in.
 | --- | --- | --- |
 | Public website | [App router](../src/router.tsx), public pages and shared layout | React/Vite routes; no CMS-backed publication pipeline |
 | Demo portal directory | [Template portal shell](../src/pages/TemplatePortalsPage.tsx) | Account-free navigation between separately scoped HR, CMS and CRM samples; keeps modules mounted while switching demo portals |
+| Shared portal registry | [Typed metadata](../src/portals/registry.ts) | One source for HR/CMS/CRM module identities, labels, descriptions and demo routes across the directory, navigation, cross-links and module validation |
 | Combined mock backups | [Directory controls](../src/portals/CombinedWorkspaceBackup.tsx), [bundle codec](../src/portals/combined-backup.ts), [restore adapter](../src/portals/restore-workspaces.ts) | One validated local file, explicit selective whole-portal restore and rollback attempts; no cloud/account or atomic multi-key transaction |
 | Automatic restore points | [History controls](../src/portals/RestorePointHistory.tsx), [history model](../src/portals/restore-points.ts) | Origin-local selected-scope snapshots before combined restore/Undo; latest five within 2,000,000 characters, explicit recovery confirmation and clearing |
 | Staff entry | [Admin dashboard](../src/pages/AdminDashboardPage.tsx) | Firebase sign-in and trusted Level 4/5 claim gate; readiness cards link to local tools |
@@ -39,6 +42,21 @@ business portal is activated by the HR preview or an administrator signing in.
 The LAN is a developer/operator control plane. Deployed CMS and CRM portals
 should be application routes with their own scoped services and records.
 Keep LAN routes and source-edit capabilities outside production bundles.
+
+### Shared portal registry
+
+`src/portals/registry.ts` is the source for the native demo portals' module
+identities, display labels, descriptions and entry routes. The directory,
+shared navigation and portal cross-links consume these entries instead of
+maintaining separate catalogs. Backup and restore module validation use the
+same known identities, keeping displayed choices aligned with accepted files.
+
+The registry describes available app surfaces. It does not authenticate a
+preview role, grant organization membership, activate a provider, share domain
+records or add a tenant backend. HR's native demo and its separate SDK session
+retain their existing boundaries. When adding a portal, start with this registry,
+then explicitly add its state validator, persistence adapter, routes and tests;
+metadata alone does not make a new module importable.
 
 ## Browser-local persistence
 
@@ -166,7 +184,9 @@ The existing individual portal controls and file format remain available.
    record summaries. Even a broken module you intend to leave unselected rejects
    the file before selection.
 4. HR, CMS and CRM selection boxes start unchecked. Select at least one complete
-   portal to enable **Restore selected workspaces**, or choose **Cancel combined restore**.
+   portal and review the [storage-budget preview](#restore-storage-budget-preview).
+   A valid budget enables **Restore selected workspaces**; **Cancel combined
+   restore** leaves records and history unchanged.
 5. Confirming replaces the selected portals’ full domain states and saves them
    locally for refresh. Unselected in-memory states and exact saved browser bytes
    stay untouched. No merge, record-level selection or ongoing sync occurs.
@@ -203,6 +223,65 @@ provider action. No account, upload, Firebase/Gusto connection, cloud restore or
 production publication is introduced. See the
 [combined backup QA receipt](COMBINED-BACKUP-QA-2026-10-14.md) for tested scope.
 
+### Restore storage-budget preview
+
+The **Storage budget preview** appears before a combined selective restore or
+Undo can be confirmed. It calculates the selected operation's app storage budget:
+
+| Preview value | Meaning |
+| --- | --- |
+| Selected workspace size | Serialized browser-save envelope for each selected portal, including its schema/module wrapper; each must fit 2,000,000 characters |
+| Selected workspace total | Sum of the selected serialized workspace envelopes; this is a size summary, not a shared browser-quota allowance |
+| New restore point | Size of the recovery snapshot built from the selected portals' current in-memory domain records |
+| Current history | Validated, normalized restore-point history read from this browser origin |
+| Projected history | History after adding the new point and pruning oldest points to retain at most five within 2,000,000 serialized characters |
+
+All sizes are serialized character counts. They are not file bytes, allocated
+disk usage or a measurement of available `localStorage` quota. Browser storage
+may be unavailable or full even when every app limit passes. The preview neither
+reserves space nor writes history or workspace keys.
+
+Changing the selected portals updates the calculation. Current domain records
+and loaded history are also inputs, so the recovery estimate captures current work,
+including saved changes made after the imported backup was exported. Unsaved
+forms, active timers and the independent SDK session remain excluded.
+For Undo, the selection is fixed to the chosen point's captured portals; the
+same preview includes the new point needed to reverse that Undo.
+**Refresh storage preview** rereads history from this browser origin without
+applying the restore. Tabs still do not merge live edits or lock each other;
+avoid changing the same workspaces from another tab during recovery.
+
+With no selection, choose a portal first. Invalid state, unreadable/rejected
+history or a new point too large for the retention budget prevents confirmation
+with a reason. Existing history and workspaces remain intact. Export current
+workspaces before explicitly clearing rejected history if a portable copy is
+needed. A pruning preview identifies history that would be discarded if the
+confirmed operation succeeds; viewing or cancelling the preview does not prune it.
+
+Confirmation repeats validation against the current state and browser history.
+The actual recovery point must save before any workspace overwrite. A failed
+write still follows the rollback and recovery-warning behavior described above;
+the size preview cannot make browser writes atomic. See the
+[P1 QA receipt](PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md) for automated fault cases,
+actual browser checks and repository gates at the checked revision.
+
+**Observed local browser results — 2026-10-14:** directory cards, navigation and
+cross-links reached all three registered portals. Nested HR payroll remained
+reachable; `/hr/demo-other` returned the 404 surface. Preview/cancellation
+preserved complete exported payloads. HR-only restore preserved CMS/CRM, and
+Undo recovered the original payloads after refresh. CMS+CRM restore preserved
+HR; all-three restore also passed.
+
+Projected history sizes matched the confirmed history at every checkpoint:
+4,748 → 9,525 → 12,486 → 15,048 → 22,602 → 24,994 characters. The sixth restore
+retained five points and pruned one. A valid CMS browser save of 1,994,127
+characters imported successfully. With that current state, an incoming all-three
+restore totaling just 7,073 characters required a 2,000,440-character recovery
+point and 2,000,471-character history envelope. The preview correctly disabled
+Restore because the history exceeded 2,000,000 characters; cancellation preserved
+all exported payloads. No browser errors were observed; the expected missing
+Firebase configuration warning remained. See the receipt for the exact sequence.
+
 ### Automatic restore points and Undo
 
 Each confirmed combined selective restore first saves a restore point containing
@@ -223,7 +302,8 @@ Undo restores the complete snapshots in that point; its scope cannot expand to
 portals that were not captured.
 
 1. Choose **Undo…** for the point you want to recover. Review its time, affected
-   portals and the **Current**/**Recover** record summaries before choosing
+   portals, the **Current**/**Recover** record summaries and the
+   [storage-budget preview](#restore-storage-budget-preview) before choosing
    **Confirm undo**, or **Cancel undo** to keep the current records.
 2. Confirm only after reviewing the replacement scope. Undo replaces those whole
    portals, including any domain changes saved after the point was created.

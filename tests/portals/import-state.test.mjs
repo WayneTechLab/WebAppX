@@ -5,9 +5,10 @@ import ts from 'typescript'
 
 const compile = source => ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
 const url = source => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`
-const persistenceUrl = url(compile(readFileSync(new URL('../../src/portals/persistence.ts', import.meta.url), 'utf8')))
+const registryUrl = url(compile(readFileSync(new URL('../../src/portals/registry.ts', import.meta.url), 'utf8')))
+const persistenceUrl = url(compile(readFileSync(new URL('../../src/portals/persistence.ts', import.meta.url), 'utf8')).replace("'./registry'", JSON.stringify(registryUrl)))
 const { saveDemoState, loadDemoState, demoStorageKey, DEMO_STORAGE_LIMIT } = await import(persistenceUrl)
-const source = compile(readFileSync(new URL('../../src/portals/import-state.ts', import.meta.url), 'utf8')).replace("'./persistence'", JSON.stringify(persistenceUrl))
+const source = compile(readFileSync(new URL('../../src/portals/import-state.ts', import.meta.url), 'utf8')).replace("'./persistence'", JSON.stringify(persistenceUrl)).replace("'./registry'", JSON.stringify(registryUrl))
 const { replaceDemoState } = await import(url(source))
 const create = () => ({ count: 0 })
 const valid = value => Boolean(value && typeof value === 'object' && Object.keys(value).length === 1 && Number.isSafeInteger(value.count) && value.count >= 0)

@@ -1,16 +1,16 @@
 import { createDemoBackup, parseDemoBackup, DEMO_BACKUP_LIMIT } from './backup'
 import { demoWorkspaceValidators, type DemoWorkspaces } from './workspaces'
 import type { DemoModule } from './persistence'
+import { portalIds } from './registry'
 
-export const COMBINED_BACKUP_LIMIT = 3 * DEMO_BACKUP_LIMIT + 512
+export const COMBINED_BACKUP_LIMIT = portalIds.length * DEMO_BACKUP_LIMIT + 512
 export const COMBINED_BACKUP_FILE_LIMIT = 4 * COMBINED_BACKUP_LIMIT
 export type CombinedBackup = { states: DemoWorkspaces; exportedAt: string }
 const FORMAT = 'webappx-mock-workspaces'
 const VERSION = 1
 const envelopeKeys = ['format', 'schemaVersion', 'exportedAt', 'workspaces']
-const modules = ['hr', 'cms', 'crm']
 
-function exactRecord(value: unknown, keys: string[]): value is Record<string, unknown> {
+function exactRecord(value: unknown, keys: readonly string[]): value is Record<string, unknown> {
   return Boolean(value && typeof value === 'object' && !Array.isArray(value)
     && Object.keys(value).length === keys.length && keys.every(key => Object.hasOwn(value, key)))
 }
@@ -32,7 +32,7 @@ export function parseCombinedBackup(text: string): CombinedBackup {
   try { envelope = JSON.parse(text) } catch { throw new Error('The file is not a valid JSON combined workspace backup.') }
   if (!exactRecord(envelope, envelopeKeys) || envelope.format !== FORMAT) throw new Error('Choose a WebAppX combined HR, CMS and CRM backup file.')
   if (envelope.schemaVersion !== VERSION) throw new Error('This combined backup version is not supported by this template.')
-  if (!exactRecord(envelope.workspaces, modules)) throw new Error('The combined backup must contain exactly the HR, CMS and CRM workspaces.')
+  if (!exactRecord(envelope.workspaces, portalIds)) throw new Error('The combined backup must contain exactly the HR, CMS and CRM workspaces.')
   const states = {
     hr: readWorkspace('hr', envelope.workspaces.hr, envelope.exportedAt, demoWorkspaceValidators.hr),
     cms: readWorkspace('cms', envelope.workspaces.cms, envelope.exportedAt, demoWorkspaceValidators.cms),
@@ -52,7 +52,7 @@ function exportWorkspace<T>(module: DemoModule, state: T, validate: (value: unkn
  * running timers or separate SDK session are included. No storage writes occur.
  */
 export function createCombinedBackup(states: DemoWorkspaces, exportedAt = new Date().toISOString()): string {
-  if (!exactRecord(states, modules)) throw new Error('A combined export requires exactly the HR, CMS and CRM workspaces.')
+  if (!exactRecord(states, portalIds)) throw new Error('A combined export requires exactly the HR, CMS and CRM workspaces.')
   const workspaces = {
     hr: exportWorkspace('hr', states.hr, demoWorkspaceValidators.hr, exportedAt),
     cms: exportWorkspace('cms', states.cms, demoWorkspaceValidators.cms, exportedAt),

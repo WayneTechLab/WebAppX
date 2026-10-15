@@ -614,12 +614,18 @@
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Define a typed portal registry",
       "acceptance": "HR, CMS and CRM navigation labels, routes, descriptions and module identifiers resolve from one checked structure.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-14",
+        "sourceBase": "a9e78672d707e198dc10193972b17a76958abeb5",
+        "evidence": "docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0052",
@@ -5550,12 +5556,18 @@
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Show storage budget estimates before restore",
       "acceptance": "The combined preview reports selected serialized workspace size and projected history size before a user confirms replacement.",
       "source": "src/portals/CombinedWorkspaceBackup.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-14",
+        "sourceBase": "a9e78672d707e198dc10193972b17a76958abeb5",
+        "evidence": "docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0452",

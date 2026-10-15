@@ -12,9 +12,14 @@ tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
 For public template improvement planning, use the host-owned
-[WebAppX roadmap pointer](WEBAPPX-ROADMAP.md) and its 1,000 proposed TODO items.
+[WebAppX roadmap pointer](WEBAPPX-ROADMAP.md) and its 1,000 improvement items.
 Read one bounded area at a time. The catalog does not populate the reusable
 task, context, plan or memory seeds and does not start agents or providers.
+Verified completions link their evidence. **WX-0051 and WX-0451** complete the
+first P1 follow-up with a shared registry and restore storage-budget preview.
+The catalog retains exactly **1,000 records**, with **998 remaining, including
+164 P1**. The host pointer links implementation and local browser/QA evidence
+without changing selected upstream defaults.
 
 # .SYSTEMX — WebAppX operational system
 

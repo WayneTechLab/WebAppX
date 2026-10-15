@@ -6,12 +6,27 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
-The [WebAppX roadmap](WebAppX-Roadmap.md) now catalogs exactly **1,000 proposed
-TODO items**, 50 in each of 20 areas, with priorities, source pointers, acceptance
+The [WebAppX roadmap](WebAppX-Roadmap.md) catalogs exactly **1,000 improvement
+items**, 50 in each of 20 areas, with priorities, source pointers, acceptance
 checks and dependencies. JSON, Markdown and CSV views are available with local
-query/validation commands. These future proposals leave reusable SYSTEMX seeds
-blank and do not activate 1,000 tasks or provider operations. The reviewed
+query/validation commands. The catalog tracks delivered items with completion
+evidence while leaving reusable SYSTEMX seeds blank; it does not activate 1,000
+tasks or provider operations. The reviewed
 SYSTEMX refresh retains alpha.6 because upstream changed only external docs.
+**WX-0051 and WX-0451 are completed; 998 items remain, including 164 P1.**
+The catalog retains exactly 1,000 records with completion evidence.
+
+The first P1 portal follow-up adds a shared typed HR/CMS/CRM registry and a
+**Storage budget preview** before combined selective restore and Undo. Review
+selected workspace sizes and projected recovery history before confirmation.
+These serialized character estimates do not measure or reserve browser quota.
+Read [Template Portals](Template-Portals.md#restore-storage-budget-preview) and
+the [P1 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
+for behavior, checks and limitations.
+
+Local browser checks passed registry navigation, selective restore/Undo,
+refresh, cancellation, retention pruning and refusal of an oversized recovery
+point. Complete exports confirmed selected recovery and unselected preservation.
 
 The retained guides below cover Firebase, the LAN builder, Gusto/HR and production kits.
 They describe available workflows; project adoption still requires configuration

@@ -1,16 +1,18 @@
-# WebAppX — 1,000 proposed TODO items
+# WebAppX — 1,000-item improvement catalog
 
 Planning baseline: `8359285c99069349d6218fe871868baab76868e5`. Created 2026-10-14.
 
-This catalog proposes future work for the WebAppX template. Every checkbox is
-an unstarted proposal; listing it does not establish a defect, accepted scope,
-implementation, deployment or provider access. Existing portal capabilities
-remain implemented as described in their source and QA receipts.
+This catalog tracks proposals and evidence for the WebAppX template. Unchecked
+items remain proposals. Checked items require completion metadata and a review
+receipt within their acceptance gate; a check does not establish deployment or
+provider access. Existing portal capabilities remain documented in source and
+their scoped QA receipts.
 
 The canonical catalog is [webappx-1000-todo.json](webappx-1000-todo.json).
 The [CSV](webappx-1000-todo.csv) and this page are generated with
 `npm run backlog:render`; run `npm run backlog:check` to validate all 1,000
-IDs, source paths, unique titles/acceptance, dependencies and generated views.
+IDs, source paths, unique titles/acceptance, dependencies, completion records
+and generated views.
 Read the [roadmap](../WEBAPPX-ROADMAP.md) for sequencing and bounded activation.
 
 ## Reading the list
@@ -19,13 +21,16 @@ Read the [roadmap](../WEBAPPX-ROADMAP.md) for sequencing and bounded activation.
 - **foundation**, **portal-maturity**, **production-readiness**, **extensions** are planning phases.
 - **local** checks use synthetic/local evidence. **provider** checks need a separately approved optional provider environment. **operator** checks need a separately approved infrastructure or operational setup.
 - Dependencies link earlier proposals. They do not activate tasks or override acceptance gates.
+- A `done` item records its verification date, reviewed source base, existing evidence file and reviewer. Read that evidence for its actual scope; metadata does not grant provider access.
 - Reusable `.SYSTEMX` task, context, plan and memory seeds stay blank. Promote a bounded proposal into an adopted project’s canonical task ledger when execution is authorized.
 
 ## Counts
 
-**1000 TODO proposals · 20 areas · 50 items per area.**
+**1000 catalog items · 998 TODO · 2 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
+
+Remaining TODO priorities: P1: 164 · P2: 676 · P3: 158.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -261,10 +266,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## Shared portal architecture
 
-- [ ] **WX-0051 — Define a typed portal registry**
+- [x] **WX-0051 — Define a typed portal registry**
   - P1 · portal-maturity · local
   - Acceptance: HR, CMS and CRM navigation labels, routes, descriptions and module identifiers resolve from one checked structure.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-14 · Source base: `a9e78672d707e198dc10193972b17a76958abeb5` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md](../../docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
 - [ ] **WX-0052 — Generate portal directory cards from the registry**
   - P1 · portal-maturity · local · Depends on: WX-0051
   - Acceptance: Changing one portal registry entry updates its card and navigation without a second duplicated definition.
@@ -1901,10 +1907,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## Mock persistence, backup and recovery
 
-- [ ] **WX-0451 — Show storage budget estimates before restore**
+- [x] **WX-0451 — Show storage budget estimates before restore**
   - P1 · portal-maturity · local
   - Acceptance: The combined preview reports selected serialized workspace size and projected history size before a user confirms replacement.
   - Source: [src/portals/CombinedWorkspaceBackup.tsx](../../src/portals/CombinedWorkspaceBackup.tsx)
+  - Verified: 2026-10-14 · Source base: `a9e78672d707e198dc10193972b17a76958abeb5` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md](../../docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
 - [ ] **WX-0452 — Show restore-point retention effects in preview**
   - P1 · portal-maturity · local · Depends on: WX-0451
   - Acceptance: Before confirmation, the UI names how many older points would be removed to retain the new point within current limits.

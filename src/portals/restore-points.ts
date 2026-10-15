@@ -1,3 +1,4 @@
+import { portalIds } from './registry'
 import { createDemoBackup, parseDemoBackup } from './backup'
 import { type DemoModule, type DemoStorage } from './persistence'
 import { demoWorkspaceValidators, isDemoWorkspaces, type DemoWorkspaces } from './workspaces'
@@ -17,7 +18,6 @@ export type RestorePointOptions = { id?: string; createdAt?: string }
 export type RestorePointsLoad = { points: RestorePoint[]; status?: string; error?: string }
 export type ClearRestorePointsResult = { ok: boolean; points: RestorePoint[]; status: string; error?: string }
 
-const modules: DemoModule[] = ['hr', 'cms', 'crm']
 const reserved = new Set(['__proto__', 'prototype', 'constructor'])
 const damaged = 'Restore-point history is damaged or incompatible. Current workspaces are unchanged. Clear restore points explicitly before restoring again; clearing history does not clear workspace saves.'
 
@@ -56,8 +56,8 @@ function hasReservedKeys(value: unknown): boolean {
   return false
 }
 export function validRestoreSelection(value: unknown): value is DemoModule[] {
-  return Array.isArray(value) && value.length > 0 && value.length <= modules.length
-    && value.every(module => modules.includes(module)) && new Set(value).size === value.length
+  return Array.isArray(value) && value.length > 0 && value.length <= portalIds.length
+    && value.every(module => portalIds.includes(module)) && new Set(value).size === value.length
 }
 function validatePoint(value: unknown): value is RestorePoint {
   if (!record(value)) return false
@@ -90,7 +90,12 @@ export function parseRestorePoints(text: string): RestorePoint[] {
 export function createRestorePoint(states: DemoWorkspaces, selected: readonly DemoModule[], kind: 'restore' | 'undo' = 'restore', sourcePointId?: string, options: RestorePointOptions = {}): RestorePoint {
   if (!validRestoreSelection(selected) || !isDemoWorkspaces(states)) throw new Error('The current mock workspaces or restore selection are invalid.')
   const createdAt = options.createdAt ?? new Date().toISOString()
-  const id = options.id ?? (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `point-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`)
+  // Both branches have the same serialized length, allowing a pure size preview
+  // to project the exact envelope length without generating a live identifier.
+  const id = options.id ?? (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, character => {
+    const random = Math.floor(Math.random() * 16)
+    return (character === 'x' ? random : (random & 3) | 8).toString(16)
+  }))
   const snapshots: Partial<DemoWorkspaces> = {}
   for (const module of selected) {
     const validate = (item: unknown): item is DemoWorkspaces[DemoModule] => demoWorkspaceValidators[module](item)
@@ -102,8 +107,11 @@ export function createRestorePoint(states: DemoWorkspaces, selected: readonly De
   return point
 }
 
-/** Keep newest first; remove oldest points to fit the bounded history budget. */
-export function prepareRestorePoints(points: RestorePoint[], point: RestorePoint): { points: RestorePoint[]; raw: string } {
+/** Pure retention projection shared by the preview and the committed write.
+ * A newest point that cannot fit is returned for an explanatory size preview;
+ * prepareRestorePoints remains the validating, rejecting write preparation.
+ */
+export function projectRestorePoints(points: readonly RestorePoint[], point: RestorePoint): { points: RestorePoint[]; raw: string } {
   if (points.some(existing => existing.id === point.id)) throw new Error('A restore point with this identifier already exists. Try again.')
   const kept = [point, ...points].slice(0, RESTORE_POINTS_MAX)
   let raw = JSON.stringify({ schemaVersion: 1, points: kept })
@@ -111,8 +119,14 @@ export function prepareRestorePoints(points: RestorePoint[], point: RestorePoint
     kept.pop()
     raw = JSON.stringify({ schemaVersion: 1, points: kept })
   }
-  if (raw.length > RESTORE_POINTS_LIMIT) throw new Error('The automatic restore point exceeds the 2,000,000-character history limit. Export a backup and reduce the selected mock workspace data before trying again.')
-  return { points: parseRestorePoints(raw), raw }
+  return { points: kept, raw }
+}
+
+/** Keep newest first; remove oldest points to fit the bounded history budget. */
+export function prepareRestorePoints(points: readonly RestorePoint[], point: RestorePoint): { points: RestorePoint[]; raw: string } {
+  const projected = projectRestorePoints(points, point)
+  if (projected.raw.length > RESTORE_POINTS_LIMIT) throw new Error('The automatic restore point exceeds the 2,000,000-character history limit. Export a backup and reduce the selected mock workspace data before trying again.')
+  return { points: parseRestorePoints(projected.raw), raw: projected.raw }
 }
 
 export function loadRestorePoints(storage?: DemoStorage | null): RestorePointsLoad {

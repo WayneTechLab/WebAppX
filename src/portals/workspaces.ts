@@ -5,6 +5,7 @@ import { createCmsState, type CmsState } from '../cms/model'
 import { isCmsState } from '../cms/persistence'
 import { createCrmState, type CrmState } from '../crm/model'
 import { isCrmState } from '../crm/persistence'
+import { portalIds } from './registry'
 
 export type DemoWorkspaces = { hr: HrDemoState; cms: CmsState; crm: CrmState }
 
@@ -26,9 +27,7 @@ export function createDemoWorkspaces(): DemoWorkspaces {
 export function isDemoWorkspaces(value: unknown): value is DemoWorkspaces {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false
   const keys = Reflect.ownKeys(value)
-  if (keys.length !== 3 || !['hr', 'cms', 'crm'].every(key => Object.hasOwn(value, key))) return false
+  if (keys.length !== portalIds.length || !portalIds.every(key => Object.hasOwn(value, key))) return false
   const workspaces = value as Record<string, unknown>
-  return demoWorkspaceValidators.hr(workspaces.hr)
-    && demoWorkspaceValidators.cms(workspaces.cms)
-    && demoWorkspaceValidators.crm(workspaces.crm)
+  return portalIds.every(module => demoWorkspaceValidators[module](workspaces[module]))
 }

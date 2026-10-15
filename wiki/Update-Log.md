@@ -1,5 +1,44 @@
 # Update Log
 
+## 3.4.0 P1 portal registry and restore storage-budget preview — 2026-10-14
+
+Implement **WX-0051** with one typed registry for HR/CMS/CRM module identities,
+labels, descriptions and demo routes. Shared navigation, directory cards,
+cross-links and backup/restore module validation consume the same metadata.
+Registry entries describe surfaces without granting authentication, sharing
+domain records or activating provider connections.
+
+Implement **WX-0451** with **Storage budget preview** before combined selective
+restore and Undo. Show each selected workspace's serialized character count,
+selected total, new recovery-point size, current normalized history and projected
+history after retention pruning. Keep the existing 2,000,000-character per-portal
+limit and five-point/2,000,000-character history limits. Empty selection requests
+a portal; rejected history, invalid data or an oversized new point blocks
+confirmation. Preview and cancellation do not write storage or prune history.
+
+These are app size estimates; available browser quota is unknown and no space
+is reserved. Confirmed operations still validate current inputs/history and must
+save their recovery point before replacing workspaces. Failed writes retain the
+rollback attempt and explicit partial-storage warning behavior. Undo still
+replaces whole captured portals and saves a new recovery point first.
+
+Complete the existing **WX-0051 and WX-0451** catalog IDs with evidence: exactly
+**1,000 records**, **998 remaining, including 164 P1**. Preserve blank reusable
+SYSTEMX records. Update host guidance,
+README and wiki. Read [Template Portals](Template-Portals.md) and the
+[P1 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
+for the actual browser checks and repository gates. App version remains 3.4.0
+with deployment count 0; no live provider or production deployment is implied.
+
+Local browser verification passed registered navigation/cross-links, HR nested
+payroll, 404 boundary, preview/cancel payload equality, HR-only/CMS+CRM/all-three
+restore, refresh and Undo. Actual history matched projected sizes, with the
+sixth restore pruning one and retaining five. A near-limit valid CMS save
+correctly blocked a small incoming bundle when its automatic point/history
+exceeded 2,000,000 characters; cancellation preserved complete exports. Focused
+automated checks passed 114 portal and 13 backlog cases. Full publication-gate
+outcomes are recorded separately in the receipt.
+
 ## 3.4.0 SYSTEMX refresh and 1,000-item roadmap — 2026-10-14
 
 Verify current public dotSYSTEMX main against the original alpha.6 import. The

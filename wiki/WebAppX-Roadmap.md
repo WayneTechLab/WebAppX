@@ -1,10 +1,11 @@
-# WebAppX roadmap — 1,000 proposed TODOs
+# WebAppX roadmap — 1,000 improvement items
 
-The public template has a structured catalog of **exactly 1,000 unstarted
-proposals**, covering 20 areas with 50 items each. Existing HR, CMS, CRM,
+The public template has a structured catalog of **exactly 1,000 items** with
+`todo` or `done` status, covering 20 areas with 50 items each. Existing HR, CMS, CRM,
 persistence, backups and restore/Undo remain the implemented baseline. The list
 describes future improvements and focused verification, not 1,000 completed
-features, known defects or automatically authorized jobs.
+features, known defects or automatically authorized jobs. Completed catalog
+items require reviewed evidence within their stated acceptance gate.
 
 ## Read and filter
 
@@ -19,7 +20,8 @@ acceptance check, existing source pointer, acceptance gate and dependencies.
 
 ```bash
 npm run backlog:summary
-npm run backlog -- --area mock-recovery --priority P1 --limit 10
+npm run backlog -- --area mock-recovery --priority P1 --status todo --limit 10
+npm run backlog -- --status done --limit 10
 npm run backlog -- --id WX-0151
 npm run backlog:render
 npm run backlog:check
@@ -27,7 +29,33 @@ npm run backlog:check
 
 The JSON is canonical; Markdown and CSV are generated. The CI check verifies
 the exact count, ordered IDs, 20 groups of 50, unique titles/acceptance, existing
-source paths, earlier dependencies and synchronized views. Queries remain local.
+source paths, earlier dependencies, completion records and synchronized views.
+Summary counts distinguish TODO/done and show remaining priority counts.
+Queries remain local.
+
+## Completion and the first P1 batch
+
+A `done` item requires exactly four completion fields: an actual `verifiedOn`
+date (`YYYY-MM-DD`), the reviewed 40-character Git `sourceBase`, an existing
+repository-relative `evidence` file and `reviewedBy` set to `agent.0` or `user`.
+TODO items prohibit this metadata. The CLI checks calendar validity and file
+resolution, including paths through symbolic links; unsupported reviewers and
+missing or extra fields fail validation.
+
+Generated Markdown uses a checked box for a completed item and links its
+evidence beside the verification date, source base and reviewer. CSV preserves
+the original ten columns and adds `completion`, containing JSON for completed
+items or an empty cell for TODOs. The JSON remains canonical.
+
+The first implementation batch completed **WX-0051**, the shared portal
+registry, and **WX-0451**, the restore storage-budget preview. Exactly **1,000
+records** remain in the catalog: **2 done and 998 TODOs, including 164 P1 TODOs**.
+Read the [P1 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
+for accepted results. Completion applies
+only to the evidence's scope; it supplies no provider credentials, deployment
+acceptance or permission to activate optional services. The remaining proposals
+keep their individual status, and all reusable SYSTEMX task/context/plan/memory
+seeds stay blank.
 
 ## Scope and activation
 

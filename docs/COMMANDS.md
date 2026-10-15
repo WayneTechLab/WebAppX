@@ -76,11 +76,11 @@ available. macOS checks alone do not prove Windows x64/ARM64 runtime acceptance.
 
 ## Validation and maintenance
 
-### Proposed WebAppX backlog
+### WebAppX improvement backlog
 
 | Command | Scope |
 | --- | --- |
-| `npm run backlog:summary` | Counts for 1,000 proposed TODOs by area, priority, phase and gate |
+| `npm run backlog:summary` | Counts for the stable 1,000-item catalog by completion state, area, priority, phase and gate |
 | `npm run backlog -- --area mock-recovery --priority P1 --limit 10` | Read a bounded group of proposals |
 | `npm run backlog -- --id WX-0151` | Inspect one proposal's acceptance, source and dependencies |
 | `npm run backlog:render` | Regenerate Markdown/CSV from the canonical JSON catalog |
@@ -89,7 +89,12 @@ available. macOS checks alone do not prove Windows x64/ARM64 runtime acceptance.
 
 The [roadmap](WEBAPPX-ROADMAP.md) is planning data. These commands leave the
 blank reusable SYSTEMX task/context/plan/memory records intact and do not start
-agents or provider operations.
+agents or provider operations. Verified completed entries retain their stable
+IDs and link completion evidence; unstarted entries remain proposals. Inspect
+the first P1 portal follow-up with `npm run backlog -- --id WX-0051` and
+`npm run backlog -- --id WX-0451`.
+Both entries are completed with evidence: the catalog contains exactly 1,000
+records, with **998 remaining, including 164 P1**.
 
 ### Repository gates
 

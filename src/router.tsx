@@ -14,14 +14,15 @@ import { StandardPage, type StandardPageKey } from '@/pages/StandardPage'
 import { SystemStatePage } from '@/pages/SystemStatePage'
 import { HrPage } from '@/pages/HrPage'
 import { TemplatePortalsPage } from '@/pages/TemplatePortalsPage'
+import { isDemoPortalPath } from '@/portals/registry'
 
 function getPathname() {
   return normalizePath(window.location.pathname)
 }
 
 function renderPage(pathname: string) {
-  if (pathname === '/portals' || pathname === '/cms/demo' || pathname === '/crm/demo' || pathname === '/hr/demo' || pathname.startsWith('/hr/demo/')) return <TemplatePortalsPage pathname={pathname} />
-  if (pathname === '/hr' || pathname.startsWith('/hr/demo') || pathname === '/admin/hr' || pathname.startsWith('/admin/hr/') || pathname === '/employee' || pathname.startsWith('/employee/') || pathname === '/manager/hr' || pathname.startsWith('/manager/hr/') || pathname === '/contractor' || pathname.startsWith('/contractor/')) {
+  if (pathname === '/portals' || isDemoPortalPath(pathname)) return <TemplatePortalsPage pathname={pathname} />
+  if (pathname === '/hr' || pathname === '/admin/hr' || pathname.startsWith('/admin/hr/') || pathname === '/employee' || pathname.startsWith('/employee/') || pathname === '/manager/hr' || pathname.startsWith('/manager/hr/') || pathname === '/contractor' || pathname.startsWith('/contractor/')) {
     return <HrPage pathname={pathname} />
   }
   switch (pathname) {

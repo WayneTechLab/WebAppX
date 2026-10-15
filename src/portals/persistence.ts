@@ -1,4 +1,6 @@
-export type DemoModule = 'hr' | 'cms' | 'crm'
+import { portalById, type PortalId } from './registry'
+
+export type DemoModule = PortalId
 export type DemoStorageStatus = {
   kind: 'ready' | 'saved' | 'restored' | 'reset' | 'unavailable' | 'recovered'
   message: string
@@ -8,7 +10,7 @@ export type DemoStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 export const DEMO_STORAGE_VERSION = 1
 export const DEMO_STORAGE_LIMIT = 2_000_000
 export const demoStorageKey = (module: DemoModule) => `webappx.demo.${module}`
-const name = (module: DemoModule) => module.toUpperCase()
+const name = (module: DemoModule) => portalById[module].label
 const unavailable = (module: DemoModule): DemoStorageStatus => ({
   kind: 'unavailable',
   message: `${name(module)} changes are only in memory because this browser could not save them. Refresh may lose changes. Allow browser storage and try another saved action, or Reset to clear this portal's save.`,

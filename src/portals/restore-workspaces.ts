@@ -1,6 +1,8 @@
+import { portalIds, portalById } from './registry'
 import { DEMO_STORAGE_LIMIT, DEMO_STORAGE_VERSION, demoStorageKey, type DemoModule, type DemoStorage, type DemoStorageStatus } from './persistence'
 import { isDemoWorkspaces, type DemoWorkspaces } from './workspaces'
-import { createRestorePoint, parseRestorePoints, prepareRestorePoints, RESTORE_POINTS_KEY, validRestoreSelection, type RestorePoint, type RestorePointOptions } from './restore-points'
+import { parseRestorePoints, RESTORE_POINTS_KEY, validRestoreSelection, type RestorePoint, type RestorePointOptions } from './restore-points'
+import { prepareCheckpointRestore } from './restore-budget'
 
 export type DemoWorkspacesRestoreResult =
   | { ok: true; status: DemoStorageStatus }
@@ -10,7 +12,6 @@ export type CheckpointRestoreResult =
   | { ok: true; status: DemoStorageStatus; point: RestorePoint; points: RestorePoint[]; states: DemoWorkspaces; modules: DemoModule[] }
   | { ok: false; status: DemoStorageStatus; recoveryRequired?: boolean }
 
-const modules: DemoModule[] = ['hr', 'cms', 'crm']
 const unchanged = 'The previous in-memory workspaces and browser saves are preserved.'
 
 function storageForRestore(storage?: DemoStorage | null): DemoStorage {
@@ -27,7 +28,7 @@ function storageForRestore(storage?: DemoStorage | null): DemoStorage {
  */
 export function restoreDemoWorkspaces(states: DemoWorkspaces, selected: readonly DemoModule[], storage?: DemoStorage | null): DemoWorkspacesRestoreResult {
   try {
-    if (!Array.isArray(selected) || selected.length === 0 || selected.length > modules.length || selected.some(module => !modules.includes(module)) || new Set(selected).size !== selected.length || !isDemoWorkspaces(states)) throw new Error('Invalid restore')
+    if (!Array.isArray(selected) || selected.length === 0 || selected.length > portalIds.length || selected.some(module => !portalIds.includes(module)) || new Set(selected).size !== selected.length || !isDemoWorkspaces(states)) throw new Error('Invalid restore')
   } catch {
     return { ok: false, status: { kind: 'recovered', message: `Restore was not applied because the backup or workspace selection is invalid or incompatible. ${unchanged}` } }
   }
@@ -77,13 +78,13 @@ export function restoreDemoWorkspaces(states: DemoWorkspaces, selected: readonly
       recoveryRequired: true,
       status: {
         kind: 'unavailable',
-        message: `Restore failed and this browser could not roll back the ${uncertain.map(module => module.toUpperCase()).join(', ')} save${uncertain.length === 1 ? '' : 's'}. Those browser saves may differ from the previous in-memory workspaces, which remain open. Unselected workspaces and unrelated browser data were not changed. Keep this tab open and export the current workspaces before refreshing. Allow browser storage or free space, then restore again to recover the selected saves.`,
+        message: `Restore failed and this browser could not roll back the ${uncertain.map(module => portalById[module].label).join(', ')} save${uncertain.length === 1 ? '' : 's'}. Those browser saves may differ from the previous in-memory workspaces, which remain open. Unselected workspaces and unrelated browser data were not changed. Keep this tab open and export the current workspaces before refreshing. Allow browser storage or free space, then restore again to recover the selected saves.`,
       },
     }
     return { ok: false, status: { kind: 'unavailable', message: `Restore was not applied because this browser could not save every selected workspace. ${unchanged} Allow browser storage or free space, then try again.` } }
   }
 
-  return { ok: true, status: { kind: 'saved', message: `${chosen.map(module => module.toUpperCase()).join(', ')} workspace${chosen.length === 1 ? '' : 's'} restored and saved in this browser. Unselected workspaces and unrelated browser data are unchanged.` } }
+  return { ok: true, status: { kind: 'saved', message: `${chosen.map(module => portalById[module].label).join(', ')} workspace${chosen.length === 1 ? '' : 's'} restored and saved in this browser. Unselected workspaces and unrelated browser data are unchanged.` } }
 }
 
 /** Selective restore and undo both commit a recovery snapshot first. All raw
@@ -113,28 +114,14 @@ function checkpointRestore(current: DemoWorkspaces, targetStates: DemoWorkspaces
   let prepared: { key: string; raw: string; label: string }[]
   try {
     const history = previousHistory === null ? [] : parseRestorePoints(previousHistory)
-    if (sourcePointId !== undefined) {
-      const source = history.find(item => item.id === sourcePointId)
-      if (!source) throw new Error('This restore point is no longer available. Refresh the restore-point list and choose an existing point.')
-      selected = source.modules
-      targetStates = { ...current, ...source.states }
-    }
-    chosen = [...selected as DemoModule[]]
-    point = createRestorePoint(current, chosen, sourcePointId === undefined ? 'restore' : 'undo', sourcePointId, options)
-    // Use validated serialized copies, so snapshots do not retain caller-owned
-    // references or serialization hooks. Domain state outside the selection is
-    // copied into the returned graph, but its browser slots are never written.
-    const restored = createRestorePoint(targetStates as DemoWorkspaces, chosen, 'restore', undefined, { id: 'restored-target', createdAt: point.createdAt })
-    states = JSON.parse(JSON.stringify({ ...current, ...restored.states })) as DemoWorkspaces
-    if (!isDemoWorkspaces(states)) throw new Error('The serialized mock workspaces are invalid or incompatible.')
-    const nextHistory = prepareRestorePoints(history, point)
-    points = nextHistory.points
-    point = points[0]
-    prepared = [
-      { key: RESTORE_POINTS_KEY, raw: nextHistory.raw, label: 'restore-point history' },
-      ...chosen.map(module => ({ key: demoStorageKey(module), raw: JSON.stringify({ schemaVersion: DEMO_STORAGE_VERSION, module, data: states[module] }), label: `${module.toUpperCase()} save` })),
-    ]
-    if (prepared.slice(1).some(item => item.raw.length > DEMO_STORAGE_LIMIT)) throw new Error('A selected workspace exceeds the browser save limit.')
+    const result = prepareCheckpointRestore(current, targetStates, selected, history, { ...options, sourcePointId })
+    if (!result.ok) throw new Error(result.message)
+    if (!result.plan.budget.canRestore) throw new Error(result.plan.budget.reason)
+    point = result.plan.point
+    points = result.plan.points
+    states = result.plan.states
+    chosen = result.plan.modules
+    prepared = result.plan.prepared
   } catch (error) {
     return { ok: false, status: { kind: 'recovered', message: `Restore was not applied. ${error instanceof Error ? error.message : 'The restore point could not be prepared.'} ${unchanged}` } }
   }
@@ -169,7 +156,7 @@ function checkpointRestore(current: DemoWorkspaces, targetStates: DemoWorkspaces
   }
   return {
     ok: true, point, points, states, modules: chosen,
-    status: { kind: 'saved', message: `${chosen.map(module => module.toUpperCase()).join(', ')} workspace${chosen.length === 1 ? '' : 's'} ${sourcePointId === undefined ? 'restored' : 'recovered from the restore point'} and saved in this browser. An automatic restore point was saved first. Unselected workspaces and unrelated browser data are unchanged.` },
+    status: { kind: 'saved', message: `${chosen.map(module => portalById[module].label).join(', ')} workspace${chosen.length === 1 ? '' : 's'} ${sourcePointId === undefined ? 'restored' : 'recovered from the restore point'} and saved in this browser. An automatic restore point was saved first. Unselected workspaces and unrelated browser data are unchanged.` },
   }
 }
 

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { AppLink } from '@/components/navigation/AppLink'
+import { portalDirectoryHref, portalRegistry } from '@/portals/registry'
 import { usePortalWorkspace } from '@/portals/PortalWorkspaceProvider'
 import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
 import { DemoWorkspaceBackup } from '@/portals/DemoWorkspaceBackup'
@@ -72,7 +73,7 @@ export function CmsDemo() {
     <header className="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 sm:p-7">
       <p className="text-xs font-semibold uppercase tracking-wider text-indigo-800">Account-free CMS · fictional content only</p>
       <div className="mt-3 flex flex-wrap items-start justify-between gap-5"><div className="max-w-3xl"><h1 className="text-3xl font-bold tracking-tight text-neutral-950">Content publishing workspace</h1><p className="mt-3 text-sm leading-6 text-neutral-700">Create a draft, request a separate review, then simulate publication. The published sample freezes the approved revision. Saved actions stay in this browser across refresh and portal navigation when local storage is available. Unsaved form edits are temporary. Reset CMS samples clears only this module. Use fictional content only; no public website is published.</p></div><button className={secondary} type="button" onClick={reset}>Reset CMS samples</button></div>
-      <nav aria-label="Business portals" className="mt-5 flex flex-wrap gap-3 text-sm font-semibold"><AppLink to="/portals" className={secondary}>All portals</AppLink><AppLink to="/hr/demo" className={secondary}>HR workspace</AppLink><AppLink to="/crm/demo" className={secondary}>CRM workspace</AppLink></nav>
+      <nav aria-label="Business portals" className="mt-5 flex flex-wrap gap-3 text-sm font-semibold"><AppLink to={portalDirectoryHref} className={secondary}>All portals</AppLink>{portalRegistry.filter(portal => portal.id !== 'cms').map(portal => <AppLink key={portal.id} to={portal.href} className={secondary}>{portal.workspaceLabel}</AppLink>)}</nav>
       <label className="mt-5 block max-w-sm text-sm font-medium">CMS preview identity<select className={field} value={actor.id} onChange={event => { setActor(cmsActors.find(person => person.id === event.target.value)!); setMessage(''); setError('') }}>{cmsActors.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}</select></label><p className="mt-2 text-xs text-neutral-600">The author writes, a separate reviewer approves, the publisher publishes or retires, and the viewer reads. These fictional identities do not grant real account permissions.</p>
     </header>
     <DemoStorageNotice status={storageStatus} />

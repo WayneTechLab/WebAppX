@@ -1,8 +1,9 @@
-# WebAppX roadmap and 1,000 proposed TODOs
+# WebAppX roadmap and 1,000 improvement items
 
 This is a planning catalog for improving the public WebAppX template from source
 baseline `8359285c99069349d6218fe871868baab76868e5`. It contains exactly **1,000
-unstarted proposals across 20 areas**, with 50 items in each area. It does not
+catalog items across 20 areas**, with 50 items in each area. Their `todo` or
+`done` status distinguishes remaining proposals from reviewed completion. It does not
 claim that every proposal is a required feature, an existing defect, or accepted
 implementation scope. Recheck its source pointers and current implementation
 before selecting work; some proposals may become unnecessary after another
@@ -12,15 +13,16 @@ change. Optional product modules are selected by an adopting app's owner.
 
 | Format | Use |
 | --- | --- |
-| [All 1,000 TODO items](backlog/WEBAPPX-1000-TODO.md) | Read by area, ID and priority; each item has a specific acceptance check and source pointer |
-| [Canonical JSON](backlog/webappx-1000-todo.json) | Edit proposals and inspect structured dependencies, phases and acceptance gates |
+| [All 1,000 improvement items](backlog/WEBAPPX-1000-TODO.md) | Read by area, ID and priority; each item has a specific acceptance check and source pointer |
+| [Canonical JSON](backlog/webappx-1000-todo.json) | Edit proposals and inspect structured dependencies, phases, acceptance gates and completion evidence |
 | [CSV](backlog/webappx-1000-todo.csv) | Filter or review in a spreadsheet without changing the canonical catalog |
 | [JSON schema](backlog/webappx-backlog.schema.json) | Inspect the portable data contract; the CLI also checks ordering, uniqueness, source paths and dependencies |
 | [SYSTEMX host pointer](../.SYSTEMX/WEBAPPX-ROADMAP.md) | Resume planning without loading all 1,000 items into an agent's context |
 
 ```bash
 npm run backlog:summary
-npm run backlog -- --area mock-recovery --priority P1 --limit 10
+npm run backlog -- --area mock-recovery --priority P1 --status todo --limit 10
+npm run backlog -- --status done --limit 10
 npm run backlog -- --id WX-0151
 npm run backlog:render
 npm run backlog:check
@@ -29,8 +31,44 @@ npm run backlog:check
 `backlog:render` regenerates Markdown and CSV from JSON. `backlog:check` is part
 of `ci:all`; it requires exactly 1,000 sequential IDs, 20 groups of 50, unique
 titles and acceptance checks, valid existing repository sources, earlier-ID
-dependencies and synchronized generated views. Queries read local files and do
+dependencies, completion metadata and synchronized generated views. Summary
+output reports the total, `todo`/`done` counts, all priority counts and remaining
+TODO priority counts. Queries read local files and do
 not create tasks, contact providers, install tools or start workers.
+
+## Record verified completion
+
+The catalog keeps the original ten proposal fields. A `todo` item has no
+`completion` field. Mark an item `done` only after reviewing its original
+acceptance criteria and evidence, and add exactly these completion fields:
+
+| Field | Required value |
+| --- | --- |
+| `verifiedOn` | An actual calendar date in `YYYY-MM-DD` form |
+| `sourceBase` | The reviewed 40-character lowercase Git source base |
+| `evidence` | An existing repository-relative evidence file that resolves inside this repository |
+| `reviewedBy` | `agent.0` or `user` |
+
+`backlog:check` rejects missing or extra metadata, impossible dates, unsupported
+reviewers and evidence paths that escape through traversal or symbolic links.
+The JSON schema describes the portable shape; the CLI also checks actual files
+and calendar dates. Markdown renders completed items with `[x]`, followed by the
+verification date, source base, reviewer and evidence link. CSV adds one
+`completion` column containing the exact JSON metadata object for completed
+items and an empty cell for proposals; the other ten columns retain their
+original values. CSV remains a generated review export rather than an import API.
+
+A completion record has the scope of its linked evidence and acceptance gate.
+Local synthetic verification does not establish provider access, deployment,
+operational readiness or permission to activate optional services. Recording
+completion does not populate the reusable SYSTEMX ledger or start agents.
+
+The first P1 batch is complete: **WX-0051**, the shared portal registry, and
+**WX-0451**, the restore storage-budget preview. The
+[QA receipt](PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md) records their accepted local
+scope. Exactly **1,000 catalog records** remain, with **2 done and 998 TODOs,
+including 164 P1 TODOs**. Use `--status done` to inspect accepted results and
+`--status todo` to choose the next bounded batch.
 
 ## Planning phases
 
@@ -43,8 +81,9 @@ not create tasks, contact providers, install tools or start workers.
 
 P1 marks candidates to review first; P2 covers subsequent maturity and P3 optional
 expansion. Priority is a proposed sequencing aid, not proof of a defect or a
-deadline. Dependencies refer to earlier catalog IDs. There are no invented dates,
-budgets, assigned staff, production credentials or completion claims.
+deadline. Dependencies refer to earlier catalog IDs. Verification dates and
+completion claims require reviewed evidence; the planning list supplies no
+budgets, assigned staff or production credentials.
 
 ## Coverage
 
@@ -86,8 +125,8 @@ Start with a small local batch, then reassess the dependent portal work:
 | Proposal | Review outcome |
 | --- | --- |
 | WX-0001 | Read-only developer prerequisite report |
-| WX-0051 | Typed shared portal registry |
-| WX-0451 | Storage-budget estimates before a selective restore |
+| WX-0051 | Completed: typed shared portal registry; see the P1 QA receipt |
+| WX-0451 | Completed: storage-budget preview; see the P1 QA receipt |
 | WX-0652 | Repeatable automated cross-portal browser smoke journey |
 | WX-0151 | Selectable fictional payroll periods |
 | WX-0280 | CMS draft field validation summaries |
@@ -115,8 +154,8 @@ source before accepting a task; no work starts from this table automatically.
    document nor a successful CLI process proves deployment/provider acceptance.
 
 The reusable template's context, master plan, task ledger, project memory and
-agent memory remain blank adoption seeds. The catalog has `todo` labels for
-proposed work; it is not an active SYSTEMX ledger and does not register agents,
+agent memory remain blank adoption seeds. The catalog uses `todo` for proposed
+work and `done` for evidenced completion; it is not an active SYSTEMX ledger and does not register agents,
 start a scheduler or enqueue 1,000 jobs.
 
 ## SYSTEMX refresh in this update

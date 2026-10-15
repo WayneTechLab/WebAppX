@@ -1,3 +1,4 @@
+import { portalIds, portalById } from './registry'
 import { DEMO_STORAGE_LIMIT, DEMO_STORAGE_VERSION, type DemoModule } from './persistence'
 
 export const DEMO_BACKUP_LIMIT = DEMO_STORAGE_LIMIT + 512
@@ -8,11 +9,10 @@ export type DemoBackup<T> = { state: T; exportedAt: string }
 const FORMAT = 'webappx-mock-workspace'
 const VERSION = 1
 const keys = ['format', 'schemaVersion', 'module', 'exportedAt', 'data']
-const modules: DemoModule[] = ['hr', 'cms', 'crm']
 const reservedKeys = new Set(['__proto__', 'constructor', 'prototype'])
 
 function requireModule(module: DemoModule) {
-  if (!modules.includes(module)) throw new Error('Choose an HR, CMS or CRM mock workspace.')
+  if (!portalIds.includes(module)) throw new Error('Choose an HR, CMS or CRM mock workspace.')
 }
 
 function validTimestamp(value: unknown): value is string {
@@ -51,7 +51,7 @@ export function parseDemoBackup<T>(text: string, module: DemoModule, validate: (
   const record = envelope as Record<string, unknown>
   if (Object.keys(record).length !== keys.length || !keys.every(key => Object.hasOwn(record, key)) || record.format !== FORMAT) throw new Error('Choose a WebAppX mock workspace backup file.')
   if (record.schemaVersion !== VERSION) throw new Error('This backup version is not supported by this template.')
-  if (record.module !== module) throw new Error(`This backup does not belong to the ${module.toUpperCase()} portal. Choose its matching backup.`)
+  if (record.module !== module) throw new Error(`This backup does not belong to the ${portalById[module].label} portal. Choose its matching backup.`)
   if (!validTimestamp(record.exportedAt)) throw new Error('The backup has an invalid export timestamp.')
   if (hasReservedKeys(record.data) || !validState(record.data, validate)) throw new Error('The backup contains incomplete or incompatible mock workspace records.')
   // This is the exact shape used by saveDemoState. A valid download must also

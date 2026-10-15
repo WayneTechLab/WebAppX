@@ -1,6 +1,7 @@
 import { useRef, useState, type ChangeEvent } from 'react'
 import { createDemoBackup, parseDemoBackup, DEMO_BACKUP_FILE_LIMIT, type DemoBackup } from './backup'
 import type { DemoModule, DemoStorageStatus } from './persistence'
+import { portalById } from './registry'
 
 const secondary = 'inline-flex min-h-11 items-center justify-center rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50'
 
@@ -14,7 +15,7 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
   const [pending, setPending] = useState<{ backup: DemoBackup<T>; filename: string } | null>(null)
   const [reading, setReading] = useState(false)
   const [feedback, setFeedback] = useState<{ message: string; error: boolean } | null>(null)
-  const title = module.toUpperCase()
+  const title = portalById[module].label
 
   function download() {
     try {

@@ -71,13 +71,16 @@ the outer `.SYSTEMX` or an explicitly selected child `.SYSTEMXP`.
 | Verified manual updates | Preview/import exact public source, back up recognized stock launchers, retain immutable snapshots and adopted records |
 | HR and Gusto | Portable `.SYSTEMX/GUSTO/` contracts, complete native synthetic journeys and selected pinned SDK workflow previews |
 
-## Roadmap and 1,000 proposed TODOs
+## Roadmap and 1,000 improvement items
 
-The [WebAppX roadmap](docs/WEBAPPX-ROADMAP.md) now links **exactly 1,000 proposed
-TODO items across 20 areas**, covering HR, CMS, CRM, local recovery, security,
+The [WebAppX roadmap](docs/WEBAPPX-ROADMAP.md) links **exactly 1,000 improvement
+items across 20 areas**, covering HR, CMS, CRM, local recovery, security,
 Firebase adoption, design, quality, operations, SYSTEMX and integrations.
 Each has a stable `WX-0001`–`WX-1000` ID, priority, phase, specific acceptance
 check, existing source pointer, acceptance gate and dependencies.
+Verified completions include their evidence in the canonical catalog; unstarted
+items remain proposals. **WX-0051 and WX-0451 are completed: 998 items remain,
+including 164 P1 items.** The catalog still contains exactly 1,000 records.
 
 - [Read the complete list](docs/backlog/WEBAPPX-1000-TODO.md)
 - [Canonical JSON](docs/backlog/webappx-1000-todo.json) · [CSV](docs/backlog/webappx-1000-todo.csv)
@@ -86,9 +89,51 @@ check, existing source pointer, acceptance gate and dependencies.
 Run `npm run backlog:summary`, or query one area with
 `npm run backlog -- --area mock-recovery --priority P1 --limit 10`.
 `npm run backlog:check` validates the exact count, IDs, sources, dependencies and
-generated views as part of `ci:all`. These are future proposals, not 1,000
-implemented features or active agent jobs. The reusable SYSTEMX records stay
-blank; optional provider/operator work requires its own reviewed adoption scope.
+generated views as part of `ci:all`. The catalog retains its stable 1,000-item
+planning scope; delivered items are tracked in the roadmap with their evidence.
+It does not represent 1,000 implemented features or active agent jobs. The
+reusable SYSTEMX records stay blank; optional provider/operator work requires
+its own reviewed adoption scope.
+
+### First P1 portal improvements
+
+**WX-0051 — shared portal registry:** [one typed registry](src/portals/registry.ts)
+owns HR, CMS and CRM module identities, labels, demo routes and descriptions.
+The shared directory, navigation and cross-links use that metadata; backup and
+restore validation use the same module identities. Registry metadata does not
+grant authentication or copy records between portals.
+
+**WX-0451 — restore storage-budget preview:** before confirming a combined
+selective restore or Undo, inspect each selected workspace's serialized character count
+against its 2,000,000-character limit, the new recovery point and projected
+history after retention pruning. History keeps at most five points within
+2,000,000 characters. The preview follows the current selection, saved domain
+state and history; it does not save a restore point or replace records.
+An empty selection prompts for a portal, while invalid data, rejected history
+or an oversized budget blocks confirmation. Undo's portal scope remains fixed to
+the chosen point.
+
+These counts describe app limits, not available browser quota. The browser may
+refuse a smaller write; confirmation revalidates and must successfully save the
+recovery point before replacing workspaces. Read the
+[portal guide](docs/TEMPLATE-PORTALS.md#restore-storage-budget-preview) and
+[P1 verification receipt](docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md) for the
+checked behavior and evidence boundaries. Version remains **3.4.0**, with
+deployment count **0**.
+
+**Local browser verification — 2026-10-14:** registry navigation and cross-links,
+HR-only/CMS+CRM/all-three restores, refresh and Undo passed. Exported payloads
+matched their expected snapshots, including cancellation and unselected-portal
+preservation. History matched each preview; the sixth restore retained five
+points and pruned one. A near-limit current CMS workspace correctly blocked a
+small incoming bundle because its automatic recovery point exceeded the history
+budget. Cancellation preserved all workspace payloads. These are local mock
+checks; the receipt records exact counts and failure coverage.
+
+Full `ci:all`, Hosting preflight and SYSTEMX drift checks passed for this update,
+including 114 portal tests, 116 HR tests and 13 catalog tests. The
+[QA receipt](docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md) records the remaining
+suite counts and five filesystem-specific skips. No production deployment ran.
 
 The current SYSTEMX refresh verifies public main
 `3fb59429c878268f1081ca255a1f32fafc5dcfba`. Its `.SYSTEMX` tree is identical to

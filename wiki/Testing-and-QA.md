@@ -77,6 +77,64 @@ and webhook foundation boundaries. It uses local fixtures and app/backend code;
 it does not contact Gusto or establish Firebase deployment acceptance.
 `hr:backend:audit` audits the isolated optional functions package's dependencies.
 
+### P1 shared registry and restore storage-budget checks
+
+The [P1 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
+records the checked revision, actual browser observations and repository gates
+for **WX-0051** and **WX-0451**. Earlier receipts below retain their own scope and
+historical counts; they are not a new test run for these changes.
+
+To repeat this wave's browser checks:
+
+1. Open `/portals`. Follow HR, CMS and CRM cards and shared navigation, including
+   cross-links. Verify each reaches its registered route and shows the expected
+   portal label while preserving the independent workspace records.
+2. Import a valid combined backup. With no portal selected, verify the budget
+   asks for a selection and confirmation is disabled. Select HR, CMS+CRM and all
+   three in turn. Verify workspace rows/total, recovery-point size and projected
+   history follow the selection; preview and cancellation must not add history.
+3. Confirm a selected restore, refresh and compare full exported domain states.
+   Verify selected records match the backup and unselected records remain intact.
+4. Open **Undo…**. Verify its budget describes the point's fixed portal scope,
+   including the new point needed to reverse Undo. Cancel first, then confirm
+   and compare exports with the expected recovery snapshots.
+5. Exercise retention with enough points to require pruning. Compare projected
+   retained/pruned counts with the confirmed history after refresh.
+
+Automated tests must cover exact serialized counts, selection/scope validation,
+read-only previews, rejected/corrupt or unreadable history, oversized newest
+points, five-point/character-budget retention and actual write failure after a
+valid preview. Browser quota is unknown; passing an app budget must not bypass
+fresh confirmation-time validation, successful recovery-point save or rollback.
+Do not equate storage-fake fault coverage with browser fault injection. The
+[portal guide](Template-Portals.md#restore-storage-budget-preview) explains the
+limits and user recovery flow.
+
+**Observed local browser results — 2026-10-14:**
+
+| Check | Observed result |
+| --- | --- |
+| Registry paths | Directory and HR/CMS/CRM cross-links passed; nested HR payroll opened and `/hr/demo-other` showed 404 |
+| Preview and cancellation | Complete exported workspace payloads remained equal |
+| HR-only restore and Undo | CMS/CRM stayed intact; Undo recovered the original complete payloads after refresh |
+| CMS+CRM and all-three restore | CMS+CRM preserved HR; all-three replacement matched the imported states |
+| Projected history | Confirmed sizes matched 4,748 → 9,525 → 12,486 → 15,048 → 22,602 → 24,994 characters; sixth restore pruned one and retained five |
+| Near-limit current state | A valid 1,994,127-character CMS save imported successfully |
+| Recovery budget refusal | Incoming all-three saves totaled 7,073 characters, but the new point required 2,000,440 and projected history 2,000,471; Restore was disabled and cancellation preserved complete payloads |
+| Browser diagnostics | No errors observed; expected missing Firebase configuration warning only |
+
+Full **`ci:all` passed**, including **114 portal cases, 116 HR cases and 13
+backlog cases**, plus 235 shared SYSTEMX cases (five filesystem-specific skips),
+36 host integration cases, eight security operations cases and 11 app/LAN cases.
+Lint, TypeScript, dependency audits, documentation links and the production build
+passed. **Hosting preflight and SYSTEMX drift checks passed**; no deployment ran.
+The receipt records exact scope and the separate provider/browser-quota limits.
+
+The stable catalog contains exactly **1,000 records**, with **WX-0051 and
+WX-0451 completed** and **998 remaining, including 164 P1**. Completed entries
+link their evidence. See the [roadmap](WebAppX-Roadmap.md); blank reusable SYSTEMX
+task/context/plan/memory records remain unchanged.
+
 ### SYSTEMX refresh and roadmap checks
 
 The [refresh/roadmap receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ROADMAP-QA-2026-10-14.md)
