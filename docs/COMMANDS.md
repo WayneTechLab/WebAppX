@@ -13,6 +13,8 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 | `npm run browser:smoke` | Owned loopback Vite server and fresh Chromium context; named seed/hash/totals, HR/CMS/CRM UI changes, reload persistence and complete export comparisons |
 | `npm run browser:smoke -- --headed` | Run the same checks with a visible Chromium window |
 | `npm run browser:smoke -- --output /path/to/local/artifacts` | Create a fresh artifact directory under the chosen parent |
+| `npm run browser:keyboard` | Isolated Chromium onboarding and selective restore/Undo journeys using real Tab traversal, Enter/Space, keyboard typing and visible-focus checks |
+| `npm run browser:keyboard:test` | Focused guard checks for the keyboard driver |
 
 The doctor requires Node.js >=24.0.0 and Python >=3.12.0; npm/Git must be present
 with parseable versions, without a specified minimum. It installs nothing and
@@ -26,6 +28,19 @@ the [QA receipt](DEVELOPER-BROWSER-QA-2026-10-14.md).
 Observed local verification passed 18 doctor cases, 16 seed/runner cases and
 seven authored browser checks with successful browser/server cleanup. Final
 publication-gate outcomes are recorded in the receipt.
+
+The keyboard journeys reuse the smoke runner's owned loopback server, clean
+browser context, explicit Chromium setup and temporary artifacts. They do not
+replace `browser:smoke`. User interactions use keyboard input; initial
+navigation/reload and setting files in a keyboard-opened native chooser remain
+explicit harness boundaries. Read the
+[keyboard guide](TEMPLATE-PORTALS.md#keyboard-onboarding-and-recovery) and
+[keyboard QA receipt](KEYBOARD-PORTALS-QA-2026-10-15.md). These checks do not
+establish whole-site accessibility, screen-reader or OS-chooser acceptance.
+The accepted keyboard run passed **nine browser checks** (three onboarding/six
+recovery), **11 driver guard tests** and **16 existing seed/runner guard tests**.
+It recorded 110 onboarding and 266 recovery focus observations. The keyboard
+receipt records exact outputs, limitations and final publication gates.
 
 ## App and local session
 
@@ -118,9 +133,9 @@ agents or provider operations. Verified completed entries retain their stable
 IDs and link completion evidence; unstarted entries remain proposals. Inspect
 the first P1 portal follow-up with `npm run backlog -- --id WX-0051` and
 `npm run backlog -- --id WX-0451`.
-Both entries remain completed with evidence, joined by **WX-0001, WX-0651 and
-WX-0652**. The catalog contains exactly **1,000 records**, with **five completed
-and 995 remaining: 162 P1, 675 P2 and 158 P3**.
+Both entries remain completed with evidence, joined by **WX-0001, WX-0651,
+WX-0652, WX-0653 and WX-0654**. The catalog contains exactly **1,000 records**,
+with **seven completed and 993 remaining: 160 P1, 675 P2 and 158 P3**.
 
 ### Repository gates
 
@@ -135,7 +150,7 @@ and 995 remaining: 162 P1, 675 P2 and 158 P3**.
 | `npm run systemx:tools:test` | Test the selected immutable standalone distribution |
 | `npm run systemx:integration:test` | Import preservation and reusable-template mirror regressions |
 | `npm run template:check` | Blank template seeds, snapshots, versions and both research inventories |
-| `npm run ci:all` | Complete reusable-template release gate, including doctor regressions, seed checks and browser smoke; requires blank seeds and explicitly installed Chromium |
+| `npm run ci:all` | Complete reusable-template release gate, including doctor regressions, seed/keyboard guards and both browser journeys; requires blank seeds and explicitly installed Chromium |
 | `npm run deploy -- hosting --preflight` | Deployment gates without commit, push or hosting deployment |
 | `npm run wiki:check` / `npm run wiki:sync` | Preview / publish checked-in pages to this checkout's GitHub wiki |
 

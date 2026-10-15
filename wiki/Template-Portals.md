@@ -67,6 +67,53 @@ Preview identities are module-specific test controls. They do not authenticate
 staff, modify Firebase claims or grant real organization memberships. Production
 role services and tenant-scoped server storage remain separate adoption work.
 
+## Keyboard onboarding and recovery
+
+Use **Tab/Shift+Tab** to move through normal page controls, **Enter** to activate
+links/actions and **Space** to toggle checkboxes or activate buttons. The authored
+journeys' controls show visible focus. Restore and Undo previews are ordinary
+page regions with normal Tab navigation.
+
+- In the employee preview's **My profile**, submitting a blank required
+  **Synthetic work email** keeps focus on that field. Use fictional `.invalid`
+  addresses for testing.
+- In **My onboarding**, successful profile/job/checklist actions move focus to
+  the next required step. Summary review moves to confirmation, then simulated
+  completion focuses its status and mock receipt.
+- Activating **Import combined backup** opens the native picker. A valid file
+  focuses **Choose workspaces to restore**; tab to scope checkboxes and use Space
+  to select. Budget/confirmation guards still apply. Cancel, successful restore
+  or a rejected file returns focus to **Import combined backup**.
+- **Undo…** focuses the Undo heading. Tab through scope, summaries and budget
+  to confirm or cancel. Closing returns focus to its opening point button when
+  available, or **Restore points & Undo** if retention removed the opener.
+- History clearing focuses its confirmation heading. Cancellation returns to
+  the Clear button; after successful clearing, the now-disabled opener falls
+  back to the history heading.
+
+Run `npm run browser:keyboard` and `npm run browser:keyboard:test` after the same
+explicit Chromium installation used by the existing smoke. The driver uses real
+Tab traversal and keyboard input, with read-only focus/state observations.
+Initial navigation/reload and giving a file to a keyboard-opened native chooser
+are explicit harness boundaries. The test does not drive the OS chooser's keys
+or establish screen-reader, whole-site or every-workflow accessibility. Read the
+[detailed guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#keyboard-onboarding-and-recovery)
+and [keyboard QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/KEYBOARD-PORTALS-QA-2026-10-15.md)
+for exact scope and outcomes.
+
+**Accepted keyboard checkpoint — 2026-10-15:** all nine browser checks passed,
+with 110 onboarding and 266 recovery focus observations. Eleven keyboard driver
+guards and 16 existing seed/runner guards passed. Required email rejection
+preserved saves; completion produced `MOCK-ONBOARDING-0001`, and refresh/full
+export matched independent records with CMS/CRM intact. Cancel preserved exact
+workspace/history bytes. HR+CMS restore and Undo kept CRM intact and returned
+focus to the exact opening point button; retention removal exercised the visible
+history-heading fallback. Reload preserved recovered records and five retained
+points. Both owned resources closed; only expected missing Firebase configuration
+warned. Independent review had no unresolved findings. Clear-history focus
+handling is outside these nine browser checks; final publication gates are
+recorded in the receipt.
+
 ## Back up, restore or move a workspace
 
 Use **Export workspace** in HR, CMS or CRM to download that portal’s validated

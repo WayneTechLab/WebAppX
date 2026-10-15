@@ -97,6 +97,42 @@ drift checks passed, including the integrated seven-gate browser run with an
 isolated optimizer cache. The receipt records all suite counts and five
 filesystem-specific skips. No production deployment ran.
 
+### Keyboard onboarding and restore/Undo checks
+
+Run **`npm run browser:keyboard`** after the same explicit Chromium installation
+to exercise **WX-0653** onboarding and **WX-0654** selective restore/Undo. Use
+**`npm run browser:keyboard:test`** for the focused driver guards. The keyboard
+journeys reuse the isolated loopback server and clean-context runner; the earlier
+`browser:smoke` command remains available.
+
+The driver reaches controls with real **Tab** traversal, activates them with
+**Enter/Space**, types through keyboard input and checks the focused element's
+visible outline/ring. App-managed transitions advance focus through onboarding's
+required steps and onto its completion status. Restore and Undo previews focus
+their headings; cancellation/completion returns to the opening control, with a
+history-heading fallback when that control is unavailable. These are ordinary
+page regions with normal Tab navigation.
+
+Initial navigation/reload and handing a local file to a keyboard-opened native
+file chooser are explicit test-harness boundaries. The checks do not automate
+the operating system's chooser keys or establish whole-site, screen-reader or
+WCAG acceptance. See the [keyboard guide](docs/TEMPLATE-PORTALS.md#keyboard-onboarding-and-recovery),
+[testing guide](wiki/Testing-and-QA.md#keyboard-onboarding-and-selective-recovery)
+and [keyboard QA receipt](docs/KEYBOARD-PORTALS-QA-2026-10-15.md) for exact scope
+and current outcomes.
+
+**Keyboard verification — 2026-10-15:** all **nine browser checks** passed
+(three onboarding, six restore/Undo), recording **110 onboarding and 266 recovery
+focus observations**. The **11 keyboard driver guards** and **16 existing
+seed/runner guards** passed. Required-field rejection preserved saves;
+`MOCK-ONBOARDING-0001` survived refresh with complete expected records. Selective
+restore/cancel/Undo preserved unselected CRM and exact payloads/history, including
+focus return to the original Undo button and the history heading when retention
+removed it. Both owned resources closed; only the expected Firebase warning
+appeared. Independent review had no unresolved findings. Full `ci:all` and
+Hosting preflight passed, including seven smoke and nine keyboard browser
+checks; the keyboard receipt records the suite counts and scope.
+
 ## Current SYSTEMX features
 
 WebAppX 3.4.0 includes the pinned dotSYSTEMX 1.9.0-alpha.6 distribution. Its
@@ -123,9 +159,9 @@ Firebase adoption, design, quality, operations, SYSTEMX and integrations.
 Each has a stable `WX-0001`–`WX-1000` ID, priority, phase, specific acceptance
 check, existing source pointer, acceptance gate and dependencies.
 Verified completions include their evidence in the canonical catalog; unstarted
-items remain proposals. **Five items are completed: WX-0001, WX-0051, WX-0451,
-WX-0651 and WX-0652.** The catalog still contains exactly **1,000 records**;
-**995 remain: 162 P1, 675 P2 and 158 P3**.
+items remain proposals. **Seven items are completed: WX-0001, WX-0051, WX-0451,
+WX-0651, WX-0652, WX-0653 and WX-0654.** The catalog still contains exactly
+**1,000 records**; **993 remain: 160 P1, 675 P2 and 158 P3**.
 
 - [Read the complete list](docs/backlog/WEBAPPX-1000-TODO.md)
 - [Canonical JSON](docs/backlog/webappx-1000-todo.json) · [CSV](docs/backlog/webappx-1000-todo.csv)

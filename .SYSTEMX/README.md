@@ -18,8 +18,9 @@ task, context, plan or memory seeds and does not start agents or providers.
 Verified completions link their evidence. **WX-0051 and WX-0451** complete the
 first P1 follow-up with a shared registry and restore storage-budget preview.
 **WX-0001, WX-0651 and WX-0652** add verified developer readiness, named seeds
-and automated browser smoke. The catalog retains exactly **1,000 records**, with
-**five completed and 995 remaining: 162 P1, 675 P2 and 158 P3**.
+and automated browser smoke. **WX-0653/WX-0654** add accepted keyboard journeys.
+The catalog retains exactly **1,000 records**, with **seven completed and 993
+remaining: 160 P1, 675 P2 and 158 P3**.
 The host pointer links implementation and local browser/QA evidence
 without changing selected upstream defaults.
 
@@ -35,6 +36,19 @@ not mutate immutable defaults or activate reusable task/agent records.
 Local focused verification passed 18 doctor tests, 16 seed/runner tests and all
 seven authored browser gates, with both owned resources cleaned up. Independent
 review had no unresolved findings; final publication gates remain in the receipt.
+
+Keyboard coverage uses `npm run browser:keyboard` for native onboarding and
+selective restore/Undo, with `npm run browser:keyboard:test` for driver guards.
+It reuses the isolated runner and checks real Tab traversal, Enter/Space, keyboard
+typing and visible focus. See the [keyboard guide](../docs/TEMPLATE-PORTALS.md#keyboard-onboarding-and-recovery)
+and [QA receipt](../docs/KEYBOARD-PORTALS-QA-2026-10-15.md) for app-managed focus
+movement/return and current outcomes. File delivery to the keyboard-opened native
+chooser is a harness boundary; whole-site/screen-reader acceptance remains separate.
+Accepted local keyboard results comprise nine browser checks (110 onboarding/
+266 recovery focus observations), 11 keyboard guards and 16 seed/runner guards,
+with exact expected records/history after refresh and both owned cleanup checks
+passed. Independent review had no unresolved findings. The receipt holds final
+publication gates; blank reusable records remain unchanged.
 
 # .SYSTEMX — WebAppX operational system
 

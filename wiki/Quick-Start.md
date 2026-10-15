@@ -76,6 +76,37 @@ the untouched baseline, browser/network error checks passed and owned browser
 and server cleanup both succeeded. The only warning was expected missing
 Firebase configuration. Consult the receipt for final publication gates.
 
+### Keyboard onboarding and recovery
+
+```bash
+npm run browser:keyboard:test
+npm run browser:keyboard
+```
+
+The keyboard journeys reuse the same explicit Chromium setup and isolated
+runner. They traverse controls with Tab, use Enter/Space and keyboard typing,
+and check visible focus through native onboarding and selective restore/Undo.
+The earlier `browser:smoke` remains a separate journey. Initial navigation/reload
+and setting a local file in a keyboard-opened native chooser are explicit harness
+boundaries; its OS key sequence is not automated.
+
+When testing manually, use Tab/Shift+Tab to move through normal page controls.
+Onboarding focus advances to the next required step and finally its receipt
+status. Restore/Undo previews focus their headings and return to the opening
+control after cancellation or success; an unavailable Undo opener falls back to
+the history heading. Read [Template Portals](Template-Portals.md#keyboard-onboarding-and-recovery)
+and the [keyboard QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/KEYBOARD-PORTALS-QA-2026-10-15.md)
+for coverage and current results. These checks are not a screen-reader or
+whole-site WCAG assessment.
+
+**Accepted locally — 2026-10-15:** nine browser checks passed (three onboarding,
+six recovery), recording 110/266 focus observations respectively. Eleven
+keyboard guards and 16 existing seed/runner guards passed. The onboarding
+receipt/state, selective restore/Undo and raw saved/exported payloads survived
+their reload checks; unselected records stayed intact and focus returned to the
+expected opener or retained-history fallback. Both owned resources closed.
+**WX-0653/WX-0654** are complete; final publication gates remain in the receipt.
+
 ## Test HR and selected Gusto workflows
 
 While Vite development is running, use:

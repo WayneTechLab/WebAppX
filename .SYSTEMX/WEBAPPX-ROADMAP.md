@@ -17,6 +17,39 @@ canonical tasks in an adopted app. Provider/operator gates remain separate.
 `WORK/TASKS.json`, context, plan, project memory and agent memory remain blank
 reusable seeds. No active tasks or roles are created by publishing the catalog.
 
+## Keyboard onboarding and selective recovery — 2026-10-15
+
+**WX-0653** and **WX-0654** are completed for native onboarding and selective
+restore/Undo keyboard journeys. Consult their catalog records and the
+[keyboard QA receipt](../docs/KEYBOARD-PORTALS-QA-2026-10-15.md) for accepted
+status and actual evidence; the description here does not create active tasks
+or change the blank reusable ledger.
+
+`npm run browser:keyboard` reuses the owned loopback Vite/cache and fresh Chromium
+runner with request/error guards and temporary artifacts. The driver sends real
+Tab, Enter/Space and typing input, checking active-element visible focus and
+app-managed transitions. `npm run browser:keyboard:test` checks driver guards.
+Native onboarding advances to the next required step and final status; restore
+and Undo previews focus headings and return to openers, with a history-heading
+fallback when unavailable. Initial navigation/reload and setting a file in the
+keyboard-opened native picker are explicit harness boundaries.
+
+The existing `browser:smoke` remains separate. Read the
+[manual keyboard guide](../docs/TEMPLATE-PORTALS.md#keyboard-onboarding-and-recovery).
+These checks do not establish OS-picker keyboard, screen-reader, every-workflow
+or whole-site WCAG acceptance; immutable defaults and blank records stay preserved.
+
+Accepted local results: nine browser checks (three onboarding, six recovery),
+11 keyboard guards and 16 existing seed/runner guards passed. The run recorded
+110 onboarding and 266 recovery focus observations. Exact record/history exports
+survived refresh, cancellation preserved raw bytes, unselected records stayed
+intact and opener/history-heading focus returns passed. Both owned resources
+closed; independent review had no unresolved findings. Final publication gates
+remain in the receipt.
+
+The current catalog retains **1,000 records**: **seven completed, 993 remaining —
+160 P1, 675 P2 and 158 P3**. Earlier checkpoints below preserve their original totals.
+
 ## Developer readiness and automated browser smoke — 2026-10-14
 
 **WX-0001**, **WX-0651** and **WX-0652** are completed for the read-only developer
@@ -24,7 +57,7 @@ version report, deterministic named portal seed baseline and automated HR/CMS/CR
 Chromium smoke. Consult their catalog records and the
 [developer/browser QA receipt](../docs/DEVELOPER-BROWSER-QA-2026-10-14.md) for
 verified status and evidence. Together with completed **WX-0051/WX-0451**, the
-catalog retains exactly **1,000 records**: **five completed, 995 remaining —
+catalog at that checkpoint retains exactly **1,000 records**: **five completed, 995 remaining —
 162 P1, 675 P2 and 158 P3**.
 
 `npm run doctor` checks installed Node.js >=24.0.0, Python >=3.12.0 and parseable

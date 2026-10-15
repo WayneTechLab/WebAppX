@@ -108,10 +108,78 @@ unconfigured-Firebase warning appeared. Independent source review left no
 unresolved findings. These are focused local results; consult the canonical
 receipt for full CI, Hosting preflight and SYSTEMX drift outcomes.
 
-The catalog retains exactly **1,000 records**, now **five completed and 995
-remaining: 162 P1, 675 P2 and 158 P3**. This wave completes **WX-0001** and
+At that developer/browser checkpoint, the catalog retained exactly **1,000
+records**, with **five completed and 995 remaining: 162 P1, 675 P2 and 158 P3**.
+That wave completed **WX-0001** and
 **WX-0652**, including **WX-0651**'s named-seed dependency; earlier **WX-0051**
 and **WX-0451** remain complete. Blank reusable SYSTEMX records stay unchanged.
+
+## Keyboard onboarding and selective recovery
+
+```bash
+npm run browser:keyboard:test
+npm run browser:keyboard
+```
+
+These commands add **WX-0653**'s native onboarding and **WX-0654**'s selective
+restore/Undo coverage alongside the existing `browser:smoke`. The keyboard
+journeys reuse its owned loopback Vite server, isolated optimizer cache, fresh
+Chromium context, request/error guards, explicit browser installation and
+temporary reports/screenshots/trace. Existing user listeners and browser data
+remain separate.
+
+The shared driver reaches controls by sending real **Tab** input and asserts
+the active element's computed focus-visible outline/ring. User actions use
+keyboard press/type input. The app itself advances or returns focus as actions
+disable controls or previews open/close; `assertFocus` verifies those transitions.
+Initial navigation/reload and setting files in a keyboard-opened native chooser
+are explicit harness boundaries. The operating system chooser's key sequence is
+not automated. Previews are page regions, not modal focus traps.
+
+The authored onboarding journey covers required-field rejection without a save,
+fictional profile editing, profile/job/checklist review, summary/confirmation,
+completion focus and a mock receipt. Recovery coverage traverses scope and budget
+controls, explicit Cancel/Confirm and Undo, checking returned focus and domain
+preservation. Read the
+[manual keyboard guide](Template-Portals.md#keyboard-onboarding-and-recovery) and
+[keyboard QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/KEYBOARD-PORTALS-QA-2026-10-15.md)
+for actual checked scope, outcomes and gates. Visible-focus assertions do not
+establish screen-reader, contrast, every-workflow, cross-browser or whole-site
+WCAG acceptance. Earlier results below retain their original wave and revision.
+
+### Accepted keyboard results — 2026-10-15
+
+All **nine authored browser checks** passed: three onboarding and six recovery,
+recording **110 onboarding and 266 selective restore/Undo focus observations**.
+All **11 keyboard driver guards** and **16 existing seed/runner guards** passed.
+
+| Accepted coverage | Observed result |
+| --- | --- |
+| Required profile field | Blank email retained focus and created no domain save; fictional keyboard entry saved |
+| Onboarding stages | Enter/Space completed profile, job, checklist, summary and confirmation; focus reached each next step and the completion status |
+| Onboarding persistence | Exact `MOCK-ONBOARDING-0001` state/save/export survived refresh; CMS/CRM and original accessibility preference stayed intact |
+| Selective cancel | Keyboard-opened chooser, Space and forward/reverse Tab traversed scopes; Cancel returned to Import and preserved raw saves/history/export |
+| Selected restore | HR+CMS matched changed input and captured only selected pre-restore states; unchecked CRM stayed intact |
+| Undo cancel | Preview heading received focus; Cancel returned to the exact opener without changing raw bytes or exports |
+| Confirm Undo | Complete HR+CMS recovery, preserved CRM and reversible selected-only point; focus returned to the exact opener |
+| Removed opener | Retention removed the oldest HR+CMS point; Undo focused the visible history heading |
+| Recovery persistence | Reload preserved exact saved workspace/history bytes, five retained points and the complete expected export |
+
+Both owned browser and server cleanup checks passed. Only expected missing
+Firebase configuration warned; no browser/request/provider/backend errors were
+observed. Independent source review had no unresolved findings. Clear-history
+focus is implemented but was not part of these nine browser checks. Consult the
+keyboard receipt for final CI, Hosting preflight and SYSTEMX drift outcomes.
+
+**WX-0653/WX-0654 are complete.** The catalog retains exactly **1,000 records**:
+**seven completed, 993 remaining — 160 P1, 675 P2 and 158 P3**. Earlier completions
+and their original evidence remain intact; blank reusable SYSTEMX seeds stay blank.
+
+Final local publication gates passed `npm run ci:all` and Hosting preflight,
+including the seven-check smoke and nine-check keyboard journeys. The
+[keyboard receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/KEYBOARD-PORTALS-QA-2026-10-15.md)
+records suite counts, five filesystem-specific skips and the local acceptance
+boundary. Preflight skipped deployment and preserved version 3.4.0/deploy count 0.
 
 ## Adopted-project checks
 

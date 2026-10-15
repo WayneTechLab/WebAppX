@@ -1,3 +1,29 @@
+# 3.4.0 follow-up — Keyboard onboarding and selective recovery — 2026-10-15
+
+- Add WX-0653 native onboarding and WX-0654 selective restore/Undo journeys with
+  `browser:keyboard` and focused `browser:keyboard:test` driver checks.
+- Reuse isolated loopback Vite/cache, fresh Chromium, explicit browser install,
+  request/error guards and temporary reports/screenshots/trace; keep the existing
+  `browser:smoke` journey available.
+- Traverse using real Tab input, activate with Enter/Space, type through the
+  keyboard and verify active-element visible focus. Advance onboarding focus
+  through required steps to completion status; focus recovery-preview headings
+  and return to the opener or available history heading after closure.
+- Document initial navigation/reload and keyboard-opened native chooser file
+  delivery as harness boundaries, without OS-picker/screen-reader/WCAG claims.
+- Complete WX-0653/WX-0654 after nine browser checks, 11 keyboard guards and 16
+  existing seed/runner guards passed. Record 110 onboarding and 266 recovery
+  focus observations, exact persisted/exported records, cancellation isolation,
+  opener/history fallback and successful cleanup of both owned resources.
+  Independent review had no unresolved findings; final publication gates remain
+  recorded separately in the receipt.
+- Keep exactly 1,000 catalog records: seven completed and 993 remaining,
+  comprising 160 P1, 675 P2 and 158 P3. Preserve earlier completion evidence.
+- Update README/wiki and host guidance. See the
+  [keyboard QA receipt](../../docs/KEYBOARD-PORTALS-QA-2026-10-15.md) for actual
+  outcomes and gates. Version 3.4.0/deploy count 0, blank adoption seeds and
+  immutable selected alpha.6 remain preserved.
+
 # 3.4.0 follow-up — Developer prerequisite report and portal browser smoke — 2026-10-14
 
 - Add WX-0001's dependency-free, read-only `doctor` command with JSON reporting:

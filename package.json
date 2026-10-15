@@ -74,7 +74,9 @@
     "doctor": "node scripts/developer-prerequisites.mjs",
     "doctor:test": "node --test tests/setup/developer-prerequisites.test.mjs",
     "browser:smoke": "node scripts/browser-smoke.mjs",
-    "browser:smoke:test": "node --test tests/browser/seed-pack.test.mjs"
+    "browser:smoke:test": "node --test tests/browser/seed-pack.test.mjs",
+    "browser:keyboard": "node scripts/browser-keyboard.mjs",
+    "browser:keyboard:test": "node --test tests/browser/keyboard-driver.test.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

@@ -8092,28 +8092,40 @@
       "area": "quality",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add keyboard-only onboarding browser coverage",
       "acceptance": "The sample employee completes required onboarding fields, review and confirmation using keyboard navigation with visible focus at every step.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
       "dependsOn": [
         "WX-0651"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "cae18da251b0a9c4418a4fbebf2bd514ccd2dcdd",
+        "evidence": "docs/KEYBOARD-PORTALS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0654",
       "area": "quality",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add keyboard-only selective restore coverage",
       "acceptance": "A browser journey selects portals, opens the confirmation, cancels and completes Undo using keyboard controls with a predictable focus return.",
       "source": "src/portals/RestorePointHistory.tsx",
       "gate": "local",
       "dependsOn": [
         "WX-0651"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "cae18da251b0a9c4418a4fbebf2bd514ccd2dcdd",
+        "evidence": "docs/KEYBOARD-PORTALS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0655",

@@ -1,5 +1,41 @@
 # Update Log
 
+## 3.4.0 keyboard onboarding and selective recovery — 2026-10-15
+
+Add **WX-0653** native onboarding and **WX-0654** selective restore/Undo keyboard
+journeys with `npm run browser:keyboard` and focused driver guards via
+`npm run browser:keyboard:test`. Retain the existing portal smoke and reuse its
+owned loopback server/cache, fresh Chromium context, explicit browser install,
+request/error guards and temporary evidence artifacts.
+
+The driver uses real Tab traversal, Enter/Space and keyboard typing with computed
+visible-focus checks. Native onboarding advances focus through required steps
+and onto completion status when completed controls become disabled. Valid import
+and Undo previews focus their headings; cancellation/success returns focus to
+the opening control, with a restore-history heading fallback if the opener is
+unavailable. Previews remain normal page regions with Tab navigation.
+
+Initial navigation/reload and file delivery to a keyboard-opened native chooser
+are explicit harness boundaries. The OS chooser's key sequence is not automated.
+Read [Template Portals](Template-Portals.md#keyboard-onboarding-and-recovery) and
+the [keyboard QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/KEYBOARD-PORTALS-QA-2026-10-15.md)
+for the checked scope and actual outcomes. Earlier receipts remain historical.
+This wave does not establish whole-site WCAG, screen-reader, cross-browser or
+provider acceptance. App 3.4.0, deployment count 0, blank adoption seeds and
+immutable alpha.6 remain preserved.
+
+Accept **WX-0653/WX-0654** after nine browser checks (three onboarding/six
+recovery), 11 keyboard guards and 16 existing seed/runner guards passed. The run
+recorded 110/266 focus observations. Exact onboarding receipt/state and selective
+recovery exports survived refresh, cancel preserved raw bytes, unselected records
+stayed intact and Undo returned to its exact opener or visible history fallback
+after retention. Both owned resources closed; only the expected Firebase warning
+appeared. Independent source review had no unresolved findings. Final publication
+gates are recorded separately in the receipt.
+
+The catalog keeps **1,000 records**: **seven completed, 993 remaining — 160 P1,
+675 P2 and 158 P3**. Existing completion evidence remains preserved.
+
 ## 3.4.0 developer prerequisite report and automated portal smoke — 2026-10-14
 
 Add **WX-0001**'s dependency-free, read-only prerequisite report with
@@ -35,8 +71,8 @@ missing Firebase configuration warned, and independent review had no unresolved
 findings. The receipt records final publication gates separately.
 
 Complete **WX-0001, WX-0651 and WX-0652** with evidence, retaining previous
-**WX-0051/WX-0451** completion. The catalog still contains **1,000 records**:
-**five completed, 995 remaining — 162 P1, 675 P2 and 158 P3**.
+**WX-0051/WX-0451** completion. At that checkpoint, the catalog contains
+**1,000 records**: **five completed, 995 remaining — 162 P1, 675 P2 and 158 P3**.
 
 ## 3.4.0 P1 portal registry and restore storage-budget preview — 2026-10-14
 

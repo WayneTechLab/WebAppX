@@ -77,7 +77,7 @@ function observePage(page, problems, warnings) {
   page.on('requestfailed', request => problems.push(`Failed request: ${request.url()} (${request.failure()?.errorText})`))
 }
 
-async function newIsolatedContext(browser, origin, problems, warnings) {
+export async function newIsolatedContext(browser, origin, problems, warnings) {
   const context = await browser.newContext({ acceptDownloads: true, serviceWorkers: 'block', locale: 'en-US', timezoneId: 'UTC', viewport: { width: 1440, height: 1080 }, reducedMotion: 'reduce' })
   await context.route('**/*', async route => {
     if (isAllowedSmokeRequest(route.request().url(), origin)) await route.continue()

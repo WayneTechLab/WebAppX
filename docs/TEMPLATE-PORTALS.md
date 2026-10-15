@@ -20,6 +20,77 @@ and restore storage-budget preview have their own
 [P1 QA receipt](PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md). No live
 business portal is activated by the HR preview or an administrator signing in.
 
+## Keyboard onboarding and recovery
+
+Use **Tab** and **Shift+Tab** to move through normal page controls, **Enter** to
+follow links or activate actions, and **Space** to activate buttons or toggle
+checkboxes. Keyboard focus has a visible outline/ring on the journey's controls.
+The restore and Undo previews are page regions; Tab continues through the page.
+
+### Native onboarding
+
+1. Open the native employee preview and **My profile**. A blank required
+   **Synthetic work email** is rejected by native form validation, with focus
+   remaining on that field. Save a fictional `.invalid` email when testing.
+2. Open **My onboarding** and activate **Review sample profile**. Focus advances
+   to **Review sample job** after the completed profile action disables itself.
+3. Complete job review, then each required checklist action. Focus moves to
+   the next required task; completed task buttons expose their pressed state.
+4. When the checklist is ready, focus moves to **Review onboarding summary**,
+   then **Confirm simulated onboarding** after review. Confirmation focuses the
+   completion status and its mock receipt. Saved onboarding still follows the
+   existing browser-local persistence rules.
+
+### Selective restore, Undo and history
+
+1. On `/portals`, activate **Import combined backup** with Enter. Choose a local
+   compatible backup in the native file picker. Once validation succeeds, focus
+   moves to **Choose workspaces to restore**. A rejected import returns focus to
+   **Import combined backup** with its visible error.
+2. Tab to each **Restore HR/CMS/CRM** checkbox and use Space to select a scope.
+   None is chosen automatically. The budget preview and explicit confirmation
+   rules still apply; a disabled Restore button cannot be activated.
+3. Tab to **Restore selected workspaces** or **Cancel combined restore**. Success
+   or cancellation returns focus to **Import combined backup**. Workspace/history
+   semantics are the same as the pointer-operated flow.
+4. Activate a point's **Undo…** button. Focus moves to its Undo heading. Inspect
+   captured scope, record summaries and budget, then Tab to **Confirm undo** or
+   **Cancel undo**. Closing the preview returns focus to the opening Undo button
+   when it remains available. If retention removed it, focus lands on
+   **Restore points & Undo** instead.
+5. **Clear restore points** similarly focuses its confirmation heading.
+   Cancelling returns to its opener; successful clearing uses the history heading
+   when the now-disabled Clear button cannot receive focus.
+
+### Automated scope
+
+`npm run browser:keyboard` exercises the two authored keyboard journeys;
+`npm run browser:keyboard:test` checks driver guards. The driver uses real Tab
+traversal and keyboard press/type input, with read-only observations to verify
+the active element, visible focus, states, history and exported payloads.
+Initial navigation/reload and setting a file in a keyboard-opened native chooser
+are explicit harness boundaries. These tests do not automate the operating
+system file-picker key sequence or establish screen-reader, every-workflow or
+whole-site WCAG acceptance. Read the
+[keyboard QA receipt](KEYBOARD-PORTALS-QA-2026-10-15.md) for exact results and gates.
+
+**Accepted local keyboard results — 2026-10-15:** **WX-0653/WX-0654** passed
+nine browser checks (three onboarding and six recovery), with 110 onboarding
+and 266 restore/Undo focus observations. Eleven keyboard driver guard tests and
+16 existing seed/runner guards passed. Empty required email created no save;
+the keyboard-completed onboarding receipt was exactly `MOCK-ONBOARDING-0001`,
+and reload/full export matched independent expected records with CMS/CRM intact.
+
+Keyboard cancellation preserved complete raw workspace/history bytes and export.
+HR+CMS restore left CRM unchanged; Undo cancellation and confirmation returned
+focus to the exact opening Undo button. Undo of the oldest point after five-point
+retention removed its opener and focused **Restore points & Undo**. Reload
+preserved the exact recovered states/history and five retained points. Both
+owned resources closed; only the expected missing Firebase warning appeared.
+Independent review had no unresolved findings. Clear-history focus handling is
+implemented but is outside these nine accepted browser checks. Read the receipt
+for final CI, preflight and drift results.
+
 ## What exists today
 
 | Surface | Implemented source | Current boundary |

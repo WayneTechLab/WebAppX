@@ -26,11 +26,11 @@ Read the [roadmap](../WEBAPPX-ROADMAP.md) for sequencing and bounded activation.
 
 ## Counts
 
-**1000 catalog items · 995 TODO · 5 done · 20 areas · 50 items per area.**
+**1000 catalog items · 993 TODO · 7 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 162 · P2: 675 · P3: 158.
+Remaining TODO priorities: P1: 160 · P2: 675 · P3: 158.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -2739,14 +2739,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: A browser run loads all three portals, changes one record per portal and verifies refresh persistence in an isolated origin context.
   - Source: [docs/PORTAL-PERSISTENCE-QA-2026-10-14.md](../../docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
   - Verified: 2026-10-14 · Source base: `4731702ec7bfdcaec60ac4d42e23b03f330f5d74` · Reviewed by: `agent.0` · Evidence: [docs/DEVELOPER-BROWSER-QA-2026-10-14.md](../../docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
-- [ ] **WX-0653 — Add keyboard-only onboarding browser coverage**
+- [x] **WX-0653 — Add keyboard-only onboarding browser coverage**
   - P1 · portal-maturity · local · Depends on: WX-0651
   - Acceptance: The sample employee completes required onboarding fields, review and confirmation using keyboard navigation with visible focus at every step.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0654 — Add keyboard-only selective restore coverage**
+  - Verified: 2026-10-15 · Source base: `cae18da251b0a9c4418a4fbebf2bd514ccd2dcdd` · Reviewed by: `agent.0` · Evidence: [docs/KEYBOARD-PORTALS-QA-2026-10-15.md](../../docs/KEYBOARD-PORTALS-QA-2026-10-15.md)
+- [x] **WX-0654 — Add keyboard-only selective restore coverage**
   - P1 · portal-maturity · local · Depends on: WX-0651
   - Acceptance: A browser journey selects portals, opens the confirmation, cancels and completes Undo using keyboard controls with a predictable focus return.
   - Source: [src/portals/RestorePointHistory.tsx](../../src/portals/RestorePointHistory.tsx)
+  - Verified: 2026-10-15 · Source base: `cae18da251b0a9c4418a4fbebf2bd514ccd2dcdd` · Reviewed by: `agent.0` · Evidence: [docs/KEYBOARD-PORTALS-QA-2026-10-15.md](../../docs/KEYBOARD-PORTALS-QA-2026-10-15.md)
 - [ ] **WX-0655 — Measure accessible names in repeated portal controls**
   - P1 · portal-maturity · local
   - Acceptance: A browser audit detects ambiguous role selectors, import buttons and record actions when hidden portal modules remain mounted.

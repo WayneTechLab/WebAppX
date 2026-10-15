@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { CheckCircle2, ChevronRight, Circle, FileText, RefreshCcw, Users } from 'lucide-react'
 import { AppLink } from '@/components/navigation/AppLink'
 import { hrFixture, hrRoutes } from '../catalog'
@@ -97,12 +97,38 @@ function Onboarding({ employee, completed, onToggle }: { employee: Pick<HrEmploy
   </Panel>
 }
 
-function OnboardingJourney({ employee, state, onAction }: { employee: HrEmployee; state: MockOnboarding; onAction: (event: MockHrEvent) => void }) {
+function OnboardingJourney({ employee, state, onAction }: { employee: HrEmployee; state: MockOnboarding; onAction: (event: MockHrEvent) => boolean }) {
+  const profileReview = useRef<HTMLButtonElement>(null)
+  const jobReview = useRef<HTMLButtonElement>(null)
+  const taskButtons = useRef(new Map<string, HTMLButtonElement>())
+  const summaryReview = useRef<HTMLButtonElement>(null)
+  const confirmation = useRef<HTMLButtonElement>(null)
+  const completionStatus = useRef<HTMLParagraphElement>(null)
+  const advanceFocus = useRef(false)
+  const focusClass = 'focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-700'
+  const actionClass = `${buttonClass} ${focusClass}`
   const ready = state.profileReviewed && state.jobReviewed && Object.values(state.tasks).every(Boolean)
+  function act(event: MockHrEvent) {
+    advanceFocus.current = true
+    if (!onAction(event)) advanceFocus.current = false
+  }
+  useLayoutEffect(() => {
+    if (!advanceFocus.current) return
+    advanceFocus.current = false
+    // Completed actions disable their controls. Continue from the next required
+    // step so keyboard users keep a visible, useful focus target after render.
+    const pendingTask = employee.onboarding.find(task => !state.tasks[task.id])
+    const next = state.stage === 'complete' ? completionStatus.current
+      : !state.profileReviewed ? profileReview.current
+        : !state.jobReviewed ? jobReview.current
+          : pendingTask ? taskButtons.current.get(pendingTask.id)
+            : state.stage === 'reviewed' ? confirmation.current : summaryReview.current
+    next?.focus()
+  }, [employee.onboarding, state])
   return <Panel title={`Complete sample onboarding · ${employee.firstName}`} note="A complete app-owned simulation. Review fictional profile/job details, finish the checklist, review the summary and confirm. No tax, bank, legal signature or Gusto acceptance is established.">
-    <div className="grid gap-4 sm:grid-cols-2"><article className="rounded-lg bg-neutral-50 p-4"><h3 className="text-sm font-semibold">1 · Profile review</h3><p className="mt-2 text-sm text-neutral-600">{employee.firstName} {employee.lastName}<br />{employee.workEmail}</p><button type="button" className={buttonClass + ' mt-4'} disabled={state.profileReviewed || state.stage === 'complete'} onClick={() => onAction({ type: 'review-profile', employeeId: employee.id })}>{state.profileReviewed ? 'Profile reviewed' : 'Review sample profile'}</button></article><article className="rounded-lg bg-neutral-50 p-4"><h3 className="text-sm font-semibold">2 · Job review</h3><p className="mt-2 text-sm text-neutral-600">{employee.jobTitle}<br />{employee.department}</p><button type="button" className={buttonClass + ' mt-4'} disabled={state.jobReviewed || state.stage === 'complete'} onClick={() => onAction({ type: 'review-job', employeeId: employee.id })}>{state.jobReviewed ? 'Job reviewed' : 'Review sample job'}</button></article></div>
-    <h3 className="mt-6 text-sm font-semibold">3 · App-owned checklist</h3><div className="mt-3 grid gap-3">{employee.onboarding.map(task => <button type="button" key={task.id} aria-pressed={Boolean(state.tasks[task.id])} disabled={state.stage === 'complete'} onClick={() => onAction({ type: 'check-task', employeeId: employee.id, taskId: task.id, complete: !state.tasks[task.id] })} className="flex min-h-14 items-center gap-3 rounded-lg border border-neutral-200 p-4 text-left text-sm disabled:cursor-default">{state.tasks[task.id] ? <CheckCircle2 className="h-5 w-5 text-emerald-700" aria-hidden="true" /> : <Circle className="h-5 w-5 text-neutral-400" aria-hidden="true" />}<span className="flex-1 font-medium">{task.title}</span><span className="text-xs text-neutral-500">{state.tasks[task.id] ? 'Complete' : 'Mark complete'}</span></button>)}</div>
-    <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4"><h3 className="text-sm font-semibold">4 · Review and confirm</h3><p className="mt-2 text-sm text-neutral-600">Profile: {state.profileReviewed ? 'reviewed' : 'pending'} · Job: {state.jobReviewed ? 'reviewed' : 'pending'} · Checklist: {Object.values(state.tasks).filter(Boolean).length}/{Object.keys(state.tasks).length}</p><div className="mt-4 flex flex-wrap gap-3"><button type="button" className={buttonClass} disabled={!ready || state.stage !== 'draft'} onClick={() => onAction({ type: 'review-onboarding', employeeId: employee.id })}>Review onboarding summary</button><button type="button" className={buttonClass} disabled={state.stage !== 'reviewed'} onClick={() => onAction({ type: 'complete-onboarding', employeeId: employee.id })}>Confirm simulated onboarding</button></div><p role="status" className="mt-4 text-sm font-semibold text-emerald-800">{state.stage === 'complete' ? `Simulated onboarding completed · ${state.receipt}. Demo directory status is now active.` : `Sample status: ${state.stage}`}</p></div>
+    <div className="grid gap-4 sm:grid-cols-2"><article className="rounded-lg bg-neutral-50 p-4"><h3 className="text-sm font-semibold">1 · Profile review</h3><p className="mt-2 text-sm text-neutral-600">{employee.firstName} {employee.lastName}<br />{employee.workEmail}</p><button ref={profileReview} type="button" className={actionClass + ' mt-4'} disabled={state.profileReviewed || state.stage === 'complete'} onClick={() => act({ type: 'review-profile', employeeId: employee.id })}>{state.profileReviewed ? 'Profile reviewed' : 'Review sample profile'}</button></article><article className="rounded-lg bg-neutral-50 p-4"><h3 className="text-sm font-semibold">2 · Job review</h3><p className="mt-2 text-sm text-neutral-600">{employee.jobTitle}<br />{employee.department}</p><button ref={jobReview} type="button" className={actionClass + ' mt-4'} disabled={state.jobReviewed || state.stage === 'complete'} onClick={() => act({ type: 'review-job', employeeId: employee.id })}>{state.jobReviewed ? 'Job reviewed' : 'Review sample job'}</button></article></div>
+    <h3 className="mt-6 text-sm font-semibold">3 · App-owned checklist</h3><div className="mt-3 grid gap-3">{employee.onboarding.map(task => <button ref={element => { if (element) taskButtons.current.set(task.id, element); else taskButtons.current.delete(task.id) }} type="button" key={task.id} aria-pressed={Boolean(state.tasks[task.id])} disabled={state.stage === 'complete'} onClick={() => act({ type: 'check-task', employeeId: employee.id, taskId: task.id, complete: !state.tasks[task.id] })} className={`flex min-h-14 items-center gap-3 rounded-lg border border-neutral-200 p-4 text-left text-sm disabled:cursor-default ${focusClass}`}>{state.tasks[task.id] ? <CheckCircle2 className="h-5 w-5 text-emerald-700" aria-hidden="true" /> : <Circle className="h-5 w-5 text-neutral-400" aria-hidden="true" />}<span className="flex-1 font-medium">{task.title}</span><span className="text-xs text-neutral-500">{state.tasks[task.id] ? 'Complete' : 'Mark complete'}</span></button>)}</div>
+    <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4"><h3 className="text-sm font-semibold">4 · Review and confirm</h3><p className="mt-2 text-sm text-neutral-600">Profile: {state.profileReviewed ? 'reviewed' : 'pending'} · Job: {state.jobReviewed ? 'reviewed' : 'pending'} · Checklist: {Object.values(state.tasks).filter(Boolean).length}/{Object.keys(state.tasks).length}</p><div className="mt-4 flex flex-wrap gap-3"><button ref={summaryReview} type="button" className={actionClass} disabled={!ready || state.stage !== 'draft'} onClick={() => act({ type: 'review-onboarding', employeeId: employee.id })}>Review onboarding summary</button><button ref={confirmation} type="button" className={actionClass} disabled={state.stage !== 'reviewed'} onClick={() => act({ type: 'complete-onboarding', employeeId: employee.id })}>Confirm simulated onboarding</button></div><p ref={completionStatus} role="status" aria-label="Onboarding completion status" tabIndex={-1} className={`mt-4 text-sm font-semibold text-emerald-800 ${focusClass}`}>{state.stage === 'complete' ? `Simulated onboarding completed · ${state.receipt}. Demo directory status is now active.` : `Sample status: ${state.stage}`}</p></div>
   </Panel>
 }
 

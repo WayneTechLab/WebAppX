@@ -16,6 +16,22 @@ server. No provider account is needed. See [Quick Start](Quick-Start.md#check-to
 the [developer/browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
 for the checked scope and results.
 
+Use **`npm run browser:keyboard`** for native onboarding and selective
+restore/Undo journeys with real Tab traversal, Enter/Space, keyboard typing and
+visible-focus checks. **`npm run browser:keyboard:test`** exercises the driver
+guards. The new [keyboard guide](Template-Portals.md#keyboard-onboarding-and-recovery)
+explains focus movement and return behavior; the
+[keyboard QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/KEYBOARD-PORTALS-QA-2026-10-15.md)
+records the checked scope. Native file-picker operation, screen-reader behavior
+and whole-site accessibility remain outside these authored journeys.
+
+The keyboard wave passed **nine browser checks**, **11 keyboard guards** and
+**16 existing seed/runner guards**, with 110 onboarding and 266 recovery focus
+observations. Exact records/history survived reload, cancellation and selected
+recovery; focus returned to the original Undo button or the history heading when
+retention removed it. Cleanup closed both owned resources. See the receipt for
+final publication gates.
+
 Local verification passed 18 doctor cases, 16 seed/runner cases and all seven
 authored browser checks, including a second clean context and successful owned
 browser/server cleanup. Only the expected unconfigured-Firebase warning appeared;
@@ -29,9 +45,10 @@ query/validation commands. The catalog tracks delivered items with completion
 evidence while leaving reusable SYSTEMX seeds blank; it does not activate 1,000
 tasks or provider operations. The reviewed
 SYSTEMX refresh retains alpha.6 because upstream changed only external docs.
-**Five items are completed: WX-0001, WX-0051, WX-0451, WX-0651 and WX-0652.**
+**Seven items are completed: WX-0001, WX-0051, WX-0451, WX-0651, WX-0652,
+WX-0653 and WX-0654.**
 The catalog retains exactly **1,000 records** with completion evidence;
-**995 remain: 162 P1, 675 P2 and 158 P3**.
+**993 remain: 160 P1, 675 P2 and 158 P3**.
 
 The first P1 portal follow-up adds a shared typed HR/CMS/CRM registry and a
 **Storage budget preview** before combined selective restore and Undo. Review

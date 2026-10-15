@@ -62,12 +62,22 @@ explicitly install Chromium with `npm run browser:install`, then run
 `npm run browser:smoke`. The runner uses an owned loopback server and clean
 contexts; it preserves existing previews and saved workspaces.
 
-Exactly **1,000 records** remain in the catalog: **5 done and 995 TODOs,
-including 162 P1, 675 P2 and 158 P3 TODOs**. Completion applies
+Exactly **1,000 records** remain in the catalog: **7 done and 993 TODOs,
+including 160 P1, 675 P2 and 158 P3 TODOs**. Completion applies
 only to the evidence's scope; it supplies no provider credentials, deployment
 acceptance or permission to activate optional services. The remaining proposals
 keep their individual status, and all reusable SYSTEMX task/context/plan/memory
 seeds stay blank.
+
+## Keyboard P1 completion — 2026-10-15
+
+**WX-0653** and **WX-0654** are complete for keyboard-only onboarding and
+selective restore/Undo. `npm run browser:keyboard` passed nine browser checks;
+`npm run browser:keyboard:test` passed 11 focused guard tests. The journeys
+check visible focus, required fields, cancellation, exact Undo opener return,
+retention fallback, complete saved/exported records and refresh persistence.
+See the [keyboard QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/KEYBOARD-PORTALS-QA-2026-10-15.md) for the accepted scope
+and harness boundaries. Both commands are included in `ci:all`; the existing HR/CMS/CRM smoke remains a separate gate.
 
 ## Scope and activation
 

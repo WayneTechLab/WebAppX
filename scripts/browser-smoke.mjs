@@ -93,11 +93,11 @@ export async function withOwnedSmokeResources({ startServer, launchBrowser, runC
   }
 }
 
-export async function main(args = process.argv.slice(2)) {
+export async function runBrowserSuite({ args = process.argv.slice(2), runChecks = runPortalSmoke, suite = 'smoke' } = {}) {
   const options = parseSmokeArguments(args)
   const parent = options.output ?? tmpdir()
   await mkdir(parent, { recursive: true })
-  const artifactDir = await mkdtemp(join(parent, 'webappx-browser-smoke-'))
+  const artifactDir = await mkdtemp(join(parent, `webappx-browser-${suite}-`))
   const startedAt = new Date().toISOString()
   let report
   let timeout
@@ -109,14 +109,14 @@ export async function main(args = process.argv.slice(2)) {
   abort.catch(() => {})
   const onInterrupt = signal => {
     interrupted = signal
-    controller.abort(new Error(`Browser smoke interrupted by ${signal}`))
+    controller.abort(new Error(`Browser ${suite} interrupted by ${signal}`))
   }
   const onSigint = () => onInterrupt('SIGINT')
   const onSigterm = () => onInterrupt('SIGTERM')
   process.once('SIGINT', onSigint)
   process.once('SIGTERM', onSigterm)
-  console.log(`Browser smoke artifacts: ${artifactDir}`)
-  timeout = setTimeout(() => controller.abort(new Error('Browser smoke exceeded its 180-second limit')), 180_000)
+  console.log(`Browser ${suite} artifacts: ${artifactDir}`)
+  timeout = setTimeout(() => controller.abort(new Error(`Browser ${suite} exceeded its 180-second limit`)), 180_000)
   try {
     const seed = await loadValidatedSeed() // Reject fixture drift before opening a listener/browser.
     controller.signal.throwIfAborted()
@@ -130,17 +130,17 @@ export async function main(args = process.argv.slice(2)) {
       launchBrowser: async () => {
         try { return await chromium.launch({ headless: !options.headed, timeout: 30_000 }) }
         catch (error) {
-          if (/Executable doesn't exist|playwright install/i.test(error.message)) throw new Error('Chromium is unavailable. Run npm run browser:install, then retry npm run browser:smoke. The smoke runner does not download browsers automatically.', { cause: error })
+          if (/Executable doesn't exist|playwright install/i.test(error.message)) throw new Error(`Chromium is unavailable. Run npm run browser:install, then retry npm run browser:${suite}. The runner does not download browsers automatically.`, { cause: error })
           throw error
         }
       },
       runChecks: async resources => {
-        return Promise.race([runPortalSmoke({ ...resources, artifactDir, seed }), abort])
+        return Promise.race([runChecks({ ...resources, artifactDir, seed }), abort])
       },
       signal: controller.signal,
     })
     report = { schemaVersion: 1, status: 'passed', seedName: seed.name, startedAt, completedAt: new Date().toISOString(), ...result }
-    console.log(`PASS: ${result.checks.length} browser smoke checks; own browser and Vite server closed.`)
+    console.log(`PASS: ${result.checks.length} browser ${suite} checks; own browser and Vite server closed.`)
   } catch (error) {
     report = { schemaVersion: 1, status: 'failed', startedAt, completedAt: new Date().toISOString(), error: error.message, origin: error.smokeOrigin, evidence: error.smokeEvidence, cleanup: error.smokeCleanup, cleanupErrors: error.smokeCleanupErrors, ...(interrupted ? { interrupted } : {}) }
     console.error(`FAIL: ${error.message}`)
@@ -150,10 +150,12 @@ export async function main(args = process.argv.slice(2)) {
     process.removeListener('SIGINT', onSigint)
     process.removeListener('SIGTERM', onSigterm)
     await writeFile(join(artifactDir, 'report.json'), JSON.stringify(report, null, 2) + '\n')
-    console.log(`Browser smoke report: ${join(artifactDir, 'report.json')}`)
+    console.log(`Browser ${suite} report: ${join(artifactDir, 'report.json')}`)
   }
   return report
 }
+
+export async function main(args = process.argv.slice(2)) { return runBrowserSuite({ args }) }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try { await main() } catch (error) { console.error(error.message); process.exitCode = 1 }

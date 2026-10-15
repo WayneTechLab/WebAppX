@@ -74,6 +74,36 @@ started from the clean seed, request/error guards passed and both owned resource
 closed. Only the expected missing Firebase configuration warning appeared.
 The receipt holds final release-gate results; earlier receipts remain historical.
 
+### Try the keyboard journeys
+
+```bash
+npm run browser:keyboard:test
+npm run browser:keyboard
+```
+
+These use the same explicit Chromium installation and isolated runner as the
+portal smoke. They cover native onboarding and selective restore/Undo with
+Tab navigation, Enter/Space activation, keyboard typing and visible-focus
+assertions. Initial navigation/reload and file delivery to a keyboard-opened
+native chooser are test-harness boundaries; the OS chooser's key sequence is
+not automated. `browser:smoke` remains a separate regression journey.
+
+To try the app manually, use **Tab/Shift+Tab** to reach controls. Onboarding
+advances focus to its next required step when an action disables the completed
+control, then to its completion status. Restore/Undo previews focus their
+headings; cancel or success returns focus to the opening control, or the restore
+history heading if that control is unavailable. These are page regions with
+normal Tab navigation. Read the [keyboard guide](TEMPLATE-PORTALS.md#keyboard-onboarding-and-recovery)
+and [QA receipt](KEYBOARD-PORTALS-QA-2026-10-15.md) for scope and outcomes.
+
+**Local keyboard verification — 2026-10-15:** all nine browser checks passed,
+with 110 onboarding and 266 recovery focus observations. Eleven keyboard guards
+and 16 existing seed/runner guards passed. Onboarding's exact receipt/state
+survived reload; selective restore and Undo preserved unselected records, exact
+saved/exported payloads and the expected focus return/fallback. Cleanup closed
+both owned resources. These checks complete **WX-0653/WX-0654**; consult the
+receipt for final publication gates.
+
 ## Create your app
 
 ```bash

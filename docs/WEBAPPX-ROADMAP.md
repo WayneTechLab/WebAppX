@@ -70,8 +70,8 @@ scope. The next wave completes **WX-0001**, the developer prerequisite report,
 **WX-0652**, the automated HR/CMS/CRM browser smoke, and its named seed-pack
 dependency **WX-0651**. See the
 [developer/browser receipt](DEVELOPER-BROWSER-QA-2026-10-14.md) for exact local
-coverage. The catalog still has **1,000 records: 5 done and 995 TODOs**, including
-**162 P1, 675 P2 and 158 P3 TODOs**. Use `--status done` to inspect accepted
+coverage. The catalog still has **1,000 records: 7 done and 993 TODOs**, including
+**160 P1, 675 P2 and 158 P3 TODOs**. Use `--status done` to inspect accepted
 results and `--status todo` to choose the next bounded batch.
 
 ```bash
@@ -87,6 +87,16 @@ Chromium contexts, then changes one domain record per portal through the UI and
 verifies complete payloads after refresh. It saves local evidence in a temporary
 directory and closes owned resources. `ci:all` includes both focused guard suites
 and the browser journey; install the pinned Chromium binary explicitly first.
+
+## Keyboard P1 completion — 2026-10-15
+
+**WX-0653** and **WX-0654** are complete for keyboard-only onboarding and
+selective restore/Undo. `npm run browser:keyboard` passed nine browser checks;
+`npm run browser:keyboard:test` passed 11 focused guard tests. The journeys
+check visible focus, required fields, cancellation, exact Undo opener return,
+retention fallback, complete saved/exported records and refresh persistence.
+See the [keyboard QA receipt](KEYBOARD-PORTALS-QA-2026-10-15.md) for the accepted scope
+and harness boundaries. Both commands are included in `ci:all`; the existing HR/CMS/CRM smoke remains a separate gate.
 
 ## Planning phases
 
