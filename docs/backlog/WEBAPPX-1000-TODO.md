@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 909 TODO · 91 done · 20 areas · 50 items per area.**
+**1000 catalog items · 891 TODO · 109 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 82 · P2: 670 · P3: 157.
+Remaining TODO priorities: P1: 70 · P2: 665 · P3: 156.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -494,46 +494,56 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## HR onboarding and directory
 
-- [ ] **WX-0101 — Add effective-dated employment instances**
+- [x] **WX-0101 — Add effective-dated employment instances**
   - P1 · portal-maturity · local
   - Acceptance: A fictional rehire creates a new employment instance while prior onboarding receipts remain attached to the original instance.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0102 — Add a fictional employee transfer workflow**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0102 — Add a fictional employee transfer workflow**
   - P1 · portal-maturity · local
   - Acceptance: A transfer preview shows previous and proposed department, manager and effective date before confirmation.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0103 — Add employment lifecycle transition reasons**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0103 — Add employment lifecycle transition reasons**
   - P1 · portal-maturity · local
   - Acceptance: Each proposed leave, return or termination transition requires a sample reason and records the prior state.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0104 — Add a simulated offboarding checklist**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0104 — Add a simulated offboarding checklist**
   - P1 · portal-maturity · local
   - Acceptance: Confirming fictional termination creates asset, access and handover assignments without calling external systems.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0105 — Add a rehire comparison screen**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0105 — Add a rehire comparison screen**
   - P1 · portal-maturity · local
   - Acceptance: The screen distinguishes retained directory identity from new employment and onboarding requirements.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0106 — Add a manager reassignment preview**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0106 — Add a manager reassignment preview**
   - P1 · portal-maturity · local
   - Acceptance: The preview lists affected direct-report scopes and prevents assigning an employee as their own manager.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0107 — Add organization chart cycle validation**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0107 — Add organization chart cycle validation**
   - P1 · portal-maturity · local
   - Acceptance: Creating a fictional reporting cycle is refused with the affected employee IDs shown.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0108 — Add directory field change history**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0108 — Add directory field change history**
   - P1 · portal-maturity · local
   - Acceptance: A saved directory edit displays old value, new value, actor preview and change sequence.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0109 — Add a profile correction request flow**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0109 — Add a profile correction request flow**
   - P1 · portal-maturity · local
   - Acceptance: An employee can propose a directory correction and HR can accept or reject it with a recorded outcome.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
-- [ ] **WX-0110 — Add onboarding template versions**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0110 — Add onboarding template versions**
   - P1 · portal-maturity · local
   - Acceptance: New hires receive the selected checklist version while existing completed onboarding retains its original version.
   - Source: [src/hr/components/HrWorkspace.tsx](../../src/hr/components/HrWorkspace.tsx)
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
 - [ ] **WX-0111 — Add reusable department records**
   - P2 · portal-maturity · local
   - Acceptance: Directory editing selects an active department record rather than relying only on free-text department names.
@@ -1377,18 +1387,21 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A simulated start and end time determines an in-app public projection using an injected clock.
   - Source: [src/cms/model.ts](../../src/cms/model.ts)
-- [ ] **WX-0314 — Add a release bundle draft**
+- [x] **WX-0314 — Add a release bundle draft**
   - P2 · portal-maturity · local
   - Acceptance: A publisher can collect several approved entries into a named local release without publishing them immediately.
   - Source: [src/cms/model.ts](../../src/cms/model.ts)
-- [ ] **WX-0315 — Validate release bundles before activation**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0315 — Validate release bundles before activation**
   - P2 · portal-maturity · local · Depends on: WX-0314
   - Acceptance: A release preview identifies stale approvals and duplicate routes and applies no entries if validation fails.
   - Source: [src/cms/model.ts](../../src/cms/model.ts)
-- [ ] **WX-0316 — Apply a local release bundle atomically**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0316 — Apply a local release bundle atomically**
   - P1 · portal-maturity · local · Depends on: WX-0315
   - Acceptance: Activating a valid sample release updates all included frozen publications or leaves the entire CMS state unchanged.
   - Source: [src/cms/model.ts](../../src/cms/model.ts)
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
 - [ ] **WX-0317 — Add a release rollback proposal**
   - P2 · portal-maturity · local · Depends on: WX-0316
   - Acceptance: A previous release can be previewed as replacement draft content requiring a new approval cycle before publication.
@@ -1642,18 +1655,21 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A lead can hold a local due date that appears in an owner-scoped follow-up queue using an injected clock.
   - Source: [src/crm/model.ts](../../src/crm/model.ts)
-- [ ] **WX-0379 — Add lead assignment simulation**
+- [x] **WX-0379 — Add lead assignment simulation**
   - P2 · portal-maturity · local
   - Acceptance: An owner or manager preview can reassign an unconverted lead and records both fictional assignees.
   - Source: [src/crm/model.ts](../../src/crm/model.ts)
-- [ ] **WX-0380 — Preview account ownership transfers**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0380 — Preview account ownership transfers**
   - P2 · portal-maturity · local · Depends on: WX-0379
   - Acceptance: The transfer preview lists linked contacts, opportunities and tasks and identifies every affected record before confirmation.
   - Source: [src/crm/CrmDemo.tsx](../../src/crm/CrmDemo.tsx)
-- [ ] **WX-0381 — Apply account ownership transfers atomically**
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0381 — Apply account ownership transfers atomically**
   - P1 · portal-maturity · local · Depends on: WX-0380
   - Acceptance: A confirmed transfer updates all supported graph owners consistently or rejects the entire operation.
   - Source: [src/crm/model.ts](../../src/crm/model.ts)
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
 - [ ] **WX-0382 — Add CRM profile archive previews**
   - P2 · portal-maturity · local
   - Acceptance: Archiving a company identifies open deals and tasks and blocks changes that would orphan active work.
@@ -2015,10 +2031,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Concurrent tabs attempting a selective restore receive a bounded lock or conflict result, and abandoned operations do not block recovery indefinitely.
   - Source: [src/portals/restore-workspaces.ts](../../src/portals/restore-workspaces.ts)
-- [ ] **WX-0467 — Record the reason for each recovery point**
+- [x] **WX-0467 — Record the reason for each recovery point**
   - P2 · portal-maturity · local
   - Acceptance: History distinguishes combined import, Undo, optional individual import, optional Reset and manual capture without inferring provider events.
   - Source: [src/portals/restore-points.ts](../../src/portals/restore-points.ts)
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
 - [ ] **WX-0468 — Export one restore point as a compatible backup**
   - P2 · portal-maturity · local
   - Acceptance: A user can download the selected point through a defined portable format while preserving its module scope and validating all included data.
@@ -2095,10 +2112,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · production-readiness · local
   - Acceptance: Seeded generated malformed envelopes exercise parsing and prove no writes occur for rejected individual, combined and history inputs.
   - Source: [tests/portals](../../tests/portals)
-- [ ] **WX-0487 — Add storage-failure browser automation**
+- [x] **WX-0487 — Add storage-failure browser automation**
   - P3 · production-readiness · local
   - Acceptance: A controlled browser harness simulates unavailable storage and verifies visible refusal of destructive restore without changing the active workspace.
   - Source: [tests/portals](../../tests/portals)
+  - Verified: 2026-10-15 · Source base: `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-LIFECYCLE-QA-2026-10-15.md](../../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
 - [ ] **WX-0488 — Add a browser crash recovery rehearsal**
   - P3 · production-readiness · local
   - Acceptance: A repeatable test interrupts navigation after persisted point capture and verifies that refresh exposes valid recovery data and accurate operation status.

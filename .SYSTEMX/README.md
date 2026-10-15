@@ -11,19 +11,51 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+## Current host lifecycle extension — locally accepted
+
+Read the [lifecycle source guide](../docs/PORTAL-LIFECYCLE.md),
+[wiki walkthrough](../wiki/Portal-Lifecycle.md) and
+[current lifecycle QA receipt](../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md) for HR
+employment instances, transfers/offboarding/rehire/corrections/templates, CMS
+release bundles, CRM ownership updates and complete recovery inspection. Run
+`npm run browser:portal-lifecycle` after normal dependency/Chromium setup;
+`hr:test` and `portals:test` include the focused model contracts.
+
+The standalone native result is **20/20 checks/check groups** on the final
+100-file runtime freeze, with **46 new status meanings, 22 accessible-name
+audits, 129 control boxes, 20 literal value probes and 22 Tab probes**.
+Targeted keyboard **9/9** and quality **6/6** runs passed after harness-only
+native-picker and literal-history corrections. App source is `458a045`, followed
+by harness-only `fdf6012`; the QA receipt binds the full source/evidence scope.
+
+**Current verification is complete: all 62 CI stages passed with terminal exit
+0 on `fdf60124e49659e9c33d30db59e45ff8369a38e1`.** Independent report review
+confirmed **180 actual browser checks/check groups**. Hosting preflight passed on
+the same final runtime before the harness-only commit; no deployment occurred.
+Agent 0 accepted the sixteen feature criteria plus audited **WX-0467/WX-0487**,
+eighteen local criteria in total. The catalog records **109 done / 891 remaining**:
+**70 P1, 665 P2 and 156 P3**, with **724 local, 127 operator and 40 provider**
+gates remaining. Source and wiki publication require separate direct remote parity checks.
+The
+[recruiting lifecycle plan](../docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+is a proposal for the next ten, not implementation. These host extensions retain
+blank reusable records and immutable selected releases.
+
+## Historical host safety checkpoint
+
 Host portal safety extensions add [dirty-form decisions and recovery](../wiki/Portal-Safety-and-Recovery.md),
 a volatile CMS restore-editor comparison, independent opt-in import/Reset
 checkpoints and bounded structured differences. The [state contract](../docs/PORTAL-STATE-CONTRACT.md),
 [failure drill](../docs/PORTAL-RECOVERY-FAILURE-DRILL.md),
 [status inventory](../docs/PORTAL-STATUS-INVENTORY.md) and
-[current safety receipt](../docs/PORTAL-SAFETY-QA-2026-10-15.md) keep source
+[dated safety receipt](../docs/PORTAL-SAFETY-QA-2026-10-15.md) keep source
 behavior and actual execution separate. Run `safety:test`, `browser:safety`,
 `browser:quality`, `browser:sdk-quality` and `browser:recovery-drill` after normal
-setup. The current receipt records accepted local scope and final integrated gates.
+setup. That receipt records the historical accepted local scope and integrated gates.
 
-Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+At that historical safety checkpoint, Agent 0 accepted **14 original local criteria** and the catalog recorded **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
 
-**Integrated verification passed: all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** The current safety QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed.
+**That safety checkpoint passed all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** Its dated QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed; the current lifecycle result is recorded separately above.
 
 Earlier host portal maturity extensions provide [chosen payroll periods and fictional
 rate timelines, corrected time, CMS editing, strict CRM imports and named recovery](../docs/PORTAL-MATURITY.md).

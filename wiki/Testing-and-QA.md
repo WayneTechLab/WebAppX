@@ -31,14 +31,61 @@ regressions, app/LAN gates, research inventories and public template integrity.
 It requires blank adoption seeds. `template:check` rejects populated tasks,
 context or project records by design. Use these to maintain the reusable release.
 
-## Portal safety wave — verified
+## Current lifecycle wave — locally accepted
+
+Read [Portal Lifecycle](Portal-Lifecycle.md), the
+[feature guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE.md)
+and [current lifecycle QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-QA-2026-10-15.md).
+App source is integrated at `458a045`, followed by harness-only `fdf6012`.
+
+```bash
+npm run hr:test
+npm run portals:test
+npm run browser:portal-lifecycle
+```
+
+| Executed evidence | Scope |
+| --- | --- |
+| Standalone native browser | **20/20 checks/check groups** on the final **100-source** runtime freeze; actual HR lifecycle/recruiting hire, CMS release, CRM ownership, refresh/import/selected restore/Undo controls with independent complete expected records. |
+| New status inventory | **46 expected / 46 observed / zero missing** meanings with scoped monochrome witnesses. Separate from earlier native and SDK inventories; not a unique global status total. |
+| Names and large text | **22 accessible-name audits**, actual Extra large preference, **129 control boxes**, **20 caller-literal value probes** and **22 Tab-reachability probes**. |
+| Targeted regressions | Keyboard **9/9** and quality **6/6** passed after observing the actual native date-picker focus target and correcting literal expected profile-history records. Console/network and complete-record assertions remain enforced. |
+
+The runtime digest is
+`48fb5c3a1b0aeebbb6d52f982aa95c5689c9c26b1b9e325c8c39b0b4a99d4882`.
+The receipt retains failed diagnostic reports, native picker observation and
+source/harness/artifact bindings. A native browser focus observation does not
+establish manual screen-reader or every-platform acceptance.
+
+**Current verification is complete: all 62 configured CI stages passed with
+terminal exit 0 on `fdf60124e49659e9c33d30db59e45ff8369a38e1`.** Independent
+report review confirmed **180 actual browser checks/check groups**: thirteen
+common suites contributed **166**, the temporary HR-disabled app contributed
+**8**, and owned LAN work-status checks contributed **6**. These are check/group
+counts; a group can contain several assertions. All thirteen common reports
+record passed status, closed browser/server resources and owned child exit 0.
+Hosting preflight passed on the same final runtime before the harness-only
+commit; no deployment occurred.
+
+The earlier attempt stopped at the keyboard stage and remains a failed
+diagnostic receipt. The final pass is a separate completed run. Agent 0 accepted
+the sixteen feature criteria plus audited **WX-0467/WX-0487**, eighteen local
+criteria. The canonical catalog records **109 done / 891 remaining**: **70 P1,
+665 P2 and 156 P3**, with **724 local, 127 operator and 40 provider** gates
+remaining. Source and wiki publication require separate direct remote parity checks.
+The
+[next recruiting plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+is proposed design only. Original dated receipts remain unchanged.
+
+## Historical portal safety wave — verified
 
 Starting base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. The
 [guide](Portal-Safety-and-Recovery.md) explains registered HR/CMS/CRM form groups,
 retained navigation drafts, CMS replacement comparison, required import/Reset
 checkpoints and bounded structured differences. Read the
-[current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md)
-for the actual accepted execution evidence; current work remains unaccepted.
+[dated safety QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md)
+for that checkpoint's accepted execution evidence. The lifecycle wave above
+has its separate accepted local evidence above.
 
 ```bash
 npm run safety:test
@@ -69,9 +116,9 @@ saves remain separate. The SDK receipt uses explicit fictional labels and remove
 the default provider-partnership wording. Actual results belong in the linked QA
 receipt; unmounted SDK exports retain their own scope.
 
-Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+At that historical safety checkpoint, Agent 0 accepted **14 original local criteria** and the catalog recorded **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
 
-**Integrated verification passed: all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** The current safety QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed.
+**That safety checkpoint passed all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** Its dated QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed; the current lifecycle result is recorded separately above.
 
 ## Historical portal maturity wave — verified
 

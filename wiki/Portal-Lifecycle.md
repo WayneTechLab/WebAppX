@@ -1,10 +1,13 @@
 # Portal Lifecycle Workflows
 
-**Implemented source guide; integrated verification and acceptance are pending.**
+**Locally accepted source guide; verification complete.**
 This page covers the account-free HR employment, CMS release and CRM ownership
-controls currently being integrated. A forthcoming QA receipt will record actual
-execution when available. This guide does not establish production or provider
-acceptance.
+controls integrated at app source `458a045`, followed by harness-only `fdf6012`.
+The [current lifecycle QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+records standalone and integrated results with their limits. All 62 CI stages
+passed on `fdf60124e49659e9c33d30db59e45ff8369a38e1`; Agent 0 recorded the
+eighteen local criteria in the catalog. Main/wiki publication, production and
+provider acceptance remain separate.
 
 Start `npm run dev:mock`, open its printed local origin and visit `/portals`.
 Use fictional information. Saved records belong to the current browser profile
@@ -139,3 +142,30 @@ and [recovery glossary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/W
 for replacement, checkpoint and retained CMS editor choices. These native
 workflows execute no real payroll, change no provider resources and establish
 no production authentication or server authorization.
+
+## Run and review the local evidence
+
+```bash
+npm run hr:test
+npm run portals:test
+npm run browser:portal-lifecycle
+```
+
+The standalone native journey passed **20/20 checks/check groups** on the final
+100-file runtime freeze. Its separate evidence covers **46 new status meanings,
+22 accessible-name audits, 129 control boxes, 20 literal input-value probes and
+22 Tab-reachability probes**. Targeted keyboard **9/9** and quality **6/6** runs
+passed after native-picker focus and literal profile-history harness corrections.
+The QA receipt preserves exact source, fixture and platform qualifications.
+
+**Current verification is complete: all 62 CI stages and 180 browser
+checks/check groups passed** on `fdf60124e49659e9c33d30db59e45ff8369a38e1`,
+with terminal CI exit 0. Hosting preflight passed on the same final runtime
+before the harness-only commit; no deployment occurred. Agent 0 accepted the
+sixteen feature criteria plus audited **WX-0467/WX-0487**, eighteen local criteria.
+The catalog records **109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**,
+with **724 local, 127 operator and 40 provider** gates remaining. Source and wiki publication require separate direct remote parity checks.
+The
+[next ten recruiting criteria](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+are proposed design work; implementation has not begun. Earlier receipts and
+their counts remain historical.

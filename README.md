@@ -66,7 +66,47 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
-## Portal safety and recovery wave — verified
+## Current lifecycle workflows — locally accepted
+
+The integrated app source at `458a045`, followed by harness-only `fdf6012`,
+adds HR employment instances, transfers, leave/return/termination, offboarding,
+rehire comparison, directory corrections/history and captured onboarding
+versions; CMS reviewed local release bundles; and CRM lead/account ownership
+previews with atomic graph updates. Read the [lifecycle guide](docs/PORTAL-LIFECYCLE.md),
+[wiki walkthrough](wiki/Portal-Lifecycle.md),
+[original implementation plan](docs/PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md) and
+[current lifecycle QA receipt](docs/PORTAL-LIFECYCLE-QA-2026-10-15.md).
+
+```bash
+npm run hr:test
+npm run portals:test
+npm run browser:portal-lifecycle
+```
+
+The standalone native journey passed **20/20 checks/check groups** on the final
+100-file runtime freeze. Its separate quality evidence covers **46 new status
+meanings**, **22 accessible-name audits**, **129 control boxes**, **20 literal
+input-value probes** and **22 Tab-reachability probes**. Targeted keyboard
+**9/9** and quality **6/6** checks also passed after harness corrections for the
+actual native date-picker focus and literal profile-history expectations.
+These observations retain the exact source, fixture and platform limits in the
+QA receipt; the 46 meanings are a separate inventory, not a global status total.
+
+**Current verification is complete: all 62 CI stages passed with terminal exit
+0 on committed source `fdf60124e49659e9c33d30db59e45ff8369a38e1`.** Independent
+report review confirmed **180 actual browser checks/check groups** across the
+common suites, temporary HR-disabled app and owned LAN work-status checks. Hosting
+preflight passed on the same final runtime before that harness-only commit;
+no deployment occurred. Agent 0 accepted the sixteen feature criteria plus
+audited **WX-0467/WX-0487**, eighteen original local criteria in total. The
+canonical catalog records **109 done / 891 remaining**: **70 P1, 665 P2 and
+156 P3**, with **724 local, 127 operator and 40 provider** gates remaining.
+Source and wiki publication require separate direct remote parity checks.
+Provider and production acceptance
+remain separate. The [next ten recruiting criteria](docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+are a design proposal; their implementation has not begun.
+
+## Historical portal safety and recovery wave — verified
 
 This wave starts from published source
 `532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. It adds registered dirty-form
@@ -77,7 +117,7 @@ checks and fictional failure/recovery exercises. Read the
 [state contract](docs/PORTAL-STATE-CONTRACT.md),
 [recovery failure drill](docs/PORTAL-RECOVERY-FAILURE-DRILL.md),
 [status inventory](docs/PORTAL-STATUS-INVENTORY.md) and
-[current QA receipt](docs/PORTAL-SAFETY-QA-2026-10-15.md).
+[safety QA receipt](docs/PORTAL-SAFETY-QA-2026-10-15.md).
 
 - **Keep editing**, **Discard and leave** and eligible **Leave and keep draft**
   decisions protect registered temporary form groups. A retained draft lasts
@@ -119,9 +159,9 @@ saves remain separate. The SDK receipt uses explicit fictional labels and remove
 the default provider-partnership wording. Actual results belong in the linked QA
 receipt; unmounted SDK exports retain their own scope.
 
-Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+At that historical safety checkpoint, Agent 0 accepted **14 original local criteria** and the catalog recorded **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
 
-**Integrated verification passed: all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** The current safety QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed.
+**That safety checkpoint passed all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** Its dated QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed. The current lifecycle result is recorded separately above.
 
 Historical maturity/evaluator results below retain their original source and
 verification scope. Provider and production acceptance require their own evidence.

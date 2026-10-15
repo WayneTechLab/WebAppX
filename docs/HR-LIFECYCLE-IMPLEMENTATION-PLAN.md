@@ -1,27 +1,44 @@
 # HR employment lifecycle implementation plan
 
-Planning date: **2026-10-15**. Status: **proposed local implementation; no
-criterion in this plan is accepted by this document**.
+Planning date: **2026-10-15**. Status: **ten HR criteria accepted locally;
+verification complete**. The catalog and QA receipt own acceptance
+and executed evidence; this document retains the implementation contract.
 
-This is the next bounded HR lane under the
-[complete execution plan](WEBAPPX-EXECUTION-PLAN.md), following the current
+This is the bounded HR lane under the
+[complete execution plan](WEBAPPX-EXECUTION-PLAN.md), following the historical
 portal safety wave. The original planning observation preceded acceptance of the safety wave.
-The [canonical catalog](backlog/webappx-1000-todo.json) now records **91 done /
-909 remaining** after those fourteen local criteria were accepted. The ten
-criteria in this next plan all remain TODO. Read live counts from the repository root:
+The historical safety checkpoint recorded **91 done / 909 remaining** after
+fourteen local criteria were accepted. The [canonical catalog](backlog/webappx-1000-todo.json)
+now records **109 done / 891 remaining**, after acceptance of these ten HR
+criteria, six CMS/CRM criteria and two audited recovery criteria. Read live
+counts from the repository root:
 
 ```sh
 node -e 'const fs=require("node:fs"); const {items}=JSON.parse(fs.readFileSync("docs/backlog/webappx-1000-todo.json","utf8")); const counts=items.reduce((out,item)=>(out[item.status]=(out[item.status]??0)+1,out),{}); console.log(JSON.stringify({total:items.length,...counts},null,2));'
 ```
 
-The source observations below are planning evidence. Implementation, independent
-review, focused tests, browser execution and the integrated acceptance gates
-remain future work. No runtime, provider, catalog or managed-release change is
-authorized by this document alone.
+The original source observations below retain their planning scope. Current app
+source is integrated at `458a045`, followed by harness-only `fdf6012`. Read the
+[current feature guide](PORTAL-LIFECYCLE.md) and
+[lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) for implemented controls
+and actual standalone execution. The native journey passed **20/20 checks/check
+groups** on the final 100-file runtime freeze; targeted keyboard **9/9** and
+quality **6/6** runs also passed with their documented harness corrections.
+**Current verification is complete: all 62 CI stages passed with terminal exit
+0 on `fdf60124e49659e9c33d30db59e45ff8369a38e1`.** Independent report review
+confirmed **180 actual browser checks/check groups**. Hosting preflight passed on
+the same final runtime before the harness-only commit; no deployment occurred.
+Agent 0 accepted these ten HR criteria, the other six feature criteria and
+audited **WX-0467/WX-0487**. Remaining priorities are **70 P1, 665 P2 and
+156 P3**; remaining gates are **724 local, 127 operator and 40 provider**.
+Source and wiki publication require separate direct remote parity checks.
+The
+[next recruiting plan](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) remains a
+proposal. No provider, catalog or managed-release change follows from this plan.
 
 ## Original scope and criteria
 
-All ten items are currently `todo`, priority `P1`, phase `portal-maturity`, area
+All ten items are accepted locally. Their original priority is `P1`, phase `portal-maturity`, area
 `hr-onboarding`, gate `local`, with source
 `src/hr/components/HrWorkspace.tsx`. Each original canonical dependency list is
 empty (`[]`). The engineering order in this plan does not change those lists.
@@ -39,7 +56,7 @@ empty (`[]`). The engineering order in this plan does not change those lists.
 | WX-0109 | Add a profile correction request flow | An employee can propose a directory correction and HR can accept or reject it with a recorded outcome. | `[]` |
 | WX-0110 | Add onboarding template versions | New hires receive the selected checklist version while existing completed onboarding retains its original version. | `[]` |
 
-## Existing source contracts
+## Original source contracts — planning observation
 
 - [Mock workflows](../src/hr/mock-workflows.ts) store one onboarding record,
   profile email and employment status per employee ID. Onboarding contains
@@ -68,10 +85,12 @@ empty (`[]`). The engineering order in this plan does not change those lists.
   present HR collections. New lifecycle collections need explicit inventory and
   difference identities before recovery inspection can claim complete coverage.
 
-These observations are grounded in the current local source. The separate SDK
-mock session is not the native HR workspace and is outside this lane.
+These observations describe the original pre-implementation planning source;
+they are not a current feature inventory. The linked feature guide describes
+the integrated implementation. The separate SDK mock session is not the native
+HR workspace and is outside this lane.
 
-## Proposed state and compatibility contract
+## Original proposed state and compatibility contract
 
 ### Identity, instances and captured onboarding
 
@@ -298,9 +317,9 @@ constructed expectations, not merely render generated snapshots or repeat the
 reducer's calculations. Temporary fixtures may model cycles, multiple managers
 and legacy receipts; immutable bundled fixtures remain unchanged.
 
-Agent 0 accepts the ten original criteria only after the implemented tree has
-independent review and the required integrated CI, Hosting preflight, drift,
-template and documentation checks. Local mock evidence does not establish a
+Agent 0 accepted the ten original criteria after independent review and the
+required integrated CI, Hosting preflight, drift, template and documentation
+checks. The linked QA receipt retains the actual results. Local mock evidence does not establish a
 provider connection, production authorization, deployed health or operational
 employment action. Follow [HR portal boundaries](HR-PORTAL.md) and
 [Gusto setup boundaries](GUSTO-SETUP.md) throughout the lane.

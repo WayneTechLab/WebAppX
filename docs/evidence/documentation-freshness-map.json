@@ -42,12 +42,12 @@
       "id": "portal-state-contract",
       "guide": {
         "path": "docs/PORTAL-STATE-CONTRACT.md",
-        "sha256": "7b5895c200a3babb81dd9cf6b990612efc6fcbc7ef2e6340c86c0d0dd786b9ec"
+        "sha256": "150d932e20ed1f386685785adfd78074fbe202523e7cd54b3a9d1cdacbaa9abb"
       },
-      "examinedRevision": "61d39c9c855fb3f56913cb7c2f8010a6a485b746",
+      "examinedRevision": "fdf60124e49659e9c33d30db59e45ff8369a38e1",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review at this committed implementation revision: protected temporary HR/CMS/CRM forms, disclosed dirty-history current-slot behavior, CMS restored-editor Reload/Reapply, independent opt-in import/Reset checkpoints, bounded domain differences, and separate fictional SDK receipt handling. The safety QA receipt separately records frozen-runtime browser observations and integrated gates. Existing receipts retain their original dates and starting-source qualifications; this mapping executes no tests."
+        "scope": "Source-only review of the current native state contract: optional HR employment/correction history, CMS releases, CRM ownership and complete recovery/inspection retention. The unchanged historical receipts retain their original starting-source qualifications; this review executes no tests. Current committed-harness lifecycle and full-CI observations are separately bound by the lifecycle guide and dated receipt."
       },
       "proposalIds": [
         "WX-0060",
@@ -65,7 +65,9 @@
         "WX-0757",
         "WX-0775",
         "WX-0847",
-        "WX-0860"
+        "WX-0860",
+        "WX-0467",
+        "WX-0487"
       ],
       "sourceScopes": [
         "src/portals",
@@ -99,6 +101,61 @@
           "observationRevision": "950f9ba0c4e48faaa65056f504f105201838e3ec",
           "revisionBasis": "receipt-source-base",
           "scope": "Historical maturity receipt records native browser execution on its changed working tree above the stated starting source base, plus a separately identified exact committed-source HR-disabled adoption recheck. Its observations are not relabeled as execution at the current guide review revision; the current safety receipt separately records new behavior and verification."
+        }
+      ]
+    },
+    {
+      "id": "portal-lifecycle",
+      "guide": {
+        "path": "docs/PORTAL-LIFECYCLE.md",
+        "sha256": "bd41b495ff37635074e351b940d041d62b8894326304ca5106c25910c41528bc"
+      },
+      "examinedRevision": "fdf60124e49659e9c33d30db59e45ff8369a38e1",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Source review of effective employment instances/templates/corrections, atomic CMS releases and complete CRM ownership transfers, with strict optional persistence/inspection and scoped actor/latest-state refusal. The dated receipt distinguishes final-runtime standalone observations, equivalent current committed-harness browser execution and the separate preflight working tree; mapping review performs no new execution."
+      },
+      "proposalIds": [
+        "WX-0101",
+        "WX-0102",
+        "WX-0103",
+        "WX-0104",
+        "WX-0105",
+        "WX-0106",
+        "WX-0107",
+        "WX-0108",
+        "WX-0109",
+        "WX-0110",
+        "WX-0314",
+        "WX-0315",
+        "WX-0316",
+        "WX-0379",
+        "WX-0380",
+        "WX-0381"
+      ],
+      "sourceScopes": [
+        "src/hr",
+        "src/cms",
+        "src/crm",
+        "src/portals",
+        "scripts/browser-portal-lifecycle.mjs",
+        "scripts/ci-plan.mjs",
+        "scripts/check-template.sh",
+        "tests/browser/portal-lifecycle.mjs",
+        "tests/browser/portal-quality.mjs",
+        "tests/browser/keyboard-driver.mjs",
+        "tests/browser/keyboard-onboarding.mjs",
+        "integrations/gusto"
+      ],
+      "receipts": [
+        {
+          "path": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+          "sha256": "3ca2bcc6783981de3a0481272611456c5e685c264c56a9112abd5afccf956620",
+          "category": "browser",
+          "observedOn": "2026-10-15",
+          "observationRevision": "fdf60124e49659e9c33d30db59e45ff8369a38e1",
+          "revisionBasis": "examined-source",
+          "scope": "Current full 62-stage CI and 180 browser checks/groups bind this committed harness; the lifecycle stage separately rehashes 100 runtime sources, ten harness sources and 178 artifacts. The earlier standalone execution has identical runtime and 46 identical status PNGs; its observation is not relabeled. Hosting preflight ran on the same final-runtime working tree before harness-only changes. These are local mock results, without provider, production, native Windows or manual screen-reader acceptance."
         }
       ]
     }

@@ -40,6 +40,32 @@
       "scopeSha256": "2013cb68983a8f673f986c7c780edca9b0add59046b046eca7c1ec7e01c90c2e",
       "decision": "retain",
       "rationale": "Retain the historical receipts within their literal starting-source and observation scopes. The reviewed safety implementation has its own frozen-runtime browser proof and current QA receipt; historical evidence is not relabeled as execution at the new implementation revision."
+    },
+    {
+      "id": "DFR-50ee274c2fce7ce0",
+      "guideId": "portal-state-contract",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "fdf60124e49659e9c33d30db59e45ff8369a38e1",
+      "reportDigest": "962c2fe2e18a04283e041eaf3a3ab776a5781972d864fcccfa76cb8e727b57fb",
+      "mappingSha256": "c9cee0bb0bab504918982f76ab4c08f99e35d6283c3116bb2b0a7abec89c19d0",
+      "inputsSha256": "f94015a0088644f1f990f60f948d8405c13270af78c1c552f978a44db6759ab2",
+      "scopeSha256": "0d10cf208bfc32d22ad2e401590bd3204c8015d489b257a4ede354cb7caf60ce",
+      "decision": "retain",
+      "rationale": "Retain historical receipt dates and source qualifications. Current contracts and this exact commit were reviewed separately; the lifecycle receipt records current committed-harness CI and browser observations plus equivalent-runtime standalone evidence. This decision performs no tests and grants no provider or deployment acceptance."
+    },
+    {
+      "id": "DFR-324a7347ed673d22",
+      "guideId": "portal-lifecycle",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "fdf60124e49659e9c33d30db59e45ff8369a38e1",
+      "reportDigest": "962c2fe2e18a04283e041eaf3a3ab776a5781972d864fcccfa76cb8e727b57fb",
+      "mappingSha256": "c9cee0bb0bab504918982f76ab4c08f99e35d6283c3116bb2b0a7abec89c19d0",
+      "inputsSha256": "f94015a0088644f1f990f60f948d8405c13270af78c1c552f978a44db6759ab2",
+      "scopeSha256": "8ee4bd60762b9589c14023c2eda1b2ec3d38077638c329f82b4aba781e38c9b3",
+      "decision": "retain",
+      "rationale": "Retain historical receipt dates and source qualifications. Current contracts and this exact commit were reviewed separately; the lifecycle receipt records current committed-harness CI and browser observations plus equivalent-runtime standalone evidence. This decision performs no tests and grants no provider or deployment acceptance."
     }
   ]
 }

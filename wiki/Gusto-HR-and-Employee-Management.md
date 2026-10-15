@@ -36,7 +36,48 @@ debit; it does not use the native timesheet/benefit calculation. No real
 SSN, banking data, cookies, authentication credentials or Gusto account is needed
 for these local requests.
 
-## Current safety and separate SDK receipt
+## Current native employment lifecycle — locally accepted
+
+Read [Portal Lifecycle](Portal-Lifecycle.md), the
+[complete feature guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE.md)
+and [current lifecycle QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-QA-2026-10-15.md).
+At `/hr/demo/admin/employees`, find **Employment lifecycle**; the Organization
+page also contains these controls. Owner/HR previews choose explicit simulation
+dates and captured onboarding versions, review old/new assignments and report
+scopes, record leave/return/termination reasons, inspect three offboarding
+assignments and compare retained identity with a fresh rehire instance/checklist.
+Employee profiles expose own correction requests and authorized HR outcomes;
+saved directory history records literal old/new values, actor and sequence.
+
+Legacy dates remain unknown until explicitly supplied. Rehire archives the
+original onboarding receipt, while the new instance receives its captured
+checklist version. Submitted payroll, consumed time, rates, benefits and existing
+leave balances retain their documented preservation rules. These are native
+records; the separate genuine SDK preview neither shares them nor grants
+provider authority.
+
+Run `npm run hr:test`, `npm run portals:test` and
+`npm run browser:portal-lifecycle`. The standalone native result passed
+**20/20 checks/check groups** on the final 100-file runtime freeze, including
+new-hire version capture and complete recovery. Its separate quality evidence
+records **46 new status meanings, 22 accessible-name audits, 129 control boxes,
+20 literal value probes and 22 Tab probes**. Targeted keyboard **9/9** and quality
+**6/6** passed after documented harness corrections. App source is `458a045`,
+followed by harness-only `fdf6012`.
+
+**Current verification is complete: all 62 CI stages and 180 browser
+checks/check groups passed** on `fdf60124e49659e9c33d30db59e45ff8369a38e1`,
+with terminal CI exit 0. Hosting preflight passed on the same final runtime
+before the harness-only commit; no deployment occurred. Agent 0 accepted the
+sixteen feature criteria plus audited **WX-0467/WX-0487**, eighteen local criteria.
+The catalog records **109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**,
+with **724 local, 127 operator and 40 provider** gates remaining. Source and wiki publication require separate direct remote parity checks.
+The
+[next recruiting plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+is a proposal; requisitions, multiple applications, interviews and scorecards
+are not implemented by this wave.
+
+## Existing safety behavior and separate SDK receipt
 
 Native portal changes add protected unsaved navigation, explicit restored CMS
 editor decisions and independently enabled pre-import/Reset checkpoints. Read

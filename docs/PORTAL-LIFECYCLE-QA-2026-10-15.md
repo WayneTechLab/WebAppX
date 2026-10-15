@@ -1,10 +1,10 @@
 # HR lifecycle, CMS releases and CRM ownership verification — 2026-10-15
 
-Status: **verification in progress; all sixteen criteria remain TODO**.
+Status: **local integration verified; Agent 0 acceptance recorded for eighteen criteria**.
 This receipt follows the published
-[safety checkpoint](PORTAL-SAFETY-QA-2026-10-15.md). Agent 0 will record
-acceptance only after the current browser evidence, independent review and
-integration requirements are complete. The active goal covers all 1,000
+[safety checkpoint](PORTAL-SAFETY-QA-2026-10-15.md). Agent 0 recorded
+acceptance after the current browser evidence, independent review and
+integration requirements completed. The active goal covers all 1,000
 original criteria; this bounded implementation does not finish that goal.
 
 ## Source and preservation contract
@@ -56,7 +56,7 @@ Definitions, source fields, priorities, gates and dependencies are preserved.
 All sixteen gates are local. CMS and CRM include their P2 predecessors before
 their dependent P1 operation can be accepted.
 
-| Criterion | Implemented contract awaiting final acceptance |
+| Criterion | Accepted implemented contract |
 | --- | --- |
 | WX-0101 | Rehire keeps the employee ID and archives original instance onboarding/receipt before creating a new instance and incomplete captured checklist. |
 | WX-0102 | Transfer preview shows previous/proposed department and manager, the explicitly chosen effective date and affected report scopes. |
@@ -172,8 +172,27 @@ Review closed concrete findings before runtime freeze:
 
 These focused totals overlap existing domain suites and are not added together
 as a unique assertion count. Typecheck and scoped lint passed on frozen source.
-The configured full integration gate remains pending; this document currently
-grants no catalog acceptance.
+The configured 62-stage integration gate subsequently passed on committed
+source `fdf60124e49659e9c33d30db59e45ff8369a38e1`. The acceptance below concerns
+the sixteen implementation criteria and two independently reviewed recovery
+criteria; it does not accept the remaining backlog.
+
+## Additional recovery criteria accepted from current regression evidence
+
+Two original local criteria have complete existing implementation and focused
+regressions. Their mandatory browser journeys passed in the current full CI.
+Agent 0 reviewed their original acceptance statements and the distinct evidence
+boundaries below before accepting them alongside the sixteen new criteria.
+
+| ID | Original acceptance | Evidence boundary |
+| --- | --- | --- |
+| WX-0467 | History distinguishes combined import, Undo, optional individual import, optional Reset and manual capture without inferring provider events. | Strict five-kind model cases, actual native history labels and explicit valid synthetic rendering of all five reasons; separate ordinary control journeys verify manual, combined, Undo, import and Reset captures. The rendering fixture is not relabeled as five performed user actions. |
+| WX-0487 | A controlled browser harness simulates unavailable storage and verifies visible refusal of destructive restore without changing the active workspace. | Isolated native denied-history import/Reset journeys retain exact exports and saved bytes; the actual combined-restore fault drill verifies visible refusal and complete same-document live-memory rescue before reload. Partial rollback deliberately leaves uncertain saved slots, so this establishes preserved active memory without claiming every disk slot is unchanged. |
+
+WX-0717 remains TODO because its canonical dependency WX-0708 remains TODO.
+Its exact-opener keyboard evidence does not supply the missing complete
+scope/effect/cancel observations for every destructive preview, particularly
+history-clear cancellation. No dependency or original definition is bypassed.
 
 ## Final standalone native browser evidence
 
@@ -205,7 +224,11 @@ Agent 0 independently verified exact fingerprints for **100 runtime sources,
 ten harness sources and 178 artifacts**. Generated Vite dependency caches and
 the self-referential report/manifest are explicitly excluded. Before/after
 runtime equality is recorded; both isolated and primary sources match the
-final freeze. Final visual review is recorded separately before acceptance.
+final freeze. Independent review rehashed all 288 declared entries and inspected
+all 46 individual status PNGs at original size with no remaining finding. Tall
+context captures include sticky chrome and partially visible horizontal tables;
+the bounded uncovered witnesses establish readable status meanings, rather than
+a claim that every pixel of each tall context capture is unobscured.
 
 Earlier diagnostic runs remain retained. `UZm2d6` passed 17 functional checks
 before the final quality/new-hire additions and before the layout correction;
@@ -221,8 +244,114 @@ and require caller-supplied literal form values instead of self-derived values.
 working tree: typecheck, lint, production build and LAN isolation. Version
 remains 3.4.0 and deployment count 0; push/deploy were skipped. The earlier
 preflight before the layout correction remains a separate diagnostic record.
-Full configured CI, final documentation/preservation checks, catalog acceptance
-and GitHub/wiki publication remain pending.
+Full configured CI passed on the committed source identified below. Final
+documentation/preservation checks and GitHub/wiki publication are recorded
+separately; this receipt does not claim production deployment.
+
+The first 62-stage attempt stopped at stage 44, the keyboard suite. The retained
+`webappx-browser-keyboard-KLZYym` report identifies the new date input's native
+calendar-control Tab stop. The active outer input did not match
+`:focus-visible`; read-only AX/closed-user-agent-shadow inspection in `DhUaw2`
+identified the actual focused calendar button, which did match and drew a
+2 px solid blue outline. The corrected strict driver observes that actual
+native part only after matching the active host, the sole focused AX node,
+known native part and user-agent-shadow ancestry. It retains the original
+enabled/visible/focus-visible/ring/geometry requirements; unknown or mismatched
+native parts fail. Twenty-seven driver cases include fifteen native negative
+cases. The targeted `keyboard-izrTmz` run passed nine checks/groups, with 133
+onboarding and 330 restore focus observations and successful owned cleanup.
+
+Older keyboard and quality complete-record fixtures now contain handwritten
+expected legacy instances, nullable dates and the newly saved profile history.
+Their assertions still compare complete independent records. The targeted
+`quality-7D7fEJ` run passed six checks/groups, observing all 151 expected legacy
+status meanings (157 observations), at the actual 390 px/20 px setting. Forty-one
+focused quality/lifecycle cases also passed. These harness-only changes are
+committed at `fdf60124e49659e9c33d30db59e45ff8369a38e1`; all 100 application
+sources remain equal to the final runtime freeze. The failed first run remains
+retained and is not counted as a passing execution.
+
+## Current committed-source lifecycle receipt
+
+The lifecycle stage in the successful full integration run is
+`webappx-browser-portal-lifecycle-fqj91B`: **20 passed checks/groups**, all
+**46/46** new status meanings, successful browser/server cleanup, owned preview
+PID 59559 exited with code 0. Its manifest SHA-256 is
+`51facdb8e4b0e64f40285ea9cb9c5532021785a62326e20a81b403592992a3fb`;
+report SHA-256 is
+`585c9f1a3d10c9013f84f616d9d8dc75658de301f7228d5464c3a30ddfa3ea63`.
+Independent review rehashed all **100 current runtime sources, ten current
+harness sources and 178 declared evidence artifacts**, with zero mismatches
+and complete filename sets outside derived Vite caches.
+
+Relative to the standalone `izeHOX` receipt, the runtime is byte-identical.
+The only harness difference is the handwritten expected-record update inside
+the legacy quality suite's `nativeJourney`; the audit/render helpers imported
+by this lifecycle suite are unchanged. All 46 matching status PNGs are
+byte-identical, so the completed individual visual review transfers without
+relabeling the earlier execution. Current measurements confirm every witness
+is inside the 390 px viewport with three uncovered samples and maximum height
+205.5 px. The new receipt binds these observations to the committed harness.
+
+## Full configured integration and checklist result
+
+`npm run ci:all` completed with terminal **exit 0** on
+`fdf60124e49659e9c33d30db59e45ff8369a38e1`. Independent review matched all
+**62 configured stages**, once each and in order, through the final successful
+build and LAN production-isolation check. The retained log SHA-256 is
+`fb222f46498681db59924ba0bcf0a87035a71714d44381d63b195101da3edbb6`.
+All 23 recorded Node failure summaries are zero; root and backend dependency
+audits found zero vulnerabilities. The build retains its visible large-chunk
+advisory; it is not an execution failure or a claim of optimized bundle size.
+
+| Current full-CI browser suite | Passed checks/groups | Retained report suffix |
+| --- | ---: | --- |
+| Smoke | 7 | `smoke-yMSLtZ` |
+| Keyboard | 9 | `keyboard-yNct6c` |
+| Foundation | 10 | `foundation-JOvPoB` |
+| State contract | 13 | `state-contract-j7C2Ll` |
+| CMS/CRM lifecycles | 12 | `lifecycles-ru866K` |
+| HR/CMS/CRM portal lifecycle | 20 | `portal-lifecycle-fqj91B` |
+| Payroll | 8 | `payroll-RMJoqr` |
+| Evaluators | 25 | `evaluators-JAmETm` |
+| Maturity | 13 | `maturity-6yvmxI` |
+| Safety | 30 | `safety-EUiTST` |
+| Quality | 6 | `quality-yUUJFH` |
+| SDK quality | 5 | `sdk-quality-8xDWHq` |
+| Recovery drill | 8 | `recovery-drill-kZ1tmy` |
+| Common-runner subtotal | **166** | All thirteen reports passed. |
+| HR-disabled adoption | **8** | Separate committed-allowlist receipt. |
+| Owned LAN work status | **6** | Separate result with preserved source records. |
+| Aggregate | **180** | Checks/groups, not unique assertions or status meanings. |
+
+All thirteen common reports record browser/server cleanup true and owned child
+exit 0 without a signal. The successful schemas usually omit their raw problems
+ledger; no nonempty reported error/problem/cleanup-error field was found. The
+SDK report explicitly records an empty problems list. The HR-disabled receipt
+binds the committed source above, 105 copied public files and its manifest
+`3399783fc63d6baf0e1a564516a89277f6e0f579174c24f7671ebdd8471a4e63`.
+The LAN result records six descriptions, no page errors, four captures and
+preserved source-record bytes. Those two embedded schemas do not expose the
+common runner's child/cleanup fields; the thirteen-child audit is not extended
+to them by inference.
+
+Agent 0 accepted **WX-0101–WX-0110, WX-0314–WX-0316, WX-0379–WX-0381,
+WX-0467 and WX-0487** after reviewing the unchanged original definitions and
+dependencies. Only those eighteen status/completion objects changed; the prior
+91 completion objects and all catalog definitions/root metadata remain exact.
+Regenerated checklist, CSV and execution plan record **109 done / 891 TODO**.
+Remaining priorities are **70 P1 / 665 P2 / 156 P3**; remaining gates are
+**724 local / 127 operator / 40 provider**. The all-1,000 goal remains active.
+
+Final local `sync:system:check`, `template:check`, `backlog:check`,
+`backlog:plan:check` and `backlog:evidence:check` passed. Current guide freshness
+is reviewed separately using a supported owned clone at the explicit committed
+source plus byte-bound local documents: the primary app-managed checkout's
+`worktreeconfig` layout is intentionally unsupported by the comparison tool.
+No Git configuration or checker limit is changed to bypass that refusal. Old
+receipt bytes and dates remain historical; the finite lifecycle mapping binds
+this current receipt without relabeling earlier runs. GitHub source/wiki
+publication is verified by direct remote parity separately from this local QA.
 
 ## Evidence limits
 

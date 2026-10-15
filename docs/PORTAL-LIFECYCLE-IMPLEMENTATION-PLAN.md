@@ -1,15 +1,40 @@
 # HR lifecycle, CMS releases and CRM ownership implementation plan
 
-Planning date: **2026-10-15**. Status: **implementation in an isolated checkout;
-all sixteen criteria remain TODO**. This is the next bounded assignment under
+Planning date: **2026-10-15**. Status: **all sixteen feature criteria accepted
+locally; verification complete**. This is the bounded assignment under
 the [full 1,000-item execution plan](WEBAPPX-EXECUTION-PLAN.md), following the
 accepted [portal safety wave](PORTAL-SAFETY-QA-2026-10-15.md).
 
-The implementation checkout starts at `61d39c9c855fb3f56913cb7c2f8010a6a485b746`.
-The catalog at this planning observation contains **91 done / 909 remaining**.
-This plan supplies no completion evidence, provider authority or production
-activation. Original definitions, dependencies, priorities and acceptance gates
+The original implementation checkout started at `61d39c9c855fb3f56913cb7c2f8010a6a485b746`.
+Current app source is integrated at `458a045`, followed by harness-only
+`fdf6012`. The catalog records **109 done / 891 remaining**. The
+[QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) supplies the executed evidence;
+this plan supplies no provider authority or production activation. Original
+definitions, dependencies, priorities and acceptance gates
 remain unchanged. Reusable SYSTEMX seeds and managed releases remain intact.
+
+## Accepted local verification and publication boundary
+
+The [source guide](PORTAL-LIFECYCLE.md) describes the integrated controls;
+the [current lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) records
+standalone **20/20 native browser checks/check groups**, the separate **46 new
+status meanings, 22 accessible-name audits, 129 control boxes, 20 literal value
+probes and 22 Tab probes**, and their exact source/evidence qualifications.
+Targeted keyboard **9/9** and quality **6/6** runs passed after harness-only
+native-picker and literal-history corrections.
+
+**Current verification is complete: all 62 CI stages passed with terminal exit
+0 on `fdf60124e49659e9c33d30db59e45ff8369a38e1`.** Independent report review
+confirmed **180 actual browser checks/check groups**. Hosting preflight passed on
+the same final runtime before the harness-only commit; no deployment occurred.
+Agent 0 accepted the sixteen feature criteria and the two separately audited
+recovery criteria **WX-0467/WX-0487**, eighteen in total. Remaining priorities
+are **70 P1, 665 P2 and 156 P3**; remaining gates are **724 local, 127 operator
+and 40 provider**. Source and wiki publication require separate direct remote parity checks.
+Their audited
+recovery scope is separate from the sixteen feature definitions below. The
+[next recruiting plan](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+is a proposal for ten later criteria, not implementation or acceptance.
 
 ## Original local scope
 
@@ -47,9 +72,10 @@ before the dependent P1 criterion can be accepted. Every gate below is local.
 | CRM ownership | CRM model, persistence, UI and literal transfer tests | Full supported graph preview and atomic owner change; historical activity remains captured. Unconverted lead reassignment is separate from account graph transfer. |
 | Agent 0 | HR workspace wiring, shared inspection/differences, source bindings, status inventory, browser integration, documentation, acceptance and Git | Sole shared-file owner; serialize dependencies and independently review literal complete records before publishing. |
 
-Domain work is isolated from the primary checkout's current publication gate.
-No lane writes the primary app, catalog, shared provider, package scripts,
-managed releases or another owner's files. Agent 0 integrates reviewed source.
+The table retains the original implementation ownership boundaries. Reviewed
+domain work is now integrated in the primary source and accepted locally in the
+catalog. Agent 0 records source/wiki publication separately through direct remote parity checks. Managed releases
+and reusable seeds remain unchanged.
 
 ## Compatibility and verification requirements
 

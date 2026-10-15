@@ -14,9 +14,37 @@ the named environment. Activation and deployment remain specific operator
 acceptance steps. Reusable SYSTEMX adoption seeds stay blank; the host execution
 plan records this public template's work.
 
-## Current accepted checkpoint — portal safety and recovery
+## Current lifecycle checkpoint — locally accepted
 
-The catalog records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**,
+The [lifecycle guide](PORTAL-LIFECYCLE.md),
+[implementation plan](PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md),
+[detailed HR contract](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md) and
+[current QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) cover HR employment
+instances/transfers/offboarding/rehire/corrections/templates, CMS release bundles
+and CRM ownership. App source is integrated at `458a045`, followed by harness-only
+`fdf6012`. Run `npm run browser:portal-lifecycle` after normal setup.
+
+The standalone native result is **20/20 checks/check groups**, with a separate
+inventory of **46 new status meanings, 22 accessible-name audits, 129 control
+boxes, 20 literal input-value probes and 22 Tab probes**. Targeted keyboard
+**9/9** and quality **6/6** checks passed after documented harness corrections.
+**Current verification is complete: all 62 CI stages and 180 browser
+checks/check groups passed** on committed source
+`fdf60124e49659e9c33d30db59e45ff8369a38e1`, with terminal CI exit 0. Hosting
+preflight passed on the same final runtime before the harness-only commit;
+deployment was skipped. Agent 0 accepted **WX-0101–WX-0110, WX-0314–WX-0316,
+WX-0379–WX-0381 and audited WX-0467/WX-0487**, eighteen original local criteria.
+The canonical catalog records **109 done / 891 remaining**: **70 P1, 665 P2 and
+156 P3**, with **724 local, 127 operator and 40 provider** gates remaining.
+Source and wiki publication require separate direct remote parity checks.
+
+The [next recruiting plan](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) proposes
+WX-0201–WX-0210; their implementation has not begun. Source, standalone execution,
+integrated gates and catalog acceptance remain separate.
+
+## Historical accepted checkpoint — portal safety and recovery
+
+At that historical checkpoint the catalog recorded **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**,
 with **742 local, 127 operator and 40 provider** gates remaining. Agent 0
 accepted fourteen original local criteria covering unsaved navigation, CMS
 restored-editor comparison, opt-in import/Reset checkpoints, structured restore
@@ -30,12 +58,9 @@ Read the [implementation plan](PORTAL-SAFETY-IMPLEMENTATION-PLAN.md),
 publication gates separately from local criteria acceptance. All earlier totals
 below retain their historical scope; query the canonical catalog for current status.
 
-The [next parallel implementation plan](PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-assigns **WX-0101–WX-0110, WX-0314–WX-0316 and WX-0379–WX-0381** for HR
-employment lifecycle, CMS release bundles and CRM ownership transfers. All
-sixteen remain TODO. The [detailed HR plan](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-and parallel plan preserve original criteria and dependencies. The full goal
-remains active until all 1,000 original criteria have accepted evidence.
+The current lifecycle section above supplies that subsequent wave's accepted
+local verification boundary. The full goal remains active until all 1,000 original
+criteria have accepted evidence.
 
 ## Open the list
 

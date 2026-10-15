@@ -1,6 +1,39 @@
 # Update Log
 
-## 3.4.0 portal safety wave — verified, 2026-10-15
+## 3.4.0 lifecycle accepted locally — 2026-10-15
+
+Integrate app source `458a045`, followed by harness-only `fdf6012`. Add HR
+employment instances and captured checklist versions, dated transfer/reason
+previews, offboarding/rehire, directory correction/history, CMS reviewed local
+release bundles and CRM ownership changes. Extend complete optional collection
+inspection and directional recovery without displaying hidden free text.
+
+The [lifecycle walkthrough](Portal-Lifecycle.md),
+[feature guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE.md)
+and [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+record controls, source and evidence boundaries. Add the dedicated
+`npm run browser:portal-lifecycle` journey. Its standalone result passed
+**20/20 checks/check groups** on the final 100-file runtime freeze, with separate
+evidence for **46 new status meanings, 22 accessible-name audits, 129 control
+boxes, 20 literal input-value probes and 22 Tab probes**. Targeted keyboard
+**9/9** and quality **6/6** passed after actual native-picker focus observation
+and literal profile-history fixture fixes; application source was unchanged by
+those harness corrections.
+
+**Current verification is complete: all 62 CI stages and 180 browser
+checks/check groups passed** on `fdf60124e49659e9c33d30db59e45ff8369a38e1`,
+with terminal CI exit 0. Hosting preflight passed on the same final runtime
+before the harness-only commit; no deployment occurred. Agent 0 accepted the
+sixteen feature criteria plus audited **WX-0467/WX-0487**, eighteen local criteria.
+The canonical catalog records **109 done / 891 remaining**: **70 P1, 665 P2 and
+156 P3**, with **724 local, 127 operator and 40 provider** gates remaining.
+Source and wiki publication require separate direct remote parity checks.
+The
+[next recruiting plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+is a proposal for ten later criteria; implementation has not begun. No provider,
+production deployment or operational adoption is established by this entry.
+
+## 3.4.0 historical portal safety wave — verified, 2026-10-15
 
 Start from published base `532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. Add
 [registered dirty-form navigation and recovery](Portal-Safety-and-Recovery.md),
@@ -23,11 +56,11 @@ interaction, isolated rendering/storage fixtures and owned child-process
 cleanup. Read the [state contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md),
 [failure drill](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-RECOVERY-FAILURE-DRILL.md),
 [status inventory](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATUS-INVENTORY.md) and
-[current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md).
+[dated safety QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md).
 
-Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+At that historical safety checkpoint, Agent 0 accepted **14 original local criteria** and the catalog recorded **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
 
-**Integrated verification passed: all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** The current safety QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed.
+**That safety checkpoint passed all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** Its dated QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed; the current lifecycle result is recorded separately above.
 
 Prior maturity/evaluator receipts below retain their original dates, source
 bases and observed results. They do not establish this wave's final gates.

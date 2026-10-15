@@ -13,9 +13,36 @@ dependency-ready candidates and remaining local/provider/operator criteria.
 The goal remains active until every item is accepted. Host planning records this
 intent while reusable SYSTEMX context, plan, task and memory seeds stay blank.
 
-## Portal safety implementation — 2026-10-15
+## Current lifecycle checkpoint — locally accepted
 
-The current source wave starts at
+The [lifecycle walkthrough](Portal-Lifecycle.md),
+[source guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE.md),
+[original plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+and [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-QA-2026-10-15.md)
+cover HR employment lifecycle, CMS releases and CRM ownership. App source
+`458a045` is integrated, followed by harness-only `fdf6012`. Run
+`npm run browser:portal-lifecycle` after normal setup.
+
+Standalone native evidence passed **20/20 checks/check groups**, with **46 new
+status meanings, 22 accessible-name audits, 129 control boxes, 20 literal value
+probes and 22 Tab probes**. Targeted keyboard **9/9** and quality **6/6** passed
+after documented harness corrections. These retain their exact local limits.
+
+**Current verification is complete: all 62 CI stages and 180 browser
+checks/check groups passed** on `fdf60124e49659e9c33d30db59e45ff8369a38e1`,
+with terminal CI exit 0. Hosting preflight passed on the same final runtime
+before the harness-only commit; no deployment occurred. Agent 0 accepted
+**WX-0101–WX-0110, WX-0314–WX-0316, WX-0379–WX-0381 and audited
+WX-0467/WX-0487**, eighteen original local criteria. The catalog records
+**109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**, with **724 local,
+127 operator and 40 provider** gates remaining. Source and wiki publication require separate direct remote parity checks.
+The
+[next recruiting plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+proposes WX-0201–WX-0210; their implementation has not begun.
+
+## Historical portal safety implementation — 2026-10-15
+
+That historical source wave starts at
 `532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. Original scope is **WX-0059,
 WX-0285, WX-0455–WX-0456, WX-0459–WX-0460, WX-0655, WX-0720, WX-0722,
 WX-0756–WX-0757 and WX-0775**, with separate existing-requirement reviews of
@@ -39,14 +66,13 @@ Use `npm run safety:test`, `browser:safety`, `browser:quality` and
 `browser:sdk-quality` companion verifies the selected local SDK session.
 Acceptance records link actual reviewed evidence in the canonical catalog.
 
-Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+At that historical safety checkpoint, Agent 0 accepted **14 original local criteria** and the catalog recorded **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
 
-**Integrated verification passed: all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** The current safety QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed.
+**That safety checkpoint passed all 61 CI stages, 160 browser checks/check groups and Hosting preflight.** Its dated QA receipt records the source, retained reports, fixture corrections and local evidence limits. Production deployment was not performed; the current lifecycle result is recorded separately above.
 
-The [next parallel implementation plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-assigns sixteen still-TODO criteria: WX-0101–WX-0110, WX-0314–WX-0316 and
-WX-0379–WX-0381. HR lifecycle, CMS releases and CRM ownership work is isolated
-from this verified source checkpoint and requires its own browser/integration evidence.
+The current lifecycle section above records that subsequent wave's integrated
+source and its accepted local scope. The historical safety result is
+retained without extending its source or observation scope.
 
 ## Historical portal maturity implementation — 2026-10-15
 

@@ -1362,120 +1362,180 @@
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add effective-dated employment instances",
       "acceptance": "A fictional rehire creates a new employment instance while prior onboarding receipts remain attached to the original instance.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0102",
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a fictional employee transfer workflow",
       "acceptance": "A transfer preview shows previous and proposed department, manager and effective date before confirmation.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0103",
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add employment lifecycle transition reasons",
       "acceptance": "Each proposed leave, return or termination transition requires a sample reason and records the prior state.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0104",
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a simulated offboarding checklist",
       "acceptance": "Confirming fictional termination creates asset, access and handover assignments without calling external systems.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0105",
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a rehire comparison screen",
       "acceptance": "The screen distinguishes retained directory identity from new employment and onboarding requirements.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0106",
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a manager reassignment preview",
       "acceptance": "The preview lists affected direct-report scopes and prevents assigning an employee as their own manager.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0107",
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add organization chart cycle validation",
       "acceptance": "Creating a fictional reporting cycle is refused with the affected employee IDs shown.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0108",
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add directory field change history",
       "acceptance": "A saved directory edit displays old value, new value, actor preview and change sequence.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0109",
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a profile correction request flow",
       "acceptance": "An employee can propose a directory correction and HR can accept or reject it with a recorded outcome.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0110",
       "area": "hr-onboarding",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add onboarding template versions",
       "acceptance": "New hires receive the selected checklist version while existing completed onboarding retains its original version.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0111",
@@ -4008,40 +4068,58 @@
       "area": "cms-publishing",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a release bundle draft",
       "acceptance": "A publisher can collect several approved entries into a named local release without publishing them immediately.",
       "source": "src/cms/model.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0315",
       "area": "cms-publishing",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Validate release bundles before activation",
       "acceptance": "A release preview identifies stale approvals and duplicate routes and applies no entries if validation fails.",
       "source": "src/cms/model.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0314"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0316",
       "area": "cms-publishing",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Apply a local release bundle atomically",
       "acceptance": "Activating a valid sample release updates all included frozen publications or leaves the entire CMS state unchanged.",
       "source": "src/cms/model.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0315"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0317",
@@ -4815,40 +4893,58 @@
       "area": "crm-contacts",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add lead assignment simulation",
       "acceptance": "An owner or manager preview can reassign an unconverted lead and records both fictional assignees.",
       "source": "src/crm/model.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0380",
       "area": "crm-contacts",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Preview account ownership transfers",
       "acceptance": "The transfer preview lists linked contacts, opportunities and tasks and identifies every affected record before confirmation.",
       "source": "src/crm/CrmDemo.tsx",
       "gate": "local",
       "dependsOn": [
         "WX-0379"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0381",
       "area": "crm-contacts",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Apply account ownership transfers atomically",
       "acceptance": "A confirmed transfer updates all supported graph owners consistently or rejects the entire operation.",
       "source": "src/crm/model.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0380"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0382",
@@ -6010,12 +6106,18 @@
       "area": "mock-recovery",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Record the reason for each recovery point",
       "acceptance": "History distinguishes combined import, Undo, optional individual import, optional Reset and manual capture without inferring provider events.",
       "source": "src/portals/restore-points.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0468",
@@ -6265,12 +6367,18 @@
       "area": "mock-recovery",
       "priority": "P3",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Add storage-failure browser automation",
       "acceptance": "A controlled browser harness simulates unavailable storage and verifies visible refusal of destructive restore without changing the active workspace.",
       "source": "tests/portals",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec",
+        "evidence": "docs/PORTAL-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0488",

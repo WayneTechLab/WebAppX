@@ -2,9 +2,10 @@
 
 Planning date: **2026-10-15**. Status: **proposal for Agent 0 review; no
 implementation is authorized by this document**. The ten criteria below remain
-**TODO**. The current sixteen criteria, WX-0101–WX-0110, WX-0314–WX-0316 and
-WX-0379–WX-0381, are still in verification. Their isolated implementation is
-not accepted evidence for this proposed wave.
+**TODO**. The preceding sixteen criteria, WX-0101–WX-0110, WX-0314–WX-0316 and
+WX-0379–WX-0381, have since completed local integration and acceptance together
+with two recovery criteria; see the [lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md).
+Their evidence does not accept any of the ten recruiting criteria below.
 
 This is a proposed next slice under the
 [full execution plan](WEBAPPX-EXECUTION-PLAN.md), following the accepted safety
@@ -210,7 +211,7 @@ must review its exact type and selector placement.
 
 These are proposed lanes, not dispatched assignments. Agent 0 first reviews
 the schema authority, transition rules, role projections and compatibility
-policy. The current sixteen-item wave must finish its own verification and
+policy. The preceding sixteen-item wave completed its own verification and
 acceptance before its employment/template APIs are treated as a settled base.
 
 | Lane | Criteria and owned files | Shared integration boundary |

@@ -35,11 +35,34 @@ only read local catalog data. They do not dispatch agents, import task records,
 contact providers or change acceptance. `backlog:plan:render` explicitly writes
 the generated plan; `backlog:plan:check` verifies it without rewriting.
 
-### Portal safety and recovery — 2026-10-15
+### Current lifecycle checkpoint — locally accepted
+
+Read the [lifecycle guide](../docs/PORTAL-LIFECYCLE.md),
+[wiki walkthrough](../wiki/Portal-Lifecycle.md),
+[implementation plan](../docs/PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md) and
+[current QA receipt](../docs/PORTAL-LIFECYCLE-QA-2026-10-15.md). App source
+`458a045` and harness-only `fdf6012` cover HR employment lifecycle, CMS releases
+and CRM ownership. Run `npm run browser:portal-lifecycle` after normal setup.
+
+The standalone native journey passed **20/20 checks/check groups** on the final
+100-file runtime freeze, with **46 new status meanings, 22 accessible-name
+audits, 129 control boxes, 20 literal value probes and 22 Tab probes**.
+Targeted keyboard **9/9** and quality **6/6** runs passed after documented
+harness corrections. **Current verification is complete: all 62 CI stages and
+180 browser checks/check groups passed** on committed source
+`fdf60124e49659e9c33d30db59e45ff8369a38e1`, with terminal CI exit 0. Hosting
+preflight passed on the same final runtime before that harness-only commit;
+no deployment occurred. Agent 0 accepted the sixteen feature criteria plus
+audited **WX-0467/WX-0487**, eighteen local criteria in total. The catalog records
+**109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**, with **724 local,
+127 operator and 40 provider** gates remaining. Source and wiki publication require separate direct remote parity checks. The [next recruiting plan](../docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+is a design proposal for ten later criteria; implementation has not begun.
+
+### Historical portal safety and recovery — 2026-10-15
 
 Agent 0 accepted **WX-0059, WX-0285, WX-0455–WX-0456, WX-0459–WX-0460,
 WX-0655, WX-0720, WX-0722, WX-0756–WX-0757, WX-0775, WX-0847 and WX-0860**.
-The catalog records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**,
+At that historical checkpoint the catalog recorded **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**,
 with **742 local, 127 operator and 40 provider** gates remaining. Read the
 [implementation plan](../docs/PORTAL-SAFETY-IMPLEMENTATION-PLAN.md),
 [QA receipt](../docs/PORTAL-SAFETY-QA-2026-10-15.md),
@@ -47,12 +70,10 @@ with **742 local, 127 operator and 40 provider** gates remaining. Read the
 [status inventory](../docs/PORTAL-STATUS-INVENTORY.md) for exact local scope and
 separate integrated publication gates.
 
-The [next parallel implementation plan](../docs/PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-assigns WX-0101–WX-0110, WX-0314–WX-0316 and WX-0379–WX-0381 for HR lifecycle,
-CMS releases and CRM ownership. All sixteen remain TODO; the
-[detailed HR plan](../docs/HR-LIFECYCLE-IMPLEMENTATION-PLAN.md) retains its
-compatibility contract. No provider/operator acceptance or reusable task record
-is created by either plan.
+The current lifecycle section above records the subsequent integrated source
+and its accepted local scope. The [detailed HR plan](../docs/HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+retains its original compatibility contract. These host records create no
+provider/operator acceptance or reusable task records.
 
 The following checkpoints retain their historical dates and totals.
 
@@ -66,7 +87,7 @@ and 40 provider** gates remaining. Read the [maturity guide](../docs/PORTAL-MATU
 [QA receipt](../docs/PORTAL-MATURITY-QA-2026-10-15.md). Publication gates belong
 to that receipt; no provider or deployment acceptance follows from local tests.
 
-The subsequent safety/recovery assignment is accepted in the current checkpoint
+The subsequent safety/recovery assignment is accepted in the historical checkpoint
 above. Its receipt preserves the exact original criteria and manual-evidence boundaries.
 
 The following checkpoints retain their historical dates and totals.

@@ -3,10 +3,17 @@
 This contract describes the native, account-free HR, CMS and CRM demos. It
 addresses WX-0060 and WX-0601, including guarded navigation, controlled drafts,
 optional replacement checkpoints, sample payroll/time corrections and recovery
-inspection. This is a **current source contract**; the new safety behavior's
-execution and acceptance are recorded separately in the
-[safety QA receipt](PORTAL-SAFETY-QA-2026-10-15.md). A source description does not
-promote a preliminary run to final browser evidence.
+inspection, together with the optional employment lifecycle, CMS release and
+CRM ownership records integrated at `458a045`. This is a **current source
+contract** for that 100-file application implementation. The
+[safety QA receipt](PORTAL-SAFETY-QA-2026-10-15.md) retains its earlier scope;
+the [lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) records the new local
+evidence. Full configured CI subsequently passed on committed harness source
+`fdf60124e49659e9c33d30db59e45ff8369a38e1`, with the same 100 application
+sources. The dated receipt records Agent 0's acceptance of the sixteen new
+criteria and two recovery criteria. This source description alone supplies no
+additional browser observation or acceptance.
+
 A **saved draft** is a workspace record created by
 an application action, even when its workflow stage is still `draft`. An
 **unsaved input** is text or a selection still held by a form. Only workspace
@@ -25,9 +32,9 @@ only; preview identities do not provide authentication or provider authority.
 
 | Browser slot | Retained categories after a successful saved action |
 | --- | --- |
-| `webappx.demo.hr` | Onboarding profile/job/task checks, stages and receipts; edited synthetic work email and employee status; draft, submitted and approved time entries, including stopped timers added as records, saved date/hour corrections and manager return reasons/identity; optional effective-dated fictional hourly rate timelines; draft/reviewed/confirmed benefit elections; the current payroll simulation, chosen sample period, frozen dated/rated inputs, calculated totals and submitted payroll history; time-off requests, balances, task/policy/training/asset/document records and people-operation activity; service requests, assignments, resolution text and activity; recruiting draft/published/closed jobs, candidate details/stages/activity and linked hired employees; performance goals and saved private self/manager review comments, stages and activity; survey drafts, questions, audience IDs, saved draft and submitted identified answers, receipts and activity; completed fixture checklist keys and acknowledgements; selected management preview role and employee preview identity. |
-| `webappx.demo.cms` | All editorial entries: draft title/slug/body, current revision and status, author ID, reviewer feedback, approval revision/reviewer/receipt, and frozen published title/slug/body/revision/receipt where present; CMS action receipts/activity and sequence. Published snapshots remain readable beside later draft edits until replaced or retired by an application action. |
-| `webappx.demo.crm` | Fictional company names and owner IDs; contact names, email addresses, company/owner links; lead names, emails, company names, status and conversion links; opportunity titles, amounts, stages, company/contact/owner/lead links; follow-up task titles, owners, opportunity links and status; CRM activity receipts/descriptions and sequence. |
+| `webappx.demo.hr` | Onboarding profile/job/task checks, stages and receipts; edited synthetic work email and employee status; draft, submitted and approved time entries, including stopped timers added as records, saved date/hour corrections and manager return reasons/identity; optional effective-dated fictional hourly rate timelines; draft/reviewed/confirmed benefit elections; the current payroll simulation, chosen sample period, frozen dated/rated inputs, calculated totals and submitted payroll history; time-off requests, balances, task/policy/training/asset/document records and people-operation activity; service requests, assignments, resolution text and activity; recruiting draft/published/closed jobs, candidate details/stages/activity and linked hired employees; performance goals and saved private self/manager review comments, stages and activity; survey drafts, questions, audience IDs, saved draft and submitted identified answers, receipts and activity; completed fixture checklist keys and acknowledgements; selected management preview role and employee preview identity; optional selected manager identity and employment lifecycle instances, captured checklists, archived onboarding, transitions, directory history/correction requests/outcomes, and offboarding assignments with linked ordinary tasks. |
+| `webappx.demo.cms` | All editorial entries: draft title/slug/body, current revision and status, author ID, reviewer feedback, approval revision/reviewer/receipt, and frozen published title/slug/body/revision/receipt where present; CMS action receipts/activity and sequence; optional named release bundles, their status/creator/preparation and activation sequences, approved member content/approval/prior-publication snapshots and activated publication captures. Published snapshots remain readable beside later draft edits until replaced or retired by an application action. |
+| `webappx.demo.crm` | Fictional company names and owner IDs; contact names, email addresses, company/owner links; lead names, emails, company names, status and conversion links; opportunity titles, amounts, stages, company/contact/owner/lead links; follow-up task titles, owners, opportunity links and status; CRM activity receipts/descriptions and sequence; optional ownership-change metadata recording the acting identity, old/new assignees, target record and affected company/contact/lead/opportunity/task ID references. |
 | `webappx.demo.restore-points` | Complete **current record snapshots for the selected portals only**, captured manually, before combined selective restore/Undo, or before individual import/Reset when its separate checkpoint option is enabled; point ID, UTC creation time, `manual`/`restore`/`undo`/`import`/`reset` kind, selected module IDs, optional label and (for Undo) source point ID. These snapshots can contain all of the private mock drafts and fictional contact details listed above. They contain no unsaved forms or running timers. |
 | `webappx.demo.recovery-preferences` | Separate schema-version-1 booleans `beforeImport` and `beforeReset`, shared by native portals at this origin. Both are off when the slot is absent. Explicit setting changes persist both choices; workspace exports and restore-point snapshots exclude them. Unreadable or malformed settings are an error, rather than evidence that either option is off. |
 
@@ -39,6 +46,8 @@ The native schemas are defined by
 [`persistence helpers`](../src/portals/persistence.ts) enforce a 2,000,000
 serialized-character limit per workspace envelope. This is a character count,
 not a quota promise in bytes. Browser quota can reject a smaller save.
+Optional captures count toward the same workspace/history character budgets;
+they do not establish a second storage allowance.
 
 ## Temporary UI and navigation
 
@@ -94,13 +103,17 @@ matches the shell-validated supported owner pathname. An unsupported observed
 descendant cannot replace the validated owner destination.
 
 HR registers meaningful profile, manual-time/timer/correction/return, period/rate,
-leave, request, recruiting, performance and survey form groups. Its role/identity
-changes and affected record-local actions guard the corresponding scope. CMS
-registers the editor, create form and separate per-entry feedback, including
-hidden author inputs. CMS identity switching itself retains these controlled
-buffers. CRM registers controlled lead, conversion amount, company, contact,
-opportunity and follow-up drafts; tab and preview-identity changes guard the
-affected CRM groups. Filters, messages and persisted records are not dirty work
+leave, request, recruiting, performance and survey form groups. New groups cover
+employment simulation date, template selection, transfer, reasoned transition,
+rehire, directory edit, correction proposal and correction outcome. Its
+role/identity changes and affected record-local actions guard the corresponding
+scope. CMS registers the editor, create form and separate per-entry feedback,
+including hidden author inputs, plus the new release name/member-selection form.
+CMS identity switching itself retains these controlled buffers. CRM registers
+controlled lead, conversion amount, company, contact, opportunity and follow-up
+drafts, plus lead-assignment and account-transfer selections; tab and
+preview-identity changes guard the affected CRM groups. Filters, messages and
+persisted records are not dirty work
 by themselves. Each successful accepted action synchronously rebases its own
 form group, including accepted memory-only actions, so it does not prompt for
 already accepted work or erase another form's draft. Validation/refusal keeps
@@ -109,15 +122,15 @@ and [React integration](../src/portals/unsaved-work.tsx).
 
 | Portal | Survives switching to another portal or the directory in the same document | Clears or changes during ordinary navigation | After a successful combined restore or Undo that selects this portal |
 | --- | --- | --- | --- |
-| HR | Workspace records and saved management role/employee identity remain. After an offered Leave and keep draft decision, the last supported subpage's mounted inputs, timer, filters/selections/messages and backup preview remain across portal/directory switches. | A guarded same-portal subpage or role/identity transition can unmount its previous forms after Discard; Keep preserves them. Reset/import generation changes clear affected local UI after acceptance. Unguarded local filters/selections still follow their owning component lifetime. A canceled timer creates no time entry. | The native HR view remounts at the remembered supported pathname with restored records. Its unsaved forms, timer, selections/messages and individual-backup preview clear. Management role and employee identity come from the restored saved records. |
-| CMS | Preview identity, selection, collection/search filters, create/editor/per-entry feedback buffers, messages and backup preview remain during retained portal navigation. Create/edit buffers survive switching identity away from author and back; hidden author edits are labeled temporary. | Dirty entry selection has its separate **Keep editing** / **Discard changes and switch** choice. Keep returns to the editor or its recovery comparison; Discard drops that editor buffer and selects the target. Clean entry selection switches directly. Successful save clears only its editor buffer, successful create clears its create form, and successful return clears that entry's feedback. Reload/shell exit clears all temporary state. | CMS resets author/filters/search/create/feedback/backup state, but retains the editor's exact raw unsaved text in a volatile slot. If meaningful dirty text predates the accepted replacement, a comparison requires explicit reload/reapply before ordinary editing/save. The edited entry is selected when present; otherwise the normal sample/first available entry is used and missing-entry recovery is shown. |
-| CRM | Preview identity, active tab and controlled drafts survive retained portal navigation. The mounted tab keeps lead/company/contact/opportunity/follow-up inputs and conversion amounts, local selections, feedback and backup preview. | Tab and identity changes ask about affected dirty groups before their keyed content unmounts. Keep cancels the change; Discard resets those drafts then changes view. Opportunity company change resets its dependent contact selection. Successful actions rebase only their submitted form. Reload/shell exit starts owner preview and Dashboard. | CRM returns to owner preview/Dashboard with restored records; selected replacement clears its controlled drafts, local selections/feedback and backup preview. |
+| HR | Workspace records and saved management role/employee identity, plus an explicitly saved optional manager identity, remain. After an offered Leave and keep draft decision, the last supported subpage's mounted inputs, timer, filters/selections/messages and backup/lifecycle/correction previews remain across portal/directory switches. | A guarded same-portal subpage or role/identity transition can unmount its previous forms after Discard; Keep preserves them. Reset/import generation changes clear affected local UI after acceptance. Unguarded local filters/selections, including the lifecycle employee chooser, still follow their owning component lifetime. A canceled timer creates no time entry. | The native HR view remounts at the remembered supported pathname with restored records. Its unsaved forms, timer, selections/messages and individual-backup/lifecycle/correction previews clear. Management role, employee identity and any optional manager selection come from restored records, with a derived manager default when the optional field is absent. |
+| CMS | Preview identity, selection, collection/search filters, create/editor/per-entry feedback buffers, release name/member choices, messages and backup/release previews remain during retained portal navigation. Create/edit buffers survive switching identity away from author and back; hidden author edits are labeled temporary. | Dirty entry selection has its separate **Keep editing** / **Discard changes and switch** choice. Keep returns to the editor or its recovery comparison; Discard drops that editor buffer and selects the target. Clean entry selection switches directly. Successful save clears only its editor buffer, successful create clears its create form, successful return clears that entry's feedback, and accepted release preparation cleans its release form. Reload/shell exit clears all temporary state. | CMS resets author/filters/search/create/feedback/release-form/preview/backup state, but retains the editor's exact raw unsaved text in a volatile slot. If meaningful dirty text predates the accepted replacement, a comparison requires explicit reload/reapply before ordinary editing/save. The edited entry is selected when present; otherwise the normal sample/first available entry is used and missing-entry recovery is shown. |
+| CRM | Preview identity, active tab and controlled drafts survive retained portal navigation. The mounted tab keeps lead/company/contact/opportunity/follow-up inputs and conversion amounts, ownership selections/previews, local selections, feedback and backup preview. | Tab and identity changes ask about affected dirty groups before their keyed content unmounts. Keep cancels the change; Discard resets those drafts then changes view. Opportunity company change resets its dependent contact selection. Successful actions rebase only their submitted form. Canceling an ownership preview retains its temporary choices without accepting records. Reload/shell exit starts owner preview and Dashboard. | CRM returns to owner preview/Dashboard with restored records; selected replacement clears its controlled drafts, ownership previews, local selections/feedback and backup preview. |
 
 All unsaved fields, live timer metadata, temporary filters, tab selections and
 CMS/CRM preview identities in the table are excluded from `localStorage`, JSON
-workspace downloads and restore points. HR's management role and employee
-identity are the explicit saved-selection exception. A reload clears temporary
-UI even when saved workspace records return.
+workspace downloads and restore points. HR's management role, employee identity
+and optional manager identity are the explicit saved-selection exceptions. A
+reload clears temporary UI even when saved workspace records return.
 
 CMS validates controlled create/edit drafts before a saved action. Invalid
 submissions retain the buffer, identify field errors, and focus the first
@@ -162,7 +175,7 @@ are in [`CmsDemo`](../src/cms/CmsDemo.tsx) and
 | Action | Workspace records and saves | Temporary UI | Recovery history |
 | --- | --- | --- | --- |
 | Successful native action | Updates the current workspace and writes its complete envelope synchronously in the action turn. Other portal saves are separate. | Action-specific; a successful create/save can reset its controlled buffer, and identity or record keys can remount affected forms. | No automatic point. |
-| Single-portal import | Validates and saves a complete replacement before accepting it in memory. Its confirmation binds current records, incoming data and reviewed preferences; enabled checkpoints also bind history. Other portal records stay unchanged. | On success, importing forms reset. CMS returns to author/all collections/empty search and retains only its editor buffer for explicit comparison; CRM returns to owner/Dashboard. HR restores saved role/employee selections. A refusal leaves the existing UI/records open. | Known-off: no point. Enabled: first saves a selected-portal point with kind `import`, labeled **Before [HR/CMS/CRM] individual import**, then saves the replacement. |
+| Single-portal import | Validates and saves a complete replacement before accepting it in memory. Its confirmation binds current records, incoming data and reviewed preferences; enabled checkpoints also bind history. Other portal records stay unchanged. | On success, importing forms reset. CMS returns to author/all collections/empty search and retains only its editor buffer for explicit comparison; CRM returns to owner/Dashboard. HR restores saved role/employee selections and any optional manager selection. A refusal leaves the existing UI/records open. | Known-off: no point. Enabled: first saves a selected-portal point with kind `import`, labeled **Before [HR/CMS/CRM] individual import**, then saves the replacement. |
 | Portal Reset | Recreates that portal's fictional seed and removes only its workspace slot. Known-off preserves the original one-click/memory-only-removal-failure semantics. Enabled requires its reviewed confirmation and successful checkpoint/removal before accepting the seed. | Accepted Reset clears affected forms/timers; HR restores seed role/employee selections; CMS clears its volatile editor and other forms; CRM returns to Dashboard and preserves its preview identity. | Existing history is retained, subject to normal oldest-point pruning only when a new required capture is added. Known-off creates no point. Enabled adds kind `reset`, labeled **Before [HR/CMS/CRM] Reset**. Older points can still reintroduce reset records through Undo. |
 | Create named restore point | Captures the complete current in-memory records of explicitly selected portals, including seeds or accepted memory-only changes. Does not import, apply or write any workspace slot. | Does not advance portal revision keys; mounted forms, timers and selections remain. | Writes history alone with kind `manual` and a required trimmed, single-line label of 1–100 characters. Preview shows projected character use and pruning. Uses the same 5-point/2,000,000-character budget as automatic captures. |
 | Rename point | Changes only the persisted label of the selected existing point. Its ID, creation time, kind, scope, captured records and source-point link remain exact. Workspace slots remain unchanged. | Does not advance portal revision keys. | Writes history alone. Does not recreate, reorder or prune captures; an oversized or invalid label is refused. |
@@ -239,18 +252,109 @@ explicit period and rates before it can continue. Legacy submitted statements
 retain the historical fixed-period fallback. All calculations are fictional
 local examples, outside provider payroll, funding, tax or legal acceptance.
 
+## Lifecycle captures and source fixture authority
+
+The [lifecycle workflow guide](PORTAL-LIFECYCLE.md) explains the controls. These
+extensions add accepted records without converting a preview into a saved
+action. Form values, chosen preview targets, readiness/refusal reports and
+confirmation tokens remain temporary. Canceling or refusing a preview creates
+no lifecycle record, release activation or ownership receipt. A pending HR
+correction request or a prepared CMS release whose status is `draft` is already
+an accepted workspace record; it is different from an unsent request form or
+an unprepared release name/member selection.
+
+### HR employment and directory records
+
+Optional `workflow.lifecycle` contains explicit simulation date/sequence and
+template selection, employment instances with initial/current status,
+department, job title and manager snapshots, active-instance links, captured
+versioned checklist definitions, archived prior onboarding payloads, ordered
+events with previous/proposed values and reasons, work-email history,
+correction requests/outcomes, and captured offboarding assignments.
+`workflow.onboarding` remains the only editable active onboarding payload.
+Rehire retains the directory employee ID and archives the previous instance's
+onboarding/receipt before creating a fresh incomplete captured checklist.
+Existing balances, rates, benefits, frozen payroll and consumed time remain;
+rehire does not silently reset those records. Termination captures three local
+asset/access/handover assignments and linked ordinary people-operation tasks.
+The capture's historical `assigned` status is separate from its task's later
+completion. No physical asset or external access is changed.
+
+The checked-in raw HR fixture and immutable captured hires establish source
+identity and original assignment. A single effective fixture combines that
+source with accepted hired records, profile/status changes and current lifecycle
+assignments for both display and native role checks. An already overlaid display
+projection cannot replace raw source authority during validation. Manager
+changes alter current report scope and must preserve unfinished-review
+relationships; imports enforce the same relationship. The optional
+`selectedManager` is a saved preview choice, not an authenticated identity.
+
+Static template definitions remain source data; an instance stores its actual
+captured task definitions/version. Later template selection affects subsequent
+hires/rehires without rewriting earlier flags or receipts. Reading an older
+workspace can project its legacy view without adding lifecycle fields or
+inventing dates. Legacy starts/completions may remain unknown. New simulation
+and effective dates are explicit accepted inputs, with no real-clock scheduler.
+Directory correction requests retain old/proposed email and acting identity;
+acceptance records the outcome and directory change together, while rejection
+records its reason and leaves the current email unchanged. These readable mock
+values remain in complete saves/history even though inspection hides them.
+See [lifecycle types](../src/hr/lifecycle-types.ts),
+[lifecycle operations](../src/hr/lifecycle.ts),
+[captured templates](../src/hr/recruiting.ts) and
+[HR validation](../src/hr/persistence.ts).
+
+### CMS releases and CRM ownership
+
+Optional `releaseBundles` retains named draft/activated bundles. Each member
+captures approved content, entry/collection/author identity, exact revision,
+reviewer/approval receipt and previous frozen publication; activated bundles
+also retain their accepted publication snapshots and activation sequence.
+Preparation saves these captures without changing publications or ordinary
+action receipts. Read-only activation preview does not write. Confirmation
+rechecks the latest complete workspace, publisher identity and every captured
+member, then accepts all publications/receipts together or none. A valid stale
+draft bundle may remain saved/importable while being ineligible to activate.
+Local activation does not deploy a public website. See
+[release types](../src/cms/release-types.ts) and
+[release operations](../src/cms/release-bundles.ts).
+
+CRM `assign-lead` and `transfer-account` activity requires structured
+`ownershipChange`: acting identity, old/new owner IDs, target record ID and
+affected company/contact/lead/opportunity/task ID lists. Older valid activity
+without the field stays unchanged. Transfer covers the complete explicit
+linked graph, including converted leads and closed/completed work; company-name
+text alone creates no link. Only a canonical owner or manager may preview a
+complete validated workspace. Confirmation binds the latest full state, actor
+and selection; stale/no-op/conflicting or over-limit choices accept no partial
+result. Existing activity keeps its recorded ownership and text after transfer.
+See [CRM ownership](../src/crm/ownership.ts) and
+[strict CRM validation](../src/crm/persistence.ts).
+
 ## Captured detail and structured differences
 
 **Inspect captured records** reads a selected point without applying it.
 [`workspace-inspection`](../src/portals/workspace-inspection.ts) and
 [`WorkspaceInspection`](../src/portals/WorkspaceInspection.tsx) provide complete
 HR/CMS/CRM collection counts and bounded stable identifiers. HR includes nested
-onboarding/payroll/rate, service, recruiting, performance and survey collections;
-CMS includes approval and frozen-publication snapshots; CRM includes every saved
-entity and activity collection. Maps count by key; current payroll counts once
+onboarding/payroll/rate, service, recruiting, performance and survey collections,
+plus captured optional employment instances, archived onboarding/checklist flags,
+lifecycle events/values, directory history/corrections/outcomes and offboarding
+assignments. CMS includes approval and frozen-publication snapshots and any
+release bundles with their nested members, approvals, previous publications and
+activated publication captures. CRM includes every saved entity/activity
+collection and any nested ownership-change captures/affected ID references.
+Maps count by key; current payroll counts once
 even when idle. Nested records/containers are separate from primary totals.
 Preview flags, saved selections and sequence counters are metadata, excluded
 from entity totals. Static fixture directories are not captured record instances.
+Captured template tasks and archived onboarding are inspected from their saved
+payloads, without substituting current fixture defaults. Missing optional
+collections remain missing; reading legacy records does not manufacture an
+extension. Comparisons include optional collections in both directions,
+including supported absent-versus-present-empty metadata, while preserving
+stable identified collection ordering. New nested captures and ID references
+do not inflate primary record totals.
 
 Selective restore and Undo show current-to-target added, removed and changed
 entity counts for selected modules before confirmation. Identity determines
@@ -268,6 +372,13 @@ opportunity differences show bounded owner and linked company/contact/lead/
 opportunity IDs plus lead state or opportunity stage. Added/removed metadata
 uses an explicit absent side. Per-category detail rows share the eight-ID default
 limit and exact omitted counts; full hidden payloads still decide changes.
+Lifecycle details additionally allowlist instance/employee/manager IDs, explicit
+dates, event/field/status labels, acting role/identity and counters. Release
+details allowlist workflow state, creator/member/collection/author IDs,
+preparation/activation sequences and approval/publication revisions/receipts.
+Ownership details allowlist actor/old/new/target IDs and affected reference
+counts. These additions display no email values, template titles, release body
+text, correction reasons or ownership record labels.
 
 The detail/difference panels expose identifiers, counts and that allowlisted
 structured metadata, without names, emails, titles, body text, comments,
@@ -278,6 +389,11 @@ The underlying
 restore point and downloaded backup still contain readable complete fictional
 records. Inspection is not anonymization, authentication or authorization, and
 has no restore/write/activity side effects.
+Complete optional records remain subject to their domain validators before
+import, restore or Undo. Their absence is compatible with legacy saves; a
+malformed present extension is not a reason to synthesize defaults or fall back
+to a legacy interpretation. A valid capture's presence establishes retained
+data, not current workflow readiness or authority to apply it.
 
 Undo confirmation binds the complete point used by the displayed preview.
 Before writing, it rereads persisted history and requires the same point ID and
@@ -352,6 +468,20 @@ rendering, controlled rare-state fixtures and monochrome boundaries. The
 storage faults and real uploads/downloads to compare current memory, saved slots
 and history. Consult the dated receipt for which executions are complete; these
 source links alone establish no new browser, accessibility or provider result.
+
+The integrated lifecycle implementation at `458a045` has separate standalone
+native evidence in the [lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md):
+**20/20 browser checks/check groups** and **46/46 new status meanings**, bound to
+its final 100-source runtime freeze. The new status inventory is separate from
+the historical native and SDK inventories. The subsequent current integrated
+receipt also passes 20 checks/groups and binds the current committed harness;
+all 46 status PNGs are byte-identical to the individually reviewed witnesses.
+The full configured **62-stage CI gate passed** at
+`fdf60124e49659e9c33d30db59e45ff8369a38e1`. The
+[lifecycle guide](PORTAL-LIFECYCLE.md) describes the user flows. The dated QA
+receipt qualifies the separate final-runtime Hosting preflight, accepted local
+criteria and publication boundaries. Earlier dated receipts keep their original
+bytes and observation scope.
 
 This is a current source contract. Dated QA receipts retain their original
 source and observation scope; updating this guide does not refresh a historical

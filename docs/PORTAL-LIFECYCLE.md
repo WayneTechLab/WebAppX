@@ -1,10 +1,13 @@
 # Account-free employment, release and ownership workflows
 
-Status: **implemented source guide; integrated verification and acceptance are
-pending**. This guide describes the current isolated implementation of HR
-employment lifecycle, CMS release bundles and CRM ownership transfers. The
-forthcoming QA receipt will record actual execution and remaining gates when it
-exists. This document supplies no completion, deployment or provider acceptance.
+Status: **locally accepted source guide; verification complete**.
+This guide describes the integrated HR employment lifecycle, CMS
+release bundles and CRM ownership transfers at app source `458a045`, followed
+by harness-only `fdf6012`. The [current QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md)
+records standalone and integrated execution with their limits. All 62 CI stages
+passed on committed source `fdf60124e49659e9c33d30db59e45ff8369a38e1`; Agent 0
+recorded the eighteen local criteria in the catalog. This does not establish
+main/wiki publication, production deployment or provider acceptance.
 
 Use fictional information only. Start `npm run dev:mock`, open the exact local
 origin printed by the command and choose `/portals`. No account is required for
@@ -117,8 +120,10 @@ The directory employee ID and contact details persist. Rehire creates a new
 employment instance with a fresh incomplete checklist from the selected version.
 The prior onboarding payload and receipt remain archived on the prior instance.
 **Employment instances and captured onboarding** and **Employment lifecycle
-history** distinguish those records. The new instance becomes active only after
-its own reviewed checklist is completed and confirmed.
+history** distinguish those records. The new instance becomes the current
+instance immediately, with employment status **Onboarding**. Its employment
+status becomes **Active** only after its own reviewed checklist is completed
+and confirmed.
 
 Rehire keeps existing leave balances, fictional hourly rate timelines and benefit
 elections unchanged. Unconfigured rates remain unconfigured. No hourly cadence
@@ -266,6 +271,34 @@ authentication, server authorization and provider adoption remain separate work.
 The [wave implementation plan](PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md) retains
 the sixteen original criteria and dependencies. The
 [HR lifecycle contract plan](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md) records the
-design boundaries. This guide describes current controls and source behavior;
-integrated verification, browser evidence and acceptance are pending. Consult
-the eventual QA receipt for actual results when it is published.
+design boundaries. Run the dedicated native journey after explicit Chromium
+installation:
+
+```bash
+npm run hr:test
+npm run portals:test
+npm run browser:portal-lifecycle
+```
+
+The [current lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) records the
+standalone **20/20 checks/check groups** on a freeze of **100 runtime sources**,
+with digest
+`48fb5c3a1b0aeebbb6d52f982aa95c5689c9c26b1b9e325c8c39b0b4a99d4882`.
+Its separate quality inventory covers **46 new status meanings**, **22 semantic
+accessible-name audits**, **129 control boxes**, **20 caller-literal input-value
+probes** and **22 Tab-reachability probes**. Targeted keyboard **9/9** and
+quality **6/6** runs passed after actual native-picker focus observation and
+literal profile-history fixture corrections. These figures describe their
+retained scenarios; they are not global coverage or manual accessibility claims.
+
+**Current verification is complete: all 62 CI stages passed with terminal exit
+0 on `fdf60124e49659e9c33d30db59e45ff8369a38e1`.** Independent report review
+confirmed **180 actual browser checks/check groups**. Hosting preflight passed on
+the same final runtime before that harness-only commit; deployment was skipped.
+Agent 0 accepted all sixteen feature criteria and the separately audited
+**WX-0467/WX-0487**, eighteen original local criteria. The catalog records
+**109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**, with **724 local,
+127 operator and 40 provider** gates remaining. Source and wiki publication require separate direct remote parity checks.
+The [next ten recruiting criteria](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+have a design proposal only; implementation has not begun. Earlier dated QA
+receipts retain their original sources and observation scopes.
