@@ -4,10 +4,12 @@ export type MockOnboarding = { profileReviewed: boolean; jobReviewed: boolean; t
 export type MockTimeEntry = HrRecord & { employeeId: string; date: string; hours: number; status: 'draft' | 'submitted' | 'approved'; source: 'manual' | 'timer' | 'fixture'; payrollReceipt?: string }
 export type MockBenefitElection = { employeeId: string; planId: string; election: 'enroll' | 'waive'; stage: 'draft' | 'reviewed' | 'confirmed'; receipt?: string }
 export type MockTimer = { employeeId: string; role: HrActor['role']; date: string; startedAt: number }
+export type MockPayrollEmployeeTotal = { employeeId: string; hours: number; grossCents: number; illustrativeWithholdingCents: number; benefitDeductionCents: number; netCents: number }
 export type MockPayroll = {
   stage: 'idle' | 'prepared' | 'calculated' | 'reviewed' | 'submitted';
   inputs: { entryId: string; employeeId: string; hours: number; rateCents: number }[];
   benefitInputs: { employeeId: string; planId: string; deductionCents: number }[];
+  employeeTotals: MockPayrollEmployeeTotal[];
   hours: number; grossCents: number; illustrativeWithholdingCents: number; benefitDeductionCents: number; netCents: number; receipt?: string;
 }
 export type MockHrState = { onboarding: Record<string, MockOnboarding>; profileEmails: Record<string, string>; employeeStatuses: Record<string, string>; timeEntries: MockTimeEntry[]; benefitElections: MockBenefitElection[]; payroll: MockPayroll; payrollHistory: MockPayroll[]; sequence: number }
@@ -22,7 +24,7 @@ export type MockHrEvent =
   | { type: 'review-benefit' | 'confirm-benefit'; planId: string }
   | { type: 'prepare-payroll' | 'calculate-payroll' | 'review-payroll' | 'submit-payroll' }
 
-const blankPayroll = (): MockPayroll => ({ stage: 'idle', inputs: [], benefitInputs: [], hours: 0, grossCents: 0, illustrativeWithholdingCents: 0, benefitDeductionCents: 0, netCents: 0 })
+const blankPayroll = (): MockPayroll => ({ stage: 'idle', inputs: [], benefitInputs: [], employeeTotals: [], hours: 0, grossCents: 0, illustrativeWithholdingCents: 0, benefitDeductionCents: 0, netCents: 0 })
 export const MOCK_HOURLY_RATE_CENTS = 3000
 export const MOCK_WITHHOLDING_RATE = 0.2
 export const MOCK_BENEFIT_DEDUCTION_CENTS = 2500
@@ -177,10 +179,19 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     }
   } else if (event.type === 'calculate-payroll') {
     if (next.payroll.stage !== 'prepared') throw new Error('Prepare approved sample inputs before calculation.')
-    next.payroll.grossCents = Math.round(next.payroll.inputs.reduce((sum, input) => sum + input.hours * input.rateCents, 0))
-    next.payroll.illustrativeWithholdingCents = Math.round(next.payroll.grossCents * MOCK_WITHHOLDING_RATE)
-    next.payroll.benefitDeductionCents = Math.min(next.payroll.grossCents - next.payroll.illustrativeWithholdingCents, next.payroll.benefitInputs.reduce((sum, input) => sum + input.deductionCents, 0))
-    next.payroll.netCents = next.payroll.grossCents - next.payroll.illustrativeWithholdingCents - next.payroll.benefitDeductionCents
+    next.payroll.employeeTotals = [...new Set(next.payroll.inputs.map(input => input.employeeId))].map(employeeId => {
+      const inputs = next.payroll.inputs.filter(input => input.employeeId === employeeId)
+      const hours = inputs.reduce((sum, input) => sum + input.hours, 0)
+      const grossCents = Math.round(inputs.reduce((sum, input) => sum + input.hours * input.rateCents, 0))
+      const illustrativeWithholdingCents = Math.round(grossCents * MOCK_WITHHOLDING_RATE)
+      // An employee's election may consume only their own available sample pay.
+      const benefitDeductionCents = Math.min(grossCents - illustrativeWithholdingCents, next.payroll.benefitInputs.filter(input => input.employeeId === employeeId).reduce((sum, input) => sum + input.deductionCents, 0))
+      return { employeeId, hours, grossCents, illustrativeWithholdingCents, benefitDeductionCents, netCents: grossCents - illustrativeWithholdingCents - benefitDeductionCents }
+    })
+    next.payroll.grossCents = next.payroll.employeeTotals.reduce((sum, employee) => sum + employee.grossCents, 0)
+    next.payroll.illustrativeWithholdingCents = next.payroll.employeeTotals.reduce((sum, employee) => sum + employee.illustrativeWithholdingCents, 0)
+    next.payroll.benefitDeductionCents = next.payroll.employeeTotals.reduce((sum, employee) => sum + employee.benefitDeductionCents, 0)
+    next.payroll.netCents = next.payroll.employeeTotals.reduce((sum, employee) => sum + employee.netCents, 0)
     next.payroll.stage = 'calculated'
   } else if (event.type === 'review-payroll') {
     if (next.payroll.stage !== 'calculated') throw new Error('Calculate fictional totals before review.')

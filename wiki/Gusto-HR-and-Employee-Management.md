@@ -12,8 +12,8 @@ and the [portable package](https://github.com/WayneTechLab/WebAppX/tree/main/.SY
 | --- | --- | --- |
 | HR entry | `/hr` | Connection requirements and preview navigation |
 | Management preview | `/hr/demo/admin` | Employee directory, onboarding review, read-only benefit catalog and staged fictional payroll |
-| Employee preview | `/hr/demo/employee` | Own synthetic profile, onboarding checklist, benefit election, timesheet and time-off requests |
-| Manager preview | `/hr/demo/manager` | Scoped team records, submitted timesheet review and sample time-off approvals |
+| Employee preview | `/hr/demo/employee` | Own profile, onboarding, benefits, time/leave, assignments, simulated pay receipts and HR help desk |
+| Manager preview | `/hr/demo/manager` | Scoped team records, time/leave review, assignment/asset actions and direct-report service requests |
 | Contractor preview | `/hr/demo/contractor` | Separate fictional profile, onboarding and payment previews |
 | Gusto SDK preview | `/hr/demo/sdk` in `npm run dev` | Genuine directory, admin onboarding and payroll components with local synthetic sessions |
 | Connected portals | `/admin/hr`, `/employee`, `/manager/hr`, `/contractor` | Guarded; live integration remains unconfigured in the reusable template |
@@ -63,7 +63,57 @@ needed. The role selector remains a synthetic fixture control. See
 [the step-by-step setup guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md)
 for the exact routes and completion checks.
 
-## Browser verification — 2026-10-14
+## Additional native portal workflows
+
+These native workflows extend the browser-memory host preview. The selected
+paths passed the portal browser verification below; the earlier core-flow
+receipt retains its original scope.
+
+| Area | Workflow and boundary |
+| --- | --- |
+| Leave | Request, approve, reject or cancel vacation/sick leave. Fixed grants are 40 vacation/24 sick hours per employee; pending/approved requests reserve them. New requests count eight hours per inclusive UTC weekday, reject overlapping date ranges and insufficient balances, and have no accrual/holiday/partial-day policy. |
+| Assignments | Complete scoped tasks/training; the assigned person acknowledges their own policy or eligible non-tax document metadata. Sample policy/training links update only matching assignments, without completing hiring. These actions are not legal signing or certification. |
+| Assets | Acknowledge an assignment, request return and obtain scoped manager/owner/HR return confirmation; no equipment is moved. |
+| People activity | View scoped `MOCK-PEOPLE-...` operation receipts and status changes. |
+| Dashboards/reports | Derive workforce and native workflow counts for the selected role. Compensation amounts stay with owner/payroll admin or an employee's own pay. |
+| Pay statements | After native simulated submission, `/hr/demo/employee/paystubs` projects own receipt-linked approved hours and employee totals. Benefit deductions are capped to that employee's available sample pay and reconcile to run totals. Historical fixture statements are separate. |
+| Service desk | Employee creates an equipment/access/general HR request. A direct-report manager or owner/HR assigns, starts, resolves and can reopen it; employees read their own status. The cases page is not exposed to auditors. |
+
+New `/hr/demo/employee/requests`, `/hr/demo/manager/requests` and scoped activity
+routes belong to WebAppX. The portable SYSTEMX **64-page** contract and managed
+alpha.6 fingerprints remain unchanged. Requests, balances, activity and statements
+reset with the native session; they neither call Gusto nor feed the separate SDK
+fixture. Read the [native portal walkthrough and production gaps](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md#native-people-operations-and-service-desk)
+and [HR portal guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL.md)
+for actor scopes and step-by-step use. Auditors use scoped activity, reports and
+payroll metadata without compensation amounts. Real staff use still needs authenticated
+server authorization, persistent records, actual leave policies, controlled
+documents/fulfillment and accepted provider payroll integrations.
+
+### Current portal verification — 2026-10-14
+
+After a full reload, the native browser check verified policy/task/onboarding
+links, non-tax document acknowledgment, training and manager-confirmed asset
+return. October 19–20 produced 16 leave hours; overlap was refused and scoped
+decisions/cancellation restored the 40-hour vacation balance. Avery and Morgan
+completed the seven-action request cycle while Jordan saw no requests.
+
+Avery's confirmed health enrollment and approved eight hours produced
+`MOCK-PAYROLL-0003`: $240 gross, $48 illustrative withholding, $25 benefit and
+$167 net. Her self-service statement matched the same totals and time/plan
+inputs; Jordan saw no statement. Owner reports reconciled the receipt and leave
+decisions. Auditor reports/history showed metadata without currency amounts or
+mutation controls.
+
+The current automated HR suite passes **70 tests**: 17 native workflow,
+9 people operations, 7 insights, 7 linked operations, 5 service desk,
+11 SDK-client mock and 14 backend boundary checks. Read the
+[portal QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md)
+for the exact browser and test scope. The earlier 41-test browser receipt below
+remains historical. The SDK UI was not rerun; native state does not modify its
+fixture or establish real provider, legal, tax, benefits or payroll acceptance.
+
+## Earlier browser verification — 2026-10-14
 
 The [full browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-BROWSER-QA-2026-10-14.md)
 records the linked native mock on macOS Apple Silicon, with Firebase
@@ -78,7 +128,7 @@ Version remains **3.4.0** for these fixes.
 | Waiver and employee isolation | Avery's confirmed health waiver and approved eight hours produced $192 net and `MOCK-PAYROLL-0007`. Jordan's receipted hours and enrollment were excluded from Avery's run; both receipts remained visible. |
 | Timer ownership | Timers retain their original employee, role and work date. Identity/role changes or Reset cancel them; stopping with the original identity keeps the starting date even if the date field changed. |
 
-`npm run hr:test` passed **41 tests**: 16 native model/workflow, 11 SDK-client
+At that checkpoint, `npm run hr:test` passed **41 tests**: 16 native model/workflow, 11 SDK-client
 mock and 14 optional backend boundary tests. Model regressions also verify that
 unchanged profile saves preserve review and later contact edits preserve completed
 hiring and its historical receipt. The October 13 release receipt's

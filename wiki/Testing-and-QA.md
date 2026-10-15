@@ -45,8 +45,10 @@ npm run ci:audit
 npm run build
 ```
 
-Consult the [2026-10-14 browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-BROWSER-QA-2026-10-14.md)
-for the native HR fixes and their checked results. The original
+Consult the [HR portal QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md)
+for the current portal wave's source, test and browser evidence boundaries. The
+earlier [2026-10-14 browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-BROWSER-QA-2026-10-14.md)
+retains the native HR fixes and historical 41-test checkpoint. The original
 [3.4.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.4.0.md)
 retains its October 13 revision and historical 39-test HR result. The historical
 [3.2.0 release receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.2.0.md)
@@ -75,7 +77,51 @@ and webhook foundation boundaries. It uses local fixtures and app/backend code;
 it does not contact Gusto or establish Firebase deployment acceptance.
 `hr:backend:audit` audits the isolated optional functions package's dependencies.
 
-### Native browser verification — 2026-10-14
+### Current portal automated checks
+
+`npm run hr:test` passes **70 tests**:
+
+| Group | Tests |
+| --- | ---: |
+| Native model/workflow | 17 |
+| People operations and PTO | 9 |
+| Scoped insights and pay statements | 7 |
+| Linked policy/training assignments | 7 |
+| HR service desk | 5 |
+| SDK-client mock contracts | 11 |
+| Optional backend boundaries | 14 |
+
+These checks cover the added leave/assignment/asset flows, scoped activity,
+dashboard/report projections, employee pay statements, per-employee payroll caps
+and request lifecycle. Native and SDK datasets remain separate. Browser
+acceptance is recorded independently in the
+[portal QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md);
+an automated pass is not evidence of provider execution or deployment.
+
+### Portal browser verification — 2026-10-14
+
+The current [portal QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md)
+records the native combined run after a full reload, using fictional data with
+Firebase initialization disabled:
+
+- Policy/training links updated their explicit assigned tasks without completing
+  unrelated onboarding. Non-tax document acknowledgment and scoped asset return
+  worked; employees could not confirm the return themselves.
+- October 19–20 displayed/submitted 16 leave hours. Reservations, overlap refusal,
+  rejection, approval and cancellation reconciled the final vacation balance to
+  40 hours.
+- The employee/manager service lifecycle preserved seven actions through reopen
+  and a second resolution; another employee saw no request.
+- `MOCK-PAYROLL-0003` and Avery's own pay statement matched $240 gross, $48
+  illustrative withholding, $25 benefit and $167 net. The owner report reconciled
+  consumed time, payroll and leave decisions; Jordan saw no statement, and
+  auditor reports/history exposed no amounts or payroll controls.
+
+This verifies the selected native host paths. The SDK UI was not rerun, and no
+provider request, deployment, legal form, insurance or real payroll acceptance
+was established. The earlier 41- and 39-test receipts remain historical.
+
+### Earlier native browser verification — 2026-10-14
 
 The dated receipt records **41 passing HR tests**: 16 native model/workflow,
 11 SDK-client mock and 14 optional backend boundary tests. On macOS Apple

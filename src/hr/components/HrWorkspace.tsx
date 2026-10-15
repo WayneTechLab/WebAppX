@@ -3,12 +3,19 @@ import { CheckCircle2, ChevronRight, Circle, FileText, RefreshCcw, Users } from 
 import { AppLink } from '@/components/navigation/AppLink'
 import { hrFixture, hrRoutes } from '../catalog'
 import {
-  canApproveTimeEntry, canApproveTimeOff, canEditEmployeeProfile, canViewCompensation, canViewRoute, demoPath, formatMoney,
+  canApproveTimeEntry, canEditEmployeeProfile, canViewCompensation, canViewRoute, demoPath, formatMoney,
   matchHrRoute, portalRoles, portalRoots, resolveHrPath, scopedEmployees,
-  scopedRecords, searchEmployees, validateTimeEntry, validateTimeOff,
+  scopedRecords, searchEmployees, validateTimeEntry,
   type HrActor, type HrEmployee, type HrPortal, type HrRecord, type HrRole, type HrRoute,
 } from '../model'
 import { createMockHrState, MOCK_PAY_PERIOD, startMockTimer, stopMockTimer, transitionMockHr, type MockBenefitElection, type MockHrEvent, type MockHrState, type MockOnboarding, type MockPayroll, type MockTimer } from '../mock-workflows'
+
+import { createPeopleOperations, peopleOperationsSummary, type PeopleModule, type PeopleOperationsEvent } from '../people-operations'
+import { applyLinkedPeopleOperation } from '../linked-operations'
+import { PeopleOperations } from './PeopleOperations'
+import { createHrServiceDesk, scopedHrRequests, transitionHrServiceDesk, type HrServiceDeskEvent } from '../service-desk'
+import { HrServiceDesk } from './HrServiceDesk'
+import { HrDashboard, HrReports, HrPayHistory } from './HrInsights'
 
 const fieldClass = 'mt-2 block min-h-11 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 focus:outline-2 focus:outline-offset-2 focus:outline-emerald-700'
 const buttonClass = 'inline-flex min-h-11 items-center justify-center rounded-md bg-neutral-950 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500'
@@ -39,11 +46,7 @@ function RecordTable({ records, empty, columns = ['title', 'status'] }: { record
   )
 }
 
-function Stat({ title, value, detail }: { title: string; value: ReactNode; detail: string }) {
-  return <article className="rounded-xl border border-neutral-200 bg-white p-5"><p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">{title}</p><p className="mt-3 text-3xl font-semibold tracking-tight text-neutral-950">{value}</p><p className="mt-2 text-xs leading-5 text-neutral-500">{detail}</p></article>
-}
-
-function EmployeeDirectory({ employees, portal }: { employees: HrEmployee[]; portal: HrPortal }) {
+function EmployeeDirectory({ employees, portal, canOpenProfile }: { employees: HrEmployee[]; portal: HrPortal; canOpenProfile: boolean }) {
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState('all')
   const filtered = searchEmployees(employees, query, status)
@@ -58,7 +61,7 @@ function EmployeeDirectory({ employees, portal }: { employees: HrEmployee[]; por
       <div className="mt-4 divide-y divide-neutral-100">
         {filtered.map(employee => <article key={employee.id} className="flex flex-wrap items-center justify-between gap-4 py-5">
           <div className="flex min-w-0 items-center gap-3"><span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-emerald-50 text-sm font-semibold text-emerald-800">{employee.firstName?.slice(0, 1)}{employee.lastName?.slice(0, 1)}</span><div><h3 className="font-semibold text-neutral-950">{employee.firstName} {employee.lastName}</h3><p className="mt-1 text-xs text-neutral-500">{employee.jobTitle} · {employee.department}</p><p className="mt-1 break-all text-xs text-neutral-500">{employee.workEmail}</p></div></div>
-          <div className="flex items-center gap-3"><Status value={employee.employmentStatus} />{portal === 'admin' ? <AppLink to={`/hr/demo/admin/employees/${employee.id}`} className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-emerald-800">View record<ChevronRight className="h-4 w-4" aria-hidden="true" /></AppLink> : portal === 'manager' && <AppLink to="/hr/demo/manager/tasks" className="inline-flex min-h-11 items-center text-sm font-semibold text-emerald-800">View team tasks</AppLink>}</div>
+          <div className="flex items-center gap-3"><Status value={employee.employmentStatus} />{portal === 'admin' && canOpenProfile ? <AppLink to={`/hr/demo/admin/employees/${employee.id}`} className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-emerald-800">View record<ChevronRight className="h-4 w-4" aria-hidden="true" /></AppLink> : portal === 'manager' && <AppLink to="/hr/demo/manager/tasks" className="inline-flex min-h-11 items-center text-sm font-semibold text-emerald-800">View team tasks</AppLink>}</div>
         </article>)}
         {!filtered.length && <p className="py-6 text-sm text-neutral-600">No fictional employees match these filters. Try a different name or status.</p>}
       </div>
@@ -126,29 +129,6 @@ function TimeEntries({ actor, records, employees, onAction }: { actor: HrActor; 
   </Panel>
 }
 
-function TimeOff({ actor, employees, requests, onRequest, onApprove }: { actor: HrActor; employees: HrEmployee[]; requests: HrRecord[]; onRequest: (value: HrRecord) => void; onApprove: (id: string) => void }) {
-  const [startDate, setStartDate] = useState('2026-10-15')
-  const [endDate, setEndDate] = useState('2026-10-16')
-  const [type, setType] = useState('vacation')
-  const [message, setMessage] = useState('')
-  function submit(event: FormEvent) {
-    event.preventDefault()
-    const result = validateTimeOff(startDate, endDate)
-    if (!result.valid) { setMessage(result.error ?? 'Check the request.'); return }
-    if (!actor.employeeId) { setMessage('Select an employee preview to create a sample request.'); return }
-    onRequest({ id: `demo-request-${Date.now()}`, employeeId: actor.employeeId, startDate, endDate, type, status: 'pending' })
-    setMessage(`Sample request submitted for ${result.days} calendar days. No company or payroll system was changed.`)
-  }
-  const visible = scopedRecords(actor, requests, employees)
-  return <div className="grid gap-5">
-    {(actor.role === 'employee' || actor.role === 'manager') && <Panel title="Request time off" note="Sample vacation/sick requests use calendar days. Real accrual, eligibility and payroll treatment are not calculated."><form onSubmit={submit} className="grid gap-4 sm:grid-cols-3"><label className="text-sm font-medium">Start date<input type="date" required className={fieldClass} value={startDate} onChange={event => setStartDate(event.target.value)} /></label><label className="text-sm font-medium">End date<input type="date" required className={fieldClass} value={endDate} onChange={event => setEndDate(event.target.value)} /></label><label className="text-sm font-medium">Request type<select className={fieldClass} value={type} onChange={event => setType(event.target.value)}><option value="vacation">Vacation</option><option value="sick">Sick</option></select></label><div className="sm:col-span-3"><button className={buttonClass} type="submit">Submit sample request</button><p role="status" className="mt-3 text-sm text-emerald-800">{message}</p></div></form></Panel>}
-    <Panel title="Time-off requests" note={actor.role === 'manager' ? 'Only your fictional direct reports are in scope. Managers cannot approve their own requests.' : 'These requests are synthetic and remain in memory.'}>
-      <div className="divide-y divide-neutral-100">{visible.map(request => <article key={request.id} className="flex flex-wrap items-center justify-between gap-4 py-4"><div><p className="text-sm font-semibold">{employees.find(employee => employee.id === request.employeeId)?.name ?? request.employeeId}</p><p className="mt-1 text-xs text-neutral-500">{label(request.type)} · {label(request.startDate)} to {label(request.endDate)}</p></div><div className="flex items-center gap-3"><Status value={request.status} />{canApproveTimeOff(actor, request, employees) && <button type="button" onClick={() => onApprove(request.id)} className="min-h-11 text-sm font-semibold text-emerald-800">Approve sample</button>}</div></article>)}</div>
-      {!visible.length && <p className="text-sm text-neutral-500">No requests in this preview identity's scope.</p>}
-    </Panel>
-  </div>
-}
-
 function PayrollPreview({ payrolls }: { payrolls: HrRecord[] }) {
   const [selected, setSelected] = useState<string | null>(null)
   const payroll = payrolls.find(record => record.id === selected)
@@ -157,7 +137,7 @@ function PayrollPreview({ payrolls }: { payrolls: HrRecord[] }) {
 
 function PayrollJourney({ state, history, actor, onAction }: { state: MockPayroll; history: MockPayroll[]; actor: HrActor; onAction: (event: MockHrEvent) => boolean }) {
   const permitted = ['employer-owner', 'payroll-admin'].includes(actor.role)
-  return <Panel title="Run a simulated payroll" note="Use approved sample timesheets. Every rate and deduction is deliberately fictional: $30/hour, flat 20% illustrative withholding and $25 per confirmed enrolled plan, capped at available net. This is not a tax engine, wage calculation or money movement.">
+  return <Panel title="Run a simulated payroll" note="Use approved sample timesheets. Every rate and deduction is deliberately fictional: $30/hour, flat 20% illustrative withholding and $25 per confirmed enrolled plan, capped at each employee's own available net. This is not a tax engine, wage calculation or money movement.">
     <p className="mb-4 rounded-md bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-950">Fixed sample pay period: {MOCK_PAY_PERIOD.start} to {MOCK_PAY_PERIOD.end}. Only active employees with approved, unpaid entries in this period are included.</p>
     <ol className="flex flex-wrap gap-2 text-xs font-medium text-neutral-600"><li className="rounded-full bg-neutral-100 px-3 py-2">1 · Prepare approved inputs</li><li className="rounded-full bg-neutral-100 px-3 py-2">2 · Calculate fictional totals</li><li className="rounded-full bg-neutral-100 px-3 py-2">3 · Review</li><li className="rounded-full bg-neutral-100 px-3 py-2">4 · Simulate receipt</li></ol>
     <div className="mt-5 grid gap-4 sm:grid-cols-2"><div className="rounded-lg bg-neutral-50 p-4"><p className="text-xs font-semibold uppercase text-neutral-500">Prepared snapshot</p><p className="mt-2 text-sm font-semibold">{state.inputs.length} approved entries · {state.hours} hours</p><p className="mt-2 text-xs leading-5 text-neutral-500">Hours and confirmed benefit elections freeze when prepared. Later changes wait for a new preparation. Receipted entries are excluded from later runs.</p><p className="mt-3 text-xs font-medium">{state.benefitInputs.length} enrolled-plan deductions in this snapshot</p></div><dl className="grid gap-3 rounded-lg border border-neutral-200 p-4 text-sm"><div className="flex justify-between gap-4"><dt>Fictional gross</dt><dd className="font-semibold">{formatMoney(state.grossCents)}</dd></div><div className="flex justify-between gap-4"><dt>Illustrative withholding</dt><dd>{formatMoney(state.illustrativeWithholdingCents)}</dd></div><div className="flex justify-between gap-4"><dt>Sample benefit deductions</dt><dd>{formatMoney(state.benefitDeductionCents)}</dd></div><div className="flex justify-between gap-4 border-t border-neutral-200 pt-3"><dt>Simulated net</dt><dd className="font-semibold">{formatMoney(state.netCents)}</dd></div></dl></div>
@@ -207,7 +187,8 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
   const [selectedEmployee, setSelectedEmployee] = useState(defaultEmployee?.id ?? '')
   const [completed, setCompleted] = useState<Set<string>>(() => new Set())
   const [acknowledgements, setAcknowledgements] = useState<Set<string>>(() => new Set())
-  const [requests, setRequests] = useState<HrRecord[]>(() => structuredClone(hrFixture.timeOffRequests))
+  const [operations, setOperations] = useState(() => createPeopleOperations(hrFixture))
+  const [serviceDesk, setServiceDesk] = useState(() => createHrServiceDesk(hrFixture))
   const [workflow, setWorkflow] = useState<MockHrState>(() => createMockHrState(hrFixture))
   const [workflowMessage, setWorkflowMessage] = useState('')
   const [workflowError, setWorkflowError] = useState(false)
@@ -227,7 +208,7 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
 
   function toggle(key: string) { setCompleted(previous => { const next = new Set(previous); if (next.has(key)) next.delete(key); else next.add(key); return next }) }
   function acknowledge(id: string) { setAcknowledgements(previous => new Set([...previous, id])) }
-  function reset() { setCompleted(new Set()); setAcknowledgements(new Set()); setRequests(structuredClone(hrFixture.timeOffRequests)); setWorkflow(createMockHrState(hrFixture)); setResetGeneration(previous => previous + 1); setWorkflowMessage('All synthetic changes, timers and receipts have been reset.'); setWorkflowError(false) }
+  function reset() { setCompleted(new Set()); setAcknowledgements(new Set()); setOperations(createPeopleOperations(hrFixture)); setServiceDesk(createHrServiceDesk(hrFixture)); setWorkflow(createMockHrState(hrFixture)); setResetGeneration(previous => previous + 1); setWorkflowMessage('All synthetic changes, timers and receipts have been reset.'); setWorkflowError(false) }
   function runAction(event: MockHrEvent) {
     try {
       setWorkflow(transitionMockHr(workflow, actor, event, hrFixture))
@@ -240,33 +221,56 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
       return false
     }
   }
+  function runPeopleAction(event: PeopleOperationsEvent) {
+    try {
+      const next = applyLinkedPeopleOperation(workflow, operations, event, actor, hrFixture)
+      setOperations(next.operations)
+      setWorkflow(next.workflow)
+      setWorkflowMessage('Sample people operation recorded. Dashboards and scoped activity reflect this session.')
+      setWorkflowError(false)
+      return true
+    } catch (error) { setWorkflowMessage(error instanceof Error ? error.message : 'The sample action failed.'); setWorkflowError(true); return false }
+  }
+  function runServiceAction(event: HrServiceDeskEvent) {
+    try {
+      setServiceDesk(transitionHrServiceDesk(serviceDesk, actor, event, hrFixture))
+      setWorkflowMessage('Fictional HR request updated in this session.')
+      setWorkflowError(false)
+      return true
+    } catch (error) { setWorkflowMessage(error instanceof Error ? error.message : 'The sample request failed.'); setWorkflowError(true); return false }
+  }
+  const openServiceRequests = scopedHrRequests(serviceDesk, actor, hrFixture).filter(request => request.status !== 'resolved').length
+  const operationsSummary = peopleOperationsSummary(operations, actor, hrFixture)
   function content() {
     if (!route || !canViewRoute(actor, route)) return <Panel title={!route ? 'Preview page not found' : 'This preview role cannot open this page'}><p className="text-sm leading-6 text-neutral-600">Choose a page from this portal's navigation. Role previews affect fictional data only.</p></Panel>
     if (selected?.parameters.employeeId && !employee) return <Panel title="Fictional employee not found"><p className="text-sm text-neutral-600">The requested ID is not in the synthetic fixture. No provider record is queried.</p></Panel>
     if (selected?.parameters.contractorId && !contractor) return <Panel title="Fictional contractor not found"><p className="text-sm text-neutral-600">The requested ID is not in the synthetic fixture.</p></Panel>
     if (selected?.parameters.payrollId && !hrFixture.payrolls.some(record => record.id === selected.parameters.payrollId)) return <Panel title="Fictional payroll not found"><p className="text-sm text-neutral-600">The requested payroll ID is not in the synthetic fixture.</p></Panel>
-    if (route.capabilityId === 'employee-directory' || module === 'people' || module === 'team') return <EmployeeDirectory employees={employees} portal={portal} />
+    if (route.capabilityId === 'employee-directory' || module === 'people' || module === 'team') return <EmployeeDirectory employees={employees} portal={portal} canOpenProfile={hrRoutes.some(item => item.portal === 'admin' && item.capabilityId === 'employee-profile' && canViewRoute(actor, item))} />
     if (['employee-profile', 'employee-compensation'].includes(route.capabilityId) && employee) return <div className="grid gap-5"><EmployeeProfile key={`${actor.role}:${employee.id}:${resetGeneration}`} employee={employee} actor={actor} email={workflow.profileEmails[employee.id]} onEmail={value => runAction({ type: 'change-profile', employeeId: employee.id, workEmail: value })} />{portal === 'admin' && <div className="flex flex-wrap gap-4 text-sm font-semibold"><AppLink to={`/hr/demo/admin/employees/${employee.id}/onboarding`} className="underline underline-offset-4">Onboarding checklist</AppLink>{canViewCompensation(actor, employee.id) && <AppLink to={`/hr/demo/admin/employees/${employee.id}/compensation`} className="underline underline-offset-4">Compensation specification</AppLink>}</div>}</div>
     if (route.capabilityId === 'employee-onboarding' && employee) return <OnboardingJourney employee={employee} state={workflow.onboarding[employee.id]} onAction={runAction} />
     if (route.capabilityId === 'contractor-profile' && contractor) return <Panel title="Fictional contractor profile" note="Contractors have their own identity and payment domain. No employee compensation or private employee record is included."><RecordTable records={[contractor]} empty="No contractor in scope." columns={['name', 'email', 'type', 'onboardingStatus']} />{portal === 'admin' && <AppLink className="mt-5 inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4" to={`/hr/demo/admin/contractors/${contractor.id}/onboarding`}>Review contractor checklist</AppLink>}</Panel>
     if (route.capabilityId === 'contractor-onboarding' && contractor) return <Onboarding employee={{ id: contractor.id, firstName: String(contractor.name), onboarding: contractor.onboarding as HrEmployee['onboarding'] ?? [] }} completed={completed} onToggle={toggle} />
-    if (module === 'time-off') return <TimeOff actor={actor} employees={hrFixture.employees} requests={requests} onRequest={value => setRequests(previous => [...previous, value])} onApprove={id => setRequests(previous => previous.map(request => request.id === id && canApproveTimeOff(actor, request, hrFixture.employees) ? { ...request, status: 'approved' } : request))} />
+    if (['time-off', 'tasks', 'policies', 'training', 'assets', 'activity'].includes(module) && portal !== 'contractor') return <PeopleOperations key={`${actor.role}:${actor.employeeId ?? 'none'}:${module}:${resetGeneration}`} state={operations} actor={actor} fixture={hrFixture} module={module as PeopleModule} onAction={runPeopleAction} />
+    if (module === 'cases' || module === 'requests' || module === 'support') return <HrServiceDesk key={`${actor.role}:${actor.employeeId ?? 'none'}:${resetGeneration}`} state={serviceDesk} actor={actor} fixture={hrFixture} onAction={runServiceAction} />
     if (module === 'time' || module === 'time-tracking') return <TimeEntries key={`${actor.role}:${actor.employeeId ?? 'none'}:${resetGeneration}`} actor={actor} records={workflow.timeEntries} employees={demoEmployees} onAction={runAction} />
+    if (module === 'payroll' && actor.role === 'auditor') return <Panel title="Simulated payroll receipt inventory" note="Read-only receipt counts and workflow metadata. This role has no compensation access."><RecordTable records={workflow.payrollHistory.map(run => ({ id: run.receipt ?? 'unreceipted', title: run.receipt, entries: run.inputs.length, status: run.stage }))} empty="No submitted simulated payroll receipts in this session." columns={['title', 'entries', 'status']} /><p className="mt-4 text-sm text-neutral-600">{hrFixture.payrolls.length} separate historical fixture payrolls. Amounts and payroll controls are unavailable to this role.</p></Panel>
     if (module === 'payroll') return <div className="grid gap-5"><PayrollJourney state={workflow.payroll} history={workflow.payrollHistory} actor={actor} onAction={runAction} /><PayrollPreview payrolls={selected?.parameters.payrollId ? hrFixture.payrolls.filter(record => record.id === selected.parameters.payrollId) : hrFixture.payrolls} /></div>
     if (route.capabilityId === 'contractor-directory') return <Panel title="Contractor directory"><RecordTable records={hrFixture.contractors} empty="No sample contractors." columns={['name', 'type', 'onboardingStatus']} /><div className="mt-4 flex flex-wrap gap-4">{hrFixture.contractors.map(record => <AppLink key={record.id} to={`/hr/demo/admin/contractors/${record.id}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-emerald-800">View {String(record.name)}</AppLink>)}</div></Panel>
     if (module === 'contractor-payments' || portal === 'contractor' && module === 'payments') return <Panel title="Contractor payment preview" note="No payment is initiated. Fixed sample amounts are independent of employee payroll."><RecordTable records={(portal === 'contractor' ? scopedRecords(actor, hrFixture.contractorPayments ?? [], hrFixture.employees) : hrFixture.contractorPayments ?? []).map(record => ({ ...record, amount: formatMoney(record.amountCents) }))} empty="No payments in this contractor's scope." columns={['title', 'amount', 'date', 'status']} /><button className={buttonClass + ' mt-5'} disabled type="button">Submit contractor payment · live adapter required</button></Panel>
     if (module === 'benefits') return <BenefitsJourney actor={actor} elections={workflow.benefitElections} onAction={runAction} />
-    if (route.capabilityId === 'paystubs') return <Panel title="Synthetic pay history" note="Fixed fictional pay statements. Provider downloads, payment methods and actual tax values remain unavailable."><RecordTable records={scopedRecords(actor, hrFixture.paystubs ?? [], hrFixture.employees).map(record => ({ ...record, gross: formatMoney(record.grossPayCents), net: formatMoney(record.netPayCents) }))} empty="No sample pay statement in this employee's scope." columns={['title', 'payDate', 'gross', 'net', 'status']} /></Panel>
+    if (route.capabilityId === 'paystubs') return <HrPayHistory actor={actor} fixture={hrFixture} state={workflow} />
+    if (module === 'documents' && portal !== 'contractor') return <PeopleOperations key={`${actor.role}:${actor.employeeId ?? 'none'}:${module}:${resetGeneration}`} state={operations} actor={actor} fixture={hrFixture} module={module as PeopleModule} onAction={runPeopleAction} />
     if (route.capabilityId === 'documents') return <Panel title={module === 'tax-documents' ? 'Tax document placeholders' : 'Document index'} note="No real PDF, tax form, bank number or legal signature is supplied. Secure downloads and provider forms require live authorization."><RecordTable records={scopedRecords(actor, hrFixture.documents, hrFixture.employees).filter(record => module !== 'tax-documents' || record.type === 'tax')} empty="No documents in this identity's scope." columns={['title', 'type', 'status']} /></Panel>
     if (nativeKinds[module]) return <NativeRecords kind={nativeKinds[module]} title={route.title} actor={actor} employees={hrFixture.employees} acknowledgements={acknowledgements} onAcknowledge={acknowledge} />
-    if (module === 'reports' || module === 'analytics') return <Panel title="Reporting inventory" note="Synthetic report definitions only. Downloads, aggregated production payroll and data exports require a reviewed adapter."><RecordTable records={hrFixture.reports} empty="No sample reports." columns={['title', 'category', 'status']} /></Panel>
+    if (module === 'reports' || module === 'analytics') return <HrReports actor={actor} fixture={hrFixture} state={workflow} requests={operations.ptoRequests} operations={operationsSummary} openOperations={operationsSummary.openCount} openServiceRequests={openServiceRequests} />
     if (route.capabilityId === 'company-locations') return <Panel title="Work locations" note="Synthetic location metadata. Jurisdiction registration and worksite validation are not established."><RecordTable records={hrFixture.locations ?? []} empty="No sample locations." columns={['name', 'state', 'status']} /></Panel>
     if (route.capabilityId === 'pay-schedules') return <Panel title="Sample pay schedules" note="Illustrative cadence only. Provider assignment and processing deadlines remain live-gated."><RecordTable records={hrFixture.paySchedules ?? []} empty="No sample schedules." columns={['title', 'frequency', 'status']} /></Panel>
     if (['company-taxes', 'company-banking'].includes(route.capabilityId)) return <Panel title={route.title} note="Sensitive values are intentionally omitted from the template. Use the authorized Gusto flow through the reviewed server proxy."><p className="text-sm leading-6 text-neutral-600">{route.capabilityId === 'company-banking' ? 'Bank account connection, account verification and employer funding authorization are unavailable in mock mode.' : 'Federal and state tax identifiers, registrations and filing setup are unavailable in mock mode.'}</p></Panel>
     if (module === 'company' || module === 'setup') return <Panel title="Fictional company setup" note="Provider onboarding gates are specifications until a Gusto Demo connection is authorized."><RecordTable records={[hrFixture.company]} empty="No company fixture." columns={['name', 'status']} /><dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2"><div><dt className="text-neutral-500">Operating mode</dt><dd className="mt-1 font-semibold">Mock · no credentials</dd></div><div><dt className="text-neutral-500">Payroll authorization</dt><dd className="mt-1 font-semibold">Disabled</dd></div></dl></Panel>
     if (module === 'departments' || module === 'organization' || module === 'locations' || module === 'pay-schedules') return <Panel title={route.title} note="Derived fictional organization data. Department and location administration remain adapter specifications."><RecordTable records={[...new Set(employees.map(record => record.department))].map((name, index) => ({ id: `department-${index}`, title: name, status: 'sample' }))} empty="No departments in scope." /></Panel>
     if (module === 'integrations' || module === 'sync' || module === 'audit' || module === 'requests' || module === 'support') return <Panel title={route.title} note="The portable package defines the provider and server contracts. This browser workspace has no Gusto connection or cloud write path."><dl className="grid gap-5 text-sm sm:grid-cols-2"><div><dt className="text-neutral-500">Gusto</dt><dd className="mt-1 font-semibold">Mock preview · disconnected</dd></div><div><dt className="text-neutral-500">Firestore projection</dt><dd className="mt-1 font-semibold">Not provisioned</dd></div><div><dt className="text-neutral-500">Webhook verification</dt><dd className="mt-1 font-semibold">Specification only</dd></div><div><dt className="text-neutral-500">Shared test key</dt><dd className="mt-1 font-semibold">None embedded</dd></div></dl></Panel>
-    if (!module) return <div className="grid gap-5"><div className="grid gap-4 sm:grid-cols-3"><Stat title={portal === 'employee' ? 'Your profile' : 'People in scope'} value={portal === 'employee' ? employee?.firstName : portal === 'contractor' ? 1 : employees.length} detail="Fictional demo identity" /><Stat title="Sample requests" value={scopedRecords(actor, requests, hrFixture.employees).filter(record => ['pending', 'requested'].includes(String(record.status))).length} detail="Time off awaiting a sample decision" /><Stat title="Provider connection" value="Mock" detail="No Gusto account or test key" /></div>{portal === 'employee' && employee ? <OnboardingJourney employee={employee} state={workflow.onboarding[employee.id]} onAction={runAction} /> : portal === 'contractor' ? <Panel title="Your fictional contractor record"><RecordTable records={hrFixture.contractors.filter(record => record.id === actor.contractorId)} empty="No contractor in scope." columns={['name', 'type', 'onboardingStatus']} /></Panel> : <EmployeeDirectory employees={employees} portal={portal} />}</div>
+    if (!module) return portal === 'contractor' ? <Panel title="Your fictional contractor record"><RecordTable records={hrFixture.contractors.filter(record => record.id === actor.contractorId)} empty="No contractor in scope." columns={['name', 'type', 'onboardingStatus']} /></Panel> : <HrDashboard actor={actor} portal={portal} fixture={hrFixture} state={workflow} requests={operations.ptoRequests} operations={operationsSummary} openOperations={operationsSummary.openCount} openServiceRequests={openServiceRequests} />
     return <Panel title={route.title}><p className="text-sm leading-6 text-neutral-600">This module has a page specification and navigation contract. Its application adapter is not implemented in this first mock phase.</p></Panel>
   }
 

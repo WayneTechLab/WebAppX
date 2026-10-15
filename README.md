@@ -102,16 +102,16 @@ route sequence. All four native journeys use browser memory and reset on refresh
 or Reset; no Gusto account, provider request or cloud service is needed. Mock
 payroll totals and receipts do not establish payroll accuracy or payment execution.
 
-**Browser verification — 2026-10-14:** the linked native mock was checked through
+**Earlier browser verification — 2026-10-14:** the linked native mock was checked through
 onboarding, approved hours, retirement enrollment, payroll submission and a
 separate employee's waiver. A changed work email now invalidates pending
 onboarding review; sample timers retain their starting employee, role and date,
 and cancel on identity changes or Reset. Payroll keeps prepared inputs until a
-new preparation and excludes hours already linked to a receipt. The current HR suite
-passes **41 tests** (16 native, 11 SDK-client mock and 14 backend). Read the
+new preparation and excludes hours already linked to a receipt. At that checkpoint,
+the HR suite passed **41 tests** (16 native, 11 SDK-client mock and 14 backend). Read the
 [dated browser QA receipt](docs/GUSTO-BROWSER-QA-2026-10-14.md) for exact values,
 receipts and boundaries. The October 13 release receipt's 39 tests remain
-historical; this update keeps version **3.4.0** and does not retest the
+historical; that verification kept version **3.4.0** and did not retest the
 separate SDK UI or establish provider acceptance.
 
 | Native mock result | Fictional gross | Illustrative withholding | Sample benefit | Simulated net |
@@ -119,10 +119,43 @@ separate SDK UI or establish provider acceptance.
 | Jordan — confirmed retirement enrollment | $240 | $48 | $25 | $167 |
 | Avery — confirmed health waiver | $240 | $48 | $0 | $192 |
 
-Employee search/profile records, time-off requests/approvals, policy/training
-acknowledgements and contractor previews remain available. Page specifications
-cover additional company, reporting, document and native HR modules, with
-implementation requirements shown on each page.
+The native portal extension also provides these browser-memory previews:
+
+| Area | Native mock workflow |
+| --- | --- |
+| Time off | Request, approve, reject or cancel vacation/sick leave, with fixed sample balances, weekday hours and overlap guards. |
+| People assignments | Complete tasks and training, acknowledge policies and eligible documents, acknowledge assigned assets and request/confirm their return within role scope. |
+| People activity | Follow scoped operation receipts and status changes in the current session. |
+| Dashboards and reports | Derive workforce, onboarding, time, benefit, absence and submitted-payroll views from the selected role's native state. |
+| Employee pay history | Read own simulated statements from submitted native payroll receipts; per-employee deductions are capped to that employee's available sample pay and reconcile to run totals. |
+| HR help desk | Employee creates a fictional equipment, app-access or general HR request; a scoped manager or HR assigns, starts, resolves and can reopen it. |
+
+The added request/activity routes belong to WebAppX; the portable **64-page**
+SYSTEMX contract remains unchanged. The earlier browser receipt above retains
+its original checkpoint. See the
+[native portal walkthrough](docs/GUSTO-SETUP.md#native-people-operations-and-service-desk)
+and [HR portal guide](docs/HR-PORTAL.md) for the synthetic policy, actor scopes
+and remaining production work.
+
+**Portal wave checks:** `npm run hr:test` now passes **70 tests**: 17 native
+workflow, 9 people operations, 7 insights, 7 linked operations, 5 service desk,
+11 SDK-client mock and 14 backend boundary checks. After a full reload, the
+selected native portal paths also passed browser verification:
+
+| Current portal check — 2026-10-14 | Observed native mock result |
+| --- | --- |
+| Linked assignments and assets | Avery's policy updated her task/checklist; Jordan's training updated his task without completing onboarding. Employee asset return required Morgan's confirmation. |
+| Leave | October 19–20 recorded 16 weekday hours; overlap was refused. Scoped rejection/approval and employee cancellation restored Avery's 40-hour vacation balance. |
+| Service desk | Avery and Morgan completed the seven-action create/assign/start/resolve/reopen cycle; Jordan saw no requests. |
+| Payroll and pay history | `MOCK-PAYROLL-0003` and Avery's own statement matched: $240 gross, $48 illustrative withholding, $25 sample benefit and $167 net. Jordan saw no statement. |
+| Reports and auditor | Owner totals reconciled to the consumed time and payroll receipt; auditor reports/history exposed no amounts or mutation controls. |
+
+Read the [portal QA record](docs/HR-PORTAL-QA-2026-10-14.md) for the exact scope.
+The earlier 41-test browser receipt remains historical. Native and SDK state
+remain separate; this wave did not rerun the SDK UI or call a provider.
+
+Employee search/profile records and contractor previews remain available. Page
+specifications identify additional modules whose adapters still need adoption.
 Connected portals remain guarded until an adopted app supplies trusted HR
 memberships and its authorized backend integration.
 

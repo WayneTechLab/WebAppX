@@ -26,7 +26,17 @@ Open the URL printed by Vite and visit:
 | `/hr/demo/manager/time` | Scoped manager review of submitted timesheets |
 | `/hr/demo/employee/benefits` | Employee-owned sample enrollment/waiver, review and confirmation |
 | `/hr/demo/admin/benefits` | Read-only sample benefit catalog; no election authority |
-| `/hr/demo/employee/time-off` | Sample request and scoped management approval |
+| `/hr/demo/employee/time-off` | Vacation/sick request, cancellation and reserved sample balances |
+| `/hr/demo/manager/time-off` | Direct-report leave approval/rejection |
+| `/hr/demo/employee/tasks`, `/hr/demo/employee/training` | Scoped task and training completion |
+| `/hr/demo/employee/policies`, `/hr/demo/employee/documents` | Policy and eligible non-tax document acknowledgments |
+| `/hr/demo/employee/assets` | Assigned asset acknowledgment and return request |
+| `/hr/demo/manager/assets` | Scoped return confirmation |
+| `/hr/demo/employee/requests`, `/hr/demo/manager/requests` | Employee HR help desk and direct-report request queue |
+| `/hr/demo/admin/cases` | Owner/HR request assignment, start, resolution and reopening |
+| `/hr/demo/employee/activity`, `/hr/demo/manager/activity`, `/hr/demo/admin/activity` | People-operation activity in the selected role's scope |
+| `/hr/demo/admin/reports` | Derived native workforce and workflow report with role-gated amounts |
+| `/hr/demo/employee/paystubs` | Own simulated statements from submitted native payroll receipts |
 | `/hr/demo/admin/payroll` | Approved hours through fictional payroll calculation, review and simulated submission |
 | `/hr/demo/sdk` | Genuine SDK directory, admin onboarding and payroll flows with local synthetic sessions |
 
@@ -80,6 +90,140 @@ Reset or reload restores the synthetic fixture. The flows do not persist to
 Firestore, contact Gusto, send invitations or create provider/cloud accounts.
 The optional Firebase module retains its separately documented implementation
 and adoption gates; completing a native demo does not enable that module.
+
+## Native people operations and service desk
+
+The additional portal workflows use the same synthetic native session as
+onboarding, time, benefits and payroll. WebAppX adds employee/manager request
+routes and employee/manager/admin activity routes without changing the portable
+SYSTEMX **64-page** contract. Reset or refresh clears native operations, request
+activity and simulated statements. The selected native paths passed the
+[portal browser verification](HR-PORTAL-QA-2026-10-14.md); the earlier
+[October 14 QA receipt](GUSTO-BROWSER-QA-2026-10-14.md) retains its original
+onboarding/time/benefit/payroll scope and 41-test checkpoint.
+Read the [HR portal guide](HR-PORTAL.md) for the detailed capability and scope map.
+
+### Current automated checks
+
+`npm run hr:test` passes **70 tests**: 17 native workflow, 9 people operations,
+7 insights, 7 linked operations, 5 service desk, 11 SDK-client mock and 14 optional
+backend boundary checks. This establishes the automated model/contract coverage.
+The earlier 41-test checkpoint is historical.
+
+### Portal browser verification — 2026-10-14
+
+The [portal QA receipt](HR-PORTAL-QA-2026-10-14.md) records a fresh native session
+after full reload, with Firebase initialization disabled and fictional data only:
+
+- Avery's policy acknowledgment updated her mapped task/onboarding item; explicit
+  profile/job/summary review and confirmation still completed hiring. Non-tax
+  document acknowledgment worked while tax placeholders exposed no action.
+  Morgan completed Jordan's mapped training/task without reviewing his profile.
+- Avery requested October 19–20 and saw exactly 16 weekday hours. Reservation,
+  overlap refusal, manager rejection/approval and employee cancellation worked;
+  the final vacation balance returned to 40 hours. Asset return required the
+  manager's confirmation.
+- Avery and Morgan completed the service-request lifecycle through reopening
+  and a second resolution, preserving seven activity actions. Jordan saw no
+  request from Avery's session work.
+- Avery's confirmed health plan and approved original eight-hour time row
+  produced `MOCK-PAYROLL-0003`: $240 gross, $48 illustrative withholding, $25
+  sample benefit and $167 net. Her own statement matched those totals and the
+  consumed time/plan inputs; Jordan had no statement.
+- Owner reports reconciled the receipt, consumed time and leave decisions.
+  Auditor reports/history displayed permitted metadata without compensation
+  amounts or mutation controls.
+
+These results cover native mock behavior. SDK fixture state stayed separate;
+its UI was not rerun for this enhancement. No provider, cloud deployment, real
+leave policy, legal signing, insurance or payroll acceptance follows from it.
+
+### Leave requests and balances
+
+1. Choose an employee identity and open **Time off**. Request vacation or sick
+   leave using a free date range and **Submit sample leave request**. An employee or manager
+   can request only for their own bound identity; owner/HR can select a known
+   employee.
+2. The fixed sample grant is **40 vacation hours and 24 sick hours per employee**.
+   Pending and approved requests both reserve hours. Existing fixture requests
+   can therefore make available hours lower than the grant.
+3. New requests count eight hours per Monday–Friday date, inclusive, using UTC
+   calendar dates. Weekend-only requests, ranges over 30 calendar days,
+   insufficient balances and overlaps with the same employee's pending/approved
+   leave are refused. The overlap guard compares inclusive date ranges across
+   vacation and sick leave.
+4. Switch to the employee's manager for a direct-report approval/rejection, or
+   to owner/HR for company scope. Use **Approve sample leave**, **Reject sample
+   leave** or an authorized **Cancel sample leave**. Rejection/cancellation
+   releases the reservation. Inspect the balance and activity
+   after each transition. Auditor views are read-only.
+
+This is a fixed fictional policy with no accrual, holiday calendar, partial-day
+rules or real PTO/payroll export. Approved leave does not create worked hours
+for the native payroll example.
+
+### Assignments, acknowledgments and assets
+
+Open the employee's **Tasks**, **Policies**, **Documents**, **Training** or
+**Assets** page, then follow the available scoped action:
+
+| Record | Synthetic transition |
+| --- | --- |
+| Task | Use **Complete my sample task**; managers/HR have explicitly labeled scoped completion controls. |
+| Policy | The assigned person uses **Acknowledge my sample policy**; managers/administrators cannot acknowledge for someone else. |
+| Document | The assigned person uses **Acknowledge my sample document** for eligible policy, handbook, welcome or training metadata; tax/provider documents remain unavailable. |
+| Training | Use **Complete my sample training**; a permitted manager/HR can explicitly mark an assigned sample complete. |
+| Asset | Use **Acknowledge sample assignment**, **Request sample asset return**, then switch to the employee's manager or owner/HR for **Confirm sample asset return**. |
+
+People activity displays scoped `MOCK-PEOPLE-...` receipts and status changes.
+The actions do not sign documents, certify training, provision access, move
+equipment or establish physical custody. A manager acts within their team;
+owner/HR can manage company records and the auditor cannot mutate them.
+The bundled policy and training links update only explicitly mapped sample
+assignments: Avery's **Demo welcome policy** on **Policies** can complete her
+pending policy task/checklist, and Jordan's **Demo starter training** on
+**Training** can complete his matching task. A separate document acknowledgment
+does not trigger the policy link. These links do not
+review Jordan's profile/job, confirm a summary or complete hiring. Adopters must
+review their own mappings instead of inferring authority from record titles.
+
+### Service request from employee to manager or HR
+
+1. In `/hr/demo/employee/requests`, choose the fictional employee. Use category
+   **Equipment**, **App access** or **HR general**, a sample title such as
+   `Demo laptop accessory` and fictional details; then **Submit sample request**.
+2. Switch to `/hr/demo/manager/requests` for that employee's manager, or
+   `/hr/demo/admin/cases` as owner/HR. Choose the **Sample HR team** or the
+   permitted manager, then **Assign sample owner**.
+3. Use **Start sample request**, enter a fictional resolution and
+   **Resolve sample request**. The authorized manager/HR can then
+   **Reopen sample request**. Inspect the `MOCK-HR-...` activity sequence.
+4. Return to the same employee to read their own request and resolution. An
+   employee cannot resolve/reopen it. Managers see direct-report requests,
+   excluding their own requests and company cases. The cases page is not exposed
+   to auditors; they use scoped people activity, reports and payroll metadata.
+
+Assignment records responsibility for the sample; it does not expand the
+selected actor's role/team permission. No email, account provisioning, equipment
+fulfillment or real HR case is sent.
+
+### Dashboards, reports and self-service pay statements
+
+Portal dashboards and **Reports** derive scoped workforce and native workflow
+counts from the current session. Counts of all approved/unpaid time can exceed
+payroll-ready time, which also requires active employment and the fixed sample
+pay period. Compensation amounts are available to owner/payroll admin and to an
+employee for their own submitted pay; manager, HR and auditor views do not gain
+compensation authority from a dashboard link.
+
+After simulating native payroll submission, switch to an included employee and
+open `/hr/demo/employee/paystubs`. **Your simulated pay receipts** shows that
+employee's submitted totals and frozen time/benefit inputs. No statement appears
+for merely prepared or calculated pay. Each employee's combined benefit deduction
+is capped to their own pay after illustrative withholding; employee totals sum
+to the run totals. The separate historical fixture statement does not enter
+these session totals. These are browser previews, not provider paystub PDFs or
+tax documents; native state never feeds the separate SDK fixture.
 
 ## Genuine SDK preview boundary
 
@@ -209,6 +353,18 @@ visibility. Root account level and a role selected in the public preview do not
 authorize Gusto endpoints.
 
 ## Migration and checks
+
+### Work remaining for a production HR application
+
+The native previews require an adopted backend before real staff use: persistent
+organization records, trusted employee/manager mappings, server-enforced scopes,
+audit retention, conflict handling and approved notifications. Leave needs the
+organization's actual accrual, calendar, partial-day and jurisdiction policy.
+Document/asset operations need controlled storage, versioned acknowledgments,
+real fulfillment and any required signature or custody process. Service requests
+need an accepted support and privacy workflow. Payroll/pay statements still need
+authorized provider execution and independently verified wage, tax and deduction
+behavior. None of those production integrations is activated by a mock receipt.
 
 The native approved-hours link feeds only the fictional payroll preview. For a
 future App Integrations time-tracking adapter, Gusto requires shift-level records

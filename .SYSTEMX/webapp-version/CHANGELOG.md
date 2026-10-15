@@ -1,3 +1,16 @@
+# 3.4.0 follow-up — Connected HR portal — 2026-10-14
+
+- Add role-scoped dashboards, actionable assignment inboxes and live mock reports.
+- Add reserved vacation/sick balances, leave decisions, cancellation and overlap guards.
+- Connect policy acknowledgment to the related task and pending onboarding check;
+  connect starter training to its assigned task without completing profile onboarding.
+- Add own-only document acknowledgments, training completion and asset return tracking.
+- Add scoped HR requests with assignment, resolution, reopening and sample receipts.
+- Freeze per-employee payroll totals, cap deductions to each person's available
+  sample pay and display own submitted receipts in employee pay history.
+- Preserve imported contracts and live-provider gates. See the [portal guide](../../docs/HR-PORTAL.md)
+  and [verification receipt](../../docs/HR-PORTAL-QA-2026-10-14.md).
+
 # 3.4.0 follow-up — Gusto browser fixes — 2026-10-14
 
 - Invalidate pending onboarding profile/summary review after a changed work

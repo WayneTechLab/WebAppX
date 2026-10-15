@@ -278,3 +278,30 @@ test('payroll excludes inactive/onboarding employees and approved dates outside 
   assert.deepEqual(state.payroll.inputs.map(input => input.entryId), [unready.id])
   assert.equal(state.payroll.inputs.some(input => input.entryId === outside.id), false)
 })
+
+
+test('payroll caps each employee benefit to their own pay and freezes reconciled statement totals', () => {
+  const sample = structuredClone(fixture)
+  sample.timeEntries.find(entry => entry.employeeId === selfActor.employeeId).hours = 0.01
+  let state = workflow.createMockHrState(sample)
+  const apply = (actor, event) => { state = workflow.transitionMockHr(state, actor, event, sample) }
+  apply(managerActor, { type: 'add-time', date: '2026-10-15', hours: 8, source: 'manual' })
+  const own = state.timeEntries.at(-1)
+  apply(managerActor, { type: 'submit-time', entryIds: [own.id] })
+  apply(ownerActor, { type: 'approve-time', entryId: own.id })
+  apply(managerActor, { type: 'approve-time', entryId: state.timeEntries.find(entry => entry.employeeId === selfActor.employeeId).id })
+  const plan = sample.benefits.find(value => value.employeeIds.includes(selfActor.employeeId))
+  for (const type of ['elect-benefit', 'review-benefit', 'confirm-benefit']) apply(selfActor, { type, planId: plan.id, election: 'enroll' })
+  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) apply(ownerActor, { type })
+  const lowPay = state.payroll.employeeTotals.find(total => total.employeeId === selfActor.employeeId)
+  const other = state.payroll.employeeTotals.find(total => total.employeeId === managerActor.employeeId)
+  assert.equal(lowPay.grossCents, 30)
+  assert.equal(lowPay.benefitDeductionCents, 24)
+  assert.equal(lowPay.netCents, 0)
+  assert.equal(other.benefitDeductionCents, 0)
+  assert.equal(other.netCents, 19200)
+  for (const key of ['grossCents', 'illustrativeWithholdingCents', 'benefitDeductionCents', 'netCents']) {
+    assert.equal(state.payroll[key], state.payroll.employeeTotals.reduce((sum, person) => sum + person[key], 0))
+  }
+  assert.deepEqual(state.payrollHistory[0].employeeTotals, state.payroll.employeeTotals)
+})

@@ -47,7 +47,7 @@ checkout while keeping production Firebase Hosting clean.
 | If you want to... | Go to |
 | --- | --- |
 | Get a running app in minutes | **[Quick Start](Quick-Start.md)** |
-| Preview synthetic HR portals and the genuine SDK directory | **[Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md)** |
+| Preview native HR portal workflows and selected genuine SDK flows | **[Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md)** |
 | Delegate one adopted-app task to an installed CLI | **[Agent Y New App Setup](Agent-Y-New-App-Setup.md)** |
 | Use `.SYSTEMX` from idea to production | **[User Ingest & Production Setup](User-Ingest-and-Production-Setup.md)** |
 | Open the local builder/control surface | **[SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md)** |
@@ -90,8 +90,11 @@ in the adopted scope.
 The portable `.SYSTEMX/GUSTO/` package provides routes, capability ownership,
 role policy and adoption contracts. In Vite development, `/hr/demo` offers
 synthetic management, employee, manager and contractor portals with app-owned
-state that resets on refresh. Onboarding, benefit elections, timesheet approval
-and simulated payroll receipts are functional. `/hr/demo/sdk` uses the genuine
+state that resets on refresh. Native source includes onboarding, benefit elections,
+timesheet approval, simulated payroll/pay statements, leave balances and decisions,
+assignments/acknowledgments, asset returns, scoped activity, dashboards/reports and
+an employee-to-manager/HR service desk. The portable 64-page contract remains
+unchanged; request/activity routes are host extensions. `/hr/demo/sdk` uses the genuine
 Gusto React SDK 0.56.6 directory, administrative onboarding and payroll execution
 components against isolated local mock records; its mock API is absent
 from Hosting and `npm run preview`.
@@ -101,6 +104,18 @@ and an adopted server integration. The optional Firebase module is disabled by
 default. Other SDK workflows and live payroll need separate acceptance. Follow
 [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md) for the
 preview, setup and validation path.
+
+The current automated HR suite passes **70 tests** across native workflows,
+people/linked operations, insights, service desk, SDK-client mocks and backend
+boundaries. The [HR portal guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL.md)
+and [portal QA record](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md)
+record the selected native browser paths verified after a full reload: linked
+assignments, asset return, leave decisions, service requests, own pay statements
+and scoped reports. Avery's simulated payroll/statement reconciled at $240
+gross/$48 illustrative withholding/$25 benefit/$167 net; other employee and
+auditor views retained their scope. This did not rerun the separate SDK UI or
+establish provider acceptance. The earlier October 14
+41-test receipt and October 13 39-test release receipt remain historical.
 
 ## Included route model
 

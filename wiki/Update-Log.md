@@ -1,5 +1,19 @@
 # Update Log
 
+## 3.4.0 connected HR portal — 2026-10-14
+
+Extend the account-free native portal with scoped dashboards and reports,
+reserved leave balances and approval decisions, employee assignments, policy
+and document acknowledgment, training, asset returns and an HR service desk.
+Submitted simulated payroll now produces employee-owned pay statements from
+frozen per-person totals. Each employee's benefit deduction is capped to their
+own available sample pay.
+
+Read the [portal guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL.md)
+and [verification receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PORTAL-QA-2026-10-14.md).
+These host features retain version 3.4.0, the immutable portable specifications,
+blank adoption seeds and disconnected live-provider boundary.
+
 ## 3.4.0 browser fixes — 2026-10-14
 
 - Keep pending onboarding review consistent with profile edits. A changed work
