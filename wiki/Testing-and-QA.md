@@ -22,6 +22,7 @@ playbook additions that adopted applications enable for their needs.
 ```bash
 npm run browser:install # explicit browser setup after npm ci; no auto-download in smoke
 npm run ci:all
+npm run sync:system:check
 npm run deploy -- hosting --preflight
 ```
 
@@ -29,6 +30,78 @@ npm run deploy -- hosting --preflight
 regressions, app/LAN gates, research inventories and public template integrity.
 It requires blank adoption seeds. `template:check` rejects populated tasks,
 context or project records by design. Use these to maintain the reusable release.
+
+## Operational foundations and complete portal lifecycles
+
+```bash
+npm run environment:check
+npm run environment:check -- --json
+npm run environment:test
+npm run repository:identity:test
+npm run browser:payroll
+npm run browser:lifecycles
+```
+
+The [environment proposal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/ENVIRONMENT-CONFIGURATION.md)
+and schema validate six fixed tracked public files: schema, root/starter examples,
+browser declarations and the reviewed server guide. The checker reports names,
+classifications and counts without reading private environment files or shell
+values. It validates examples; production configuration enforcement and provider
+acceptance require their own implementation and evidence.
+
+For an already authorized publication review, inspect the checkout with:
+
+```bash
+npm run repository:identity -- --json
+# Adopted repositories must supply their intended identity:
+npm run repository:identity -- --expected-repository Example/adopted-app --json
+```
+
+The [repository receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/REPOSITORY-IDENTITY.md)
+distinguishes origin/push identity, current branch/HEAD, cached upstream refs,
+direct GitHub main and tracked/staged/untracked changes. It performs no fetch,
+stage, commit or push. Both `clean-parity` and `clean-ahead` exit 0 for complete
+clean observations; local commits ahead of the verified direct remote ancestor
+still need publication review. A receipt supplies observations within existing
+authorization. It grants no additional authority and runs no release gates.
+
+Both new browser commands use the unchanged named seed, owned loopback Vite,
+fresh Chromium contexts, ordinary rendered actions and actual downloads compared
+with handwritten expected records. The payroll journey covers two employees'
+onboarding/benefits/time approval, preparation, calculation, review, submission,
+individual statements and consumed-time refusal. **17.75 hours / $532.50 gross /
+$106.50 illustrative withholding / $25 benefits / $401 net** reconcile exactly
+between statements and the combined export after reload.
+
+The CMS journey saves revision 2, requests separate review, approves and publishes,
+then saves revision 3 and checks the complete frozen revision-2 public preview
+and saved records after reload. CRM creates, qualifies and converts a lead into
+linked company/contact/opportunity records, completes a linked follow-up, and
+checks exact dashboards and exports. Removing the conversion form establishes UI
+prevention. A separately reported browser-module negative probe calls the actual
+CRM transition on a detached converted download, checks replay refusal and
+preserves both its input and application save bytes. The probe neither injects
+application state nor constructs expected records.
+
+**Focused verification — 2026-10-15:** **26 repository-identity tests, 22
+environment tests, eight payroll browser checks and twelve CMS/CRM browser
+checks passed**. Browser reports confirmed owned cleanup and no unexpected
+traffic/errors; only the expected unset-Firebase warning appeared. Agent 0
+accepted nine original criteria, taking the catalog to **42 done / 958 remaining**.
+All **43 CI stages, 56 browser checks and Hosting preflight passed**; each
+browser report confirmed its owned browser and server closed.
+Read the [operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
+for the final integrated result and the [coverage map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/QA-COVERAGE-MAP.md)
+for each invariant's model/browser evidence and uncovered boundaries.
+
+The [security assumptions](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SECURITY-ASSUMPTIONS.md),
+[command effects](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMMAND-SAFETY.md)
+and [monitoring contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/MONITORING.md)
+keep source validation, browser runtime, stored startup readiness, current process
+ownership, optional providers and deployed health independently reportable.
+Local fixtures establish no real payroll, live provider, production deployment,
+Windows runtime or whole-site accessibility acceptance. Existing human
+authorization persists for the work it covers.
 
 ## Session, portal state and evidence contracts
 
@@ -74,7 +147,7 @@ or querying never accepts that item. The
 [session/contracts QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SESSION-CONTRACTS-QA-2026-10-15.md)
 records actual integrated outcomes, source base and remaining boundaries.
 
-**Accepted session/contracts checkpoint — 2026-10-15:** all **38 CI stages**
+**Historical accepted session/contracts checkpoint — 2026-10-15:** all **38 CI stages**
 and Hosting preflight passed. Focused/integrated verification includes **42
 session tests**, **15 evidence-index tests**, **eight planner tests** and
 **13 CI-plan tests**. The four browser suites passed **7 smoke, 9 keyboard,

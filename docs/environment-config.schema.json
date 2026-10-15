@@ -1,0 +1,516 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/WayneTechLab/WebAppX/blob/main/docs/environment-config.schema.json",
+  "title": "WebAppX optional environment example configuration proposal",
+  "description": "Validate normalized tracked example assignments and reviewed placeholder values. Classification annotations describe intended exposure; this proposal does not enforce production runtime configuration or activate an integration. Blank strings remain valid template placeholders.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "VITE_FIREBASE_USE_EMULATORS": {
+      "type": "string",
+      "enum": [
+        "",
+        "true"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root"
+      ]
+    },
+    "VITE_FIREBASE_EMULATOR_HOST": {
+      "type": "string",
+      "enum": [
+        "",
+        "127.0.0.1"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root"
+      ]
+    },
+    "VITE_FIREBASE_AUTH_EMULATOR_PORT": {
+      "type": "string",
+      "enum": [
+        "",
+        "9099"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root"
+      ]
+    },
+    "VITE_FIREBASE_FIRESTORE_EMULATOR_PORT": {
+      "type": "string",
+      "enum": [
+        "",
+        "8080"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root"
+      ]
+    },
+    "VITE_FIREBASE_STORAGE_EMULATOR_PORT": {
+      "type": "string",
+      "enum": [
+        "",
+        "9199"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root"
+      ]
+    },
+    "VITE_SYSTEMX_LOCAL_SESSION": {
+      "type": "string",
+      "enum": [
+        "",
+        "false"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root"
+      ]
+    },
+    "VITE_FIREBASE_API_KEY": {
+      "type": "string",
+      "enum": [
+        "",
+        "AIzaSyCxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "VITE_FIREBASE_AUTH_DOMAIN": {
+      "type": "string",
+      "enum": [
+        "",
+        "your-project.firebaseapp.com"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "VITE_FIREBASE_PROJECT_ID": {
+      "type": "string",
+      "enum": [
+        "",
+        "your-project"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "VITE_FIREBASE_STORAGE_BUCKET": {
+      "type": "string",
+      "enum": [
+        "",
+        "your-project.firebasestorage.app"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "VITE_FIREBASE_MESSAGING_SENDER_ID": {
+      "type": "string",
+      "enum": [
+        "",
+        "000000000000"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "VITE_FIREBASE_APP_ID": {
+      "type": "string",
+      "enum": [
+        "",
+        "1:000000000000:web:xxxxxxxxxxxxxxxxxxxxxx"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "VITE_FIREBASE_MEASUREMENT_ID": {
+      "type": "string",
+      "enum": [
+        "",
+        "G-XXXXXXXXXX"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "VITE_WSG_ACCOUNT_LEVELS": {
+      "type": "string",
+      "enum": [
+        "",
+        "0,1,2,3,4,5"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "setup-metadata",
+      "x-declared-in": []
+    },
+    "VITE_WSG_SENDER_PROVIDER": {
+      "type": "string",
+      "enum": [
+        "",
+        "google"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "setup-metadata",
+      "x-declared-in": []
+    },
+    "VITE_WSG_SENDER_EMAIL": {
+      "type": "string",
+      "enum": [
+        "",
+        "sender@example.com"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "setup-metadata",
+      "x-declared-in": []
+    },
+    "VITE_WSG_DNS_PROVIDER": {
+      "type": "string",
+      "enum": [
+        "",
+        "godaddy"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "setup-metadata",
+      "x-declared-in": []
+    },
+    "VITE_FUNCTIONS_BASE_URL": {
+      "type": "string",
+      "enum": [
+        ""
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "VITE_SENTRY_DSN": {
+      "type": "string",
+      "enum": [
+        ""
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "VITE_ENVIRONMENT": {
+      "type": "string",
+      "enum": [
+        "",
+        "development"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "browser",
+      "x-declared-in": [
+        "root",
+        "starter"
+      ]
+    },
+    "SYSTEMX_GOOGLE_FONTS_API_KEY": {
+      "type": "string",
+      "enum": [
+        ""
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "secret",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "SENDER_EMAIL": {
+      "type": "string",
+      "enum": [
+        "",
+        "sender@example.com"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "SENDER_REPLY_TO": {
+      "type": "string",
+      "enum": [
+        "",
+        "support@example.com"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "SENDER_PROVIDER": {
+      "type": "string",
+      "enum": [
+        "",
+        "google"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "SMTP_HOST": {
+      "type": "string",
+      "enum": [
+        "",
+        "smtp.example.com"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "SMTP_PORT": {
+      "type": "string",
+      "enum": [
+        "",
+        "587"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "SMTP_USERNAME": {
+      "type": "string",
+      "enum": [
+        "",
+        "sender@example.com"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "SMTP_PASSWORD": {
+      "type": "string",
+      "enum": [
+        "",
+        "replace-with-secret-store-value"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "secret",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "VITE_STRIPE_PUBLISHABLE_KEY": {
+      "type": "string",
+      "enum": [
+        "",
+        "pk_test_example"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "optional-extension",
+      "x-declared-in": []
+    },
+    "GUSTO_MODE": {
+      "type": "string",
+      "enum": [
+        "",
+        "disabled"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "GUSTO_WEBHOOK_APPROVED": {
+      "type": "string",
+      "enum": [
+        "",
+        "false"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "GUSTO_WEBHOOK_HEX_VERIFIED": {
+      "type": "string",
+      "enum": [
+        "",
+        "false"
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "GUSTO_WEBHOOK_ORG_ID": {
+      "type": "string",
+      "enum": [
+        ""
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "private-setting",
+      "x-consumer": "server",
+      "x-declared-in": []
+    },
+    "GUSTO_WEBHOOK_VERIFICATION_TOKEN": {
+      "type": "string",
+      "enum": [
+        ""
+      ],
+      "x-classification": "server-only",
+      "x-sensitivity": "secret",
+      "x-consumer": "server",
+      "x-declared-in": []
+    }
+  },
+  "patternProperties": {
+    "^VITE_STRIPE_PRICE_[A-Z][A-Z0-9_]*$": {
+      "type": "string",
+      "enum": [
+        "",
+        "price_example"
+      ],
+      "x-classification": "public-browser",
+      "x-sensitivity": "public",
+      "x-consumer": "optional-extension",
+      "x-declared-in": []
+    }
+  },
+  "x-webappx": {
+    "version": 1,
+    "profiles": [
+      {
+        "id": "root",
+        "example": ".env.example",
+        "declarations": "src/vite-env.d.ts",
+        "required": [
+          "VITE_FIREBASE_USE_EMULATORS",
+          "VITE_FIREBASE_EMULATOR_HOST",
+          "VITE_FIREBASE_AUTH_EMULATOR_PORT",
+          "VITE_FIREBASE_FIRESTORE_EMULATOR_PORT",
+          "VITE_FIREBASE_STORAGE_EMULATOR_PORT",
+          "VITE_SYSTEMX_LOCAL_SESSION",
+          "VITE_FIREBASE_API_KEY",
+          "VITE_FIREBASE_AUTH_DOMAIN",
+          "VITE_FIREBASE_PROJECT_ID",
+          "VITE_FIREBASE_STORAGE_BUCKET",
+          "VITE_FIREBASE_MESSAGING_SENDER_ID",
+          "VITE_FIREBASE_APP_ID",
+          "VITE_FIREBASE_MEASUREMENT_ID",
+          "VITE_WSG_ACCOUNT_LEVELS",
+          "VITE_WSG_SENDER_PROVIDER",
+          "VITE_WSG_SENDER_EMAIL",
+          "VITE_WSG_DNS_PROVIDER",
+          "VITE_FUNCTIONS_BASE_URL",
+          "VITE_SENTRY_DSN",
+          "VITE_ENVIRONMENT",
+          "SYSTEMX_GOOGLE_FONTS_API_KEY",
+          "SENDER_EMAIL",
+          "SENDER_REPLY_TO",
+          "SENDER_PROVIDER",
+          "SMTP_HOST",
+          "SMTP_PORT",
+          "SMTP_USERNAME",
+          "SMTP_PASSWORD"
+        ]
+      },
+      {
+        "id": "starter",
+        "example": ".SYSTEMX/Template/starter/.env.example",
+        "declarations": ".SYSTEMX/Template/starter/src/vite-env.d.ts",
+        "required": [
+          "VITE_FIREBASE_API_KEY",
+          "VITE_FIREBASE_AUTH_DOMAIN",
+          "VITE_FIREBASE_PROJECT_ID",
+          "VITE_FIREBASE_STORAGE_BUCKET",
+          "VITE_FIREBASE_MESSAGING_SENDER_ID",
+          "VITE_FIREBASE_APP_ID",
+          "VITE_FIREBASE_MEASUREMENT_ID",
+          "VITE_WSG_ACCOUNT_LEVELS",
+          "VITE_WSG_SENDER_PROVIDER",
+          "VITE_WSG_SENDER_EMAIL",
+          "VITE_WSG_DNS_PROVIDER",
+          "VITE_FUNCTIONS_BASE_URL",
+          "VITE_SENTRY_DSN",
+          "VITE_ENVIRONMENT",
+          "SENDER_EMAIL",
+          "SENDER_REPLY_TO",
+          "SENDER_PROVIDER",
+          "SMTP_HOST",
+          "SMTP_PORT",
+          "SMTP_USERNAME",
+          "SMTP_PASSWORD"
+        ]
+      }
+    ],
+    "optionalMarkers": [
+      "VITE_STRIPE_PUBLISHABLE_KEY",
+      "VITE_STRIPE_PRICE_*"
+    ],
+    "serverDocumentation": {
+      "path": "docs/GUSTO-FIREBASE.md",
+      "keys": [
+        "GUSTO_MODE",
+        "GUSTO_WEBHOOK_APPROVED",
+        "GUSTO_WEBHOOK_HEX_VERIFIED",
+        "GUSTO_WEBHOOK_ORG_ID",
+        "GUSTO_WEBHOOK_VERIFICATION_TOKEN"
+      ]
+    }
+  }
+}

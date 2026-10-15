@@ -212,11 +212,40 @@ records the integrated checks and their acceptance boundaries.
 
 **Accepted checkpoint — 2026-10-15:** nine additional items are complete:
 **WX-0007–WX-0010, WX-0060, WX-0501, WX-0601, WX-0805 and WX-0854**.
-The catalog now has **33 done / 967 remaining**. All **38 CI stages** and
+At that checkpoint the catalog reached **33 done / 967 remaining**. All **38 CI stages** and
 Hosting preflight passed, including **42 session tests, 15 evidence-index tests**
 and **36 browser checks** across smoke, keyboard, foundation and state-contract
 suites. All owned browser/server resources closed. The full 1,000-item goal
 remains active; the QA receipt records fixes and platform/provider boundaries.
+
+## Operational contracts and lifecycle checks
+
+Use **`npm run repository:identity`** before an authorized publication review
+for origin/push identity, branch, direct GitHub main and separate worktree/index
+observations. **`npm run environment:check`** validates tracked configuration
+examples and classifications through a fixed six-file allowlist, without reading
+private environment files or shell values. Neither report activates a service.
+
+**`npm run browser:payroll`** exercises two employees' elections and approved
+hours through one simulated payroll, then reconciles their scoped statements.
+**`npm run browser:lifecycles`** checks CMS review/publication and later draft
+separation, plus linked CRM conversion/follow-up and explicit replay guards.
+Read the [QA coverage map](docs/QA-COVERAGE-MAP.md),
+[command effects table](docs/COMMAND-SAFETY.md),
+[health vocabulary](docs/MONITORING.md),
+[security assumptions](docs/SECURITY-ASSUMPTIONS.md),
+[configuration proposal](docs/ENVIRONMENT-CONFIGURATION.md) and
+[repository receipt guide](docs/REPOSITORY-IDENTITY.md).
+The [operational-foundations receipt](docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
+records execution results, fixes and acceptance boundaries for this wave.
+
+**Accepted operational checkpoint — 2026-10-15:** nine more original criteria
+are verified, bringing the full checklist to **42 done / 958 remaining**.
+All **43 CI stages**, **56 browser checks** and **Hosting preflight passed**;
+each browser suite confirmed owned cleanup. The final focused repository suite
+passed 26 tests after the symlink entry-point fix; configuration validation
+passed 22 tests. Provider and operator requirements retain their stated evidence
+gates, and the complete 1,000-item goal remains active.
 
 ## Current SYSTEMX features
 

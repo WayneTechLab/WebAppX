@@ -28,6 +28,20 @@ Follow [dependency installation](DEPENDENCY-INSTALLATION.md) for the locked
 `npm ci` workflow, version-manager choices and the optional Functions adapter's
 separate Node 22 environment. Root and starter installs use their own lockfiles.
 
+Validate the tracked public environment examples with:
+
+```bash
+npm run environment:check
+npm run environment:check -- --json
+npm run environment:test
+```
+
+The [configuration proposal](ENVIRONMENT-CONFIGURATION.md) and schema describe
+browser exposure, server settings and safe placeholders. The checker reads six
+fixed public schema/example/declaration/guide files and reports names,
+classifications and counts. It excludes private environment files and shell
+values. Example validation adds no runtime enforcement or provider connection.
+
 macOS and Windows x64/ARM64 are target platforms. Historical host verification
 was recorded on macOS Apple Silicon; use current checks for your selected
 revision. Core PowerShell launchers and record tools are included. Native Windows
@@ -76,7 +90,7 @@ compares complete exported payloads. Temporary reports, screenshots and trace
 paths are printed by the command. Cleanup closes only its own browser and server.
 Use these synthetic records for testing; the smoke is separate from your saved
 mock workspaces. See [Testing & QA](../wiki/Testing-and-QA.md#automated-developer-and-portal-smoke-checks)
-and the [QA receipt](DEVELOPER-BROWSER-QA-2026-10-14.md) for coverage and current
+and the [historical smoke QA receipt](DEVELOPER-BROWSER-QA-2026-10-14.md) for its
 verification outcomes. No Windows runtime or provider acceptance follows from
 a local Chromium run.
 
@@ -117,6 +131,38 @@ survived reload; selective restore and Undo preserved unselected records, exact
 saved/exported payloads and the expected focus return/fallback. Cleanup closed
 both owned resources. These checks complete **WX-0653/WX-0654**; consult the
 receipt for final publication gates.
+
+### Run complete payroll, CMS and CRM journeys
+
+After installing Chromium explicitly, run:
+
+```bash
+npm run browser:payroll
+npm run browser:lifecycles
+```
+
+The new suites use the unchanged named seed, owned loopback Vite and fresh
+Chromium contexts. Ordinary mutations use rendered controls; actual downloads
+and browser saves are compared with handwritten expected records. Payroll covers
+two employees' onboarding/benefits/time approval through simulated submission,
+then reconciles both statements and the combined receipt at **17.75 hours,
+$532.50 gross and $401 net** after reload and checks consumed-time refusal.
+
+CMS checks the complete frozen revision-2 public preview after a later revision-3
+draft edit and reload. CRM checks exact linked conversion, completed follow-up
+and dashboards. Removing the conversion form establishes UI prevention. A
+separately reported browser-module negative probe checks actual CRM replay refusal
+on a detached converted download and preserves input/application save bytes,
+without injecting application state.
+
+**Focused verification — 2026-10-15:** eight payroll and twelve CMS/CRM browser
+checks passed, alongside 26 repository and 22 environment tests. Agent 0 accepted
+nine original operational criteria; the catalog reached **42 done / 958 remaining**.
+All **43 CI stages, 56 browser checks and Hosting preflight passed**, with
+owned browser/server cleanup.
+Read the [operational QA receipt](OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md) for
+final gates and the [coverage map](QA-COVERAGE-MAP.md) for each invariant's
+model/browser evidence and untested boundaries.
 
 ## Create your app
 
@@ -328,6 +374,29 @@ npm run deploy -- hosting --preflight
 
 Choose your Firebase project and authorize deployment separately. The template
 release and preflight do not create services or establish production acceptance.
+
+Before an already authorized source publication, inspect repository identity:
+
+```bash
+npm run repository:identity -- --json
+# Adopted repositories must name their intended identity:
+npm run repository:identity -- --expected-repository Example/adopted-app --json
+```
+
+The [repository receipt](REPOSITORY-IDENTITY.md) separates origin/push identity,
+branch/HEAD, direct GitHub main, cached refs and tracked/staged/untracked changes.
+It performs no fetch, stage, commit or push. `clean-parity` and `clean-ahead`
+are complete clean observations; local commits ahead of the verified remote
+ancestor remain subject to publication review. The receipt grants no additional
+authority. Existing authorization persists within its original scope. Reusable
+template publication requires `ci:all`, `sync:system:check` and Hosting preflight.
+
+Read [command effects](COMMAND-SAFETY.md) before selecting a check, preview or
+deployment mode. The [security assumptions](SECURITY-ASSUMPTIONS.md) and
+[monitoring contract](MONITORING.md) distinguish source validation, browser
+runtime, stored startup readiness, current process ownership, optional provider
+connection and deployed health. Local preflight or configuration presence
+does not establish live provider or production health.
 
 Read the [command reference](COMMANDS.md), [template maintenance guide](TEMPLATE-MAINTENANCE.md),
 and [feature/provenance map](UNIFIED-TEMPLATE.md).

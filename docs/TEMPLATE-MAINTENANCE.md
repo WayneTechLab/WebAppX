@@ -53,6 +53,21 @@ blanket replacement of downstream files to the importer.
 
 ## Review and validate the source
 
+The [operational health vocabulary](MONITORING.md),
+[security assumptions register](SECURITY-ASSUMPTIONS.md) and
+[command effects table](COMMAND-SAFETY.md) distinguish examined source,
+local processes/browser behavior, optional provider operations and deployed
+services. Use [the QA coverage map](QA-COVERAGE-MAP.md) to select checks with
+the right scope; do not refresh historical evidence by relabeling its revision.
+
+`npm run repository:identity` creates a read-only
+[publication observation](REPOSITORY-IDENTITY.md) with direct remote main and
+separate worktree/index categories. Run it before an authorized publish step;
+clean local commits ahead of the verified remote ancestor remain distinguishable
+from parity. The report never fetches, stages, commits or pushes. For example
+configuration changes, run `npm run environment:check` and inspect the
+[proposal's explicit file/classification boundaries](ENVIRONMENT-CONFIGURATION.md).
+
 The [WebAppX roadmap](WEBAPPX-ROADMAP.md) contains 1,000 proposed improvements
 in a separate planning catalog. Query one area with `npm run backlog`, review
 its current applicability and only activate bounded work in an adopted project's

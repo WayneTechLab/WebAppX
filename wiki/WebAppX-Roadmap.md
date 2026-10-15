@@ -13,6 +13,39 @@ dependency-ready candidates and remaining local/provider/operator criteria.
 The goal remains active until every item is accepted. Host planning records this
 intent while reusable SYSTEMX context, plan, task and memory seeds stay blank.
 
+## Operational foundations checkpoint — 2026-10-15
+
+Agent 0 accepted **WX-0650, WX-0673, WX-0677, WX-0678, WX-0700, WX-0751,
+WX-0793, WX-0835 and WX-0840** against their original criteria. The catalog now
+holds **42 done / 958 remaining — 131 P1, 670 P2 and 157 P3**. Remaining gates
+are **790 local, 128 operator and 40 provider**. The prior session/contracts
+checkpoint held 33 done / 967 remaining and passed its then-current 38 CI stages;
+that historical receipt retains its examined revision and scope.
+
+New focused commands are `environment:check` / `environment:test`,
+`repository:identity` / `repository:identity:test`, `browser:payroll` and
+`browser:lifecycles`. Focused verification passed 22 environment and 26 repository
+tests, eight payroll browser checks and twelve CMS/CRM browser checks.
+All **43 CI stages, 56 browser checks and Hosting preflight passed**, with
+owned browser/server cleanup.
+Use the [operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
+for the final gate results and [Testing & QA](Testing-and-QA.md#operational-foundations-and-complete-portal-lifecycles)
+for command behavior and evidence limits.
+
+The payroll fixture reconciles two employees at 17.75 hours, $532.50 gross and
+$401 net; CMS checks a complete frozen public preview after later draft edits;
+CRM distinguishes rendered conversion prevention from its explicit browser-module
+replay probe against a detached actual download. Public environment example
+validation supplies no runtime enforcement, and the read-only repository receipt
+accepts `clean-ahead` as an observation without granting publication authority.
+The [QA coverage map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/QA-COVERAGE-MAP.md),
+[security assumptions](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SECURITY-ASSUMPTIONS.md),
+[command effects](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMMAND-SAFETY.md)
+and [health vocabulary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/MONITORING.md)
+retain the source, local, provider and deployment boundaries. Existing human
+authorization remains applicable; every unfinished criterion keeps its original
+acceptance requirements.
+
 ## Read and filter
 
 - [Roadmap and sequencing](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-ROADMAP.md)

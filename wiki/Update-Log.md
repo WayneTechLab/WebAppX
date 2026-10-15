@@ -1,6 +1,46 @@
 # Update Log
 
-## 3.4.0 session, portal state and evidence contracts — 2026-10-15
+## 3.4.0 operational foundations and complete portal lifecycles — 2026-10-15
+
+Add `environment:check` / `environment:test` for the configuration schema proposal,
+tracked public examples and browser declarations. The fixed six-file inventory
+excludes private environment files and shell values. The schema documents exposure
+and safe placeholders; it adds no runtime enforcement. Add `repository:identity`
+and its focused tests for read-only origin/push identity, branch/HEAD, direct
+GitHub main, cached refs and tracked/staged/untracked observations. `--json` and
+`--expected-repository OWNER/REPO` support structured and adopted-app receipts.
+`clean-ahead` accepts complete clean observations of unpublished local commits;
+the receipt performs no Git mutation and supplies no publication authority.
+
+Add `browser:payroll` and `browser:lifecycles` against the unchanged named seed.
+The payroll journey reconciles two employee statements with the real combined
+download at **17.75 hours / $532.50 gross / $401 net** and checks consumed-time
+refusal after reload. CMS checks the complete frozen public preview beside a
+later draft revision. CRM checks exact conversion links, follow-up and dashboard
+totals; UI prevention remains distinct from the explicit actual-browser module
+replay probe on a detached download. Neither journey injects application state.
+
+Publish the [QA coverage map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/QA-COVERAGE-MAP.md),
+[security assumptions](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SECURITY-ASSUMPTIONS.md),
+[monitoring vocabulary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/MONITORING.md),
+[command effects](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMMAND-SAFETY.md),
+[repository receipt guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/REPOSITORY-IDENTITY.md)
+and [configuration proposal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/ENVIRONMENT-CONFIGURATION.md).
+Source, browser, owned local session, provider and deployed health retain their
+own evidence. Existing authorization continues to cover its original scope.
+
+Agent 0 accepted **WX-0650, WX-0673, WX-0677, WX-0678, WX-0700, WX-0751,
+WX-0793, WX-0835 and WX-0840**. The catalog reaches **42 done / 958 remaining**:
+**131 P1, 670 P2 and 157 P3**, with **790 local, 128 operator and 40 provider**
+criteria remaining. Focused verification passed **26 repository tests, 22
+environment tests and 20 new browser checks**. All **43 CI stages, 56 browser
+checks and Hosting preflight passed**, with owned browser/server cleanup.
+Final results and the later CLI regression rerun are recorded in the
+[operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md).
+The full 1,000-item goal remains active. App 3.4.0 / deploy count 0 and reusable
+template preservation retain their existing scope.
+
+## 3.4.0 historical session, portal state and evidence checkpoint — 2026-10-15
 
 Add fixed origin support to the integrated local session with
 `npm run dev:systemx -- --host 127.0.0.1 --port 5185` and `--fixed-origin`.
@@ -43,8 +83,8 @@ for actual results and accepted scope. Current completion counts come from
 `npm run backlog:summary` and the generated execution plan; earlier checkpoints
 below retain their historical counts.
 
-Accept **nine additional items: WX-0007–WX-0010, WX-0060, WX-0501, WX-0601,
-WX-0805 and WX-0854**. The catalog reaches **33 done / 967 remaining**, with
+At this checkpoint, accept **nine additional items: WX-0007–WX-0010, WX-0060, WX-0501, WX-0601,
+WX-0805 and WX-0854**. The catalog then reached **33 done / 967 remaining**, with
 **137 P1, 673 P2 and 157 P3** still open. All **38 CI stages** and Hosting
 preflight pass, including **42 session tests, 15 evidence-index tests and
 36 browser checks**. Every browser report confirms owned cleanup. The receipt

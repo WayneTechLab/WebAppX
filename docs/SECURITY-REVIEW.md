@@ -1,5 +1,8 @@
 # Template security review — 2026-10-05
 
+For the separately dated current source assumptions and adoption requirements,
+see the [security assumptions register](SECURITY-ASSUMPTIONS.md).
+
 The Codex Security source review identified and repaired eight security findings
 across Firebase authorization, the local LAN builder, synchronization and operator
 tooling. The public template and private mirror carry the same repaired files.

@@ -10,9 +10,9 @@ The separate [review index](BACKLOG-EVIDENCE.md) attaches scoped historical
 receipts with examined and observation revisions. It does not accept work
 or convert an earlier browser result into a current execution.
 
-Current verified progress: **33 done / 967 remaining**.
-Remaining priorities: **137 P1 · 673 P2 · 157 P3**.
-Remaining acceptance gates: **799 local · 40 provider · 128 operator**.
+Current verified progress: **42 done / 958 remaining**.
+Remaining priorities: **131 P1 · 670 P2 · 157 P3**.
+Remaining acceptance gates: **790 local · 40 provider · 128 operator**.
 
 ## Execution and acceptance
 
@@ -62,11 +62,11 @@ coverage ships with each slice rather than waiting for the quality area.
 | Mock persistence, backup and recovery | WX-0451–WX-0500 | 2 | 48 |
 | Identity, membership and permissions | WX-0501–WX-0550 | 1 | 49 |
 | Firebase data, functions and rules | WX-0551–WX-0600 | 0 | 50 |
-| Security and privacy | WX-0601–WX-0650 | 1 | 49 |
-| Testing, quality and accessibility | WX-0651–WX-0700 | 4 | 46 |
+| Security and privacy | WX-0601–WX-0650 | 2 | 48 |
+| Testing, quality and accessibility | WX-0651–WX-0700 | 8 | 42 |
 | Design, responsiveness and interaction | WX-0701–WX-0750 | 0 | 50 |
-| Observability, support and operations | WX-0751–WX-0800 | 1 | 49 |
-| CI, delivery and infrastructure | WX-0801–WX-0850 | 2 | 48 |
+| Observability, support and operations | WX-0751–WX-0800 | 3 | 47 |
+| CI, delivery and infrastructure | WX-0801–WX-0850 | 4 | 46 |
 | SYSTEMX and agent workflows | WX-0851–WX-0900 | 2 | 48 |
 | Documentation and adoption kits | WX-0901–WX-0950 | 1 | 49 |
 | Optional integrations, extensibility and internationalization | WX-0951–WX-1000 | 0 | 50 |
@@ -76,13 +76,13 @@ Domain waves (the dependency graph overrides this order):
 | Wave | Areas | Done | Remaining |
 | --- | --- | ---: | ---: |
 | Foundation | setup, systemx | 13 | 87 |
-| Shared core | portal-shell, identity, security | 10 | 140 |
+| Shared core | portal-shell, identity, security | 11 | 139 |
 | Recovery | mock-recovery | 2 | 48 |
 | Human resources | hr-onboarding, hr-payroll, hr-talent | 0 | 150 |
 | Content | cms-authoring, cms-publishing | 0 | 100 |
 | Customer relationships | crm-contacts, crm-sales | 0 | 100 |
-| Quality and design | quality, design | 4 | 96 |
-| Operations and delivery | operations, delivery | 3 | 97 |
+| Quality and design | quality, design | 8 | 92 |
+| Operations and delivery | operations, delivery | 7 | 93 |
 | Adoption | adoption | 1 | 49 |
 | Connected extensions | firebase, integrations | 0 | 100 |
 
@@ -114,12 +114,7 @@ or grant access, and current write ownership must be checked before selection.
 
 | ID | Priority / phase | Acceptance |
 | --- | --- | --- |
-| WX-0650 | P1 / foundation | List current reviewed-source, local-OS, emulator and provider assumptions with review dates and links to evidence rather than implied production guarantees. |
-| WX-0700 | P1 / foundation | Map onboarding, payroll, CMS publishing, CRM conversion and recovery invariants to existing unit evidence and new browser acceptance scenarios. |
-| WX-0751 | P1 / foundation | Document separate states for source validation, browser runtime, owned LAN session, optional provider readiness and deployed service health. |
-| WX-0793 | P1 / foundation | Document which existing commands only inspect, which mutate local state and which require separately authorized provider or production actions. |
-| WX-0835 | P1 / foundation | A read-only report records repository origin, branch, direct remote revision and tracked/staged/untracked status before an authorized publish step. |
-| WX-0840 | P1 / foundation | A schema proposal identifies public browser variables versus private server settings and validates examples without reading actual secret files. |
+| WX-0800 | P1 / foundation | Link ownership, monitoring, recovery, secrets and release rehearsal records with explicit deferred status for unadopted production services. |
 | WX-0851 | P1 / foundation | A preview maps a bounded operator-selected proposal set to valid adopted TASK identifiers, owners and dependencies; applying requires the selected adopted app and leaves the reusable template ledger blank. |
 | WX-0852 | P1 / foundation | Comparing two source revisions lists proposals whose referenced scopes changed and requests review without changing canonical task state or marking work complete. |
 | WX-0855 | P1 / foundation | Adoption previews distinguish credential readiness, operator authorization and local prerequisites per selected task and refuse to infer readiness from a TODO status. |
@@ -134,6 +129,11 @@ or grant access, and current write ownership must be checked before selection.
 | WX-0905 | P1 / foundation | A fictional scenario demonstrates separate review and publication responsibilities and verifies the frozen published projection. |
 | WX-0906 | P1 / foundation | A fictional scenario creates a lead, converts it and moves an opportunity while showing the expected linked records. |
 | WX-0907 | P1 / foundation | The walkthrough backs up all portals, restores one selected module and reverses it while checking untouched modules. |
+| WX-0908 | P1 / foundation | A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions. |
+| WX-0909 | P1 / foundation | Each documented Gusto capability maps to its native mock behavior, optional SDK coverage and specific adopter-owned backend or provider work with evidence scope. |
+| WX-0910 | P1 / foundation | A temporary adoption example removes HR entry points deliberately, retains working CMS and CRM evaluation, and lists the resulting bundle and backup compatibility decisions. |
+| WX-0056 | P1 / portal-maturity | Opening the directory from a portal and returning restores the last supported portal subsection in that session. |
+| WX-0059 | P1 / portal-maturity | Leaving a portal with an unsaved form offers keep editing or discard choices without intercepting a completed saved action. |
 
 ## Resume commands
 

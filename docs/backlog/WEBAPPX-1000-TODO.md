@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 967 TODO · 33 done · 20 areas · 50 items per area.**
+**1000 catalog items · 958 TODO · 42 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 137 · P2: 673 · P3: 157.
+Remaining TODO priorities: P1: 131 · P2: 670 · P3: 157.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -2742,10 +2742,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A shareable synthetic report can include an unmistakable fictional-data watermark and export time without changing recoverable JSON payloads.
   - Source: [src/portals/backup.ts](../../src/portals/backup.ts)
-- [ ] **WX-0650 — Publish a security assumptions register**
+- [x] **WX-0650 — Publish a security assumptions register**
   - P1 · foundation · local · Depends on: WX-0601
   - Acceptance: List current reviewed-source, local-OS, emulator and provider assumptions with review dates and links to evidence rather than implied production guarantees.
   - Source: [docs/SECURITY-REVIEW.md](../../docs/SECURITY-REVIEW.md)
+  - Verified: 2026-10-15 · Source base: `f197affabfe125321c439d8a50854abe684c2355` · Reviewed by: `agent.0` · Evidence: [docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md](../../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 
 <a id="quality"></a>
 
@@ -2843,10 +2844,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Apply a fixed number of sample actions to each portal, record snapshot size and UI latency and compare against an explicit local budget.
   - Source: [src/portals/persistence.ts](../../src/portals/persistence.ts)
-- [ ] **WX-0673 — Add payroll reconciliation browser coverage for two employees**
+- [x] **WX-0673 — Add payroll reconciliation browser coverage for two employees**
   - P2 · portal-maturity · local · Depends on: WX-0651
   - Acceptance: A browser fixture completes two distinct employee elections and approved time entries and compares individual statements with the combined payroll receipt.
   - Source: [src/hr/components/HrInsights.tsx](../../src/hr/components/HrInsights.tsx)
+  - Verified: 2026-10-15 · Source base: `f197affabfe125321c439d8a50854abe684c2355` · Reviewed by: `agent.0` · Evidence: [docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md](../../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 - [ ] **WX-0674 — Add cross-period payroll preview fixtures**
   - P2 · portal-maturity · local
   - Acceptance: A proposed extended-period fixture documents boundary-day inclusion and prevents previously consumed time from entering a later mock period.
@@ -2859,14 +2861,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A fixed UTC restore point and synthetic time entry display correctly around DST transitions while stored timestamps remain canonical UTC.
   - Source: [src/portals/RestorePointHistory.tsx](../../src/portals/RestorePointHistory.tsx)
-- [ ] **WX-0677 — Automate deterministic CMS editorial browser regression**
+- [x] **WX-0677 — Automate deterministic CMS editorial browser regression**
   - P2 · portal-maturity · local · Depends on: WX-0651
   - Acceptance: A repeatable browser test loads the named synthetic seed, saves and separately reviews a draft, publishes it, and asserts that the exact frozen public projection survives a later draft edit in an isolated origin with no manual setup.
   - Source: [src/cms/CmsDemo.tsx](../../src/cms/CmsDemo.tsx)
-- [ ] **WX-0678 — Automate deterministic CRM conversion browser regression**
+  - Verified: 2026-10-15 · Source base: `f197affabfe125321c439d8a50854abe684c2355` · Reviewed by: `agent.0` · Evidence: [docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md](../../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
+- [x] **WX-0678 — Automate deterministic CRM conversion browser regression**
   - P2 · portal-maturity · local · Depends on: WX-0651
   - Acceptance: A repeatable browser test starts from the named seed, creates and converts one fictional lead, completes a follow-up, and asserts linked record identities, dashboard totals and conversion replay refusal without manual setup.
   - Source: [src/crm/CrmDemo.tsx](../../src/crm/CrmDemo.tsx)
+  - Verified: 2026-10-15 · Source base: `f197affabfe125321c439d8a50854abe684c2355` · Reviewed by: `agent.0` · Evidence: [docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md](../../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 - [ ] **WX-0679 — Automate deterministic survey privacy browser regression**
   - P2 · portal-maturity · local · Depends on: WX-0651
   - Acceptance: A repeatable browser test loads the named seed and asserts that an employee draft is absent from administrator results until submission, another fixture employee cannot overwrite it, and the expected submitted counts remain exact.
@@ -2951,10 +2955,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: The receipt template records browser, screen reader, route, exact actions, observed result and remaining issues without claiming whole-product conformance.
   - Source: [docs/RESTORE-POINTS-QA-2026-10-14.md](../../docs/RESTORE-POINTS-QA-2026-10-14.md)
-- [ ] **WX-0700 — Create a QA coverage map from domain to browser evidence**
+- [x] **WX-0700 — Create a QA coverage map from domain to browser evidence**
   - P1 · foundation · local · Depends on: WX-0651
   - Acceptance: Map onboarding, payroll, CMS publishing, CRM conversion and recovery invariants to existing unit evidence and new browser acceptance scenarios.
   - Source: [docs/COMMANDS.md](../../docs/COMMANDS.md)
+  - Verified: 2026-10-15 · Source base: `f197affabfe125321c439d8a50854abe684c2355` · Reviewed by: `agent.0` · Evidence: [docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md](../../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 
 <a id="design"></a>
 
@@ -3165,10 +3170,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## Observability, support and operations
 
-- [ ] **WX-0751 — Define a local operational health vocabulary**
+- [x] **WX-0751 — Define a local operational health vocabulary**
   - P1 · foundation · local
   - Acceptance: Document separate states for source validation, browser runtime, owned LAN session, optional provider readiness and deployed service health.
   - Source: [docs/MONITORING.md](../../docs/MONITORING.md)
+  - Verified: 2026-10-15 · Source base: `f197affabfe125321c439d8a50854abe684c2355` · Reviewed by: `agent.0` · Evidence: [docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md](../../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 - [ ] **WX-0752 — Add a local diagnostics summary export**
   - P2 · portal-maturity · local
   - Acceptance: A user can download app version, feature modes and sanitized error categories without exporting workspace records, tokens or absolute local paths.
@@ -3334,10 +3340,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Fictional missing mappings and stale projections can be assigned, explained and resolved locally with separate receipts.
   - Source: [src/hr/service-desk.ts](../../src/hr/service-desk.ts)
-- [ ] **WX-0793 — Create a runbook command safety table**
+- [x] **WX-0793 — Create a runbook command safety table**
   - P1 · foundation · local
   - Acceptance: Document which existing commands only inspect, which mutate local state and which require separately authorized provider or production actions.
   - Source: [docs/COMMANDS.md](../../docs/COMMANDS.md)
+  - Verified: 2026-10-15 · Source base: `f197affabfe125321c439d8a50854abe684c2355` · Reviewed by: `agent.0` · Evidence: [docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md](../../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 - [ ] **WX-0794 — Design optional audit evidence retention ownership**
   - P2 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An adoption record identifies who can retain, retrieve and expire operational evidence and where private artifacts are stored outside public source.
@@ -3509,10 +3516,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local · Depends on: WX-0045
   - Acceptance: Temporary repository fixtures prove the tracking check flags build caches, emulator exports and session logs while accepting approved source fixtures and both protected research packages without reading or deleting ignored files.
   - Source: [scripts/validate-template.py](../../scripts/validate-template.py)
-- [ ] **WX-0835 — Add a pre-release repository identity receipt**
+- [x] **WX-0835 — Add a pre-release repository identity receipt**
   - P1 · foundation · local
   - Acceptance: A read-only report records repository origin, branch, direct remote revision and tracked/staged/untracked status before an authorized publish step.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
+  - Verified: 2026-10-15 · Source base: `f197affabfe125321c439d8a50854abe684c2355` · Reviewed by: `agent.0` · Evidence: [docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md](../../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 - [ ] **WX-0836 — Define optional branch protection adoption checklist**
   - P2 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An operator worksheet selects required checks, review policy and administrative exceptions without assuming organization permissions or changing GitHub settings.
@@ -3529,10 +3537,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A local report lists enabled mock features and optional Firebase, LAN and provider modes with source references so downstream adopters can review defaults.
   - Source: [src/config/siteControls.ts](../../src/config/siteControls.ts)
-- [ ] **WX-0840 — Add optional environment configuration schema**
+- [x] **WX-0840 — Add optional environment configuration schema**
   - P1 · foundation · local
   - Acceptance: A schema proposal identifies public browser variables versus private server settings and validates examples without reading actual secret files.
   - Source: [.env.example](../../.env.example)
+  - Verified: 2026-10-15 · Source base: `f197affabfe125321c439d8a50854abe684c2355` · Reviewed by: `agent.0` · Evidence: [docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md](../../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 - [ ] **WX-0841 — Add build-time configuration contradiction checks**
   - P2 · portal-maturity · local
   - Acceptance: A local check rejects incompatible declared example modes such as production build plus requested local-session bridge while retaining existing isolation checks.

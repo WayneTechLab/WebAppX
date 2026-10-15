@@ -11,6 +11,16 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+Host operational contracts now include [dated security assumptions](../docs/SECURITY-ASSUMPTIONS.md),
+[health vocabulary](../docs/MONITORING.md), [command effects](../docs/COMMAND-SAFETY.md)
+and [QA coverage](../docs/QA-COVERAGE-MAP.md). Use `npm run repository:identity`
+for a read-only publication observation and `npm run environment:check` for
+tracked configuration examples. The native `browser:payroll` and
+`browser:lifecycles` journeys keep provider/account acceptance separate.
+Read the [operational-foundations receipt](../docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
+for examined source and actual execution. These are host extensions; shared
+release fingerprints and blank adoption records retain their existing scope.
+
 For public template improvement planning, use the host-owned
 [WebAppX roadmap pointer](WEBAPPX-ROADMAP.md) and its 1,000 improvement items.
 Read one bounded area at a time. The catalog does not populate the reusable

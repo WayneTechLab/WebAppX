@@ -95,7 +95,13 @@
     "browser:state-contract": "node scripts/browser-state-contract.mjs",
     "backlog:evidence": "node scripts/backlog-evidence.mjs",
     "backlog:evidence:check": "node scripts/backlog-evidence.mjs --check",
-    "backlog:evidence:test": "node --test tests/backlog/evidence.test.mjs"
+    "backlog:evidence:test": "node --test tests/backlog/evidence.test.mjs",
+    "environment:check": "node scripts/check-environment-examples.mjs",
+    "environment:test": "node --test tests/setup/environment-examples.test.mjs",
+    "repository:identity": "node scripts/repository-identity.mjs",
+    "repository:identity:test": "node --test tests/setup/repository-identity.test.mjs",
+    "browser:lifecycles": "node scripts/browser-lifecycles.mjs",
+    "browser:payroll": "node scripts/browser-payroll.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

@@ -69,6 +69,20 @@ ignored local environment-file rules. It reads tracked source/examples without
 opening private `.env` files or reporting secret values. Select Node 24.22.0
 with an installed version manager for the checked-in baseline, then use `npm ci`.
 
+Check the public configuration proposal with:
+
+```bash
+npm run environment:check
+npm run environment:check -- --json
+npm run environment:test
+```
+
+This validates six fixed tracked public schema/example/declaration/guide files
+and prints names, classifications and counts. Private environment files and
+shell values are excluded. The [configuration proposal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/ENVIRONMENT-CONFIGURATION.md)
+documents browser versus server settings and safe examples; it supplies no
+runtime configuration enforcement or provider acceptance.
+
 After `npm ci`:
 
 ```bash
@@ -90,7 +104,7 @@ The run checks a named deterministic synthetic seed/hash and expected dashboard
 totals, makes an HR/CMS/CRM domain change through each interface, reloads and
 compares complete exports. It prints temporary report, screenshots and trace
 paths, then cleans up only its browser/server. Read [Testing & QA](Testing-and-QA.md#automated-developer-and-portal-smoke-checks)
-and the [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
+and the [historical smoke QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
 for checked behavior. A macOS Chromium result does not verify Windows runtime
 or live provider integration.
 
@@ -151,6 +165,34 @@ publication gates. At that checkpoint the catalog held **24 completed /
 976 remaining**. The full goal remains active; consult `npm run backlog:summary`
 and the [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
 for current counts and dependency-ready work.
+
+### Run complete payroll, CMS and CRM journeys
+
+After the same explicit Chromium setup, run:
+
+```bash
+npm run browser:payroll
+npm run browser:lifecycles
+```
+
+Both commands use the named synthetic seed, owned loopback Vite and a fresh
+browser context. Payroll checks two employees' onboarding/benefits/approved time,
+preparation through simulated submission, statements, reload and consumed-time
+refusal. The actual combined download reconciles **17.75 hours, $532.50 gross
+and $401 net**. CMS checks the complete frozen public preview after a later
+draft edit and reload. CRM checks linked conversion and completed follow-up;
+form removal establishes UI prevention, while a separately reported actual-browser
+module probe checks replay refusal on a detached download without injecting
+application state.
+
+**Focused results — 2026-10-15:** eight payroll and twelve CMS/CRM browser checks,
+26 repository tests and 22 environment tests passed. Agent 0 accepted the nine
+operational criteria; the catalog reached **42 done / 958 remaining**. The current
+**43-stage full CI, 56 browser checks and Hosting preflight passed**, with
+owned browser/server cleanup. Read the
+[operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
+and [coverage map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/QA-COVERAGE-MAP.md)
+for the checked source, exact records and remaining boundaries.
 
 ## Test HR and selected Gusto workflows
 
@@ -310,6 +352,31 @@ npm run deploy -- hosting --preflight
 
 Preflight verifies local gates without publishing hosting. Choose the Firebase
 project and authorize a deployment separately. Read [Deployment](Deployment.md).
+
+For an already authorized source publication, capture the read-only repository
+observations from the intended checkout:
+
+```bash
+npm run repository:identity -- --json
+# Supply the intended repository explicitly after adopting the template:
+npm run repository:identity -- --expected-repository Example/adopted-app --json
+```
+
+The [receipt guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/REPOSITORY-IDENTITY.md)
+explains direct GitHub main versus cached refs, worktree categories and
+`clean-parity` / `clean-ahead`. Clean local commits ahead of a verified remote
+ancestor are a valid observation for publication review; this report performs no
+fetch, stage, commit or push and grants no authority. Existing authorization
+continues to apply within its scope. Template publication also requires
+`ci:all`, `sync:system:check` and Hosting preflight.
+
+Use [command effects](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMMAND-SAFETY.md)
+before choosing a check, preview or deployment mode. The
+[security assumptions](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SECURITY-ASSUMPTIONS.md)
+and [monitoring contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/MONITORING.md)
+distinguish source checks, browser workflows, stored startup readiness, current
+process ownership, provider connection and deployed health. Local preflight and
+configuration badges establish no live provider or production health result.
 
 The [unified template guide](Unified-Template-Guide.md) links the complete command,
 adoption, mirror-maintenance and provenance references.

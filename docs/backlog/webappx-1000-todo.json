@@ -8160,14 +8160,20 @@
       "area": "security",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Publish a security assumptions register",
       "acceptance": "List current reviewed-source, local-OS, emulator and provider assumptions with review dates and links to evidence rather than implied production guarantees.",
       "source": "docs/SECURITY-REVIEW.md",
       "gate": "local",
       "dependsOn": [
         "WX-0601"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f197affabfe125321c439d8a50854abe684c2355",
+        "evidence": "docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0651",
@@ -8470,14 +8476,20 @@
       "area": "quality",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add payroll reconciliation browser coverage for two employees",
       "acceptance": "A browser fixture completes two distinct employee elections and approved time entries and compares individual statements with the combined payroll receipt.",
       "source": "src/hr/components/HrInsights.tsx",
       "gate": "local",
       "dependsOn": [
         "WX-0651"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f197affabfe125321c439d8a50854abe684c2355",
+        "evidence": "docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0674",
@@ -8520,28 +8532,40 @@
       "area": "quality",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Automate deterministic CMS editorial browser regression",
       "acceptance": "A repeatable browser test loads the named synthetic seed, saves and separately reviews a draft, publishes it, and asserts that the exact frozen public projection survives a later draft edit in an isolated origin with no manual setup.",
       "source": "src/cms/CmsDemo.tsx",
       "gate": "local",
       "dependsOn": [
         "WX-0651"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f197affabfe125321c439d8a50854abe684c2355",
+        "evidence": "docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0678",
       "area": "quality",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Automate deterministic CRM conversion browser regression",
       "acceptance": "A repeatable browser test starts from the named seed, creates and converts one fictional lead, completes a follow-up, and asserts linked record identities, dashboard totals and conversion replay refusal without manual setup.",
       "source": "src/crm/CrmDemo.tsx",
       "gate": "local",
       "dependsOn": [
         "WX-0651"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f197affabfe125321c439d8a50854abe684c2355",
+        "evidence": "docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0679",
@@ -8810,14 +8834,20 @@
       "area": "quality",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Create a QA coverage map from domain to browser evidence",
       "acceptance": "Map onboarding, payroll, CMS publishing, CRM conversion and recovery invariants to existing unit evidence and new browser acceptance scenarios.",
       "source": "docs/COMMANDS.md",
       "gate": "local",
       "dependsOn": [
         "WX-0651"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f197affabfe125321c439d8a50854abe684c2355",
+        "evidence": "docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0701",
@@ -9441,12 +9471,18 @@
       "area": "operations",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Define a local operational health vocabulary",
       "acceptance": "Document separate states for source validation, browser runtime, owned LAN session, optional provider readiness and deployed service health.",
       "source": "docs/MONITORING.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f197affabfe125321c439d8a50854abe684c2355",
+        "evidence": "docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0752",
@@ -9965,12 +10001,18 @@
       "area": "operations",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Create a runbook command safety table",
       "acceptance": "Document which existing commands only inspect, which mutate local state and which require separately authorized provider or production actions.",
       "source": "docs/COMMANDS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f197affabfe125321c439d8a50854abe684c2355",
+        "evidence": "docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0794",
@@ -10501,12 +10543,18 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a pre-release repository identity receipt",
       "acceptance": "A read-only report records repository origin, branch, direct remote revision and tracked/staged/untracked status before an authorized publish step.",
       "source": "docs/TEMPLATE-MAINTENANCE.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f197affabfe125321c439d8a50854abe684c2355",
+        "evidence": "docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0836",
@@ -10563,12 +10611,18 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add optional environment configuration schema",
       "acceptance": "A schema proposal identifies public browser variables versus private server settings and validates examples without reading actual secret files.",
       "source": ".env.example",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f197affabfe125321c439d8a50854abe684c2355",
+        "evidence": "docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0841",

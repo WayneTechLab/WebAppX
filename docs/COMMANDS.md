@@ -4,6 +4,28 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 Read [dependency installation](DEPENDENCY-INSTALLATION.md) for runtime selection
 and root/starter versus optional Functions installation scopes.
 
+## Operational evidence and lifecycle checks
+
+| Command | Behavior |
+| --- | --- |
+| `npm run repository:identity` | Read-only origin/push identity, branch, local refs, direct GitHub main and worktree receipt; complete clean parity or clean-ahead exits 0, review needed/unverified exits 1, usage errors exit 2 |
+| `npm run --silent repository:identity -- --json` | Same bounded observations as JSON, without npm headers; performs no fetch, stage, commit or push |
+| `npm run environment:check` | Validates the configuration proposal against six fixed public files; prints names/categories/counts without reading private environment files or shell values |
+| `npm run environment:test` | Independent classification, placeholder, no-secret-read, path and CLI fixtures |
+| `npm run repository:identity:test` | Injected remote responses and disposable Git fixtures; no real network calls |
+| `npm run browser:payroll` | Two employee elections, four approved time entries, staged simulated payroll, reconciled scoped statements, reload and consumed-time refusal |
+| `npm run browser:lifecycles` | Separate CMS review/publication with a frozen public projection; linked CRM conversion/follow-up and an explicitly scoped browser-module replay-refusal probe |
+
+Read the [command effects and authority table](COMMAND-SAFETY.md) before
+choosing modes with local/Git/provider effects. The [repository receipt](REPOSITORY-IDENTITY.md)
+records an observation for an already authorized publication review; it grants
+no authority or lease. The [configuration proposal](ENVIRONMENT-CONFIGURATION.md)
+checks examples and declarations rather than production runtime enforcement.
+Use the [QA coverage map](QA-COVERAGE-MAP.md), [health vocabulary](MONITORING.md)
+and [security assumptions register](SECURITY-ASSUMPTIONS.md) to retain the exact
+scope and observation date of each result. Current execution evidence belongs
+in the [operational-foundations receipt](OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md).
+
 ## Developer prerequisites and browser smoke
 
 | Command | Behavior |

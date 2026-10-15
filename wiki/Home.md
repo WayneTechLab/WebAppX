@@ -6,6 +6,35 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
+The operational-foundations wave adds **`environment:check`** for tracked public
+examples, **`repository:identity`** for a read-only Git publication receipt,
+and **`browser:payroll` / `browser:lifecycles`** for complete synthetic payroll,
+CMS and CRM journeys. Read [Testing & QA](Testing-and-QA.md#operational-foundations-and-complete-portal-lifecycles)
+and the [operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
+for the examined source, focused results and integration gates. Agent 0 accepted
+nine original criteria, taking the catalog to **42 done / 958 remaining**.
+All **43 CI stages, 56 browser checks and Hosting preflight passed**. Every
+browser report confirmed owned cleanup; the earlier 38-stage pass below
+remains a historical checkpoint.
+
+The new payroll fixture reconciles two statements and the actual combined export:
+**17.75 hours, $532.50 gross and $401.00 net**. CMS checks the complete frozen
+public preview after a later draft edit and reload. CRM checks linked conversion
+and follow-up records; its removed form establishes UI prevention, while an
+explicit browser-module probe separately verifies conversion replay refusal on
+a detached actual download, without injecting application state.
+
+Use the [configuration proposal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/ENVIRONMENT-CONFIGURATION.md),
+[repository receipt guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/REPOSITORY-IDENTITY.md),
+[command effects](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMMAND-SAFETY.md),
+[security assumptions](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SECURITY-ASSUMPTIONS.md),
+[QA coverage map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/QA-COVERAGE-MAP.md)
+and [health vocabulary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/MONITORING.md)
+when adopting these tools. Example validation supplies no runtime enforcement;
+source, browser, owned-session, provider and deployed health need separate
+evidence. Repository `clean-ahead` is a valid observation for already authorized
+publication review, without granting publication or deployment authority.
+
 The session/contracts wave adds fixed browser-save origins, independent app and
 emulator readiness, a read-only restart preview, and source-backed portal state
 and capability contracts. Use [Quick Start](Quick-Start.md#open-the-integrated-local-builder)
@@ -25,7 +54,7 @@ attaches scoped reviews to stable catalog IDs without changing completion;
 pending work. Actual verification is recorded in the
 [session/contracts QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SESSION-CONTRACTS-QA-2026-10-15.md).
 
-At the accepted session/contracts checkpoint, the catalog reached **33 completed
+At the historical accepted session/contracts checkpoint, the catalog reached **33 completed
 and 967 remaining**. All **38 CI stages**, **36 browser checks** and Hosting
 preflight passed; the receipt retains exact scope and platform boundaries.
 
@@ -168,6 +197,8 @@ checkout while keeping production Firebase Hosting clean.
 | Ship safely | **[Security](Security.md)** |
 | Deploy to Firebase | **[Deployment](Deployment.md)** |
 | Test locally | **[Testing & QA](Testing-and-QA.md)** |
+| Review command effects and existing authority | **[Command safety](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMMAND-SAFETY.md)** |
+| Distinguish source checks, local readiness and live health | **[Monitoring and health evidence](https://github.com/WayneTechLab/WebAppX/blob/main/docs/MONITORING.md)** |
 | Track template changes | **[Update Log](Update-Log.md)** |
 
 ## Managed tools and current release guides
