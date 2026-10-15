@@ -19,6 +19,7 @@ export function LocalStackStatus({ status, loading, error, refresh, compact = fa
   const bridgeUrl = getSystemxBridgeUrl(status)
   const toolingReady = status?.tooling?.filter((tool) => tool.installed).length ?? 0
   const toolingTotal = status?.tooling?.length ?? 0
+  const work = status?.operating?.workStatus
 
   return (
     <section className={`border border-neutral-200 bg-neutral-50 ${compact ? 'p-4' : 'p-5'}`} aria-labelledby="local-stack-status-title">
@@ -96,6 +97,32 @@ export function LocalStackStatus({ status, loading, error, refresh, compact = fa
             <span>Changes: <strong className="text-neutral-950">{status.repository?.changedFiles ?? 0}</strong></span>
             <span>Policy: <strong className="text-neutral-950">{status.builder?.writePolicy ?? 'not reported'}</strong></span>
           </div>
+
+          {work && (
+            <div className="mt-4 grid gap-3 text-sm sm:grid-cols-3" aria-label="Recorded work sources">
+              <div className="border border-neutral-200 bg-white p-3">
+                <h3 className="font-semibold text-neutral-950">Reusable work seeds</h3>
+                <p className="mt-2 text-neutral-600">{work.reusableSeed.state === 'available'
+                  ? `Selected stock bytes: ${work.reusableSeed.stockMatch}. ${work.reusableSeed.taskCount} root tasks recorded.`
+                  : 'Work seed records unavailable.'}</p>
+                <p className="mt-2 text-xs text-neutral-600">Seed equality does not establish project identity or completion.</p>
+              </div>
+              <div className="border border-neutral-200 bg-white p-3">
+                <h3 className="font-semibold text-neutral-950">WebAppX roadmap proposals</h3>
+                <p className="mt-2 text-neutral-600">{work.roadmap.state === 'available'
+                  ? `${work.roadmap.itemCount} catalog items · ${work.roadmap.itemsByStatus?.todo} proposed TODO · ${work.roadmap.itemsByStatus?.done} recorded source completions`
+                  : 'Roadmap counts unavailable.'}</p>
+              </div>
+              <div className="border border-neutral-200 bg-white p-3">
+                <h3 className="font-semibold text-neutral-950">Selected project work</h3>
+                <p className="mt-2 text-neutral-600">{work.adoptedProject.state === 'not-selected'
+                  ? 'No adopted scope selected. Select root or an exact registered child in the LAN builder.'
+                  : work.adoptedProject.state === 'unavailable' ? 'Selected records unavailable.'
+                    : `${work.adoptedProject.taskCount} tasks recorded in ${work.adoptedProject.selection?.kind === 'child' ? work.adoptedProject.selection.name : 'root records'}.`}</p>
+                <p className="mt-2 text-xs text-neutral-600">Registered roles do not establish running workers.</p>
+              </div>
+            </div>
+          )}
 
           <a href={bridgeUrl} className="mt-4 inline-flex text-sm font-semibold text-neutral-950 underline underline-offset-4">
             Open SYSTEMX LAN builder

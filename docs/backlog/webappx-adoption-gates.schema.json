@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WebAppX adoption action gate constraints",
+  "$ref": "#/$defs/gate",
+  "$defs": {
+    "label": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{0,79}$" },
+    "text": { "type": "string", "minLength": 1, "maxLength": 500, "pattern": "^[^\\x00-\\x1f\\x7f]+$" },
+    "namesRequirement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reviewed", "required"],
+      "properties": {
+        "reviewed": { "type": "boolean" },
+        "required": { "type": "array", "maxItems": 40, "uniqueItems": true, "items": { "$ref": "#/$defs/label" } }
+      }
+    },
+    "authorizationRequirement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reviewed", "required"],
+      "properties": { "reviewed": { "type": "boolean" }, "required": { "type": "boolean" } }
+    },
+    "credentialObservation": {
+      "description": "Reported availability only. Secret values and provider access probes are outside this contract.",
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "state", "reference"],
+      "properties": {
+        "name": { "$ref": "#/$defs/label" },
+        "state": { "enum": ["available", "unavailable", "unknown"] },
+        "reference": { "type": "string", "maxLength": 500 }
+      },
+      "if": { "properties": { "state": { "enum": ["available", "unavailable"] } } },
+      "then": { "properties": { "reference": { "$ref": "#/$defs/text" } } }
+    },
+    "prerequisiteObservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "state", "reference"],
+      "properties": {
+        "name": { "$ref": "#/$defs/label" },
+        "state": { "enum": ["met", "unmet", "unknown"] },
+        "reference": { "type": "string", "maxLength": 500 }
+      },
+      "if": { "properties": { "state": { "enum": ["met", "unmet"] } } },
+      "then": { "properties": { "reference": { "$ref": "#/$defs/text" } } }
+    },
+    "authorizationObservation": {
+      "description": "A reported authorization applies only when action and target match the selected gate action and target.",
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "action", "target", "by", "reference"],
+      "properties": {
+        "state": { "enum": ["authorized", "denied", "unknown"] },
+        "action": { "type": "string", "maxLength": 500 },
+        "target": { "type": "string", "maxLength": 500 },
+        "by": { "type": "string", "maxLength": 500 },
+        "reference": { "type": "string", "maxLength": 500 }
+      },
+      "if": { "properties": { "state": { "enum": ["authorized", "denied"] } } },
+      "then": { "properties": {
+        "action": { "$ref": "#/$defs/text" }, "target": { "$ref": "#/$defs/text" },
+        "by": { "$ref": "#/$defs/text" }, "reference": { "$ref": "#/$defs/text" }
+      } }
+    },
+    "gate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["proposalId", "criterionSha256", "action", "target", "requirements", "observations"],
+      "properties": {
+        "proposalId": { "type": "string", "pattern": "^WX-[0-9]{4}$" },
+        "criterionSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "SHA256 of the JSON encoded acceptance string, matching the tool's digest function." },
+        "action": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "target": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "requirements": {
+          "type": "object", "additionalProperties": false,
+          "required": ["credentials", "operatorAuthorization", "localPrerequisites"],
+          "properties": {
+            "credentials": { "$ref": "#/$defs/namesRequirement" },
+            "operatorAuthorization": { "$ref": "#/$defs/authorizationRequirement" },
+            "localPrerequisites": { "$ref": "#/$defs/namesRequirement" }
+          }
+        },
+        "observations": {
+          "type": "object", "additionalProperties": false,
+          "required": ["credentials", "operatorAuthorization", "localPrerequisites"],
+          "properties": {
+            "credentials": { "type": "array", "maxItems": 40, "items": { "$ref": "#/$defs/credentialObservation" } },
+            "operatorAuthorization": { "$ref": "#/$defs/authorizationObservation" },
+            "localPrerequisites": { "type": "array", "maxItems": 40, "items": { "$ref": "#/$defs/prerequisiteObservation" } }
+          }
+        }
+      }
+    }
+  }
+}

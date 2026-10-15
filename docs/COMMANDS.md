@@ -4,6 +4,30 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 Read [dependency installation](DEPENDENCY-INSTALLATION.md) for runtime selection
 and root/starter versus optional Functions installation scopes.
 
+## Adopted work, provenance and source review
+
+| Command | Behavior |
+| --- | --- |
+| `npm run backlog:adopt -- preview --help` | Inspect explicit app/scope, selection and locally committed catalog options; preview performs no writes |
+| `npm run backlog:adopt -- apply --help` | Inspect the deliberate reviewed-plan TODO intake mode; apply requires exact target identity/scope and `--authorize-intake`, with stale/dependency checks |
+| `npm run backlog:adopt:test` | Temporary root/child adoption, gate, preservation, permission and spawned CLI fixtures |
+| `npm run backlog:impact -- --from REV --to REV --json` | Read-only committed revision comparison and bounded proposal review advisories; no fetch or canonical status change |
+| `npm run backlog:impact:test` | Temporary Git-tree, metadata, path and refusal fixtures |
+| `npm run systemx:provenance -- --path WORK/TASKS.json` | Exact outer path ownership and retained-content relation; stock equality never authorizes overwrite |
+| `npm run systemx:provenance -- --limit 25` | Deterministic inventory page with continuation and exact global totals |
+| `npm run systemx:provenance:test` | Synthetic retained-release ownership, equivalence, boundary and preservation fixtures |
+| `npm run systemx:work-status:test` | Reusable work records, proposed roadmap and exact selected root/child read-model fixtures |
+| `npm run browser:work-status` | Owned temporary LAN/Chromium fixture for source cards, explicit selection, unavailable facts and stale-response refusal |
+| `npm run systemx:upstream:check -- --limit 25 --offset 0` | Versioned bounded JSON with exact public source, pin/selection, host-only preservation and complete conflict blocking; no import apply |
+
+Use real locally available revisions in place of `REV`. Follow the
+[adoption workflow](BACKLOG-ADOPTION.md), [rebaseline report](BACKLOG-REBASELINE.md),
+[work-status contract](WORK-STATUS.md), [provenance guide](SYSTEMX-PROVENANCE.md)
+and [upstream review](SYSTEMX-UPSTREAM-REVIEW.md). The
+[adoption-foundations QA receipt](SYSTEMX-ADOPTION-QA-2026-10-15.md) records
+examined source, actual fixtures, review fixes and integrated gates. TODO intake,
+reported credentials, operator authority and execution remain separate facts.
+
 ## Operational evidence and lifecycle checks
 
 | Command | Behavior |

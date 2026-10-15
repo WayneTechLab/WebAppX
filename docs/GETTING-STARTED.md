@@ -155,10 +155,10 @@ separately reported browser-module negative probe checks actual CRM replay refus
 on a detached converted download and preserves input/application save bytes,
 without injecting application state.
 
-**Focused verification — 2026-10-15:** eight payroll and twelve CMS/CRM browser
+**Historical operational verification — 2026-10-15:** eight payroll and twelve CMS/CRM browser
 checks passed, alongside 26 repository and 22 environment tests. Agent 0 accepted
 nine original operational criteria; the catalog reached **42 done / 958 remaining**.
-All **43 CI stages, 56 browser checks and Hosting preflight passed**, with
+At that checkpoint all **43 CI stages, 56 browser checks and Hosting preflight passed**, with
 owned browser/server cleanup.
 Read the [operational QA receipt](OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md) for
 final gates and the [coverage map](QA-COVERAGE-MAP.md) for each invariant's
@@ -340,6 +340,84 @@ complete role/provider setup, real task assignment, clean Git checkpoint,
 private prompt, handoff preview and Agent 0 acceptance workflow.
 A separately installed current CLI also supports
 `systemx projects --target "/path/to/workspace" -- context --project NAME --agent agent.0`.
+
+### Preview reviewed TODO intake
+
+The [backlog adoption workflow](BACKLOG-ADOPTION.md) selects 1–40 catalog
+proposals for an explicit already configured adopted app, then maps them to valid
+TASK identifiers, registered owners and reviewed dependencies. The app name must
+match the selected root or exact registered child; the reusable WebAppX source
+and identity are refused. Create a local selection using the guide's schema:
+
+```bash
+npm run backlog:adopt -- preview --target ../adopted-app --app 'Example App' --root \
+  --catalog-revision FULL_REVIEWED_LOCAL_COMMIT --selection ./local/adoption-selection.json
+```
+
+The revision, target and selection above are placeholders. Preview resolves and
+checks the explicit available local catalog commit; it creates no records,
+locks or workers. Review credential readiness, authorization for the named
+action/target and local prerequisites independently. Unreviewed requirements or
+missing observations remain `unknown`. TODO status is not a readiness signal,
+and completed WebAppX source work does not accept a target dependency.
+
+After reviewing the exact plan, the guide's apply command records the TODO batch
+with `--authorize-intake`. That flag authorizes this intake action; execution,
+provider access and deployment retain their own applicable authority. Unknown
+or blocked action gates can coexist with accepted TODO intake. Existing target
+records and blank reusable source records stay protected.
+
+Use [source rebaseline impact](BACKLOG-REBASELINE.md) when reviewing changes
+between two explicit local committed revisions:
+
+```bash
+npm run backlog:impact -- --from FROM_REVISION --to TO_REVISION --json
+```
+
+The bounded report identifies affected proposal scopes and separate definition
+review advice. It leaves catalog completion and canonical task state intact.
+
+### Read the selected scope's work status
+
+In the LAN builder, open **AGI / Agent 0**. Its three source cards distinguish
+reusable work seeds, WebAppX roadmap counts and recorded work for an explicitly
+selected root or exact registered child. No adopted scope is selected by default
+or after a page reload. Missing/invalid records remain unavailable; a valid
+empty adopted ledger means no work recorded. Recorded roles do not observe
+running workers. Exact task/focus/role byte equality does not establish pristine
+context/memory, project identity or completion. Read [work status](WORK-STATUS.md)
+for the fixed API paths and independent unavailable states.
+
+Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**
+against their original local criteria. The catalog now records **48 done /
+952 remaining**, with **125 P1, 670 P2 and 157 P3** remaining and **784 local,
+128 operator and 40 provider** gates. Focused checks passed **95 integration,
+19 impact, 37 work-status and 13 CI-plan tests**, plus **six owned LAN browser
+checks**. The CI plan contains **46 stages**.
+
+**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**Generated catalog/plan, link and preservation checks passed.** GitHub
+publication uses final repository-identity and native-wiki parity checks. See the [current QA receipt](SYSTEMX-ADOPTION-QA-2026-10-15.md) for
+examined source, repaired cases, preservation evidence and remaining boundaries.
+Earlier 42-done/43-stage/56-browser results are historical operational evidence.
+
+### Inspect ownership before an upstream update
+
+```bash
+npm run systemx:provenance -- --limit 40
+npm run systemx:provenance -- --path GLOBAL/CONTEXT.md
+npm run systemx:upstream:check -- --limit 25
+```
+
+The [provenance inventory](SYSTEMX-PROVENANCE.md) verifies all registered
+retained snapshots and reports host ownership independently of exact byte or
+manifest-equivalent stock relationships. A matching blank seed grants no
+overwrite authority. The [bounded upstream review](SYSTEMX-UPSTREAM-REVIEW.md)
+binds the exact source/current public-main observation, reports selected/pinned
+versions, every preserved host path including host-only extensions, bootstrap
+conflicts and complete blocking totals under pagination. A ready preview is
+read-only; it applies no import and cannot waive the source/preservation checks
+of a later authorized apply.
 
 ## Verify an adopted app
 

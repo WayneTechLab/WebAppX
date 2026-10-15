@@ -339,7 +339,7 @@ class ImportIntegration(unittest.TestCase):
             importer.sync(self.target, self.source, True)
 
     def test_source_revision_mismatch_is_rejected_before_writes(self):
-        with patch.object(importer, 'git', side_effect=lambda source, *args: 'different\trefs/heads/main' if args == ('ls-remote', 'origin', 'refs/heads/main') else subprocess.check_output(['git', '-C', str(source), *args], text=True).strip()):
+        with patch.object(importer, 'git', side_effect=lambda source, *args: '0' * 40 + '\trefs/heads/main' if args == ('ls-remote', 'origin', 'refs/heads/main') else subprocess.check_output(['git', '-C', str(source), *args], text=True).strip()):
             with self.assertRaisesRegex(ValueError, 'differs from public main'):
                 importer.sync(self.target, self.source, True)
         self.assertEqual(list(self.target.iterdir()), [])

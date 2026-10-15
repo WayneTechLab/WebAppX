@@ -31,7 +31,121 @@ regressions, app/LAN gates, research inventories and public template integrity.
 It requires blank adoption seeds. `template:check` rejects populated tasks,
 context or project records by design. Use these to maintain the reusable release.
 
+## Adoption, recorded work and import-review foundations
+
+Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**
+against their original local criteria. The catalog now holds **48 done / 952
+remaining**: **125 P1, 670 P2 and 157 P3**, with **784 local, 128 operator and
+40 provider** acceptance gates remaining. The complete 1,000-item goal stays
+active. The [adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+records the examined source, review fixes, live read-only observations and limits.
+
+Use the current package aliases for focused verification:
+
+```bash
+npm run backlog:adopt:test
+npm run backlog:impact:test
+npm run systemx:provenance:test
+npm run systemx:work-status:test
+npm run browser:work-status
+npm run systemx:integration:test
+npm run ci:plan
+npm run ci:plan:test
+```
+
+The integration suite already includes adoption, provenance and upstream-review
+fixtures; the individual aliases support focused changes. `ci:plan` describes
+the configured gates without executing them.
+
+| Focused evidence — 2026-10-15 | Recorded result |
+| --- | --- |
+| Host integration | 95 passed: 23 adoption, 23 provenance, 13 upstream-review and 36 prior integration tests |
+| Revision impact | 19 passed in disposable real Git repositories |
+| Work status | 37 passed for explicit selection, validated records and independent unavailable facts |
+| Actual LAN browser | Six passed in an owned temporary fixture, including stale-response protection and unchanged reusable source seed bytes |
+| CI plan | 13 passed; the current source-derived plan lists 46 stages with no unknown command classifications |
+
+**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**Generated catalog/plan, link and preservation checks passed.** GitHub
+publication uses final repository-identity and native-wiki parity checks. The final integrated run passed all 46 stages.
+The earlier 42-done / 43-stage / 56-browser-check checkpoint below is historical.
+
+### Adopted TODO intake and independent action gates
+
+The [adoption tool](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-ADOPTION.md)
+requires an explicit adopted app identity, root or exact registered child, reviewed
+local catalog revision, bounded selection and registered owners. Preview creates
+no files or tasks. Apply rechecks the complete reviewed plan under the selected
+scope's coordination lock and records TODO tasks with empty acceptance evidence.
+Source WX dependencies must map to selected or explicitly reviewed existing target
+tasks even when the source proposal is done. Existing adopted records and blank
+reusable seeds retain their respective scope.
+
+Credential readiness, operator authorization and local prerequisites have
+independent requirements and observations per selected action/target. Omitted or
+unreviewed dimensions remain `unknown`; blocked gates can coexist with reviewed
+TODO intake. `--authorize-intake` records the deliberate intake action and grants
+no worker execution or provider access. Reported readiness and TODO status do not
+establish execution authority, verified credentials or operational acceptance.
+
+The [revision-impact guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-REBASELINE.md)
+documents `npm run backlog:impact -- --from FROM_REVISION --to TO_REVISION --json`.
+Replace both operands with reviewed locally available commits. The report compares
+the resolved endpoint trees and the selected committed catalog, requests review
+for changed source scopes, and distinguishes catalog metadata from definition
+changes. It does not fetch, reopen proposals or change canonical task state.
+
+### Recorded status, ownership and import review
+
+The [work-status contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORK-STATUS.md)
+adds records-only summaries to `/api/status` and the Vite development bridge.
+The LAN builder's **AGI / Agent 0** panel and local React status card display
+reusable work seeds, the proposal roadmap and explicitly selected root/child
+work. The default is `not-selected`; an unavailable selected source stays
+`unavailable`, with diagnostics and any independently readable facts. A valid
+empty ledger means no work recorded. The view does not coerce unavailable data
+to zero, infer a project from the last chat or observe running workers.
+
+Stock comparison covers only the selected release's task, focus and role bytes.
+Exact equality does not establish ownership, pristine context/memory, adopted
+identity, project completion or installed integrity. The owned browser journey
+uses actual rendered controls for default/root/child selection, malformed child
+and unavailable roadmap states. Holding an older root response until after a
+new child selection checks that stale responses cannot misattribute work. It
+retains local evidence, verifies source seed bytes and closes its owned resources.
+
+```bash
+npm run systemx:provenance -- --format text --limit 40
+npm run systemx:provenance -- --path GLOBAL/CONTEXT.md
+npm run systemx:upstream:check -- --source /path/to/dotSYSTEMX \
+  --expected-commit FULL_REVIEWED_COMMIT --limit 25
+```
+
+The source path and commit above are placeholders for the reviewed standalone
+checkout. The [provenance inventory](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-PROVENANCE.md)
+verifies every registered retained release and reports ownership independently
+from exact or manifest-equivalent content. Host-owned blank seeds remain host
+owned; byte equality grants no overwrite authority. Runtime/secret boundaries
+are excluded without reading payloads, and invalid integrity prevents a verified
+partial report. It starts no workflows or updates.
+
+The [bounded upstream review](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-UPSTREAM-REVIEW.md)
+binds the clean standalone source's exact HEAD to an independent canonical public
+main observation, the manifest and historical receipt proof. It reports selected
+versions, all preserved host paths and bootstrap conflicts. Pagination leaves
+complete-set blocking intact. Unknown source facts remain unverified; a ready
+preview applies no import and cannot waive the later apply checks.
+
+Focused fixtures use temporary root/child records, intact synthetic releases and
+injected public-main responses. Actual read-only source observations are dated
+in the receipt. This wave exercises no real adopted app intake, provider action,
+deployment, native Windows runtime or whole-site accessibility acceptance.
+
 ## Operational foundations and complete portal lifecycles
+
+This historical checkpoint retains the earlier 42 accepted proposals, 43 CI
+stages and 56 browser checks. The current adoption wave and its integrated
+gate results are recorded above.
 
 ```bash
 npm run environment:check
@@ -83,13 +197,13 @@ CRM transition on a detached converted download, checks replay refusal and
 preserves both its input and application save bytes. The probe neither injects
 application state nor constructs expected records.
 
-**Focused verification — 2026-10-15:** **26 repository-identity tests, 22
+**Historical focused verification — 2026-10-15:** **26 repository-identity tests, 22
 environment tests, eight payroll browser checks and twelve CMS/CRM browser
 checks passed**. Browser reports confirmed owned cleanup and no unexpected
 traffic/errors; only the expected unset-Firebase warning appeared. Agent 0
-accepted nine original criteria, taking the catalog to **42 done / 958 remaining**.
-All **43 CI stages, 56 browser checks and Hosting preflight passed**; each
-browser report confirmed its owned browser and server closed.
+then accepted nine original criteria, taking the catalog to **42 done / 958 remaining**.
+At that checkpoint, all **43 CI stages, 56 browser checks and Hosting preflight
+passed**; each browser report confirmed its owned browser and server closed.
 Read the [operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 for the final integrated result and the [coverage map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/QA-COVERAGE-MAP.md)
 for each invariant's model/browser evidence and uncovered boundaries.

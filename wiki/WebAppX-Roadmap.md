@@ -13,12 +13,39 @@ dependency-ready candidates and remaining local/provider/operator criteria.
 The goal remains active until every item is accepted. Host planning records this
 intent while reusable SYSTEMX context, plan, task and memory seeds stay blank.
 
-## Operational foundations checkpoint — 2026-10-15
+## Adoption, recorded work and import review — 2026-10-15
+
+Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**
+against their original local criteria. The catalog now holds **48 done /
+952 remaining — 125 P1, 670 P2 and 157 P3**. Remaining gates are
+**784 local, 128 operator and 40 provider**. The complete goal remains active;
+source completion never transfers adopted task acceptance.
+
+| Accepted scope | Review workflow |
+| --- | --- |
+| WX-0851 / WX-0855 | [Reviewed adoption](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-ADOPTION.md) selects an adopted app and 1–40 proposals, binds owners/dependencies and previews exact TODO records. Credentials, action/target authorization and local prerequisites remain independent; omitted requirements or observations remain unknown. Authorized TODO intake does not execute tasks. |
+| WX-0852 | [Source rebaseline impact](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-REBASELINE.md) compares two local committed revisions, requests scope/definition review and preserves catalog/task state. |
+| WX-0856 | [Recorded work](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORK-STATUS.md) distinguishes reusable work seeds, roadmap proposals and explicitly selected root/child work. Unavailable input remains unavailable; an empty adopted ledger means no work recorded. |
+| WX-0857 | [Provenance](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-PROVENANCE.md) reports host ownership separately from exact or manifest-equivalent retained matches. Equality cannot authorize replacement. |
+| WX-0858 | [Bounded upstream review](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-UPSTREAM-REVIEW.md) reports exact source/current public-main observations, complete blocking counts, preserved host-only paths and bootstrap conflicts without applying an import. |
+
+Focused verification passed **95 SYSTEMX integration tests** (23 adoption,
+23 provenance, 13 upstream-review and 36 prior cases), **19 impact tests**,
+**37 work-status tests**, **six owned LAN browser checks** and **13 CI-plan
+tests**. The source-derived plan contains **46 CI stages**.
+
+**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**Generated catalog/plan, link and preservation checks passed.** GitHub
+publication uses final repository-identity and native-wiki parity checks. The
+[adoption/status/review QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+retains actual evidence and platform/provider limits.
+
+## Historical operational foundations checkpoint — 2026-10-15
 
 Agent 0 accepted **WX-0650, WX-0673, WX-0677, WX-0678, WX-0700, WX-0751,
-WX-0793, WX-0835 and WX-0840** against their original criteria. The catalog now
-holds **42 done / 958 remaining — 131 P1, 670 P2 and 157 P3**. Remaining gates
-are **790 local, 128 operator and 40 provider**. The prior session/contracts
+WX-0793, WX-0835 and WX-0840** against their original criteria. At that checkpoint
+the catalog held **42 done / 958 remaining — 131 P1, 670 P2 and 157 P3**. Remaining
+gates then were **790 local, 128 operator and 40 provider**. The prior session/contracts
 checkpoint held 33 done / 967 remaining and passed its then-current 38 CI stages;
 that historical receipt retains its examined revision and scope.
 
@@ -26,7 +53,7 @@ New focused commands are `environment:check` / `environment:test`,
 `repository:identity` / `repository:identity:test`, `browser:payroll` and
 `browser:lifecycles`. Focused verification passed 22 environment and 26 repository
 tests, eight payroll browser checks and twelve CMS/CRM browser checks.
-All **43 CI stages, 56 browser checks and Hosting preflight passed**, with
+At that historical checkpoint all **43 CI stages, 56 browser checks and Hosting preflight passed**, with
 owned browser/server cleanup.
 Use the [operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 for the final gate results and [Testing & QA](Testing-and-QA.md#operational-foundations-and-complete-portal-lifecycles)
@@ -74,6 +101,10 @@ npm run backlog:plan:check
 npm run backlog:evidence
 npm run backlog:evidence -- --id WX-0717 --category browser --limit 20
 npm run backlog:evidence:check
+npm run backlog:adopt -- --help
+npm run backlog:impact -- --from FROM_REVISION --to TO_REVISION --json
+npm run systemx:provenance -- --limit 40
+npm run systemx:upstream:check -- --limit 25
 ```
 
 The JSON is canonical; Markdown and CSV are generated. The CI check verifies
@@ -193,7 +224,7 @@ template's SYSTEMX context, plan, task and memory seeds remain blank.
 
 ## SYSTEMX refresh
 
-The selected release remains the latest **1.9.0-alpha.6**. Reviewed public main
+The selected release remains **1.9.0-alpha.6**. The reviewed 2026-10-14 public main
 `3fb59429c878268f1081ca255a1f32fafc5dcfba` changed only upstream README/wiki
 content outside `.SYSTEMX`; its complete source tree matches the original import
 commit. The host importer now recognizes that case while preserving original

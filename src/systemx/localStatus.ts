@@ -14,7 +14,62 @@ export type SystemxProvider = {
   detail: string
 }
 
+export type WorkStatusSource = {
+  path: string
+  state: 'available' | 'unavailable'
+  sha256: string | null
+  diagnostic?: string
+  stockSha256?: string | null
+  exactStockMatch?: boolean | null
+  stockDiagnostic?: string
+}
+
+export type RecordedWorkStatus = {
+  state: 'available' | 'unavailable'
+  recordRoot: string
+  sources: WorkStatusSource[]
+  supportingSources: WorkStatusSource[]
+  taskCount: number | null
+  tasksByStatus: Record<'todo' | 'in_progress' | 'blocked' | 'needs_review' | 'done' | 'cancelled', number> | null
+  focus: { objective: string; taskIds: string[]; updatedAt: string; checkpointRecorded: boolean } | null
+  agentRoles: Array<{ id: string; role: string }> | null
+}
+
+export type SystemxWorkStatus = {
+  schemaVersion: 1
+  authority: 'records-only'
+  reusableSeed: RecordedWorkStatus & { selectedVersion: string | null; stockMatch: 'exact' | 'modified' | 'unavailable' }
+  roadmap: WorkStatusSource & {
+    schemaVersion?: number
+    project?: string
+    intent?: string
+    sourceCommit?: string
+    itemCount: number | null
+    itemsByStatus: { todo: number; done: number } | null
+  }
+  adoptedProject: Partial<Omit<RecordedWorkStatus, 'state'>> & {
+    state: 'not-selected' | 'available' | 'unavailable'
+    selection: { kind: 'root' } | { kind: 'child'; name: string } | null
+    diagnostic?: string
+    identitySource?: WorkStatusSource
+  }
+  scopeOptions: WorkStatusSource & { root: true; children: string[] | null }
+}
+
 export type SystemxStatus = {
+  operating?: {
+    installed: boolean | null
+    selectedVersion: string | null
+    pinnedVersion: string | null
+    updatePolicy: string | null
+    taskCount: number | null
+    tasksByStatus: RecordedWorkStatus['tasksByStatus']
+    agentRoles: Array<{ id: string; role: string }>
+    childProjectCount: number | null
+    authority: 'records-only'
+    recordDiagnostics: WorkStatusSource[]
+    workStatus: SystemxWorkStatus
+  }
   repository?: {
     branch?: string
     clean?: boolean

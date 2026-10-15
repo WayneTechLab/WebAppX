@@ -1,6 +1,61 @@
 # Update Log
 
+## 3.4.0 adoption, recorded work and import-review foundations — 2026-10-15
+
+Add [reviewed backlog adoption](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-ADOPTION.md)
+through `backlog:adopt` and its focused tests. A bounded, explicit selection maps
+WX proposals to valid adopted root/child TASK records, registered owners and
+complete target dependencies. Preview writes nothing. Apply validates the reviewed
+plan under the selected coordination lock and records TODO intake with empty
+evidence; source completion does not transfer to adopted acceptance. Credential
+availability, operator authorization and local prerequisites remain independent
+action gates, with omitted or unreviewed dimensions `unknown`. The intake flag
+grants no worker execution or provider authority.
+
+Add `backlog:impact` and [revision rebaseline review](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-REBASELINE.md)
+for two explicit committed endpoints. The read-only report identifies changed
+proposal source scopes and separate definition review while preserving catalog
+completion and canonical task state. It neither fetches nor dispatches work.
+
+Add the [recorded-work status view](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORK-STATUS.md)
+to the LAN **AGI / Agent 0** panel and local React status card. Reusable work
+seeds, roadmap proposals and explicitly selected adopted root/child work remain
+distinct. Default `not-selected`, selected `unavailable` and valid empty records
+have separate meanings. Stock task/focus/role byte equality establishes no
+ownership, project identity or completion. Add `systemx:work-status:test` and
+the actual owned LAN journey `browser:work-status`, including delayed stale
+response protection.
+
+Add `systemx:provenance` and [ownership inventory](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-PROVENANCE.md)
+with all-retained-release verification, bounded pagination and exact path lookup.
+Host-owned paths remain host owned when equal to blank retained seeds; equality
+grants no overwrite authority. Extend `systemx:upstream:check` with a
+[bounded review](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-UPSTREAM-REVIEW.md)
+of the exact standalone source commit and current canonical public main, preserved
+host paths, first-import proof and bootstrap conflicts. Preview applies no import;
+complete blocking results survive pagination.
+
+Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**.
+The catalog reaches **48 done / 952 remaining**: **125 P1, 670 P2 and 157 P3**,
+with **784 local, 128 operator and 40 provider** criteria remaining. Focused
+verification passed **95 host-integration tests** (23 adoption, 23 provenance,
+13 upstream-review and 36 prior), **19 revision-impact tests, 37 work-status
+tests, six owned LAN browser checks and 13 CI-plan tests**. The current plan has
+**46 stages**, all passed in the final integrated run.
+
+**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**Generated catalog/plan, link and preservation checks passed.** GitHub
+publication uses final repository-identity and native-wiki parity checks. The [adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+retains focused results, review corrections and dated read-only observations.
+The full 1,000-item goal remains active. App 3.4.0 / deploy count 0, immutable
+managed fingerprints, research packages and reusable blank records retain their
+scope. Local macOS evidence establishes no real adopted-app intake, provider,
+production, native Windows or whole-site accessibility acceptance.
+
 ## 3.4.0 operational foundations and complete portal lifecycles — 2026-10-15
+
+This is the historical 42-done / 43-stage / 56-browser-check checkpoint. The
+current adoption wave and its integrated gate results are recorded above.
 
 Add `environment:check` / `environment:test` for the configuration schema proposal,
 tracked public examples and browser declarations. The fixed six-file inventory
@@ -30,11 +85,11 @@ Source, browser, owned local session, provider and deployed health retain their
 own evidence. Existing authorization continues to cover its original scope.
 
 Agent 0 accepted **WX-0650, WX-0673, WX-0677, WX-0678, WX-0700, WX-0751,
-WX-0793, WX-0835 and WX-0840**. The catalog reaches **42 done / 958 remaining**:
+WX-0793, WX-0835 and WX-0840**. The catalog then reached **42 done / 958 remaining**:
 **131 P1, 670 P2 and 157 P3**, with **790 local, 128 operator and 40 provider**
 criteria remaining. Focused verification passed **26 repository tests, 22
-environment tests and 20 new browser checks**. All **43 CI stages, 56 browser
-checks and Hosting preflight passed**, with owned browser/server cleanup.
+environment tests and 20 new browser checks**. At that checkpoint, all **43 CI
+stages, 56 browser checks and Hosting preflight passed**, with owned browser/server cleanup.
 Final results and the later CLI regression rerun are recorded in the
 [operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md).
 The full 1,000-item goal remains active. App 3.4.0 / deploy count 0 and reusable

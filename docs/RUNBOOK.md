@@ -19,6 +19,26 @@ Use `npm run environment:check` for the reviewed public-example proposal and
 the [QA coverage map](QA-COVERAGE-MAP.md) to choose relevant authored browser
 and unit scenarios. Keep reports/downloads/traces in local artifact storage.
 
+## Review adopted work and upstream changes
+
+Open the LAN **Work sources** cards to inspect reusable work records, the
+computed WebAppX roadmap and one explicitly selected root/child scope. An
+unavailable record is not an empty ledger; a role record is not a running worker.
+Read [work status](WORK-STATUS.md) before using these observations operationally.
+
+Use `backlog:adopt -- preview` with the selected configured app and reviewed
+committed catalog before deliberate TODO intake. Inspect every dependency and
+independent gate dimension; an unknown credential or authorization fact remains
+unknown. The [adoption guide](BACKLOG-ADOPTION.md) covers stale/repeated-plan
+refusal and recovery after generated-view refresh failures.
+
+Compare explicit committed source revisions through `backlog:impact`; review
+advisories do not reopen or accept tasks. Inspect `systemx:provenance` before
+updates, then `systemx:upstream:check` for source, pin, preserved paths and
+bootstrap conflicts. Follow every relevant continuation page and the complete
+blocking count. The [upstream-review guide](SYSTEMX-UPSTREAM-REVIEW.md) describes
+ready/blocked/invalid states and the separately requested apply boundary.
+
 - Operator runbook: [`.SYSTEMX/docs/RUNBOOK.md`](../.SYSTEMX/docs/RUNBOOK.md)
 - Deploy plan: [`.SYSTEMX/deploy/canary-plan.md`](../.SYSTEMX/deploy/canary-plan.md)
 - Status board: [`.SYSTEMX/status/TODO.md`](../.SYSTEMX/status/TODO.md)

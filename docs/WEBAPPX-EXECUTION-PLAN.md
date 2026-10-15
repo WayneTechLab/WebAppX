@@ -10,9 +10,9 @@ The separate [review index](BACKLOG-EVIDENCE.md) attaches scoped historical
 receipts with examined and observation revisions. It does not accept work
 or convert an earlier browser result into a current execution.
 
-Current verified progress: **42 done / 958 remaining**.
-Remaining priorities: **131 P1 · 670 P2 · 157 P3**.
-Remaining acceptance gates: **790 local · 40 provider · 128 operator**.
+Current verified progress: **48 done / 952 remaining**.
+Remaining priorities: **125 P1 · 670 P2 · 157 P3**.
+Remaining acceptance gates: **784 local · 40 provider · 128 operator**.
 
 ## Execution and acceptance
 
@@ -67,7 +67,7 @@ coverage ships with each slice rather than waiting for the quality area.
 | Design, responsiveness and interaction | WX-0701–WX-0750 | 0 | 50 |
 | Observability, support and operations | WX-0751–WX-0800 | 3 | 47 |
 | CI, delivery and infrastructure | WX-0801–WX-0850 | 4 | 46 |
-| SYSTEMX and agent workflows | WX-0851–WX-0900 | 2 | 48 |
+| SYSTEMX and agent workflows | WX-0851–WX-0900 | 8 | 42 |
 | Documentation and adoption kits | WX-0901–WX-0950 | 1 | 49 |
 | Optional integrations, extensibility and internationalization | WX-0951–WX-1000 | 0 | 50 |
 
@@ -75,7 +75,7 @@ Domain waves (the dependency graph overrides this order):
 
 | Wave | Areas | Done | Remaining |
 | --- | --- | ---: | ---: |
-| Foundation | setup, systemx | 13 | 87 |
+| Foundation | setup, systemx | 19 | 81 |
 | Shared core | portal-shell, identity, security | 11 | 139 |
 | Recovery | mock-recovery | 2 | 48 |
 | Human resources | hr-onboarding, hr-payroll, hr-talent | 0 | 150 |
@@ -115,12 +115,6 @@ or grant access, and current write ownership must be checked before selection.
 | ID | Priority / phase | Acceptance |
 | --- | --- | --- |
 | WX-0800 | P1 / foundation | Link ownership, monitoring, recovery, secrets and release rehearsal records with explicit deferred status for unadopted production services. |
-| WX-0851 | P1 / foundation | A preview maps a bounded operator-selected proposal set to valid adopted TASK identifiers, owners and dependencies; applying requires the selected adopted app and leaves the reusable template ledger blank. |
-| WX-0852 | P1 / foundation | Comparing two source revisions lists proposals whose referenced scopes changed and requests review without changing canonical task state or marking work complete. |
-| WX-0855 | P1 / foundation | Adoption previews distinguish credential readiness, operator authorization and local prerequisites per selected task and refuse to infer readiness from a TODO status. |
-| WX-0856 | P1 / foundation | A host status view distinguishes blank reusable task seeds, proposed roadmap items and any explicitly adopted project work. |
-| WX-0857 | P1 / foundation | Maintainers can inspect which outer files are host-owned, imported stock defaults or immutable release content before updating them. |
-| WX-0858 | P1 / foundation | Import preview summarizes selected version, exact public source commit, preserved host paths and bootstrap conflicts in a bounded report. |
 | WX-0859 | P1 / foundation | An import rehearsal lists preserved project records and host extension fingerprints without publishing their private content. |
 | WX-0901 | P1 / foundation | A maintainer can identify guides whose examined evidence predates relevant source changes, record a review decision and preserve the original dated receipts. |
 | WX-0902 | P1 / foundation | A one-page worksheet guides an evaluator through the three fictional portal journeys and recovery exercise with spaces for observed outcomes and exact browser origin. |
@@ -134,6 +128,12 @@ or grant access, and current write ownership must be checked before selection.
 | WX-0910 | P1 / foundation | A temporary adoption example removes HR entry points deliberately, retains working CMS and CRM evaluation, and lists the resulting bundle and backup compatibility decisions. |
 | WX-0056 | P1 / portal-maturity | Opening the directory from a portal and returning restores the last supported portal subsection in that session. |
 | WX-0059 | P1 / portal-maturity | Leaving a portal with an unsaved form offers keep editing or discard choices without intercepting a completed saved action. |
+| WX-0101 | P1 / portal-maturity | A fictional rehire creates a new employment instance while prior onboarding receipts remain attached to the original instance. |
+| WX-0102 | P1 / portal-maturity | A transfer preview shows previous and proposed department, manager and effective date before confirmation. |
+| WX-0103 | P1 / portal-maturity | Each proposed leave, return or termination transition requires a sample reason and records the prior state. |
+| WX-0104 | P1 / portal-maturity | Confirming fictional termination creates asset, access and handover assignments without calling external systems. |
+| WX-0105 | P1 / portal-maturity | The screen distinguishes retained directory identity from new employment and onboarding requirements. |
+| WX-0106 | P1 / portal-maturity | The preview lists affected direct-report scopes and prevents assigning an employee as their own manager. |
 
 ## Resume commands
 

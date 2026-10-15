@@ -35,6 +35,26 @@ only read local catalog data. They do not dispatch agents, import task records,
 contact providers or change acceptance. `backlog:plan:render` explicitly writes
 the generated plan; `backlog:plan:check` verifies it without rewriting.
 
+### Adoption and review foundations — 2026-10-15
+
+The catalog now records **48 done / 952 remaining**, including accepted
+WX-0851, WX-0852 and WX-0855–WX-0858. Remaining priorities are **125 P1,
+670 P2 and 157 P3**; gates are **784 local, 128 operator and 40 provider**.
+Read [adoption-foundations QA](../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+for the examined source, focused execution, review fixes and integrated gates.
+
+`backlog:adopt` previews bounded selected proposals and separate credential,
+operator and local prerequisite facts. Deliberate apply selects a configured
+adopted app and creates only TODO intake; it refuses this template and stale or
+repeated plans. `backlog:impact` compares two committed source revisions and
+requests review without changing acceptance. `systemx:provenance` classifies
+host ownership independently from stock equality, while upstream preview
+reports exact public source and all conflict totals through bounded pages.
+The LAN work-status cards separate reusable work records, roadmap source
+acceptance and explicitly selected project records; malformed data is unavailable.
+
+The following checkpoints retain their historical dates and totals.
+
 ### Execution foundations
 
 The current wave adds runtime/environment contracts, sanitized account-free
@@ -52,7 +72,7 @@ items, original evidence and publication results. Managed snapshots, research
 fingerprints and blank task/context/plan/memory seeds remain intact.
 
 Agent 0 accepted **WX-0002–WX-0006, WX-0042, WX-0052–WX-0055, WX-0057–WX-0058,
-WX-0452, WX-0783, WX-0801, WX-0853 and WX-0932**. The current catalog contains
+WX-0452, WX-0783, WX-0801, WX-0853 and WX-0932**. At that checkpoint the catalog contained
 exactly **1,000 records: 24 done, 976 remaining — 146 P1, 673 P2 and 157 P3**.
 Remaining gates are **808 local, 128 operator and 40 provider**. The full goal
 stays active until each remaining original criterion is accepted.

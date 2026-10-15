@@ -21,6 +21,7 @@ import { inspectCurrentRepository, inspectExternalProject } from './Builder/impo
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
 import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
+import { readOperatingStatus } from './work-status.mjs'
 
 const lanRoot = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(lanRoot, '..', '..')
@@ -575,32 +576,6 @@ function toolingStatus() {
   ]
 }
 
-function operatingStatus() {
-  const readRecord = (name, fallback) => {
-    try {
-      return JSON.parse(readFileSync(join(repoRoot, '.SYSTEMX', name), 'utf8'))
-    } catch {
-      return fallback
-    }
-  }
-  const installation = readRecord('INSTALLATION.json', null)
-  const tasks = readRecord('WORK/TASKS.json', { tasks: [] }).tasks ?? []
-  const agents = readRecord('AGENTS/REGISTRY.json', { agents: [] }).agents ?? []
-  const projects = readRecord('Projects/REGISTRY.json', { projects: [] }).projects ?? []
-  return {
-    installed: Boolean(installation),
-    selectedVersion: installation?.activeVersion ?? null,
-    pinnedVersion: installation?.pinnedVersion ?? null,
-    updatePolicy: installation?.autoUpdate ?? null,
-    taskCount: tasks.length,
-    tasksByStatus: Object.fromEntries(['todo', 'in_progress', 'blocked', 'needs_review', 'done', 'cancelled']
-      .map((status) => [status, tasks.filter((task) => task.status === status).length])),
-    agentRoles: agents.map((agent) => ({ id: agent.id, role: agent.role })),
-    childProjectCount: projects.length,
-    authority: 'records-only',
-  }
-}
-
 function requireSessionToken(request, response) {
   if (request.headers['x-systemx-session'] !== sessionToken) {
     sendJson(response, 403, { error: 'SYSTEMX session token required' })
@@ -957,7 +932,7 @@ function resolvePublicFile(pathname) {
   return confinedFile(repoRoot, target)
 }
 
-async function getStatus() {
+async function getStatus(workSelection = null) {
   const branch = runGit(['branch', '--show-current']) || 'unknown'
   const status = runGit(['status', '--short'])
   const changedFiles = status ? status.split('\n').filter(Boolean).length : 0
@@ -1042,7 +1017,7 @@ async function getStatus() {
       environment: localData.environment,
     },
     tooling: toolingStatus(),
-    operating: operatingStatus(),
+    operating: readOperatingStatus(repoRoot, workSelection),
     files: [
       'src/router.tsx',
       ...workspace.sourceFiles,
@@ -1091,7 +1066,14 @@ const server = createServer(async (request, response) => {
   }
 
   if (requestUrl.pathname === '/api/status') {
-    sendJson(response, 200, await getStatus())
+    const scope = requestUrl.searchParams.get('workScope')
+    const project = requestUrl.searchParams.get('project')
+    const ambiguous = requestUrl.searchParams.getAll('workScope').length > 1 || requestUrl.searchParams.getAll('project').length > 1
+    const selection = ambiguous ? { kind: 'invalid' } : scope === null && project === null ? null
+      : scope === 'root' && project === null ? { kind: 'root' }
+        : scope === 'child' && project !== null ? { kind: 'child', name: project }
+          : { kind: 'invalid' }
+    sendJson(response, 200, await getStatus(selection))
     return
   }
 

@@ -6,16 +6,58 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
-The operational-foundations wave adds **`environment:check`** for tracked public
+The adoption and recorded-work wave accepts **WX-0851, WX-0852, WX-0855,
+WX-0856, WX-0857 and WX-0858**, taking the catalog to **48 done / 952 remaining**.
+Remaining priorities are **125 P1, 670 P2 and 157 P3**; remaining acceptance gates
+are **784 local, 128 operator and 40 provider**. The full 1,000-item goal stays
+active. Read [Testing & QA](Testing-and-QA.md#adoption-recorded-work-and-import-review-foundations)
+and the [adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+for the accepted scope and evidence.
+
+The [adoption workflow](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-ADOPTION.md)
+previews a bounded proposal selection and applies reviewed **TODO intake** to an
+explicit adopted root or registered child. Credential availability, operator
+authorization and local prerequisites are independent action gates; omitted or
+unreviewed gates stay `unknown`. Recording TODO intake does not authorize
+execution or transfer source completion evidence. The
+[revision-impact report](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-REBASELINE.md)
+compares explicit committed source endpoints and requests review while preserving
+catalog and task acceptance state.
+
+The LAN builder's **AGI / Agent 0** panel and local React status card distinguish
+reusable work seeds, roadmap proposals and explicitly selected recorded work.
+The [work-status guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORK-STATUS.md)
+explains default `not-selected`, exact root/child selection and `unavailable`
+records. Readable empty records mean no work recorded; unavailable data does not
+mean zero work. Exact stock-byte equality describes those files' content and
+does not establish ownership, adoption or completion.
+
+Inspect update boundaries with **`npm run systemx:provenance -- --format text --limit 40`**
+and [the provenance guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-PROVENANCE.md).
+Host-owned paths stay host owned when they match blank stock seeds; equality
+grants no overwrite authority. The existing **`systemx:upstream:check`** command
+now supplies a [bounded upstream review](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-UPSTREAM-REVIEW.md)
+bound to the exact source commit and current canonical public main. The preview
+reports preserved host paths and bootstrap conflicts, and applies no import.
+
+Focused verification passed **95 host-integration tests, 19 revision-impact
+tests, 37 work-status tests, six owned LAN browser checks and 13 CI-plan tests**.
+The current source-derived CI plan has **46 stages**; planning does not run them.
+**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**Generated catalog/plan, link and preservation checks passed.** GitHub
+publication uses final repository-identity and native-wiki parity checks. Local macOS evidence does not establish provider,
+production, native Windows or whole-site accessibility acceptance.
+
+At the historical operational-foundations checkpoint, the wave added **`environment:check`** for tracked public
 examples, **`repository:identity`** for a read-only Git publication receipt,
 and **`browser:payroll` / `browser:lifecycles`** for complete synthetic payroll,
 CMS and CRM journeys. Read [Testing & QA](Testing-and-QA.md#operational-foundations-and-complete-portal-lifecycles)
 and the [operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
-for the examined source, focused results and integration gates. Agent 0 accepted
-nine original criteria, taking the catalog to **42 done / 958 remaining**.
-All **43 CI stages, 56 browser checks and Hosting preflight passed**. Every
-browser report confirmed owned cleanup; the earlier 38-stage pass below
-remains a historical checkpoint.
+for the examined source, focused results and integration gates. Agent 0 then
+accepted nine original criteria, taking the catalog to **42 done / 958 remaining**.
+At that checkpoint, all **43 CI stages, 56 browser checks and Hosting preflight
+passed**. Every browser report confirmed owned cleanup. These results and the
+earlier 38-stage pass below retain their historical scope.
 
 The new payroll fixture reconciles two statements and the actual combined export:
 **17.75 hours, $532.50 gross and $401.00 net**. CMS checks the complete frozen

@@ -18,6 +18,14 @@ production kits and sanitized examples. It combines the public webapp and privat
 | Root and starter package versions, `.SYSTEMX/webapp-version/` | Webapp release version; independent of standalone version |
 | `.SYSTEMX/status/` | Retained LAN feature roadmap/history, not the integration task authority |
 
+Use the read-only [per-path provenance inventory](SYSTEMX-PROVENANCE.md) before
+updating outer content. Ownership and stock-content relation are independent:
+an exact blank seed match remains a host record. The [work-status contract](WORK-STATUS.md)
+likewise separates reusable work-record facts, catalog proposals and one exact
+explicitly selected project scope. New [adoption previews](BACKLOG-ADOPTION.md)
+leave this reusable ledger blank and create TODO intake only in a separately
+selected configured app; gate observations grant no execution authority.
+
 `npm run systemx:status` reports the authoritative selected defaults and integrity.
 The selected release is **1.9.0-alpha.6**, imported from public main
 `7f0d82b7ba8531ac04d897209d8c1ed263ee29cb` with distribution manifest SHA-256
@@ -112,12 +120,23 @@ the reviewed commit; pass the same value to the apply command when pinning a rev
 A later public commit with the same release may pass only when the receipt's
 repository/version/manifest match, its original full commit object is available,
 and both commits have the identical complete `.SYSTEMX` Git tree. The report
-then exposes `receiptCommit` and `identicalSourceTree: true`, while `commit`
-identifies the newly reviewed public main. The original receipt bytes and
+then exposes `receipt.originalCommit`, `receipt.identicalSourceTree: true` and
+the `identical-source-tree` proof in the default bounded review, while
+`source.commit` identifies the newly reviewed public main. The legacy apply
+receipt retains its flat `receiptCommit`/`identicalSourceTree`/`commit` fields.
+The original receipt bytes and
 timestamp are retained. Matching a manifest alone is insufficient: source-tree
 changes, including unlisted files or Git tree metadata, remain conflicts requiring
 a new upstream release. If the historical commit is absent from a shallow
 checkout, obtain the reviewed history before retrying; do not rewrite provenance.
+
+The default CLI preview now emits versioned bounded JSON with independently
+paged groups, exact totals and complete blocking counts; exit 0 is ready and
+exit 1 is blocked or invalid. Use `--limit`/`--offset` to inspect every page.
+It includes host-only preserved paths as well as incoming overlaps. Invalid
+source observations retain null/unverified facts and portable diagnostic codes.
+Read the [upstream-review contract](SYSTEMX-UPSTREAM-REVIEW.md) for the changed
+preview shape, canonical public-main query, conflict handling and apply boundary.
 
 Preview leaves the target untouched. For a managed target, it also previews
 the upstream manager's explicit `bootstrap-refresh` for eight stock manager and

@@ -46,8 +46,13 @@ and the [integration guide](docs/SYSTEMX-INTEGRATION.md),
 [adoption example](docs/examples/private-template-adoption.md),
 [release provenance and feature map](docs/UNIFIED-TEMPLATE.md),
 [3.4.0 validation receipt](docs/VALIDATION-3.4.0.md), and
-[entry point](.SYSTEMX/START-HERE.md). Preview upstream updates with
-`npm run systemx:upstream:check`; apply reviewed updates with
+[entry point](.SYSTEMX/START-HERE.md). Inspect ownership with
+`npm run systemx:provenance`, then preview upstream updates with
+`npm run systemx:upstream:check -- --limit 25`. The bounded review reports the
+exact source/public-main observation, preserved host paths and bootstrap
+conflicts; pagination retains complete blocking totals. A preview applies no
+changes. Read [upstream review](docs/SYSTEMX-UPSTREAM-REVIEW.md) before applying
+reviewed updates with
 `npm run systemx:upstream:import`. The upstream distribution is immutable and pinned.
 The importer previews recognized stock bootstrap replacements, then backs up
 and refreshes them before selecting changed defaults. Original snapshots and
@@ -210,7 +215,7 @@ date, revision and limitations; it does not change completion state or satisfy
 unfinished dependencies. The [session/contracts QA receipt](docs/SESSION-CONTRACTS-QA-2026-10-15.md)
 records the integrated checks and their acceptance boundaries.
 
-**Accepted checkpoint — 2026-10-15:** nine additional items are complete:
+**Historical accepted checkpoint — 2026-10-15:** nine additional items were complete:
 **WX-0007–WX-0010, WX-0060, WX-0501, WX-0601, WX-0805 and WX-0854**.
 At that checkpoint the catalog reached **33 done / 967 remaining**. All **38 CI stages** and
 Hosting preflight passed, including **42 session tests, 15 evidence-index tests**
@@ -239,13 +244,41 @@ Read the [QA coverage map](docs/QA-COVERAGE-MAP.md),
 The [operational-foundations receipt](docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
 records execution results, fixes and acceptance boundaries for this wave.
 
-**Accepted operational checkpoint — 2026-10-15:** nine more original criteria
-are verified, bringing the full checklist to **42 done / 958 remaining**.
-All **43 CI stages**, **56 browser checks** and **Hosting preflight passed**;
+**Historical operational checkpoint — 2026-10-15:** nine more original criteria
+were verified, bringing the checklist then to **42 done / 958 remaining**.
+At that checkpoint all **43 CI stages**, **56 browser checks** and **Hosting preflight passed**;
 each browser suite confirmed owned cleanup. The final focused repository suite
 passed 26 tests after the symlink entry-point fix; configuration validation
 passed 22 tests. Provider and operator requirements retain their stated evidence
 gates, and the complete 1,000-item goal remains active.
+
+## Backlog adoption and recorded work
+
+Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**
+against their original local criteria. The current catalog has **48 done /
+952 remaining**, with **125 P1, 670 P2 and 157 P3** remaining. Remaining gates
+are **784 local, 128 operator and 40 provider**. The complete 1,000-item goal
+remains active, and source completion does not transfer acceptance to an adopted app.
+
+| Capability | Entry point and boundary |
+| --- | --- |
+| Reviewed TODO intake — WX-0851/WX-0855 | [`backlog:adopt`](docs/BACKLOG-ADOPTION.md) previews 1–40 selected proposals for an explicit adopted app/root or registered child. Apply records reviewed TODOs with valid owners/dependencies; independent credential, authorization and local prerequisite dimensions default to unknown. Intake grants no execution authority. |
+| Source impact — WX-0852 | [`backlog:impact`](docs/BACKLOG-REBASELINE.md) compares two explicit local committed revisions and requests review for affected scopes without changing catalog or canonical task state. |
+| Recorded work — WX-0856 | [LAN work status](docs/WORK-STATUS.md) separates reusable work seeds, roadmap counts and an explicitly selected root/child's recorded work. Missing or invalid data is unavailable; valid empty work means no work recorded. Roles do not observe running workers. |
+| Ownership inventory — WX-0857 | [`systemx:provenance`](docs/SYSTEMX-PROVENANCE.md) separates host ownership, retained byte/manifest equality and immutable release content. A blank stock match grants no overwrite authority. |
+| Bounded upstream review — WX-0858 | [`systemx:upstream:check`](docs/SYSTEMX-UPSTREAM-REVIEW.md) binds the exact source/current public-main observation and reports preserved host-only paths and bootstrap conflicts without applying an import. |
+
+Focused verification passed **95 SYSTEMX integration tests** (including 23
+adoption, 23 provenance and 13 upstream-review cases), **19 impact tests**,
+**37 work-status tests**, **six owned LAN browser checks** and **13 CI-plan
+tests**. The current CI plan contains **46 stages**; planning does not execute
+them.
+
+**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**Generated catalog/plan, link and preservation checks passed.** GitHub
+publication uses final repository-identity and native-wiki parity checks. Read the
+[adoption/status/review QA receipt](docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+for the examined source, fixes, preservation checks and acceptance boundaries.
 
 ## Current SYSTEMX features
 
@@ -263,6 +296,7 @@ the outer `.SYSTEMX` or an explicitly selected child `.SYSTEMXP`.
 | Child projects | Explicit `.SYSTEMXP` selection through `projects ... --project NAME` |
 | CLI/tools guide | `npm run systemx -- tools-guide` |
 | Verified manual updates | Preview/import exact public source, back up recognized stock launchers, retain immutable snapshots and adopted records |
+| Adoption and work inspection | Reviewed TODO intake, committed source impact, explicit recorded-work scopes, ownership inventory and bounded upstream review |
 | HR and Gusto | Portable `.SYSTEMX/GUSTO/` contracts, complete native synthetic journeys and selected pinned SDK workflow previews |
 
 ## Roadmap and execution of all 1,000 items
@@ -372,7 +406,7 @@ including 114 portal tests, 116 HR tests and 13 catalog tests. The
 [QA receipt](docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md) records the remaining
 suite counts and five filesystem-specific skips. No production deployment ran.
 
-The current SYSTEMX refresh verifies public main
+The reviewed 2026-10-14 SYSTEMX refresh observed public main
 `3fb59429c878268f1081ca255a1f32fafc5dcfba`. Its `.SYSTEMX` tree is identical to
 the original **1.9.0-alpha.6** import, so the selected version and receipt stay
 intact. Documentation-only upstream commits can now pass the update check when
@@ -1137,7 +1171,10 @@ WSG-MENU
 | `npm run systemx:context` | Load a bounded Agent 0 resume packet |
 | `npm run systemx -- menu` | Open managed project, role and workspace tools |
 | `npm run systemx -- tools-guide` | Read the selected CLI/tools and child-scope guide |
-| `npm run systemx:upstream:check` | Preview current standalone defaults |
+| `npm run backlog:adopt -- preview ...` | Preview a bounded TODO intake for an explicit adopted app and reviewed local catalog commit |
+| `npm run backlog:impact -- --from FROM_REVISION --to TO_REVISION` | Report committed source-scope review advice without changing acceptance |
+| `npm run systemx:provenance` | Inspect host ownership and all retained release relationships without writes |
+| `npm run systemx:upstream:check -- --limit 25` | Read bounded exact-source/public-main import review, preservation and bootstrap conflicts |
 | `npm run systemx:upstream:import` | Explicitly import and pin reviewed defaults |
 | `npm run template:check` | Validate blank reusable-template seeds and packaged integrity |
 | `npm run ci:all` | Complete reusable-template release gate |

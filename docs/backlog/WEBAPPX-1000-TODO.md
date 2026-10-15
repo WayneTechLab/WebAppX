@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 958 TODO · 42 done · 20 areas · 50 items per area.**
+**1000 catalog items · 952 TODO · 48 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 131 · P2: 670 · P3: 157.
+Remaining TODO priorities: P1: 125 · P2: 670 · P3: 157.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -3587,14 +3587,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## SYSTEMX and agent workflows
 
-- [ ] **WX-0851 — Add reviewed backlog-to-ledger adoption exports**
+- [x] **WX-0851 — Add reviewed backlog-to-ledger adoption exports**
   - P1 · foundation · local
   - Acceptance: A preview maps a bounded operator-selected proposal set to valid adopted TASK identifiers, owners and dependencies; applying requires the selected adopted app and leaves the reusable template ledger blank.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
-- [ ] **WX-0852 — Add proposal source rebaseline impact reports**
+  - Verified: 2026-10-15 · Source base: `f8494b750447af7d4e39695f4a6fceeff29f48bb` · Reviewed by: `agent.0` · Evidence: [docs/SYSTEMX-ADOPTION-QA-2026-10-15.md](../../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0852 — Add proposal source rebaseline impact reports**
   - P1 · foundation · local
   - Acceptance: Comparing two source revisions lists proposals whose referenced scopes changed and requests review without changing canonical task state or marking work complete.
   - Source: [scripts/validate-template.py](../../scripts/validate-template.py)
+  - Verified: 2026-10-15 · Source base: `f8494b750447af7d4e39695f4a6fceeff29f48bb` · Reviewed by: `agent.0` · Evidence: [docs/SYSTEMX-ADOPTION-QA-2026-10-15.md](../../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
 - [x] **WX-0853 — Add dependency critical-path visualization**
   - P1 · foundation · local
   - Acceptance: A read-only view shows the selected proposal dependency graph, longest dependency chains and unresolved external gates without assigning or dispatching workers.
@@ -3605,22 +3607,26 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: A review index can attach examined revision and local, browser, provider or operator evidence references to a proposal without converting historical evidence into current completion.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
   - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
-- [ ] **WX-0855 — Add machine-readable adoption gate constraints**
+- [x] **WX-0855 — Add machine-readable adoption gate constraints**
   - P1 · foundation · local
   - Acceptance: Adoption previews distinguish credential readiness, operator authorization and local prerequisites per selected task and refuse to infer readiness from a TODO status.
   - Source: [scripts/validate-template.py](../../scripts/validate-template.py)
-- [ ] **WX-0856 — Show active versus proposed work separately**
+  - Verified: 2026-10-15 · Source base: `f8494b750447af7d4e39695f4a6fceeff29f48bb` · Reviewed by: `agent.0` · Evidence: [docs/SYSTEMX-ADOPTION-QA-2026-10-15.md](../../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0856 — Show active versus proposed work separately**
   - P1 · foundation · local
   - Acceptance: A host status view distinguishes blank reusable task seeds, proposed roadmap items and any explicitly adopted project work.
   - Source: [src/systemx/localStatus.ts](../../src/systemx/localStatus.ts)
-- [ ] **WX-0857 — Add a host-extension provenance inventory**
+  - Verified: 2026-10-15 · Source base: `f8494b750447af7d4e39695f4a6fceeff29f48bb` · Reviewed by: `agent.0` · Evidence: [docs/SYSTEMX-ADOPTION-QA-2026-10-15.md](../../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0857 — Add a host-extension provenance inventory**
   - P1 · foundation · local
   - Acceptance: Maintainers can inspect which outer files are host-owned, imported stock defaults or immutable release content before updating them.
   - Source: [docs/SYSTEMX-INTEGRATION.md](../../docs/SYSTEMX-INTEGRATION.md)
-- [ ] **WX-0858 — Add an upstream review checklist generator**
+  - Verified: 2026-10-15 · Source base: `f8494b750447af7d4e39695f4a6fceeff29f48bb` · Reviewed by: `agent.0` · Evidence: [docs/SYSTEMX-ADOPTION-QA-2026-10-15.md](../../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0858 — Add an upstream review checklist generator**
   - P1 · foundation · local
   - Acceptance: Import preview summarizes selected version, exact public source commit, preserved host paths and bootstrap conflicts in a bounded report.
   - Source: [scripts/sync-systemx.py](../../scripts/sync-systemx.py)
+  - Verified: 2026-10-15 · Source base: `f8494b750447af7d4e39695f4a6fceeff29f48bb` · Reviewed by: `agent.0` · Evidence: [docs/SYSTEMX-ADOPTION-QA-2026-10-15.md](../../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0859 — Add a before-and-after import preservation report**
   - P1 · foundation · local
   - Acceptance: An import rehearsal lists preserved project records and host extension fingerprints without publishing their private content.

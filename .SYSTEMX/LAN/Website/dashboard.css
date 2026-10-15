@@ -3510,3 +3510,17 @@ code,
 .right-toolbar .inspector-group-button[title]:focus-visible::after {
   right: calc(100% + 7px);
 }
+/* Recorded work is distinct from the runtime and provider cards. */
+.work-status-section { margin: 16px 0; }
+.work-status-section h3 { margin: 0 0 12px; font-size: 14px; }
+.work-status-grid { display: grid; gap: 10px; }
+.work-status-card { min-width: 0; padding: 12px; border: 1px solid var(--line, #d8dce3); border-radius: 8px; background: var(--panel, #fff); }
+.work-status-card.unavailable { border-color: #b8792c; }
+.work-status-card h4 { margin: 0 0 6px; font-size: 13px; }
+.work-status-card p { margin: 8px 0 0; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.work-status-sources { margin-top: 10px; font-size: 11px; }
+.work-status-sources summary { cursor: pointer; }
+.work-status-sources code, .work-status-sources small { display: block; margin-top: 6px; overflow-wrap: anywhere; white-space: normal; }
+.work-scope-label { display: block; margin: 14px 0 6px; font-size: 12px; font-weight: 600; }
+.work-scope-select { width: 100%; min-height: 38px; padding: 8px; border: 1px solid var(--line, #d8dce3); border-radius: 6px; background: var(--panel, #fff); color: inherit; }
+.work-scope-select:focus-visible { outline: 2px solid #1874da; outline-offset: 2px; }

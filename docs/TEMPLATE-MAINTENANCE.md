@@ -188,6 +188,30 @@ maintained task-status ledger into the blank reusable SYSTEMX records. The
 execution plan is deterministic and its check fails if the rendered counts,
 area coverage or dependency-ready candidates are stale.
 
+## Review and adopt a bounded proposal selection
+
+The host [adoption workflow](BACKLOG-ADOPTION.md) converts explicitly selected
+proposals into new TODO records in a separately selected configured app or
+registered child. Its preview binds a locally available catalog commit/digest,
+registered owners, exact target identity/scope, task allocation and every mapped
+dependency. Source completion evidence does not become target acceptance.
+
+Review per-task credentials, operator authority and local prerequisites
+independently. Missing constraints remain unknown; available credentials are
+reported without provider probes. Deliberate reviewed-plan intake is separate
+from activating or executing the work. Applying a stale or repeated plan refuses
+before duplicating tasks. Unreadable records cannot disappear from fingerprints.
+Do not apply this host tool to the reusable template itself.
+
+Use [revision-impact reports](BACKLOG-REBASELINE.md) when comparing committed
+source versions. Review candidates retain their original canonical state.
+The [work-status view](WORK-STATUS.md) separates root work-record byte matches,
+roadmap source acceptance and one explicitly selected adopted scope. The
+[provenance inventory](SYSTEMX-PROVENANCE.md) separates path ownership from stock
+content relation before any update; inspect the [bounded upstream review](SYSTEMX-UPSTREAM-REVIEW.md)
+for exact source/pin facts and all conflict totals before a separately authorized
+import. An omitted display row cannot remove a blocker.
+
 ## Maintain contracts and evidence attachments
 
 The [portal state contract](PORTAL-STATE-CONTRACT.md) describes actual retained

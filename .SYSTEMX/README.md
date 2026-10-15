@@ -11,6 +11,13 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+Host adoption/review tools now include [bounded TODO intake and gate previews](../docs/BACKLOG-ADOPTION.md),
+[revision-impact advisories](../docs/BACKLOG-REBASELINE.md), [separate work sources](../docs/WORK-STATUS.md),
+[per-path provenance](../docs/SYSTEMX-PROVENANCE.md) and [bounded upstream review](../docs/SYSTEMX-UPSTREAM-REVIEW.md).
+Read the [adoption-foundations receipt](../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+for actual execution and limitations. These tools do not populate this template's
+blank ledger or transfer source acceptance to an adopted app.
+
 Host operational contracts now include [dated security assumptions](../docs/SECURITY-ASSUMPTIONS.md),
 [health vocabulary](../docs/MONITORING.md), [command effects](../docs/COMMAND-SAFETY.md)
 and [QA coverage](../docs/QA-COVERAGE-MAP.md). Use `npm run repository:identity`

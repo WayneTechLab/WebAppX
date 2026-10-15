@@ -10756,24 +10756,36 @@
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add reviewed backlog-to-ledger adoption exports",
       "acceptance": "A preview maps a bounded operator-selected proposal set to valid adopted TASK identifiers, owners and dependencies; applying requires the selected adopted app and leaves the reusable template ledger blank.",
       "source": "docs/TEMPLATE-MAINTENANCE.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f8494b750447af7d4e39695f4a6fceeff29f48bb",
+        "evidence": "docs/SYSTEMX-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0852",
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add proposal source rebaseline impact reports",
       "acceptance": "Comparing two source revisions lists proposals whose referenced scopes changed and requests review without changing canonical task state or marking work complete.",
       "source": "scripts/validate-template.py",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f8494b750447af7d4e39695f4a6fceeff29f48bb",
+        "evidence": "docs/SYSTEMX-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0853",
@@ -10816,48 +10828,72 @@
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add machine-readable adoption gate constraints",
       "acceptance": "Adoption previews distinguish credential readiness, operator authorization and local prerequisites per selected task and refuse to infer readiness from a TODO status.",
       "source": "scripts/validate-template.py",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f8494b750447af7d4e39695f4a6fceeff29f48bb",
+        "evidence": "docs/SYSTEMX-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0856",
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Show active versus proposed work separately",
       "acceptance": "A host status view distinguishes blank reusable task seeds, proposed roadmap items and any explicitly adopted project work.",
       "source": "src/systemx/localStatus.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f8494b750447af7d4e39695f4a6fceeff29f48bb",
+        "evidence": "docs/SYSTEMX-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0857",
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a host-extension provenance inventory",
       "acceptance": "Maintainers can inspect which outer files are host-owned, imported stock defaults or immutable release content before updating them.",
       "source": "docs/SYSTEMX-INTEGRATION.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f8494b750447af7d4e39695f4a6fceeff29f48bb",
+        "evidence": "docs/SYSTEMX-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0858",
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add an upstream review checklist generator",
       "acceptance": "Import preview summarizes selected version, exact public source commit, preserved host paths and bootstrap conflicts in a bounded report.",
       "source": "scripts/sync-systemx.py",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "f8494b750447af7d4e39695f4a6fceeff29f48bb",
+        "evidence": "docs/SYSTEMX-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0859",

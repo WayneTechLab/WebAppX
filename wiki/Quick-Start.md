@@ -185,9 +185,9 @@ form removal establishes UI prevention, while a separately reported actual-brows
 module probe checks replay refusal on a detached download without injecting
 application state.
 
-**Focused results — 2026-10-15:** eight payroll and twelve CMS/CRM browser checks,
+**Historical focused results — 2026-10-15:** eight payroll and twelve CMS/CRM browser checks,
 26 repository tests and 22 environment tests passed. Agent 0 accepted the nine
-operational criteria; the catalog reached **42 done / 958 remaining**. The current
+operational criteria; the catalog then reached **42 done / 958 remaining**. At that checkpoint,
 **43-stage full CI, 56 browser checks and Hosting preflight passed**, with
 owned browser/server cleanup. Read the
 [operational QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md)
@@ -311,6 +311,56 @@ Follow [Agent Y setup for a new app](Agent-Y-New-App-Setup.md) to configure real
 app checks, authenticate an installed CLI, assign one bounded task and review
 its local result or explicitly opted-in draft PR.
 
+### Review a small proposal intake
+
+Use the [reviewed adoption guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-ADOPTION.md)
+to select 1–40 proposals for an already configured adopted app. The explicit
+app name must match its selected root or registered child configuration; the
+tool refuses this reusable WebAppX identity. Create the local selection using
+the guide's schema, then preview with an available reviewed catalog commit:
+
+```bash
+npm run backlog:adopt -- preview --target ../adopted-app --app 'Example App' --root \
+  --catalog-revision FULL_REVIEWED_LOCAL_COMMIT --selection ./local/adoption-selection.json
+```
+
+These operands are placeholders for the reviewed target and local files.
+Preview writes no tasks or workers. Review every owner, scope, dependency,
+next action and independent credential/authorization/local-prerequisite gate.
+Omitted requirements or observations remain `unknown`; a source `done` item
+does not satisfy a target dependency automatically. The guide's apply command
+uses the unchanged reviewed plan and `--authorize-intake` to record TODOs.
+Accepted intake does not authorize execution or prove provider readiness.
+
+`npm run backlog:impact -- --from FROM_REVISION --to TO_REVISION --json`
+compares two explicit local committed revisions and requests review of affected
+proposal scopes. It changes no completion or canonical task state. Read
+[source impact](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-REBASELINE.md)
+for catalog binding, definition advice and bounded output.
+
+### Inspect recorded work
+
+Open **AGI / Agent 0** in the LAN builder. It separates reusable work seeds,
+WebAppX proposal counts and recorded work for an explicitly selected root or
+exact registered child. Reload starts with no selected adopted scope. Missing,
+invalid or unsupported records display unavailable; readable empty work means
+no work recorded. An exact work-seed match does not establish project identity,
+completion or running workers. See the
+[work-status contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORK-STATUS.md).
+
+The current accepted catalog is **48 done / 952 remaining**, with **125 P1,
+670 P2 and 157 P3** remaining and **784 local, 128 operator and 40 provider**
+gates. WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858 have focused
+local acceptance. The source-derived plan has 46 stages.
+
+**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**Generated catalog/plan, link and preservation checks passed.** GitHub
+publication uses final repository-identity and native-wiki parity checks.
+The [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+records 95 integration, 19 impact, 37 work-status and 13 CI-plan tests plus six
+owned LAN browser checks. Earlier 42-done/43-stage/56-browser results belong to
+the historical operational checkpoint.
+
 ## Verify the app
 
 ```bash
@@ -345,10 +395,21 @@ Use `bootstrap.sh --check` for read-only tooling inspection before optional
 installation or login. Configure cloud services for the adopted project.
 
 ```bash
-npm run systemx:upstream:check  # preview reviewed standalone defaults
+npm run systemx:provenance -- --limit 40
+npm run systemx:provenance -- --path GLOBAL/CONTEXT.md
+npm run systemx:upstream:check -- --limit 25
 npm run systemx:upstream:import # explicitly import and pin; preserve host records
 npm run deploy -- hosting --preflight
 ```
+
+The [ownership inventory](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-PROVENANCE.md)
+verifies retained snapshots and distinguishes host ownership from exact or
+manifest-equivalent stock matches. A matching blank seed grants no overwrite
+authority. The [bounded upstream review](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-UPSTREAM-REVIEW.md)
+reports the exact source/current public-main observation, selected/pinned
+versions, preserved host-only paths and bootstrap conflicts. Its pagination
+retains full blocking totals. Review is read-only and applies no import; use
+the same actual reviewed commit and applicable authority for a later apply.
 
 Preflight verifies local gates without publishing hosting. Choose the Firebase
 project and authorize a deployment separately. Read [Deployment](Deployment.md).

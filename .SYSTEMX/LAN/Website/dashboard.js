@@ -62,6 +62,8 @@ function loadLayout() {
 
 const state = {
   status: null,
+  workSelection: null,
+  statusRequestGeneration: 0,
   data: null,
   selectedPageId: null,
   selectedNodeId: null,
@@ -1224,15 +1226,90 @@ async function saveSelectedText() {
   await refresh()
 }
 
+function recordedCounts(source) {
+  if (source.taskCount === null || !source.tasksByStatus) return 'Task records unavailable.'
+  return source.taskCount === 0 ? 'No work recorded.'
+    : `${source.taskCount} recorded ${source.taskCount === 1 ? 'task' : 'tasks'} · ${Object.entries(source.tasksByStatus).map(([name, count]) => `${name}: ${count}`).join(' · ')}`
+}
+
+function renderWorkStatus(work) {
+  const view = document.querySelector('#work-status-view')
+  const select = document.querySelector('#work-scope-select')
+  if (!view || !select) return
+  view.replaceChildren()
+  if (!work || work.schemaVersion !== 1) {
+    view.append(create('p', 'panel-help', 'Work source status unavailable.'))
+    select.disabled = true
+    return
+  }
+  const card = (title, state, lines, sources = []) => {
+    const article = create('article', `work-status-card${state === 'unavailable' ? ' unavailable' : ''}`)
+    article.append(create('h4', '', title), create('span', 'badge', state))
+    for (const line of lines) article.append(create('p', '', line))
+    if (sources.length) {
+      const detail = create('details', 'work-status-sources')
+      detail.append(create('summary', '', 'Source digests and diagnostics'))
+      for (const source of sources) {
+        detail.append(create('code', '', source.path), create('small', '', source.diagnostic ?? source.state))
+        if (source.sha256) detail.append(create('code', '', `SHA-256 ${source.sha256}`))
+        if (Object.hasOwn(source, 'exactStockMatch')) detail.append(create('small', '', `Exact selected stock bytes: ${source.exactStockMatch === null ? 'unavailable' : source.exactStockMatch ? 'match' : 'different'}`))
+        if (source.stockDiagnostic) detail.append(create('small', '', `Stock source: ${source.stockDiagnostic}`))
+      }
+      article.append(detail)
+    }
+    view.append(article)
+  }
+  const seed = work.reusableSeed
+  card('Reusable work seeds', seed.state, [
+    `Selected stock comparison: ${seed.stockMatch}.`, recordedCounts(seed),
+    seed.focus ? seed.focus.objective ? `Recorded focus: ${seed.focus.objective}` : 'No focus recorded.' : 'Focus records unavailable.',
+    'Exact seed bytes describe task, focus and role records. They do not establish project identity or completion.',
+  ], [...seed.sources, ...(seed.supportingSources ?? [])])
+  const roadmap = work.roadmap
+  card('WebAppX roadmap proposals', roadmap.state, roadmap.state === 'available' ? [
+    `${roadmap.project} · ${roadmap.intent} · schema ${roadmap.schemaVersion}`,
+    `${roadmap.itemCount} catalog items · ${roadmap.itemsByStatus.todo} proposed TODO · ${roadmap.itemsByStatus.done} recorded source completions`,
+    'Catalog completion records do not transfer acceptance to an adopted project.',
+  ] : ['Roadmap counts unavailable.'], [roadmap])
+  const adopted = work.adoptedProject
+  const scope = adopted.selection?.kind === 'child' ? adopted.selection.name : 'root records'
+  const lines = adopted.state === 'not-selected' ? ['No adopted scope selected. Choose a scope below to inspect its recorded work.']
+    : [`Explicit scope: ${scope}.`, adopted.diagnostic ?? recordedCounts(adopted),
+      adopted.focus ? adopted.focus.objective ? `Recorded focus: ${adopted.focus.objective}` : 'No focus recorded.' : 'Focus unavailable.',
+      `${adopted.agentRoles?.length ?? 'Unavailable'} registered roles. Role records do not establish running workers.`]
+  card('Selected project work', adopted.state, lines, [...(adopted.sources ?? []), ...(adopted.supportingSources ?? []), ...(adopted.identitySource ? [adopted.identitySource] : [])])
+  select.replaceChildren(create('option', '', 'No adopted scope selected'))
+  select.options[0].value = ''
+  const rootOption = create('option', '', 'Root records (explicit selection)')
+  rootOption.value = 'root'
+  select.append(rootOption)
+  for (const name of work.scopeOptions.children ?? []) {
+    const option = create('option', '', name)
+    option.value = `child:${name}`
+    select.append(option)
+  }
+  const selectionValue = state.workSelection?.kind === 'root' ? 'root' : state.workSelection?.kind === 'child' ? `child:${state.workSelection.name}` : ''
+  if (selectionValue && !Array.from(select.options).some((option) => option.value === selectionValue)) {
+    const unavailable = create('option', '', `${state.workSelection.name ?? 'Selected scope'} (unavailable)`)
+    unavailable.value = selectionValue; select.append(unavailable)
+  }
+  select.value = selectionValue
+  select.disabled = false
+  text('#work-scope-help', work.scopeOptions.state === 'available'
+    ? `${work.scopeOptions.children.length} registered ${work.scopeOptions.children.length === 1 ? 'child' : 'children'}. Select an exact scope; this reads status only.`
+    : `Child scope registry unavailable (${work.scopeOptions.diagnostic ?? 'unreadable'}). Root records can be explicitly inspected.`)
+}
+
 function renderStatus(status) {
   state.status = status
   const operating = status.operating
   text('#systemx-version-state', operating?.installed
     ? `SYSTEMX ${operating.selectedVersion} · ${operating.updatePolicy} updates · pinned ${operating.pinnedVersion}`
-    : 'Managed SYSTEMX is not installed')
+    : 'Managed SYSTEMX installation status unavailable')
   text('#systemx-record-state', operating
-    ? `${operating.taskCount} recorded tasks · ${operating.agentRoles.length} registered roles · ${operating.childProjectCount} child projects`
+    ? `${operating.taskCount ?? 'Unavailable'} root tasks · ${operating.recordDiagnostics?.some((source) => source.path === '.SYSTEMX/AGENTS/REGISTRY.json') ? 'Unavailable' : operating.agentRoles.length} registered roles · ${operating.childProjectCount ?? 'Unavailable'} registered child projects`
     : 'Project records unavailable')
+  renderWorkStatus(operating?.workStatus)
   text('#controller-state', 'online')
   text('#controller-detail', `${status.session?.lanUrl ?? '127.0.0.1'} · loopback only`)
   text('#vite-state', status.vite.listening ? 'Online' : 'Offline')
@@ -1530,7 +1607,18 @@ function renderTools(tools) {
 }
 
 async function refresh() {
-  const [status, data] = await Promise.all([request('/api/status'), request('/api/builder/data')])
+  const generation = ++state.statusRequestGeneration
+  const selection = state.workSelection
+  const query = selection?.kind === 'root' ? '?workScope=root'
+    : selection?.kind === 'child' ? `?workScope=child&project=${encodeURIComponent(selection.name)}` : ''
+  let status, data
+  try {
+    ;[status, data] = await Promise.all([request(`/api/status${query}`), request('/api/builder/data')])
+  } catch (error) {
+    if (generation !== state.statusRequestGeneration) return
+    throw error
+  }
+  if (generation !== state.statusRequestGeneration) return
   state.data = data
   renderStatus(status)
   renderPages(data.pages)
@@ -2026,6 +2114,15 @@ async function boot() {
   restoreLayout()
   applyInspectorTabs(state.layout.activeRight || 'style')
   bind()
+  document.querySelector('#work-scope-select')?.addEventListener('change', (event) => {
+    const value = event.target.value
+    state.workSelection = value === 'root' ? { kind: 'root' } : value.startsWith('child:') ? { kind: 'child', name: value.slice(6) } : null
+    document.querySelector('#work-status-view')?.replaceChildren(create('p', 'panel-help', 'Reading selected work sources…'))
+    void refresh().catch((error) => {
+      text('#work-scope-help', `Selected status unavailable: ${error.message}`)
+      document.querySelector('#work-status-view')?.replaceChildren(create('p', 'panel-help', 'Work source status unavailable. Refresh to retry.'))
+    })
+  })
   activateWorkspaceFromHash()
   try {
     await refresh()

@@ -534,9 +534,18 @@
               <strong>Managed SYSTEMX</strong>
               <small id="systemx-version-state">Loading selected operating tools.</small>
               <small id="systemx-record-state">Loading project records.</small>
-              <p class="panel-help">Roles and tasks are recorded context. Use the terminal menu to act on the selected project.</p>
+              <p class="panel-help">Tasks and registered roles are recorded context. They do not establish running workers or project completion.</p>
               <code>npm run systemx -- menu</code>
             </article>
+            <section class="work-status-section" aria-labelledby="work-status-heading">
+              <h3 id="work-status-heading">Work sources</h3>
+              <div id="work-status-view" class="work-status-grid" aria-live="polite">Loading work sources.</div>
+              <label class="work-scope-label" for="work-scope-select">Inspect recorded project work</label>
+              <select id="work-scope-select" class="work-scope-select">
+                <option value="">No adopted scope selected</option>
+              </select>
+              <p id="work-scope-help" class="panel-help">Select root records or an exact registered child. Selection reads status only.</p>
+            </section>
             <div class="toolchain-grid">
               <article class="toolchain-card">
                 <strong>Agent 0</strong>

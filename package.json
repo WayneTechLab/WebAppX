@@ -101,7 +101,15 @@
     "repository:identity": "node scripts/repository-identity.mjs",
     "repository:identity:test": "node --test tests/setup/repository-identity.test.mjs",
     "browser:lifecycles": "node scripts/browser-lifecycles.mjs",
-    "browser:payroll": "node scripts/browser-payroll.mjs"
+    "browser:payroll": "node scripts/browser-payroll.mjs",
+    "backlog:adopt": "python3 -B scripts/backlog-adoption.py",
+    "backlog:adopt:test": "python3 -B -m unittest discover -s tests/systemx -p test_adoption.py -v",
+    "backlog:impact": "node scripts/backlog-impact.mjs",
+    "backlog:impact:test": "node --test tests/backlog/impact.test.mjs",
+    "systemx:provenance": "python3 -B scripts/systemx-provenance.py",
+    "systemx:provenance:test": "python3 -B -m unittest discover -s tests/systemx -p test_provenance.py -v",
+    "systemx:work-status:test": "node --test .SYSTEMX/LAN/tests/work-status.test.mjs",
+    "browser:work-status": "node .SYSTEMX/LAN/tests/work-status-browser.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",
