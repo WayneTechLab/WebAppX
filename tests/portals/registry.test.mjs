@@ -21,12 +21,16 @@ test('app navigation honors system and saved reduced motion before scrolling new
     for (const [systemReduced, savedMotion, behavior] of [[true, 'system', 'instant'], [false, 'reduced', 'instant'], [false, 'system', 'smooth']]) {
       const scrolls = [], locations = [], events = []
       globalThis.window = {
+        location: new URL('https://example.invalid/portals'),
         matchMedia: query => { assert.equal(query, '(prefers-reduced-motion: reduce)'); return { matches: systemReduced } },
         history: { pushState: (...args) => locations.push(args) },
         dispatchEvent: event => events.push(event.type),
         scrollTo: options => scrolls.push(options),
       }
-      globalThis.document = { documentElement: { dataset: { wtlMotion: savedMotion } } }
+      globalThis.document = {
+        documentElement: { dataset: { wtlMotion: savedMotion } },
+        getElementById: id => { assert.equal(id, 'review'); return null },
+      }
       navigate('/hr/demo/employee/onboarding?source=keyboard#review')
       assert.deepEqual(locations, [[{}, '', '/hr/demo/employee/onboarding?source=keyboard#review']])
       assert.deepEqual(events, ['sfwa-wtl:navigation'])
