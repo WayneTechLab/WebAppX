@@ -27,6 +27,36 @@ for (const [name, patch] of [
   ['zero-size target', { rect: { x: 10, y: 10, width: 0, height: 0 } }],
 ]) test(`focus evidence rejects ${name}`, () => assert.throws(() => assertVisibleFocus({ ...visible, ...patch }, name)))
 
+const datePicker = {
+  ...visible, tag: 'DIV', id: 'picker', pseudo: '-webkit-calendar-picker-indicator', focused: true,
+  userAgentShadow: true, activeDateHost: true, axFocused: true, axFocusedCount: 1,
+  axRole: 'button', axName: 'Show date picker Show date picker',
+  rect: { x: 180, y: 18, width: 18, height: 18 },
+}
+const dateHost = { ...visible, tag: 'INPUT', type: 'date', focusVisible: false, outlineStyle: 'none', rect: { x: 10, y: 10, width: 200, height: 40 }, nativeFocus: datePicker }
+test('native date focus uses the actually focused, visibly outlined AX picker inside its active user-agent host', () => {
+  assert.doesNotThrow(() => assertVisibleFocus(dateHost, 'Native picker'))
+})
+for (const [name, patch] of [
+  ['unverified user-agent provenance', { userAgentShadow: false }],
+  ['different active host', { activeDateHost: false }],
+  ['ambiguous AX focus', { axFocusedCount: 2 }],
+  ['unfocused AX control', { axFocused: false }],
+  ['wrong AX role', { axRole: 'textbox' }],
+  ['unknown native control', { axName: 'Other native control' }],
+  ['wrong native pseudo', { pseudo: '-webkit-datetime-edit-month-field' }],
+  ['unfocused native part', { focused: false }],
+  ['hidden native part', { hidden: true }],
+  ['disabled native part', { disabled: true }],
+  ['native part without focus-visible', { focusVisible: false }],
+  ['native part without a ring', { outlineStyle: 'none', boxShadow: 'none' }],
+  ['native part with transparent outline', { outlineColor: 'rgba(0, 0, 0, 0)' }],
+  ['native part outside its host', { rect: { x: 220, y: 18, width: 18, height: 18 } }],
+]) test(`native date focus rejects ${name}`, () => assert.throws(() => assertVisibleFocus({ ...dateHost, nativeFocus: { ...datePicker, ...patch } }, name)))
+test('native picker evidence cannot rescue a different host type', () => {
+  assert.throws(() => assertVisibleFocus({ ...dateHost, type: 'text' }, 'Wrong host'))
+})
+
 test('onboarding expected records are independent, complete and leave all other records unchanged', async () => {
   const seed = await loadValidatedSeed()
   const baseline = structuredClone(seed.workspaces)
@@ -36,6 +66,12 @@ test('onboarding expected records are independent, complete and leave all other 
   assert.deepEqual(expected.crm, baseline.crm)
   assert.equal(expected.hr.workflow.onboarding['employee-002'].receipt, 'MOCK-ONBOARDING-0001')
   assert.equal(expected.hr.workflow.sequence, 2)
+  assert.equal(expected.hr.workflow.lifecycle.simulationDate, null)
+  assert.equal(expected.hr.workflow.lifecycle.sequence, 3)
+  assert.deepEqual(expected.hr.workflow.lifecycle.directoryHistory, [{ id: 'directory-1', sequence: 1, employeeId: 'employee-002', field: 'workEmail', oldValue: 'avery@example.invalid', newValue: 'avery.keyboard@fixture.invalid', actor: { role: 'employee', employeeId: 'employee-002' }, origin: 'direct' }])
+  assert.equal(expected.hr.workflow.lifecycle.events.length, 1)
+  assert.deepEqual(Object.fromEntries(['id', 'sequence', 'kind', 'employeeId', 'instanceId', 'effectiveDate', 'reason'].map(key => [key, expected.hr.workflow.lifecycle.events[0][key]])), { id: 'lifecycle-2', sequence: 2, kind: 'onboarding-complete', employeeId: 'employee-002', instanceId: 'employment-employee-002-1', effectiveDate: null, reason: 'Sample onboarding confirmed' })
+  assert.deepEqual(expected.hr.workflow.lifecycle.instances.map(instance => [instance.id, instance.startDate, instance.endDate, instance.templateVersion]), [['employment-employee-001-1', null, null, 'legacy-employee-001'], ['employment-employee-002-1', null, null, 'legacy-employee-002'], ['employment-employee-003-1', null, null, 'legacy-employee-003']])
 })
 
 test('keyboard journey source cannot silently introduce pointer, direct focus or browser-state injection helpers', async () => {

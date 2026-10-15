@@ -20,6 +20,22 @@ export function expectedKeyboardOnboarding(states) {
   }
   expected.hr.workflow.employeeStatuses['employee-002'] = 'active'
   expected.hr.workflow.sequence = 2
+  const morgan = { status: 'active', department: 'Operations', jobTitle: 'Operations Manager', managerId: null }
+  const avery = { status: 'active', department: 'Design', jobTitle: 'Product Designer', managerId: 'employee-001' }
+  const jordan = { status: 'onboarding', department: 'Engineering', jobTitle: 'Software Developer', managerId: 'employee-001' }
+  const employee = { role: 'employee', employeeId: 'employee-002' }
+  expected.hr.workflow.lifecycle = {
+    schemaVersion: 1, simulationDate: null, sequence: 3, selectedTemplateVersion: 'sample-v1',
+    instances: [
+      { id: 'employment-employee-001-1', employeeId: 'employee-001', startDate: null, endDate: null, initial: morgan, current: { ...morgan }, templateVersion: 'legacy-employee-001', tasks: [{ id: 'intro', title: 'Welcome checklist' }] },
+      { id: 'employment-employee-002-1', employeeId: 'employee-002', startDate: null, endDate: null, initial: avery, current: { ...avery }, templateVersion: 'legacy-employee-002', tasks: [{ id: 'profile', title: 'Profile review' }, { id: 'policy', title: 'Read welcome policy' }] },
+      { id: 'employment-employee-003-1', employeeId: 'employee-003', startDate: null, endDate: null, initial: jordan, current: { ...jordan }, templateVersion: 'legacy-employee-003', tasks: [{ id: 'profile', title: 'Complete own profile' }] },
+    ],
+    activeInstances: { 'employee-001': 'employment-employee-001-1', 'employee-002': 'employment-employee-002-1', 'employee-003': 'employment-employee-003-1' },
+    events: [{ id: 'lifecycle-2', sequence: 2, kind: 'onboarding-complete', employeeId: 'employee-002', instanceId: 'employment-employee-002-1', effectiveDate: null, actor: employee, reason: 'Sample onboarding confirmed', previous: { ...avery }, proposed: { ...avery } }],
+    directoryHistory: [{ id: 'directory-1', sequence: 1, employeeId: 'employee-002', field: 'workEmail', oldValue: 'avery@example.invalid', newValue: keyboardOnboardingEmail, actor: employee, origin: 'direct' }],
+    corrections: [], offboardingAssignments: [],
+  }
   return expected
 }
 
@@ -31,9 +47,7 @@ async function exportedWorkspaces(page, artifactDir, keyboard) {
   await expect(page.getByRole('heading', { name: 'Choose a portal.', exact: true })).toBeVisible()
   const exportButton = page.getByRole('region', { name: 'Combined workspace backup', exact: true }).getByRole('button', { name: 'Export all workspaces', exact: true })
   await keyboard.focus(exportButton, 'Export the completed keyboard onboarding workspace')
-  const downloadPromise = page.waitForEvent('download')
-  await page.keyboard.press('Enter')
-  const download = await downloadPromise
+  const [download] = await Promise.all([page.waitForEvent('download'), page.keyboard.press('Enter')])
   const destination = join(artifactDir, 'onboarding-complete-workspaces.json')
   await download.saveAs(destination)
   assert.equal(await download.failure(), null)

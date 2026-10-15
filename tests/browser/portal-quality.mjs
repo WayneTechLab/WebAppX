@@ -237,6 +237,36 @@ async function nativeJourney({ page, context, origin, artifactDir, seed, checks 
   await page.keyboard.press('Enter')
   const expected = structuredClone(seed.workspaces)
   expected.hr.workflow.profileEmails['employee-002'] = 'quality.avery@example.invalid'
+  // A meaningful legacy profile save captures all original employment instances
+  // with unknown dates and records this exact actor/value change. These expected
+  // records are handwritten; no application reducer generates the browser oracle.
+  expected.hr.workflow.lifecycle = {
+    schemaVersion: 1, simulationDate: null, sequence: 2, selectedTemplateVersion: 'sample-v1',
+    instances: [
+      {
+        id: 'employment-employee-001-1', employeeId: 'employee-001', startDate: null, endDate: null,
+        initial: { status: 'active', department: 'Operations', jobTitle: 'Operations Manager', managerId: null },
+        current: { status: 'active', department: 'Operations', jobTitle: 'Operations Manager', managerId: null },
+        templateVersion: 'legacy-employee-001', tasks: [{ id: 'intro', title: 'Welcome checklist' }],
+      },
+      {
+        id: 'employment-employee-002-1', employeeId: 'employee-002', startDate: null, endDate: null,
+        initial: { status: 'active', department: 'Design', jobTitle: 'Product Designer', managerId: 'employee-001' },
+        current: { status: 'active', department: 'Design', jobTitle: 'Product Designer', managerId: 'employee-001' },
+        templateVersion: 'legacy-employee-002', tasks: [{ id: 'profile', title: 'Profile review' }, { id: 'policy', title: 'Read welcome policy' }],
+      },
+      {
+        id: 'employment-employee-003-1', employeeId: 'employee-003', startDate: null, endDate: null,
+        initial: { status: 'onboarding', department: 'Engineering', jobTitle: 'Software Developer', managerId: 'employee-001' },
+        current: { status: 'onboarding', department: 'Engineering', jobTitle: 'Software Developer', managerId: 'employee-001' },
+        templateVersion: 'legacy-employee-003', tasks: [{ id: 'profile', title: 'Complete own profile' }],
+      },
+    ],
+    activeInstances: { 'employee-001': 'employment-employee-001-1', 'employee-002': 'employment-employee-002-1', 'employee-003': 'employment-employee-003-1' },
+    events: [],
+    directoryHistory: [{ id: 'directory-1', sequence: 1, employeeId: 'employee-002', field: 'workEmail', oldValue: 'avery@example.invalid', newValue: 'quality.avery@example.invalid', actor: { role: 'employee', employeeId: 'employee-002' }, origin: 'direct' }],
+    corrections: [], offboardingAssignments: [],
+  }
   audits.push(await auditVisibleControls(page, 'hr-profile', artifactDir))
   await capture(page, artifactDir, 'xlarge-hr-profile')
   await page.getByRole('navigation', { name: 'Employee mobile HR pages', exact: true }).getByRole('link', { name: 'My time', exact: true }).click()
