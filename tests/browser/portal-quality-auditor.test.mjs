@@ -1,8 +1,42 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { auditControlRecords, auditStatusCoverage, statusFamilies, externalStatusFamilies } from './portal-quality.mjs'
+import { auditControlRecords, auditStatusCoverage, statusFamilies, externalStatusFamilies, parseAriaControlLine } from './portal-quality.mjs'
 
 const control = (name, scope = '', visible = true, role = 'button') => ({ name, scope, visible, role })
+test('actual quoted scorecard ARIA key retains the complete accessible name including its UTC colon', () => {
+  const line = `- 'textbox "Scorecard recorded time in UTC Use an explicit UTC instant with milliseconds. Your previous action for this interview: 2030-01-01T12:00:00.000Z. Equality is allowed."':`
+  assert.deepEqual(parseAriaControlLine(line), { role: 'textbox', name: 'Scorecard recorded time in UTC Use an explicit UTC instant with milliseconds. Your previous action for this interview: 2030-01-01T12:00:00.000Z. Equality is allowed.' })
+})
+test('ARIA key decoding preserves exact whitespace, escaped quotes, backslashes, apostrophes and unicode in every supported format', () => {
+  const cases = [
+    [String.raw`- button "  Keep \"quoted\" \\ draft  " [disabled] [active]`, { role: 'button', name: '  Keep "quoted" \\ draft  ' }],
+    [String.raw`- 'button "O''Brien''s \"draft\":  café 東京 👩‍💻" [disabled]':`, { role: 'button', name: 'O\'Brien\'s "draft":  café 東京 👩‍💻' }],
+    [String.raw`- "textbox \"Say \\\"hello\\\":  café\"": value`, { role: 'textbox', name: 'Say "hello":  café' }],
+    [String.raw`- "button \"\\u6771\\u4eac\""`, { role: 'button', name: '東京' }],
+    [String.raw`- checkbox "Agree: yes" [checked=mixed]: value`, { role: 'checkbox', name: 'Agree: yes' }],
+    [String.raw`- spinbutton "Hours" [invalid]`, { role: 'spinbutton', name: 'Hours' }],
+  ]
+  for (const [line, expected] of cases) assert.deepEqual(parseAriaControlLine(line), expected, line)
+})
+test('malformed ARIA keys refuse partial matches, invalid JSON and unsupported trailing key text', () => {
+  const malformed = [
+    null, undefined, 42, '', 'button "Save"', '-  button "Save"',
+    '- button "unterminated', '- button "Save" trailing', '- button "Save":wrong',
+    '- button "Save" [disabled', '- button "Save" [disabled] rubbish',
+    `- 'button "Save"`, `- 'button "Save"' trailing`, `- 'button "O'Brien"'`,
+    `- 'button "Save": value'`, `- ''`,
+    String.raw`- textbox "Bad\q"`, String.raw`- "button \"Bad\q\"":`,
+    '- button "Save"\n- button "Other"',
+  ]
+  for (const line of malformed) assert.throws(() => parseAriaControlLine(line), /Could not measure accessible control/, String(line))
+})
+test('missing and whitespace-only names remain subject to the existing unnamed-control rejection', () => {
+  const records = ['- button', '- button ""', `- 'textbox "  "':`].map(line => ({ ...parseAriaControlLine(line), visible: true, scope: 'Visible form' }))
+  assert.deepEqual(records.map(record => record.name), ['', '', '  '])
+  const result = auditControlRecords([...records, control('', 'Hidden form', false)])
+  assert.equal(result.missingNames.length, 3)
+  assert.throws(() => assert.deepEqual(result.missingNames, []), assert.AssertionError)
+})
 test('negative fixture detects an ambiguous visible import selector while excluding hidden mounted portals', () => {
   const result = auditControlRecords([control('Import workspace'), control('Import workspace'), control('Import workspace', 'HR backup', false)])
   assert.equal(result.hidden, 1); assert.equal(result.visible, 2)

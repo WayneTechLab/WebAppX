@@ -33,7 +33,20 @@ const requiredBindings = [CAPABILITIES_PATH, INVENTORY_PATH, PIN_PATH, SDK_PATH,
   'src/hr/lifecycle-types.ts', 'src/hr/lifecycle.ts',
   'src/hr/components/HrDirectoryCorrections.tsx', 'src/hr/components/HrEmploymentLifecycle.tsx',
   'src/hr/persistence.ts', 'src/hr/linked-operations.ts',
-  'src/portals/workspace-inspection.ts', 'src/portals/WorkspaceInspection.tsx']
+  'src/portals/workspace-inspection.ts', 'src/portals/WorkspaceInspection.tsx',
+  'src/hr/recruiting-lifecycle-types.ts', 'src/hr/recruiting-lifecycle-value.ts',
+  'src/hr/recruiting-lifecycle-replay.ts', 'src/hr/recruiting-lifecycle-projection.ts',
+  'src/hr/recruiting-lifecycle.ts', 'src/hr/recruiting-controller.ts',
+  'src/hr/recruiting-requisitions.ts', 'src/hr/recruiting-interviews.ts',
+  'src/hr/recruiting-hire.ts', 'src/hr/recruiting-services.ts',
+  'src/hr/recruiting-time-zone.ts', 'src/hr/recruiting-employment-baseline.ts',
+  'src/hr/recruiting-lifecycle-validation.ts', 'src/hr/provider-adapter.ts',
+  'src/hr/RecruitingPreviewProvider.tsx', 'src/hr/components/HrRecruitingLifecycleHost.tsx',
+  'src/hr/components/HrRecruitingApplications.tsx', 'src/hr/components/HrRecruitingHireSummary.tsx',
+  'src/hr/components/HrRecruitingRequisitions.tsx', 'src/hr/components/HrRecruitingInterviews.tsx',
+  'src/hr/components/HrRecruitingOwnScorecards.tsx', 'src/portals/ScopedPortalChrome.tsx',
+  'src/components/layout/Layout.tsx', 'src/pages/TemplatePortalsPage.tsx',
+  'src/portals/RetainedPortalSurface.tsx', 'src/portals/CombinedWorkspaceBackup.tsx']
 const shaPattern = /^[0-9a-f]{64}$/
 const nativeCoverage = ['interactive-mock', 'read-only-mock', 'partial-mock', 'not-implemented']
 const exact = (record, keys) => !!record && typeof record === 'object' && !Array.isArray(record)
@@ -135,7 +148,7 @@ export async function validateGapData(data, { root = ROOT } = {}) {
     throw new Error('Declared or locked SDK dependency differs from the reviewed pinned version')
   }
   if (sha(await bytes(INVENTORY_PATH)) !== pin.sdk.inventorySha256) throw new Error('Pinned vendor inventory bytes differ from their exact fingerprint')
-  if (!Array.isArray(data.sourceBindings) || data.sourceBindings.length < requiredBindings.length || data.sourceBindings.length > 80) throw new Error('Missing bounded reviewed source bindings')
+  if (!Array.isArray(data.sourceBindings) || data.sourceBindings.length < requiredBindings.length || data.sourceBindings.length > 77) throw new Error('Missing bounded reviewed source bindings')
   const bound = new Map()
   for (const binding of data.sourceBindings) {
     if (!exact(binding, ['path', 'hashMode', 'sha256']) || !shaPattern.test(binding.sha256) || bound.has(binding.path)) throw new Error('Invalid or duplicate source binding')
@@ -199,8 +212,10 @@ export function renderGapGuide(data) {
     '[portable catalog](../.SYSTEMX/GUSTO/CAPABILITIES.json) to current native mock',
     'behavior, selected SDK coverage, specific adopter-owned work and evidence scope.', '',
     `Source review: **${data.reviewedOn}**. Integration baseline supplied by Agent 0:`,
-    `**\`${data.reviewBase.revision}\`**. That supplied baseline is not a fresh Git`,
-    'observation. The reviewed local files have the explicit fingerprints below.', '',
+    `**\`${data.reviewBase.revision}\`**. This revision names the supplied published baseline.`,
+    'The explicit fingerprints below bind the reviewed recruiting working tree.',
+    'Agent 0 froze 123 application source files by exact bytes; the source-manifest SHA-256 is `5a48242850a2f840d61478ebc55c427e05cb6135c24b61ed2f50af232df39569`.',
+    'This source-only review establishes no new commit, browser observation, provider operation or production acceptance.', '',
     `The pinned SDK is **${data.sdk.package} ${data.sdk.version}**, API alias`,
     `**${data.sdk.apiVersion}**. The app declaration and lockfile must retain that SDK version.`,
     `Current selection: **${counts['selected-mock']} capabilities with`,

@@ -1,4 +1,6 @@
-import type { HrLifecycleState } from './lifecycle-types'
+import type { HrEmploymentInstance, HrLifecycleState } from './lifecycle-types'
+import type { RecruitingState } from './recruiting'
+import { recruitingEmploymentBaseline } from './recruiting-employment-baseline'
 import { canApproveTimeEntry, canEditEmployeeProfile, validateTimeEntry, type HrActor, type HrFixture, type HrRecord } from './model'
 
 export type MockOnboarding = { profileReviewed: boolean; jobReviewed: boolean; tasks: Record<string, boolean>; stage: 'draft' | 'reviewed' | 'complete'; receipt?: string }
@@ -136,8 +138,10 @@ export function effectiveWorkflowFixture(state: MockHrState, fixture: HrFixture)
 }
 
 /** Materialize only for an accepted action; unknown legacy dates remain null. */
-export function createHrLifecycle(state: MockHrState, fixture: HrFixture, simulationDate: string | null): HrLifecycleState {
-  const instances = fixture.employees.map(employee => {
+export function createHrLifecycle(state: MockHrState, fixture: HrFixture, simulationDate: string | null, recruiting?: RecruitingState): HrLifecycleState {
+  const instances: HrEmploymentInstance[] = fixture.employees.map(employee => {
+    const baseline = recruitingEmploymentBaseline(state, employee, recruiting)
+    if (baseline) return { id: `employment-${employee.id}-1`, employeeId: employee.id, startDate: null, endDate: null, ...baseline, current: { ...baseline.initial } }
     const initial = { status: state.employeeStatuses[employee.id], department: employee.department, jobTitle: employee.jobTitle, managerId: employee.managerId }
     return { id: `employment-${employee.id}-1`, employeeId: employee.id, startDate: null, endDate: null, initial, current: { ...initial }, templateVersion: `legacy-${employee.id}`, tasks: employee.onboarding.map(task => ({ id: task.id, title: task.title })) }
   })
@@ -172,7 +176,7 @@ function requirePayrollRole(actor: HrActor) {
   if (!['employer-owner', 'payroll-admin'].includes(actor.role)) throw new Error('Only the employer owner or payroll admin may simulate a payroll run.')
 }
 
-export function transitionMockHr(state: MockHrState, actor: HrActor, event: MockHrEvent, fixture: HrFixture): MockHrState {
+export function transitionMockHr(state: MockHrState, actor: HrActor, event: MockHrEvent, fixture: HrFixture, recruiting?: RecruitingState): MockHrState {
   const next = structuredClone(state)
   const receipt = (kind: string) => `MOCK-${kind}-${String(next.sequence++).padStart(4, '0')}`
   if (event.type === 'change-profile') {
@@ -181,7 +185,7 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     if (!workEmail) throw new Error('A synthetic work email is required.')
     if (workEmail.length > 160 || Array.from(workEmail).some(character => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127)) throw new Error('Use no more than 160 printable characters for the synthetic work email.')
     if (next.profileEmails[event.employeeId] !== workEmail) {
-      next.lifecycle ??= createHrLifecycle(state, fixture, null)
+      next.lifecycle ??= createHrLifecycle(state, fixture, null, recruiting)
       const oldValue = next.profileEmails[event.employeeId]
       next.profileEmails[event.employeeId] = workEmail
       if (next.lifecycle) {

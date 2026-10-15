@@ -16,9 +16,11 @@ import { PeopleOperations } from './PeopleOperations'
 import { scopedHrRequests, transitionHrServiceDesk, type HrServiceDeskEvent } from '../service-desk'
 import { HrServiceDesk } from './HrServiceDesk'
 import { HrDashboard, HrReports, HrPayHistory } from './HrInsights'
-import { recruitingSummary, type RecruitingEvent } from '../recruiting'
+import { canManageRecruiting, recruitingSummary, type RecruitingEvent } from '../recruiting'
 import { applyRecruitingToHr, recruitingFixture } from '../recruiting-link'
 import { HrRecruiting } from './HrRecruiting'
+import { HrRecruitingLifecycleHost } from './HrRecruitingLifecycleHost'
+import { useRecruitingPreview } from '../RecruitingPreviewProvider'
 import { performanceSummary, transitionPerformance, type PerformanceEvent } from '../performance'
 import { HrPerformance } from './HrPerformance'
 import { surveySummary, transitionSurveys, type SurveysEvent } from '../surveys'
@@ -279,6 +281,7 @@ function Specification({ route }: { route: HrRoute }) {
 
 export function HrWorkspace({ pathname }: { pathname: string }) {
   const request = useUnsavedTransition()
+  const recruitingPreview = useRecruitingPreview()
   const resolution = resolveHrPath(pathname === '/hr/demo' ? '/hr/demo/admin' : pathname)
   const portal = resolution?.portal ?? 'admin'
   const { state, setState: setStoredState, reset: resetStoredState, status: storageStatus, importState, replacementEpoch, recovery } = usePortalWorkspace('hr')
@@ -301,7 +304,12 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
   const [workflowMessage, setWorkflowMessage] = useState('')
   const [workflowError, setWorkflowError] = useState(false)
   const resetGeneration = replacementEpoch
-  const actor: HrActor = { role: portal === 'admin' ? managementRole : portalRoles[portal], employeeId: portal === 'manager' ? selectedManager?.id : portal === 'employee' ? selectedEmployee : undefined, contractorId: portal === 'contractor' ? fixture.contractors[0]?.id : undefined }
+  const actor: HrActor = {
+    role: portal === 'admin' ? managementRole : portalRoles[portal],
+    ...(portal === 'manager' && selectedManager ? { employeeId: selectedManager.id } : {}),
+    ...(portal === 'employee' ? { employeeId: selectedEmployee } : {}),
+    ...(portal === 'contractor' && fixture.contractors[0] ? { contractorId: fixture.contractors[0].id } : {}),
+  }
   const selected = resolution && matchHrRoute(resolution.canonical, hrRoutes)
   const route = selected?.route
   const employeeId = selected?.parameters.employeeId ?? actor.employeeId
@@ -324,7 +332,7 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
   }
   function runAction(event: MockHrEvent) {
     try {
-      setState(current => ({ ...current, workflow: transitionMockHr(current.workflow, actor, event, effectiveHrFixture(current, recruitingFixture(hrFixture, current.recruiting))) }))
+      setState(current => ({ ...current, workflow: transitionMockHr(current.workflow, actor, event, effectiveHrFixture(current, recruitingFixture(hrFixture, current.recruiting)), current.recruiting) }))
       setWorkflowMessage('Simulated change recorded in this preview only. No provider call or money movement occurred.')
       setWorkflowError(false)
       return true
@@ -363,6 +371,9 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
       })
       setWorkflowMessage('Sample recruiting updated. Hired candidates appear in the employee directory and onboarding preview.'); setWorkflowError(false); return true
     } catch (error) { setWorkflowMessage(error instanceof Error ? error.message : 'The sample recruiting action failed.'); setWorkflowError(true); return false }
+  }
+  function replaceRecruitingState(build: (current: HrDemoState) => HrDemoState) {
+    try { setState(build); return true } catch { return false }
   }
   function runPerformanceAction(event: PerformanceEvent) {
     try {
@@ -417,7 +428,7 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
     if (route.capabilityId === 'paystubs') return <HrPayHistory actor={actor} fixture={fixture} state={workflow} />
     if (module === 'documents' && portal !== 'contractor') return <PeopleOperations key={`${actor.role}:${actor.employeeId ?? 'none'}:${module}:${resetGeneration}`} state={operations} actor={actor} fixture={fixture} module={module as PeopleModule} onAction={runPeopleAction} />
     if (route.capabilityId === 'documents') return <Panel title={module === 'tax-documents' ? 'Tax document placeholders' : 'Document index'} note="No real PDF, tax form, bank number or legal signature is supplied. Secure downloads and provider forms require live authorization."><RecordTable records={scopedRecords(actor, fixture.documents, fixture.employees).filter(record => module !== 'tax-documents' || record.type === 'tax')} empty="No documents in this identity's scope." columns={['title', 'type', 'status']} /></Panel>
-    if (module === 'recruiting') return <HrRecruiting key={`${actor.role}:${resetGeneration}`} state={recruiting} actor={actor} fixture={fixture} onAction={runRecruitingAction} />
+    if (module === 'recruiting') return <div className="grid min-w-0 grid-cols-1 gap-5">{canManageRecruiting(actor) && <HrRecruitingLifecycleHost key={`native:${actor.role}:${resetGeneration}`} state={state} actor={actor} rawFixture={hrFixture} replacementEpoch={replacementEpoch} storageStatus={storageStatus} onUpdate={replaceRecruitingState} />}{!Object.hasOwn(recruiting, 'lifecycle') && <HrRecruiting key={`legacy:${actor.role}:${resetGeneration}`} state={recruiting} actor={actor} fixture={fixture} onAction={runRecruitingAction} />}</div>
     if (module === 'performance') return <HrPerformance key={`${actor.role}:${actor.employeeId ?? 'none'}:${resetGeneration}`} state={performance} actor={actor} fixture={fixture} onAction={runPerformanceAction} />
     if (module === 'surveys') return <HrSurveys key={`${actor.role}:${actor.employeeId ?? 'none'}:${resetGeneration}`} state={surveys} actor={actor} fixture={fixture} onAction={runSurveyAction} />
     if (nativeKinds[module]) return <NativeRecords kind={nativeKinds[module]} title={route.title} actor={actor} employees={fixture.employees} acknowledgements={acknowledgements} onAcknowledge={acknowledge} />
@@ -431,6 +442,8 @@ export function HrWorkspace({ pathname }: { pathname: string }) {
     if (!module) return portal === 'contractor' ? <Panel title="Your fictional contractor record"><RecordTable records={fixture.contractors.filter(record => record.id === actor.contractorId)} empty="No contractor in scope." columns={['name', 'type', 'onboardingStatus']} /></Panel> : <HrDashboard actor={actor} portal={portal} fixture={fixture} state={workflow} requests={operations.ptoRequests} operations={operationsSummary} openOperations={operationsSummary.openCount} openServiceRequests={openServiceRequests} talent={talent} />
     return <Panel title={route.title}><p className="text-sm leading-6 text-neutral-600">This module has a page specification and navigation contract. Its application adapter is not implemented in this first mock phase.</p></Panel>
   }
+
+  if (recruitingPreview.interviewerEmployeeId !== null && pathname === '/hr/demo/admin/recruiting') return <HrRecruitingLifecycleHost key={`interviewer:${recruitingPreview.generation}:${resetGeneration}`} state={state} actor={actor} rawFixture={hrFixture} replacementEpoch={replacementEpoch} storageStatus={storageStatus} onUpdate={replaceRecruitingState} />
 
   return <section className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
     <div className="rounded-xl border border-amber-300 bg-amber-50 px-5 py-4 text-amber-950"><p className="text-sm font-semibold">Synthetic HR demo · no account or credentials required</p><p className="mt-1 text-xs leading-5">Fictional records only. Saved sample changes use this browser’s local storage and survive refresh when storage is available. No Firebase or Gusto connection is used. Do not enter real employee information.</p></div>

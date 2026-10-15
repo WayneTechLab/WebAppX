@@ -68,6 +68,26 @@ function actorMetadata(value: unknown): StructuredRecordMetadata {
   const actor = object(value)
   return { actorRole: stateChoice(actor.role, hrRoles), actorEmployeeId: optionalId(actor, 'employeeId'), actorContractorId: optionalId(actor, 'contractorId') }
 }
+function recruitingInstantMetadata(value: unknown): string {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) return failure('invalid recruiting UTC instant metadata')
+  const time = Date.parse(value)
+  return Number.isFinite(time) && new Date(time).toISOString() === value ? value : failure('invalid recruiting UTC instant metadata')
+}
+const nullableRecruitingInstant = (value: unknown) => value === null ? null : recruitingInstantMetadata(value)
+function recruitingActorMetadata(value: unknown): StructuredRecordMetadata {
+  const actor = object(value)
+  if (actor.mode === 'native') return { actorMode: 'native', ...actorMetadata(actor.actor) }
+  if (actor.mode === 'interviewer') return { actorMode: 'interviewer', actorRole: null, actorEmployeeId: token(actor.employeeId), actorContractorId: null }
+  return failure('invalid recruiting actor metadata')
+}
+function recruitingZoneMetadata(value: unknown): string {
+  if (typeof value !== 'string' || value.length > 80 || value !== 'UTC' && !/^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+)+$/.test(value) || /^Etc\/GMT[+-]/.test(value)) return failure('invalid recruiting named zone metadata')
+  try { new Intl.DateTimeFormat('en-US', { timeZone: value }).format(0); return value } catch { return failure('invalid recruiting named zone metadata') }
+}
+function recruitingNumberMetadata(value: unknown, min: number, max: number): number {
+  if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < min || value > max) return failure('invalid recruiting numeric metadata')
+  return value
+}
 function publicationMetadata(value: unknown): StructuredRecordMetadata {
   const publication = value === null ? null : object(value)
   return { publicationRevision: publication ? revision(publication.revision) : null, publicationReceiptId: publication ? token(publication.receipt) : null }
@@ -76,6 +96,64 @@ function publicationMetadata(value: unknown): StructuredRecordMetadata {
 /** Only allowlisted structured metadata leaves the comparison index. Complete
  * hidden payload fingerprints still determine the existing change categories. */
 function annotateRecord(module: DemoModule, key: string, value: unknown): RecordAnnotation | undefined {
+  if (module === 'hr' && key.startsWith('recruiting.lifecycle.')) {
+    const entry = object(value)
+    if (key === 'recruiting.lifecycle.people') return { metadata: { provenanceKind: stateChoice(object(entry.provenance).kind, ['legacy', 'created']) } }
+    if (key === 'recruiting.lifecycle.applications') return { metadata: {
+      personId: token(entry.personId), jobId: token(entry.jobId), applicationStage: stateChoice(entry.stage, ['applied', 'screening', 'interview', 'offer', 'hired', 'rejected', 'withdrawn']),
+      stageEnteredAt: nullableRecruitingInstant(entry.stageEnteredAt), lastStageRecordedAt: nullableRecruitingInstant(entry.lastStageRecordedAt), hireBindingId: nullableId(entry.hireBindingId),
+    } }
+    if (key === 'recruiting.lifecycle.requisitions') return { metadata: {
+      revision: recruitingNumberMetadata(entry.revision, 1, 1000), requisitionState: stateChoice(entry.state, ['draft', 'in-review', 'approved', 'rejected']),
+      ownerEmployeeId: token(object(entry.content).ownerEmployeeId), headcount: recruitingNumberMetadata(object(entry.content).headcount, 1, 50), currentApprovalId: nullableId(entry.currentApprovalId),
+    } }
+    if (key === 'recruiting.lifecycle.approvals') return { metadata: {
+      requisitionId: token(entry.requisitionId), revision: recruitingNumberMetadata(entry.revision, 1, 1000), eventId: token(entry.eventId), recordedAt: recruitingInstantMetadata(entry.recordedAt), ...recruitingActorMetadata(entry.actor),
+    } }
+    if (key === 'recruiting.lifecycle.jobs') return { metadata: {
+      revision: recruitingNumberMetadata(entry.revision, 1, 1000), jobState: stateChoice(entry.state, ['draft', 'published', 'closed']), managerEmployeeId: token(entry.managerEmployeeId),
+      requisitionId: nullableId(entry.requisitionId), currentPublicationId: nullableId(entry.currentPublicationId),
+    } }
+    if (key === 'recruiting.lifecycle.publications') return { metadata: {
+      jobId: token(entry.jobId), jobRevision: recruitingNumberMetadata(entry.jobRevision, 1, 1000), requisitionApprovalId: token(entry.requisitionApprovalId), eventId: token(entry.eventId), recordedAt: recruitingInstantMetadata(entry.recordedAt),
+    } }
+    if (key === 'recruiting.lifecycle.interviews') {
+      const participants = array(entry.participantEmployeeIds).map(token)
+      if (!participants.length || participants.length > 5 || new Set(participants).size !== participants.length) return failure('invalid recruiting participant metadata')
+      return { metadata: { applicationId: token(entry.applicationId), participantEmployeeIds: participants.sort(compare).join(' / '), participantCount: participants.length,
+        startAt: recruitingInstantMetadata(entry.startAt), timeZone: recruitingZoneMetadata(entry.timeZone), durationMinutes: recruitingNumberMetadata(entry.durationMinutes, 15, 240), createdEventId: token(entry.createdEventId),
+      } }
+    }
+    if (key === 'recruiting.lifecycle.scorecards') return { metadata: {
+      interviewId: token(entry.interviewId), applicationId: token(entry.applicationId), authorEmployeeId: token(entry.authorEmployeeId), revision: recruitingNumberMetadata(entry.revision, 1, 1000),
+      scorecardState: stateChoice(entry.state, ['draft', 'submitted']), rubricVersion: stateChoice(object(entry.content).rubricVersion, ['sample-interview-v1']),
+      latestDraftEventId: token(entry.latestDraftEventId), lastOwnRecordedAt: recruitingInstantMetadata(entry.lastOwnRecordedAt), submittedEventId: nullableId(entry.submittedEventId),
+    } }
+    if (key === 'recruiting.lifecycle.hireBindings') {
+      const employment = entry.employmentAtHire === null ? null : object(entry.employmentAtHire)
+      const legacy = entry.legacyEmploymentLinks === null ? null : object(entry.legacyEmploymentLinks)
+      return { metadata: { personId: token(entry.personId), applicationId: token(entry.applicationId), employeeId: token(entry.employeeId),
+        provenanceKind: stateChoice(object(entry.provenance).kind, ['legacy', 'created']), checklistVersion: nullableId(object(entry.checklist).version),
+        employmentAtHireKind: employment ? stateChoice(employment.kind, ['absent', 'created']) : null,
+        employmentInstanceId: employment?.kind === 'created' ? token(employment.instanceId) : null, employmentHireEventId: employment?.kind === 'created' ? token(employment.hireEventId) : null,
+        legacyEmploymentInstanceId: legacy ? nullableId(legacy.instanceId) : null, legacyEmploymentHireEventId: legacy ? nullableId(legacy.hireEventId) : null,
+      } }
+    }
+    if (key === 'recruiting.lifecycle.events') {
+      const metadata: StructuredRecordMetadata = { sequence: revision(entry.sequence), eventKind: stateChoice(entry.kind, ['adopt', 'person-created', 'application-created', 'application-stage', 'requisition-changed', 'requisition-reviewed', 'job-changed', 'job-published', 'interview-scheduled', 'scorecard-saved', 'scorecard-submitted', 'hired']), recordedAt: recruitingInstantMetadata(entry.recordedAt), ...recruitingActorMetadata(entry.actor) }
+      for (const field of ['applicationId', 'requisitionId', 'jobId', 'interviewId', 'scorecardId', 'authorEmployeeId', 'draftEventId']) if (Object.hasOwn(entry, field)) metadata[field] = token(entry[field])
+      for (const [field, label] of [['person', 'personId'], ['interview', 'interviewId'], ['scorecard', 'scorecardId'], ['hire', 'hireBindingId']]) if (Object.hasOwn(entry, field)) metadata[label] = id(entry[field])
+      return { metadata }
+    }
+    if (key === 'recruiting.lifecycle.metadata') {
+      const adoption = object(entry.adoption)
+      return { metadata: { schemaVersion: revision(entry.schemaVersion), sequence: revision(entry.sequence), adoptionEventId: token(adoption.eventId), recordedAt: recruitingInstantMetadata(adoption.recordedAt),
+        legacySequence: savedCounter(adoption.legacySequence), legacyJobCount: array(adoption.legacyJobs).length, legacyCandidateCount: array(adoption.legacyCandidates).length,
+        legacyHireCount: array(adoption.legacyHiredEmployees).length, legacyHireLinkCount: array(adoption.legacyHireLinks).length, ...recruitingActorMetadata(adoption.actor),
+      } }
+    }
+    return undefined
+  }
   if (module === 'hr' && ['workflow.lifecycle.instances', 'workflow.lifecycle.instances.initial', 'workflow.lifecycle.instances.current', 'workflow.lifecycle.events', 'workflow.lifecycle.directoryHistory', 'workflow.lifecycle.corrections', 'workflow.lifecycle.corrections.outcome', 'workflow.lifecycle.offboardingAssignments', 'operations.records.tasks'].includes(key)) {
     const entry = object(value)
     if (key === 'workflow.lifecycle.instances') return { metadata: {
@@ -307,6 +385,35 @@ function inventory(states: Partial<DemoWorkspaces>, modules: DemoModule[]): Map<
       primary('recruiting.candidates', 'Recruiting candidates', candidates, normalizeActivity); nestedActivity('recruiting.candidates.activity', 'Candidate activity', candidates)
       primary('recruiting.hiredEmployees', 'Captured hired employees', hires, entry => ({ ...entry, onboarding: by(array(entry.onboarding), task => [id(task)]) }))
       add('recruiting.hiredEmployees.onboarding', 'Hired employee onboarding items', 'nested', 'Hired employee ID + task ID', hires.flatMap(employee => records(employee.onboarding).map(task => ({ parts: [id(employee), id(task)], value: task }))))
+      if (Object.hasOwn(recruiting, 'lifecycle')) {
+        const lifecycle = object(recruiting.lifecycle)
+        const recruitingCollections = [
+          ['people', 'Recruiting people'], ['applications', 'Recruiting applications'], ['requisitions', 'Recruiting requisitions'], ['approvals', 'Captured requisition approvals'],
+          ['jobs', 'Authoritative recruiting jobs'], ['publications', 'Captured job publications'], ['interviews', 'Recruiting interviews'], ['scorecards', 'Recruiting scorecards'],
+          ['hireBindings', 'Recruiting hire bindings'], ['events', 'Recruiting lifecycle events'],
+        ] as const
+        const required = ['schemaVersion', 'sequence', 'adoption', ...recruitingCollections.map(([key]) => key)]
+        if (lifecycle.schemaVersion !== 1 || required.some(key => !Object.hasOwn(lifecycle, key)) || Object.keys(lifecycle).some(key => !required.includes(key))) return failure('unsupported recruiting lifecycle snapshot')
+        const normalizeEmployee = (employee: JsonRecord) => ({ ...employee, onboarding: by(array(employee.onboarding), task => [id(task)]) })
+        const normalizeAdoption = (capture: JsonRecord) => ({ ...capture,
+          legacyJobs: by(records(capture.legacyJobs).map(normalizeActivity), job => [id(job)]),
+          legacyCandidates: by(records(capture.legacyCandidates).map(normalizeActivity), candidate => [id(candidate)]),
+          legacyHiredEmployees: by(records(capture.legacyHiredEmployees).map(normalizeEmployee), employee => [id(employee)]),
+          legacyHireLinks: by(array(capture.legacyHireLinks), link => [id(link, 'employeeId')]),
+        })
+        const normalizeInterview = (interview: JsonRecord) => ({ ...interview, participantEmployeeIds: by(array(interview.participantEmployeeIds), employee => [token(employee)]) })
+        const normalizeHire = (hire: JsonRecord) => ({ ...hire, employeeSnapshot: normalizeEmployee(object(hire.employeeSnapshot)), checklist: { ...object(hire.checklist), tasks: by(array(object(hire.checklist).tasks), task => [id(task)]) } })
+        const normalizeEvent = (event: JsonRecord) => ({ ...event,
+          ...(Object.hasOwn(event, 'adoption') ? { adoption: normalizeAdoption(object(event.adoption)) } : {}),
+          ...(Object.hasOwn(event, 'interview') ? { interview: normalizeInterview(object(event.interview)) } : {}),
+          ...(Object.hasOwn(event, 'hire') ? { hire: normalizeHire(object(event.hire)) } : {}),
+        })
+        for (const [key, label] of recruitingCollections) primary(`recruiting.lifecycle.${key}`, label, lifecycle[key], key === 'interviews' ? normalizeInterview : key === 'hireBindings' ? normalizeHire : key === 'events' ? normalizeEvent : undefined)
+        // Captured arrays and event bodies are contained provenance, not a second
+        // inventory of people/jobs/hires. Their complete hidden content remains
+        // in these fingerprints, with identified nested order normalized.
+        add('recruiting.lifecycle.metadata', 'Recruiting lifecycle adoption metadata', 'metadata', 'One present optional extension; nested adoption captures are not additional primary records', [{ parts: ['extension'], value: { schemaVersion: lifecycle.schemaVersion, sequence: lifecycle.sequence, adoption: normalizeAdoption(object(lifecycle.adoption)) } }])
+      }
       const goals = records(performance.goals); const reviews = records(performance.reviews)
       primary('performance.goals', 'Performance goals', goals, normalizeActivity); nestedActivity('performance.goals.activity', 'Goal activity', goals)
       primary('performance.reviews', 'Performance reviews', reviews, normalizeActivity); nestedActivity('performance.reviews.activity', 'Review activity', reviews)
@@ -414,7 +521,7 @@ export function compareWorkspaces(current: Partial<DemoWorkspaces>, target: Part
     const previousCollections = before.get(module)!; const nextCollections = after.get(module)!
     const previousByKey = new Map(previousCollections.map(collection => [collection.key, collection]))
     const nextByKey = new Map(nextCollections.map(collection => [collection.key, collection]))
-    const extension = (key: string) => key.startsWith('workflow.lifecycle.') || key === 'preview.selectedManager' || key.startsWith('releaseBundles') || key.startsWith('activity.ownershipChange')
+    const extension = (key: string) => key.startsWith('workflow.lifecycle.') || key.startsWith('recruiting.lifecycle.') || key === 'preview.selectedManager' || key.startsWith('releaseBundles') || key.startsWith('activity.ownershipChange')
     const keys = [...new Set([...previousByKey.keys(), ...nextByKey.keys()])]
     // Legacy rows retain their established order; optional extension rows have
     // the same order in both comparison directions, even if a field is absent.

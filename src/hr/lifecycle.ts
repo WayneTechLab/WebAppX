@@ -28,7 +28,7 @@ function email(value: string) {
 }
 function validDate(value: string) { if (!validateTimeEntry(value, 1).valid) throw new Error('Choose a valid explicit sample date.'); return value }
 function initialLifecycle(state: HrDemoState, base: HrFixture, simulationDate: string | null): HrLifecycleState {
-  return createHrLifecycle(state.workflow, rawFixture(state, base), simulationDate)
+  return createHrLifecycle(state.workflow, rawFixture(state, base), simulationDate, state.recruiting)
 }
 /** Pure view: legacy facts are projected without adding fields to saved state. */
 export function lifecycleView(state: HrDemoState, base: HrFixture) {

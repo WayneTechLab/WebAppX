@@ -4,8 +4,12 @@ These are concrete synthetic examples from the reviewed fixture. Use the
 [canonical cross-portal capability matrix](PORTAL-CAPABILITIES.md) for the complete vocabulary, role scopes and provider boundary.
 A role example is an actor, resource, action and current state; opening a route does not establish permission for its domain transitions.
 
-Review basis: ` 61d39c9c855fb3f56913cb7c2f8010a6a485b746 ` and proposal ` WX-0908 `.
+Review basis: ` 7a582ed4a5396d54aa94e3ca780667d1b07f179e ` and proposal ` WX-0908 `.
 Original criterion: A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.
+
+The revision above names the supplied published baseline. The fingerprints below bind the explicitly reviewed recruiting working tree.
+Agent 0 froze 123 application source files by exact bytes; the source-manifest SHA-256 is `5a48242850a2f840d61478ebc55c427e05cb6135c24b61ed2f50af232df39569`.
+This source-only review establishes no new commit, browser observation, provider operation or production acceptance.
 
 The [reviewed fixture](../tests/fixtures/hr-capability-examples.json) supplies each action, prerequisite and literal expected result.
 The independent [domain tests](../tests/hr/role-examples.test.mjs) exercise the actual HR transitions, ownership checks, projections and complete backup codecs.
@@ -352,20 +356,20 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | --- | --- |
 | [docs/PORTAL-CAPABILITIES.md](../docs/PORTAL-CAPABILITIES.md) | ` 145d912322bd3d4e9ffce7a8ca45131c1fd557f8801ef9d36ed348934368f6cd ` |
 | [src/hr/model.ts](../src/hr/model.ts) | ` 32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e ` |
-| [src/hr/mock-workflows.ts](../src/hr/mock-workflows.ts) | ` 98251e7ff60deceb7b504972a10e64752a0f0579dd3d8fb628f8025b984f0f25 ` |
+| [src/hr/mock-workflows.ts](../src/hr/mock-workflows.ts) | ` 4197404a605b370245d4a7542aba9a31ed620c852f1643e330cb42288c638136 ` |
 | [src/hr/performance.ts](../src/hr/performance.ts) | ` e4dd5404f9c826a162981904fbc0417588b64252998fa4ac1ca7c0477c8c716f ` |
 | [src/hr/surveys.ts](../src/hr/surveys.ts) | ` 5bc231e4a19c62c3a2b7520e93026f885d1f0f636e89306ccfa76d0a7f0a2b85 ` |
-| [src/hr/persistence.ts](../src/hr/persistence.ts) | ` 4ec2c8e543e6b25fa2a955761f95e164563cb6f5db7e67ce8337bc6fc4d1c5f5 ` |
+| [src/hr/persistence.ts](../src/hr/persistence.ts) | ` 052a06301f32565b5c89e8bdde9f2d075752ff08cd172293408116cb8e3a2d1f ` |
 | [src/portals/backup.ts](../src/portals/backup.ts) | ` b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a ` |
 | [src/portals/combined-backup.ts](../src/portals/combined-backup.ts) | ` 186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726 ` |
-| [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | ` 2b173d5d158281d0f1b390215a39047981b2949cf5c5a6c43dd8be6bad6f5aed ` |
-| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` 8c8a26fad535f26760e3d206912523d59ca77c1adc9cbe27506eca187587afb0 ` |
-| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` 297f4fb063ca37a98a22566a67ec3fe64d92c392931d15d2691261aeba96c9fb ` |
+| [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | ` 850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809 ` |
+| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51 ` |
+| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` d37bc8bc39d8bd1af1a6b075f7193dda802dd8d7b184d0af90a87bac566749c3 ` |
 | [.SYSTEMX/GUSTO/mock/fixtures/demo-company.json](../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json) | ` 14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3 ` |
-| [src/portals/unsaved-work-core.ts](../src/portals/unsaved-work-core.ts) | ` ee9abc498ae015df8554e2056d1526dfc2d5b534bc1e47284242c7134d8c5a59 ` |
+| [src/portals/unsaved-work-core.ts](../src/portals/unsaved-work-core.ts) | ` f5f7db3ae4ff9c70edb4c3dfd7052075c0b5f3fe3e7c36333ebf311ff0623e14 ` |
 | [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | ` 5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316 ` |
 | [src/lib/navigation.ts](../src/lib/navigation.ts) | ` d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24 ` |
-| [src/router.tsx](../src/router.tsx) | ` 0ef2cee3f4e1c684db7f54525448b83535da6a3d7da2c68333b518f064be5a32 ` |
+| [src/router.tsx](../src/router.tsx) | ` ec93762a8acbb9bbfdf43ceab5858a55243491b8ca5e7404419d71df4ab359c7 ` |
 | [src/hr/components/useHrFormDraft.ts](../src/hr/components/useHrFormDraft.ts) | ` d93f943cad287eb323ea80799d9f807d1e537aaf1dd9032b51a6e6c50c9265e7 ` |
 | [src/hr/components/PeopleOperations.tsx](../src/hr/components/PeopleOperations.tsx) | ` a6f6ade235d7c4ce8dec497cbc5a4c6fbf9fe6553efb71f5e30f6b99683e3d0b ` |
 | [src/hr/components/HrServiceDesk.tsx](../src/hr/components/HrServiceDesk.tsx) | ` 584ce87da135d5bdc04c56fd9c4789d5e8269c42e7a9f8308ef42adaf8ba1267 ` |
@@ -384,19 +388,44 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/portals/restore-points.ts](../src/portals/restore-points.ts) | ` d80d770440de2db847fd5cd933a960fbe2cc88adb4f80d9bd9ae13e97ce89e1b ` |
 | [src/portals/RestorePointHistory.tsx](../src/portals/RestorePointHistory.tsx) | ` 883a619f1e6f78db5ffee7302b48b36b6f88823ddfe706699a0395ee6505183d ` |
 | [src/portals/restore-workspaces.ts](../src/portals/restore-workspaces.ts) | ` 1e84b45222b119e9d02e75efa1ba251584353ef0ff2142db5350f009e2797cce ` |
-| [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | ` fff4347a1b37c46686324ba654873ca2ff650935da885a8331ad45f9c35fcc1f ` |
-| [src/portals/WorkspaceInspection.tsx](../src/portals/WorkspaceInspection.tsx) | ` 2822bc6b015e9dd3da199a83699565d7cf4b15e1dd19735de58e8e18f985fbac ` |
+| [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | ` 6af90c859a293c5cc6f1d80b702333af1aa39ce8dfc662139fefbf9f759b4a11 ` |
+| [src/portals/WorkspaceInspection.tsx](../src/portals/WorkspaceInspection.tsx) | ` 2e5b584d1f61cb1331879b0f251c8355b6f9f74b638fcb40f82e0da1439db069 ` |
 | [src/crm/CrmDemo.tsx](../src/crm/CrmDemo.tsx) | ` 5d2703a94ce2bcb75c1d72d68ae8d64c14df77e2d48b57ac95c7699c8b85501c ` |
-| [src/hr/lifecycle-types.ts](../src/hr/lifecycle-types.ts) | ` a8b94591da083b3de34951e019b740121d0439023153d0bb8eb4b6bd988c650a ` |
-| [src/hr/lifecycle.ts](../src/hr/lifecycle.ts) | ` 89d2c31ea8fd5f6a86016bd7d57ace18a02b2c7605df9558ad86923e066087b4 ` |
+| [src/hr/lifecycle-types.ts](../src/hr/lifecycle-types.ts) | ` 3d4330aa6bea5a438ba55c6e3d7ee8dab4332d538793adad81e0fe6bb955de27 ` |
+| [src/hr/lifecycle.ts](../src/hr/lifecycle.ts) | ` db1c8cd09a3145d6c0e4dfc48215d961127bb33be0306e7fcec7994ea838fb68 ` |
 | [src/hr/components/HrDirectoryCorrections.tsx](../src/hr/components/HrDirectoryCorrections.tsx) | ` 84b456d3d44cf83b2cedbf2d253a932a11522beb29e31e71510572d8779e953c ` |
 | [src/hr/components/HrEmploymentLifecycle.tsx](../src/hr/components/HrEmploymentLifecycle.tsx) | ` bc9c99cba0b2dc9ffd7f8d8c399bc9be4d5c5ca946366d46264139e23f0db699 ` |
 | [src/cms/release-types.ts](../src/cms/release-types.ts) | ` 9b14e7617331c5c02752fa4232348b16fead327528c1b6c9d73d32ac9ba46360 ` |
 | [src/cms/release-bundles.ts](../src/cms/release-bundles.ts) | ` ed159266af4cf6346cc49506d8e55d80e5c090e48c67c0001e718bad96c9ab24 ` |
 | [src/crm/ownership.ts](../src/crm/ownership.ts) | ` 513a052d85d9f3107869b71ed4fd8c71b35da484111fd44f7a123da045ed6ab0 ` |
 | [src/hr/linked-operations.ts](../src/hr/linked-operations.ts) | ` 2e66e04000c9fd1dec82d8afcd4079a9daaaa238c0fbf0f9574290d70b7cf4ab ` |
-| [src/hr/recruiting.ts](../src/hr/recruiting.ts) | ` e49f25772d6b07cfde7293d9aa29d4c75bf8332770b7dcf9391f4023bc5c939b ` |
+| [src/hr/recruiting.ts](../src/hr/recruiting.ts) | ` 034cd80e1f9dfc29f47b609e40dfd51b550d1e2f307c2796b32a9288c4af9d84 ` |
 | [src/hr/recruiting-link.ts](../src/hr/recruiting-link.ts) | ` 1995589d100b58fc2db37629f9dfe0feed730b6ce89b65c3b2e2b24e49c01839 ` |
 | [src/cms/persistence.ts](../src/cms/persistence.ts) | ` ba4c010799c4af240382936308a8a946ffc3ecd1600a8626417d7f44ffa4e430 ` |
 | [src/crm/model.ts](../src/crm/model.ts) | ` fbef9b656e5e286d3a6a22a93487a905e7909482b64972a33c5c90d86e91bed8 ` |
 | [src/crm/persistence.ts](../src/crm/persistence.ts) | ` 1b4e2dcc0e4c44c5ac65b2256e49e5159f4580cc4d381dcb352717078b4c2170 ` |
+| [src/hr/recruiting-lifecycle-types.ts](../src/hr/recruiting-lifecycle-types.ts) | ` 2ad4f9bf47610036ed5d2808690cb88d186062f1493b03d1c9b973bcee9463db ` |
+| [src/hr/recruiting-lifecycle-value.ts](../src/hr/recruiting-lifecycle-value.ts) | ` 2a62ef990f090269b92e2bcf1f153dc67a758cd08e1f15995fc0ef8f110cc434 ` |
+| [src/hr/recruiting-lifecycle-replay.ts](../src/hr/recruiting-lifecycle-replay.ts) | ` 42d903bf54c358ca667b53a547ec99151caff2db7ef9fe5e618a7cdbcaaa5329 ` |
+| [src/hr/recruiting-lifecycle-projection.ts](../src/hr/recruiting-lifecycle-projection.ts) | ` 832533db77976ace5a6b0aaccf4cdf863d38a3e6541c9a4dbdadb74cf2ca332f ` |
+| [src/hr/recruiting-lifecycle.ts](../src/hr/recruiting-lifecycle.ts) | ` c1f244edfa0df984548985fd1b896c5e4318bae7794a9ce7457c51fddc6ef40a ` |
+| [src/hr/recruiting-controller.ts](../src/hr/recruiting-controller.ts) | ` 5a1a5c6e5b82ea496573ca8d6a8123b83ada9b67b06e4c5b55b4a13f366c48cb ` |
+| [src/hr/recruiting-requisitions.ts](../src/hr/recruiting-requisitions.ts) | ` 1229e857cfe886effa7987ed8e998d9e372266ad6068fd278f09b06220d6a0f2 ` |
+| [src/hr/recruiting-interviews.ts](../src/hr/recruiting-interviews.ts) | ` eb43b9c4a55b58af37276967dc0b01072a299dafef376b5ff1c6a14a1b99c317 ` |
+| [src/hr/recruiting-hire.ts](../src/hr/recruiting-hire.ts) | ` a66c9c526b89ee91f3bcc8176ced533c2f4c585d1b03729ced36b514e5dc2c56 ` |
+| [src/hr/recruiting-services.ts](../src/hr/recruiting-services.ts) | ` 2d093fdab506c35646fd2c1d2d78d1a446e8b402ba91d0c2dd678f7afdf8bc6a ` |
+| [src/hr/recruiting-time-zone.ts](../src/hr/recruiting-time-zone.ts) | ` 2e3ed02882fdc7be480518934fe2e4c30392806c529241b5f3903579a096c288 ` |
+| [src/hr/recruiting-employment-baseline.ts](../src/hr/recruiting-employment-baseline.ts) | ` 23ebd4ab55f4aaef1fbf96392366ef727b648495bd2f016faa654bad00130b4c ` |
+| [src/hr/recruiting-lifecycle-validation.ts](../src/hr/recruiting-lifecycle-validation.ts) | ` dfd6a0be7859fa08f973a9663aa7ec4e721a09c9d1afc29b63765f6a6246aa30 ` |
+| [src/hr/provider-adapter.ts](../src/hr/provider-adapter.ts) | ` 3422961870779a81018e25161604645220f2041b7bb71a5b3864d2e6bd4c579f ` |
+| [src/hr/RecruitingPreviewProvider.tsx](../src/hr/RecruitingPreviewProvider.tsx) | ` 2e1c2792eff30457ec566aab12d6750b67aae338c05a9833b7594cbcb320f25e ` |
+| [src/hr/components/HrRecruitingLifecycleHost.tsx](../src/hr/components/HrRecruitingLifecycleHost.tsx) | ` 19f613977cde5164ea528e3436697721463e186737dc04e1f310f5bd654cf146 ` |
+| [src/hr/components/HrRecruitingApplications.tsx](../src/hr/components/HrRecruitingApplications.tsx) | ` b7fab6c09248b9c5773f698d257b29a5a86d27f3184de30d1da154467d70a1b5 ` |
+| [src/hr/components/HrRecruitingHireSummary.tsx](../src/hr/components/HrRecruitingHireSummary.tsx) | ` 85387bce1a77ac70f4bd27d6dae1e3724b3854f23192da47ce2d9134a7e9637b ` |
+| [src/hr/components/HrRecruitingRequisitions.tsx](../src/hr/components/HrRecruitingRequisitions.tsx) | ` 8f5d46726fdb7746519d93ec81ec61ca62743b1a8fb55277a2be9f50a17ea9c1 ` |
+| [src/hr/components/HrRecruitingInterviews.tsx](../src/hr/components/HrRecruitingInterviews.tsx) | ` a7204ee9baaf233100b9eb2e8e7c9edef7de68e0f08254b0ef3280623503aada ` |
+| [src/hr/components/HrRecruitingOwnScorecards.tsx](../src/hr/components/HrRecruitingOwnScorecards.tsx) | ` 89d0637278604a9e54ab0d2cf0aff5d49393b3238c8e6d490da475bb9adbfabe ` |
+| [src/portals/ScopedPortalChrome.tsx](../src/portals/ScopedPortalChrome.tsx) | ` 4d068981ecff1b5e92b6b3b86fc0fb6729031ae065c2941763b75bce1c7c0ee8 ` |
+| [src/components/layout/Layout.tsx](../src/components/layout/Layout.tsx) | ` 41937e488db1f41614d39d68fef41b80683ac57925bee092b4aadbb139b909a6 ` |
+| [src/pages/TemplatePortalsPage.tsx](../src/pages/TemplatePortalsPage.tsx) | ` 0d76bcf1c6a32001c7efb66f3c8e95290427363ee7907c0c2575d38b9e7402da ` |
+| [src/portals/RetainedPortalSurface.tsx](../src/portals/RetainedPortalSurface.tsx) | ` 31bf40cda4f2bddc6bfb1eb68113ebf59374ea291284161df0473c85009bb82a ` |

@@ -2,13 +2,13 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import ts from 'typescript'
+import { loadMockModel } from '../browser/model-loader.mjs'
 
 const compile = file => ts.transpileModule(readFileSync(new URL(file, import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
 const dataUrl = source => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`
 const modelUrl = dataUrl(compile('../../src/hr/model.ts'))
-const workflowUrl = dataUrl(compile('../../src/hr/mock-workflows.ts').replace(/from ['"]\.\/model['"]/g, `from '${modelUrl}'`))
-const insights = await import(dataUrl(compile('../../src/hr/insights.ts').replace(/from ['"]\.\/model['"]/g, `from '${modelUrl}'`).replace(/from ['"]\.\/mock-workflows['"]/g, `from '${workflowUrl}'`)))
-const workflow = await import(workflowUrl)
+const insights = await loadMockModel(new URL('../../src/hr/insights.ts', import.meta.url))
+const workflow = await loadMockModel(new URL('../../src/hr/mock-workflows.ts', import.meta.url))
 const fixture = JSON.parse(readFileSync(new URL('../../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json', import.meta.url), 'utf8'))
 const owner = { role: 'employer-owner' }
 const avery = { role: 'employee', employeeId: 'employee-002' }

@@ -11,6 +11,72 @@ function plan(scripts, names = Object.keys(scripts).filter(name => name !== 'ci:
   return buildCiPlan({ shellSource: runner(names), packageJson: { scripts: { 'ci:all': 'bash scripts/check-template.sh', ...scripts }, engines: { node: '>=24.0.0' } }, gustoPackageJson: { engines: { node: '22' } }, installation: { activeVersion: '1.9.0-alpha.6' } })
 }
 
+// Literal pre-recruiting gate order protects every existing stage during this insertion.
+const previousGateOrder = [
+  'development:check',
+  'development:test',
+  'environment:check',
+  'environment:test',
+  'repository:identity:test',
+  'dev:mock:test',
+  'systemx:session:test',
+  'ci:plan:test',
+  'backlog:plan:check',
+  'backlog:plan:test',
+  'backlog:evidence:check',
+  'backlog:evidence:test',
+  'backlog:impact:test',
+  'docs:freshness:test',
+  'systemx:work-status:test',
+  'doctor',
+  'doctor:test',
+  'browser:smoke:test',
+  'browser:keyboard:test',
+  'backlog:check',
+  'backlog:test',
+  'template:check',
+  'systemx:status',
+  'systemx:validate',
+  'sync:system:check',
+  'research:validate',
+  'systemx:tools:test',
+  'systemx:integration:test',
+  'security:controls:test',
+  'ci:lint',
+  'ci:typecheck',
+  'ci:test',
+  'hr:test',
+  'hr:roles:check',
+  'hr:roles:test',
+  'gusto:capabilities:check',
+  'gusto:capabilities:test',
+  'portals:test',
+  'maturity:test',
+  'safety:test',
+  'adoption:hr-disabled:test',
+  'adoption:hr-disabled',
+  'browser:smoke',
+  'browser:keyboard',
+  'browser:foundation',
+  'browser:state-contract',
+  'browser:lifecycles',
+  'browser:portal-lifecycle',
+  'browser:payroll',
+  'browser:evaluators',
+  'browser:maturity',
+  'browser:safety',
+  'browser:quality',
+  'browser:sdk-quality',
+  'browser:recovery-drill',
+  'browser:work-status',
+  'hr:backend:audit',
+  'docs:links',
+  'ci:security',
+  'ci:ai',
+  'ci:audit',
+  'build',
+]
+
 test('reads all current required gates in the existing shell order', async () => {
   const [shellSource, packageText, gustoText, installationText] = await Promise.all([
     readFile(new URL('../../scripts/check-template.sh', import.meta.url), 'utf8'),
@@ -20,6 +86,8 @@ test('reads all current required gates in the existing shell order', async () =>
   ])
   const report = buildCiPlan({ shellSource, packageJson: JSON.parse(packageText), gustoPackageJson: JSON.parse(gustoText), installation: JSON.parse(installationText) })
   assert.deepEqual(report.stages.map(stage => stage.name), parseGateOrder(shellSource))
+  assert.equal(report.stages.length, 63)
+  assert.deepEqual(report.stages.filter(stage => stage.name !== 'browser:recruiting').map(stage => stage.name), previousGateOrder, 'all prior 62 stages retain their exact relative order')
   assert.deepEqual(report.stages.map(stage => stage.number), Array.from({ length: report.stages.length }, (_, index) => index + 1))
   assert.ok(report.stages.find(stage => stage.name === 'hr:backend:audit').workspaces.includes('gusto-functions'))
   assert.ok(report.stages.find(stage => stage.name === 'systemx:tools:test').workspaces.includes('systemx-managed'))
@@ -39,8 +107,24 @@ test('required lifecycle suites run once without replacing existing recovery or 
   const names = parseGateOrder(shellSource)
   const report = buildCiPlan({ shellSource, packageJson })
   const required = {
-    'hr:test': ['tests/hr/lifecycle.test.mjs', 'tests/hr/employment-lifecycle-ui.test.mjs', 'tests/hr/directory-corrections-ui.test.mjs'],
-    'portals:test': ['tests/portals/cms-releases.test.mjs', 'tests/portals/cms-release-callbacks.test.mjs', 'tests/portals/crm-ownership.test.mjs', 'tests/portals/lifecycle-inspection.test.mjs'],
+    'browser:smoke:test': ['tests/browser/seed-pack.test.mjs', 'tests/browser/preview-process.test.mjs', 'tests/browser/recruiting-harness.test.mjs'],
+    'hr:test': [
+      'tests/hr/lifecycle.test.mjs', 'tests/hr/employment-lifecycle-ui.test.mjs', 'tests/hr/directory-corrections-ui.test.mjs',
+      'tests/hr/recruiting-core.test.mjs',
+      'tests/hr/recruiting-requisitions.test.mjs',
+      'tests/hr/recruiting-requisitions-ui.test.mjs',
+      'tests/hr/recruiting-interviews.test.mjs',
+      'tests/hr/recruiting-interviews-ui.test.mjs',
+      'tests/hr/recruiting-scorecard-controller.test.mjs',
+      'tests/hr/recruiting-applications-ui.test.mjs',
+      'tests/hr/provider-adapter.test.mjs',
+      'tests/hr/recruiting-preview-shell.test.mjs',
+      'tests/hr/recruiting-employment-baseline.test.mjs',
+      'tests/hr/recruiting-persistence.test.mjs',
+      'tests/hr/recruiting-lifecycle-host.test.mjs',
+      'tests/hr/recruiting-integration.test.mjs',
+    ],
+    'portals:test': ['tests/portals/cms-releases.test.mjs', 'tests/portals/cms-release-callbacks.test.mjs', 'tests/portals/crm-ownership.test.mjs', 'tests/portals/lifecycle-inspection.test.mjs', 'tests/portals/recruiting-inspection.test.mjs', 'tests/portals/retained-surface.test.mjs'],
     'maturity:test': ['tests/portals/workspace-inspection.test.mjs'],
     'safety:test': ['tests/portals/domain-differences.test.mjs'],
   }
@@ -56,11 +140,16 @@ test('required lifecycle suites run once without replacing existing recovery or 
   }
   assert.equal(scripts['browser:lifecycles'], 'node scripts/browser-lifecycles.mjs', 'the earlier CMS/CRM journey remains required')
   assert.equal(scripts['browser:portal-lifecycle'], 'node scripts/browser-portal-lifecycle.mjs')
-  for (const name of ['browser:lifecycles', 'browser:portal-lifecycle']) assert.equal(names.filter(stage => stage === name).length, 1, name)
+  assert.equal(scripts['browser:recruiting'], 'node scripts/browser-recruiting.mjs')
+  for (const name of ['browser:lifecycles', 'browser:portal-lifecycle', 'browser:recruiting']) assert.equal(names.filter(stage => stage === name).length, 1, name)
   assert.equal(names.indexOf('browser:portal-lifecycle'), names.indexOf('browser:lifecycles') + 1)
-  const browserStage = report.stages.find(stage => stage.name === 'browser:portal-lifecycle')
-  assert.deepEqual(browserStage.mutations, ['temporary-files-or-processes'])
-  assert.deepEqual(browserStage.workspaces, ['webappx'])
+  assert.equal(names.indexOf('browser:recruiting'), names.indexOf('browser:portal-lifecycle') + 1)
+  assert.equal(names.indexOf('browser:payroll'), names.indexOf('browser:recruiting') + 1)
+  for (const name of ['browser:portal-lifecycle', 'browser:recruiting']) {
+    const browserStage = report.stages.find(stage => stage.name === name)
+    assert.deepEqual(browserStage.mutations, ['temporary-files-or-processes'])
+    assert.deepEqual(browserStage.workspaces, ['webappx'])
+  }
 })
 
 test('changed gate ordering and repeated gates are reflected without a duplicated inventory', () => {

@@ -1,18 +1,63 @@
 # Recruiting lifecycle implementation plan
 
-Planning date: **2026-10-15**. Status: **proposal for Agent 0 review; no
-implementation is authorized by this document**. The ten criteria below remain
-**TODO**. The preceding sixteen criteria, WX-0101–WX-0110, WX-0314–WX-0316 and
-WX-0379–WX-0381, have since completed local integration and acceptance together
-with two recovery criteria; see the [lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md).
-Their evidence does not accept any of the ten recruiting criteria below.
+Planning and status date: **2026-10-15**. Status: **IN DEVELOPMENT in an isolated
+worktree; implementation present, final verification and acceptance incomplete**.
+The authoritative [shared contract, section 12](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
+governs final types, authority, privacy and compatibility. Earlier design
+illustrations retained below are historical and cannot override that section or
+the [implemented shared types](../src/hr/recruiting-lifecycle-types.ts).
 
-This is a proposed next slice under the
-[full execution plan](WEBAPPX-EXECUTION-PLAN.md), following the accepted safety
-checkpoint `f5ed3de`. It changes no catalog status, dependency, completion
-metadata or acceptance gate. This document records source observations and a
-design proposal; it records no new test execution, browser observation,
-provider adoption or production readiness.
+The published primary checkpoint is **111 done / 889 remaining**, including the
+accepted lifecycle wave and subsequent **WX-0708 → WX-0717** confirmation review.
+The full 1,000-item goal remains active. **WX-0201–WX-0210 remain TODO**, as does
+the separately scoped **WX-0951** optional provider adapter criterion. Isolated
+source, focused test results and this documentation do not accept or publish
+those eleven items. Earlier dated QA receipts retain their own source and
+observation scope.
+
+## Current implementation and verification boundary
+
+| Isolated implementation present | Source and scope |
+| --- | --- |
+| Explicit adoption and one event authority | [Core](../src/hr/recruiting-lifecycle.ts) and [replay](../src/hr/recruiting-lifecycle-replay.ts) require a separate `adopt` preview/confirm command before extension actions. Reads and ordinary legacy actions do not adopt. Captured legacy records remain the compatibility base. |
+| Requisition and publication workflow | [Handler](../src/hr/recruiting-requisitions.ts) and [management UI](../src/hr/components/HrRecruitingRequisitions.tsx) implement explicit review, immutable approval/publication captures, separate owner/manager choices and bounded headcount planning. |
+| People, applications and timelines | The core, [projection](../src/hr/recruiting-lifecycle-projection.ts) and [application UI](../src/hr/components/HrRecruitingApplications.tsx) implement authorized conflict previews, independent applications, reasons, terminal withdrawal and explicit recorded-time intervals. |
+| Interviews and private scorecards | [Interview handler](../src/hr/recruiting-interviews.ts), scoped DTOs and command ports implement assigned-author drafts and explicit submission. [Controller](../src/hr/recruiting-controller.ts) privately binds source, actor, epoch, generation and ephemeral handles. |
+| Atomic hire and later employment materialization | [Hire adapter](../src/hr/recruiting-hire.ts), [employment baseline](../src/hr/recruiting-employment-baseline.ts) and [strict validation](../src/hr/recruiting-lifecycle-validation.ts) capture exact additions and distinguish immutable hire facts from later onboarding/profile/employment changes. |
+| Recovery and scoped shell | [Inspection](../src/portals/workspace-inspection.ts) inventories the optional collections and hidden payloads. The [preview provider](../src/hr/RecruitingPreviewProvider.tsx) keeps volatile identity selection in HR; shared layout consumes only [generic boolean chrome state](../src/portals/ScopedPortalChrome.tsx). |
+| Separate WX-0951 contract | [Provider adapter](../src/hr/provider-adapter.ts) separates native commands, provider outcomes, retry states and unsupported operations. Its supplied implementation stays mock/unconfigured, performs no transport and grants no provider authority. |
+
+Focused lane/model/callback checks have been executed during implementation.
+For example, the requisition handoff recorded **23 focused tests** plus scoped
+lint and a then-current TypeScript pass. These are implementation observations,
+not a final frozen-source or whole-wave verification receipt. The prepared
+[host tests](../tests/hr/recruiting-lifecycle-host.test.mjs),
+[integration tests](../tests/hr/recruiting-integration.test.mjs) and
+[independent browser journey](../tests/browser/recruiting.mjs) identify further
+boundaries to review; their presence is not evidence that the final gates passed.
+This documentation update executes no new application test or browser journey.
+
+Remaining integration steps, owned and accepted by Agent 0:
+
+1. Complete independent host/source review, strict persistence and all four
+   recruiting/employment extension combinations, including later profile and
+   onboarding changes. Resolve findings before the final runtime freeze.
+2. Freeze actual source and harness bytes, record their bindings, then run the
+   owned `browser:recruiting` journey and affected existing browser regressions.
+   Verify literal complete records, privacy, keyboard/large-text/monochrome
+   observations and cleanup; preserve every failed diagnostic. No manual
+   screen-reader or other-platform acceptance is inferred.
+3. Recheck final source/evidence bindings after corrections. Run the configured
+   **63-stage** full `ci:all`, Hosting preflight, SYSTEMX drift, template and link
+   gates on the final reviewed source. Record terminal outcomes and independently
+   audit stage/report coverage; a configured plan is not a successful run.
+4. Review each original WX-0201–WX-0210 criterion and the separately scoped
+   WX-0951 contract. Only accepted evidence can change canonical completion;
+   then regenerate derived views and finalize a new dated QA receipt and current
+   guides. Preserve all earlier receipt bytes and observation qualifications.
+5. Integrate and publish source/wiki documentation under Agent 0, verify direct
+   remote parity, and retain the full-goal remainder. Preflight and local
+   acceptance never authorize production deployment or provider activation.
 
 ## Original canonical scope
 
@@ -51,12 +96,24 @@ engineering sequence later in this plan does not add canonical dependencies.
 | WX-0209 | Add candidate withdrawal as a terminal outcome | A withdrawn application cannot be hired and remains distinct from an employer rejection. |
 | WX-0210 | Add hiring preview validation summaries | Before mock hire, the screen lists directory, onboarding and balance records that will be created atomically. |
 
-The other dependency-ready P1 local candidates found in the primary catalog
-review were WX-0159/WX-0160, WX-0656 and WX-0951. Pay-period corrections, manual
-screen-reader evidence and the optional provider interface are separate slices.
-They are outside this proposed recruiting assignment.
+The historical candidate-selection review also identified WX-0159/WX-0160,
+WX-0656 and WX-0951. Pay-period corrections and manual screen-reader evidence
+remain separate work. WX-0951 is now a separately scoped local contract in the
+current development wave, with its original definition intact:
 
-## Current source observations — planning only
+| Field | Original WX-0951 value |
+| --- | --- |
+| Title | Define an optional provider adapter interface |
+| Acceptance | A typed contract separates native HR commands, provider results, retry states and unsupported operations while mock mode stays the default. |
+| Area / priority / phase | `integrations` / `P1` / `extensions` |
+| Status / gate / dependencies | `todo` / `local` / `[]` |
+| Source | `docs/GUSTO-SETUP.md` |
+
+## Historical source observations — before implementation
+
+This table preserves the planning-era baseline and its then-missing work. It
+does not describe the current isolated implementation listed above, and supplies
+no new execution or acceptance evidence.
 
 | Source | Existing behavior observed in source | Gap relevant to this proposal |
 | --- | --- | --- |
@@ -72,17 +129,20 @@ The existing [recruiting tests](../tests/hr/recruiting.test.mjs) and
 single-application pipeline, generic duplicate refusal, atomic hire and scope
 preservation. The [2026-10-14 talent receipt](HR-TALENT-QA-2026-10-14.md)
 documents the earlier recruiting journey. These are useful foundations, not
-acceptance of WX-0201–WX-0210. No test or browser run was performed to prepare
-this plan, and the dated receipt must remain unchanged.
+acceptance of WX-0201–WX-0210. No test or browser run was performed for the
+original planning-only preparation; later implementation checks are scoped
+separately above. The dated receipt must remain unchanged.
 
-## Proposed optional schema and authority
+## Historical schema proposal — superseded by the reviewed contract
 
-All names and fields in this section are **proposals**, subject to Agent 0's
-review before implementation. Use one optional `recruiting.lifecycle` schema
-extension. Keep existing saves valid when it is absent, and do not add it during
-reads, rendering, summaries, previews, export, refusal or no-op operations.
+The following illustration is retained as **historical design**, not the current
+type contract. Section 12 of the reviewed shared contract and the implemented
+types take precedence. In particular, the implementation has no `simulationAt`
+or `jobRequisitionLinks` field; it uses explicit approval/publication captures,
+jobs, hire bindings and an adoption envelope. The optional extension remains
+absent during reads, rendering, summaries, previews, export, refusal and no-ops.
 
-Proposed top-level shape:
+Historical proposed top-level shape:
 
 ```ts
 type RecruitingLifecycleV1 = {
@@ -115,14 +175,16 @@ Exact ID prefixes, field names, collection caps and rubric fields must be frozen
 in the reviewed type contract. Keep explicit JSON-safe bounds and strict field
 allowlists; do not accept partially present extensions as legacy data.
 
-### Legacy compatibility without duplicate authority
+### Compatibility design, with the adopted explicit action clarified
 
 1. With no extension, read the existing jobs, candidate/application records and
    hires exactly as stored. A pure view may expose deterministic legacy person
    and application IDs, but it must not write or consume a sequence.
-2. The first meaningful accepted new workflow action may materialize the
-   extension. Capture the existing candidate-to-person/application relationship
-   with explicit legacy provenance. Preserve the original candidate records and
+2. **Current decision: only a separate explicit `adopt` preview/confirm action
+   materializes recruiting history.** Other new workflow commands refuse until
+   adoption; the first meaningful ordinary action does not adopt automatically.
+   Capture the existing candidate-to-person/application relationship with
+   explicit legacy provenance. Preserve the original candidate records and
    their activity bytes as the compatibility base. If existing identities or
    normalized emails conflict, refuse adoption with an authorized conflict
    preview; do not silently merge, repair or discard those legacy records.
@@ -150,7 +212,11 @@ is chosen, it must still provide one authoritative application model and
 byte-preserving reads of old saves. Dual mutable candidate/application copies
 are not an acceptable shortcut.
 
-## Proposed command and preview contract
+## Historical command and preview design
+
+The reviewed shared contract and current implementation above settle the final
+command/DTO shape. This original design table remains rationale, not a second
+dispatcher or permission to bypass the trusted controller.
 
 Use pure preview/confirm functions over the full captured HR workspace, actor
 and explicit action. A preview returns structured scope, proposed records,
@@ -174,12 +240,12 @@ open interval uses the explicitly selected sample observation time. Display
 unknown legacy boundaries as unknown, with no invented zero or estimated
 duration. A receipt sequence orders events; it is not a clock.
 
-## Interviewer privacy and local preview limits
+## Historical interviewer privacy design and continuing local limits
 
-Propose a recruiting-specific preview actor rather than granting a new native
-HR role or broadening manager authority. One possible union is an HR actor mode
-and an interviewer mode bound to an existing fictional employee ID. Agent 0
-must review its exact type and selector placement.
+The original proposal below led to the reviewed native/interviewer actor union
+and dedicated local shell. It creates no native HR role or broader manager
+authority. Current exact DTOs, selector placement and final privacy decisions
+are governed by the shared contract, especially section 12.
 
 - Owner/HR-admin previews manage requisitions, applications, scheduling and
   hiring review. They do not receive another interviewer's unsubmitted scorecard
@@ -207,12 +273,12 @@ must review its exact type and selector placement.
   names, emails, comments, reasons and scorecard answers remain absent from that
   default presentation.
 
-## Sequencing and disjoint ownership proposal
+## Historical sequencing and disjoint ownership proposal
 
-These are proposed lanes, not dispatched assignments. Agent 0 first reviews
-the schema authority, transition rules, role projections and compatibility
-policy. The preceding sixteen-item wave completed its own verification and
-acceptance before its employment/template APIs are treated as a settled base.
+This table retains the original proposed split. Agent 0 subsequently reviewed
+the shared contract and dispatched implementation; current ownership and
+remaining integration steps are coordinated separately. The table does not
+authorize new edits or represent every current file owner.
 
 | Lane | Criteria and owned files | Shared integration boundary |
 | --- | --- | --- |
@@ -224,7 +290,7 @@ acceptance before its employment/template APIs are treated as a settled base.
 | F — Browser/evidence | New owned browser journey/runner, independent literal expected records and a new dated QA receipt. | Runs after runtime freeze; preserves failed diagnostics and earlier receipts. No domain edits. |
 | Agent 0 — Integration | Existing recruiting dispatch/projections, hire integration, HR route/component composition, shared command/docs/catalog wiring and final review. | Sole owner of existing `recruiting.ts`, `recruiting-link.ts`, `HrRecruiting.tsx` and `HrWorkspace.tsx`; serialize shared changes. |
 
-Suggested order:
+Original suggested order, retained as historical design:
 
 1. Review and freeze the proposed schema, bounds, legacy adoption rule and role
    projections. Do not begin implementation from this planning document alone.
@@ -239,7 +305,9 @@ Suggested order:
 
 ## Required verification before acceptance
 
-The list below is a future verification plan, not an executed result.
+The list below remains the acceptance checklist. Focused implementation checks
+may cover parts of it, but this table supplies no final host/browser/freeze,
+63-stage CI, preflight or catalog acceptance result.
 
 | Boundary | Required evidence |
 | --- | --- |

@@ -33,6 +33,19 @@ const requiredSources = [
   'src/cms/release-types.ts', 'src/cms/release-bundles.ts', 'src/crm/ownership.ts',
   'src/hr/linked-operations.ts', 'src/hr/recruiting.ts', 'src/hr/recruiting-link.ts',
   'src/cms/persistence.ts', 'src/crm/model.ts', 'src/crm/persistence.ts',
+  'src/hr/recruiting-lifecycle-types.ts', 'src/hr/recruiting-lifecycle-value.ts',
+  'src/hr/recruiting-lifecycle-replay.ts', 'src/hr/recruiting-lifecycle-projection.ts',
+  'src/hr/recruiting-lifecycle.ts', 'src/hr/recruiting-controller.ts',
+  'src/hr/recruiting-requisitions.ts', 'src/hr/recruiting-interviews.ts',
+  'src/hr/recruiting-hire.ts', 'src/hr/recruiting-services.ts',
+  'src/hr/recruiting-time-zone.ts', 'src/hr/recruiting-employment-baseline.ts',
+  'src/hr/recruiting-lifecycle-validation.ts', 'src/hr/provider-adapter.ts',
+  'src/hr/RecruitingPreviewProvider.tsx', 'src/hr/components/HrRecruitingLifecycleHost.tsx',
+  'src/hr/components/HrRecruitingApplications.tsx', 'src/hr/components/HrRecruitingHireSummary.tsx',
+  'src/hr/components/HrRecruitingRequisitions.tsx', 'src/hr/components/HrRecruitingInterviews.tsx',
+  'src/hr/components/HrRecruitingOwnScorecards.tsx', 'src/portals/ScopedPortalChrome.tsx',
+  'src/components/layout/Layout.tsx', 'src/pages/TemplatePortalsPage.tsx',
+  'src/portals/RetainedPortalSurface.tsx',
 ]
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value)
 function fields(value, expected, label) {
@@ -75,7 +88,7 @@ export function validateHrRoleExamples(fixture) {
   fields(review, ['proposalId', 'criterion', 'sourceRevision', 'canonicalDocument', 'hashMode', 'reviewedSources'], 'Review basis')
   if (review.proposalId !== 'WX-0908' || review.canonicalDocument !== 'docs/PORTAL-CAPABILITIES.md' || review.hashMode !== 'utf8-lf-sha256' || typeof review.sourceRevision !== 'string' || !/^[0-9a-f]{40}$/.test(review.sourceRevision)) throw new Error('Use the reviewed WX-0908 source and canonical capability document')
   text(review.criterion, 'Acceptance criterion')
-  list(review.reviewedSources, 'Reviewed sources', { maximum: 56 })
+  list(review.reviewedSources, 'Reviewed sources', { maximum: 75 })
   const sources = new Set()
   for (const source of review.reviewedSources) {
     fields(source, ['path', 'sha256'], 'Reviewed source')
@@ -149,6 +162,9 @@ export function renderHrRoleExamples(input) {
     'A role example is an actor, resource, action and current state; opening a route does not establish permission for its domain transitions.', '',
     `Review basis: ${code(fixture.review.sourceRevision)} and proposal ${code(fixture.review.proposalId)}.`,
     `Original criterion: ${escaped(fixture.review.criterion)}`, '',
+    'The revision above names the supplied published baseline. The fingerprints below bind the explicitly reviewed recruiting working tree.',
+    'Agent 0 froze 123 application source files by exact bytes; the source-manifest SHA-256 is `5a48242850a2f840d61478ebc55c427e05cb6135c24b61ed2f50af232df39569`.',
+    'This source-only review establishes no new commit, browser observation, provider operation or production acceptance.', '',
     'The [reviewed fixture](../tests/fixtures/hr-capability-examples.json) supplies each action, prerequisite and literal expected result.',
     'The independent [domain tests](../tests/hr/role-examples.test.mjs) exercise the actual HR transitions, ownership checks, projections and complete backup codecs.',
     'Synthetic preview choices and local MOCK receipts do not authenticate people, assign account grants, establish tenant membership or enable provider operations.', '',

@@ -4,7 +4,7 @@
   "review": {
     "proposalId": "WX-0908",
     "criterion": "A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.",
-    "sourceRevision": "61d39c9c855fb3f56913cb7c2f8010a6a485b746",
+    "sourceRevision": "7a582ed4a5396d54aa94e3ca780667d1b07f179e",
     "canonicalDocument": "docs/PORTAL-CAPABILITIES.md",
     "reviewedSources": [
       {
@@ -17,7 +17,7 @@
       },
       {
         "path": "src/hr/mock-workflows.ts",
-        "sha256": "98251e7ff60deceb7b504972a10e64752a0f0579dd3d8fb628f8025b984f0f25"
+        "sha256": "4197404a605b370245d4a7542aba9a31ed620c852f1643e330cb42288c638136"
       },
       {
         "path": "src/hr/performance.ts",
@@ -29,7 +29,7 @@
       },
       {
         "path": "src/hr/persistence.ts",
-        "sha256": "4ec2c8e543e6b25fa2a955761f95e164563cb6f5db7e67ce8337bc6fc4d1c5f5"
+        "sha256": "052a06301f32565b5c89e8bdde9f2d075752ff08cd172293408116cb8e3a2d1f"
       },
       {
         "path": "src/portals/backup.ts",
@@ -41,15 +41,15 @@
       },
       {
         "path": "src/portals/DemoWorkspaceBackup.tsx",
-        "sha256": "2b173d5d158281d0f1b390215a39047981b2949cf5c5a6c43dd8be6bad6f5aed"
+        "sha256": "850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809"
       },
       {
         "path": "src/portals/CombinedWorkspaceBackup.tsx",
-        "sha256": "8c8a26fad535f26760e3d206912523d59ca77c1adc9cbe27506eca187587afb0"
+        "sha256": "cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51"
       },
       {
         "path": "src/hr/components/HrWorkspace.tsx",
-        "sha256": "297f4fb063ca37a98a22566a67ec3fe64d92c392931d15d2691261aeba96c9fb"
+        "sha256": "d37bc8bc39d8bd1af1a6b075f7193dda802dd8d7b184d0af90a87bac566749c3"
       },
       {
         "path": ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json",
@@ -57,7 +57,7 @@
       },
       {
         "path": "src/portals/unsaved-work-core.ts",
-        "sha256": "ee9abc498ae015df8554e2056d1526dfc2d5b534bc1e47284242c7134d8c5a59"
+        "sha256": "f5f7db3ae4ff9c70edb4c3dfd7052075c0b5f3fe3e7c36333ebf311ff0623e14"
       },
       {
         "path": "src/portals/unsaved-work.tsx",
@@ -69,7 +69,7 @@
       },
       {
         "path": "src/router.tsx",
-        "sha256": "0ef2cee3f4e1c684db7f54525448b83535da6a3d7da2c68333b518f064be5a32"
+        "sha256": "ec93762a8acbb9bbfdf43ceab5858a55243491b8ca5e7404419d71df4ab359c7"
       },
       {
         "path": "src/hr/components/useHrFormDraft.ts",
@@ -145,11 +145,11 @@
       },
       {
         "path": "src/portals/workspace-inspection.ts",
-        "sha256": "fff4347a1b37c46686324ba654873ca2ff650935da885a8331ad45f9c35fcc1f"
+        "sha256": "6af90c859a293c5cc6f1d80b702333af1aa39ce8dfc662139fefbf9f759b4a11"
       },
       {
         "path": "src/portals/WorkspaceInspection.tsx",
-        "sha256": "2822bc6b015e9dd3da199a83699565d7cf4b15e1dd19735de58e8e18f985fbac"
+        "sha256": "2e5b584d1f61cb1331879b0f251c8355b6f9f74b638fcb40f82e0da1439db069"
       },
       {
         "path": "src/crm/CrmDemo.tsx",
@@ -157,11 +157,11 @@
       },
       {
         "path": "src/hr/lifecycle-types.ts",
-        "sha256": "a8b94591da083b3de34951e019b740121d0439023153d0bb8eb4b6bd988c650a"
+        "sha256": "3d4330aa6bea5a438ba55c6e3d7ee8dab4332d538793adad81e0fe6bb955de27"
       },
       {
         "path": "src/hr/lifecycle.ts",
-        "sha256": "89d2c31ea8fd5f6a86016bd7d57ace18a02b2c7605df9558ad86923e066087b4"
+        "sha256": "db1c8cd09a3145d6c0e4dfc48215d961127bb33be0306e7fcec7994ea838fb68"
       },
       {
         "path": "src/hr/components/HrDirectoryCorrections.tsx",
@@ -189,7 +189,7 @@
       },
       {
         "path": "src/hr/recruiting.ts",
-        "sha256": "e49f25772d6b07cfde7293d9aa29d4c75bf8332770b7dcf9391f4023bc5c939b"
+        "sha256": "034cd80e1f9dfc29f47b609e40dfd51b550d1e2f307c2796b32a9288c4af9d84"
       },
       {
         "path": "src/hr/recruiting-link.ts",
@@ -206,6 +206,106 @@
       {
         "path": "src/crm/persistence.ts",
         "sha256": "1b4e2dcc0e4c44c5ac65b2256e49e5159f4580cc4d381dcb352717078b4c2170"
+      },
+      {
+        "path": "src/hr/recruiting-lifecycle-types.ts",
+        "sha256": "2ad4f9bf47610036ed5d2808690cb88d186062f1493b03d1c9b973bcee9463db"
+      },
+      {
+        "path": "src/hr/recruiting-lifecycle-value.ts",
+        "sha256": "2a62ef990f090269b92e2bcf1f153dc67a758cd08e1f15995fc0ef8f110cc434"
+      },
+      {
+        "path": "src/hr/recruiting-lifecycle-replay.ts",
+        "sha256": "42d903bf54c358ca667b53a547ec99151caff2db7ef9fe5e618a7cdbcaaa5329"
+      },
+      {
+        "path": "src/hr/recruiting-lifecycle-projection.ts",
+        "sha256": "832533db77976ace5a6b0aaccf4cdf863d38a3e6541c9a4dbdadb74cf2ca332f"
+      },
+      {
+        "path": "src/hr/recruiting-lifecycle.ts",
+        "sha256": "c1f244edfa0df984548985fd1b896c5e4318bae7794a9ce7457c51fddc6ef40a"
+      },
+      {
+        "path": "src/hr/recruiting-controller.ts",
+        "sha256": "5a1a5c6e5b82ea496573ca8d6a8123b83ada9b67b06e4c5b55b4a13f366c48cb"
+      },
+      {
+        "path": "src/hr/recruiting-requisitions.ts",
+        "sha256": "1229e857cfe886effa7987ed8e998d9e372266ad6068fd278f09b06220d6a0f2"
+      },
+      {
+        "path": "src/hr/recruiting-interviews.ts",
+        "sha256": "eb43b9c4a55b58af37276967dc0b01072a299dafef376b5ff1c6a14a1b99c317"
+      },
+      {
+        "path": "src/hr/recruiting-hire.ts",
+        "sha256": "a66c9c526b89ee91f3bcc8176ced533c2f4c585d1b03729ced36b514e5dc2c56"
+      },
+      {
+        "path": "src/hr/recruiting-services.ts",
+        "sha256": "2d093fdab506c35646fd2c1d2d78d1a446e8b402ba91d0c2dd678f7afdf8bc6a"
+      },
+      {
+        "path": "src/hr/recruiting-time-zone.ts",
+        "sha256": "2e3ed02882fdc7be480518934fe2e4c30392806c529241b5f3903579a096c288"
+      },
+      {
+        "path": "src/hr/recruiting-employment-baseline.ts",
+        "sha256": "23ebd4ab55f4aaef1fbf96392366ef727b648495bd2f016faa654bad00130b4c"
+      },
+      {
+        "path": "src/hr/recruiting-lifecycle-validation.ts",
+        "sha256": "dfd6a0be7859fa08f973a9663aa7ec4e721a09c9d1afc29b63765f6a6246aa30"
+      },
+      {
+        "path": "src/hr/provider-adapter.ts",
+        "sha256": "3422961870779a81018e25161604645220f2041b7bb71a5b3864d2e6bd4c579f"
+      },
+      {
+        "path": "src/hr/RecruitingPreviewProvider.tsx",
+        "sha256": "2e1c2792eff30457ec566aab12d6750b67aae338c05a9833b7594cbcb320f25e"
+      },
+      {
+        "path": "src/hr/components/HrRecruitingLifecycleHost.tsx",
+        "sha256": "19f613977cde5164ea528e3436697721463e186737dc04e1f310f5bd654cf146"
+      },
+      {
+        "path": "src/hr/components/HrRecruitingApplications.tsx",
+        "sha256": "b7fab6c09248b9c5773f698d257b29a5a86d27f3184de30d1da154467d70a1b5"
+      },
+      {
+        "path": "src/hr/components/HrRecruitingHireSummary.tsx",
+        "sha256": "85387bce1a77ac70f4bd27d6dae1e3724b3854f23192da47ce2d9134a7e9637b"
+      },
+      {
+        "path": "src/hr/components/HrRecruitingRequisitions.tsx",
+        "sha256": "8f5d46726fdb7746519d93ec81ec61ca62743b1a8fb55277a2be9f50a17ea9c1"
+      },
+      {
+        "path": "src/hr/components/HrRecruitingInterviews.tsx",
+        "sha256": "a7204ee9baaf233100b9eb2e8e7c9edef7de68e0f08254b0ef3280623503aada"
+      },
+      {
+        "path": "src/hr/components/HrRecruitingOwnScorecards.tsx",
+        "sha256": "89d0637278604a9e54ab0d2cf0aff5d49393b3238c8e6d490da475bb9adbfabe"
+      },
+      {
+        "path": "src/portals/ScopedPortalChrome.tsx",
+        "sha256": "4d068981ecff1b5e92b6b3b86fc0fb6729031ae065c2941763b75bce1c7c0ee8"
+      },
+      {
+        "path": "src/components/layout/Layout.tsx",
+        "sha256": "41937e488db1f41614d39d68fef41b80683ac57925bee092b4aadbb139b909a6"
+      },
+      {
+        "path": "src/pages/TemplatePortalsPage.tsx",
+        "sha256": "0d76bcf1c6a32001c7efb66f3c8e95290427363ee7907c0c2575d38b9e7402da"
+      },
+      {
+        "path": "src/portals/RetainedPortalSurface.tsx",
+        "sha256": "31bf40cda4f2bddc6bfb1eb68113ebf59374ea291284161df0473c85009bb82a"
       }
     ],
     "hashMode": "utf8-lf-sha256"

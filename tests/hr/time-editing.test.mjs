@@ -1,11 +1,8 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import ts from 'typescript'
-const compile = file => ts.transpileModule(readFileSync(new URL(file, import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-const url = value => `data:text/javascript;base64,${Buffer.from(value).toString('base64')}`
-const modelUrl = url(compile('../../src/hr/model.ts'))
-const workflow = await import(url(compile('../../src/hr/mock-workflows.ts').replace(/from ['"]\.\/model['"]/, `from '${modelUrl}'`)))
+import { loadMockModel } from '../browser/model-loader.mjs'
+const workflow = await loadMockModel(new URL('../../src/hr/mock-workflows.ts', import.meta.url))
 const fixture = JSON.parse(readFileSync(new URL('../../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json', import.meta.url), 'utf8'))
 const avery = { role: 'employee', employeeId: 'employee-002' }, manager = { role: 'manager', employeeId: 'employee-001' }, owner = { role: 'employer-owner' }
 const change = (state, event, actor = avery) => workflow.transitionMockHr(state, actor, event, fixture)

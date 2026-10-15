@@ -17,6 +17,7 @@ import { TemplatePortalsPage } from '@/pages/TemplatePortalsPage'
 import { resolvePortalRoute } from '@/portals/routes'
 import { hrRoutes } from '@/hr/catalog'
 import { UnsavedWorkProvider } from '@/portals/unsaved-work'
+import { RecruitingPreviewProvider } from '@/hr/RecruitingPreviewProvider'
 
 function getPathname() {
   return normalizePath(window.location.pathname)
@@ -78,9 +79,11 @@ function RoutedContent() {
   }, [])
 
   return (
-    <Layout currentPath={pathname}>
-      {renderPage(pathname)}
-    </Layout>
+    <RecruitingPreviewProvider pathname={pathname}>
+      <Layout currentPath={pathname}>
+        {renderPage(pathname)}
+      </Layout>
+    </RecruitingPreviewProvider>
   )
 }
 

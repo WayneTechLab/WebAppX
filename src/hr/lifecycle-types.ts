@@ -3,10 +3,15 @@ import type { MockOnboarding } from './mock-workflows'
 
 export type HrChecklistTask = { id: string; title: string }
 export type HrEmploymentSnapshot = { status: string; department: string; jobTitle: string; managerId: string | null }
+export type HrRecruitingBaseline = {
+  kind: 'recruiting-baseline'; hireBindingId: string; capturedOnboarding: MockOnboarding;
+  completion: { actor: 'unknown'; effectiveDate: null } | null;
+}
 export type HrEmploymentInstance = {
   id: string; employeeId: string; startDate: string | null; endDate: string | null;
   previousInstanceId?: string; initial: HrEmploymentSnapshot; current: HrEmploymentSnapshot;
   templateVersion: string; tasks: HrChecklistTask[]; archivedOnboarding?: MockOnboarding;
+  recruitingBaseline?: HrRecruitingBaseline;
 }
 export type HrLifecycleEvent = {
   id: string; sequence: number; kind: 'transfer' | 'leave' | 'return' | 'terminate' | 'rehire' | 'onboarding-complete' | 'select-template' | 'hire' | 'set-simulation-date';

@@ -25,6 +25,12 @@ observations from integrated publishing gates.
 To adopt CMS and CRM without HR, use the deliberately separate
 [temporary app walkthrough](examples/hr-disabled-adoption.md).
 
+The new [native recruiting lifecycle how-to](HR-RECRUITING-LIFECYCLE.md) describes
+explicit adoption, requisition review, independent applications, assigned private
+scorecards and exact hire previews. **That isolated implementation is under
+verification; WX-0201–WX-0210 and separate WX-0951 remain TODO.** It supplies no
+new accepted browser, provider or deployment result.
+
 ## Try the template without an account
 
 ```bash
@@ -57,7 +63,7 @@ Open the URL printed by Vite and visit:
 | `/hr/demo/employee/activity`, `/hr/demo/manager/activity`, `/hr/demo/admin/activity` | People-operation activity in the selected role's scope |
 | `/hr/demo/admin/reports` | Derived native workforce and workflow report with role-gated amounts |
 | `/hr/demo/employee/paystubs` | Own simulated statements from submitted native payroll receipts |
-| `/hr/demo/admin/recruiting` | Owner/HR sample job and candidate pipeline, ending in a native onboarding employee |
+| `/hr/demo/admin/recruiting` | Owner/HR legacy pipeline before explicit adoption; recruiting lifecycle source adds reviewed requisitions, independent applications, interviews, scoped scorecards and exact hire previews under verification |
 | `/hr/demo/admin/performance`, `/hr/demo/employee/performance`, `/hr/demo/manager/performance` | Scoped goals and self-review/manager-publication/employee-acknowledgment cycle |
 | `/hr/demo/admin/surveys`, `/hr/demo/employee/surveys` | Identified employee feedback with draft, publish, own answer, submit and close stages |
 | `/hr/demo/admin/payroll` | Explicit chosen period and employee rate timelines through eligible hours, fictional calculation, review and simulated submission |
@@ -275,13 +281,56 @@ CRM lead-to-won refresh checks separately from earlier QA history.
 
 The talent modules use the native session and role projections. Read the
 [talent walkthrough](HR-PORTAL.md#recruiting-performance-and-identified-feedback)
-for the exact authoring sequence, privacy gates and mock hire connection.
+for the earlier authoring sequence, privacy gates and mock hire connection.
+The recruiting row below describes the retained **unadopted legacy** workflow;
+after deliberate adoption, use the [recruiting lifecycle guide](HR-RECRUITING-LIFECYCLE.md).
 
 | Module | Sequence and scope |
 | --- | --- |
 | Recruiting | Owner/HR creates and publishes a sample job, adds a unique fictional `.invalid` candidate and advances applied → screening → interview → offer → hired. The hire begins native onboarding with unconfigured compensation; it is not an active employee or an executed offer. |
 | Performance | The employee updates own goals and saves/submits own self-review. Only the assigned direct manager saves/publishes manager feedback; the employee acknowledges it. Owner/HR can assign goals/open cycles but cannot impersonate either author. |
 | Surveys | Owner/HR drafts questions and audience, saves and publishes. Each assigned employee saves own 1–5 rating/text answers before submitting once. Owner/HR closes the survey. Submitted names/answers are visible to owner/HR/auditor; results are identified, never anonymous. |
+
+### Recruiting lifecycle source under verification
+
+At the same recruiting route, **Preview recruiting adoption** → **Confirm
+recruiting adoption** explicitly captures the saved legacy jobs, candidates,
+activity and hires. Reads and ordinary legacy actions do not adopt. Original
+jobs/candidates/activity/legacy sequence stay frozen; the original hired-employee
+prefix stays unchanged while new hires append captures. Extension
+people/applications/jobs/events become the authority for new work. Old activity
+has unknown legacy times and
+old publication gains no fabricated requisition approval.
+
+Create a sample requisition, request explicit review and record its outcome
+before binding/publishing a job. Department, owner and bounded planning
+headcount are reviewed separately from the eligible hiring manager. A matching
+person email yields a conflict preview without creation; **Choose existing
+person for a separate application** starts a deliberate second-job application,
+not an identity merge. Rejection and withdrawal require a visible reason and
+remain distinct terminal outcomes. Public stage durations use recorded UTC
+boundaries and **Apply duration observation**, never sequence or hidden draft
+times. Scheduling stores an explicit UTC start, supported named zone, duration
+and known participants without invitation delivery.
+
+**Enter interviewer preview** opens only assigned context and the selected
+author's cards. **Confirm own draft save** persists privately; **Confirm
+scorecard submission** shares that exact saved revision with hiring review.
+**Leave interviewer preview** respects Keep/Discard for temporary work. These
+are fictional local projection rules. Complete HR saves, deliberate exports and
+recovery points include saved private scorecards and draft-save history;
+interviewer mode is not account authentication or encrypted isolation.
+
+**Preview exact fictional hire** lists directory, onboarding/checklist,
+profile/status, balance and any employment instance/event additions before a
+single accepted replacement. Without employment history it leaves that extension
+absent. Later materialization can capture actual onboarding completion with an
+unknown historical actor/date instead of inventing events. Refresh/import and
+selected restore/Undo retain their whole-workspace and storage-failure rules.
+Follow the [full how-to](HR-RECRUITING-LIFECYCLE.md) and authoritative
+[contract section 12](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
+for exact labels, stale refusals and recovery ordering. None of this source
+description accepts the eleven pending criteria or changes earlier QA receipts.
 
 Saved survey answers stay out of other role projections and submitted-only
 aggregates. Performance self-review drafts stay private until submission;
@@ -588,6 +637,29 @@ Do not populate the reusable template's coordination or employee records.
 | SDK components and endpoint inventory | Pinned Gusto artifact, with retained upstream license/provenance |
 | `.SYSTEMX/GUSTO` contracts and synthetic examples | Portable standard |
 
+## Optional typed provider adapter — source under verification
+
+The app-owned [typed provider contract](../src/hr/provider-adapter.ts) is the
+separate local WX-0951 scope. It accepts eight `HrNativeCommand` families:
+`workflow`, `people-operations`, `service-desk`, `recruiting`,
+`recruiting-lifecycle`, `performance`, `surveys` and `lifecycle`.
+
+| Typed outcome | Contract boundary |
+| --- | --- |
+| `provider-result` | An adopter-defined value, separate from accepted native state and requiring reviewed validation/projection. |
+| `refused` | `invalid-input`, `not-authorized` or `not-ready`. |
+| `retry` | `manual-retry` or `review-before-retry`; no scheduled retry or permission to repeat a write. |
+| `unsupported` | `adapter-unconfigured` or `unmapped-command`. |
+
+`createUnconfiguredHrProviderAdapter()` returns a frozen mock-default object
+with `providerConnected: false` and `payrollExecutionEnabled: false`. `execute`
+returns `unsupported / adapter-unconfigured`, reads no payload and performs no
+native write, transport or retry work. The `disabled`, `demo` and `production`
+mode names are type vocabulary, not activation. Native reducers, the selected
+SDK mock session and the optional Firebase backend remain separate. This
+interface configures none of them and supplies no provider acceptance. WX-0951
+remains TODO pending independent review and Agent 0 acceptance.
+
 ## Adopt the Firebase module
 
 The optional module in `integrations/gusto/functions/` has its own package and
@@ -635,10 +707,11 @@ and validate the program-specific adapter separately.
    write gates. Demo scope behavior is not production authorization proof.
 7. Complete Gusto program/QA and the adopted app's production release gates.
 
-The current optional adapter is a tested foundation, with connected transport
-disabled. The module does not claim full SDK mock coverage or production payroll
-readiness. Production deployment and financial actions require their own operator
-authorization in the adopted app.
+The existing optional Firebase adapter remains a separately tested foundation,
+with connected transport disabled. The new app-owned typed interface above is
+still under verification. Neither claims full SDK mock coverage or production
+payroll readiness. Production deployment and financial actions require their own
+operator authorization in the adopted app.
 
 ```bash
 npm run hr:test

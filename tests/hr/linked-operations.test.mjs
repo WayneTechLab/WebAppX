@@ -1,18 +1,11 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import ts from 'typescript'
+import { loadMockModel } from '../browser/model-loader.mjs'
 
-const compile = (name, dependencies = []) => {
-  let compiled = ts.transpileModule(readFileSync(new URL(`../../src/hr/${name}.ts`, import.meta.url), 'utf8'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-  for (const [path, url] of dependencies) compiled = compiled.replaceAll(`from '${path}'`, `from '${url}'`)
-  return `data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`
-}
-const modelUrl = compile('model')
-const workflowUrl = compile('mock-workflows', [['./model', modelUrl]])
-const peopleUrl = compile('people-operations', [['./model', modelUrl]])
-const linkedUrl = compile('linked-operations', [['./mock-workflows', workflowUrl], ['./people-operations', peopleUrl]])
-const [workflowModel, peopleModel, linked] = await Promise.all([import(workflowUrl), import(peopleUrl), import(linkedUrl)])
+const workflowModel = await loadMockModel(new URL('../../src/hr/mock-workflows.ts', import.meta.url))
+const peopleModel = await loadMockModel(new URL('../../src/hr/people-operations.ts', import.meta.url))
+const linked = await loadMockModel(new URL('../../src/hr/linked-operations.ts', import.meta.url))
 const fixture = JSON.parse(readFileSync(new URL('../../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json', import.meta.url), 'utf8'))
 const avery = { role: 'employee', employeeId: 'employee-002' }
 const jordan = { role: 'employee', employeeId: 'employee-003' }

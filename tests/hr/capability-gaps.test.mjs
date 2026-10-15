@@ -162,7 +162,7 @@ test('AST selection ignores comments and string examples and resolves import ali
 test('required source bindings and explicit text/vendor hash modes cannot be omitted or weakened', async () => {
   const missing = clone(); missing.sourceBindings.pop()
   await assert.rejects(validateGapData(missing), /Missing bounded reviewed source/)
-  const duplicate = clone(); duplicate.sourceBindings.push(duplicate.sourceBindings[0])
+  const duplicate = clone(); duplicate.sourceBindings[1] = structuredClone(duplicate.sourceBindings[0])
   await assert.rejects(validateGapData(duplicate), /duplicate source binding/)
   const wrongMode = clone(); wrongMode.sourceBindings.find(item => item.path === INVENTORY_PATH).hashMode = 'utf8-lf-sha256'
   await assert.rejects(validateGapData(wrongMode), /hash mode/)
@@ -170,6 +170,22 @@ test('required source bindings and explicit text/vendor hash modes cannot be omi
   assert.equal(sourceDigest(Buffer.from('line\r\n'), 'utf8-lf-sha256'), hash('line\n'))
   assert.notEqual(sourceDigest(Buffer.from('\ufeffline\n'), 'utf8-lf-sha256'), hash('line\n'))
   assert.throws(() => sourceDigest(Buffer.from([255]), 'utf8-lf-sha256'), /encoded data was not valid/)
+})
+
+test('all 77 reviewed source members are required at the exact finite source bound', async () => {
+  assert.equal(data.sourceBindings.length, 77)
+  const replacement = { path: 'src/hr/catalog.ts', hashMode: 'utf8-lf-sha256', sha256: sourceDigest(await readFile(join(ROOT, 'src/hr/catalog.ts')), 'utf8-lf-sha256') }
+  assert.equal(data.sourceBindings.some(binding => binding.path === replacement.path), false)
+  for (const [index, source] of data.sourceBindings.entries()) {
+    const missing = clone()
+    // Keep the count at its limit so membership cannot pass on a count check.
+    missing.sourceBindings[index] = replacement
+    await assert.rejects(validateGapData(missing), /Required behavior\/source binding is missing/, source.path)
+  }
+  const tooMany = clone()
+  tooMany.sourceBindings.push(replacement)
+  assert.equal(tooMany.sourceBindings.length, 78)
+  await assert.rejects(validateGapData(tooMany), /Missing bounded reviewed source bindings/)
 })
 
 test('a relevant native source edit refuses the prior review even with all capability rows present', async t => {

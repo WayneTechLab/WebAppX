@@ -1,4 +1,5 @@
 import type { HrActor, HrEmployee, HrFixture } from './model'
+import type { RecruitingLifecycleV1 } from './recruiting-lifecycle-types'
 
 const onboardingTemplates = [
   { version: 'sample-v1', title: 'Sample welcome checklist v1', tasks: [{ id: 'profile', title: 'Complete own profile' }, { id: 'policy', title: 'Review sample welcome checklist' }] },
@@ -20,7 +21,7 @@ export type RecruitingCandidate = {
   id: string; jobId: string; firstName: string; lastName: string; workEmail: string; stage: RecruitingStage;
   employeeId?: string; activity: RecruitingActivity[];
 }
-export type RecruitingState = { jobs: RecruitingJob[]; candidates: RecruitingCandidate[]; hiredEmployees: HrEmployee[]; sequence: number }
+export type RecruitingState = { jobs: RecruitingJob[]; candidates: RecruitingCandidate[]; hiredEmployees: HrEmployee[]; sequence: number; lifecycle?: RecruitingLifecycleV1 }
 export type RecruitingEvent =
   | { type: 'create-job'; title: string; department: string; managerId: string }
   | { type: 'set-job-status'; jobId: string; status: 'published' | 'closed' }
@@ -49,10 +50,21 @@ export function createRecruitingState(fixture: HrFixture): RecruitingState {
 }
 
 export function scopedRecruiting(state: RecruitingState, actor: HrActor) {
+  if (canManageRecruiting(actor) && Object.hasOwn(state, 'lifecycle')) throw new Error('Use the adopted recruiting view for these applications and jobs.')
   return canManageRecruiting(actor) ? { jobs: state.jobs, candidates: state.candidates, hiredEmployees: state.hiredEmployees } : { jobs: [], candidates: [], hiredEmployees: [] }
 }
 
 export function recruitingSummary(state: RecruitingState, actor: HrActor) {
+  if (canManageRecruiting(actor) && Object.hasOwn(state, 'lifecycle')) {
+    const lifecycle = state.lifecycle
+    if (!lifecycle || lifecycle.schemaVersion !== 1) throw new Error('The adopted recruiting workspace is unavailable.')
+    return {
+      jobs: lifecycle.jobs.length, openJobs: lifecycle.jobs.filter(job => job.state === 'published').length,
+      draftJobs: lifecycle.jobs.filter(job => job.state === 'draft').length,
+      activeCandidates: lifecycle.applications.filter(application => !['hired', 'rejected', 'withdrawn'].includes(application.stage)).length,
+      offers: lifecycle.applications.filter(application => application.stage === 'offer').length, hires: lifecycle.hireBindings.length,
+    }
+  }
   const { jobs, candidates, hiredEmployees } = scopedRecruiting(state, actor)
   return {
     jobs: jobs.length, openJobs: jobs.filter(job => job.status === 'published').length,
@@ -72,6 +84,7 @@ function text(value: string, label: string, min: number, max: number) {
 
 export function transitionRecruiting(state: RecruitingState, actor: HrActor, event: RecruitingEvent, fixture: HrFixture, templateVersion?: string): RecruitingState {
   if (!canManageRecruiting(actor)) throw new Error('Only the owner or HR administrator preview can manage recruiting.')
+  if (Object.hasOwn(state, 'lifecycle')) throw new Error('Use the adopted recruiting workflow. Legacy recruiting records remain captured history.')
   const next = structuredClone(state)
   const activity = (record: RecruitingJob | RecruitingCandidate, action: string) => {
     next.sequence += 1

@@ -5,9 +5,9 @@ import { loadMockModel } from '../browser/model-loader.mjs'
 const { createUnsavedWorkController, unsavedRouteTransition, isUnsavedPortalShell } = await loadMockModel(new URL('../../src/portals/unsaved-work-core.ts', import.meta.url))
 const { createNavigationDriver, installNavigationGuard, NAVIGATION_STATE_KEY } = await loadMockModel(new URL('../../src/lib/navigation.ts', import.meta.url))
 
-function participant(controller, { id = 'cms-editor', portal = 'cms', label = 'CMS draft', dirty = true } = {}) {
-  const current = { dirty, discards: 0, focuses: 0 }
-  const read = () => ({ id, portal, label, isDirty: () => current.dirty, discard() { current.discards++; current.dirty = false }, focus() { current.focuses++ } })
+function participant(controller, { id = 'cms-editor', portal = 'cms', label = 'CMS draft', dirty = true, canRetain } = {}) {
+  const current = { dirty, discards: 0, focuses: 0, canRetain }
+  const read = () => ({ id, portal, label, canRetain: current.canRetain, isDirty: () => current.dirty, discard() { current.discards++; current.dirty = false }, focus() { current.focuses++ } })
   const unregister = controller.register(read)
   return { current, read, unregister }
 }
@@ -82,6 +82,70 @@ test('Keep editing preserves every field and focuses its owner after dialog clos
   assert.equal(commits, 1)
   assert.equal(editor.current.dirty, true)
   assert.equal(editor.current.discards, 0)
+})
+
+test('one selected dirty participant can prohibit retention without changing any forms', () => {
+  const controller = createUnsavedWorkController()
+  const editor = participant(controller)
+  const ownScorecard = participant(controller, { id: 'own-scorecard', portal: 'hr', canRetain: false })
+  let commits = 0
+  controller.request({ label: 'Leave retained workspaces', retain: true }, () => commits++)
+  const pending = controller.getSnapshot()
+  assert.deepEqual(pending.participants.map(form => form.id), ['cms-editor', 'own-scorecard'])
+  assert.equal(pending.canRetain, false)
+  assert.equal(controller.resolve(pending.id, 'retain'), false)
+  assert.equal(commits, 0)
+  assert.deepEqual([editor.current.dirty, ownScorecard.current.dirty], [true, true])
+  assert.deepEqual([editor.current.discards, ownScorecard.current.discards], [0, 0])
+  assert.equal(controller.resolve(pending.id, 'keep-editing'), true)
+  assert.equal(controller.getSnapshot(), null)
+  assert.deepEqual([editor.current.dirty, ownScorecard.current.dirty], [true, true])
+})
+
+test('default and explicitly retainable forms preserve retention while clean and excluded forms do not block it', () => {
+  const controller = createUnsavedWorkController()
+  const editor = participant(controller)
+  const contact = participant(controller, { id: 'crm-contact', portal: 'crm', canRetain: true })
+  participant(controller, { id: 'clean-card', portal: 'hr', dirty: false, canRetain: false })
+  const excluded = participant(controller, { id: 'excluded-card', portal: 'hr', canRetain: false })
+  let commits = 0
+  controller.request({ ids: ['cms-editor', 'crm-contact', 'clean-card'], label: 'Open another retained portal', retain: true }, () => commits++)
+  const pending = controller.getSnapshot()
+  assert.deepEqual(pending.participants.map(form => form.id), ['cms-editor', 'crm-contact'])
+  assert.equal(pending.canRetain, true)
+  assert.equal(controller.resolve(pending.id, 'retain'), true)
+  assert.equal(commits, 1)
+  assert.deepEqual([editor.current.dirty, contact.current.dirty, excluded.current.dirty], [true, true, true])
+  assert.deepEqual([editor.current.discards, contact.current.discards, excluded.current.discards], [0, 0, 0])
+})
+
+test('a late retention refusal preserves the original intent and forms, then still permits Keep or Discard', () => {
+  for (const nextDecision of ['keep-editing', 'discard']) {
+    const controller = createUnsavedWorkController()
+    const editor = participant(controller)
+    const ownScorecard = participant(controller, { id: 'own-scorecard', portal: 'hr', canRetain: true })
+    const operations = []
+    controller.request({ label: 'First captured destination', retain: true }, () => operations.push('commit'))
+    const first = controller.getSnapshot()
+    assert.equal(first.canRetain, true)
+    ownScorecard.current.canRetain = false
+    assert.equal(controller.resolve(first.id, 'retain', () => operations.push('before-commit')), false)
+    const refused = controller.getSnapshot()
+    assert.equal(refused.id, first.id)
+    assert.equal(refused.label, 'First captured destination')
+    assert.deepEqual(refused.participants, first.participants)
+    assert.equal(refused.canRetain, false)
+    assert.equal(refused.error, 'These temporary changes cannot be retained when leaving this view. Keep editing, or discard them to continue.')
+    assert.deepEqual(operations, [])
+    assert.deepEqual([editor.current.dirty, ownScorecard.current.dirty], [true, true])
+    assert.deepEqual([editor.current.discards, ownScorecard.current.discards], [0, 0])
+    assert.equal(controller.resolve(first.id, 'retain'), false, 'a refused Retain cannot replay the commit')
+    assert.equal(controller.resolve(first.id, nextDecision), true)
+    assert.equal(controller.getSnapshot(), null)
+    assert.deepEqual(operations, nextDecision === 'discard' ? ['commit'] : [])
+    assert.deepEqual([editor.current.dirty, ownScorecard.current.dirty], nextDecision === 'discard' ? [false, false] : [true, true])
+    assert.deepEqual([editor.current.discards, ownScorecard.current.discards], nextDecision === 'discard' ? [1, 1] : [0, 0])
+  }
 })
 
 test('a stale dialog cannot replay a newer intent, and pending requests never replace the original destination', () => {

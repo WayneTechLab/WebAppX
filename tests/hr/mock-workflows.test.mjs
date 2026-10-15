@@ -1,17 +1,12 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import ts from 'typescript'
+import { loadMockModel } from '../browser/model-loader.mjs'
 
 // Exercise the actual pure host model without a browser, emulator, provider or
 // account. Transpilation is in memory; reusable template records stay blank.
-const source = readFileSync(new URL('../../src/hr/model.ts', import.meta.url), 'utf8')
-const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-const modelUrl = `data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`
-const model = await import(modelUrl)
-const workflowSource = readFileSync(new URL('../../src/hr/mock-workflows.ts', import.meta.url), 'utf8')
-const workflowCompiled = ts.transpileModule(workflowSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from ['"]\.\/model['"]/, `from '${modelUrl}'`)
-const workflow = await import(`data:text/javascript;base64,${Buffer.from(workflowCompiled).toString('base64')}`)
+const model = await loadMockModel(new URL('../../src/hr/model.ts', import.meta.url))
+const workflow = await loadMockModel(new URL('../../src/hr/mock-workflows.ts', import.meta.url))
 const fixture = JSON.parse(readFileSync(new URL('../../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json', import.meta.url), 'utf8'))
 const employees = [
   { id: 'manager-one', managerId: null, firstName: 'Morgan', lastName: 'Sample', department: 'Engineering', workEmail: 'morgan@example.test', jobTitle: 'Team lead', employmentStatus: 'active' },

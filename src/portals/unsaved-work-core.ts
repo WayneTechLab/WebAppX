@@ -6,6 +6,7 @@ export type UnsavedWorkParticipant = {
   isDirty: () => boolean
   discard: () => void
   focus?: () => void
+  canRetain?: boolean
 }
 export type UnsavedTransitionOptions = {
   portal?: UnsavedPortal
@@ -75,7 +76,7 @@ export function createUnsavedWorkController() {
       if (!participants.length) { commit(); return true }
       focusAfterClose = undefined
       pending = {
-        view: { id: ++sequence, label: options.label, participants: participants.map(({ id, portal, label }) => ({ id, portal, label })), canRetain: options.retain === true, ...(options.historyNotice ? { historyNotice: options.historyNotice } : {}) },
+        view: { id: ++sequence, label: options.label, participants: participants.map(({ id, portal, label }) => ({ id, portal, label })), canRetain: options.retain === true && participants.every(participant => participant.canRetain !== false), ...(options.historyNotice ? { historyNotice: options.historyNotice } : {}) },
         options: { ...options, ids: options.ids && [...options.ids] }, commit,
       }
       emit()
@@ -85,6 +86,11 @@ export function createUnsavedWorkController() {
       if (!pending || pending.view.id !== id || (decision === 'retain' && !pending.view.canRetain)) return false
       const intent = pending
       const participants = selected(intent.options)
+      if (decision === 'retain' && participants.some(participant => participant.canRetain === false)) {
+        pending = { ...intent, view: { ...intent.view, canRetain: false, error: 'These temporary changes cannot be retained when leaving this view. Keep editing, or discard them to continue.' } }
+        emit()
+        return false
+      }
       if (decision === 'keep-editing') {
         focusAfterClose = participants.find(participant => participant.focus)?.focus
         pending = null

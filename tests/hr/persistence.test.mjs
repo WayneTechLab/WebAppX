@@ -1,28 +1,15 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import ts from 'typescript'
+import { loadMockModel } from '../browser/model-loader.mjs'
 
-const urls = {}
-async function load(name) {
-  const source = readFileSync(new URL(`../../src/hr/${name}.ts`, import.meta.url), 'utf8')
-  const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-  const resolved = compiled.replace(/from ['"]\.\/([^'"]+)['"]/g, (_, dependency) => {
-    assert.ok(urls[dependency], `Load ${dependency} before ${name}`)
-    return `from '${urls[dependency]}'`
-  })
-  urls[name] = `data:text/javascript;base64,${Buffer.from(resolved).toString('base64')}`
-  return import(urls[name])
-}
-await load('model')
-const workflow = await load('mock-workflows')
-const people = await load('people-operations')
-const desk = await load('service-desk')
-await load('recruiting')
-const linked = await load('recruiting-link')
-const performance = await load('performance')
-const surveys = await load('surveys')
-const persistence = await load('persistence')
+const workflow = await loadMockModel(new URL('../../src/hr/mock-workflows.ts', import.meta.url))
+const people = await loadMockModel(new URL('../../src/hr/people-operations.ts', import.meta.url))
+const desk = await loadMockModel(new URL('../../src/hr/service-desk.ts', import.meta.url))
+const linked = await loadMockModel(new URL('../../src/hr/recruiting-link.ts', import.meta.url))
+const performance = await loadMockModel(new URL('../../src/hr/performance.ts', import.meta.url))
+const surveys = await loadMockModel(new URL('../../src/hr/surveys.ts', import.meta.url))
+const persistence = await loadMockModel(new URL('../../src/hr/persistence.ts', import.meta.url))
 const fixture = JSON.parse(readFileSync(new URL('../../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json', import.meta.url), 'utf8'))
 const initial = () => persistence.createHrDemoState(fixture)
 const validate = state => persistence.isHrDemoState(state, fixture)

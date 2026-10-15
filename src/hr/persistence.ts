@@ -1,4 +1,5 @@
-import type { HrFixture, HrRole } from './model'
+import type { HrEmployee, HrFixture, HrRole } from './model'
+import type { HrEmploymentInstance } from './lifecycle-types'
 import { createMockHrState, validMockPeriod, type MockHrState } from './mock-workflows'
 import { validateTimeEntry } from './model'
 import { createPeopleOperations, type PeopleOperationsState } from './people-operations'
@@ -6,6 +7,8 @@ import { createHrServiceDesk, type HrServiceDeskState } from './service-desk'
 import { createRecruitingState, hrOnboardingTemplate, type RecruitingState } from './recruiting'
 import { createPerformanceState, type PerformanceState } from './performance'
 import { createSurveysState, type SurveysState } from './surveys'
+import { assertRecruitingBaselineInstance, assertValidRecruitingLifecycle } from './recruiting-lifecycle-validation'
+import { canonicalRecruitingJson } from './recruiting-lifecycle-value'
 
 /** One JSON snapshot keeps a hire and its linked HR requirements atomic. */
 export type HrDemoState = {
@@ -55,6 +58,13 @@ export function isHrDemoState(value: unknown, base: HrFixture): value is HrDemoS
 }
 
 function validateHrDemoState(value: unknown, base: HrFixture): boolean {
+  // A present extension opts the whole saved envelope into plain JSON before
+  // structural validation can read any user-defined nested property.
+  if (object(value)) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, 'recruiting')
+    if (descriptor && !('value' in descriptor)) return false
+    if (descriptor && 'value' in descriptor && object(descriptor.value) && Object.hasOwn(descriptor.value, 'lifecycle')) canonicalRecruitingJson({ schemaVersion: 1, module: 'hr', data: value })
+  }
   if (!fields(value, {
     workflow: object, operations: object, serviceDesk: object, recruiting: object, performance: object, surveys: object,
     completed: strings, acknowledgements: strings,
@@ -89,7 +99,8 @@ function validateHrDemoState(value: unknown, base: HrFixture): boolean {
   if (candidates.some(candidate => candidate.stage === 'hired'
     ? !hires.some(employee => employee.id === candidate.employeeId && employee.workEmail === candidate.workEmail)
     : candidate.employeeId !== undefined)) return false
-  if (hires.some(employee => candidates.filter(candidate => candidate.stage === 'hired' && candidate.employeeId === employee.id).length !== 1)) return false
+  const hasRecruitingLifecycle = Object.hasOwn(recruiting, 'lifecycle')
+  if (!hasRecruitingLifecycle && hires.some(employee => candidates.filter(candidate => candidate.stage === 'hired' && candidate.employeeId === employee.id).length !== 1)) return false
 
   const knownPlan: Check = entry => typeof entry === 'string' && base.benefits.some(plan => plan.id === entry)
   const date: Check = entry => typeof entry === 'string' && validateTimeEntry(entry, 1).valid
@@ -162,12 +173,13 @@ function validateHrDemoState(value: unknown, base: HrFixture): boolean {
       activity: items => list(items, activity),
     }) && optional(survey.receipt, text) && (survey.responses as ObjectValue[]).every(response => (survey.audienceIds as unknown[]).includes(response.employeeId)) && unique(survey.responses as ObjectValue[], 'employeeId')),
   })) return false
-  return validateLifecycle(value, employees)
+  if (hasRecruitingLifecycle) assertValidRecruitingLifecycle(value as HrDemoState, base)
+  return validateLifecycle(value, employees, hasRecruitingLifecycle)
 }
 
 
 /** The extension is optional, but a present extension is never a legacy fallback. */
-function validateLifecycle(state: ObjectValue, employees: ObjectValue[]): boolean {
+function validateLifecycle(state: ObjectValue, employees: ObjectValue[], hasRecruitingLifecycle: boolean): boolean {
   const workflow = state.workflow as ObjectValue
   if (workflow.lifecycle === undefined) return true
   const exact = (value: unknown, required: string[], allowed: string[] = []): value is ObjectValue => object(value) && required.every(key => Object.hasOwn(value, key)) && Object.keys(value).every(key => required.includes(key) || allowed.includes(key))
@@ -183,7 +195,7 @@ function validateLifecycle(state: ObjectValue, employees: ObjectValue[]): boolea
   const lifecycle = workflow.lifecycle
   if (!exact(lifecycle, ['schemaVersion', 'simulationDate', 'sequence', 'selectedTemplateVersion', 'instances', 'activeInstances', 'events', 'directoryHistory', 'corrections', 'offboardingAssignments']) || lifecycle.schemaVersion !== 1 || !(lifecycle.simulationDate === null || date(lifecycle.simulationDate)) || !sequence(lifecycle.sequence) || Number(lifecycle.sequence) < 1) return false
   if (!['sample-v1', 'sample-v2'].includes(String(lifecycle.selectedTemplateVersion))) return false
-  if (!arrayObjects(lifecycle.instances, value => exact(value, ['id', 'employeeId', 'startDate', 'endDate', 'initial', 'current', 'templateVersion', 'tasks'], ['previousInstanceId', 'archivedOnboarding']) && id(value.id) && known(value.employeeId) && (value.startDate === null || date(value.startDate)) && (value.endDate === null || date(value.endDate)) && snapshot(value.initial) && snapshot(value.current) && printable(value.templateVersion, 200) && arrayObjects(value.tasks, task => exact(task, ['id', 'title']) && id(task.id) && printable(task.title, 200)) && optional(value.previousInstanceId, id))) return false
+  if (!arrayObjects(lifecycle.instances, value => exact(value, ['id', 'employeeId', 'startDate', 'endDate', 'initial', 'current', 'templateVersion', 'tasks'], ['previousInstanceId', 'archivedOnboarding', ...(hasRecruitingLifecycle ? ['recruitingBaseline'] : [])]) && id(value.id) && known(value.employeeId) && (value.startDate === null || date(value.startDate)) && (value.endDate === null || date(value.endDate)) && snapshot(value.initial) && snapshot(value.current) && printable(value.templateVersion, 200) && arrayObjects(value.tasks, task => exact(task, ['id', 'title']) && id(task.id) && printable(task.title, 200)) && optional(value.previousInstanceId, id))) return false
   const instances = lifecycle.instances as ObjectValue[]
   if (!map(lifecycle.activeInstances, id) || Object.keys(lifecycle.activeInstances).length !== employees.length || !Object.keys(lifecycle.activeInstances).every(known)) return false
   const active = lifecycle.activeInstances as ObjectValue
@@ -203,7 +215,7 @@ function validateLifecycle(state: ObjectValue, employees: ObjectValue[]): boolea
   }
   if (selected !== lifecycle.selectedTemplateVersion) return false
   // Reconstruct every accepted graph and template choice, not only its final view.
-  const historical = new Map(instances.filter(instance => String(instance.templateVersion).startsWith('legacy-')).map(instance => [instance.employeeId, instance.initial as ObjectValue]))
+  const historical = new Map(instances.filter(instance => String(instance.templateVersion).startsWith('legacy-') || Object.hasOwn(instance, 'recruitingBaseline')).map(instance => [instance.employeeId, instance.initial as ObjectValue]))
   let historicalTemplate = 'sample-v1'
   const graphValid = () => {
     for (const [employeeId, entry] of historical) {
@@ -230,13 +242,20 @@ function validateLifecycle(state: ObjectValue, employees: ObjectValue[]): boolea
     if (!chain.length || active[String(employee.id)] !== chain.at(-1)!.id) return false
     for (let index = 0; index < chain.length; index++) {
       const instance = chain[index]; const tasks = instance.tasks as ObjectValue[]
+      const recruitingBaseline = Object.hasOwn(instance, 'recruitingBaseline')
       if (instance.id !== `employment-${employee.id}-${index + 1}` || instance.previousInstanceId !== (index ? chain[index - 1].id : undefined)) return false
+      if (recruitingBaseline) {
+        if (!hasRecruitingLifecycle || index !== 0) return false
+        assertRecruitingBaselineInstance(state as HrDemoState, employee as HrEmployee, instance as HrEmploymentInstance)
+      }
       if (index === 0) {
         const initial = instance.initial as ObjectValue
         if (initial.department !== employee.department || initial.jobTitle !== employee.jobTitle || initial.managerId !== employee.managerId) return false
         if (employee.onboardingTemplateVersion !== undefined && instance.templateVersion !== employee.onboardingTemplateVersion) return false
       }
-      if (index === 0 && instance.startDate === null && instance.templateVersion === `legacy-${employee.id}`) {
+      if (recruitingBaseline) {
+        // The strict capture above supplies the immutable template and status.
+      } else if (index === 0 && instance.startDate === null && instance.templateVersion === `legacy-${employee.id}`) {
         if (!equal(tasks, (employee.onboarding as ObjectValue[]).map(task => ({ id: task.id, title: task.title })))) return false
       } else {
         if (!(date(instance.startDate) || index === 0 && instance.startDate === null) || instance.startDate !== null && String(instance.startDate) > String(lifecycle.simulationDate)) return false
@@ -272,13 +291,16 @@ function validateLifecycle(state: ObjectValue, employees: ObjectValue[]): boolea
       }
       if (!equal(current, instance.current) || (current.status === 'terminated') !== (instance.endDate !== null)) return false
       if (index > 0 && changes.filter(change => change.instanceId === instance.id && change.kind === 'rehire').length !== 1) return false
-      if (index === 0 && !String(instance.templateVersion).startsWith('legacy-') && changes.filter(change => change.instanceId === instance.id && change.kind === 'hire').length !== 1) return false
+      const hires = changes.filter(change => change.instanceId === instance.id && change.kind === 'hire')
+      if (recruitingBaseline ? hires.length !== 0 : index === 0 && !String(instance.templateVersion).startsWith('legacy-') && hires.length !== 1) return false
       const currentOnboarding = (workflow.onboarding as ObjectValue)[String(employee.id)]
       const captured = index === chain.length - 1 ? currentOnboarding : instance.archivedOnboarding
       if (!onboardingCheck(captured, tasks) || index === chain.length - 1 && instance.archivedOnboarding !== undefined || index < chain.length - 1 && current.status !== 'terminated') return false
       const completions = changes.filter(change => change.instanceId === instance.id && change.kind === 'onboarding-complete')
       if (completions.length > 1 || completions.length === 1 && (!object(captured) || captured.stage !== 'complete' || captured.profileReviewed !== true || captured.jobReviewed !== true || !printable(captured.receipt, 200) || !Object.values(captured.tasks as ObjectValue).every(value => value === true))) return false
-      if (!String(instance.templateVersion).startsWith('legacy-') && object(captured) && captured.stage === 'complete' && completions.length !== 1) return false
+      const observedCompletion = recruitingBaseline && object(instance.recruitingBaseline) && instance.recruitingBaseline.completion !== null
+      if (observedCompletion && (completions.length !== 0 || !equal(captured, (instance.recruitingBaseline as ObjectValue).capturedOnboarding))) return false
+      if (!observedCompletion && !String(instance.templateVersion).startsWith('legacy-') && object(captured) && captured.stage === 'complete' && completions.length !== 1) return false
       if (object(captured) && typeof captured.receipt === 'string') { if (receipts.has(captured.receipt)) return false; receipts.add(captured.receipt) }
     }
     if ((chain.at(-1)!.current as ObjectValue).status !== (workflow.employeeStatuses as ObjectValue)[String(employee.id)]) return false

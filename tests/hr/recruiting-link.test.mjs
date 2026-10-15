@@ -1,29 +1,17 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import ts from 'typescript'
+import { loadMockModel } from '../browser/model-loader.mjs'
 
 // Compile the real host models in memory. No provider, browser, reusable records
 // or external service is involved in this cross-module integration proof.
-const urls = {}
-async function load(name) {
-  const source = readFileSync(new URL(`../../src/hr/${name}.ts`, import.meta.url), 'utf8')
-  const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-  const resolved = compiled.replace(/from ['"]\.\/([^'"]+)['"]/g, (_, dependency) => {
-    assert.ok(urls[dependency], `Load ${dependency} before ${name}`)
-    return `from '${urls[dependency]}'`
-  })
-  urls[name] = `data:text/javascript;base64,${Buffer.from(`${resolved}\n//# sourceURL=hr-${name}.mjs`).toString('base64')}`
-  return import(urls[name])
-}
-await load('model')
-const workflow = await load('mock-workflows')
-const people = await load('people-operations')
-const recruiting = await load('recruiting')
-const link = await load('recruiting-link')
-const insights = await load('insights')
-const performance = await load('performance')
-const surveys = await load('surveys')
+const workflow = await loadMockModel(new URL('../../src/hr/mock-workflows.ts', import.meta.url))
+const people = await loadMockModel(new URL('../../src/hr/people-operations.ts', import.meta.url))
+const recruiting = await loadMockModel(new URL('../../src/hr/recruiting.ts', import.meta.url))
+const link = await loadMockModel(new URL('../../src/hr/recruiting-link.ts', import.meta.url))
+const insights = await loadMockModel(new URL('../../src/hr/insights.ts', import.meta.url))
+const performance = await loadMockModel(new URL('../../src/hr/performance.ts', import.meta.url))
+const surveys = await loadMockModel(new URL('../../src/hr/surveys.ts', import.meta.url))
 const base = JSON.parse(readFileSync(new URL('../../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json', import.meta.url), 'utf8'))
 const owner = { role: 'employer-owner' }
 const avery = { role: 'employee', employeeId: 'employee-002' }

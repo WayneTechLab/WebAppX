@@ -27,6 +27,40 @@ export function auditControlRecords(records) {
   return { visible: visible.length, hidden: records.length - visible.length, repeated, ambiguous: repeated.filter(group => !group.resolved), missingNames }
 }
 
+const ariaJsonString = String.raw`"(?:[^"\\]|\\.)*"`
+const ariaControlKey = String.raw`([a-z]+)(?: (${ariaJsonString}))?(?: \[[a-z][a-z-]*(?:=[^\s[\]]+)?\])*`
+const ariaPlainControlLine = new RegExp(`^${ariaControlKey}(?::(?: .*)?)?$`)
+const ariaQuotedControlKey = new RegExp(`^${ariaControlKey}$`)
+const ariaJsonKeyLine = new RegExp(`^(${ariaJsonString})(?::(?: .*)?)?$`)
+
+/** Parse only the first-line key forms emitted by an ARIA snapshot. YAML's
+ * whole-key quoting is separate from the JSON string holding the actual name.
+ * Neither layer may normalize that name or accept a partially parsed key.
+ */
+export function parseAriaControlLine(line) {
+  const invalid = () => { throw new Error(`Could not measure accessible control: ${line}`) }
+  if (typeof line !== 'string' || !line.startsWith('- ') || /[\r\n]/.test(line)) invalid()
+  const body = line.slice(2)
+  let match
+  if (body.startsWith("'")) {
+    const quoted = /^'((?:[^']|'')*)'(?::(?: .*)?)?$/.exec(body)
+    if (!quoted) invalid()
+    match = ariaQuotedControlKey.exec(quoted[1].replaceAll("''", "'"))
+  } else if (body.startsWith('"')) {
+    const quoted = ariaJsonKeyLine.exec(body)
+    if (!quoted) invalid()
+    try { match = ariaQuotedControlKey.exec(JSON.parse(quoted[1])) } catch { invalid() }
+  } else {
+    match = ariaPlainControlLine.exec(body)
+  }
+  if (!match) invalid()
+  let name = ''
+  if (match[2] !== undefined) {
+    try { name = JSON.parse(match[2]) } catch { invalid() }
+  }
+  return { role: match[1], name }
+}
+
 const open = (page, name) => page.getByRole('navigation', { name: 'Template workspaces', exact: true }).getByRole('link', { name, exact: true }).click()
 const button = (scope, name) => scope.getByRole('button', { name, exact: true })
 const backup = (page, name) => page.getByRole('region', { name: `${name} workspace backup`, exact: true })
@@ -82,10 +116,7 @@ export async function auditVisibleControls(page, label, artifactDir) {
     const aria = await locator.ariaSnapshot()
     assert.equal(await locator.evaluate((element, captured) => element === captured, node), true, `${label}: controls changed during accessible-name measurement; repeat against stable source`)
     const first = aria.split('\n')[0]
-    const match = /^- ([a-z]+)(?: "((?:[^"\\]|\\.)*)")?/.exec(first)
-    if (!match) throw new Error(`Could not measure accessible control: ${first}`)
-    let role = match[1]
-    let name = match[2] ? JSON.parse(`"${match[2]}"`) : ''
+    let { role, name } = parseAriaControlLine(first)
     // Playwright's ARIA YAML exposes native summary as text. Chromium's
     // accessibility tree supplies its actual DisclosureTriangle name.
     if (await node.evaluate(element => element.tagName === 'SUMMARY')) {

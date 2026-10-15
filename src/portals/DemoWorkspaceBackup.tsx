@@ -68,7 +68,7 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
   return <section aria-label={`${title} workspace backup`} className="mt-5 rounded-xl border border-neutral-200 bg-white p-5">
     <h2 className="text-lg font-semibold text-neutral-950">Back up this workspace</h2>
     <p className="mt-2 max-w-4xl text-sm leading-6 text-neutral-600">Export {title}'s fictional records to a JSON file, then import it in this portal in another browser. Files stay on your device; nothing is uploaded. Import replaces this portal's records. The other portals stay separate.</p>
-    <p className="mt-2 text-xs leading-5 text-neutral-500">Backups are readable text, including saved private review drafts and survey answers where present. Use fictional data only. Unsaved fields and running timers are excluded. Export your current workspace before replacing it if you want to keep both versions.</p>
+    <p className="mt-2 text-xs leading-5 text-neutral-500">Backups are readable text, including saved private review drafts, recruiting scorecards and survey answers where present. Use fictional data only. Unsaved fields and running timers are excluded. Export your current workspace before replacing it if you want to keep both versions.</p>
     {recovery && <fieldset className="mt-4 rounded-lg border border-neutral-200 p-3">
       <legend className="px-1 text-sm font-semibold text-neutral-900">Optional required checkpoints</legend>
       <p className="mb-3 text-xs leading-5 text-neutral-500">Both settings start off. Each applies to all native portals at this browser origin, survives refresh and stays outside workspace exports and restore-point history. When enabled, replacement refuses if its checkpoint cannot be saved.</p>
