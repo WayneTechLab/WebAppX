@@ -4,15 +4,17 @@ WebAppX should support three connected business workspaces: people operations
 (HR), publishing (CMS) and customer relationships (CRM). This document records
 the current native source inventory and proposed adoption architecture. Source
 review: **2026-10-15**, using changed working source atop starting base
-`950f9ba0c4e48faaa65056f504f105201838e3ec`; the base commit does not already
+`532cc4ad63d18a4fe911b0a9b18e258b85ef3416`; the base commit does not already
 contain this wave's changes. The account-free HR talent workflows, CMS editorial
 core and CRM relationship workspace are implemented. The broader adoption
 architecture and shared backend described below remain proposed. The
 [maturity guide](PORTAL-MATURITY.md) covers current session return, named capture,
 labels, record inspection and differences; the
 [maturity QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) records focused execution.
-The integrated **56-stage CI and Hosting preflight passed**, including 111
-browser checks/check groups. This documentation pass adds no execution evidence.
+The preceding maturity checkpoint passed **56-stage CI and Hosting preflight**,
+including 111 browser checks/check groups. Its receipt remains historical.
+Current safety execution and acceptance belong in the
+[safety QA receipt](PORTAL-SAFETY-QA-2026-10-15.md); this guide adds no execution evidence.
 
 Earlier receipts remain immutable historical checkpoints. Browser and repository
 checks from the earlier talent wave are recorded in the
@@ -28,6 +30,49 @@ restore-point and Undo checks are recorded in the
 and restore storage-budget preview have their own
 [P1 QA receipt](PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md). No live
 business portal is activated by the HR preview or an administrator signing in.
+
+## Dirty drafts, replacement decisions and display checks
+
+Meaningful unsaved inputs now participate in a shared **Leave with unsaved
+changes?** decision. **Keep editing** returns to the exact retained owner and
+focuses its editable group; **Discard and leave** drops only the affected
+inputs. **Leave and keep draft** is available when switching within the mounted
+portal shell. Completed accepted actions establish a clean baseline, while a
+rejected action retains its inputs. Full-document exits use the browser's native
+warning. Retained text and running timers remain temporary and are excluded
+from portable exports and recovery snapshots.
+
+A dirty CMS editor survives successful individual import, selected restore and
+Undo long enough to compare its original baseline, restored draft and unsaved
+text. **Reload restored draft** chooses restored fields; **Reapply unsaved
+text** applies meaningful edited fields to the buffer, followed by an ordinary
+validated Save. This works even when the numeric revision is unchanged. Missing
+records, lost editing permission or a changed comparison refuse reapplication.
+Frozen published content remains separate. Accepted Reset clears the editor.
+
+Recovery settings independently enable **Require checkpoint before individual
+imports** and **Require checkpoint before Reset**. Both default off and live in
+`webappx.demo.recovery-preferences`, outside workspace files and restore history.
+An enabled replacement shows the current/target inspection and checkpoint
+budget, saves a labeled selected-portal point first, then replaces its save.
+Failure refuses replacement. Confirmation binds the reviewed records, target,
+operation, both settings and required history; changed facts need a fresh
+review. Unknown or damaged settings refuse visibly. Known-off Reset remains a
+one-click action and can accept seeds only in memory if removal fails.
+
+Selective restore and Undo also display bounded CMS draft/approval/publication
+revision metadata and CRM relationship/lead-state/opportunity-stage metadata.
+They still replace complete selected modules. See the
+[state contract](PORTAL-STATE-CONTRACT.md),
+[recovery failure drill](PORTAL-RECOVERY-FAILURE-DRILL.md) and
+[status inventory](PORTAL-STATUS-INVENTORY.md).
+
+After explicit Chromium setup, use `npm run safety:test`,
+`npm run browser:safety`, `npm run browser:quality` and
+`npm run browser:recovery-drill`. The suites distinguish real user-control
+journeys from isolated status-rendering and storage-fault fixtures. Their dated
+receipt qualifies actual accessible names, monochrome status and narrow x-large
+form/confirmation observations; source presence is not browser acceptance.
 
 ## Paced evaluation and optional adoption
 
@@ -228,9 +273,9 @@ those accepted records can still be exported from the open page's memory.
 | Boundary | Native HR | CMS and CRM |
 | --- | --- | --- |
 | Switch portal or open directory | Shared records and the last supported HR subsection remain mounted; returning uses that subsection and can retain its current unsaved inputs/timer | Hidden portal roots remain mounted; the currently mounted form can retain unsaved inputs, filters and preview identity |
-| Change the form's route, record, tab or preview identity | The affected subpage/keyed component can remount and clear local UI | Changing entry/identity or CRM tab can remount the affected form and clear its inputs |
-| Reload or leave the entire portal shell | Saved workspace records can return; temporary UI clears | Saved workspace records can return; temporary UI clears |
-| Combined restore or Undo | Selected portal roots remount; restored HR records include its saved role/employee selections | Selected roots remount with default local UI; unchecked CMS/CRM roots retain their mounted UI |
+| Change the form's route, record, tab or preview identity | Dirty affected groups require Keep/Discard before destructive remount or target change | CMS entry changes and CRM tab/identity/dependent target changes protect dirty groups; retained CMS identity buffers remain temporary |
+| Reload or leave the entire portal shell | Dirty groups warn before leaving; accepted departure clears temporary UI, while saved records can return | Same decision and saved-record boundary |
+| Combined restore or Undo | Selected portal roots remount; restored HR records include its saved role/employee selections | Selected roots remount; dirty CMS editor is retained for explicit comparison/Reload/Reapply. Other selected temporary UI clears; unchecked roots retain mounted UI |
 | Named capture or point rename | Only restore-point history changes; current records, workspace save and mounted temporary UI remain | Same history-only boundary; no workspace-save writes or portal remount |
 | Portal Reset | Recreates this portal's seed and removes its workspace save; retained restore points remain | Same saved-record/history boundary; CMS resets preview identity, while CRM retains its current preview identity and returns to Dashboard |
 
@@ -272,8 +317,9 @@ key rather than storing another fixture snapshot.
 The visible **Browser save.** notice distinguishes ready, saved, restored and
 reset states. **Browser save needs attention.** reports unavailable storage or
 a recovered incompatible/damaged save. If removing a saved snapshot fails,
-Reset still restores fixtures in memory but warns that the previous save may
-return after refresh; allow storage and Reset again. A rejected old snapshot
+Known-off Reset still restores fixtures in memory but warns that the previous
+save may return after refresh; allow storage and Reset again. Unknown settings
+or a failed required checkpoint refuse Reset without accepting seed records. A rejected old snapshot
 is replaced by the next successfully saved action or removed by Reset.
 
 - Use the same browser profile and origin: scheme, hostname and port identify
@@ -387,8 +433,9 @@ The existing individual portal controls and file format remain available.
    locally for refresh. Unselected in-memory states and exact saved browser bytes
    stay untouched. No merge, record-level selection or ongoing sync occurs.
 
-Selected modules remount after a successful restore, clearing their unsaved
-forms, active timers and transient interface messages. Unselected CMS/CRM roots
+Selected modules remount after a successful restore. A dirty CMS editor is
+retained for explicit comparison/Reload/Reapply; other selected unsaved forms,
+active timers and transient messages clear. Unselected CMS/CRM roots
 retain mounted interface state. Unselected HR keeps its supported subsection
 mounted while the directory is open, including that subsection's temporary UI.
 The independent SDK preview is outside the bundle. See the
@@ -568,7 +615,8 @@ confirmed operation still replaces complete selected workspaces.
    applying Undo. Use that newer point to reverse the Undo if needed. It must
    pass the same validation, retention and storage checks as a normal restore.
 4. Inspect the save result and refresh. The recovered records persist; selected
-   modules remount and clear their unsaved forms, timers and transient messages.
+   modules remount. A dirty CMS editor remains for explicit comparison; other
+   selected unsaved forms, timers and transient messages clear.
    Other portals’ records and browser saves stay unchanged. Unchecked CMS/CRM
    roots retain mounted interface state; an unchecked HR root also keeps its
    supported subsection mounted during directory navigation.
@@ -588,8 +636,10 @@ points leaves all three current workspaces and their browser saves intact.
 Points capture domain snapshots, including current in-memory domain state if an
 earlier normal save failed. They do not capture exact old storage bytes, unsaved
 forms, active timers or the independent SDK session. Restoring initial fixtures
-through Undo creates a valid saved snapshot. Individual portal imports, normal
-edits and Reset do not automatically create points. Points are not included in
+through Undo creates a valid saved snapshot. Normal edits do not automatically
+create points. Individual imports and Reset create labeled `import`/`reset`
+points only when their independent required-checkpoint setting is enabled.
+Both settings default off; clearing history does not reset those preferences. Points are not included in
 either JSON backup format; export workspace files separately to move records to
 another browser. Clearing site data also clears this origin’s history.
 

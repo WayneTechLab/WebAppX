@@ -17,11 +17,14 @@ export function AppLink({ children, onClick, to, ...props }: AppLinkProps) {
       event.altKey ||
       event.ctrlKey ||
       event.shiftKey ||
-      props.target
+      props.target ||
+      (props.download !== undefined && props.download !== false)
     ) {
       return
     }
 
+    const target = new URL(to, window.location.href)
+    if (target.origin !== window.location.origin || !['http:', 'https:'].includes(target.protocol)) return
     event.preventDefault()
     navigate(to)
   }

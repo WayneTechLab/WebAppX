@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createServer as createTcpServer } from 'node:net'
-import { createServer } from 'vite'
+import { ownedPreviewProcess } from './browser-preview-process.mjs'
 import { chromium } from '@playwright/test'
 import { loadValidatedSeed } from '../tests/browser/seed-contract.mjs'
 import { runPortalSmoke, smokeHmrPath } from '../tests/browser/portals-smoke.mjs'
@@ -58,22 +58,25 @@ export async function withOwnedSmokeResources({ startServer, launchBrowser, runC
   const cleanup = { browserClosed: false, serverClosed: false }
   let primaryFailure
   let origin
+  let previewProcess
   try {
     signal?.throwIfAborted()
     server = await startServer()
     signal?.throwIfAborted()
     await server.listen()
+    previewProcess = server.processHandle
     signal?.throwIfAborted()
     const address = server.httpServer?.address()
     if (!address || typeof address === 'string' || address.address !== '127.0.0.1') throw new Error('Smoke Vite server did not bind its owned loopback listener')
     origin = `http://127.0.0.1:${address.port}`
     browser = await launchBrowser()
     signal?.throwIfAborted()
-    return { ...(await runChecks({ browser, origin })), origin, cleanup }
+    return { ...(await runChecks({ browser, origin })), origin, cleanup, ...(previewProcess ? { previewProcess } : {}) }
   } catch (error) {
     primaryFailure = error
     error.smokeCleanup = cleanup
     error.smokeOrigin = origin
+    error.smokePreviewProcess = server?.processHandle
     throw error
   } finally {
     const failures = []
@@ -83,10 +86,19 @@ export async function withOwnedSmokeResources({ startServer, launchBrowser, runC
     if (server) {
       try { await server.close(); cleanup.serverClosed = true } catch (error) { failures.push(error) }
     }
+    if (signal?.aborted && !primaryFailure) {
+      const error = signal.reason instanceof Error ? signal.reason : new Error('Browser verification was interrupted during cleanup')
+      error.smokeCleanup = cleanup
+      error.smokeOrigin = origin
+      error.smokePreviewProcess = server?.processHandle
+      if (failures.length) error.smokeCleanupErrors = failures.map(failure => failure.message)
+      throw error
+    }
     if (failures.length && !primaryFailure) {
       const error = new AggregateError(failures, 'Smoke resource cleanup failed')
       error.smokeCleanup = cleanup
       error.smokeOrigin = origin
+      error.smokePreviewProcess = server?.processHandle
       throw error
     }
     if (failures.length && primaryFailure) primaryFailure.smokeCleanupErrors = failures.map(error => error.message)
@@ -125,7 +137,7 @@ export async function runBrowserSuite({ args = process.argv.slice(2), runChecks 
       startServer: async () => {
         const port = await allocateSmokePort()
         controller.signal.throwIfAborted()
-        return createServer({ root: repository, cacheDir: join(artifactDir, 'vite-cache'), envDir: false, mode: 'test', clearScreen: false, logLevel: 'warn', server: { host: '127.0.0.1', port, strictPort: true, open: false, ws: { path: smokeHmrPath } } })
+        return ownedPreviewProcess({ root: repository, cacheDir: join(artifactDir, 'vite-cache'), port, hmrPath: smokeHmrPath })
       },
       launchBrowser: async () => {
         try { return await chromium.launch({ headless: !options.headed, timeout: 30_000 }) }
@@ -142,7 +154,7 @@ export async function runBrowserSuite({ args = process.argv.slice(2), runChecks 
     report = { schemaVersion: 1, status: 'passed', seedName: seed.name, startedAt, completedAt: new Date().toISOString(), ...result }
     console.log(`PASS: ${result.checks.length} browser ${suite} checks; own browser and Vite server closed.`)
   } catch (error) {
-    report = { schemaVersion: 1, status: 'failed', startedAt, completedAt: new Date().toISOString(), error: error.message, origin: error.smokeOrigin, evidence: error.smokeEvidence, cleanup: error.smokeCleanup, cleanupErrors: error.smokeCleanupErrors, ...(interrupted ? { interrupted } : {}) }
+    report = { schemaVersion: 1, status: 'failed', startedAt, completedAt: new Date().toISOString(), error: error.message, origin: error.smokeOrigin, evidence: error.smokeEvidence, cleanup: error.smokeCleanup, cleanupErrors: error.smokeCleanupErrors, previewProcess: error.smokePreviewProcess, ...(interrupted ? { interrupted } : {}) }
     console.error(`FAIL: ${error.message}`)
     process.exitCode = 1
   } finally {

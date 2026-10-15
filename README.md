@@ -66,9 +66,69 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
-## Portal maturity wave — focused verification passed
+## Portal safety and recovery wave — local criteria verified
 
-The current implementation wave starts from published source
+This wave starts from published source
+`532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. It adds registered dirty-form
+navigation decisions, CMS editor comparison after replacement, independently
+opted-in import/Reset checkpoints, bounded domain differences, visual quality
+checks and fictional failure/recovery exercises. Read the
+[portal safety guide](wiki/Portal-Safety-and-Recovery.md),
+[state contract](docs/PORTAL-STATE-CONTRACT.md),
+[recovery failure drill](docs/PORTAL-RECOVERY-FAILURE-DRILL.md),
+[status inventory](docs/PORTAL-STATUS-INVENTORY.md) and
+[current QA receipt](docs/PORTAL-SAFETY-QA-2026-10-15.md).
+
+- **Keep editing**, **Discard and leave** and eligible **Leave and keep draft**
+  decisions protect registered temporary form groups. A retained draft lasts
+  only in the open page and is excluded from saves, exports and restore points.
+- A dirty CMS author editor survives individual import, selective restore and
+  Undo for explicit **Reload restored draft** or **Reapply unsaved text**. Reapply
+  copies only meaningfully edited fields to the restored draft buffer; ordinary
+  Save and its permissions/validation still apply. Accepted Reset clears it.
+- Import and Reset checkpoint settings are independent and off by default.
+  Enabled operations must save the reviewed destination checkpoint first.
+  Unknown/damaged settings refuse replacement; known-off Reset retains its
+  existing one-click behavior. Default-off imports still bind explicit review.
+- Inspection/difference views are read-only. CMS revision/approval/publication
+  and CRM owner/link/stage metadata stay bounded; replacement requires its own
+  confirmation. The recovery drill explains keep-open/export ordering when
+  browser storage may be partial.
+
+Dirty Back/Forward decisions reuse the current history slot: **Keep editing**
+preserves the approved view and drafts; **Discard and leave** opens the requested
+URL in that slot. This adds no entries or forward-history truncation, but the
+Back/Forward entries can differ afterward. Clean traversal and ordinary app-link
+pushes keep their normal behavior.
+
+```bash
+npm run safety:test
+npm run browser:safety
+npm run browser:quality
+npm run browser:recovery-drill
+```
+
+Browser commands require the existing explicit Chromium installation and use
+owned loopback preview processes and fresh browser contexts. Their reports and
+artifacts establish the particular local observations actually completed.
+
+The separate genuine SDK preview has its own `npm run browser:sdk-quality`
+companion with a canonical same-origin local API gate. It covers selected session,
+onboarding, pending payroll, fictional receipt and Reset meanings. Native workspace
+saves remain separate. The SDK receipt uses explicit fictional labels and removes
+the default provider-partnership wording. Actual results belong in the linked QA
+receipt; unmounted SDK exports retain their own scope.
+
+Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+
+Focused and browser verification passed. The required **61-stage integrated CI and Hosting preflight are pending** before publication; their final results belong in the current safety QA receipt.
+
+Historical maturity/evaluator results below retain their original source and
+verification scope. Provider and production acceptance require their own evidence.
+
+## Historical portal maturity wave — verified
+
+That implementation wave started from published source
 `950f9ba0c4e48faaa65056f504f105201838e3ec` and covers **16 original criteria**:
 **WX-0056, WX-0151–WX-0158, WX-0280, WX-0282, WX-0397, WX-0453,
 WX-0454, WX-0457 and WX-0458**. Read the [portal maturity guide](docs/PORTAL-MATURITY.md)
@@ -100,8 +160,8 @@ complete **139-test HR suite**, and **13 actual browser check groups covering al
 historical $401 evaluator scenario below. The browser run uses owned isolated
 Vite/Chromium resources, complete downloads and raw-save comparisons.
 
-Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
-records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+Agent 0 accepted all **16 original criteria locally**. At that checkpoint the catalog
+recorded **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
 **756 local, 127 operator and 40 provider** gates remaining. The complete
 1,000-item goal remains active; use `npm run backlog:summary` for current counts.
 
@@ -136,7 +196,7 @@ operator and 40 provider**. The complete 1,000-item goal remains active.
 The [evaluator/adoption QA receipt](docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
 records the final integrated CI, browser, Hosting preflight and preservation
 results. The [P1 implementation plan](docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
-scopes the 16 local app changes in the current maturity wave above. The earlier **48-done / 46-stage / 62-browser-check** receipt below is
+scoped the 16 local app changes in the historical maturity wave above. The earlier **48-done / 46-stage / 62-browser-check** receipt below is
 historical. No provider, deployed service or production acceptance follows from
 this wave's local checks.
 
@@ -662,7 +722,7 @@ or port can remove or hide saved samples. Multiple tabs do not merge live
 changes: the last successful write wins. Use fictional data only; preview roles
 are not browser security, and anyone with access to this browser can inspect
 its saved records. See the [persistence QA receipt](docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
-for the current checked paths.
+for its historical checked paths.
 
 The CMS viewer is a read-only editorial identity; only the published-sample
 projection excludes draft content. A simulated CMS publication does not update
@@ -721,7 +781,9 @@ its initial sample even if it has no saved browser snapshot yet.
    Selected portals are replaced in full and saved for refresh; unselected portals
    keep their current records and browser saves. No records are merged.
 
-Restoring resets selected portals’ unsaved forms and active timers. The selected
+Restoring clears selected portals’ ordinary unsaved forms and active timers. A
+dirty CMS author editor is retained for comparison and explicit Reload/Reapply;
+accepted Reset clears that editor. The selected
 snapshots are revalidated and all their browser saves are attempted before their
 in-memory workspaces change. On a storage-write failure, the app attempts to
 restore the selected keys’ previous bytes and keeps the prior in-memory records.
@@ -752,7 +814,8 @@ the captured portals, including changes saved after the point was made. It first
 of their current states, so that Undo can itself be reversed. Other portals’
 records and saved bytes stay unchanged; unchecked CMS/CRM roots retain mounted
 interface state. Leaving an HR subpage for the directory can already have cleared
-its route-local forms/timer. Restored portal roots reset temporary UI after success.
+its route-local forms/timer. Restored portal roots reset ordinary temporary UI
+after success; the dirty CMS author editor uses the explicit comparison exception.
 
 History retains at most **five points** within **2,000,000 serialized characters**;
 oldest points are pruned when needed. A newest point that cannot fit is refused
@@ -764,12 +827,14 @@ rollback and partial-storage warning behavior described above.
 
 Restore points are origin-local plain-text fictional domain records, including
 private drafts and mock receipts. They exclude unsaved forms/timers and SDK
-state, and are not included in JSON exports. Individual imports, Reset and
-ordinary edits do not automatically create points. Use exported files for
+state, and are not included in JSON exports. Ordinary edits create no automatic
+point. Individual import and Reset create a required module-only checkpoint only
+when their independent origin-local setting is enabled. Unreadable settings
+refuse replacement; known-off Reset keeps its existing one-click behavior. Use exported files for
 portable backups and fictional data throughout; no account, cloud or provider
 credentials are required. Read the [restore-point guide](docs/TEMPLATE-PORTALS.md#automatic-restore-points-and-undo)
-and [current QA receipt](docs/RESTORE-POINTS-QA-2026-10-14.md) for this update’s
-verification. The combined-backup results below describe the earlier checkpoint.
+and [earlier QA receipt](docs/RESTORE-POINTS-QA-2026-10-14.md) for that update’s
+historical verification. The combined-backup results below describe the earlier checkpoint.
 
 Browser checks passed for HR-only, CMS/CRM and all-three restore/Undo, Undo after
 refresh, cancellation, retention, and clearing history without changing workspace

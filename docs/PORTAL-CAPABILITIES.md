@@ -24,6 +24,33 @@ role is only one prerequisite. “None” below means no implemented domain acti
 in that category; it does not prevent the person using this browser from
 switching to a different fictional preview identity.
 
+## Temporary forms and navigation
+
+The [shared unsaved-work controller](../src/portals/unsaved-work-core.ts) tracks
+registered temporary form groups separately from saved domain records. Leaving
+a dirty portal offers **Keep editing** or **Discard and leave**. Eligible moves
+between mounted portal workspaces and the directory also offer **Leave and keep
+draft**; this retains temporary values only in the open page. It is not a save,
+backup or new role capability. Leaving the shell considers retained drafts in
+hidden portals as well as the visible module.
+
+Form owners compare current values with their accepted baseline using each
+form's normalization rules.
+Successful in-memory actions clear only their own completed form group, even
+when browser persistence reports unavailable. Failed validation keeps the
+buffer dirty; returning to baseline becomes clean. Changes to a target person,
+role or record that would replace a dirty form are guarded by the relevant
+consumer. Filters, read-only projections and saved domain drafts are not
+automatically unsaved form work. Native unload warning requests remain separate
+from these in-app choices; refreshing or closing the page does not preserve a
+temporary buffer.
+
+Dirty Back/Forward decisions reuse the current history slot. Keep preserves the
+approved view and drafts; Discard opens the requested URL in that same slot.
+The fallback adds no history entry or forward truncation, but Back/Forward
+entries can differ afterward. Clean traversal and ordinary app-link pushes
+keep their normal behavior.
+
 ## HR matrix
 
 HR uses seven `HrRole` values and four portal families. The management preview
@@ -132,6 +159,27 @@ a clean baseline. Surrounding title/body whitespace and slug case/whitespace
 that normalize to the saved values do not create a dirty warning. Temporary
 form buffers survive preview identity changes and remain outside saved exports.
 
+The [CMS editor recovery model](../src/cms/editor-recovery.ts) is a deliberate
+exception to ordinary replacement remounts. An unsaved author editor survives
+individual import, selective restore and Undo in a volatile context slot. A
+successful replacement epoch or changed baseline record, including different
+content at the same revision number, presents escaped **Editor baseline**,
+**Restored draft** and exact **Unsaved text** values. Saving that editor is
+blocked until an explicit **Reload restored draft** or **Reapply unsaved text**
+choice.
+
+Reload discards the buffer. Reapply requires the restored entry's recognized
+assigned author and copies only meaningfully edited fields onto the restored
+values; normalization-only changes do not replace untouched restored fields.
+Invalid reapplied text remains editable with normal field/slug validation, and
+an ordinary Save is still required to create a revision. A changed comparison,
+second replacement or missing record cannot silently reapply an older choice.
+Both choices change temporary UI only and preserve the frozen published sample.
+Reset explicitly clears this volatile editor; other CMS temporary forms keep
+their existing replacement clearing behavior. Unsaved reviewer feedback retained
+after approval has its own temporary edit/discard panel, without an out-of-stage
+review action.
+
 ## CRM matrix
 
 | Synthetic CRM role | read | create | approve | publish | export |
@@ -185,9 +233,32 @@ timestamp, size and complete domain graph compatibility. These checks establish
 that fictional state can be restored; they do not prove who exported it or
 authorize its contents. Files are readable JSON and contain saved domain drafts
 and receipts. Unsaved form fields, running timers, restore-point history and
-the separate SDK mock session are excluded. Per-module import and selective
+the separate SDK mock session are excluded. The volatile CMS editor/recovery
+buffer, navigation/dirty-controller state and origin-local checkpoint settings
+are also excluded. Per-module import and selective
 whole-portal restore use explicit replacement confirmation, without a role or
 tenant authorization boundary.
+
+The [checkpoint preferences](../src/portals/recovery-preferences.ts) independently
+opt into a required destination capture before individual import or Reset.
+Both start off, apply to all native portals at the current browser origin and
+survive refresh in a separate settings slot. They are excluded from workspace
+exports and restore history. Damaged or unreadable settings refuse replacement
+until the choices can be explicitly reviewed; they do not silently disable a
+checkpoint.
+
+When enabled, [replacement recovery](../src/portals/replacement-recovery.ts)
+previews the module-only capture and retention budget, rechecks the reviewed
+current/target/settings/history facts, saves the checkpoint, then commits the
+selected import or Reset. A missing or stale required confirmation refuses
+before writes. Failed capture or replacement accepts no new in-memory state and
+attempts exact rollback of affected history/save slots; an unconfirmed rollback
+reports uncertainty and asks the user to keep the current page open and export
+its records. Other modules and unrelated storage are outside those writes.
+Known-off Reset retains its existing one-click behavior, including accepting
+fresh in-memory records if removing its old save fails; that old save may return
+after refresh. Default-off individual imports still use their reviewed explicit
+replacement confirmation.
 
 The directory's [restore history](../src/portals/RestorePointHistory.tsx) is a
 separate local facility with no preview-role check. A named manual point captures
@@ -206,6 +277,15 @@ state and grants no new data authority. Confirming Undo rechecks the exact point
 shown in its preview against stored history, saves a pre-Undo point, then replaces
 only the captured portal scope. Changed or missing source points are refused.
 
+The same comparison engine now adds bounded structured domain details. CMS entry
+rows distinguish draft, approval and frozen publication projections, with
+revision/status and allowed reviewer/receipt IDs. CRM company/contact/lead/
+opportunity rows show owner/link IDs and lead states or opportunity stages.
+These details use the same identifier limit and exact omission counts; names,
+emails, content, feedback, answers, reasons and amounts remain hidden. Hidden
+field changes still affect the complete record comparison without exposing
+those values.
+
 This behavior belongs to the shared, account-free demo browser. Browser storage
 and imported data are editable by its user. A production export implementation
 needs its own trusted actor/resource/field scope and authorization check; the
@@ -214,14 +294,17 @@ demo backup mechanism is not an employee, contractor or auditor export policy.
 ## Session return locations
 
 The [portal shell](../src/pages/TemplatePortalsPage.tsx) remembers each module's
-last supported pathname within the mounted session. Directory cards and shared
+last supported pathname within the mounted session. Directory cards and shell
 workspace links return to that subsection; query/hash values are not remembered.
 The [route helpers](../src/portals/routes.ts) revalidate that each destination
 belongs to its exact module and exclude unsupported routes, inherited map values
 and unsafe HR parameters. This temporary navigation memory is separate from
 workspace records, backup exports and restore revisions. A directory visit keeps
 the remembered HR path while the HR workspace is hidden; selective restore clears
-only the restored modules' temporary UI.
+only the restored modules' ordinary temporary UI. The volatile CMS author editor
+uses the explicit comparison exception described above. A dirty-form prompt or
+retained route supplies no authentication, domain write permission or authority
+to start a provider worker.
 
 ## Firebase and provider boundary
 
@@ -282,6 +365,13 @@ Relevant focused suites are [HR workflow scope](../tests/hr/mock-workflows.test.
 [named history points](../tests/portals/manual-restore-points.test.mjs),
 [record inspection](../tests/portals/workspace-inspection.test.mjs) and
 [session return locations](../tests/portals/return-location.test.mjs).
+
+The [portal safety QA receipt](PORTAL-SAFETY-QA-2026-10-15.md) tracks current
+acceptance for dirty navigation, restored CMS editors, replacement checkpoints
+and structured differences. It separately records verification of the browser
+runner's owned preview child process and cleanup; that process evidence does not
+describe a portal role capability or a provider worker. Its pending gates remain
+pending until the receipt records completed evidence.
 Passing these checks supplies local source/workflow evidence. It does not
 establish production authorization, confidential-data protection or provider
 activation.

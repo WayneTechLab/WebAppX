@@ -6,7 +6,29 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
-The adoption and recorded-work wave accepts **WX-0851, WX-0852, WX-0855,
+## Current portal safety wave
+
+The source wave starts at `532cc4ad63d18a4fe911b0a9b18e258b85ef3416`.
+[Portal Safety and Recovery](Portal-Safety-and-Recovery.md) explains dirty-form
+choices, the volatile CMS restored-editor exception, independent opt-in
+import/Reset checkpoints and bounded structured differences. Read the
+[current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md),
+[state contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md),
+[failure drill](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-RECOVERY-FAILURE-DRILL.md) and
+[status inventory](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATUS-INVENTORY.md).
+
+Run `npm run safety:test`, `browser:safety`, `browser:quality` and
+`browser:recovery-drill` after normal setup. These are local fictional-workspace
+checks. The current receipt links all fourteen accepted local criteria;
+provider and production gates retain their separate acceptance requirements.
+
+Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+
+Focused and browser verification passed. The required **61-stage integrated CI and Hosting preflight are pending** before publication; their final results belong in the current safety QA receipt.
+
+## Historical adoption and recorded-work checkpoint
+
+That adoption and recorded-work wave accepted **WX-0851, WX-0852, WX-0855,
 WX-0856, WX-0857 and WX-0858**, taking the catalog to **48 done / 952 remaining**.
 Remaining priorities are **125 P1, 670 P2 and 157 P3**; remaining acceptance gates
 are **784 local, 128 operator and 40 provider**. The full 1,000-item goal stays
@@ -42,7 +64,7 @@ reports preserved host paths and bootstrap conflicts, and applies no import.
 
 Focused verification passed **95 host-integration tests, 19 revision-impact
 tests, 37 work-status tests, six owned LAN browser checks and 13 CI-plan tests**.
-The current source-derived CI plan has **46 stages**; planning does not run them.
+That checkpoint’s source-derived CI plan had **46 stages**; planning did not run them.
 **Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
 **Generated catalog/plan, link and preservation checks passed.** GitHub
 publication uses final repository-identity and native-wiki parity checks. Local macOS evidence does not establish provider,
@@ -322,7 +344,7 @@ for workflows, scopes and remaining production work. Earlier talent browser/test
 is recorded in the [talent/CMS/CRM QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-TALENT-QA-2026-10-14.md),
 separately from the historical HR portal receipts.
 The earlier talent checkpoint passed **129 model tests**: 109 HR, 10 CMS and
-10 CRM. Current refresh/reset evidence is recorded separately in the
+10 CRM. Earlier refresh/reset evidence is recorded separately in the
 [persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md).
 Selected browser checks verified native hire/onboarding, performance review
 privacy/acknowledgment, survey 2/2 submitted responses with mean 4, and CMS
@@ -360,8 +382,10 @@ on the directory. The entire file must validate before its three summaries and
 unchecked selection boxes appear. Select one, two or all three complete portals,
 then choose **Restore selected workspaces**, or **Cancel combined restore**.
 
-Only selected portals are replaced and saved, with their unsaved forms/timers
-reset. Unselected memory and browser saves stay untouched. The app attempts to
+Only selected portals are replaced and saved. Their ordinary unsaved forms and
+timers clear; a dirty CMS author editor remains for explicit restored-text
+comparison and Reload/Reapply. Accepted Reset clears that editor. Unselected
+memory and browser saves stay untouched. The app attempts to
 roll back selected saved bytes on a write failure and keeps old memory; a failed
 rollback explicitly warns that browser storage may be partial. Export current
 memory before refreshing, restore storage access/capacity, and retry or Reset
@@ -386,7 +410,10 @@ characters, pruning oldest entries as needed. If a point cannot fit or save, the
 operation stops before overwrite. Invalid history blocks restore/Undo until
 explicit **Clear restore points**; clearing history leaves workspaces intact.
 Points contain plain-text fictional domain records and are excluded from JSON
-exports. Individual import, Reset and ordinary edits do not create points. See
+exports. Ordinary edits create no automatic point. Individual import and Reset
+create a required module-only point only when their independent setting is
+enabled. Both start off; unknown settings refuse replacement and known-off Reset
+keeps its one-click behavior. See
 [Template Portals](Template-Portals.md#automatic-restore-points-and-undo) and the
 [restore-point QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md)
 for workflow, retention, recovery and verification scope.

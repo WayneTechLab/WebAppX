@@ -16,6 +16,7 @@ import { HrPage } from '@/pages/HrPage'
 import { TemplatePortalsPage } from '@/pages/TemplatePortalsPage'
 import { resolvePortalRoute } from '@/portals/routes'
 import { hrRoutes } from '@/hr/catalog'
+import { UnsavedWorkProvider } from '@/portals/unsaved-work'
 
 function getPathname() {
   return normalizePath(window.location.pathname)
@@ -63,17 +64,15 @@ function renderPage(pathname: string) {
   }
 }
 
-export function AppRouter() {
+function RoutedContent() {
   const [pathname, setPathname] = useState(getPathname)
 
   useEffect(() => {
     const handleNavigation = () => setPathname(getPathname())
 
-    window.addEventListener('popstate', handleNavigation)
     window.addEventListener(NAVIGATION_EVENT, handleNavigation)
 
     return () => {
-      window.removeEventListener('popstate', handleNavigation)
       window.removeEventListener(NAVIGATION_EVENT, handleNavigation)
     }
   }, [])
@@ -83,4 +82,8 @@ export function AppRouter() {
       {renderPage(pathname)}
     </Layout>
   )
+}
+
+export function AppRouter() {
+  return <UnsavedWorkProvider><RoutedContent /></UnsavedWorkProvider>
 }

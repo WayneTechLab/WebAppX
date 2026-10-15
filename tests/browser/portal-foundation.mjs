@@ -7,6 +7,7 @@ import { loadMockModel } from './model-loader.mjs'
 import { createKeyboardDriver } from './keyboard-driver.mjs'
 
 const navigation = page => page.getByRole('navigation', { name: 'Template workspaces', exact: true })
+const unsaved = page => page.getByRole('dialog', { name: 'Leave with unsaved changes?', exact: true })
 const domainSaves = state => state.origins.flatMap(origin => origin.localStorage.filter(item => /^webappx\.demo\./.test(item.name)))
 
 /** Source-independent browser assertions for the shared portal shell. Fault
@@ -94,6 +95,11 @@ export async function runPortalFoundation({ browser, origin, artifactDir }) {
     const documentTimeOrigin = await page.evaluate(() => performance.timeOrigin)
     await page.locator('#edit-title').fill('Unsaved fictional title preserved across the explanation link')
     await page.getByRole('link', { name: 'How mock data is handled', exact: true }).click()
+    await expect(unsaved(page)).toBeVisible()
+    await expect(unsaved(page).getByRole('button', { name: 'Keep editing', exact: true })).toBeFocused()
+    await expect(unsaved(page).getByRole('listitem')).toHaveText(['CMS entry editor'])
+    await unsaved(page).getByRole('button', { name: 'Leave and keep draft', exact: true }).click()
+    await expect(unsaved(page)).not.toBeVisible()
     await expect(page.locator('#mock-data-handling')).toBeInViewport()
     await expect(page.locator('#mock-data-handling')).toBeFocused()
     await navigation(page).getByRole('link', { name: 'Content management', exact: true }).click()
@@ -101,12 +107,13 @@ export async function runPortalFoundation({ browser, origin, artifactDir }) {
     assert.equal(await page.evaluate(() => performance.timeOrigin), documentTimeOrigin, 'The explanation link must preserve the current document and mounted portal session')
     assert.deepEqual(domainSaves(await context.storageState()), beforeExplanation, 'Reading the shared explanation must not save or discard a draft')
     await page.locator('#edit-title').fill(initialTitle)
-    checks.push('Shared explanation navigation preserves the mounted session, unsaved CMS input and exact domain saves; its target receives focus and scroll')
+    checks.push('Explicit Leave and keep draft at the shared explanation link preserves the mounted session, exact unsaved CMS input and domain saves; its target receives focus and scroll')
 
     await page.locator('#edit-title').fill('Shared shell save summary fixture')
     await page.getByRole('button', { name: 'Save draft revision', exact: true }).click()
     await navigation(page).getByRole('link', { name: 'Portal directory', exact: true }).click()
     await expect(page.getByRole('status', { name: 'CMS save status', exact: true })).toContainText('Browser save: Saved')
+    await expect(unsaved(page)).not.toBeVisible()
     for (const label of ['HR', 'CRM']) await expect(page.getByRole('status', { name: `${label} save status`, exact: true })).toContainText('Browser save: Ready')
     await page.reload()
     await expect(page.getByRole('status', { name: 'CMS save status', exact: true })).toContainText('Browser save: Saved')

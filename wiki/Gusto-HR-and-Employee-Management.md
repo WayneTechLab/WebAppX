@@ -36,6 +36,21 @@ debit; it does not use the native timesheet/benefit calculation. No real
 SSN, banking data, cookies, authentication credentials or Gusto account is needed
 for these local requests.
 
+## Current safety and separate SDK receipt
+
+Native portal changes add protected unsaved navigation, explicit restored CMS
+editor decisions and independently enabled pre-import/Reset checkpoints. Read
+[Portal Safety and Recovery](Portal-Safety-and-Recovery.md) for setup and the
+current [state contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md).
+
+The separate pinned SDK preview now supports **View payroll receipt** after its
+local simulated submission. It shows fictional total/debit/tax labels and local
+mock text; Reset clears only that session. Native time, benefits, payroll and
+portable workspaces remain separate. Run `npm run browser:sdk-quality` for the
+canonical-local-API companion, including actual pending states and monochrome
+captures. The [safety QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md)
+records executed evidence; this guide adds no provider acceptance.
+
 ## Current native payroll and time setup — 2026-10-15
 
 The [portal maturity guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY.md)
@@ -72,7 +87,7 @@ excluded from payroll until resubmitted and approved. Employees and managers can
 **Delete draft** with **Confirm delete draft** / **Keep draft**. Submitted,
 approved and paid rows cannot be edited or deleted through these actions.
 
-The current 16-criterion maturity wave starts from published base
+The historical 16-criterion maturity wave started from published base
 `950f9ba0c4e48faaa65056f504f105201838e3ec`. Focused results record **79 new model
 tests**, the complete **139-test HR suite**, and **13 browser check groups covering
 all 16 criteria** passing; its payroll fixture independently reconciles
@@ -81,7 +96,7 @@ $401 evaluator scenario below. Run `npm run maturity:test` and
 `npm run browser:maturity` after explicit Chromium installation. The
 [maturity QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-QA-2026-10-15.md)
 retains exact scope. Agent 0 accepted all **16 original criteria locally**. The
-canonical catalog now records **77 done / 923 remaining**: **96 P1, 670 P2 and
+catalog at that checkpoint recorded **77 done / 923 remaining**: **96 P1, 670 P2 and
 157 P3**, with **756 local, 127 operator and 40 provider** gates remaining. The
 full 1,000-item goal remains active; use `npm run backlog:summary` for current
 counts.

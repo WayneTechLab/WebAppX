@@ -247,8 +247,8 @@ scenario reconciles **10.75 hours / $298.75 gross / $239 net**, separately from
 the historical evaluator's inputs below. The
 [maturity QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-QA-2026-10-15.md)
 retains the source and local evidence boundaries.
-Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
-records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+Agent 0 accepted all **16 original criteria locally**. At that checkpoint the catalog
+recorded **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
 **756 local, 127 operator and 40 provider** gates remaining. The full 1,000-item
 goal remains active; use `npm run backlog:summary` for current counts.
 

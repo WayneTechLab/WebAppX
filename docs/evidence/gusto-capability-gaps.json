@@ -3,7 +3,7 @@
   "kind": "webappx-gusto-capability-gaps",
   "reviewedOn": "2026-10-15",
   "reviewBase": {
-    "revision": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+    "revision": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
     "provenance": "integration-baseline-supplied-by-agent-0"
   },
   "evidenceScope": "source-review",
@@ -66,7 +66,7 @@
     {
       "path": "integrations/gusto/mock-api.mjs",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "d9eabf2cfee99cfdc3f6d3439967c334f76c6b7898a9ce918ea97f0578c19ac9"
+      "sha256": "7083b242287796179d1548a5d1fba2958cdd1fdda6f0638154d6ee345738a01e"
     },
     {
       "path": "integrations/gusto/schema.json",
@@ -81,12 +81,12 @@
     {
       "path": "integrations/gusto/sdk-payroll.mjs",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "490afa82699de4e34dc012edd5a27f1bfe43b9fb0439d76b2d8163b9fad83e7d"
+      "sha256": "135258d7805b981c4539c31aa80f4013611713fd8da8506d3bf72d1b8b0b41ae"
     },
     {
       "path": "src/hr/components/HrWorkspace.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "169e81c354ab72cf61fb89fa4e3244fe27e99c5efbe1742cafdd1d82c1cd2d20"
+      "sha256": "09f094455796da1879b82d9e8e9daf86800c16a24617a34f7396965e90a089ba"
     },
     {
       "path": "src/hr/components/HrInsights.tsx",
@@ -96,7 +96,7 @@
     {
       "path": "src/hr/gusto/GustoSdkPreview.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "f23c83b15c170227ebb5d1970880d8c54c30865dbc19ccd971905a44da7df2a5"
+      "sha256": "2997c3af94e9d89225ee670c439241de5b65adf68c75cc5cf198c16f495978cd"
     },
     {
       "path": "src/hr/insights.ts",
@@ -147,6 +147,91 @@
       "path": "src/pages/HrPage.tsx",
       "hashMode": "utf8-lf-sha256",
       "sha256": "daf6bf5bbc0325c253ea6d9802e76ee867b60a3ff608312c67911a18453b4292"
+    },
+    {
+      "path": "src/portals/unsaved-work-core.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "ee9abc498ae015df8554e2056d1526dfc2d5b534bc1e47284242c7134d8c5a59"
+    },
+    {
+      "path": "src/portals/unsaved-work.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316"
+    },
+    {
+      "path": "src/lib/navigation.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24"
+    },
+    {
+      "path": "src/router.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "0ef2cee3f4e1c684db7f54525448b83535da6a3d7da2c68333b518f064be5a32"
+    },
+    {
+      "path": "src/hr/components/useHrFormDraft.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "d93f943cad287eb323ea80799d9f807d1e537aaf1dd9032b51a6e6c50c9265e7"
+    },
+    {
+      "path": "src/hr/components/PeopleOperations.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "a6f6ade235d7c4ce8dec497cbc5a4c6fbf9fe6553efb71f5e30f6b99683e3d0b"
+    },
+    {
+      "path": "src/hr/components/HrServiceDesk.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "584ce87da135d5bdc04c56fd9c4789d5e8269c42e7a9f8308ef42adaf8ba1267"
+    },
+    {
+      "path": "src/hr/components/HrRecruiting.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "f2f4b25642cecddd1433d23c6a3fb2f4c1fb109b890ed5763169aec5457e7857"
+    },
+    {
+      "path": "src/hr/components/HrPerformance.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "7c27e5b9a36dc02f69725c101e21568661b9820b613bca0fe44e781f81090357"
+    },
+    {
+      "path": "src/hr/components/HrSurveys.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "ba28cb8d4bdc1d5a3e313be89f4272bbd340dedbb3d1d9008609a48b71a794ef"
+    },
+    {
+      "path": "src/portals/PortalWorkspaceProvider.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa"
+    },
+    {
+      "path": "src/portals/useDemoPersistence.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "7ea3895df10dc73752ee5fb622f3fed08957f0a4d031485d09b1a2747fda05ed"
+    },
+    {
+      "path": "src/portals/recovery-preferences.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "0104715273131dfc397c991b3fe201d525e32903b21b265ddc17bd5fe3391859"
+    },
+    {
+      "path": "src/portals/replacement-recovery.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "4d80db30057b7ddd1974400e0a8555b33158ec7b8ce55633726b2f8de839dc2c"
+    },
+    {
+      "path": "src/portals/DemoWorkspaceBackup.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "2b173d5d158281d0f1b390215a39047981b2949cf5c5a6c43dd8be6bad6f5aed"
+    },
+    {
+      "path": "src/portals/DemoWorkspaceReset.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "907be2ce4b8182c8207383136b327948b8fb5f9bf879e6080ebeb537c43b6d81"
+    },
+    {
+      "path": "src/portals/RecoveryCheckpointPreview.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "537ac122bab47679253afe068c4af1aa3c158903bc13c7a9a501a7b3a9b7c71d"
     }
   ],
   "capabilities": [
@@ -449,10 +534,11 @@
       "capabilitySha256": "f7661e491423a3748ebc08c4a5d2a4fdf01e9131f985bbf996f54fe6b5afb766",
       "native": {
         "coverage": "partial-mock",
-        "behavior": "Profiles display fictional job, department and status; eligible preview actors can edit synthetic work email. Sensitive identity, tax and bank values are omitted.",
+        "behavior": "Profiles display fictional job, department and status; eligible preview actors can edit synthetic work email. Its temporary email form has a normalized dirty baseline; accepted in-memory Save clears that group, while failed validation retains it. Sensitive identity, tax and bank values are omitted.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/mock-workflows.ts"
+          "src/hr/mock-workflows.ts",
+          "src/hr/components/useHrFormDraft.ts"
         ]
       },
       "sdk": {
@@ -538,11 +624,12 @@
       "capabilitySha256": "f364f7f7765710f49fbc4bab5c480906681151fb2d6b26775f5d82b85ad58a90",
       "native": {
         "coverage": "partial-mock",
-        "behavior": "The fixture compensation amount stays read-only and declares no hourly cadence. Owner/payroll previews separately append explicit fictional employee hourly rates with strictly later effective dates in Payroll. Work dates select the applicable rate; new hires have no inferred rate, and submitted receipts retain their frozen rates.",
+        "behavior": "The fixture compensation amount stays read-only and declares no hourly cadence. Owner/payroll previews separately append explicit fictional employee hourly rates with strictly later effective dates in Payroll. Rate setup is a guarded temporary form, separate from accepted rate records. Work dates select the applicable rate; new hires have no inferred rate, and submitted receipts retain their frozen rates.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/model.ts",
-          "src/hr/mock-workflows.ts"
+          "src/hr/mock-workflows.ts",
+          "src/hr/components/useHrFormDraft.ts"
         ]
       },
       "sdk": {
@@ -709,10 +796,11 @@
       "capabilitySha256": "f53e17ed9033aaf0ee4d9509b712e4f827cf834b7f466217c0f39c9b626eb217",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/payroll previews choose a 1–366-day sample period and configure explicit fictional rates for all otherwise eligible employee/work dates. The table explains inclusion/exclusion before preparation freezes approved unpaid hours, dated rates and confirmed benefit choices. Input or eligibility changes block calculation, review and submission until intentional repreparation; receipted runs remain frozen.",
+        "behavior": "Owner/payroll previews choose a 1–366-day sample period and configure explicit fictional rates for all otherwise eligible employee/work dates. Independent rate/period form groups track unsaved inputs. Preparation freezes approved unpaid hours, dated rates and confirmed benefit choices; the table explains exclusions. Changed inputs, eligibility or selected period block calculation, review and submission until intentional repreparation; receipted runs remain frozen.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/mock-workflows.ts"
+          "src/hr/mock-workflows.ts",
+          "src/hr/components/useHrFormDraft.ts"
         ]
       },
       "sdk": {
@@ -930,11 +1018,12 @@
       "capabilitySha256": "eccb86d64c41e499b1ab5a411f74f399fb8d55bfe616e90cf62ce8744c9a47f3",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Own dated entries and stopped timers become draft hours. Bound employees/managers can edit or explicitly delete only their own unpaid drafts. A different direct manager can return submitted unpaid time with a saved reason for correction and resubmission; scoped approval is still required. Submitted, approved and receipted rows resist draft edits/deletion; only eligible approved unpaid hours with explicit dated rates enter chosen-period native payroll.",
+        "behavior": "Own dated entries and stopped timers become draft hours. Bound employees/managers edit or explicitly delete only their own unpaid drafts. A different direct manager may return submitted unpaid time with a saved reason for correction and resubmission. Manual entry, correction, return-reason and running-timer groups protect transient work; stopping a timer accepts its draft only after the domain action succeeds. Submitted, approved and receipted rows resist draft edits/deletion; eligible approved unpaid hours with dated rates enter chosen-period payroll.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/mock-workflows.ts",
-          "src/hr/model.ts"
+          "src/hr/model.ts",
+          "src/hr/components/useHrFormDraft.ts"
         ]
       },
       "sdk": {
@@ -973,11 +1062,13 @@
       "capabilitySha256": "2ec22dbd66a6aa318b7c082a802c1e29abf3b22bfe7476f979cdc8aec245e083",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Employees request/cancel fictional vacation or sick leave; scoped managers approve/reject, with reserved balances and people-operation receipts.",
+        "behavior": "Employees request/cancel fictional vacation or sick leave; scoped managers approve/reject, with reserved balances and people-operation receipts. The temporary dates/type form has its own normalized baseline and guards a change of target employee; an accepted request clears that group without clearing unrelated forms.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/people-operations.ts",
-          "integrations/gusto/functions/src/backend.mjs"
+          "integrations/gusto/functions/src/backend.mjs",
+          "src/hr/components/PeopleOperations.tsx",
+          "src/hr/components/useHrFormDraft.ts"
         ]
       },
       "sdk": {
@@ -1058,10 +1149,12 @@
       "capabilitySha256": "1d8cfa9a6e375dbfaa1869edf4b1fa2d385a2d7d0c985f13bbb00f15e1806b30",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/HR create, edit, publish and close fictional jobs; candidates move through screening/interview/offer/hire or rejection, and accepted sample hires enter native onboarding.",
+        "behavior": "Owner/HR create, edit, publish and close fictional jobs; candidates move through screening/interview/offer/hire or rejection, and accepted sample hires enter native onboarding. Job and candidate inputs have independent dirty groups. Closing the candidate form’s selected published job is guarded before the job changes, and successful creation clears only its completed form.",
         "refs": [
           "src/hr/recruiting.ts",
-          "src/hr/recruiting-link.ts"
+          "src/hr/recruiting-link.ts",
+          "src/hr/components/HrRecruiting.tsx",
+          "src/hr/components/useHrFormDraft.ts"
         ]
       },
       "sdk": {
@@ -1327,10 +1420,12 @@
       "capabilitySha256": "12729b8d6bbb8863f7ffebf063fe6a4c898ec883150a12b1f08143b8fbd6aee0",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Goals and private self-review drafts progress through self submission, assigned manager publication and employee acknowledgment under native relationship checks.",
+        "behavior": "Goals and private self-review drafts progress through self submission, assigned manager publication and employee acknowledgment under native relationship checks. Goal/cycle creation, progress and self/manager text use independent temporary form groups. Saving accepts only that group’s baseline; self submission and manager publication require current text to be saved first. Saved private domain drafts remain distinct from unsaved inputs.",
         "refs": [
           "src/hr/performance.ts",
-          "src/hr/model.ts"
+          "src/hr/model.ts",
+          "src/hr/components/HrPerformance.tsx",
+          "src/hr/components/useHrFormDraft.ts"
         ]
       },
       "sdk": {
@@ -1365,10 +1460,12 @@
       "capabilitySha256": "32061dea6eb7c3d81e2a8b7cb63a3b9332c7403bcfa8dc9cb7ab7337f8c1f1ad",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "The fictional service desk supports employee equipment/access/general requests, scoped manager triage and owner/HR assignment, start, resolution and reopening.",
+        "behavior": "The fictional service desk supports employee equipment/access/general requests, scoped manager triage and owner/HR assignment, start, resolution and reopening. Request creation, assignment and resolution inputs use independent dirty groups. Resolving a request guards an unsaved assignment first; accepted actions clear only their completed group, while invalid actions retain it.",
         "refs": [
           "src/hr/service-desk.ts",
-          "src/hr/components/HrWorkspace.tsx"
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/components/HrServiceDesk.tsx",
+          "src/hr/components/useHrFormDraft.ts"
         ]
       },
       "sdk": {
@@ -1403,9 +1500,11 @@
       "capabilitySha256": "b43b91222d06511c5717e50836ea48421d7ea8b611ff80bfbed583e54f4cb328",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/HR draft, publish and close sample surveys; identified assigned employees save drafts and submit own answers. Responses are not anonymous.",
+        "behavior": "Owner/HR draft, publish and close sample surveys; identified assigned employees save drafts and submit own answers. Questions/audience and response inputs have separate normalized dirty groups. Publication/submission requires the current draft or answers to be saved first; accepted Save clears that form’s baseline. Saved private answers remain domain records, and responses are not anonymous.",
         "refs": [
-          "src/hr/surveys.ts"
+          "src/hr/surveys.ts",
+          "src/hr/components/HrSurveys.tsx",
+          "src/hr/components/useHrFormDraft.ts"
         ]
       },
       "sdk": {

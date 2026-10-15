@@ -7,6 +7,29 @@ export function handlePayroll({ method, path, query, body, state, respond, error
   const companyRoot = `/v1/companies/${state.companyId}`
   const payrollRoot = `${companyRoot}/payrolls/${state.payroll.uuid}`
   const payroll = state.payroll
+  if (path === `/v1/payrolls/${payroll.uuid}/receipt`) {
+    if (method !== 'GET') return error(403, 'mock_method_denied', 'Synthetic payroll receipts support reads only.')
+    if (query.size) return error(422, 'invalid_attribute_value', 'Synthetic payroll receipts do not accept query options.')
+    if (state.payrollPhase !== 'submitted' || !state.receipt || !payroll.totals) return error(409, 'invalid_operation', 'Submit this synthetic payroll before reading its fictional receipt.')
+    return respond(200, {
+      payroll_uuid: payroll.uuid, company_uuid: state.companyId,
+      name_of_sender: 'Fictional Demo Employer — local mock only', name_of_recipient: 'Fictional payroll recipients',
+      recipient_notice: state.receipt.notice, debit_date: new Date(payroll.payroll_deadline).toISOString().slice(0, 10),
+      license: 'Synthetic receipt only. No licensed processing or funds movement occurred.', license_uri: '/hr/demo/sdk',
+      right_to_refund: 'No payment occurred; this fictional receipt creates no refund right.',
+      liability_of_licensee: 'No provider account, filing, banking connection or legal submission exists in this mock.',
+      totals: { company_debit: payroll.totals.company_debit, net_pay_debit: payroll.totals.net_pay_debit,
+        child_support_debit: '0.00', reimbursement_debit: '0.00', tax_debit: '0.00' },
+      taxes: [],
+      employee_compensations: payroll.employee_compensations.filter(row => !row.excluded).map(row => {
+        const person = state.employees.find(employee => employee.uuid === row.employee_uuid)
+        return { employee_uuid: row.employee_uuid, employee_first_name: person.first_name, employee_last_name: person.last_name,
+          payment_method: row.payment_method, net_pay: row.net_pay, total_tax: '0.00', total_garnishments: '0.00',
+          child_support_garnishment: '0.00', total_reimbursement: '0.00' }
+      }),
+      licensee: { name: 'Fictional local mock processor', address: '100 Fictional Lane', city: 'Austin', state: 'TX', postal_code: '78701', phone_number: '0000000000' },
+    })
+  }
   if (path === `${companyRoot}/bank_accounts` && method === 'GET') return respond(200, state.payrollFixture.bankAccounts)
   if (path === `${companyRoot}/payment_configs` && method === 'GET') return respond(200, state.payrollFixture.paymentConfig)
   if (path === `${companyRoot}/pay_schedules/${state.payrollFixture.paySchedule.uuid}` && method === 'GET') return respond(200, state.payrollFixture.paySchedule)

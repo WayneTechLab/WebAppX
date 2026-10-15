@@ -4,6 +4,8 @@ import { createDemoWorkspaces, demoWorkspaceValidators, type DemoWorkspaces } fr
 import type { DemoModule, DemoStorageStatus } from './persistence'
 import { restoreWithCheckpoint, undoRestorePoint } from './restore-workspaces'
 import { clearRestorePoints, createManualRestorePoint, loadRestorePoints, renameRestorePoint, type RestorePoint, type RestorePointsLoad } from './restore-points'
+import { defaultRecoveryPreferences, loadRecoveryPreferences, saveRecoveryPreferences, type RecoveryPreference, type WorkspaceRecoveryControls } from './recovery-preferences'
+import { previewWorkspaceReplacement, replaceWorkspaceWithRecovery, type WorkspaceReplacement, type WorkspaceReplacementResult } from './replacement-recovery'
 
 type PortalWorkspace<K extends DemoModule> = ReturnType<typeof useDemoPersistence<DemoWorkspaces[K]>>
 type WorkspaceRevisions = Record<DemoModule, number>
@@ -31,11 +33,27 @@ const createCrm = () => createDemoWorkspaces().crm
  * the same in-memory snapshots. No component loads a second, stale copy.
  */
 export function PortalWorkspaceProvider({ children }: { children: ReactNode }) {
-  const hr = useDemoPersistence('hr', createHr, demoWorkspaceValidators.hr)
-  const cms = useDemoPersistence('cms', createCms, demoWorkspaceValidators.cms)
-  const crm = useDemoPersistence('crm', createCrm, demoWorkspaceValidators.crm)
+  function replacement<K extends DemoModule>(module: K, current: DemoWorkspaces[K], incoming: unknown, operation: WorkspaceReplacement, confirmation?: string): WorkspaceReplacementResult<DemoWorkspaces[K]> {
+    const result = replaceWorkspaceWithRecovery(module, { ...states, [module]: current }, incoming, operation, undefined, {}, confirmation)
+    if ((result.ok && result.points) || (!result.ok && (result.recoveryRequired || result.refreshPreview))) setHistory(loadRestorePoints())
+    setSettings(loadRecoveryPreferences())
+    return result
+  }
+  const hr = useDemoPersistence('hr', createHr, demoWorkspaceValidators.hr, {
+    importState: (current, incoming, confirmation) => replacement('hr', current, incoming, 'import', confirmation),
+    reset: (current, seed, confirmation) => replacement('hr', current, seed, 'reset', confirmation),
+  })
+  const cms = useDemoPersistence('cms', createCms, demoWorkspaceValidators.cms, {
+    importState: (current, incoming, confirmation) => replacement('cms', current, incoming, 'import', confirmation),
+    reset: (current, seed, confirmation) => replacement('cms', current, seed, 'reset', confirmation),
+  })
+  const crm = useDemoPersistence('crm', createCrm, demoWorkspaceValidators.crm, {
+    importState: (current, incoming, confirmation) => replacement('crm', current, incoming, 'import', confirmation),
+    reset: (current, seed, confirmation) => replacement('crm', current, seed, 'reset', confirmation),
+  })
   const [revisions, setRevisions] = useState<WorkspaceRevisions>({ hr: 0, cms: 0, crm: 0 })
   const [history, setHistory] = useState(() => loadRestorePoints())
+  const [settings, setSettings] = useState(() => loadRecoveryPreferences())
   const { acceptStoredState: acceptHr } = hr
   const { acceptStoredState: acceptCms } = cms
   const { acceptStoredState: acceptCrm } = crm
@@ -57,7 +75,7 @@ export function PortalWorkspaceProvider({ children }: { children: ReactNode }) {
     return result
   }, [acceptHr, acceptCms, acceptCrm])
 
-  const states = { hr: hr.state, cms: cms.state, crm: crm.state }
+  const states: DemoWorkspaces = { hr: hr.state, cms: cms.state, crm: crm.state }
   const restore: WorkspaceBundle['restore'] = (target, selected) => acceptRestore(restoreWithCheckpoint(states, target, selected))
   const undo: WorkspaceBundle['undo'] = (pointId, expectedPoint) => acceptRestore(undoRestorePoint(states, pointId, undefined, {}, expectedPoint))
   const clearHistory = () => {
@@ -78,7 +96,18 @@ export function PortalWorkspaceProvider({ children }: { children: ReactNode }) {
   }
 
   const statuses = { hr: hr.status, cms: cms.status, crm: crm.status }
-  return <PortalWorkspaceContext.Provider value={{ hr, cms, crm, bundle: { states, revisions, statuses, restore, history, undo, clearHistory, createPoint, renamePoint, refreshHistory } }}>{children}</PortalWorkspaceContext.Provider>
+  const setPreference = (preference: RecoveryPreference, enabled: boolean) => {
+    const latest = loadRecoveryPreferences()
+    const result = saveRecoveryPreferences({ ...(latest.error ? defaultRecoveryPreferences() : latest.preferences), [preference]: enabled })
+    setSettings(loadRecoveryPreferences())
+    return result
+  }
+  const recovery = (module: DemoModule): WorkspaceRecoveryControls => ({
+    settings, setPreference,
+    previewImport: incoming => previewWorkspaceReplacement(module, states, incoming, 'import', settings, history),
+    previewReset: () => previewWorkspaceReplacement(module, states, createDemoWorkspaces()[module], 'reset', settings, history),
+  })
+  return <PortalWorkspaceContext.Provider value={{ hr: { ...hr, recovery: recovery('hr') }, cms: { ...cms, recovery: recovery('cms') }, crm: { ...crm, recovery: recovery('crm') }, bundle: { states, revisions, statuses, restore, history, undo, clearHistory, createPoint, renamePoint, refreshHistory } }}>{children}</PortalWorkspaceContext.Provider>
 }
 
 // These hooks deliberately share the provider's private context.

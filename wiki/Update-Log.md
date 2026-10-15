@@ -1,6 +1,38 @@
 # Update Log
 
-## 3.4.0 portal maturity wave — focused verification passed, 2026-10-15
+## 3.4.0 portal safety wave — local criteria verified, 2026-10-15
+
+Start from published base `532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. Add
+[registered dirty-form navigation and recovery](Portal-Safety-and-Recovery.md),
+with explicit Keep/Discard and eligible Leave and keep draft decisions across
+native HR/CMS/CRM. Accepted actions clear only their own form baselines; retained
+buffers remain temporary and outside exports.
+
+Preserve a dirty CMS author editor through individual import, selective restore
+and Undo for escaped baseline/restored/unsaved comparison. Reload discards it;
+Reapply copies only meaningfully changed fields into a buffer and still requires
+normal Save. Accepted Reset clears the editor. Add independently opt-in required
+checkpoints for individual import and Reset, preview-bound confirmation and
+rollback/preservation checks. Both preferences start off; unknown preferences
+refuse replacement, while known-off Reset retains its one-click behavior.
+
+Add bounded CMS draft/approval/publication and CRM owner/link/stage details to
+the read-only difference engine. Add `safety:test`, `browser:safety`,
+`browser:quality` and `browser:recovery-drill`; reports distinguish actual
+interaction, isolated rendering/storage fixtures and owned child-process
+cleanup. Read the [state contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md),
+[failure drill](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-RECOVERY-FAILURE-DRILL.md),
+[status inventory](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATUS-INVENTORY.md) and
+[current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md).
+
+Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+
+Focused and browser verification passed. The required **61-stage integrated CI and Hosting preflight are pending** before publication; their final results belong in the current safety QA receipt.
+
+Prior maturity/evaluator receipts below retain their original dates, source
+bases and observed results. They do not establish this wave's final gates.
+
+## 3.4.0 historical portal maturity wave — verified, 2026-10-15
 
 Implement **16 original criteria — WX-0056, WX-0151–WX-0158, WX-0280,
 WX-0282, WX-0397, WX-0453, WX-0454, WX-0457 and WX-0458** — from published
@@ -39,8 +71,8 @@ covering all 16 criteria**. Literal maturity payroll expectations reconcile
 evaluator scenario. Real uploads/downloads, complete exports and raw-save checks
 use fresh owned browser contexts and loopback resources; cleanup passed.
 
-Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
-records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+Agent 0 accepted all **16 original criteria locally**. At that checkpoint the catalog
+recorded **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
 **756 local, 127 operator and 40 provider** gates remaining. The full 1,000-item
 goal remains active; use `npm run backlog:summary` for current counts.
 

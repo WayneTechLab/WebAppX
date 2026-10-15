@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { normalizeHrFormValue, useHrFormDraft } from './useHrFormDraft'
 import type { HrActor, HrFixture } from '../model'
 import { canManageSurveys, scopedSurveys, surveyAggregate, surveySummary, type HrSurvey, type SurveysEvent, type SurveysState } from '../surveys'
 
@@ -8,45 +9,42 @@ type Action = (event: SurveysEvent) => boolean | void
 
 function DraftForm({ survey, fixture, onAction }: { survey?: HrSurvey; fixture: HrFixture; onAction: Action }) {
   const [message, setMessage] = useState('')
-  const [dirty, setDirty] = useState(false)
+  const initial = { title: survey?.title ?? '', ratingPrompt: survey?.questions.ratingPrompt ?? 'How clear are the sample onboarding next steps?', textPrompt: survey?.questions.textPrompt ?? 'What would improve this fictional onboarding experience?', audienceIds: survey?.audienceIds ?? [] }
+  const draft = useHrFormDraft({ id: `hr:survey:${survey?.id ?? 'new'}:draft`, label: survey ? `Survey draft ${survey.id}` : 'New sample survey', initial, normalize: value => normalizeHrFormValue({ ...value, audienceIds: [...value.audienceIds].sort() }) })
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const form = event.currentTarget
-    const values = new FormData(form)
-    const fields = { title: String(values.get('title') ?? ''), ratingPrompt: String(values.get('ratingPrompt') ?? ''), textPrompt: String(values.get('textPrompt') ?? ''), audienceIds: values.getAll('audience').map(String) }
+    const fields = draft.value
     const action: SurveysEvent = survey ? { type: 'edit-survey', surveyId: survey.id, ...fields } : { type: 'create-survey', ...fields }
     if (onAction(action) !== false) {
-      setDirty(false)
+      draft.accept(survey ? { ...fields, title: fields.title.trim(), ratingPrompt: fields.ratingPrompt.trim(), textPrompt: fields.textPrompt.trim() } : initial)
       setMessage(survey ? 'Sample draft saved. Publish when the questions and audience are ready.' : 'Sample survey draft created. Review it below before publishing.')
-      if (!survey) form.reset()
     }
   }
-  return <form className="space-y-4" onSubmit={submit} onChange={() => setDirty(true)}>
-    <label className="block text-sm font-medium">Survey title<input className={field} name="title" defaultValue={survey?.title ?? ''} minLength={3} maxLength={100} required placeholder="Demo onboarding feedback" /></label>
-    <label className="block text-sm font-medium">Rating question · 1–5<input className={field} name="ratingPrompt" defaultValue={survey?.questions.ratingPrompt ?? 'How clear are the sample onboarding next steps?'} minLength={3} maxLength={180} required /></label>
-    <label className="block text-sm font-medium">Short-text question<input className={field} name="textPrompt" defaultValue={survey?.questions.textPrompt ?? 'What would improve this fictional onboarding experience?'} minLength={3} maxLength={180} required /></label>
-    <fieldset><legend className="text-sm font-semibold">Employee audience</legend><p className="mt-1 text-xs leading-5 text-neutral-500">Choose at least one sample employee. The audience and questions become fixed when published; future hires are not added automatically.</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{fixture.employees.map(employee => <label key={employee.id} className="flex min-h-11 items-center gap-3 rounded-md border border-neutral-200 p-3 text-sm"><input type="checkbox" name="audience" value={employee.id} defaultChecked={survey ? survey.audienceIds.includes(employee.id) : false} className="size-4 accent-emerald-700" /><span>{employee.firstName} {employee.lastName}<span className="block text-xs text-neutral-500">{employee.department}</span></span></label>)}</div></fieldset>
+  return <form id={draft.id} className="space-y-4" onSubmit={submit}>
+    <label className="block text-sm font-medium">Survey title<input className={field} name="title" value={draft.value.title} onChange={event => draft.setValue(previous => ({ ...previous, title: event.target.value }))} minLength={3} maxLength={100} required placeholder="Demo onboarding feedback" /></label>
+    <label className="block text-sm font-medium">Rating question · 1–5<input className={field} name="ratingPrompt" value={draft.value.ratingPrompt} onChange={event => draft.setValue(previous => ({ ...previous, ratingPrompt: event.target.value }))} minLength={3} maxLength={180} required /></label>
+    <label className="block text-sm font-medium">Short-text question<input className={field} name="textPrompt" value={draft.value.textPrompt} onChange={event => draft.setValue(previous => ({ ...previous, textPrompt: event.target.value }))} minLength={3} maxLength={180} required /></label>
+    <fieldset><legend className="text-sm font-semibold">Employee audience</legend><p className="mt-1 text-xs leading-5 text-neutral-500">Choose at least one sample employee. The audience and questions become fixed when published; future hires are not added automatically.</p><div className="mt-3 grid gap-2 sm:grid-cols-2">{fixture.employees.map(employee => <label key={employee.id} className="flex min-h-11 items-center gap-3 rounded-md border border-neutral-200 p-3 text-sm"><input type="checkbox" name="audience" value={employee.id} checked={draft.value.audienceIds.includes(employee.id)} onChange={event => { const checked = event.target.checked; draft.setValue(previous => ({ ...previous, audienceIds: checked ? [...previous.audienceIds, employee.id] : previous.audienceIds.filter(id => id !== employee.id) })) }} className="size-4 accent-emerald-700" /><span>{employee.firstName} {employee.lastName}<span className="block text-xs text-neutral-500">{employee.department}</span></span></label>)}</div></fieldset>
     <button type="submit" className={button}>{survey ? 'Save sample survey draft' : 'Create sample survey draft'}</button><p role="status" className="text-sm text-emerald-800">{message}</p>
-    {survey && <div className="border-t border-neutral-200 pt-4"><p className="text-xs leading-5 text-neutral-500">Save any edits before publishing. Publication fixes the saved questions and audience and makes this survey available to its assigned employee previews.</p><button type="button" className={button + ' mt-3'} disabled={dirty} onClick={() => onAction({ type: 'publish-survey', surveyId: survey.id })}>Publish saved sample survey</button>{dirty && <p className="mt-2 text-xs text-neutral-500">Save the draft before publishing these changes.</p>}</div>}
+    {survey && <div className="border-t border-neutral-200 pt-4"><p className="text-xs leading-5 text-neutral-500">Save any edits before publishing. Publication fixes the saved questions and audience and makes this survey available to its assigned employee previews.</p><button type="button" className={button + ' mt-3'} disabled={draft.dirty} onClick={() => onAction({ type: 'publish-survey', surveyId: survey.id })}>Publish saved sample survey</button>{draft.dirty && <p className="mt-2 text-xs text-neutral-500">Save the draft before publishing these changes.</p>}</div>}
   </form>
 }
 
 function SurveyAnswers({ survey, actor, onAction }: { survey: HrSurvey; actor: HrActor; onAction: Action }) {
   const response = survey.responses.find(record => record.employeeId === actor.employeeId)
-  const [dirty, setDirty] = useState(false)
+  const draft = useHrFormDraft({ id: `hr:survey:${survey.id}:${actor.employeeId}:response`, label: `Survey response ${survey.id}`, initial: { rating: response ? String(response.rating) : '', text: response?.text ?? '' }, enabled: survey.status === 'published' && response?.status !== 'submitted' })
   const [message, setMessage] = useState('')
   if (response?.status === 'submitted') return <div className="mt-5 rounded-lg bg-emerald-50 p-4 text-sm text-emerald-950"><h4 className="font-semibold">Your submitted sample response</h4><p className="mt-3">{survey.questions.ratingPrompt} <strong>{response.rating} / 5</strong></p><p className="mt-3 font-medium">{survey.questions.textPrompt}</p><p className="mt-1 whitespace-pre-wrap break-words leading-6">{response.text}</p><p className="mt-3 text-xs font-semibold">{response.receipt} · Submitted once; answers are locked.</p></div>
   if (survey.status === 'closed') return <p className="mt-5 rounded-md bg-neutral-50 p-4 text-sm text-neutral-600">This sample survey is closed.{response ? ' Your saved answers were not submitted and are excluded from results.' : ' No response was submitted.'}{response && <span className="mt-3 block break-words">Your saved rating: {response.rating} / 5 · Your saved text: {response.text}</span>}</p>
   function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const values = new FormData(event.currentTarget)
-    if (onAction({ type: 'save-survey-response', surveyId: survey.id, rating: Number(values.get('rating')), text: String(values.get('text') ?? '') }) !== false) { setDirty(false); setMessage('Your sample answers are saved privately as a draft. Submit to include them in identified results.') }
+    if (onAction({ type: 'save-survey-response', surveyId: survey.id, rating: Number(draft.value.rating), text: draft.value.text }) !== false) { draft.accept({ ...draft.value, text: draft.value.text.trim() }); setMessage('Your sample answers are saved privately as a draft. Submit to include them in identified results.') }
   }
-  return <div className="mt-5"><form className="space-y-4" onSubmit={save} onChange={() => setDirty(true)}>
-    <label className="block text-sm font-medium">{survey.questions.ratingPrompt}<select name="rating" defaultValue={response?.rating ?? ''} required className={field}><option value="" disabled>Choose a sample rating</option>{[1, 2, 3, 4, 5].map(rating => <option key={rating} value={rating}>{rating} / 5</option>)}</select></label>
-    <label className="block text-sm font-medium">{survey.questions.textPrompt}<textarea className={field} name="text" defaultValue={response?.text ?? ''} required minLength={3} maxLength={500} rows={3} placeholder="Use fictional feedback only." /></label>
+  return <div className="mt-5"><form id={draft.id} className="space-y-4" onSubmit={save}>
+    <label className="block text-sm font-medium">{survey.questions.ratingPrompt}<select name="rating" value={draft.value.rating} onChange={event => draft.setValue(previous => ({ ...previous, rating: event.target.value }))} required className={field}><option value="" disabled>Choose a sample rating</option>{[1, 2, 3, 4, 5].map(rating => <option key={rating} value={rating}>{rating} / 5</option>)}</select></label>
+    <label className="block text-sm font-medium">{survey.questions.textPrompt}<textarea className={field} name="text" value={draft.value.text} onChange={event => draft.setValue(previous => ({ ...previous, text: event.target.value }))} required minLength={3} maxLength={500} rows={3} placeholder="Use fictional feedback only." /></label>
     <button type="submit" className={button}>Save my sample answers</button><p role="status" className="text-sm text-emerald-800">{message}</p>
-  </form><div className="mt-4 border-t border-neutral-200 pt-4"><p className="text-xs leading-5 text-neutral-500">Submission shares your name and these answers with the owner, HR administrators and read-only auditor preview. Submitted answers cannot be edited or submitted again.</p><button type="button" className={button + ' mt-3'} disabled={!response || dirty} onClick={() => onAction({ type: 'submit-survey-response', surveyId: survey.id })}>Submit my sample response</button>{dirty && <p className="mt-2 text-xs text-neutral-500">Save your current answers before submitting.</p>}</div></div>
+  </form><div className="mt-4 border-t border-neutral-200 pt-4"><p className="text-xs leading-5 text-neutral-500">Submission shares your name and these answers with the owner, HR administrators and read-only auditor preview. Submitted answers cannot be edited or submitted again.</p><button type="button" className={button + ' mt-3'} disabled={!response || draft.dirty} onClick={() => onAction({ type: 'submit-survey-response', surveyId: survey.id })}>Submit my sample response</button>{draft.dirty && <p className="mt-2 text-xs text-neutral-500">Save your current answers before submitting.</p>}</div></div>
 }
 
 function Results({ survey, fixture }: { survey: HrSurvey; fixture: HrFixture }) {

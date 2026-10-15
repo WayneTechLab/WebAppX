@@ -4,12 +4,12 @@
   "review": {
     "proposalId": "WX-0908",
     "criterion": "A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.",
-    "sourceRevision": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+    "sourceRevision": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
     "canonicalDocument": "docs/PORTAL-CAPABILITIES.md",
     "reviewedSources": [
       {
         "path": "docs/PORTAL-CAPABILITIES.md",
-        "sha256": "18c422225b25b4b0020946e81fd85471ad89db8d71ab508d9398a1c3f6785d69"
+        "sha256": "145d912322bd3d4e9ffce7a8ca45131c1fd557f8801ef9d36ed348934368f6cd"
       },
       {
         "path": "src/hr/model.ts",
@@ -41,19 +41,119 @@
       },
       {
         "path": "src/portals/DemoWorkspaceBackup.tsx",
-        "sha256": "5c1028cd8b954c77fffbc3c5ac33d2f232874109f57929911b61a9608c57dc88"
+        "sha256": "2b173d5d158281d0f1b390215a39047981b2949cf5c5a6c43dd8be6bad6f5aed"
       },
       {
         "path": "src/portals/CombinedWorkspaceBackup.tsx",
-        "sha256": "29cf00252051dee4e172f467d2ae026fee95ed7ed48443df287f6f449141c311"
+        "sha256": "8c8a26fad535f26760e3d206912523d59ca77c1adc9cbe27506eca187587afb0"
       },
       {
         "path": "src/hr/components/HrWorkspace.tsx",
-        "sha256": "169e81c354ab72cf61fb89fa4e3244fe27e99c5efbe1742cafdd1d82c1cd2d20"
+        "sha256": "09f094455796da1879b82d9e8e9daf86800c16a24617a34f7396965e90a089ba"
       },
       {
         "path": ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json",
         "sha256": "14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3"
+      },
+      {
+        "path": "src/portals/unsaved-work-core.ts",
+        "sha256": "ee9abc498ae015df8554e2056d1526dfc2d5b534bc1e47284242c7134d8c5a59"
+      },
+      {
+        "path": "src/portals/unsaved-work.tsx",
+        "sha256": "5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316"
+      },
+      {
+        "path": "src/lib/navigation.ts",
+        "sha256": "d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24"
+      },
+      {
+        "path": "src/router.tsx",
+        "sha256": "0ef2cee3f4e1c684db7f54525448b83535da6a3d7da2c68333b518f064be5a32"
+      },
+      {
+        "path": "src/hr/components/useHrFormDraft.ts",
+        "sha256": "d93f943cad287eb323ea80799d9f807d1e537aaf1dd9032b51a6e6c50c9265e7"
+      },
+      {
+        "path": "src/hr/components/PeopleOperations.tsx",
+        "sha256": "a6f6ade235d7c4ce8dec497cbc5a4c6fbf9fe6553efb71f5e30f6b99683e3d0b"
+      },
+      {
+        "path": "src/hr/components/HrServiceDesk.tsx",
+        "sha256": "584ce87da135d5bdc04c56fd9c4789d5e8269c42e7a9f8308ef42adaf8ba1267"
+      },
+      {
+        "path": "src/hr/components/HrRecruiting.tsx",
+        "sha256": "f2f4b25642cecddd1433d23c6a3fb2f4c1fb109b890ed5763169aec5457e7857"
+      },
+      {
+        "path": "src/hr/components/HrPerformance.tsx",
+        "sha256": "7c27e5b9a36dc02f69725c101e21568661b9820b613bca0fe44e781f81090357"
+      },
+      {
+        "path": "src/hr/components/HrSurveys.tsx",
+        "sha256": "ba28cb8d4bdc1d5a3e313be89f4272bbd340dedbb3d1d9008609a48b71a794ef"
+      },
+      {
+        "path": "src/cms/model.ts",
+        "sha256": "b5281fea82aa168a5dc9262353e7d5cd45255915ceaf2db54282dd5ba8c64e7f"
+      },
+      {
+        "path": "src/cms/CmsDemo.tsx",
+        "sha256": "e242a252a724f8ac36ea7f7612016da4ed2372c25fcb22f386b85c7c3d573ee6"
+      },
+      {
+        "path": "src/cms/editor-recovery.ts",
+        "sha256": "0806b91c571018ebb5735130a670a5cf0fcd9d5d00227e9b6f425a49a982ac27"
+      },
+      {
+        "path": "src/portals/PortalWorkspaceProvider.tsx",
+        "sha256": "186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa"
+      },
+      {
+        "path": "src/portals/useDemoPersistence.ts",
+        "sha256": "7ea3895df10dc73752ee5fb622f3fed08957f0a4d031485d09b1a2747fda05ed"
+      },
+      {
+        "path": "src/portals/recovery-preferences.ts",
+        "sha256": "0104715273131dfc397c991b3fe201d525e32903b21b265ddc17bd5fe3391859"
+      },
+      {
+        "path": "src/portals/replacement-recovery.ts",
+        "sha256": "4d80db30057b7ddd1974400e0a8555b33158ec7b8ce55633726b2f8de839dc2c"
+      },
+      {
+        "path": "src/portals/DemoWorkspaceReset.tsx",
+        "sha256": "907be2ce4b8182c8207383136b327948b8fb5f9bf879e6080ebeb537c43b6d81"
+      },
+      {
+        "path": "src/portals/RecoveryCheckpointPreview.tsx",
+        "sha256": "537ac122bab47679253afe068c4af1aa3c158903bc13c7a9a501a7b3a9b7c71d"
+      },
+      {
+        "path": "src/portals/restore-points.ts",
+        "sha256": "d80d770440de2db847fd5cd933a960fbe2cc88adb4f80d9bd9ae13e97ce89e1b"
+      },
+      {
+        "path": "src/portals/RestorePointHistory.tsx",
+        "sha256": "883a619f1e6f78db5ffee7302b48b36b6f88823ddfe706699a0395ee6505183d"
+      },
+      {
+        "path": "src/portals/restore-workspaces.ts",
+        "sha256": "1e84b45222b119e9d02e75efa1ba251584353ef0ff2142db5350f009e2797cce"
+      },
+      {
+        "path": "src/portals/workspace-inspection.ts",
+        "sha256": "93359bb84b035a6415ae53540f274ec9b9f12ba6564d6fb1c1c0c39986c1bbd3"
+      },
+      {
+        "path": "src/portals/WorkspaceInspection.tsx",
+        "sha256": "c9daf24e7fd319f0fceb9543dc69b2b8424044e812bae6b02a188fc6d97013f5"
+      },
+      {
+        "path": "src/crm/CrmDemo.tsx",
+        "sha256": "40fb0275d100fb788f8ca77f1d458d8419b2316db99c9a4f8fc20db8b06c6221"
       }
     ],
     "hashMode": "utf8-lf-sha256"
@@ -772,8 +872,9 @@
       "Unpublished CMS drafts and review metadata; CRM records belonging to other representatives."
     ],
     "excluded": [
-      "Unsaved form inputs, running timers, restore-point history and the separate SDK mock session."
+      "Unsaved form inputs, running timers, restore-point history and the separate SDK mock session.",
+      "Retained navigation drafts, the volatile CMS editor/recovery buffer and origin-local checkpoint preferences; these are not saved domain records."
     ],
-    "authority": "Readable JSON backups and synthetic role choices do not authenticate a person, grant Firebase claims or tenant membership, or authorize provider access. Production export needs its own trusted actor, resource and field policy."
+    "authority": "Readable JSON backups and synthetic role choices do not authenticate a person, grant Firebase claims or tenant membership, or authorize provider access. Dirty-form choices and required destination checkpoints protect local editing/replacement but grant no role permission. Production export needs its own trusted actor, resource and field policy."
   }
 }

@@ -8,15 +8,25 @@ export type WorkspaceCollectionInspection = { key: string; label: string; kind: 
 export type WorkspaceModuleInspection = { module: DemoModule; primaryRecordCount: number; collections: WorkspaceCollectionInspection[] }
 export type WorkspaceInspectionReport = { schemaVersion: 1; modules: WorkspaceModuleInspection[] }
 type ChangeKind = 'added' | 'removed' | 'changed'
+export type StructuredRecordMetadata = Record<string, string | number | null>
+export type CmsProjection = 'draft' | 'approval' | 'publication'
+export type ProjectionDifference = ChangeKind | 'unchanged' | 'absent'
+export type WorkspaceRecordDifference = {
+  identifier: string; before: StructuredRecordMetadata | null; after: StructuredRecordMetadata | null;
+  projections?: Record<CmsProjection, ProjectionDifference>;
+}
 export type WorkspaceCollectionDifference = Omit<WorkspaceCollectionInspection, 'count' | 'identifiers' | 'omittedIdentifiers'> & {
   beforeCount: number; afterCount: number; added: number; removed: number; changed: number; unchanged: number;
   identifiers: Record<ChangeKind, string[]>; omittedIdentifiers: Record<ChangeKind, number>;
+  recordDetails?: Record<ChangeKind, WorkspaceRecordDifference[]>;
 }
 export type WorkspaceModuleDifference = { module: DemoModule; added: number; removed: number; changed: number; unchanged: number; hasChanges: boolean; collections: WorkspaceCollectionDifference[] }
 export type WorkspaceDifferenceReport = { schemaVersion: 1; modules: WorkspaceModuleDifference[] }
 type JsonRecord = Record<string, unknown>
 type Entity = { parts: string[]; value: unknown }
-type IndexedCollection = { key: string; label: string; kind: InspectionKind; identityRule: string; entries: Map<string, { identifier: string; fingerprint: string }> }
+type RecordAnnotation = { metadata: StructuredRecordMetadata; projections?: Record<CmsProjection, string | null> }
+type IndexedEntry = { identifier: string; fingerprint: string; annotation?: RecordAnnotation }
+type IndexedCollection = { key: string; label: string; kind: InspectionKind; identityRule: string; entries: Map<string, IndexedEntry> }
 const order: readonly DemoModule[] = ['hr', 'cms', 'crm']
 const forbidden = new Set(['__proto__', 'constructor', 'prototype'])
 const failure = (reason: string): never => { throw new Error(`Workspace inspection unavailable: ${reason}. No records were changed.`) }
@@ -35,6 +45,65 @@ const encode = (parts: string[]) => JSON.stringify(parts)
 const by = (rows: unknown[], identity: (value: unknown) => string[]) => [...rows].sort((left, right) => compare(encode(identity(left)), encode(identity(right))))
 const stable = (value: unknown): unknown => Array.isArray(value) ? value.map(stable) : value && typeof value === 'object'
   ? Object.fromEntries(Object.keys(value).sort(compare).map(key => [key, stable((value as JsonRecord)[key])])) : value
+const fingerprint = (value: unknown) => JSON.stringify(stable(value))
+
+function revision(value: unknown): number {
+  if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 1) return failure('invalid content revision metadata')
+  return value
+}
+function stateChoice(value: unknown, allowed: readonly string[]): string {
+  if (typeof value !== 'string' || !allowed.includes(value)) return failure('invalid workflow state metadata')
+  return value
+}
+const optionalId = (record: JsonRecord, key: string) => Object.hasOwn(record, key) ? token(record[key]) : null
+
+/** Only allowlisted structured metadata leaves the comparison index. Complete
+ * hidden payload fingerprints still determine the existing change categories. */
+function annotateRecord(module: DemoModule, key: string, value: unknown): RecordAnnotation | undefined {
+  if (module === 'cms' && key === 'entries') {
+    const entry = object(value)
+    const approval = entry.approval === null ? null : object(entry.approval)
+    const published = entry.published === null ? null : object(entry.published)
+    const draft = Object.fromEntries(Object.entries(entry).filter(([field]) => !['approval', 'published'].includes(field)))
+    return {
+      metadata: {
+        collectionId: token(entry.collectionId), draftRevision: revision(entry.revision),
+        workflowStatus: stateChoice(entry.status, ['draft', 'in-review', 'approved', 'published', 'retired']),
+        approvalRevision: approval ? revision(approval.revision) : null,
+        approvalReviewerId: approval ? token(approval.reviewerId) : null,
+        approvalReceiptId: approval ? token(approval.receipt) : null,
+        publicationRevision: published ? revision(published.revision) : null,
+        publicationReceiptId: published ? token(published.receipt) : null,
+      },
+      projections: { draft: fingerprint(draft), approval: approval ? fingerprint(approval) : null, publication: published ? fingerprint(published) : null },
+    }
+  }
+  if (module !== 'crm' || !['companies', 'contacts', 'leads', 'opportunities'].includes(key)) return undefined
+  const entry = object(value)
+  const metadata: StructuredRecordMetadata = { ownerId: token(entry.ownerId) }
+  if (key === 'contacts') metadata.companyId = token(entry.companyId)
+  if (key === 'leads') Object.assign(metadata, {
+    leadState: stateChoice(entry.status, ['new', 'qualified', 'converted']),
+    companyId: optionalId(entry, 'companyId'), contactId: optionalId(entry, 'contactId'), opportunityId: optionalId(entry, 'opportunityId'),
+  })
+  if (key === 'opportunities') Object.assign(metadata, {
+    opportunityStage: stateChoice(entry.stage, ['discovery', 'proposal', 'negotiation', 'won', 'lost']),
+    companyId: token(entry.companyId), contactId: token(entry.contactId), leadId: optionalId(entry, 'leadId'),
+  })
+  return { metadata }
+}
+
+function recordDifference(before: IndexedEntry | undefined, after: IndexedEntry | undefined): WorkspaceRecordDifference {
+  const annotations = { before: before?.annotation, after: after?.annotation }
+  const projections = annotations.before?.projections || annotations.after?.projections
+    ? Object.fromEntries((['draft', 'approval', 'publication'] as const).map(key => {
+      const left = annotations.before?.projections?.[key] ?? null
+      const right = annotations.after?.projections?.[key] ?? null
+      const change: ProjectionDifference = left === null && right === null ? 'absent' : left === null ? 'added' : right === null ? 'removed' : left === right ? 'unchanged' : 'changed'
+      return [key, change]
+    })) as Record<CmsProjection, ProjectionDifference> : undefined
+  return { identifier: (after ?? before)!.identifier, before: annotations.before?.metadata ?? null, after: annotations.after?.metadata ?? null, ...(projections ? { projections } : {}) }
+}
 
 /** Inspect only JSON data properties. Accessors/cycles/unsupported values are
  * refused before collection extraction, without invoking getters or toJSON. */
@@ -87,12 +156,13 @@ function inventory(states: Partial<DemoWorkspaces>, modules: DemoModule[]): Map<
     function add(key: string, label: string, kind: InspectionKind, identityRule: string, rows: Entity[]) {
       total += rows.length
       if (total > workspaceInspectionLimits.entities) return failure('entity inspection limit exceeded')
-      const entries = new Map<string, { identifier: string; fingerprint: string }>()
+      const entries = new Map<string, IndexedEntry>()
       for (const row of rows) {
         const parts = row.parts.map(token); const identity = encode(parts)
         if (!parts.length || parts.length > 3) return failure('invalid composite identifier')
         if (entries.has(identity)) return failure(`duplicate identity in ${key}`)
-        entries.set(identity, { identifier: parts.join(' / '), fingerprint: JSON.stringify(stable(row.value)) })
+        const annotation = annotateRecord(module, key, row.value)
+        entries.set(identity, { identifier: parts.join(' / '), fingerprint: fingerprint(row.value), ...(annotation ? { annotation } : {}) })
       }
       collections.push({ key, label, kind, identityRule, entries: new Map([...entries].sort(([a], [b]) => compare(a, b))) })
     }
@@ -215,14 +285,20 @@ export function compareWorkspaces(current: Partial<DemoWorkspaces>, target: Part
     const collections = before.get(module)!.map((left, index): WorkspaceCollectionDifference => {
       const right = after.get(module)![index]
       const ids = { added: [] as string[], removed: [] as string[], changed: [] as string[] }; let unchanged = 0
+      const records: Record<ChangeKind, WorkspaceRecordDifference[]> = { added: [], removed: [], changed: [] }
+      const hasRecordDetails = module === 'cms' && left.key === 'entries' || module === 'crm' && ['companies', 'contacts', 'leads', 'opportunities'].includes(left.key)
+      function change(kind: ChangeKind, previous: IndexedEntry | undefined, next: IndexedEntry | undefined) {
+        ids[kind].push((next ?? previous)!.identifier)
+        if (hasRecordDetails && records[kind].length < limit) records[kind].push(recordDifference(previous, next))
+      }
       for (const [key, entry] of right.entries) {
         const previous = left.entries.get(key)
-        if (!previous) ids.added.push(entry.identifier)
-        else if (previous.fingerprint !== entry.fingerprint) ids.changed.push(entry.identifier)
+        if (!previous) change('added', undefined, entry)
+        else if (previous.fingerprint !== entry.fingerprint) change('changed', previous, entry)
         else unchanged++
       }
-      for (const [key, entry] of left.entries) if (!right.entries.has(key)) ids.removed.push(entry.identifier)
-      return { key: left.key, label: left.label, kind: left.kind, identityRule: left.identityRule, beforeCount: left.entries.size, afterCount: right.entries.size, added: ids.added.length, removed: ids.removed.length, changed: ids.changed.length, unchanged, identifiers: { added: ids.added.slice(0, limit), removed: ids.removed.slice(0, limit), changed: ids.changed.slice(0, limit) }, omittedIdentifiers: { added: Math.max(0, ids.added.length - limit), removed: Math.max(0, ids.removed.length - limit), changed: Math.max(0, ids.changed.length - limit) } }
+      for (const [key, entry] of left.entries) if (!right.entries.has(key)) change('removed', entry, undefined)
+      return { key: left.key, label: left.label, kind: left.kind, identityRule: left.identityRule, beforeCount: left.entries.size, afterCount: right.entries.size, added: ids.added.length, removed: ids.removed.length, changed: ids.changed.length, unchanged, identifiers: { added: ids.added.slice(0, limit), removed: ids.removed.slice(0, limit), changed: ids.changed.slice(0, limit) }, omittedIdentifiers: { added: Math.max(0, ids.added.length - limit), removed: Math.max(0, ids.removed.length - limit), changed: Math.max(0, ids.changed.length - limit) }, ...(hasRecordDetails ? { recordDetails: records } : {}) }
     })
     const primary = collections.filter(collection => collection.kind === 'primary')
     return { module, added: primary.reduce((n, row) => n + row.added, 0), removed: primary.reduce((n, row) => n + row.removed, 0), changed: primary.reduce((n, row) => n + row.changed, 0), unchanged: primary.reduce((n, row) => n + row.unchanged, 0), hasChanges: collections.some(row => row.added + row.removed + row.changed > 0), collections }

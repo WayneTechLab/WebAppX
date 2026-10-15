@@ -5,7 +5,27 @@ import { expect } from '@playwright/test'
 import { newIsolatedContext } from './portals-smoke.mjs'
 
 const navigation = page => page.getByRole('navigation', { name: 'Template workspaces', exact: true })
-const open = (page, title) => navigation(page).getByRole('link', { name: title, exact: true }).click()
+const unsaved = page => page.getByRole('dialog', { name: 'Leave with unsaved changes?', exact: true })
+async function open(page, title) {
+  const link = navigation(page).getByRole('link', { name: title, exact: true })
+  await link.click()
+  await expect(link).toHaveAttribute('aria-current', 'page')
+  await expect(unsaved(page)).not.toBeVisible()
+}
+async function chooseUnsaved(page, choice, labels) {
+  const prompt = unsaved(page)
+  await expect(prompt).toBeVisible()
+  await expect(prompt.getByRole('button', { name: 'Keep editing', exact: true })).toBeFocused()
+  await expect(prompt.getByRole('listitem')).toHaveText(labels)
+  await prompt.getByRole('button', { name: choice, exact: true }).click()
+  await expect(prompt).not.toBeVisible()
+}
+async function openKeepingDraft(page, title, labels) {
+  const link = navigation(page).getByRole('link', { name: title, exact: true })
+  await link.click()
+  await chooseUnsaved(page, 'Leave and keep draft', labels)
+  await expect(link).toHaveAttribute('aria-current', 'page')
+}
 const storageKey = module => `webappx.demo.${module}`
 
 async function browserSaves(context, origin) {
@@ -26,13 +46,15 @@ async function downloadJson(page, button, artifactDir, label) {
   return { path, text, value: JSON.parse(text) }
 }
 
-async function combinedDownload(page, artifactDir, label) {
-  await open(page, 'Portal directory')
+async function combinedDownload(page, artifactDir, label, retainedLabels) {
+  if (retainedLabels) await openKeepingDraft(page, 'Portal directory', retainedLabels)
+  else await open(page, 'Portal directory')
   return downloadJson(page, page.getByRole('button', { name: 'Export all workspaces', exact: true }), artifactDir, label)
 }
 
-async function restore(page, path, modules) {
-  await open(page, 'Portal directory')
+async function restore(page, path, modules, retainedLabels) {
+  if (retainedLabels) await openKeepingDraft(page, 'Portal directory', retainedLabels)
+  else await open(page, 'Portal directory')
   await page.getByLabel('Combined backup JSON file', { exact: true }).setInputFiles(path)
   const preview = page.getByRole('region', { name: 'Selective restore preview', exact: true })
   await expect(preview).toBeVisible()
@@ -79,7 +101,7 @@ export async function runPortalStateContract({ browser, origin, artifactDir, see
     await expect(page.getByRole('button', { name: 'Stop and add sample time', exact: true })).toBeVisible()
     await page.getByLabel('Work date', { exact: true }).fill('2026-10-13')
     await page.getByRole('spinbutton', { name: 'Hours', exact: true }).fill('2.75')
-    await open(page, 'Content management')
+    await openKeepingDraft(page, 'Content management', ['Manual time entry', 'Running sample timer'])
     assert.deepEqual(await browserSaves(context, origin), afterTime, 'Live timer and unsaved HR fields must not change saved records')
     await expect(navigation(page).getByRole('link', { name: 'People & HR', exact: true })).toHaveAttribute('href', '/hr/demo/employee/time')
     await open(page, 'People & HR')
@@ -93,6 +115,7 @@ export async function runPortalStateContract({ browser, origin, artifactDir, see
     checks.push('HR returns to its last supported subpage and retains its live timer/date/hours across portal switches without recording timer time or changing saves')
 
     await page.getByRole('navigation', { name: 'Demo portals', exact: true }).getByRole('link', { name: 'Employee', exact: true }).click()
+    await chooseUnsaved(page, 'Discard and leave', ['Manual time entry', 'Running sample timer'])
     await page.getByRole('navigation', { name: 'Employee HR pages', exact: true }).getByRole('link', { name: 'My time', exact: true }).click()
     await expect(page.getByRole('button', { name: 'Start sample timer', exact: true })).toBeVisible()
     await expect(page.getByRole('spinbutton', { name: 'Hours', exact: true })).toHaveValue('8')
@@ -101,18 +124,20 @@ export async function runPortalStateContract({ browser, origin, artifactDir, see
     await page.getByRole('button', { name: 'Start sample timer', exact: true }).click()
     await page.getByRole('spinbutton', { name: 'Hours', exact: true }).fill('3.5')
     await page.getByRole('combobox', { name: /^Synthetic employee identity/ }).selectOption('employee-002')
+    await chooseUnsaved(page, 'Discard and leave', ['Manual time entry', 'Running sample timer'])
     await expect(page.getByRole('button', { name: 'Start sample timer', exact: true })).toBeVisible()
     await expect(page.getByRole('spinbutton', { name: 'Hours', exact: true })).toHaveValue('8')
     const changedIdentity = await browserSaves(context, origin)
     assert.deepEqual(JSON.parse(changedIdentity[storageKey('hr')]).data, { ...hr, selectedEmployee: 'employee-002' }, 'Changing employee identity saves only that selection and never adds canceled timer time')
     await page.getByRole('combobox', { name: /^Synthetic employee identity/ }).selectOption('employee-001')
+    await expect(unsaved(page)).not.toBeVisible()
     assert.deepEqual(await browserSaves(context, origin), afterTime)
     await page.getByLabel('Work date', { exact: true }).fill('2026-10-13')
     await page.getByRole('spinbutton', { name: 'Hours', exact: true }).fill('2.75')
     await page.getByRole('button', { name: 'Start sample timer', exact: true }).click()
-    checks.push('HR owning-subpage and preview-identity changes clear their temporary timer/forms without creating time; only the explicit identity selection is saved')
+    checks.push('Explicit Discard before HR owning-subpage and preview-identity changes clears only temporary timer/forms without creating time; only the accepted identity selection is saved')
 
-    await open(page, 'Content management')
+    await openKeepingDraft(page, 'Content management', ['Manual time entry', 'Running sample timer'])
     await page.locator('#edit-title').fill('Retained state contract draft')
     await page.getByRole('button', { name: 'Save draft revision', exact: true }).click()
     const beforeCmsBuffers = await browserSaves(context, origin)
@@ -154,7 +179,7 @@ export async function runPortalStateContract({ browser, origin, artifactDir, see
     await page.getByRole('combobox', { name: 'Collection', exact: true }).selectOption('articles')
     await page.getByRole('searchbox', { name: 'Search content', exact: true }).fill('Retained')
     checks.push('CMS controlled create/edit buffers survive identity switches; dirty entry switching requires Keep or explicit Discard and neither action writes saved records')
-    await open(page, 'Customer relationships')
+    await openKeepingDraft(page, 'Customer relationships', ['CMS entry editor', 'CMS new content form'])
     await page.getByRole('combobox', { name: 'CRM preview identity', exact: true }).selectOption('crm-manager')
     await page.getByRole('button', { name: 'Companies & contacts', exact: true }).click()
     await page.getByRole('textbox', { name: 'Contact name', exact: true }).fill('Retained Contact Fiction')
@@ -169,19 +194,19 @@ export async function runPortalStateContract({ browser, origin, artifactDir, see
       assert.ok(!raw.includes('UNSAVED '), 'Native workspace envelopes must exclude unsaved text')
       assert.ok(!raw.includes('unsaved-contract@fiction.invalid'), 'Native workspace envelopes must exclude unsaved contact email')
     }
-    await open(page, 'Content management')
+    await openKeepingDraft(page, 'Content management', ['New CRM contact'])
     await expect(page.locator('#edit-title')).toHaveValue('UNSAVED CMS edit contract')
     await expect(page.locator('#create-title')).toHaveValue('UNSAVED CMS create contract')
     await expect(page.getByRole('combobox', { name: 'Collection', exact: true })).toHaveValue('articles')
     await expect(page.getByRole('searchbox', { name: 'Search content', exact: true })).toHaveValue('Retained')
-    await open(page, 'Customer relationships')
+    await openKeepingDraft(page, 'Customer relationships', ['CMS entry editor', 'CMS new content form'])
     await expect(page.getByRole('combobox', { name: 'CRM preview identity', exact: true })).toHaveValue('crm-manager')
     await expect(page.getByRole('button', { name: 'Companies & contacts', exact: true })).toHaveAttribute('aria-current', 'page')
     await expect(page.getByRole('textbox', { name: 'Contact name', exact: true })).toHaveValue('UNSAVED CRM contact contract')
     await expect(page.getByRole('textbox', { name: 'Contact email', exact: true })).toHaveValue('unsaved-contract@fiction.invalid')
     checks.push('CMS mounted forms, collection/search and CRM identity/tab/contact inputs survive portal switching while only saved draft/publication/contact records enter storage')
 
-    const current = await combinedDownload(page, artifactDir, 'state-contract-records-only')
+    const current = await combinedDownload(page, artifactDir, 'state-contract-records-only', ['New CRM contact'])
     assert.equal(current.value.workspaces.cms.entries.find(item => item.id === 'cms-article-001').title, 'Retained state contract draft')
     assert.equal(current.value.workspaces.hr.workflow.timeEntries.at(-1).hours, 1.25)
     assert.ok(current.value.workspaces.crm.contacts.some(item => item.email === 'retained-contract@fiction.invalid'))
@@ -202,23 +227,35 @@ export async function runPortalStateContract({ browser, origin, artifactDir, see
     await open(page, 'Customer relationships')
     await expect(page.getByRole('combobox', { name: 'CRM preview identity', exact: true })).toHaveValue('crm-manager')
     await expect(page.getByRole('textbox', { name: 'Contact name', exact: true })).toHaveValue('UNSAVED CRM contact contract')
-    await open(page, 'Content management')
+    await openKeepingDraft(page, 'Content management', ['New CRM contact'])
     await expect(page.getByRole('combobox', { name: 'CMS preview identity', exact: true })).toHaveValue('cms-author')
     await expect(page.getByRole('combobox', { name: 'Collection', exact: true })).toHaveValue('all')
     await expect(page.getByRole('searchbox', { name: 'Search content', exact: true })).toHaveValue('')
-    await expect(page.locator('#edit-title')).toHaveValue('A fictional team update')
+    const recovery = page.getByRole('region', { name: 'CMS editor recovery', exact: true })
+    await expect(recovery).toBeVisible()
+    await expect(page.locator('#edit-title')).not.toBeVisible()
+    await expect(recovery.locator('tbody tr').nth(0).getByRole('cell')).toHaveText(['Retained state contract draft', 'A fictional team update', 'UNSAVED CMS edit contract'])
+    await expect(recovery.locator('tbody tr').nth(1).getByRole('cell')).toHaveText(['team-update', 'team-update', 'team-update'])
+    const seedBody = seed.workspaces.cms.entries.find(item => item.id === 'cms-article-001').body
+    await expect(recovery.locator('tbody tr').nth(2).getByRole('cell')).toHaveText([seedBody, seedBody, seedBody])
     await expect(page.locator('#create-title')).toHaveValue('')
+    assert.deepEqual(await browserSaves(context, origin), restored, 'Displaying the retained CMS editor comparison must not change any workspace/history bytes')
+    await recovery.getByRole('button', { name: 'Reload restored draft', exact: true }).click()
+    await expect(recovery).not.toBeVisible()
+    await expect(page.locator('#edit-title')).toHaveValue('A fictional team update')
+    await expect(page.locator('#edit-title')).toBeFocused()
+    assert.deepEqual(await browserSaves(context, origin), restored, 'Explicit Reload discards only the preserved editor buffer and creates no saved action or history entry')
     await open(page, 'People & HR')
     assert.equal(new URL(page.url()).pathname, '/hr/demo/employee/time')
     await expect(page.getByRole('button', { name: 'Stop and add sample time', exact: true })).toBeVisible()
     await expect(page.getByRole('spinbutton', { name: 'Hours', exact: true })).toHaveValue('2.75')
     await expect(page.getByLabel('Work date', { exact: true })).toHaveValue('2026-10-13')
     assert.equal((await browserSaves(context, origin))[storageKey('hr')], saved[storageKey('hr')])
-    await open(page, 'Content management')
-    checks.push('Selecting CMS replaces its full records and clears its transient UI; unchecked HR keeps its subpage/timer/unsaved inputs, CRM keeps identity/tab/contact, exact HR/CRM saves remain, and the point contains only prior CMS records')
+    await openKeepingDraft(page, 'Content management', ['Manual time entry', 'Running sample timer'])
+    checks.push('Selecting CMS replaces its full records, clears create/search/identity UI and preserves meaningful editor text for comparison until explicit Reload; unchecked HR retains its timer/forms and CRM its contact, exact saves remain, and the point contains only prior CMS records')
 
     await page.locator('#create-title').fill('UNSAVED CMS survives CRM restore')
-    await restore(page, baseline.path, ['crm'])
+    await restore(page, baseline.path, ['crm'], ['CMS new content form'])
     restored = await browserSaves(context, origin)
     assert.deepEqual(JSON.parse(restored[storageKey('crm')]).data, seed.workspaces.crm)
     history = JSON.parse(restored[storageKey('restore-points')]).points
@@ -233,7 +270,7 @@ export async function runPortalStateContract({ browser, origin, artifactDir, see
     await expect(page.locator('#create-title')).toHaveValue('UNSAVED CMS survives CRM restore')
     checks.push('Selecting CRM resets its identity/tab/forms and captures its prior saved contacts; unchecked CMS preserves its unsaved form')
 
-    await open(page, 'Portal directory')
+    await openKeepingDraft(page, 'Portal directory', ['CMS new content form'])
     await page.getByRole('button', { name: /^Undo restore point .* CMS$/ }).click()
     await page.getByRole('button', { name: 'Confirm undo', exact: true }).click()
     restored = await browserSaves(context, origin)
@@ -242,18 +279,23 @@ export async function runPortalStateContract({ browser, origin, artifactDir, see
     assert.deepEqual(history[0].states, { cms: seed.workspaces.cms })
     assert.deepEqual(JSON.parse(restored[storageKey('cms')]).data, current.value.workspaces.cms)
     await open(page, 'Content management')
+    await expect(recovery).not.toBeVisible()
     await expect(page.locator('#edit-title')).toHaveValue('Retained state contract draft')
     await expect(page.locator('#create-title')).toHaveValue('')
     checks.push('Undo restores the captured CMS records, clears selected transient forms and saves a new point for reversing the Undo')
 
     await page.locator('#create-title').fill('UNSAVED refresh-only CMS field')
     await page.getByRole('searchbox', { name: 'Search content', exact: true }).fill('Retained')
-    await open(page, 'Customer relationships')
+    await openKeepingDraft(page, 'Customer relationships', ['CMS new content form'])
     await page.getByRole('combobox', { name: 'CRM preview identity', exact: true }).selectOption('crm-manager')
     await page.getByRole('button', { name: 'Companies & contacts', exact: true }).click()
     await page.getByRole('textbox', { name: 'Contact name', exact: true }).fill('UNSAVED refresh-only CRM field')
     const beforeRefresh = await browserSaves(context, origin)
-    await page.reload()
+    const reloadWarning = page.waitForEvent('dialog')
+    await Promise.all([page.reload(), reloadWarning.then(async warning => {
+      assert.equal(warning.type(), 'beforeunload', 'Only the deliberate refresh may accept a native unsaved-work warning')
+      await warning.accept()
+    })])
     await expect(page.getByRole('combobox', { name: 'CRM preview identity', exact: true })).toHaveValue('crm-owner')
     await expect(page.getByRole('button', { name: 'Dashboard', exact: true })).toHaveAttribute('aria-current', 'page')
     await open(page, 'Content management')
@@ -276,7 +318,13 @@ export async function runPortalStateContract({ browser, origin, artifactDir, see
 
     const beforeReset = await browserSaves(context, origin)
     await open(page, 'Content management')
+    await page.locator('#edit-title').fill('UNSAVED CMS Reset-only editor')
+    await page.locator('#create-title').fill('UNSAVED CMS Reset-only create')
     await page.getByRole('button', { name: 'Reset CMS samples', exact: true }).click()
+    await expect(unsaved(page)).not.toBeVisible()
+    await expect(recovery).not.toBeVisible()
+    await expect(page.locator('#edit-title')).toHaveValue('A fictional team update')
+    await expect(page.locator('#create-title')).toHaveValue('')
     const afterReset = await browserSaves(context, origin)
     assert.equal(afterReset[storageKey('cms')], undefined)
     assert.equal(afterReset[storageKey('hr')], beforeReset[storageKey('hr')])

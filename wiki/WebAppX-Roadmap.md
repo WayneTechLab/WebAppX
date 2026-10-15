@@ -13,9 +13,39 @@ dependency-ready candidates and remaining local/provider/operator criteria.
 The goal remains active until every item is accepted. Host planning records this
 intent while reusable SYSTEMX context, plan, task and memory seeds stay blank.
 
-## Portal maturity implementation — 2026-10-15
+## Portal safety implementation — 2026-10-15
 
-The current wave implements **16 original local criteria — WX-0056,
+The current source wave starts at
+`532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. Original scope is **WX-0059,
+WX-0285, WX-0455–WX-0456, WX-0459–WX-0460, WX-0655, WX-0720, WX-0722,
+WX-0756–WX-0757 and WX-0775**, with separate existing-requirement reviews of
+**WX-0847 and WX-0860**. The
+[implementation plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-IMPLEMENTATION-PLAN.md)
+preserves those criteria; the [guide](Portal-Safety-and-Recovery.md) and
+[QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md) separate implemented
+source from accepted browser/integration evidence.
+
+Dirty form groups have Keep/Discard and eligible retained-draft decisions.
+A dirty CMS editor survives import/restore/Undo for an explicit restored-text
+choice, while accepted Reset clears it. Independently enabled import/Reset
+settings require the reviewed module-only checkpoint before replacement;
+unknown settings fail closed and known-off Reset keeps its old one-click path.
+Structured CMS revision/publication and CRM owner/link/stage differences remain
+read-only. Quality checks and a fictional failure/recovery drill retain their
+specific execution and platform limits.
+
+Use `npm run safety:test`, `browser:safety`, `browser:quality` and
+`browser:recovery-drill` after normal dependency/Chromium setup. The separate
+`browser:sdk-quality` companion verifies the selected local SDK session.
+Acceptance records link actual reviewed evidence in the canonical catalog.
+
+Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+
+Focused and browser verification passed. The required **61-stage integrated CI and Hosting preflight are pending** before publication; their final results belong in the current safety QA receipt.
+
+## Historical portal maturity implementation — 2026-10-15
+
+That wave implemented **16 original local criteria — WX-0056,
 WX-0151–WX-0158, WX-0280, WX-0282, WX-0397, WX-0453, WX-0454, WX-0457 and
 WX-0458** — from published source
 `950f9ba0c4e48faaa65056f504f105201838e3ec`. The
@@ -41,8 +71,8 @@ period and explicit fictional hourly rates; no rate is inferred from `payCents`.
 The maturity scenario's **10.75 hours / $298.75 gross / $239 net** is separate
 from the historical evaluator's explicit inputs below.
 
-Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
-records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+Agent 0 accepted all **16 original criteria locally**. At that checkpoint the catalog
+recorded **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
 **756 local, 127 operator and 40 provider** gates remaining. The full 1,000-item
 goal remains active; use `npm run backlog:summary` for current counts.
 
@@ -72,7 +102,7 @@ At that checkpoint the canonical catalog recorded **61 done / 939 remaining**, w
 P2 and 157 P3**, and **772 local, 127 operator and 40 provider** remaining gates.
 Use `npm run backlog:summary` for its current state. The
 [P1 implementation plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
-scopes the 16 local portal improvements in the current maturity wave above.
+scoped the 16 local portal improvements in the historical maturity wave above.
 Source completion never transfers provider, adopted-app or production acceptance.
 
 ## Adoption, recorded work and import review — 2026-10-15

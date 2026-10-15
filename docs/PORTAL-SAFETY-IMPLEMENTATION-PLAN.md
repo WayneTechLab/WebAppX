@@ -1,15 +1,17 @@
-# Next portal safety and recovery batch — 2026-10-15
+# Portal safety and recovery implementation — 2026-10-15
 
-Status: **planned, unaccepted**. This assignment follows the accepted
+Status: **fourteen original local criteria accepted; integrated publication gates pending**. This assignment follows the accepted
 [16-item maturity wave](PORTAL-MATURITY-QA-2026-10-15.md), under the active
 [all-1,000 execution plan](WEBAPPX-EXECUTION-PLAN.md). Read-only planning examined
 published starting base `950f9ba0c4e48faaa65056f504f105201838e3ec` plus the
-unpublished maturity implementation. Recheck the eventual published source
-before implementation. This plan changes no catalog status or reusable task seed.
+unpublished maturity implementation. Implementation resumed from verified clean public main
+`532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. The earlier observation remains
+historical planning context. The final acceptance below updates only canonical status/evidence and generated views; reusable task seeds remain blank.
 
-The current catalog has 77 done / 923 remaining, including 38 dependency-ready
-P1 local candidates at this planning snapshot. These twelve are all TODO, P1
-and local-gated; their original definitions/dependencies remain authoritative.
+The initial planning snapshot had 77 done / 923 remaining, including 38
+dependency-ready P1 local candidates. This assignment covered twelve original
+criteria plus WX-0847/WX-0860 below. All fourteen original definitions and
+dependencies remain unchanged.
 
 ## Original criteria and implementation ownership
 
@@ -44,18 +46,20 @@ serialized integration links and contract changes.
 6. Review complete expected exports/raw saves, run affected regressions, then
    the required full CI/Hosting preflight/drift/template gates before publishing.
 
-The current state contract intentionally clears selected temporary UI on restore.
-WX-0285 requires deliberate design and an updated reviewed contract; do not
-silently invalidate existing remount/recovery assertions. New opt-in preferences
-must have explicit storage scope and portable-backup inclusion rules. Required
-capture plus replacement must retain the existing rollback/uncertainty contract.
+The reviewed state contract now retains the dirty CMS editor on import/restore/Undo
+for explicit comparison, Reload or Reapply; accepted Reset clears it. Other
+selected temporary forms and timers retain their clearing behavior. Independent
+import/Reset preferences default off and remain outside portable backups. Enabled
+checkpoints bind the preview and preserve rollback/uncertainty semantics.
 
-## Separate existing-source acceptance reviews
+## Supplemental implementation and existing-source acceptance reviews
 
-- **WX-0847:** inspect whether the owned browser runner's real resource handles,
-  lifecycle and retained reports meet its exact process-handle criterion.
-- **WX-0860:** review existing populated fictional import rehearsal and retained
-  fingerprints before building another rehearsal.
+- **WX-0847:** implement a real owned preview child process, retain the exact
+  fork handle and PID/readiness/exit evidence, and verify isolated cleanup on
+  success, startup failure, interrupted checks and interrupted cleanup. The prior
+  in-process server ownership was partial evidence for the literal criterion.
+- **WX-0860:** review and execute the existing populated fictional import
+  rehearsal with exact preserved fingerprints; no second importer is needed.
 - **WX-0656:** requires manual screen-reader evidence. Automated DOM/browser
   assertions cannot accept this item.
 
@@ -63,3 +67,16 @@ No provider account, production deployment or native Windows acceptance is
 created by this plan. Preserve selected immutable releases, research checksums
 and blank SYSTEMX context/plan/task/memory records. Record each future completion
 only after its original criterion has accepted evidence.
+
+## Current verification
+
+The [current QA receipt](PORTAL-SAFETY-QA-2026-10-15.md) collects actual
+verification and independent review. Agent 0 accepted all fourteen original local criteria after independent review
+and completed model/browser/importer evidence. The catalog records **91 done /
+909 remaining**, including **82 P1, 670 P2 and 157 P3**; remaining gates are
+**742 local, 127 operator and 40 provider**. Full publication CI/preflight must
+pass before GitHub push. The all-1,000 goal remains active.
+
+The [next HR employment lifecycle plan](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+assigns WX-0101–WX-0110 as proposed implementation. All ten remain TODO; its
+engineering order changes none of their original dependencies.

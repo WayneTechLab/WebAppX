@@ -14,19 +14,26 @@ the named environment. Activation and deployment remain specific operator
 acceptance steps. Reusable SYSTEMX adoption seeds stay blank; the host execution
 plan records this public template's work.
 
-## Current accepted checkpoint — portal maturity
+## Current accepted checkpoint — portal safety and recovery
 
-The catalog records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**,
-with **756 local, 127 operator and 40 provider** gates remaining. The
-[maturity guide](PORTAL-MATURITY.md) and [QA receipt](PORTAL-MATURITY-QA-2026-10-15.md)
-cover chosen payroll periods/rates, time corrections, CMS validation/dirty buffers,
-strict CRM imports, named history, record differences and session return navigation.
-The [implementation plan](PORTAL-MATURITY-IMPLEMENTATION-PLAN.md) records the
-original assignment and acceptance handoff. All earlier totals below describe
-their historical checkpoints; query the canonical catalog for current status.
+The catalog records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**,
+with **742 local, 127 operator and 40 provider** gates remaining. Agent 0
+accepted fourteen original local criteria covering unsaved navigation, CMS
+restored-editor comparison, opt-in import/Reset checkpoints, structured restore
+differences, accessible control names, monochrome statuses, x-large text,
+recovery guidance/drills, owned preview processes and populated import preservation.
 
-The [next safety and recovery plan](PORTAL-SAFETY-IMPLEMENTATION-PLAN.md) assigns
-twelve remaining local P1 criteria without changing their acceptance status.
+Read the [implementation plan](PORTAL-SAFETY-IMPLEMENTATION-PLAN.md),
+[safety QA receipt](PORTAL-SAFETY-QA-2026-10-15.md),
+[state contract](PORTAL-STATE-CONTRACT.md) and
+[status inventory](PORTAL-STATUS-INVENTORY.md). The receipt records integrated
+publication gates separately from local criteria acceptance. All earlier totals
+below retain their historical scope; query the canonical catalog for current status.
+
+The [next HR employment lifecycle plan](HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+assigns WX-0101–WX-0110 for proposed implementation. Those ten remain TODO;
+the plan preserves their original criteria and dependencies. The full goal
+remains active until all 1,000 original criteria have accepted evidence.
 
 ## Open the list
 

@@ -11,9 +11,23 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
-Host portal maturity extensions now provide [chosen payroll periods and fictional
+Host portal safety extensions add [dirty-form decisions and recovery](../wiki/Portal-Safety-and-Recovery.md),
+a volatile CMS restore-editor comparison, independent opt-in import/Reset
+checkpoints and bounded structured differences. The [state contract](../docs/PORTAL-STATE-CONTRACT.md),
+[failure drill](../docs/PORTAL-RECOVERY-FAILURE-DRILL.md),
+[status inventory](../docs/PORTAL-STATUS-INVENTORY.md) and
+[current safety receipt](../docs/PORTAL-SAFETY-QA-2026-10-15.md) keep source
+behavior and actual execution separate. Run `safety:test`, `browser:safety`,
+`browser:quality`, `browser:sdk-quality` and `browser:recovery-drill` after normal
+setup. The current receipt records accepted local scope and final integrated gates.
+
+Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+
+Focused and browser verification passed. The required **61-stage integrated CI and Hosting preflight are pending** before publication; their final results belong in the current safety QA receipt.
+
+Earlier host portal maturity extensions provide [chosen payroll periods and fictional
 rate timelines, corrected time, CMS editing, strict CRM imports and named recovery](../docs/PORTAL-MATURITY.md).
-The [current receipt](../docs/PORTAL-MATURITY-QA-2026-10-15.md) accepts 16 more
+The [maturity receipt](../docs/PORTAL-MATURITY-QA-2026-10-15.md) accepted 16 more
 original criteria: **77 done / 923 remaining**. Full publication checks are
 recorded in that receipt. These host extensions retain schema-1 compatibility,
 blank reusable records and immutable selected release fingerprints.
@@ -348,7 +362,13 @@ accepted records, including saved drafts and accepted in-memory changes whose
 browser save failed. Exports cover complete workspaces independently of a
 preview role; unsaved forms, running timers, recovery history and the separate
 Gusto SDK session are excluded. Selective restore and Undo replace selected
-whole workspaces and first save a recovery point. Reset preserves recovery
+whole workspaces and first save a recovery point. A dirty CMS author editor
+survives import/restore/Undo for explicit comparison and Reload/Reapply; accepted
+Reset clears it. Independent origin-local settings, initially off, can require a
+module-only checkpoint before individual import or Reset. Unknown/damaged
+settings refuse replacement; known-off Reset keeps its one-click behavior.
+The volatile editor, retained navigation drafts and these settings are excluded
+from workspace exports. Reset preserves recovery
 history, and clearing that history is a separate action. Use fictional data
 only and follow any displayed export/recovery guidance before refreshing
 after a storage failure. The complete behavior is defined in the

@@ -10,7 +10,7 @@ export const RESTORE_POINT_LABEL_MAX = 100
 export type RestorePoint = {
   id: string
   createdAt: string
-  kind: 'restore' | 'undo' | 'manual'
+  kind: 'restore' | 'undo' | 'manual' | 'import' | 'reset'
   modules: DemoModule[]
   states: Partial<DemoWorkspaces>
   sourcePointId?: string
@@ -98,10 +98,10 @@ function validatePoint(value: unknown): value is RestorePoint {
   if (!record(value)) return false
   const keys = ['id', 'createdAt', 'kind', 'modules', 'states', ...(value.kind === 'undo' ? ['sourcePointId'] : []), ...(Object.hasOwn(value, 'label') ? ['label'] : [])]
   if (!exactKeys(value, keys) || !validId(value.id) || !validTimestamp(value.createdAt)
-    || !['restore', 'undo', 'manual'].includes(value.kind as string) || !validRestoreSelection(value.modules)
+    || !['restore', 'undo', 'manual', 'import', 'reset'].includes(value.kind as string) || !validRestoreSelection(value.modules)
     || !record(value.states) || !exactKeys(value.states, value.modules)) return false
   if (value.kind === 'undo' && (!validId(value.sourcePointId) || value.sourcePointId === value.id)) return false
-  if ((Object.hasOwn(value, 'label') && !validLabel(value.label)) || (value.kind === 'manual' && !validLabel(value.label))) return false
+  if ((Object.hasOwn(value, 'label') && !validLabel(value.label)) || (['manual', 'import', 'reset'].includes(value.kind as string) && !validLabel(value.label))) return false
   return value.modules.every(module => {
     const state = (value.states as Record<string, unknown>)[module]
     const validate = (item: unknown): item is DemoWorkspaces[DemoModule] => demoWorkspaceValidators[module](item)

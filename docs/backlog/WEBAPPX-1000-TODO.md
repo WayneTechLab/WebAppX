@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 923 TODO · 77 done · 20 areas · 50 items per area.**
+**1000 catalog items · 909 TODO · 91 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 96 · P2: 670 · P3: 157.
+Remaining TODO priorities: P1: 82 · P2: 670 · P3: 157.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -319,10 +319,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: The directory shows ready, saved, recovered or unavailable status for each module from current provider status.
   - Source: [src/portals/PortalWorkspaceProvider.tsx](../../src/portals/PortalWorkspaceProvider.tsx)
   - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
-- [ ] **WX-0059 — Add an unsaved form navigation prompt**
+- [x] **WX-0059 — Add an unsaved form navigation prompt**
   - P1 · portal-maturity · local
   - Acceptance: Leaving a portal with an unsaved form offers keep editing or discard choices without intercepting a completed saved action.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [x] **WX-0060 — Define a shared transient-state contract**
   - P1 · portal-maturity · local
   - Acceptance: Each portal documents which forms, timers and selections survive portal switching and which clear after selected restore.
@@ -1254,10 +1255,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local · Depends on: WX-0283
   - Acceptance: Opening a recovered buffer displays saved time and differences before applying it to the current form.
   - Source: [src/cms/CmsDemo.tsx](../../src/cms/CmsDemo.tsx)
-- [ ] **WX-0285 — Handle stale CMS editor revisions explicitly**
+- [x] **WX-0285 — Handle stale CMS editor revisions explicitly**
   - P1 · portal-maturity · local
   - Acceptance: A revision changed through restore causes a visible comparison and requires reloading or reapplying unsaved text.
   - Source: [src/cms/model.ts](../../src/cms/model.ts)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [ ] **WX-0286 — Add collection-level content search**
   - P2 · portal-maturity · local
   - Acceptance: Search can include body text and tags while showing which field matched each visible result.
@@ -1959,14 +1961,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: A user can create a named selected-scope point without importing a file or altering the current workspace saves.
   - Source: [src/portals/RestorePointHistory.tsx](../../src/portals/RestorePointHistory.tsx)
   - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
-- [ ] **WX-0455 — Add optional recovery points for individual imports**
+- [x] **WX-0455 — Add optional recovery points for individual imports**
   - P1 · portal-maturity · local
   - Acceptance: A separately enabled setting captures the destination portal before an individual import and refuses replacement if that required point cannot save.
   - Source: [src/portals/DemoWorkspaceBackup.tsx](../../src/portals/DemoWorkspaceBackup.tsx)
-- [ ] **WX-0456 — Add optional recovery points for portal reset**
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
+- [x] **WX-0456 — Add optional recovery points for portal reset**
   - P1 · portal-maturity · local
   - Acceptance: An explicitly enabled preference previews and saves the current portal before Reset while keeping the existing default behavior documented.
   - Source: [src/portals/useDemoPersistence.ts](../../src/portals/useDemoPersistence.ts)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [x] **WX-0457 — Inspect captured records in restore-point details**
   - P1 · portal-maturity · local
   - Acceptance: A read-only detail panel lists bounded record identifiers and a complete collection-count breakdown for the point’s captured modules without applying it or exposing full free-text fields by default.
@@ -1977,14 +1981,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: The preview lists added, removed and changed entity counts per selected module using identifiers without exposing full sensitive-style fields by default.
   - Source: [src/portals/CombinedWorkspaceBackup.tsx](../../src/portals/CombinedWorkspaceBackup.tsx)
   - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
-- [ ] **WX-0459 — Add record difference inspection for CMS restores**
+- [x] **WX-0459 — Add record difference inspection for CMS restores**
   - P1 · portal-maturity · local · Depends on: WX-0458
   - Acceptance: A preview can show which fictional content revisions and publication projections would change before whole-module replacement.
   - Source: [src/cms/persistence.ts](../../src/cms/persistence.ts)
-- [ ] **WX-0460 — Add record difference inspection for CRM restores**
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
+- [x] **WX-0460 — Add record difference inspection for CRM restores**
   - P1 · portal-maturity · local · Depends on: WX-0458
   - Acceptance: A preview can show changed fictional companies, contacts, lead states and opportunities before whole-module replacement.
   - Source: [src/crm/persistence.ts](../../src/crm/persistence.ts)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [ ] **WX-0461 — Add record difference inspection for HR restores**
   - P2 · portal-maturity · local · Depends on: WX-0458
   - Acceptance: A preview can show changed fictional employee counts, time approvals, benefit elections and payroll receipts before whole-module replacement.
@@ -2789,10 +2795,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: A browser journey selects portals, opens the confirmation, cancels and completes Undo using keyboard controls with a predictable focus return.
   - Source: [src/portals/RestorePointHistory.tsx](../../src/portals/RestorePointHistory.tsx)
   - Verified: 2026-10-15 · Source base: `cae18da251b0a9c4418a4fbebf2bd514ccd2dcdd` · Reviewed by: `agent.0` · Evidence: [docs/KEYBOARD-PORTALS-QA-2026-10-15.md](../../docs/KEYBOARD-PORTALS-QA-2026-10-15.md)
-- [ ] **WX-0655 — Measure accessible names in repeated portal controls**
+- [x] **WX-0655 — Measure accessible names in repeated portal controls**
   - P1 · portal-maturity · local
   - Acceptance: A browser audit detects ambiguous role selectors, import buttons and record actions when hidden portal modules remain mounted.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [ ] **WX-0656 — Add screen reader status announcement checks**
   - P1 · portal-maturity · local
   - Acceptance: Manual evidence records storage save, import refusal, restore success and Undo result announcements without duplicate announcements from hidden modules.
@@ -3058,18 +3065,20 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Repeated edit and advance controls expose the associated record name in their accessible label.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0720 — Audit color-independent status labels**
+- [x] **WX-0720 — Audit color-independent status labels**
   - P1 · portal-maturity · local
   - Acceptance: Every workflow status remains understandable in a monochrome capture using text or shape labels alongside color.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [ ] **WX-0721 — Add portal high-contrast state examples**
   - P2 · portal-maturity · local
   - Acceptance: A local fixture page demonstrates focus, selection, error and disabled states under the existing high-contrast preference.
   - Source: [src/index.css](../../src/index.css)
-- [ ] **WX-0722 — Add portal large-text browser checks**
+- [x] **WX-0722 — Add portal large-text browser checks**
   - P1 · portal-maturity · local
   - Acceptance: At the existing x-large text setting, forms and restore controls retain all labels, values and confirmation actions.
   - Source: [src/index.css](../../src/index.css)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [ ] **WX-0723 — Add relaxed-spacing layout checks**
   - P2 · portal-maturity · local
   - Acceptance: The existing line and letter spacing preferences keep portal field help and record cards readable without overlap.
@@ -3208,14 +3217,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Users can distinguish no saved data, usable saves, unavailable storage and damaged history with actionable links to export or recovery guidance.
   - Source: [src/portals/DemoStorageNotice.tsx](../../src/portals/DemoStorageNotice.tsx)
-- [ ] **WX-0756 — Create a damaged restore-history recovery runbook**
+- [x] **WX-0756 — Create a damaged restore-history recovery runbook**
   - P1 · portal-maturity · local · Depends on: WX-0751
   - Acceptance: The guide explains preserving exports, explicitly clearing unusable history and checking current portal saves without claiming the damaged history was repaired.
   - Source: [docs/RUNBOOK.md](../../docs/RUNBOOK.md)
-- [ ] **WX-0757 — Create a partial rollback recovery runbook**
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
+- [x] **WX-0757 — Create a partial rollback recovery runbook**
   - P1 · portal-maturity · local · Depends on: WX-0751
   - Acceptance: A worked synthetic example explains uncertain browser slots, exporting current memory before reload and verifying each portal independently.
   - Source: [src/portals/restore-workspaces.ts](../../src/portals/restore-workspaces.ts)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [ ] **WX-0758 — Document local session ownership diagnosis**
   - P2 · portal-maturity · local
   - Acceptance: A runbook shows how to identify the checkout, command and owner of a listener before choosing another port or using the owned stop control.
@@ -3284,10 +3295,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · extensions · provider
   - Acceptance: For optional adoption after operator approval and provider setup: A proposed adapter defines explicit user approval, selected fields and provider destination before a real ticket can be sent.
   - Source: [src/components/shell/HelpDeskChat.tsx](../../src/components/shell/HelpDeskChat.tsx)
-- [ ] **WX-0775 — Prepare an operational rehearsal checklist**
+- [x] **WX-0775 — Prepare an operational rehearsal checklist**
   - P1 · portal-maturity · local · Depends on: WX-0751
   - Acceptance: A local drill covers bad import, unavailable storage, failed restore and recovery from a portable backup with exact expected outcomes.
   - Source: [docs/RUNBOOK.md](../../docs/RUNBOOK.md)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [ ] **WX-0776 — Add a mock change calendar**
   - P2 · portal-maturity · local
   - Acceptance: Fictional template changes show planned date, reviewed scope, dependencies and local validation status without scheduling external actions.
@@ -3584,10 +3596,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Extend host tests to compare Git status and version metadata before and after additional supported read-only deploy flag combinations.
   - Source: [tests/security/test_operational_controls.py](../../tests/security/test_operational_controls.py)
-- [ ] **WX-0847 — Add smoke test entrypoint using an owned loopback port**
+- [x] **WX-0847 — Add smoke test entrypoint using an owned loopback port**
   - P1 · portal-maturity · local
   - Acceptance: A local script launches only its own preview, records its process handle, chooses an available loopback port and cleans up only that process.
   - Source: [docs/COMMANDS.md](../../docs/COMMANDS.md)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [ ] **WX-0848 — Prepare optional CDN cache verification checklist**
   - P2 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An adoption plan compares immutable asset caching with HTML freshness on an authorized preview endpoint before production header changes.
@@ -3650,10 +3663,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: An import rehearsal lists preserved project records and host extension fingerprints without publishing their private content.
   - Source: [scripts/sync-systemx.py](../../scripts/sync-systemx.py)
   - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
-- [ ] **WX-0860 — Add a reusable import rehearsal fixture**
+- [x] **WX-0860 — Add a reusable import rehearsal fixture**
   - P1 · foundation · local · Depends on: WX-0859
   - Acceptance: A temporary adopted app with populated fictional records demonstrates that reviewed upstream imports preserve project-specific ledgers and configuration.
   - Source: [tests/systemx](../../tests/systemx)
+  - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
 - [ ] **WX-0861 — Add host extension compatibility declarations**
   - P2 · foundation · local
   - Acceptance: The host records its supported managed release range and an import preview warns when a new release is outside that reviewed range.

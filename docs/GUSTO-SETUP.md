@@ -247,7 +247,10 @@ storage refuses it, restore/Undo stops before changing workspaces. Damaged or
 unsupported history blocks these operations until explicit **Clear restore
 points**, which leaves current workspaces intact. Points exclude unsaved forms,
 timers and SDK sessions, and are not exported in either JSON format. Individual
-imports, Reset and ordinary actions do not automatically create them.
+imports and Reset capture a labeled destination point only when their separate
+required-checkpoint preference is enabled. Both default off; ordinary actions
+create no point. See the [current state contract](PORTAL-STATE-CONTRACT.md) and
+[safety receipt](PORTAL-SAFETY-QA-2026-10-15.md).
 
 History includes plain-text fictional employee records, drafts and mock receipts.
 Use exported files to move records between browsers; local history requires no
@@ -475,6 +478,23 @@ onboarding**. The host performs an explicit local status update and readback.
 These confirmations do not sign legal forms, file a report or verify employment
 eligibility. They are additional mock requirements, not hidden legal completion.
 
+### Automated selected SDK status checks
+
+`npm run browser:sdk-quality` opens a separate owned loopback worker and fresh
+browser context for the genuine pinned SDK. Its explicit gate permits that
+worker's canonical local `/__gusto_mock__/` routes and assets. The native portal
+runner keeps its stricter backend boundary. No Gusto account or key is used.
+
+The companion checks startup/retry, directory, onboarding data and final review,
+real prepare/calculate/submit pending states, processed receipt and Reset. Rare
+API-error render fixtures are labeled separately from ordinary control-driven
+transitions. Expected failures are tied to exact one-shot requests. Complete
+native browser storage remains unchanged. Read the
+[safety QA receipt](PORTAL-SAFETY-QA-2026-10-15.md) and
+[status inventory](PORTAL-STATUS-INVENTORY.md) for actual execution and retained
+monochrome evidence. This covers the selected local workflows; unmounted SDK
+exports and connected provider operations retain their own acceptance scope.
+
 ### Repeat the bounded SDK onboarding sample
 
 Select **Employee onboarding** and keep the supplied fictional Jordan record.
@@ -510,6 +530,7 @@ No bank connection or account is needed.
 | Calculate | Use **Calculate and review** and wait for the local calculation/polling to reach **Review payroll**. |
 | Review | The verified fixture shows fictional `$200` gross/company pays, `$0` tax and `$0` debit, **Check** payment and the synthetic company account ending `0000`. These values are sample arithmetic, not a real tax calculation or bank confirmation. |
 | Simulate submission | Use **Submit**, then inspect the genuine SDK **Payroll submitted** summary and host **Simulated payroll processed** banner. No Gusto submission, wages, tax filing or funds movement occurs. |
+| Inspect fictional receipt | Choose **View payroll receipt**. The session-scoped local receipt appears only after simulated submission, with explicit fictional total, debit/tax labels and local mock text. Reset removes that session’s receipt. This is separate from native statements and is not a provider paystub/download. |
 
 The submitted sample cannot be submitted again without resetting its SDK
 session. Download, check/paystub and cancellation actions are outside this

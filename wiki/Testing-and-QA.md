@@ -31,9 +31,51 @@ regressions, app/LAN gates, research inventories and public template integrity.
 It requires blank adoption seeds. `template:check` rejects populated tasks,
 context or project records by design. Use these to maintain the reusable release.
 
-## Portal maturity wave — focused verification passed
+## Portal safety wave — local criteria verified
 
-The current wave starts from published base
+Starting base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416`. The
+[guide](Portal-Safety-and-Recovery.md) explains registered HR/CMS/CRM form groups,
+retained navigation drafts, CMS replacement comparison, required import/Reset
+checkpoints and bounded structured differences. Read the
+[current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md)
+for the actual accepted execution evidence; current work remains unaccepted.
+
+```bash
+npm run safety:test
+npm run browser:safety
+npm run browser:quality
+npm run browser:recovery-drill
+```
+
+| Check | Scope and boundary |
+| --- | --- |
+| `safety:test` | Pure/model regressions for dirty decisions and navigation, CMS recovery tokens/permissions, structured metadata, checkpoint preferences/replacement/epochs, capture kinds, HR form baselines and quality-auditor negative fixtures. It does not establish rendered browser behavior. |
+| `browser:safety` | Actual local navigation, form/recovery choices and checkpoint/difference journeys through the product UI in fresh owned contexts; complete exports and unaffected save bytes are compared. |
+| `browser:quality` | Visible accessible-name ambiguity checks, complete implemented workflow-status rendering with monochrome captures, and real Extra large preference at narrow width. Labeled rare-state render fixtures remain distinct from performed user transitions. |
+| `browser:recovery-drill` | Isolated fictional invalid imports, unavailable storage, partial selected-write/uncertain rollback and damaged history; rescue download and explicit recovery ordering. The storage faults belong only to the runner's isolated profiles. |
+
+The [state contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md),
+[failure drill](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-RECOVERY-FAILURE-DRILL.md) and
+[status inventory](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATUS-INVENTORY.md) specify preservation
+and evidence limits. Browser runners use owned preview child processes and
+fresh Chromium contexts. The QA receipt records cleanup observations; commands
+alone do not establish a pass. Manual screen-reader, native Windows, provider
+and production acceptance remain separate.
+
+The separate genuine SDK preview has its own `npm run browser:sdk-quality`
+companion with a canonical same-origin local API gate. It covers selected session,
+onboarding, pending payroll, fictional receipt and Reset meanings. Native workspace
+saves remain separate. The SDK receipt uses explicit fictional labels and removes
+the default provider-partnership wording. Actual results belong in the linked QA
+receipt; unmounted SDK exports retain their own scope.
+
+Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+
+Focused and browser verification passed. The required **61-stage integrated CI and Hosting preflight are pending** before publication; their final results belong in the current safety QA receipt.
+
+## Historical portal maturity wave — verified
+
+That wave started from published base
 `950f9ba0c4e48faaa65056f504f105201838e3ec`. The
 [maturity guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY.md)
 and [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-QA-2026-10-15.md)
@@ -70,8 +112,8 @@ preparing payroll. No rate is inferred from historical `payCents`. The maturity
 scenario's $239 net result and the earlier evaluator's $401 result have different
 explicit inputs; neither is a general payroll policy or provider result.
 
-Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
-records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+Agent 0 accepted all **16 original criteria locally**. At that checkpoint the catalog
+recorded **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
 **756 local, 127 operator and 40 provider** gates remaining. The full 1,000-item
 goal remains active; use `npm run backlog:summary` for current counts.
 

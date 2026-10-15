@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { List, X } from 'lucide-react'
+import { replaceNavigationHash } from '@/lib/navigation'
 
 type SnapPoint = {
   id: string
@@ -112,7 +113,7 @@ export function PageSnapMenu({ pathname }: PageSnapMenuProps) {
 
     const reducedMotion = document.documentElement.dataset.wtlMotion === 'reduced'
     section.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
-    window.history.replaceState(null, '', `${pathname}#${id}`)
+    replaceNavigationHash(id)
     setActiveId(id)
     setOpen(false)
   }

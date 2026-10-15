@@ -82,7 +82,7 @@ export function createMockSdk({ now = () => Date.now(), maxSessions = MAX_SESSIO
     if (!session && sessionId != null) return error(403, 'mock_session_invalid', 'Create a new server issued synthetic session.')
     // The historical directory reads stay stateless. Every new workflow needs an issued session.
     if (!session && !(method === 'GET' && path === directoryPath)) {
-      const workflowPath = /^\/__(reset|state|onboarding_review)$/.test(path) || path.startsWith(`/v1/companies/${MOCK_COMPANY_ID}/`)
+      const workflowPath = /^\/__(reset|state|onboarding_review)$/.test(path) || path === `/v1/payrolls/${MOCK_PAYROLL_ID}/receipt` || path.startsWith(`/v1/companies/${MOCK_COMPANY_ID}/`)
         || /^\/v1\/(employees|jobs|compensations|home_addresses|work_addresses|locations)\//.test(path)
       return workflowPath ? error(403, 'mock_session_required', 'Create a local synthetic session for this workflow.')
         : error(501, 'mock_endpoint_not_implemented', 'This endpoint is outside the tested synthetic SDK journeys.')

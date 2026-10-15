@@ -86,6 +86,48 @@ temporary UI. Undo rechecks the exact previewed source point before replacement.
 Read the [current QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) for focused
 observations and the passed integrated publishing gates.
 
+## Portal safety and recovery effects
+
+`safety:test` exercises dirty navigation/history, volatile draft ownership,
+CMS restored-editor decisions, metadata differences, independent checkpoint
+preferences and exact replacement confirmations using supplied fixtures.
+`browser:safety`, `browser:quality` and `browser:recovery-drill` use fresh owned
+Chromium contexts and an exact owned loopback preview child. They write
+temporary traces, screenshots, downloads and reports. The quality suite also
+uses explicitly labeled valid status-rendering fixtures; the recovery drill
+uses explicitly controlled storage faults. Neither replaces a private browser
+profile or establishes provider, deployment or native Windows acceptance.
+
+`browser:sdk-quality` has a separate canonical same-origin local-mock request
+gate and uses the genuine selected SDK components. Its expected API errors are
+one-shot request-bound fixtures; native storage is compared in full. SDK writes
+change only that worker's synthetic session memory. The receipt read is
+session-scoped, available only after simulated submission and reset with its
+session. A supported provider dictionary labels the rendered receipt fictional.
+
+The owned verification worker disables watching/HMR updates and retains only its
+allowed socket for Vite connection/error messages. A passing frozen-source run
+does not test hot reloading. Normal local development keeps its own configuration.
+
+Native dirty-navigation decisions change temporary UI only. A retained draft
+stays in the current open document and is excluded from portable files. A CMS
+editor retained across successful import/selective restore/Undo needs an
+explicit Reload or Reapply decision; Reapply changes the editor buffer and an
+ordinary Save is still needed for workspace records. Accepted Reset clears it.
+
+Independent **Require checkpoint before individual imports** and **Require
+checkpoint before Reset** settings write only
+`webappx.demo.recovery-preferences`. They are outside workspace files and
+restore history. Enabled replacement captures the complete current selected
+portal to history before replacing/removing its save; a checkpoint failure
+refuses replacement. Confirmation rechecks the reviewed module, operation,
+current records, target, both settings and required history before writes.
+Unreadable or malformed settings refuse replacement visibly. Known-off Reset
+retains the one-click behavior; if its removal fails, accepted seed records may
+exist only in memory. Follow the exact memory/save distinctions in the
+[state contract](PORTAL-STATE-CONTRACT.md) and
+[fictional failure drill](PORTAL-RECOVERY-FAILURE-DRILL.md).
+
 ## Command effects table
 
 | Command | Mode | Scope | Filesystem, process and network effects | Git / provider / external effects | Authority | Result limits |

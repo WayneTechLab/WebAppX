@@ -4,7 +4,7 @@ These are concrete synthetic examples from the reviewed fixture. Use the
 [canonical cross-portal capability matrix](PORTAL-CAPABILITIES.md) for the complete vocabulary, role scopes and provider boundary.
 A role example is an actor, resource, action and current state; opening a route does not establish permission for its domain transitions.
 
-Review basis: ` 950f9ba0c4e48faaa65056f504f105201838e3ec ` and proposal ` WX-0908 `.
+Review basis: ` 532cc4ad63d18a4fe911b0a9b18e258b85ef3416 ` and proposal ` WX-0908 `.
 Original criterion: A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.
 
 The [reviewed fixture](../tests/fixtures/hr-capability-examples.json) supplies each action, prerequisite and literal expected result.
@@ -335,11 +335,12 @@ Every preview role can export the complete saved module workspace; the shared ba
 - Included: Saved HR performance self-review and manager drafts, survey draft answers, fictional rate timelines, chosen payroll periods, time-return reasons, payroll snapshots and mock receipts where present.
 - Included: Unpublished CMS drafts and review metadata; CRM records belonging to other representatives.
 - Excluded: Unsaved form inputs, running timers, restore-point history and the separate SDK mock session.
+- Excluded: Retained navigation drafts, the volatile CMS editor/recovery buffer and origin-local checkpoint preferences; these are not saved domain records.
 
 An HR contractor or auditor can therefore export saved private draft content that is absent from their visible pages. A CMS viewer export contains unpublished content, and a CRM representative export contains other representatives’ saved records.
 The module and combined codecs validate complete fictional graphs and file compatibility; they receive no actor and apply no role or field filtering. A portal selection during restore does not narrow the export.
 
-Readable JSON backups and synthetic role choices do not authenticate a person, grant Firebase claims or tenant membership, or authorize provider access. Production export needs its own trusted actor, resource and field policy.
+Readable JSON backups and synthetic role choices do not authenticate a person, grant Firebase claims or tenant membership, or authorize provider access. Dirty-form choices and required destination checkpoints protect local editing/replacement but grant no role permission. Production export needs its own trusted actor, resource and field policy.
 
 ## Reviewed source fingerprints
 
@@ -347,7 +348,7 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 
 | Source | SHA-256 |
 | --- | --- |
-| [docs/PORTAL-CAPABILITIES.md](../docs/PORTAL-CAPABILITIES.md) | ` 18c422225b25b4b0020946e81fd85471ad89db8d71ab508d9398a1c3f6785d69 ` |
+| [docs/PORTAL-CAPABILITIES.md](../docs/PORTAL-CAPABILITIES.md) | ` 145d912322bd3d4e9ffce7a8ca45131c1fd557f8801ef9d36ed348934368f6cd ` |
 | [src/hr/model.ts](../src/hr/model.ts) | ` 32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e ` |
 | [src/hr/mock-workflows.ts](../src/hr/mock-workflows.ts) | ` 373b8a8ce4d34250d306095d0c6247d38e6a03646ddf708e00c5a6bf3b529659 ` |
 | [src/hr/performance.ts](../src/hr/performance.ts) | ` e4dd5404f9c826a162981904fbc0417588b64252998fa4ac1ca7c0477c8c716f ` |
@@ -355,7 +356,32 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/hr/persistence.ts](../src/hr/persistence.ts) | ` 42c45c2e3cf714d30129b44705fd9fb2c98a4b35d05f43c7710fe75239d91a01 ` |
 | [src/portals/backup.ts](../src/portals/backup.ts) | ` b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a ` |
 | [src/portals/combined-backup.ts](../src/portals/combined-backup.ts) | ` 186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726 ` |
-| [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | ` 5c1028cd8b954c77fffbc3c5ac33d2f232874109f57929911b61a9608c57dc88 ` |
-| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` 29cf00252051dee4e172f467d2ae026fee95ed7ed48443df287f6f449141c311 ` |
-| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` 169e81c354ab72cf61fb89fa4e3244fe27e99c5efbe1742cafdd1d82c1cd2d20 ` |
+| [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | ` 2b173d5d158281d0f1b390215a39047981b2949cf5c5a6c43dd8be6bad6f5aed ` |
+| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` 8c8a26fad535f26760e3d206912523d59ca77c1adc9cbe27506eca187587afb0 ` |
+| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` 09f094455796da1879b82d9e8e9daf86800c16a24617a34f7396965e90a089ba ` |
 | [.SYSTEMX/GUSTO/mock/fixtures/demo-company.json](../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json) | ` 14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3 ` |
+| [src/portals/unsaved-work-core.ts](../src/portals/unsaved-work-core.ts) | ` ee9abc498ae015df8554e2056d1526dfc2d5b534bc1e47284242c7134d8c5a59 ` |
+| [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | ` 5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316 ` |
+| [src/lib/navigation.ts](../src/lib/navigation.ts) | ` d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24 ` |
+| [src/router.tsx](../src/router.tsx) | ` 0ef2cee3f4e1c684db7f54525448b83535da6a3d7da2c68333b518f064be5a32 ` |
+| [src/hr/components/useHrFormDraft.ts](../src/hr/components/useHrFormDraft.ts) | ` d93f943cad287eb323ea80799d9f807d1e537aaf1dd9032b51a6e6c50c9265e7 ` |
+| [src/hr/components/PeopleOperations.tsx](../src/hr/components/PeopleOperations.tsx) | ` a6f6ade235d7c4ce8dec497cbc5a4c6fbf9fe6553efb71f5e30f6b99683e3d0b ` |
+| [src/hr/components/HrServiceDesk.tsx](../src/hr/components/HrServiceDesk.tsx) | ` 584ce87da135d5bdc04c56fd9c4789d5e8269c42e7a9f8308ef42adaf8ba1267 ` |
+| [src/hr/components/HrRecruiting.tsx](../src/hr/components/HrRecruiting.tsx) | ` f2f4b25642cecddd1433d23c6a3fb2f4c1fb109b890ed5763169aec5457e7857 ` |
+| [src/hr/components/HrPerformance.tsx](../src/hr/components/HrPerformance.tsx) | ` 7c27e5b9a36dc02f69725c101e21568661b9820b613bca0fe44e781f81090357 ` |
+| [src/hr/components/HrSurveys.tsx](../src/hr/components/HrSurveys.tsx) | ` ba28cb8d4bdc1d5a3e313be89f4272bbd340dedbb3d1d9008609a48b71a794ef ` |
+| [src/cms/model.ts](../src/cms/model.ts) | ` b5281fea82aa168a5dc9262353e7d5cd45255915ceaf2db54282dd5ba8c64e7f ` |
+| [src/cms/CmsDemo.tsx](../src/cms/CmsDemo.tsx) | ` e242a252a724f8ac36ea7f7612016da4ed2372c25fcb22f386b85c7c3d573ee6 ` |
+| [src/cms/editor-recovery.ts](../src/cms/editor-recovery.ts) | ` 0806b91c571018ebb5735130a670a5cf0fcd9d5d00227e9b6f425a49a982ac27 ` |
+| [src/portals/PortalWorkspaceProvider.tsx](../src/portals/PortalWorkspaceProvider.tsx) | ` 186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa ` |
+| [src/portals/useDemoPersistence.ts](../src/portals/useDemoPersistence.ts) | ` 7ea3895df10dc73752ee5fb622f3fed08957f0a4d031485d09b1a2747fda05ed ` |
+| [src/portals/recovery-preferences.ts](../src/portals/recovery-preferences.ts) | ` 0104715273131dfc397c991b3fe201d525e32903b21b265ddc17bd5fe3391859 ` |
+| [src/portals/replacement-recovery.ts](../src/portals/replacement-recovery.ts) | ` 4d80db30057b7ddd1974400e0a8555b33158ec7b8ce55633726b2f8de839dc2c ` |
+| [src/portals/DemoWorkspaceReset.tsx](../src/portals/DemoWorkspaceReset.tsx) | ` 907be2ce4b8182c8207383136b327948b8fb5f9bf879e6080ebeb537c43b6d81 ` |
+| [src/portals/RecoveryCheckpointPreview.tsx](../src/portals/RecoveryCheckpointPreview.tsx) | ` 537ac122bab47679253afe068c4af1aa3c158903bc13c7a9a501a7b3a9b7c71d ` |
+| [src/portals/restore-points.ts](../src/portals/restore-points.ts) | ` d80d770440de2db847fd5cd933a960fbe2cc88adb4f80d9bd9ae13e97ce89e1b ` |
+| [src/portals/RestorePointHistory.tsx](../src/portals/RestorePointHistory.tsx) | ` 883a619f1e6f78db5ffee7302b48b36b6f88823ddfe706699a0395ee6505183d ` |
+| [src/portals/restore-workspaces.ts](../src/portals/restore-workspaces.ts) | ` 1e84b45222b119e9d02e75efa1ba251584353ef0ff2142db5350f009e2797cce ` |
+| [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | ` 93359bb84b035a6415ae53540f274ec9b9f12ba6564d6fb1c1c0c39986c1bbd3 ` |
+| [src/portals/WorkspaceInspection.tsx](../src/portals/WorkspaceInspection.tsx) | ` c9daf24e7fd319f0fceb9543dc69b2b8424044e812bae6b02a188fc6d97013f5 ` |
+| [src/crm/CrmDemo.tsx](../src/crm/CrmDemo.tsx) | ` 40fb0275d100fb788f8ca77f1d458d8419b2316db99c9a4f8fc20db8b06c6221 ` |

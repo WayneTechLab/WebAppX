@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { EmployeeManagement, EmployeeOnboarding, GustoProvider, Payroll, type APIConfig, type EventType } from '@gusto/embedded-react-sdk'
+import { EmployeeManagement, EmployeeOnboarding, GustoProvider, Payroll, type APIConfig, type EventType, type GlobalResourceDictionary } from '@gusto/embedded-react-sdk'
 import '@gusto/embedded-react-sdk/style.css'
 import { AppLink } from '@/components/navigation/AppLink'
 
@@ -9,6 +9,12 @@ const payrollId = '00000000-0000-4000-8000-000000000301'
 const sessionHeader = 'X-Systemx-Gusto-Mock-Session'
 type PreviewFlow = 'directory' | 'onboarding' | 'payroll'
 const onboardingDefaults = { profile: { homeAddress: { street1: '100 Fictional Lane', city: 'Austin', state: 'TX', zip: '78701' } } }
+// Supported SDK translation overrides keep its receipt inside this local mock's
+// authority. The vendor receipt otherwise displays real processor partnership copy.
+const mockReceiptDictionary = { en: { 'Payroll.PayrollReceipts': { receipt: {
+  totalLabel: 'Fictional local payroll total',
+  companyInfo: 'Local fictional SDK receipt. No payroll provider partnership, licensed processing or funds movement is represented.',
+}, sections: { debitedLabel: 'Fictional debit breakdown (no transfer)', taxLabel: 'Illustrative zero-tax breakdown' } } } } satisfies GlobalResourceDictionary
 
 export function GustoSdkPreview() {
   const [flow, setFlow] = useState<PreviewFlow>('directory')
@@ -151,7 +157,7 @@ export function GustoSdkPreview() {
         <p role="status" className="text-sm text-neutral-600">{message}</p>
         {error && <div role="alert" className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-900">{error}{!sessionId && <button type="button" onClick={() => setAttempt(value => value + 1)} className="ml-4 min-h-11 underline">Retry mock session</button>}</div>}
         {sessionId && <div className="rounded-xl border bg-white p-4 text-neutral-900">
-          <GustoProvider key={`${sessionId}:${epoch}:${flow}`} config={sdkConfig}>
+          <GustoProvider key={`${sessionId}:${epoch}:${flow}`} config={sdkConfig} dictionary={mockReceiptDictionary}>
             {flow === 'directory' ? <EmployeeManagement.EmployeeList companyId={companyId} onEvent={onEvent} /> : flow === 'onboarding' ? onboardingComplete ? <p className="text-sm">The fictional employee is active. Choose Employee directory to read back the record, or reset SDK samples to repeat onboarding.</p> : <EmployeeOnboarding.OnboardingExecutionFlow companyId={companyId} initialEmployeeId={employeeId} defaultValues={onboardingDefaults} isAdmin isSelfOnboardingEnabled={false} withEmployeeI9={false} onEvent={onEvent} /> : <Payroll.PayrollExecutionFlow companyId={companyId} payrollId={payrollId} withReimbursements={false} onEvent={onEvent} />}
           </GustoProvider>
         </div>}

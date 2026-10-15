@@ -237,3 +237,48 @@ test('actual published payroll client prepares, edits, calculates, reviews and f
   assert.equal(localRequest(mock, id, 'POST', '/__reset').status, 200)
   assert.equal(localRequest(mock, id, 'GET', '/__state').body.payrollPhase, 'draft')
 })
+
+test('selected SDK payroll receipt has an independent complete fictional wire fixture and published client readback', async () => {
+  const mock = createMockSdk({ now: () => Date.parse('2026-10-15T12:00:00.000Z') })
+  const id = session(mock), sdk = client(mock, id), route = `/v1/payrolls/${MOCK_PAYROLL_ID}/receipt`
+  const ids = { companyId: MOCK_COMPANY_ID, payrollId: MOCK_PAYROLL_ID }
+  assert.equal(mock.respond({ url: '/__gusto_mock__' + route, headers }).status, 403)
+  assert.equal(localRequest(mock, id, 'GET', route).status, 409)
+  assert.equal(localRequest(mock, id, 'PUT', route, {}).status, 403)
+  assert.equal(localRequest(mock, id, 'GET', route + '?include=taxes').status, 422)
+  assert.equal(localRequest(mock, id, 'GET', route.replace(MOCK_PAYROLL_ID, 'foreign-payroll')).status, 501)
+  const prepared = (await sdk.payrolls.prepare(ids)).payrollPrepared
+  const row = prepared.employeeCompensations[0]
+  await sdk.payrolls.update({ ...ids, payrollUpdate: { employeeCompensations: [{ employeeUuid: row.employeeUuid, version: row.version,
+    hourlyCompensations: [{ name: 'Regular Hours', jobUuid: '00000000-0000-4000-8000-000000000201', hours: '40.000' }] }] } })
+  await sdk.payrolls.calculate(ids)
+  assert.equal(localRequest(mock, id, 'GET', route).status, 409)
+  await sdk.payrolls.get({ ...ids, include: ['totals'] })
+  await sdk.payrolls.submit({ ...ids, requestBody: { submissionBlockers: [] } })
+  const before = localRequest(mock, id, 'GET', '/__state').body
+  const wire = localRequest(mock, id, 'GET', route)
+  assert.equal(wire.status, 200)
+  assert.deepEqual(wire.body, {
+    payroll_uuid: '00000000-0000-4000-8000-000000000301', company_uuid: '00000000-0000-4000-8000-000000000001',
+    name_of_sender: 'Fictional Demo Employer — local mock only', name_of_recipient: 'Fictional payroll recipients',
+    recipient_notice: 'Synthetic test receipt only. No wages, taxes, bank transfer or Gusto submission occurred.', debit_date: '2026-10-20',
+    license: 'Synthetic receipt only. No licensed processing or funds movement occurred.', license_uri: '/hr/demo/sdk',
+    right_to_refund: 'No payment occurred; this fictional receipt creates no refund right.',
+    liability_of_licensee: 'No provider account, filing, banking connection or legal submission exists in this mock.',
+    totals: { company_debit: '1000.00', net_pay_debit: '1000.00', child_support_debit: '0.00', reimbursement_debit: '0.00', tax_debit: '0.00' },
+    taxes: [], employee_compensations: [{ employee_uuid: '00000000-0000-4000-8000-000000000101', employee_first_name: 'Avery', employee_last_name: 'Example',
+      payment_method: 'Direct Deposit', net_pay: '1000.00', total_tax: '0.00', total_garnishments: '0.00', child_support_garnishment: '0.00', total_reimbursement: '0.00' }],
+    licensee: { name: 'Fictional local mock processor', address: '100 Fictional Lane', city: 'Austin', state: 'TX', postal_code: '78701', phone_number: '0000000000' },
+  })
+  const parsed = (await sdk.payrolls.getReceipt({ payrollUuid: MOCK_PAYROLL_ID })).payrollReceipt
+  assert.equal(parsed.nameOfSender, 'Fictional Demo Employer — local mock only')
+  assert.equal(parsed.totals.companyDebit, '1000.00')
+  assert.equal(parsed.employeeCompensations[0].employeeFirstName, 'Avery')
+  assert.equal(parsed.employeeCompensations[0].netPay, '1000.00')
+  assert.equal(parsed.licensee.postalCode, '78701')
+  assert.equal(parsed.licenseUri, '/hr/demo/sdk')
+  assert.deepEqual(localRequest(mock, id, 'GET', '/__state').body, before, 'Receipt reads cannot mutate a submitted payroll')
+  assert.equal(localRequest(mock, session(mock), 'GET', route).status, 409, 'Another fresh session cannot read this receipt')
+  localRequest(mock, id, 'POST', '/__reset')
+  assert.equal(localRequest(mock, id, 'GET', route).status, 409)
+})

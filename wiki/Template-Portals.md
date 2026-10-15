@@ -5,6 +5,21 @@ fictional browser-local records and require no Gusto account, Firebase sign-in,
 provider credentials or external service. Use sample names/content and `.invalid`
 addresses; validation does not remove personal information from free text.
 
+## Current safety and recovery behavior
+
+[Portal Safety and Recovery](Portal-Safety-and-Recovery.md) explains dirty-form
+Keep/Discard and eligible retained-draft choices, the CMS restored-editor
+exception, independent opt-in import/Reset checkpoints, structured differences,
+quality checks and fictional failure recovery. The
+[current safety QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-SAFETY-QA-2026-10-15.md)
+records final execution and acceptance when completed. The source wave begins
+at `532cc4ad63d18a4fe911b0a9b18e258b85ef3416`; older browser checkpoints below
+remain dated historical evidence.
+
+Agent 0 accepted **14 original local criteria**. The catalog now records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**, with **742 local, 127 operator and 40 provider** acceptance gates remaining. The full 1,000-item goal remains active.
+
+Focused and browser verification passed. The required **61-stage integrated CI and Hosting preflight are pending** before publication; their final results belong in the current safety QA receipt.
+
 ## Start locally
 
 ```bash
@@ -25,8 +40,11 @@ Open Vite's printed URL and choose **Template Portals**:
 
 Each native module saves domain actions to its own versioned `localStorage`
 snapshot. Refreshing or leaving and returning restores the last successfully
-saved records in the same browser and origin. **Reset** clears only that
-module’s saved snapshot and restores its fixtures. The modules do not
+saved records in the same browser and origin. An accepted **Reset** removes only
+that module’s saved snapshot, restores its fixtures and clears its temporary UI.
+An independently enabled checkpoint setting adds review and required capture
+before Reset; known-off Reset keeps its one-click behavior. Unknown settings
+refuse replacement. The modules do not
 automatically share identities, HR records, customer information or content.
 Opening `/hr/demo/sdk` may unmount native HR; returning restores the saved native
 HR snapshot. The SDK’s independent sample state is not saved by this adapter.
@@ -50,8 +68,11 @@ active timers and transient messages are not guaranteed to restore.
 
 - The same browser profile and **origin** are required. A different hostname,
   scheme or port uses separate storage; `localhost` and `127.0.0.1` differ.
-- A module’s **Reset** clears only its saved snapshot. Clearing site data or
-  ending private-browsing sessions can remove saved samples.
+- A module’s accepted **Reset** clears its own saved snapshot and temporary
+  editor, with an optional required checkpoint first. Existing history remains.
+  With its setting known off, failed save removal still accepts the fresh seed
+  in memory and warns that the old save may return after refresh. Clearing site
+  data or ending private-browsing sessions can remove saved samples.
 - The workspace shows storage status. Blocked/full storage visibly falls back
   to memory; malformed or unsupported snapshots load fresh fixtures with a notice.
 - Tabs do not merge live edits. Each tab starts from its loaded snapshot and the
@@ -61,7 +82,7 @@ active timers and transient messages are not guaranteed to restore.
   only; never enter real employee/customer information, credentials or secrets.
 
 Read the [persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
-for the current checked paths. Earlier receipts retain their original scope.
+for its historical checked paths. Earlier receipts retain their original scope.
 
 Preview identities are module-specific test controls. They do not authenticate
 staff, modify Firebase claims or grant real organization memberships. Production
@@ -162,7 +183,9 @@ Use **Export workspace** in HR, CMS or CRM to download that portal’s validated
 current domain snapshot as a JSON file. Use separate files or the combined
 directory controls below. Save/complete domain actions before exporting.
 Unsaved fields, running timers, most interface selections and the SDK preview’s
-independent session are excluded. Native HR retains its saved role/employee choice.
+independent session are excluded. Retained navigation drafts, the volatile CMS
+editor/recovery buffer, restore history and origin-local checkpoint settings are
+also excluded. Native HR retains its saved role/employee choice.
 
 1. Copy the exported file to the destination browser/computer and open the
    matching native portal. A different scheme, hostname or port is supported
@@ -173,8 +196,16 @@ independent session are excluded. Native HR retains its saved role/employee choi
    workspace**, **Replace CMS workspace** or **Replace CRM workspace**. Choose
    **Cancel import** to preserve current records. Import replaces the whole matching
    portal; it does not merge or synchronize workspaces.
-4. Check the save status and refresh. A successful import restores from that
-   browser’s own storage. The other two portals and SDK session are unchanged.
+4. If **Require checkpoint before individual imports** is enabled, inspect the
+   module-only destination capture and retention preview. Confirmation is bound
+   to the reviewed current/target/settings/history facts, and the checkpoint
+   must save before replacement. Default-off import still requires the reviewed
+   explicit Replace action; unknown settings or stale confirmation refuse it.
+5. Check the save status. A dirty CMS author editor is retained for comparison
+   and explicit Reload/Reapply; no recovery choice writes a revision. Export
+   or resolve temporary text before refreshing, because it is not in a backup.
+   A refresh checks saved domain records at the destination origin. The other
+   two portals and SDK session are unchanged.
 
 Size, format/version, module and full nested schema checks run before replacement.
 Invalid/incompatible or wrong-module files preserve current records. If browser
@@ -208,8 +239,10 @@ contributes its initial sample. Export does not create an account or upload data
 4. Choose **Restore selected workspaces** to replace and save only those portals,
    or **Cancel combined restore**. Unselected memory and exact browser-save bytes remain
    untouched. Restore replaces whole portals; it does not merge records.
-5. Check the result and refresh. Successful restores clear selected portals’
-   unsaved forms/timers; unselected portal interface state remains active.
+5. Check the result before refreshing. Successful restores clear selected
+   portals’ ordinary unsaved forms/timers; a dirty CMS author editor survives
+   for **Reload restored draft** or **Reapply unsaved text**. Resolve or copy that
+   temporary text before refresh. Unselected portal interface state remains active.
 
 Before changing memory, the app revalidates selected snapshots and attempts all
 selected browser writes. A failed write attempts to restore prior selected-key
@@ -294,8 +327,10 @@ this browser address’s latest history (`webappx.demo.restore-points`).
    Undo replaces later saved changes in the captured portals too.
 3. Undo first saves a new point of those portals’ current states. Use the newer
    point to reverse it. If that point cannot validate or save, Undo is refused.
-4. Check the result and refresh. Restored portals’ unsaved forms/timers reset;
-   unselected portals’ domain data, saved bytes and interface state stay intact.
+4. Check the result before refreshing. Restored portals’ ordinary unsaved
+   forms/timers reset; a dirty CMS author editor keeps its exact raw text for
+   explicit comparison and Reload/Reapply. Unselected portals’ domain data,
+   saved bytes and interface state stay intact.
 
 History keeps at most **five points** within **2,000,000 serialized characters**,
 pruning oldest points as needed. If the newest point alone cannot fit, existing
@@ -309,13 +344,16 @@ before refreshing.
 
 Points are plain-text fictional domain records, including private drafts and
 mock receipts; preview roles do not protect them. They exclude unsaved forms,
-active timers and SDK state. Individual imports, Reset and ordinary edits do not
-automatically create points. Neither JSON format includes history: export files
+active timers and SDK state. Ordinary edits do not automatically create points.
+Individual import and Reset have independent origin-local checkpoint settings,
+both off by default. Enabling one requires its reviewed module-only point before
+that replacement; unknown preferences refuse it. Reset preserves existing
+history and explicitly clears the volatile CMS editor. Neither JSON format includes history: export files
 separately for portable backups. Avoid simultaneous changes in other tabs. No
 account, upload, cloud storage or provider key is required. Read the
 [restore-point guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#automatic-restore-points-and-undo)
-and [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md)
-for this update. The following checkpoints retain their historical scope.
+and [earlier QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md)
+for that historical update. The following checkpoints retain their historical scope.
 
 ### Combined browser checkpoint — 2026-10-14
 

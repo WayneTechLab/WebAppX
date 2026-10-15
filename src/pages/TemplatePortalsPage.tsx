@@ -11,6 +11,7 @@ import { portalDirectoryHref, portalRegistry } from '@/portals/registry'
 import { rememberPortalLocation, resolvePortalRoute } from '@/portals/routes'
 import { PortalBreadcrumbs, PortalMockBanner, UnsupportedPortalRoute, WorkspaceSaveSummary } from '@/portals/PortalChrome'
 import { hrRoutes } from '@/hr/catalog'
+import { useUnsavedOwnerLocations } from '@/portals/unsaved-work'
 
 const portalIcons = { users: Users, 'file-text': FileText, handshake: Handshake } as const
 
@@ -32,6 +33,7 @@ function TemplatePortalsContent({ pathname }: { pathname: string }) {
     returnLocations = rememberPortalLocation(navigation.locations, pathname, hrRoutes)
     setNavigation({ pathname, locations: returnLocations })
   }
+  useUnsavedOwnerLocations(returnLocations)
   useEffect(() => {
     if (route.kind !== 'directory' || window.location.hash !== '#mock-data-handling') return
     const explanation = document.getElementById('mock-data-handling')

@@ -2,13 +2,16 @@ import { useRef, useState, type ChangeEvent } from 'react'
 import { createDemoBackup, parseDemoBackup, DEMO_BACKUP_FILE_LIMIT, type DemoBackup } from './backup'
 import type { DemoModule, DemoStorageStatus } from './persistence'
 import { portalById } from './registry'
+import type { WorkspaceRecoveryControls } from './recovery-preferences'
+import { RecoveryCheckpointPreview } from './RecoveryCheckpointPreview'
 
 const secondary = 'inline-flex min-h-11 items-center justify-center rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50'
 
-export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onImport }: {
+export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onImport, recovery }: {
   module: DemoModule; state: T; validate: (value: unknown) => value is T;
   summarize: (value: T) => string;
-  onImport: (value: T) => { ok: boolean; status: DemoStorageStatus };
+  onImport: (value: T, confirmation?: string) => { ok: boolean; status: DemoStorageStatus };
+  recovery?: WorkspaceRecoveryControls;
 }) {
   const input = useRef<HTMLInputElement>(null)
   const selection = useRef(0)
@@ -16,6 +19,7 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
   const [reading, setReading] = useState(false)
   const [feedback, setFeedback] = useState<{ message: string; error: boolean } | null>(null)
   const title = portalById[module].label
+  const checkpoint = pending && recovery ? recovery.previewImport(pending.backup.state) : undefined
 
   function download() {
     try {
@@ -56,7 +60,7 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
 
   function replace() {
     if (!pending) return
-    const result = onImport(pending.backup.state)
+    const result = onImport(pending.backup.state, checkpoint?.confirmation)
     if (result.ok) setPending(null)
     setFeedback({ message: result.status.message, error: !result.ok })
   }
@@ -65,6 +69,15 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
     <h2 className="text-lg font-semibold text-neutral-950">Back up this workspace</h2>
     <p className="mt-2 max-w-4xl text-sm leading-6 text-neutral-600">Export {title}'s fictional records to a JSON file, then import it in this portal in another browser. Files stay on your device; nothing is uploaded. Import replaces this portal's records. The other portals stay separate.</p>
     <p className="mt-2 text-xs leading-5 text-neutral-500">Backups are readable text, including saved private review drafts and survey answers where present. Use fictional data only. Unsaved fields and running timers are excluded. Export your current workspace before replacing it if you want to keep both versions.</p>
+    {recovery && <fieldset className="mt-4 rounded-lg border border-neutral-200 p-3">
+      <legend className="px-1 text-sm font-semibold text-neutral-900">Optional required checkpoints</legend>
+      <p className="mb-3 text-xs leading-5 text-neutral-500">Both settings start off. Each applies to all native portals at this browser origin, survives refresh and stays outside workspace exports and restore-point history. When enabled, replacement refuses if its checkpoint cannot be saved.</p>
+      {recovery.settings.error && <p role="alert" className="mb-3 text-sm leading-6 text-red-900">{recovery.settings.error} Choose the settings below explicitly; a successful setting change saves both choices shown.</p>}
+      {(['beforeImport', 'beforeReset'] as const).map(preference => <label key={preference} className="mt-2 flex min-h-11 items-center gap-3 text-sm text-neutral-800"><input type="checkbox" checked={recovery.settings.preferences[preference]} onChange={event => {
+        const result = recovery.setPreference(preference, event.currentTarget.checked)
+        setFeedback({ message: result.status.message, error: !result.ok })
+      }} />{preference === 'beforeImport' ? 'Require checkpoint before individual imports' : 'Require checkpoint before Reset'}</label>)}
+    </fieldset>}
     <div className="mt-4 flex flex-wrap gap-3">
       <button type="button" className={secondary} onClick={download}>Export workspace</button>
       <button type="button" className={secondary} onClick={() => input.current?.click()} disabled={reading}>Import workspace</button>
@@ -75,7 +88,8 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
       <h3 className="font-semibold text-amber-950">Ready to replace {title} workspace</h3>
       <dl className="mt-3 grid gap-x-5 gap-y-2 break-words text-sm text-amber-950 sm:grid-cols-[auto_1fr]"><dt className="font-medium">File</dt><dd>{pending.filename}</dd><dt className="font-medium">Exported at (UTC)</dt><dd>{pending.backup.exportedAt}</dd><dt className="font-medium">Backup records</dt><dd>{summarize(pending.backup.state)}</dd></dl>
       <p className="mt-3 text-sm leading-6 text-amber-950">This replaces the current {title} mock workspace and its browser save. It does not merge records. Continue only if this is the backup you want to use.</p>
-      <div className="mt-4 flex flex-wrap gap-3"><button type="button" className="inline-flex min-h-11 items-center rounded-md bg-neutral-950 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800" onClick={replace}>Replace {title} workspace</button><button type="button" className={secondary} onClick={cancel}>Cancel import</button></div>
+      {checkpoint && <RecoveryCheckpointPreview preview={checkpoint} />}
+      <div className="mt-4 flex flex-wrap gap-3"><button type="button" className="inline-flex min-h-11 items-center rounded-md bg-neutral-950 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50" disabled={checkpoint !== undefined && (!checkpoint.ok || !checkpoint.canReplace)} onClick={replace}>Replace {title} workspace</button><button type="button" className={secondary} onClick={cancel}>Cancel import</button></div>
     </div>}
     {feedback && <p role={feedback.error ? 'alert' : 'status'} className={`mt-4 rounded-lg border p-3 text-sm leading-6 ${feedback.error ? 'border-red-200 bg-red-50 text-red-900' : 'border-emerald-200 bg-emerald-50 text-emerald-950'}`}>{feedback.message}</p>}
   </section>

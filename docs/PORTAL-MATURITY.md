@@ -87,7 +87,12 @@ missing history requires refresh and review before any replacement.
 Directory cards and shared portal links return to the last supported subsection
 in the mounted session. Unsupported URLs cannot replace it. There is no new
 localStorage/sessionStorage preference. A fresh document starts at defaults;
-selected restores remount only their portal's temporary UI.
+selected restores remount only their portal's temporary UI. The subsequent
+[safety extension](PORTAL-SAFETY-QA-2026-10-15.md) adds shared dirty-navigation
+decisions, explicit comparison of a dirty CMS editor retained across replacement
+and independently enabled pre-import/Reset points. Accepted Reset still clears
+the editor. The current [state contract](PORTAL-STATE-CONTRACT.md) defines those
+boundaries; the original maturity receipt keeps its original observations.
 
 ```bash
 npm run maturity:test

@@ -21,7 +21,15 @@ const requiredBindings = [CAPABILITIES_PATH, INVENTORY_PATH, PIN_PATH, SDK_PATH,
   'src/pages/HrPage.tsx', 'integrations/gusto/mock-api.mjs', 'integrations/gusto/sdk-onboarding.mjs',
   'integrations/gusto/sdk-payroll.mjs', 'integrations/gusto/schema.json',
   'integrations/gusto/functions/src/backend.mjs', 'integrations/gusto/functions/src/security.mjs',
-  'integrations/gusto/functions/src/index.mjs', 'integrations/gusto/functions/src/webhooks.mjs']
+  'integrations/gusto/functions/src/index.mjs', 'integrations/gusto/functions/src/webhooks.mjs',
+  'src/portals/unsaved-work-core.ts', 'src/portals/unsaved-work.tsx', 'src/lib/navigation.ts', 'src/router.tsx',
+  'src/hr/components/useHrFormDraft.ts', 'src/hr/components/PeopleOperations.tsx',
+  'src/hr/components/HrServiceDesk.tsx', 'src/hr/components/HrRecruiting.tsx',
+  'src/hr/components/HrPerformance.tsx', 'src/hr/components/HrSurveys.tsx',
+  'src/portals/PortalWorkspaceProvider.tsx', 'src/portals/useDemoPersistence.ts',
+  'src/portals/recovery-preferences.ts', 'src/portals/replacement-recovery.ts',
+  'src/portals/DemoWorkspaceBackup.tsx', 'src/portals/DemoWorkspaceReset.tsx',
+  'src/portals/RecoveryCheckpointPreview.tsx']
 const shaPattern = /^[0-9a-f]{64}$/
 const nativeCoverage = ['interactive-mock', 'read-only-mock', 'partial-mock', 'not-implemented']
 const exact = (record, keys) => !!record && typeof record === 'object' && !Array.isArray(record)

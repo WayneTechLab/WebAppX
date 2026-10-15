@@ -22,6 +22,17 @@ dependencies, or change the required CI runner. JSON uses repository-relative
 paths and excludes raw unreviewed command bodies and machine paths. Redirect
 standard output yourself when a saved report is useful.
 
+The current safety extension adds `safety:test`, `browser:safety`,
+`browser:quality`, `browser:sdk-quality` and `browser:recovery-drill` to the maintained sequential
+runner. Browser suites fork an owned preview worker with argument arrays,
+verify its exact PID/parent and allocated loopback port, and close that same
+child after browser cleanup. This verification worker disables filesystem
+watching and HMR updates while retaining its allowed owned socket for Vite
+connection/error messages. Ordinary local development retains hot updates. The preview-process tests cover real process
+startup/shutdown, interruption during cleanup and preservation of an unrelated
+listener. A stage count in this source report is separate from the executed
+results in the [safety QA receipt](PORTAL-SAFETY-QA-2026-10-15.md).
+
 ## Dependent workspaces
 
 | Workspace | Source of context | Role in the existing gate |

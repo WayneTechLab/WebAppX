@@ -35,19 +35,36 @@ only read local catalog data. They do not dispatch agents, import task records,
 contact providers or change acceptance. `backlog:plan:render` explicitly writes
 the generated plan; `backlog:plan:check` verifies it without rewriting.
 
-### Portal maturity — 2026-10-15
+### Portal safety and recovery — 2026-10-15
+
+Agent 0 accepted **WX-0059, WX-0285, WX-0455–WX-0456, WX-0459–WX-0460,
+WX-0655, WX-0720, WX-0722, WX-0756–WX-0757, WX-0775, WX-0847 and WX-0860**.
+The catalog records **91 done / 909 remaining**: **82 P1, 670 P2 and 157 P3**,
+with **742 local, 127 operator and 40 provider** gates remaining. Read the
+[implementation plan](../docs/PORTAL-SAFETY-IMPLEMENTATION-PLAN.md),
+[QA receipt](../docs/PORTAL-SAFETY-QA-2026-10-15.md),
+[state contract](../docs/PORTAL-STATE-CONTRACT.md) and
+[status inventory](../docs/PORTAL-STATUS-INVENTORY.md) for exact local scope and
+separate integrated publication gates.
+
+The [next HR lifecycle plan](../docs/HR-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+assigns WX-0101–WX-0110 as proposed implementation. All ten remain TODO; no
+provider/operator acceptance or reusable task record is created by the plan.
+
+The following checkpoints retain their historical dates and totals.
+
+### Historical portal maturity — 2026-10-15
 
 Agent 0 accepted **WX-0056, WX-0151–WX-0158, WX-0280, WX-0282, WX-0397,
-WX-0453, WX-0454, WX-0457 and WX-0458**. The catalog records **77 done /
+WX-0453, WX-0454, WX-0457 and WX-0458**. At that checkpoint the catalog recorded **77 done /
 923 remaining**: **96 P1, 670 P2 and 157 P3**, with **756 local, 127 operator
 and 40 provider** gates remaining. Read the [maturity guide](../docs/PORTAL-MATURITY.md),
 [implementation plan](../docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md) and
 [QA receipt](../docs/PORTAL-MATURITY-QA-2026-10-15.md). Publication gates belong
 to that receipt; no provider or deployment acceptance follows from local tests.
 
-The [next safety/recovery assignment](../docs/PORTAL-SAFETY-IMPLEMENTATION-PLAN.md)
-plans twelve remaining local P1 criteria. Those criteria remain unaccepted;
-the plan retains existing-source review and manual-evidence boundaries.
+The subsequent safety/recovery assignment is accepted in the current checkpoint
+above. Its receipt preserves the exact original criteria and manual-evidence boundaries.
 
 The following checkpoints retain their historical dates and totals.
 

@@ -826,12 +826,18 @@
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add an unsaved form navigation prompt",
       "acceptance": "Leaving a portal with an unsaved form offers keep editing or discard choices without intercepting a completed saved action.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0060",
@@ -3640,12 +3646,18 @@
       "area": "cms-authoring",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Handle stale CMS editor revisions explicitly",
       "acceptance": "A revision changed through restore causes a visible comparison and requires reloading or reapplying unsaved text.",
       "source": "src/cms/model.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0286",
@@ -5810,24 +5822,36 @@
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add optional recovery points for individual imports",
       "acceptance": "A separately enabled setting captures the destination portal before an individual import and refuses replacement if that required point cannot save.",
       "source": "src/portals/DemoWorkspaceBackup.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0456",
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add optional recovery points for portal reset",
       "acceptance": "An explicitly enabled preference previews and saves the current portal before Reset while keeping the existing default behavior documented.",
       "source": "src/portals/useDemoPersistence.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0457",
@@ -5870,28 +5894,40 @@
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add record difference inspection for CMS restores",
       "acceptance": "A preview can show which fictional content revisions and publication projections would change before whole-module replacement.",
       "source": "src/cms/persistence.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0458"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0460",
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add record difference inspection for CRM restores",
       "acceptance": "A preview can show changed fictional companies, contacts, lead states and opportunities before whole-module replacement.",
       "source": "src/crm/persistence.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0458"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0461",
@@ -8360,12 +8396,18 @@
       "area": "quality",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Measure accessible names in repeated portal controls",
       "acceptance": "A browser audit detects ambiguous role selectors, import buttons and record actions when hidden portal modules remain mounted.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0656",
@@ -9191,12 +9233,18 @@
       "area": "design",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Audit color-independent status labels",
       "acceptance": "Every workflow status remains understandable in a monochrome capture using text or shape labels alongside color.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0721",
@@ -9215,12 +9263,18 @@
       "area": "design",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add portal large-text browser checks",
       "acceptance": "At the existing x-large text setting, forms and restore controls retain all labels, values and confirmation actions.",
       "source": "src/index.css",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0723",
@@ -9641,28 +9695,40 @@
       "area": "operations",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Create a damaged restore-history recovery runbook",
       "acceptance": "The guide explains preserving exports, explicitly clearing unusable history and checking current portal saves without claiming the damaged history was repaired.",
       "source": "docs/RUNBOOK.md",
       "gate": "local",
       "dependsOn": [
         "WX-0751"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0757",
       "area": "operations",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Create a partial rollback recovery runbook",
       "acceptance": "A worked synthetic example explains uncertain browser slots, exporting current memory before reload and verifying each portal independently.",
       "source": "src/portals/restore-workspaces.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0751"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0758",
@@ -9875,14 +9941,20 @@
       "area": "operations",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Prepare an operational rehearsal checklist",
       "acceptance": "A local drill covers bad import, unavailable storage, failed restore and recovery from a portable backup with exact expected outcomes.",
       "source": "docs/RUNBOOK.md",
       "gate": "local",
       "dependsOn": [
         "WX-0751"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0776",
@@ -10811,12 +10883,18 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add smoke test entrypoint using an owned loopback port",
       "acceptance": "A local script launches only its own preview, records its process handle, chooses an available loopback port and cleans up only that process.",
       "source": "docs/COMMANDS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0848",
@@ -11026,14 +11104,20 @@
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a reusable import rehearsal fixture",
       "acceptance": "A temporary adopted app with populated fictional records demonstrates that reviewed upstream imports preserve project-specific ledgers and configuration.",
       "source": "tests/systemx",
       "gate": "local",
       "dependsOn": [
         "WX-0859"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "532cc4ad63d18a4fe911b0a9b18e258b85ef3416",
+        "evidence": "docs/PORTAL-SAFETY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0861",
