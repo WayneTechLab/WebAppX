@@ -20,6 +20,7 @@ import net from 'node:net'
 import { inspectCurrentRepository, inspectExternalProject } from './Builder/importer/current-repo.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
+import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
 
 const lanRoot = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(lanRoot, '..', '..')
@@ -1312,12 +1313,13 @@ const server = createServer(async (request, response) => {
 })
 
 server.listen(port, host, () => {
-  if (!testMode) {
+  if (!testMode && !process.env.SYSTEMX_SESSION_OWNER_PID) {
     const existingSession = readSession(repoRoot)
     const session = existingSession?.sessionId === sessionId
       ? {
           ...existingSession,
           processes: { ...existingSession.processes, lan: process.pid },
+          processIdentities: { ...existingSession.processIdentities, lan: captureSessionProcessIdentity(process.pid, { workingDirectory: process.cwd() }) },
           ports: { ...existingSession.ports, lan: port, app: appPort },
           urls: {
             ...existingSession.urls,
@@ -1331,6 +1333,7 @@ server.listen(port, host, () => {
           sessionId,
           ownerPid: Number.parseInt(process.env.SYSTEMX_SESSION_OWNER_PID ?? String(process.pid), 10),
           processes: { lan: process.pid },
+          processIdentities: { lan: captureSessionProcessIdentity(process.pid, { workingDirectory: process.cwd() }) },
           ports: { lan: port, app: appPort },
           urls: {
             lan: `http://${host}:${port}/`,
@@ -1347,7 +1350,7 @@ server.listen(port, host, () => {
 })
 
 function shutdown() {
-  if (!testMode) clearSession(repoRoot, sessionId)
+  if (!testMode && !process.env.SYSTEMX_SESSION_OWNER_PID) clearSession(repoRoot, sessionId)
   server.close(() => process.exit(0))
 }
 

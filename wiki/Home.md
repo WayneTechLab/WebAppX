@@ -6,6 +6,29 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
+The session/contracts wave adds fixed browser-save origins, independent app and
+emulator readiness, a read-only restart preview, and source-backed portal state
+and capability contracts. Use [Quick Start](Quick-Start.md#open-the-integrated-local-builder)
+for `dev:systemx -- --host 127.0.0.1 --port 5185` and
+`systemx:session:restart:preview`. The
+[dependency installation guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEPENDENCY-INSTALLATION.md)
+explains the root/starter and optional Functions runtime scopes.
+
+Read the [state contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md)
+for retained records, temporary inputs and navigation/reset/restore behavior,
+and the [capability matrix](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-CAPABILITIES.md)
+for synthetic role checks and complete demo backup contents. Run
+`npm run browser:state-contract` for the isolated browser journey. The
+[evidence index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-EVIDENCE.md)
+attaches scoped reviews to stable catalog IDs without changing completion;
+`npm run backlog:evidence -- --id WX-0717` demonstrates historical evidence on
+pending work. Actual verification is recorded in the
+[session/contracts QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SESSION-CONTRACTS-QA-2026-10-15.md).
+
+At the accepted session/contracts checkpoint, the catalog reached **33 completed
+and 967 remaining**. All **38 CI stages**, **36 browser checks** and Hosting
+preflight passed; the receipt retains exact scope and platform boundaries.
+
 The owner has authorized completing **all 1,000 catalog items**. The
 [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
 maps every stable ID into workstreams and dependency-aware waves. The goal stays
@@ -23,9 +46,9 @@ categories without executing them. Read [Quick Start](Quick-Start.md),
 the [foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
 for exact behavior and checked evidence.
 
-Accepted foundation checks passed 15 development contracts, 14 launcher cases,
+At the earlier foundation checkpoint, accepted checks passed 15 development contracts, 14 launcher cases,
 eight planner cases, 14 catalog cases and 121 portal model cases. CI planning
-passed 13 cases and reported all 34 stages without unknown classifications.
+passed 13 cases and reported the then-current 34 stages without unknown classifications.
 Nine foundation and nine existing keyboard browser checks passed with owned
 cleanup successful. The receipt records final integrated publication gates.
 
@@ -68,9 +91,9 @@ query/validation commands. The catalog tracks delivered items with completion
 evidence while leaving reusable SYSTEMX seeds blank; it does not activate 1,000
 tasks or provider operations. The reviewed
 SYSTEMX refresh retains alpha.6 because upstream changed only external docs.
-The catalog retains exactly **1,000 records** with completion evidence:
-**24 completed, 976 remaining — 146 P1, 673 P2 and 157 P3**. Remaining acceptance
-gates are **808 local, 128 operator and 40 provider**. The full goal remains active.
+The catalog retains exactly **1,000 records** with completion evidence. Run
+`npm run backlog:summary` or read the generated execution plan for current
+completion and remaining-gate counts. The full goal remains active.
 
 The first P1 portal follow-up adds a shared typed HR/CMS/CRM registry and a
 **Storage budget preview** before combined selective restore and Undo. Review

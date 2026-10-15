@@ -38,6 +38,9 @@ npm run backlog:ready -- --gate all --priority P1 --limit 30
 npm run backlog:graph -- --id WX-0654 --id WX-0551
 npm run backlog:plan:render
 npm run backlog:plan:check
+npm run backlog:evidence
+npm run backlog:evidence -- --id WX-0717 --category browser --limit 20
+npm run backlog:evidence:check
 ```
 
 The JSON is canonical; Markdown and CSV are generated. The CI check verifies
@@ -50,6 +53,29 @@ Plan and ready reports return JSON. Graph output includes a selected dependency
 closure, longest chains and unresolved nonlocal acceptance criteria. These reports
 only read the local catalog; they start no workers and change no task statuses.
 The explicit plan-render command writes the generated execution document.
+
+## Scoped evidence for pending and completed items
+
+The [evidence index guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-EVIDENCE.md)
+explains review attachments in
+[`webappx-evidence-index.json`](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/webappx-evidence-index.json).
+A review retains the examined source revision, while each reference retains
+its original date, revision, evidence method and limitations. Local/browser
+observations do not become provider or operator acceptance when reused.
+
+`backlog:evidence` defaults to a JSON summary. Query filters for `--id` and
+`--category` combine; `--limit` ranges from 1 through 100, with a default of 20.
+A known item with no attachments returns zero matches. `--markdown` emits the
+complete index to stdout without writing a file. Validation checks references,
+dates, revisions and known catalog IDs while preserving all completion state.
+
+**WX-0717** demonstrates why evidence and completion remain separate: earlier
+keyboard observations can support an existing-behavior review while its
+prerequisite remains pending. Reading or attaching that evidence does not accept
+WX-0717 or bypass its dependency. Canonical catalog completion still requires
+the original criterion, accepted dependencies and Agent 0/user review.
+The [session/contracts QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SESSION-CONTRACTS-QA-2026-10-15.md)
+records the evidence-index and related session/portal contract checks.
 
 ## Completion and the first P1 batch
 
@@ -82,9 +108,9 @@ explicitly install Chromium with `npm run browser:install`, then run
 `npm run browser:smoke`. The runner uses an owned loopback server and clean
 contexts; it preserves existing previews and saved workspaces.
 
-Exactly **1,000 records** remain in the catalog: **24 done and 976 TODOs,
-including 146 P1, 673 P2 and 157 P3 TODOs**. Remaining acceptance gates are
-**808 local, 128 operator and 40 provider**. Completion applies
+Exactly **1,000 records** remain in the catalog. Read `npm run backlog:summary`
+or the generated execution plan for current completion, priority and gate counts.
+Completion applies
 only to the evidence's scope; it supplies no provider credentials, deployment
 acceptance or permission to activate optional services. The remaining proposals
 keep their individual status, and all reusable SYSTEMX task/context/plan/memory
@@ -113,10 +139,10 @@ for the accepted item IDs and their exact verification.
 Agent 0 accepted **WX-0002–WX-0006, WX-0042, WX-0052–WX-0055, WX-0057–WX-0058,
 WX-0452, WX-0783, WX-0801, WX-0853 and WX-0932**. Focused checks passed 15
 development-contract, 14 mock-launcher, eight planner, 14 catalog, 13 CI-plan and
-121 portal model tests. The actual CI report listed all 34 stages without unknown
+121 portal model tests. The actual CI report listed its then-current 34 stages without unknown
 classifications. Nine foundation and nine existing keyboard browser checks
 passed with successful owned cleanup. Read the receipt for final publication
-gates; completing the remaining 976 items is still the active goal.
+gates; completing every remaining item is still the active goal.
 
 The areas cover setup, portal architecture, three HR groups, two CMS groups,
 two CRM groups, mock recovery, identity, Firebase, security/privacy, quality and

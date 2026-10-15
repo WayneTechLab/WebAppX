@@ -1,6 +1,8 @@
 # Unified template command reference
 
 Run from the repository root. Use `npm ci` for the committed lockfile.
+Read [dependency installation](DEPENDENCY-INSTALLATION.md) for runtime selection
+and root/starter versus optional Functions installation scopes.
 
 ## Developer prerequisites and browser smoke
 
@@ -18,6 +20,7 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 | `npm run development:check` | Read-only root/starter runtime, public client environment coverage and ignored local environment-file contract check |
 | `npm run development:test` | Focused runtime/environment contract regressions |
 | `npm run browser:foundation` | Isolated portal cards, normalized routes, breadcrumbs, unsupported-page recovery and save-summary browser journey |
+| `npm run browser:state-contract` | Isolated native-portal saved-record, temporary-input, navigation, Reset, restore/Undo and in-memory export contract journey |
 
 The doctor requires Node.js >=24.0.0 and Python >=3.12.0; npm/Git must be present
 with parseable versions, without a specified minimum. It installs nothing and
@@ -55,7 +58,7 @@ Recovered/Unavailable states. Read the
 [foundation QA receipt](EXECUTION-FOUNDATION-QA-2026-10-15.md).
 Accepted focused verification passed 15 contract tests, 14 mock-launcher tests,
 eight planner tests, 14 catalog tests and 121 portal model tests. CI planning
-passed 13 tests and reported all 34 stages with zero unknown classifications.
+passed 13 tests and reported its then-current 34 stages with zero unknown classifications.
 Nine foundation browser checks and nine existing keyboard checks passed; final
 integrated gates remain recorded in the receipt.
 
@@ -67,13 +70,52 @@ integrated gates remain recorded in the receipt.
 | `npm run dev:mock` | Owned native HR/CMS/CRM server on a free `127.0.0.1` port, with `.env` files and provider/emulator/LAN integrations disabled |
 | `npm run dev:mock -- --port 5185` | Request a stable local origin; an occupied explicit port fails without stopping its listener |
 | `npm run dev:mock:test` | Mock-launcher argument, environment, ownership and shutdown regressions |
-| `npm run dev:systemx` | Owned app + LAN + Firebase emulator session with available loopback ports |
+| `npm run dev:systemx` | Owned app + LAN + Firebase emulator session with free loopback ports and separate component readiness |
+| `npm run dev:systemx -- --host 127.0.0.1 --port 5185` | Pin the app's HTTP origin; an occupied app port fails without fallback or replacing its listener |
+| `npm run dev:systemx -- --fixed-origin` | Pin the default app origin `http://127.0.0.1:5173`, unless host/port overrides are supplied |
 | `npm run dev:firebase` | Alias for the integrated local session |
 | `npm run systemx:lan` | Direct LAN service only |
-| `npm run systemx:session:status` | Read current session ownership and URLs |
-| `npm run systemx:session:stop` | Stop only owned session processes |
+| `npm run systemx:session:status` | Read recorded origin/URLs/component readiness and inspect recorded process liveness/association; no fresh service probes |
+| `npm run systemx:session:restart:preview` | Read-only process/listener snapshot and proposed launch at the recorded origin/ports; no restart occurs |
+| `npm run systemx:session:test` | Focused supervisor and restart-preview regressions with isolated fixtures |
+| `npm run systemx:session:stop` | Verify ownership before a stop request; Windows combined sessions refuse and require Ctrl+C in the owning terminal; refusal preserves record/files |
 | `npm run build` | TypeScript/Vite build plus LAN artifact-isolation check |
 | `npm run preview` | Preview the built app |
+
+The integrated launcher accepts `--host 127.0.0.1` or `--host localhost` and
+`--port` from 1024 through 65535. Either option pins the app origin, as do
+`SYSTEMX_DEV_HOST`, `SYSTEMX_APP_PORT` or `SYSTEMX_FIXED_ORIGIN=true`.
+Without these overrides it chooses available ports. Backend LAN/emulator hosts
+use `127.0.0.1`; backend preferred ports use `SYSTEMX_LAN_PORT` and
+`SYSTEMX_FIREBASE_{AUTH,FIRESTORE,STORAGE}_PORT`. The launcher prints the exact
+mock-save origin and `/portals` URL; reuse its scheme, hostname and port in the
+same browser profile to reopen saves. `localhost` and `127.0.0.1` select
+different browser storage.
+
+Readiness has independent `starting`, `ready` and `failed` results for Vite,
+LAN, Auth, Firestore and Storage. A usable app does not establish emulator
+readiness. Storage reports only a reachable TCP listener; the other components
+check their specific HTTP responses. These observations do not test provider
+workflows. The [session guide](GETTING-STARTED.md#start-the-integrated-local-workspace)
+explains status and origin troubleshooting.
+
+The restart preview invokes `session-control.mjs restart --preview` and emits
+JSON. `ready-for-review` exits 0; `refused` exits 1, including missing records,
+foreign listeners and unavailable ownership metadata. Malformed invocation
+exits 2; `restart` without `--preview` is rejected. Listener states distinguish
+`available`, `release-required`, `blocked` and `unverified`. This is a snapshot
+without port reservations, signals or file writes. Recheck ownership and
+availability before an actual restart. See the
+[session/contracts receipt](SESSION-CONTRACTS-QA-2026-10-15.md) for actual checks.
+
+Windows combined-session stop exits 1 with reason
+`windows-combined-stop-requires-owning-terminal`, including for an apparently
+exited record. It signals nothing and preserves session/configuration files.
+Use **Ctrl+C in the owning terminal**, then inspect child processes and listeners;
+remaining state needs inspection before operator recovery. A verified standalone
+LAN stop on Windows can terminate that single process; wait for exit and rerun
+stop to clear its verified exited record if the handler did not clean up.
+Read the [shutdown guide](GETTING-STARTED.md#preview-a-restart) for these boundaries.
 
 ## Gusto and HR previews
 
@@ -153,6 +195,10 @@ available. macOS checks alone do not prove Windows x64/ARM64 runtime acceptance.
 | `npm run backlog:plan:render` | Explicitly regenerate the host execution-plan Markdown from canonical statuses/evidence |
 | `npm run backlog:plan:check` | Verify exact generated execution-plan parity without rewriting it |
 | `npm run backlog:plan:test` | Dependency ordering, report modes and generated-plan regression tests |
+| `npm run backlog:evidence` | Read-only JSON summary of scoped review/evidence attachments, independent of catalog completion |
+| `npm run backlog:evidence -- --id WX-0717 --category browser --limit 20` | Query one known item and evidence category; limits range from 1 through 100 |
+| `npm run backlog:evidence:check` | Validate evidence metadata, dates, revisions, known proposal IDs and repository file references without changing status |
+| `npm run backlog:evidence:test` | Evidence-index schema, path-containment, validation, filtering and preservation regressions |
 
 The [roadmap](WEBAPPX-ROADMAP.md) is planning data. These commands leave the
 blank reusable SYSTEMX task/context/plan/memory records intact and do not start
@@ -161,9 +207,18 @@ IDs and link completion evidence; unfinished entries remain open work. Inspect
 the first P1 portal follow-up with `npm run backlog -- --id WX-0051` and
 `npm run backlog -- --id WX-0451`.
 Those earlier entries remain completed with their evidence. The foundation wave
-accepts 17 additional IDs; the catalog contains exactly **1,000 records**, with
-**24 completed and 976 remaining: 146 P1, 673 P2 and 157 P3**. Remaining gates
-are **808 local, 128 operator and 40 provider**.
+accepted 17 additional IDs; consult `backlog:summary` and the generated execution
+plan for current completion and remaining-gate counts.
+
+The [evidence index](BACKLOG-EVIDENCE.md) preserves a review's examined revision
+separately from each original observation's revision, date, method and limits.
+It can attach historical local/browser evidence to a TODO item without accepting
+that item or its dependencies. The CLI defaults to a summary; `--summary` is
+explicit. `--id` and `--category` filters combine, with a default query limit
+of 20. A known item without attachments returns zero matches. `--markdown`
+emits the complete index to stdout, with links relative to `docs/backlog/`;
+it writes no file. Write/apply/completion options are unsupported. Check the
+canonical catalog for acceptance state.
 
 The owner has authorized completing the entire catalog. The
 [host execution plan](WEBAPPX-EXECUTION-PLAN.md) covers every original criterion
@@ -189,7 +244,7 @@ dependencies as well as evidence.
 | `npm run systemx:tools:test` | Test the selected immutable standalone distribution |
 | `npm run systemx:integration:test` | Import preservation and reusable-template mirror regressions |
 | `npm run template:check` | Blank template seeds, snapshots, versions and both research inventories |
-| `npm run ci:all` | Complete reusable-template release gate, including doctor regressions, seed/keyboard guards and both browser journeys; requires blank seeds and explicitly installed Chromium |
+| `npm run ci:all` | Complete reusable-template release gate; inspect `ci:plan` for its current stage list, browser journeys and effects; requires blank seeds and explicitly installed Chromium |
 | `npm run deploy -- hosting --preflight` | Deployment gates without commit, push or hosting deployment |
 | `npm run wiki:check` / `npm run wiki:sync` | Preview / publish checked-in pages to this checkout's GitHub wiki |
 

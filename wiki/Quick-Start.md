@@ -18,6 +18,9 @@ Read [Windows Setup](Windows-Setup.md), [Platform Matrix](Platform-Matrix.md), a
 [Setup Playbook](Setup-Playbook.md) for platform and optional tooling details.
 Managed SYSTEMX includes Bash and PowerShell launchers. The WSG lifecycle menu
 and complete template gate use Bash; the webapp/LAN supervisor uses Node.
+Use the [dependency installation guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEPENDENCY-INSTALLATION.md)
+for locked installs, runtime selection and the optional Functions adapter's
+separate Node 22 environment.
 
 ## Create and run an app
 
@@ -144,9 +147,10 @@ and the [foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/mai
 including actual cold-module startup and owned cleanup. All nine foundation
 browser checks and nine existing keyboard checks passed; 121 portal model tests
 also passed. The receipt records exact planner/CI metadata checks and final
-publication gates. The full 1,000-item goal remains active at **24 completed /
-976 remaining**; consult the [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
-for dependency-ready work.
+publication gates. At that checkpoint the catalog held **24 completed /
+976 remaining**. The full goal remains active; consult `npm run backlog:summary`
+and the [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
+for current counts and dependency-ready work.
 
 ## Test HR and selected Gusto workflows
 
@@ -169,6 +173,14 @@ portals require trusted identity/memberships and an adopted backend. The optiona
 Firebase module is disabled by default. Read
 [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md) and
 [the setup guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md).
+The [portal state contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md)
+lists retained domain records and temporary inputs with each portal's actual
+navigation, Reset and restore behavior. Saved drafts are records; unsaved forms
+and active timers are temporary. Complete JSON backups include the whole
+fictional workspace across preview roles, including private mock drafts; read
+the [capability matrix](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-CAPABILITIES.md)
+for role projections and export scope. Run `npm run browser:state-contract`
+for the isolated browser journey against these boundaries.
 Use [WebAppX Roadmap](WebAppX-Roadmap.md) to review the stable 1,000-item catalog
 and completion evidence without activating tasks in the reusable SYSTEMX ledger.
 
@@ -181,19 +193,58 @@ npm run hr:backend:audit
 
 ```bash
 npm run dev:systemx
+# Choose this launch instead to retain a specific app origin:
+npm run dev:systemx -- --host 127.0.0.1 --port 5185
 npm run systemx:session:status
 ```
 
-The supervisor selects free loopback ports for Vite, LAN and Firebase
-Auth/Firestore/Storage emulators. Open the printed app URL plus `/__systemx/`
-for the same-origin builder bridge. The direct LAN URL is printed separately.
-Use the current session's URLs rather than assuming fixed ports.
+The default supervisor selects free loopback ports for Vite, LAN and Firebase
+Auth/Firestore/Storage emulators. `--host` or `--port` fixes the app origin;
+`--fixed-origin` pins the default `http://127.0.0.1:5173` when no overrides are
+supplied. A busy fixed app port fails without choosing another port or stopping
+the existing listener. Vite also binds strictly during startup. Supported app
+hosts are `127.0.0.1` and `localhost`; LAN/emulators bind to `127.0.0.1`.
+
+Open the printed **Mock save origin** and **Portal directory** URL. The scheme,
+hostname, port and browser profile identify the saved samples. Switching between
+`localhost` and `127.0.0.1`, another port or profile opens separate storage.
+Private browsing or cleared site data can remove saves. Use a downloaded backup
+to transfer fictional records between browser workspaces deliberately.
+
+Vite, LAN, Auth, Firestore and Storage have separate `starting`, `ready` and
+`failed` observations. A usable app can coexist with unavailable emulators.
+Vite/LAN/Auth/Firestore use specific HTTP responses; Storage reports only its
+reachable listener. Status reads the recorded observations and process checks,
+without making fresh service probes. Open the printed `/__systemx/` app bridge
+for the builder; the direct LAN URL is printed separately.
+
+```bash
+npm run systemx:session:restart:preview
+```
+
+This prints a read-only process/listener snapshot and proposed launch at the
+recorded origin and ports. It changes no processes or runtime files. Unverified
+ownership, foreign listeners, missing records or unavailable metadata refuse
+the preview. `ready-for-review` is advisory and does not reserve ports or perform
+a restart; recheck ownership and availability before a later restart.
+The [session guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GETTING-STARTED.md#start-the-integrated-local-workspace)
+details environment overrides, JSON states and exit codes. Actual verification
+is recorded in the [session/contracts QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SESSION-CONTRACTS-QA-2026-10-15.md).
 
 ```bash
 npm run systemx:session:stop
 ```
 
-The stop command affects only owned session processes. `npm run systemx:lan`
+On macOS, combined-session stop verifies the recorded live processes before
+signaling the owned supervisor to stop its children and clear runtime state.
+Ownership uncertainty refuses the stop while preserving the record and files.
+On Windows, combined-session stop exits 1 with
+`windows-combined-stop-requires-owning-terminal`, sends no signals and preserves
+the record/configuration. Press **Ctrl+C in the owning terminal**, then inspect
+child processes/listeners and any remaining state before operator recovery.
+A verified standalone Windows LAN stop can terminate its single process; wait
+for exit and rerun stop to clear the verified exited record if it remains.
+`npm run systemx:lan`
 starts just the direct dashboard service. Read [LAN Operations](SYSTEMX-LAN-Operations-Manual.md)
 and [LAN API Reference](SYSTEMX-LAN-API-Reference.md) before guarded edits.
 

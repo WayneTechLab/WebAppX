@@ -84,6 +84,14 @@ test('read-only CLI graph/report preserve catalog, plan and blank adoption seeds
     const child = spawnSync(process.execPath, [fileURLToPath(new URL('../../scripts/backlog-execution.mjs', import.meta.url)), ...args], { encoding: 'utf8' })
     assert.equal(child.status, 0, child.stderr)
     assert.doesNotMatch(child.stdout, /\/Users\/|\/Volumes\//)
+    if (args.includes('--ready')) {
+      const report = JSON.parse(child.stdout)
+      assert.deepEqual(report.filters, { gate: 'local', priority: 'all', limit: 2 })
+      assert.ok(report.next.length <= 2)
+      assert.ok(report.dependencyReady >= report.next.length)
+      assert.equal(Object.hasOwn(report, 'dependencyWaiting'), false)
+      assert.equal(Object.hasOwn(report, 'waves'), false)
+    }
   }
   const after = await Promise.all(files.map(file => readFile(new URL(`../../${file}`, import.meta.url))))
   assert.deepEqual(after, snapshot)

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "project": "WebAppX",
+  "intent": "scoped-feature-evidence",
+  "reviews": [
+    {
+      "reviewId": "WXR-0001",
+      "proposalId": "WX-0717",
+      "examinedRevision": "0469e11bcb17ec67b118099a73958e039c759979",
+      "reviewedOn": "2026-10-15",
+      "scope": "Undo preview heading focus, ordinary page-region keyboard navigation and focus return to the launching Undo control on cancellation.",
+      "evidence": [
+        {
+          "category": "local",
+          "reference": "docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md",
+          "observedOn": "2026-10-15",
+          "observationRevision": "0469e11bcb17ec67b118099a73958e039c759979",
+          "revisionBasis": "examined-source",
+          "scope": "Source and test assertions were inspected for Undo heading focus, cancellation return and fallback; this review reused the earlier browser receipt."
+        },
+        {
+          "category": "browser",
+          "reference": "docs/KEYBOARD-PORTALS-QA-2026-10-15.md",
+          "observedOn": "2026-10-15",
+          "observationRevision": "cae18da251b0a9c4418a4fbebf2bd514ccd2dcdd",
+          "revisionBasis": "receipt-source-base",
+          "scope": "Prior macOS Apple Silicon Chromium evidence includes Undo cancellation focus return and removed-opener fallback among nine keyboard checks; the revision is that wave's recorded starting base."
+        }
+      ],
+      "limitations": "The foundation receipt verifies this behavior but leaves WX-0708 prerequisite acceptance pending and does not independently authorize closing WX-0717. It claims no new browser run, exact final browser-build commit, Windows, screen-reader, whole-site accessibility, provider or deployment acceptance."
+    },
+    {
+      "reviewId": "WXR-0002",
+      "proposalId": "WX-0452",
+      "examinedRevision": "0469e11bcb17ec67b118099a73958e039c759979",
+      "reviewedOn": "2026-10-15",
+      "scope": "Restore and Undo previews expose the exact number of older restore points removed by count and character-budget retention before confirmation.",
+      "evidence": [
+        {
+          "category": "local",
+          "reference": "docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md",
+          "observedOn": "2026-10-15",
+          "observationRevision": "0469e11bcb17ec67b118099a73958e039c759979",
+          "revisionBasis": "examined-source",
+          "scope": "The receipt records inspection of both shared budget previews and a focused synthetic restore-budget suite with 12 passed, zero failed and zero skipped tests."
+        }
+      ],
+      "limitations": "This records the dated local review and its original test result. Current completion remains in the canonical proposal catalog; this attachment neither refreshes the checks nor establishes a provider, operator, device or deployed-environment result."
+    }
+  ]
+}

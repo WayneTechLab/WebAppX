@@ -13,6 +13,8 @@
     "systemx:lan": "node .SYSTEMX/LAN/server.mjs",
     "systemx:session:status": "node .SYSTEMX/LAN/session-control.mjs status",
     "systemx:session:stop": "node .SYSTEMX/LAN/session-control.mjs stop",
+    "systemx:session:restart:preview": "node .SYSTEMX/LAN/session-control.mjs restart --preview",
+    "systemx:session:test": "node --test .SYSTEMX/LAN/tests/session-supervisor.test.mjs .SYSTEMX/LAN/tests/session-restart-preview.test.mjs",
     "build": "tsc -b --noCheck && vite build && node .SYSTEMX/scripts/assert-lan-isolation.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.json",
@@ -89,7 +91,11 @@
     "dev:mock:test": "node --test tests/setup/dev-mock.test.mjs",
     "ci:plan": "node scripts/ci-plan.mjs",
     "ci:plan:test": "node --test tests/setup/ci-plan.test.mjs",
-    "browser:foundation": "node scripts/browser-foundation.mjs"
+    "browser:foundation": "node scripts/browser-foundation.mjs",
+    "browser:state-contract": "node scripts/browser-state-contract.mjs",
+    "backlog:evidence": "node scripts/backlog-evidence.mjs",
+    "backlog:evidence:check": "node scripts/backlog-evidence.mjs --check",
+    "backlog:evidence:test": "node --test tests/backlog/evidence.test.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

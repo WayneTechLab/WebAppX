@@ -65,6 +65,12 @@ private-only features deliberately; keep managed releases immutable and
 research manifests consistent. Ship blank context/plan/task/memory seeds, and
 keep secrets, active project records and local runtime state outside the release.
 
+Select the relevant runtime and locked dependency scope using
+[dependency installation](DEPENDENCY-INSTALLATION.md). The root app/starter
+and optional Functions adapter have different runtime declarations and separate
+lockfiles. Keep installer output and local browser/session artifacts outside
+tracked reusable files.
+
 ```bash
 npm ci
 npm run sync:system:check
@@ -166,3 +172,41 @@ Keep `docs/backlog/webappx-1000-todo.json` canonical. Do not copy a second
 maintained task-status ledger into the blank reusable SYSTEMX records. The
 execution plan is deterministic and its check fails if the rendered counts,
 area coverage or dependency-ready candidates are stale.
+
+## Maintain contracts and evidence attachments
+
+The [portal state contract](PORTAL-STATE-CONTRACT.md) describes actual retained
+records, temporary UI, route/remount behavior and Reset/restore/history boundaries.
+The [capability matrix](PORTAL-CAPABILITIES.md) describes synthetic domain checks
+and complete backup scope. Reconcile both with source when changing portal state,
+preview identities, exports or navigation. Complete demo backups are role agnostic;
+they include private fictional drafts beyond a restricted visible projection.
+
+For session changes, preserve the printed scheme/hostname/port and browser-profile
+boundary. Fixed origin startup must reject a busy app port without fallback, and
+app/LAN readiness remains independent of Auth/Firestore/Storage readiness.
+`systemx:session:restart:preview` is a read-only snapshot with an advisory proposed
+launch. It does not reserve replacement listeners or perform a restart.
+
+Inspect the focused contracts with:
+
+```bash
+npm run systemx:session:test
+npm run browser:state-contract
+npm run backlog:evidence:check
+npm run backlog:evidence:test
+```
+
+The [evidence index](BACKLOG-EVIDENCE.md) records examined revisions and references
+to original observations. Preserve the original observation's date, source base
+and limitations when reusing it. An attachment can describe existing behavior
+for an unfinished proposal without accepting the proposal or bypassing a pending
+dependency. Read `npm run backlog:evidence -- --id WX-0717` for that distinction.
+The evidence CLI validates/queries/renders attachments without changing the
+canonical catalog or generated completion views. A new attachment requires a
+deliberately reviewed index edit; CLI output is not an acceptance operation.
+
+Record current check results and remaining boundaries in a dated host receipt,
+such as [session/contracts QA](SESSION-CONTRACTS-QA-2026-10-15.md), rather than
+populating the blank reusable context, plan, task, focus or memory seeds. Retain
+the required `ci:all`, Hosting preflight, host-drift and template-copy gates.

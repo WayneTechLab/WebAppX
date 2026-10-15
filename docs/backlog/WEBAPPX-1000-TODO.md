@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 976 TODO · 24 done · 20 areas · 50 items per area.**
+**1000 catalog items · 967 TODO · 33 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 146 · P2: 673 · P3: 157.
+Remaining TODO priorities: P1: 137 · P2: 673 · P3: 157.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -93,22 +93,26 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: The command starts the native mock portals with provider and emulator integrations disabled and prints the portal URL.
   - Source: [package.json](../../package.json)
   - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
-- [ ] **WX-0007 — Add a stable local origin option**
+- [x] **WX-0007 — Add a stable local origin option**
   - P1 · foundation · local
   - Acceptance: A developer can request a fixed loopback host and port and receives an actionable occupied-port error rather than silently changing origin.
   - Source: [.SYSTEMX/LAN/dev-session.mjs](../../.SYSTEMX/LAN/dev-session.mjs)
-- [ ] **WX-0008 — Show the active origin in the local session summary**
+  - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
+- [x] **WX-0008 — Show the active origin in the local session summary**
   - P1 · foundation · local
   - Acceptance: The supervisor prints the exact scheme, host and port that own mock saves and links to the portal directory.
   - Source: [.SYSTEMX/LAN/dev-session.mjs](../../.SYSTEMX/LAN/dev-session.mjs)
-- [ ] **WX-0009 — Add a session restart preview**
+  - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
+- [x] **WX-0009 — Add a session restart preview**
   - P1 · foundation · local
   - Acceptance: The operator can inspect the owned processes and proposed replacement listeners before restarting a supervised session.
   - Source: [.SYSTEMX/LAN/session-control.mjs](../../.SYSTEMX/LAN/session-control.mjs)
-- [ ] **WX-0010 — Expose separate app-only and emulator readiness**
+  - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
+- [x] **WX-0010 — Expose separate app-only and emulator readiness**
   - P1 · foundation · local
   - Acceptance: The session summary distinguishes a usable Vite app from each emulator becoming ready, with component-specific failure messages.
   - Source: [.SYSTEMX/LAN/dev-session.mjs](../../.SYSTEMX/LAN/dev-session.mjs)
+  - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
 - [ ] **WX-0011 — Add a setup troubleshooting decision tree**
   - P2 · foundation · local
   - Acceptance: A new developer can follow distinct instructions for dependency install, runtime mismatch, occupied port and emulator startup failures.
@@ -318,10 +322,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P1 · portal-maturity · local
   - Acceptance: Leaving a portal with an unsaved form offers keep editing or discard choices without intercepting a completed saved action.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0060 — Define a shared transient-state contract**
+- [x] **WX-0060 — Define a shared transient-state contract**
   - P1 · portal-maturity · local
   - Acceptance: Each portal documents which forms, timers and selections survive portal switching and which clear after selected restore.
   - Source: [src/portals/PortalWorkspaceProvider.tsx](../../src/portals/PortalWorkspaceProvider.tsx)
+  - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
 - [ ] **WX-0061 — Add focus restoration after portal navigation**
   - P2 · portal-maturity · local
   - Acceptance: Keyboard navigation moves focus to the newly active page heading while back navigation restores a sensible prior target.
@@ -2129,10 +2134,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## Identity, membership and permissions
 
-- [ ] **WX-0501 — Document a cross-portal capability vocabulary**
+- [x] **WX-0501 — Document a cross-portal capability vocabulary**
   - P1 · foundation · local
   - Acceptance: Publish a matrix that maps current synthetic HR, CMS and CRM roles to read, create, approve, publish and export actions without treating demo roles as Firebase claims.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
+  - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
 - [ ] **WX-0502 — Add a synthetic organization switcher fixture**
   - P2 · portal-maturity · local
   - Acceptance: Provide two fictional organizations with distinct HR, CMS and CRM labels and visibly isolate the selected organization in the demo shell.
@@ -2539,10 +2545,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## Security and privacy
 
-- [ ] **WX-0601 — Inventory browser-retained mock data categories**
+- [x] **WX-0601 — Inventory browser-retained mock data categories**
   - P1 · foundation · local
   - Acceptance: Document which HR drafts, CRM contacts, CMS publications and restore snapshots remain in browser storage and which transient inputs do not.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
+  - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
 - [ ] **WX-0602 — Add a local data retention settings preview**
   - P2 · portal-maturity · local · Depends on: WX-0601
   - Acceptance: A mock settings page shows workspace and restore-history retention choices without silently deleting saved records.
@@ -3381,10 +3388,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local · Depends on: WX-0801
   - Acceptance: Each existing check emits machine-readable start, end and exit status into an ignored local report while preserving failure propagation.
   - Source: [scripts/check-template.sh](../../scripts/check-template.sh)
-- [ ] **WX-0805 — Add a deterministic dependency installation guide**
+- [x] **WX-0805 — Add a deterministic dependency installation guide**
   - P1 · foundation · local
   - Acceptance: Document supported Node and package-manager versions, npm ci behavior and separate Gusto backend dependency installation for clean checkouts.
   - Source: [package-lock.json](../../package-lock.json)
+  - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
 - [ ] **WX-0806 — Define an optional dependency update cadence**
   - P2 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An adoption plan groups runtime, SDK, tooling and managed release changes with distinct review and rollback criteria rather than automatic production upgrades.
@@ -3583,10 +3591,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: A read-only view shows the selected proposal dependency graph, longest dependency chains and unresolved external gates without assigning or dispatching workers.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
   - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
-- [ ] **WX-0854 — Link proposals to scoped feature evidence**
+- [x] **WX-0854 — Link proposals to scoped feature evidence**
   - P1 · foundation · local
   - Acceptance: A review index can attach examined revision and local, browser, provider or operator evidence references to a proposal without converting historical evidence into current completion.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
+  - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
 - [ ] **WX-0855 — Add machine-readable adoption gate constraints**
   - P1 · foundation · local
   - Acceptance: Adoption previews distinguish credential readiness, operator authorization and local prerequisites per selected task and refuse to infer readiness from a TODO status.

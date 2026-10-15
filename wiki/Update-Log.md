@@ -1,5 +1,57 @@
 # Update Log
 
+## 3.4.0 session, portal state and evidence contracts — 2026-10-15
+
+Add fixed origin support to the integrated local session with
+`npm run dev:systemx -- --host 127.0.0.1 --port 5185` and `--fixed-origin`.
+Print the exact mock-save origin and portal URL, preserve existing listeners
+when a requested app port is busy, and use strict Vite binding. Report Vite,
+LAN, Auth, Firestore and Storage readiness independently; Storage's observation
+covers its listener only. App usability and emulator readiness have separate
+results. `systemx:session:status` reads recorded observations and process checks.
+
+Windows combined-session stop refuses with
+`windows-combined-stop-requires-owning-terminal`, preserving records/configuration
+without signaling. Use Ctrl+C in the owning terminal, then inspect child processes,
+listeners and any remaining state before operator recovery. Verified standalone
+Windows LAN stop retains its record until exit is confirmed; rerun stop afterward
+if the cleanup handler was bypassed. Read [Quick Start](Quick-Start.md#open-the-integrated-local-builder)
+for the shutdown workflow.
+
+Add `npm run systemx:session:restart:preview` for an advisory process/listener
+snapshot and proposed launch at the recorded origin/ports. Ownership uncertainty,
+foreign listeners or unavailable inspection metadata refuse the preview. It
+sends no signals, opens no listeners and writes no runtime files; a reviewable
+snapshot does not reserve ports or perform a restart.
+
+Document the [native portal state lifecycle](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md)
+and [capability vocabulary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-CAPABILITIES.md),
+including saved drafts versus unsaved forms, HR route-local resets, CMS/CRM
+mounted inputs, selected replacement and retained history after Reset. Complete
+JSON demo backups include private fictional drafts across preview roles.
+Add `browser:state-contract` for the isolated browser journey and the
+[dependency installation guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEPENDENCY-INSTALLATION.md)
+for the app/starter versus optional Functions runtime scopes.
+
+Add a [backlog evidence index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-EVIDENCE.md)
+with `backlog:evidence`, `backlog:evidence:check` and focused tests. Preserve
+examined revisions separately from each original observation's date/revision
+and limitations. Attachments can reference unfinished proposals without changing
+their status or bypassing dependencies. Read the
+[session/contracts QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SESSION-CONTRACTS-QA-2026-10-15.md)
+for actual results and accepted scope. Current completion counts come from
+`npm run backlog:summary` and the generated execution plan; earlier checkpoints
+below retain their historical counts.
+
+Accept **nine additional items: WX-0007–WX-0010, WX-0060, WX-0501, WX-0601,
+WX-0805 and WX-0854**. The catalog reaches **33 done / 967 remaining**, with
+**137 P1, 673 P2 and 157 P3** still open. All **38 CI stages** and Hosting
+preflight pass, including **42 session tests, 15 evidence-index tests and
+36 browser checks**. Every browser report confirms owned cleanup. The receipt
+retains the browser focus-readiness correction, session review fixes and five
+existing managed-suite filesystem skips. App 3.4.0 and deploy count 0 remain;
+the complete 1,000-item goal stays active.
+
 ## 3.4.0 full-catalog execution and portal foundations — 2026-10-15
 
 The owner authorizes completing **all 1,000 original catalog items**. Publish
@@ -32,12 +84,12 @@ operator and platform boundaries.
 
 Accept **17 additional IDs**: **WX-0002–WX-0006, WX-0042, WX-0052–WX-0055,
 WX-0057–WX-0058, WX-0452, WX-0783, WX-0801, WX-0853 and WX-0932**. The catalog
-retains **1,000 records: 24 done, 976 remaining — 146 P1, 673 P2 and 157 P3**.
-Remaining gates are **808 local, 128 operator and 40 provider**; the full goal
+then retained **1,000 records: 24 done, 976 remaining — 146 P1, 673 P2 and 157 P3**.
+Remaining gates then were **808 local, 128 operator and 40 provider**; the full goal
 remains active.
 
 Focused verification passed **15 contract, 14 launcher, eight planner, 14 catalog,
-13 CI-plan and 121 portal model tests**. The CI report described all **34 stages**
+13 CI-plan and 121 portal model tests**. The CI report described the then-current **34 stages**
 with **zero unknown classifications**. **Nine foundation and nine existing
 keyboard browser checks passed**, including unsaved-state preservation and
 isolated storage faults. Owned cleanup succeeded; only expected Firebase setup

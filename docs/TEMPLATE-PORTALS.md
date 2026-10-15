@@ -145,7 +145,8 @@ keep their original query and hash. Unknown descendants display a portal-specifi
 unavailable-page explanation with links back to that workspace or the directory;
 showing or leaving the recovery page preserves saved fictional records.
 Following **How mock data is handled** uses in-app navigation, retaining mounted
-unsaved portal forms while showing the handling details.
+CMS/CRM forms while showing the handling details. HR's route content follows
+the [temporary UI lifecycle](PORTAL-STATE-CONTRACT.md#temporary-ui-and-navigation).
 
 Run **`npm run browser:foundation`** for the authored registry-card, route,
 breadcrumb and save-summary checks, including isolated synthetic malformed/
@@ -161,7 +162,8 @@ corrupted/denied-storage states. The 120 portal model tests and existing nine
 keyboard browser checks also passed. Owned browser/server cleanup succeeded;
 only the expected unset-Firebase warning appeared. The receipt records review
 corrections, the 17 accepted IDs and final publication gates. The complete goal
-remains active at **24 done / 976 remaining** across the 1,000-item catalog.
+remains active. That checkpoint held **24 done / 976 remaining**; read
+`npm run backlog:summary` for current counts across the 1,000-item catalog.
 
 ### Shared portal registry
 
@@ -177,6 +179,37 @@ records or add a tenant backend. HR's native demo and its separate SDK session
 retain their existing boundaries. When adding a portal, start with this registry,
 then explicitly add its state validator, persistence adapter, routes and tests;
 metadata alone does not make a new module importable.
+
+## Saved records and temporary interface state
+
+Read the [portal state and browser retention contract](PORTAL-STATE-CONTRACT.md)
+for the complete field categories and action-by-action lifecycle. **Saved draft**
+means a workspace record created by an app action. Text still held in an
+unsaved form is temporary, even if its purpose is drafting. Completed domain
+actions enter the current workspace immediately; if a browser write fails,
+those accepted records can still be exported from the open page's memory.
+
+| Boundary | Native HR | CMS and CRM |
+| --- | --- | --- |
+| Switch portal or open directory | Shared records remain; leaving an HR subpage replaces its route content with the management dashboard and clears that subpage's unsaved inputs/timer | Hidden portal roots remain mounted; the currently mounted form can retain unsaved inputs, filters and preview identity |
+| Change the form's route, record, tab or preview identity | The affected subpage/keyed component can remount and clear local UI | Changing entry/identity or CRM tab can remount the affected form and clear its inputs |
+| Reload or leave the entire portal shell | Saved workspace records can return; temporary UI clears | Saved workspace records can return; temporary UI clears |
+| Combined restore or Undo | Selected portal roots remount; restored HR records include its saved role/employee selections | Selected roots remount with default local UI; unchecked CMS/CRM roots retain their mounted UI |
+| Portal Reset | Recreates this portal's seed and removes its workspace save; retained restore points remain | Same saved-record/history boundary; CMS resets preview identity, while CRM retains its current preview identity and returns to Dashboard |
+
+The [capability vocabulary](PORTAL-CAPABILITIES.md) documents synthetic
+read/create/approve/publish projections and the separate export scope. Complete
+JSON demo backups include the whole fictional workspace across preview roles,
+including private review drafts, saved survey answers and mock receipts. A
+restricted visible projection does not filter a downloaded backup or secure
+browser storage.
+
+Run **`npm run browser:state-contract`** after the explicit Chromium installation
+to exercise the retained-record, temporary-input, Reset, selected-replacement and
+in-memory export boundaries in a fresh isolated browser context. Its artifacts
+remain in temporary storage. The
+[session/contracts QA receipt](SESSION-CONTRACTS-QA-2026-10-15.md) records the
+actual checked revision, outcomes and limits.
 
 ## Browser-local persistence
 
@@ -213,7 +246,8 @@ is replaced by the next successfully saved action or removed by Reset.
   fixtures. Clearing site data or ending some private-browsing sessions can
   remove all saved samples for that origin.
 - Save the domain action before refreshing. Unsaved form fields, active timers
-  and transient UI messages are not guaranteed to restore.
+  and transient UI messages are excluded from workspace saves and exports.
+  The state contract describes earlier navigation boundaries that can clear them.
 - Inspect the visible storage status. Read/write failures fall back to memory.
   Malformed or unsupported snapshots are rejected and fresh fixtures load with
   a notice, rather than trusting incompatible saved records.
@@ -267,10 +301,12 @@ characters and the resulting browser-save envelope to 2,000,000 characters.
 Browser quota may be lower, in which case replacement is refused without changing
 the current records. Newer unsupported formats are rejected; no migration is inferred.
 
-Only saved-action domain state is portable. Unsaved fields, running timers and
-most interface selections are excluded; native HR’s saved role/employee choice
-is included. The SDK preview’s separate session is excluded. Reset still clears
-only the chosen browser-local module, leaving files already downloaded intact.
+Current accepted in-memory domain records are portable, including seeds, saved
+drafts and accepted actions whose browser write failed. Unsaved fields, running
+timers and most interface selections are excluded; native HR’s saved role/employee
+choice is included. The SDK preview’s separate session is excluded. Reset clears
+the chosen browser-local workspace while preserving retained recovery points
+and files already downloaded. Undo can reintroduce records from those points.
 
 ### File contents and trust boundary
 
@@ -312,8 +348,11 @@ The existing individual portal controls and file format remain available.
    stay untouched. No merge, record-level selection or ongoing sync occurs.
 
 Selected modules remount after a successful restore, clearing their unsaved
-forms, active timers and transient interface messages. Unselected modules retain
-those interface states. The independent SDK preview is outside the bundle.
+forms, active timers and transient interface messages. Unselected CMS/CRM roots
+retain mounted interface state. Leaving HR for the directory can already have
+cleared its route-local forms or timer; unselected HR records remain intact.
+The independent SDK preview is outside the bundle. See the
+[state lifecycle](PORTAL-STATE-CONTRACT.md#temporary-ui-and-navigation) for details.
 
 A combined file uses `format: "webappx-mock-workspaces"`, `schemaVersion: 1`,
 `exportedAt` (UTC ISO timestamp) and `workspaces: { hr, cms, crm }`. It is distinct
@@ -433,7 +472,9 @@ portals that were not captured.
    pass the same validation, retention and storage checks as a normal restore.
 4. Inspect the save result and refresh. The recovered records persist; selected
    modules remount and clear their unsaved forms, timers and transient messages.
-   Other portals’ records, browser saves and interface state stay unchanged.
+   Other portals’ records and browser saves stay unchanged. Unchecked CMS/CRM
+   roots retain mounted interface state; leaving an HR subpage for the directory
+   can already have cleared its route-local UI.
 
 This history retains at most **five points**, subject to a total **2,000,000
 serialized-character limit**, including its envelope. Oldest points are pruned

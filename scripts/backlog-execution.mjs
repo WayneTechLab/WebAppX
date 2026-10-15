@@ -113,6 +113,9 @@ export function renderExecutionPlan(catalog) {
     'acceptance criteria. This plan covers all 1,000 stable IDs; the canonical',
     '[catalog](backlog/webappx-1000-todo.json) owns status and evidence. The',
     '[checklist](backlog/WEBAPPX-1000-TODO.md) and CSV remain generated views.', '',
+    'The separate [review index](BACKLOG-EVIDENCE.md) attaches scoped historical',
+    'receipts with examined and observation revisions. It does not accept work',
+    'or convert an earlier browser result into a current execution.', '',
     `Current verified progress: **${report.statuses.done} done / ${report.statuses.todo} remaining**.`,
     `Remaining priorities: **${Object.entries(report.remainingPriorities).map(([key, value]) => `${value} ${key}`).join(' · ')}**.`,
     `Remaining acceptance gates: **${Object.entries(report.remainingGates).map(([key, value]) => `${value} ${key}`).join(' · ')}**.`, '',
@@ -172,6 +175,7 @@ export function renderExecutionPlan(catalog) {
   lines.push('', '## Resume commands', '', '```bash', 'npm run backlog:plan', 'npm run backlog:ready',
     'npm run backlog:ready -- --gate all --priority P1 --limit 30',
     'npm run backlog:graph -- --id WX-0654 --id WX-0551', 'npm run backlog:plan:render', 'npm run backlog:plan:check',
+    'npm run backlog:evidence -- --id WX-0717', 'npm run backlog:evidence:check',
     '```', '', 'The graph command includes the selected dependency closure, longest chain',
     'and unresolved provider/operator criteria. Reports only read local catalog',
     'files. The explicit render command writes this document; no command starts',
@@ -219,6 +223,11 @@ export async function main(args = process.argv.slice(2)) {
     if (options.mode === 'write') { await writeFile(planFile, content); console.log('Rendered full 1,000-item execution plan from canonical evidence/status.') }
     else if (await readFile(planFile, 'utf8') !== content) throw new Error('Execution plan is stale; run npm run backlog:plan:render')
     else console.log('Execution plan covers all 1,000 IDs with current counts and dependency-ready selections.')
+  } else if (options.mode === 'ready') {
+    // A bounded work selection should not expand into the full waiting graph.
+    // The summary and graph modes retain that separate diagnostic context.
+    const { objective, statuses, remainingPriorities, remainingGates, dependencyReady, next, readinessBoundary } = report
+    console.log(JSON.stringify({ objective, filters: { gate: options.gate, priority: options.priority, limit: options.limit }, statuses, remainingPriorities, remainingGates, dependencyReady, next, readinessBoundary }, null, 2))
   } else console.log(JSON.stringify(report, null, 2))
 }
 

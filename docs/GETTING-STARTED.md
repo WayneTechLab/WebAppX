@@ -24,6 +24,10 @@ declaration or version report does not establish runtime acceptance on every
 Node version or target platform. See [development contracts](DEVELOPMENT-CONTRACTS.md)
 for the read-only root/starter and environment coverage checks.
 
+Follow [dependency installation](DEPENDENCY-INSTALLATION.md) for the locked
+`npm ci` workflow, version-manager choices and the optional Functions adapter's
+separate Node 22 environment. Root and starter installs use their own lockfiles.
+
 macOS and Windows x64/ARM64 are target platforms. Historical host verification
 was recorded on macOS Apple Silicon; use current checks for your selected
 revision. Core PowerShell launchers and record tools are included. Native Windows
@@ -144,6 +148,13 @@ with Undo. Unsaved form fields and running timers remain temporary. Keep real
 employee information out of these previews. See the
 [portal guide](TEMPLATE-PORTALS.md) and [1,000-item roadmap](WEBAPPX-ROADMAP.md).
 
+The [state contract](PORTAL-STATE-CONTRACT.md) details which records are saved
+and which form inputs clear during navigation, Reset, import and Undo. A saved
+draft is a domain record; text still held by an unsaved form is temporary.
+Complete demo backups include the whole fictional workspace across preview
+roles, including private mock drafts. The [capability matrix](PORTAL-CAPABILITIES.md)
+explains role projections and their separate export boundary.
+
 `/hr/demo/sdk` uses genuine Gusto React SDK 0.56.6 directory, administrative
 onboarding and payroll execution components against an isolated local mock.
 The selected SDK journeys use synthetic reads and writes; other SDK workflows
@@ -161,21 +172,97 @@ From the repository root, use:
 
 ```bash
 npm run dev:systemx
+# Keep a chosen browser-save origin across launches:
+npm run dev:systemx -- --host 127.0.0.1 --port 5185
+# Or pin the default http://127.0.0.1:5173:
+npm run dev:systemx -- --fixed-origin
 npm run systemx:session:status
 ```
 
 The supervisor starts the app, LAN service and Firebase Auth/Firestore/Storage
-emulators. It selects available loopback ports and records owned processes.
-Open the printed app URL and its `/__systemx/` bridge for the builder. The
+emulators. Choose one of the launch commands above. Without origin overrides it
+selects available loopback ports; `--host` or `--port` fixes the app origin.
+Only `127.0.0.1` and `localhost` are accepted app hosts. `--fixed-origin` pins
+the defaults when no host/port override is supplied. A busy fixed app port
+fails before children start, and Vite binds strictly if a later bind race occurs.
+The launcher preserves the existing listener and does not fall back to another
+app port. LAN and emulator listeners use `127.0.0.1` independently of the app host.
+
+`SYSTEMX_DEV_HOST` or `SYSTEMX_APP_PORT` also pins the app origin;
+`SYSTEMX_FIXED_ORIGIN=true` pins the defaults. To return to automatic selection,
+omit the host/port flags and remove these origin overrides. Backend preferred
+ports can be set with `SYSTEMX_LAN_PORT`, `SYSTEMX_FIREBASE_AUTH_PORT`,
+`SYSTEMX_FIREBASE_FIRESTORE_PORT` and `SYSTEMX_FIREBASE_STORAGE_PORT`.
+Their selected ports remain distinct from the app and each other.
+
+Open the printed **Mock save origin** and **Portal directory** URL. Browser saves
+belong to the exact scheme, hostname, port and browser profile. If records seem
+missing after a launch, compare all four with the previous session. A change
+from `127.0.0.1` to `localhost`, another free port, another profile, private
+browsing, or cleared site data can open a different or empty browser workspace.
+Use a downloaded backup to transfer records deliberately between origins.
+
+The session record reports each of **Vite app, LAN, Auth, Firestore and Storage**
+as `starting`, `ready` or `failed`, with its endpoint and message. App readiness
+does not wait for complete emulator readiness. A failed Firebase process can
+leave the app and LAN usable; inspect the named component's output and correct
+its prerequisites before relaunching. Vite, LAN, Auth and Firestore use specific
+HTTP responses; Storage readiness means only that its loopback listener is
+reachable. These are local startup checks, not emulator workflow acceptance.
+`systemx:session:status` reads the last recorded component observations and
+checks recorded process liveness/association; it does not run fresh HTTP probes.
+
+Use the printed `/__systemx/` app bridge for the builder. The
 Agent 0 panel shows the selected SYSTEMX version and recorded task/role/project
 counts. Those records do not start workers or grant cloud permissions.
+
+### Preview a restart
+
+```bash
+npm run systemx:session:restart:preview
+```
+
+This runs `node .SYSTEMX/LAN/session-control.mjs restart --preview`. It inspects
+OS process metadata and listeners, verifies recorded ownership and proposes a
+launch with the recorded origin and ports. JSON reports `owned`, `exited` or
+`unverified` processes and replacement listeners as `available`,
+`release-required`, `blocked` or `unverified`. `release-required` means a
+currently owned listener would first need to exit. Foreign listeners,
+unverifiable ownership, unavailable inspection metadata or no session record
+produce `refused` and exit status 1. A reviewable snapshot exits 0; malformed
+arguments exit 2. `restart` without `--preview` is rejected.
+
+The preview sends no signals, opens no probe listeners and changes no session,
+token or runtime configuration files. `ready-for-review` is advisory at the
+observation time; it neither reserves ports nor performs a restart. Recheck
+ownership and listener availability immediately before a later restart.
 
 ```bash
 npm run systemx:session:stop
 ```
 
-This stops the session's owned processes. Run `npm run systemx:lan` if you need
+For a combined session on macOS, stop verifies the recorded live-process
+ownership and signals the owned supervisor, which stops its children and clears
+runtime state. Unverifiable ownership refuses the stop while preserving the
+record and files.
+
+On Windows, combined-session `stop` exits 1 with `status: "refused"` and
+`windows-combined-stop-requires-owning-terminal`. It sends no signals and
+preserves the record and runtime configuration, including when the recorded
+processes appear exited. Press **Ctrl+C in the terminal that owns the session**
+so the supervisor can close its children. Inspect the child processes and
+listeners after shutdown. If state remains, inspect it before operator recovery:
+Windows forced termination cannot prove that descendant cleanup finished.
+
+For a directly started standalone LAN service on Windows, a verified stop can
+request termination of that single process. The record remains until exit is
+confirmed; wait for the process to exit and rerun stop to clear the verified
+exited record if its cleanup handler was bypassed.
+
+Run `npm run systemx:lan` if you need
 only the local dashboard service; that command does not start the app or emulators.
+Read the [session/contracts QA receipt](SESSION-CONTRACTS-QA-2026-10-15.md) for
+the checked revision, local results and remaining platform/runtime boundaries.
 
 ## Adopt project records
 

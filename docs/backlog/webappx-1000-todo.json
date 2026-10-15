@@ -120,48 +120,72 @@
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a stable local origin option",
       "acceptance": "A developer can request a fixed loopback host and port and receives an actionable occupied-port error rather than silently changing origin.",
       "source": ".SYSTEMX/LAN/dev-session.mjs",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+        "evidence": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0008",
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Show the active origin in the local session summary",
       "acceptance": "The supervisor prints the exact scheme, host and port that own mock saves and links to the portal directory.",
       "source": ".SYSTEMX/LAN/dev-session.mjs",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+        "evidence": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0009",
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a session restart preview",
       "acceptance": "The operator can inspect the owned processes and proposed replacement listeners before restarting a supervised session.",
       "source": ".SYSTEMX/LAN/session-control.mjs",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+        "evidence": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0010",
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Expose separate app-only and emulator readiness",
       "acceptance": "The session summary distinguishes a usable Vite app from each emulator becoming ready, with component-specific failure messages.",
       "source": ".SYSTEMX/LAN/dev-session.mjs",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+        "evidence": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0011",
@@ -808,12 +832,18 @@
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Define a shared transient-state contract",
       "acceptance": "Each portal documents which forms, timers and selections survive portal switching and which clear after selected restore.",
       "source": "src/portals/PortalWorkspaceProvider.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+        "evidence": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0061",
@@ -1478,7 +1508,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Add effective-dated location transfers",
-      "acceptance": "Future location changes display separately from the employee’s current assignment until the sample date advances.",
+      "acceptance": "Future location changes display separately from the employee\u2019s current assignment until the sample date advances.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
       "dependsOn": []
@@ -1934,7 +1964,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Add employee-specific mock hourly rates",
-      "acceptance": "A run freezes each fictional employee’s configured sample rate and displays that rate beside consumed hours.",
+      "acceptance": "A run freezes each fictional employee\u2019s configured sample rate and displays that rate beside consumed hours.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
       "dependsOn": []
@@ -2198,7 +2228,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Add a local payroll register export",
-      "acceptance": "A fictional export reconciles employee rows to the selected receipt’s gross, deductions and net totals.",
+      "acceptance": "A fictional export reconciles employee rows to the selected receipt\u2019s gross, deductions and net totals.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
       "dependsOn": []
@@ -2690,7 +2720,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Add candidate consent notice previews",
-      "acceptance": "A local candidate intake preview shows the adopted app’s configurable notice text without collecting a real application.",
+      "acceptance": "A local candidate intake preview shows the adopted app\u2019s configurable notice text without collecting a real application.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
       "dependsOn": []
@@ -5722,7 +5752,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Inspect captured records in restore-point details",
-      "acceptance": "A read-only detail panel lists bounded record identifiers and a complete collection-count breakdown for the point’s captured modules without applying it or exposing full free-text fields by default.",
+      "acceptance": "A read-only detail panel lists bounded record identifiers and a complete collection-count breakdown for the point\u2019s captured modules without applying it or exposing full free-text fields by default.",
       "source": "src/portals/RestorePointHistory.tsx",
       "gate": "local",
       "dependsOn": []
@@ -6277,12 +6307,18 @@
       "area": "identity",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Document a cross-portal capability vocabulary",
       "acceptance": "Publish a matrix that maps current synthetic HR, CMS and CRM roles to read, create, approve, publish and export actions without treating demo roles as Firebase claims.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+        "evidence": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0502",
@@ -7201,7 +7237,7 @@
       "phase": "production-readiness",
       "status": "todo",
       "title": "Add optional short-lived document access service",
-      "acceptance": "An adopted server rechecks access for each issued link and denies requests for another organization’s file.",
+      "acceptance": "An adopted server rechecks access for each issued link and denies requests for another organization\u2019s file.",
       "source": "docs/GUSTO-FIREBASE.md",
       "gate": "operator",
       "dependsOn": []
@@ -7225,7 +7261,7 @@
       "phase": "production-readiness",
       "status": "todo",
       "title": "Add optional report download authorization",
-      "acceptance": "An adopted server denies a completed report after the requester’s membership is revoked.",
+      "acceptance": "An adopted server denies a completed report after the requester\u2019s membership is revoked.",
       "source": "docs/GUSTO-FIREBASE.md",
       "gate": "operator",
       "dependsOn": []
@@ -7465,7 +7501,7 @@
       "phase": "production-readiness",
       "status": "todo",
       "title": "Add optional server export redaction profiles",
-      "acceptance": "An adopted export includes only approved fields for its purpose and never inherits the public mock backup’s unrestricted shape.",
+      "acceptance": "An adopted export includes only approved fields for its purpose and never inherits the public mock backup\u2019s unrestricted shape.",
       "source": "docs/GUSTO-FIREBASE.md",
       "gate": "operator",
       "dependsOn": []
@@ -7511,12 +7547,18 @@
       "area": "security",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Inventory browser-retained mock data categories",
       "acceptance": "Document which HR drafts, CRM contacts, CMS publications and restore snapshots remain in browser storage and which transient inputs do not.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+        "evidence": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0602",
@@ -8564,7 +8606,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Automate deterministic service request browser regression",
-      "acceptance": "A repeatable browser test loads the named seed, creates, triages, resolves and reopens a fictional case and asserts actor-scoped timelines, exact inbox counts and refusal of an unrelated employee’s mutation.",
+      "acceptance": "A repeatable browser test loads the named seed, creates, triages, resolves and reopens a fictional case and asserts actor-scoped timelines, exact inbox counts and refusal of an unrelated employee\u2019s mutation.",
       "source": "src/hr/components/HrServiceDesk.tsx",
       "gate": "local",
       "dependsOn": [
@@ -10081,12 +10123,18 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a deterministic dependency installation guide",
       "acceptance": "Document supported Node and package-manager versions, npm ci behavior and separate Gusto backend dependency installation for clean checkouts.",
       "source": "package-lock.json",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+        "evidence": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0806",
@@ -10696,12 +10744,18 @@
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Link proposals to scoped feature evidence",
       "acceptance": "A review index can attach examined revision and local, browser, provider or operator evidence references to a proposal without converting historical evidence into current completion.",
       "source": "docs/TEMPLATE-MAINTENANCE.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+        "evidence": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0855",

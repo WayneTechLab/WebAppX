@@ -21,22 +21,33 @@ Open:
 http://127.0.0.1:7331/
 ```
 
-When Vite is running, the same dashboard is also available through the dev-only
-Vite bridge:
+When the combined session is running, the same dashboard is also available
+through the dev-only Vite bridge at the printed app origin:
 
 ```text
-http://127.0.0.1:5173/__systemx/
+http://127.0.0.1:<app-port>/__systemx/
 ```
 
-To start the public app and LAN shell together:
+To start the public app, LAN service, and Auth, Firestore and Storage emulators
+together:
 
 ```bash
 npm run dev:systemx
 ```
 
-`dev:systemx` starts at app port `5173` and LAN port `7331`, then moves to the
-next free ports when another local project already owns them. This keeps
-SYSTEMX from closing or hijacking unrelated development servers.
+Without an explicit app origin, `dev:systemx` selects free loopback ports,
+starting from app port `5173` and LAN port `7331`. Use the printed URLs or
+`npm run systemx:session:status` to find this session. To keep browser saves at
+the same app address across launches, select a fixed origin:
+
+```bash
+npm run dev:systemx -- --host 127.0.0.1 --port 5185
+```
+
+The fixed app port has no fallback. An occupied fixed port fails before any
+child starts or runtime state is written; Vite also uses `--strictPort` to
+catch a listener race. The [local session contract](#local-sessions) below
+explains origin selection and independent readiness reporting.
 
 The G1 builder can inspect controller health, the active Vite app, git state,
 routes, provider plans, and important builder files. It also supports guarded
@@ -71,20 +82,138 @@ or add LAN files to `dist/`.
 
 ## Local sessions
 
-The start-of-day and end-of-day commands own the local session lifecycle:
+The canonical app origin for a session is the exact HTTP scheme, hostname and
+port printed as **Mock save origin** and recorded in `origin.url`. The summary
+also prints the `/portals` directory URL. Browser mock saves belong to that
+origin and browser profile: `http://localhost:5185` and
+`http://127.0.0.1:5185` use different browser storage, as does another port,
+profile or private-browsing context. Retain the printed address to reopen the
+same browser saves.
 
-1. discover an unused port from the approved range;
-2. verify that an existing listener is a SYSTEMX-owned process before reuse or
-   shutdown;
-3. start Vite, the LAN service, and requested emulators with explicit child
-   process arguments;
-4. write a sanitized session record to ignored
-   `.SYSTEMX/state/local-session.json`;
-5. expose the active URLs in the menu, doctor output, and operation log;
-6. stop only processes recorded by that session and verify the ports are free.
+Use `--host 127.0.0.1 --port 5185` to select an explicit origin, or
+`--fixed-origin` to pin the defaults at `http://127.0.0.1:5173` when no origin
+environment overrides are set. `--host` accepts `127.0.0.1` or `localhost`;
+`--port` accepts an integer from `1024` to `65535`. Supplying either option,
+`SYSTEMX_DEV_HOST`, or `SYSTEMX_APP_PORT` fixes the app origin.
+`SYSTEMX_FIXED_ORIGIN=true` also fixes it. In this mode an unavailable app
+port fails without choosing another port or stopping its listener. The LAN,
+Auth, Firestore and Storage services bind to `127.0.0.1` and select their
+ports separately from the app host.
 
-The end-of-day command must never kill a process merely because it happens to
-be listening on a familiar port. This protects other local projects.
+With no fixed-origin option or environment setting, the supervisor checks
+loopback port availability, including IPv4 and IPv6, and selects free ports.
+Every Vite child still uses `--strictPort` after selection. The supervisor
+plans all five ports before starting children, passes child arguments without
+a command shell, and records the selected origin, URLs, process identities
+and readiness in ignored `.SYSTEMX/state/local-session.json`. It refuses to
+start another session while a recorded process remains alive.
+
+### Readiness and status
+
+The supervisor reports these components independently as `starting`, `ready`
+or `failed`, with a URL, message and `checkedAt` timestamp under `readiness`:
+
+| Component | Startup evidence reported by the supervisor |
+| --- | --- |
+| `app` | The `/portals` HTTP response contains the Vite client marker. This establishes a usable dev app response; it is not a browser workflow check. |
+| `lan` | The LAN health endpoint reports `online` and `local-only`. |
+| `auth` | The Auth emulator HTTP response reports `authEmulator.ready`. |
+| `firestore` | The Firestore emulator returns its expected HTTP health response. |
+| `storage` | The Storage loopback TCP listener is reachable. This does not establish Storage workflow readiness. |
+
+Each startup check has a bounded wait. The app can become usable while an
+emulator is still starting or has failed. A component failure does not make
+the other components ready or failed; an exited child invalidates the
+readiness of its own components. These are startup observations with process
+exit updates, rather than continuous workflow monitoring.
+
+```bash
+npm run systemx:session:status
+npm run systemx:session:restart:preview
+npm run systemx:session:stop
+```
+
+`status` reads the recorded origin, URLs and readiness and adds current process
+liveness and repository-ownership observations. Its `recorded` status is not
+an aggregate health verdict; inspect the component messages and timestamps.
+`offline` with `no-owned-session-record` means no owned record was found.
+For a combined session on macOS, `stop` verifies the recorded live processes
+and signals the owned supervisor; that owner shuts down its children and clears
+runtime state. Unverified ownership refuses the stop and preserves record/files.
+A familiar port alone never authorizes stopping a listener.
+
+On Windows, combined-session `stop` exits `1` with `status: "refused"` and reason
+`windows-combined-stop-requires-owning-terminal`. This applies even when all
+recorded processes appear exited. It sends no signals and preserves session and
+runtime configuration files because forced Windows termination cannot establish
+descendant cleanup. Press **Ctrl+C in the terminal that owns the session** so
+the supervisor can close its children, then inspect child processes and listeners
+after shutdown. Inspect any remaining record/state before operator recovery.
+
+A standalone Windows LAN stop can request termination of its single process
+after verifying identity and recorded startup directory. It retains the record
+until exit is confirmed. Wait for the process to exit, then rerun stop to clear
+the verified exited LAN record if forced termination bypassed its cleanup handler.
+
+### Read-only restart preview
+
+The preview command is also available directly:
+
+```bash
+node .SYSTEMX/LAN/session-control.mjs restart --preview
+```
+
+It reads the recorded session and OS process/listener metadata, verifies
+ownership, and describes a proposed launch preserving the recorded app
+hostname and all five ports. The JSON includes `action: "restart-preview"`,
+`readOnly: true`, process ownership states, replacement listener states, and
+`proposedLaunch` when the recorded origin can be reconstructed. Its status is
+`ready-for-review` or `refused`; `canRestart` describes only that snapshot.
+Listener states distinguish `available`, `release-required`, `blocked` and
+`unverified`, so an owned listener awaiting release is visible separately from
+an unknown listener. Missing or unverified ownership, foreign listeners or an
+unavailable OS snapshot refuse the preview.
+
+Exit `0` means the proposal is reviewable, `1` means refusal, and `2` means an
+invalid invocation. `restart` requires `--preview`; no mutating restart action
+is implemented. Preview sends no process signals, starts no children, binds no
+probe listener, and changes no session record, token or runtime configuration.
+Recheck ownership and listener availability immediately before any later
+restart operation because an OS snapshot can become stale.
+
+### Demo saves, backups and recovery
+
+Read the [portal state and browser retention contract](../../docs/PORTAL-STATE-CONTRACT.md)
+for the complete save, navigation, replacement and recovery behavior, and the
+[portal capability vocabulary](../../docs/PORTAL-CAPABILITIES.md) for each
+synthetic role's actions and the export boundary. These contracts apply to the
+native account-free HR, CMS and CRM demos opened at the session's app origin.
+Preview roles do not grant Firebase claims, provider access or production
+export permission.
+
+Successful native actions retain complete workspace records in origin-scoped
+browser storage. Exports are readable JSON downloads of current accepted
+in-memory records, including saved drafts and accepted changes whose browser
+save failed. A per-portal export contains the complete portal workspace, and a
+combined export contains all three workspaces regardless of the selected
+preview identity. Unsaved form inputs, live timers, recovery history and the
+separate Gusto SDK mock session are excluded. Use fictional data only.
+
+Imports and selective restore replace complete selected workspaces without a
+merge. Combined selective restore and Undo first retain the current selected
+records as a recovery point; only selected portal roots remount after success.
+Single-portal import and Reset create no automatic recovery point. Reset
+preserves existing restore history, so a later Undo can reintroduce reset
+records. Clearing restore points removes that history separately from the
+current workspace saves. Browser/site-data deletion can remove both, while
+downloaded backup files remain separate.
+
+If browser storage is unavailable, accepted records may exist only in the
+open page's memory and can still be exported. A combined restore that cannot
+save its automatic recovery point is not applied. Browser storage has no
+multi-key transaction; if a write and its rollback fail, follow the displayed
+export/recovery guidance before refreshing. The canonical state contract
+defines the recovery budgets, damaged-save handling and temporary-UI behavior.
 
 ## Builder surfaces
 
@@ -294,10 +423,12 @@ Start the owned Vite, LAN, Auth, Firestore, and Storage session together:
 npm run dev:systemx
 ```
 
-`npm run dev:firebase` is an alias for the same session. The supervisor chooses
-free loopback ports for every child and records them in
-`.SYSTEMX/state/local-session.json`; it never stops a port owned by another
-project. `npm run dev:firebase:raw` remains available for an advanced operator
+`npm run dev:firebase` is an alias for the same session. The supervisor records
+the selected origin, ports and independent component readiness in
+`.SYSTEMX/state/local-session.json`. Default launches select free loopback
+ports; an explicitly fixed app origin fails if its app port is occupied. See
+the [local session contract](#local-sessions) for status and read-only restart
+preview. `npm run dev:firebase:raw` remains available for an advanced operator
 who intentionally wants to run Firebase CLI without the WebApp supervisor.
 
 Only `email-password` is enabled in the local lane. Google, email link/code,

@@ -22,8 +22,14 @@ npm run dev:systemx
 ```
 
 The launcher selects available loopback ports and tracks its own processes.
-Use `npm run systemx:session:status` and `npm run systemx:session:stop` to inspect
-and stop that session. Firebase configuration belongs to the adopted project.
+To reopen the same browser saves, choose an origin explicitly with
+`npm run dev:systemx -- --host 127.0.0.1 --port 5185`. An occupied fixed app
+port fails without falling back to another address. Use
+`npm run systemx:session:status` to read component readiness and
+`npm run systemx:session:stop` to stop the recorded owned session.
+For a Windows combined session, stop refuses and preserves state; use **Ctrl+C
+in its owning terminal** and inspect the children/listeners after shutdown.
+Firebase configuration belongs to the adopted project.
 
 SYSTEMX includes project and child-workspace management, bounded Agent 0
 coordination, Agent X event records, optional Agent Y CLI handoffs, Agent Z
@@ -73,6 +79,11 @@ your installed version manager, then use `npm ci`. **`npm run development:check`
 compares root/starter runtime declarations, public client environment-variable
 coverage and ignored local environment-file rules. It reads checked-in source
 and examples without opening private environment files or returning secret values.
+
+The [dependency installation guide](docs/DEPENDENCY-INSTALLATION.md) explains
+runtime selection, locked installs and the optional Functions adapter's separate
+Node 22 environment. Installing packages and downloading Chromium have their own
+effects; a successful installation does not establish passing application checks.
 
 ### Start only the native account-free portals
 
@@ -158,6 +169,55 @@ appeared. Independent review had no unresolved findings. Full `ci:all` and
 Hosting preflight passed, including seven smoke and nine keyboard browser
 checks; the keyboard receipt records the suite counts and scope.
 
+## Local session, portal state and evidence contracts
+
+The integrated launcher prints the exact **Mock save origin** and **Portal
+directory** URL. A save belongs to the same scheme, hostname, port and browser
+profile. `localhost` and `127.0.0.1`, different ports, and different profiles
+have separate browser storage. Use `--host 127.0.0.1 --port 5185` to retain that
+address, or `--fixed-origin` to pin the default `http://127.0.0.1:5173`.
+The default without origin overrides selects free ports. Fixed origin requests
+fail on a busy app port; Vite also binds strictly if a listener appears during startup.
+
+Readiness is reported separately for **Vite app, LAN, Auth, Firestore and Storage**.
+A usable app can coexist with failed emulators. HTTP readiness responses are
+checked for Vite, LAN, Auth and Firestore; Storage reports only a reachable
+listener. Read `npm run systemx:session:status` for each component's recorded
+`starting`, `ready` or `failed` result and reason. Those observations do not
+establish emulator workflow or provider acceptance.
+
+**`npm run systemx:session:restart:preview`** reads process ownership and current
+listeners and prints a proposed launch using the recorded origin and ports.
+It changes no processes, listeners or runtime files. A `ready-for-review` result
+is a snapshot: availability and ownership must be rechecked before an actual
+restart. Read the [session guide](docs/GETTING-STARTED.md#start-the-integrated-local-workspace)
+for the output and refusal cases.
+
+The [portal state contract](docs/PORTAL-STATE-CONTRACT.md) lists retained records,
+temporary forms and navigation/reset/restore behavior for each native portal.
+The [capability matrix](docs/PORTAL-CAPABILITIES.md) describes the synthetic role
+projections and domain checks. Complete JSON demo backups include private mock
+drafts and records across preview roles; selecting a role does not filter a
+backup. Read these contracts before using shared browser profiles or moving files.
+Run **`npm run browser:state-contract`** for the isolated browser journey covering
+the documented record, temporary-input and recovery boundaries.
+
+The [backlog evidence index](docs/BACKLOG-EVIDENCE.md) attaches scoped reviews and
+original evidence to catalog IDs, including unfinished items. Use
+`npm run backlog:evidence -- --id WX-0717 --category browser` and
+`npm run backlog:evidence:check`. A review attachment preserves its original
+date, revision and limitations; it does not change completion state or satisfy
+unfinished dependencies. The [session/contracts QA receipt](docs/SESSION-CONTRACTS-QA-2026-10-15.md)
+records the integrated checks and their acceptance boundaries.
+
+**Accepted checkpoint — 2026-10-15:** nine additional items are complete:
+**WX-0007–WX-0010, WX-0060, WX-0501, WX-0601, WX-0805 and WX-0854**.
+The catalog now has **33 done / 967 remaining**. All **38 CI stages** and
+Hosting preflight passed, including **42 session tests, 15 evidence-index tests**
+and **36 browser checks** across smoke, keyboard, foundation and state-contract
+suites. All owned browser/server resources closed. The full 1,000-item goal
+remains active; the QA receipt records fixes and platform/provider boundaries.
+
 ## Current SYSTEMX features
 
 WebAppX 3.4.0 includes the pinned dotSYSTEMX 1.9.0-alpha.6 distribution. Its
@@ -184,9 +244,9 @@ Firebase adoption, design, quality, operations, SYSTEMX and integrations.
 Each has a stable `WX-0001`–`WX-1000` ID, priority, phase, specific acceptance
 check, existing source pointer, acceptance gate and dependencies.
 Verified completions include their evidence in the canonical catalog; unfinished
-items remain open work. The catalog contains exactly **1,000 records**:
-**24 completed, 976 remaining — 146 P1, 673 P2 and 157 P3**. The remaining
-acceptance gates are **808 local, 128 operator and 40 provider**. Completion
+items remain open work. The catalog contains exactly **1,000 records**. Read
+`npm run backlog:summary` or the generated execution plan for current completion,
+priority and remaining-gate counts. Completion
 evidence and accepted dependencies remain attached to each completed ID.
 
 - [Read the complete list](docs/backlog/WEBAPPX-1000-TODO.md)
@@ -232,7 +292,7 @@ actual checks, acceptance IDs and publication evidence.
 
 **Foundation verification — 2026-10-15:** 15 development-contract tests,
 14 mock-launcher tests, eight planner tests, 14 catalog tests and 121 portal
-model tests passed. The CI report passed 13 tests and described all 34 required
+model tests passed. The CI report passed 13 tests and described the then-current 34 required
 stages with no unknown classifications. All nine foundation browser checks and
 the existing nine keyboard checks passed, including unset-Firebase guidance,
 normalized routes, keyboard breadcrumbs, unsaved-form preservation and synthetic
@@ -240,7 +300,7 @@ storage recovery/unavailability. Owned cleanup succeeded; only the expected
 unset-Firebase warning appeared. Full `ci:all`, Hosting preflight and final
 host drift/plan/checklist checks passed; the receipt retains the diagnosed
 failures, corrections and final suite results. The full goal remains active.
-Agent 0 accepted 17 additional IDs, bringing the total to 24. The full goal remains
+At that foundation checkpoint, Agent 0 accepted 17 additional IDs, bringing the total to 24. The full goal remains
 active; the receipt holds final integrated CI, preflight and publication results.
 
 ### First P1 portal improvements
@@ -457,8 +517,8 @@ automatically shared with CMS/CRM.
 
 Storage status is visible in each workspace. Blocked or full browser storage
 falls back to memory; malformed or unsupported snapshots start fresh fixtures
-with a visible notice. Unsaved form fields and running timers are not guaranteed
-to survive refresh. Private browsing, clearing site data, or changing hostname
+with a visible notice. Unsaved form fields and running timers are excluded from
+workspace saves and exports; navigation can clear them before refresh. Private browsing, clearing site data, or changing hostname
 or port can remove or hide saved samples. Multiple tabs do not merge live
 changes: the last successful write wins. Use fictional data only; preview roles
 are not browser security, and anyone with access to this browser can inspect
@@ -551,8 +611,9 @@ Choose **Undo…** for a point, inspect its scope and record summaries, then cho
 **Confirm undo**, or **Cancel undo** to keep the current records. Undo replaces
 the captured portals, including changes saved after the point was made. It first saves another point
 of their current states, so that Undo can itself be reversed. Other portals’
-records, saved bytes and unsaved interface state stay unchanged; the restored
-portals’ forms/timers reset after success.
+records and saved bytes stay unchanged; unchecked CMS/CRM roots retain mounted
+interface state. Leaving an HR subpage for the directory can already have cleared
+its route-local forms/timer. Restored portal roots reset temporary UI after success.
 
 History retains at most **five points** within **2,000,000 serialized characters**;
 oldest points are pruned when needed. A newest point that cannot fit is refused
@@ -889,6 +950,11 @@ npm run systemx:session:status
 npm run systemx:session:stop
 ```
 
+Windows combined-session stop refuses without signaling or clearing state.
+Use **Ctrl+C in the owning terminal**, then inspect the child processes/listeners
+and any remaining record before operator recovery. Read the
+[session shutdown guidance](docs/GETTING-STARTED.md#preview-a-restart).
+
 The Style inspector also includes an offline-first Google Fonts browser. It can
 preview a selected family in the live Vite canvas, show the iframe's loaded
 font faces, and stage a controlled `src/index.css` change only after the exact
@@ -1032,7 +1098,7 @@ WSG-MENU
 | `npm run dev:systemx` | Start Vite plus the local SYSTEMX LAN builder |
 | `npm run systemx:lan` | Start the LAN builder directly |
 | `npm run systemx:session:status` | Show the owned local SYSTEMX session |
-| `npm run systemx:session:stop` | Stop only the owned local SYSTEMX session |
+| `npm run systemx:session:stop` | Verify ownership before stopping; Windows combined sessions require Ctrl+C in the owning terminal |
 | `npm test` | Run LAN characterization tests for local-only/read/write safety |
 | `npm run browser:install` | Install Playwright Chromium |
 | `npm run browser:codegen` | Record a local browser flow |

@@ -30,6 +30,61 @@ regressions, app/LAN gates, research inventories and public template integrity.
 It requires blank adoption seeds. `template:check` rejects populated tasks,
 context or project records by design. Use these to maintain the reusable release.
 
+## Session, portal state and evidence contracts
+
+```bash
+npm run systemx:session:test
+npm run browser:state-contract
+npm run backlog:evidence:check
+npm run backlog:evidence:test
+```
+
+The supervisor tests use isolated process/port/probe fixtures for fixed origin
+selection, busy-listener preservation, strict Vite binding and independent
+Vite/LAN/Auth/Firestore/Storage readiness. Startup observations distinguish
+`starting`, `ready` and `failed`; Storage readiness is a reachable TCP listener,
+not a tested storage workflow. A usable app can coexist with failed emulators.
+These focused fixtures do not establish a complete live emulator session on
+every target platform.
+
+Restart-preview tests exercise ownership and replacement-listener classification,
+including a real temporary fixture whose process, listener and runtime file
+bytes stay intact. `npm run systemx:session:restart:preview` is a read-only OS
+snapshot: it sends no signals, creates no listeners and writes no session/token/
+configuration files. A reviewable result neither reserves ports nor performs
+a restart. Read [Quick Start](Quick-Start.md#open-the-integrated-local-builder)
+for operator commands and origin troubleshooting.
+
+The [state contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-STATE-CONTRACT.md)
+separates accepted workspace records from temporary form/timer state and
+documents each portal's navigation, Reset, import and Undo lifecycle. The browser
+journey changes ordinary records through rendered controls and reads storage
+and downloads for evidence. An isolated denied-storage fixture checks export
+of accepted records still held in memory. Temporary reports, downloads,
+screenshots and traces stay outside tracked reusable files. The
+[capability matrix](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-CAPABILITIES.md)
+explains synthetic role projections and complete, role-agnostic backup contents.
+
+The [evidence index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-EVIDENCE.md)
+keeps review scope separate from original evidence metadata. Its validation
+tests cover known proposal IDs, dates/revisions, path containment, references,
+filtering and preservation of catalog state. An attachment to a TODO item can
+reuse earlier browser evidence while its dependencies remain pending. Validation
+or querying never accepts that item. The
+[session/contracts QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SESSION-CONTRACTS-QA-2026-10-15.md)
+records actual integrated outcomes, source base and remaining boundaries.
+
+**Accepted session/contracts checkpoint — 2026-10-15:** all **38 CI stages**
+and Hosting preflight passed. Focused/integrated verification includes **42
+session tests**, **15 evidence-index tests**, **eight planner tests** and
+**13 CI-plan tests**. The four browser suites passed **7 smoke, 9 keyboard,
+9 foundation and 11 state-contract checks**, with both owned resources closed
+in every report. The 235-case managed suite retains five existing filesystem
+skips. Final drift, template, checklist/plan, link and whitespace checks passed.
+The catalog reached **33 done / 967 remaining** after nine new local acceptances;
+this checkpoint does not establish Windows runtime, real emulator/provider
+workflows, production deployment or whole-site accessibility acceptance.
+
 ## Execution-foundation contracts and reports
 
 ```bash
@@ -71,7 +126,7 @@ journeys' strict no-state-injection boundary. The
 [foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
 records actual test/browser results, accepted IDs and final publication gates.
 
-### Accepted foundation results — 2026-10-15
+### Historical foundation results — 2026-10-15
 
 | Focused gate | Verified result |
 | --- | --- |
@@ -79,7 +134,7 @@ records actual test/browser results, accepted IDs and final publication gates.
 | Native mock launcher | 14 tests passed, including actual cold-module startup, occupied-listener preservation, signal failure reporting and shared server/cache cleanup |
 | Execution planner | Eight tests passed, including dependency order, exact large tied-path counts, bounded output and preserved source/seeds |
 | Catalog | 14 tests passed, including rejection of unfinished dependencies on a completed item |
-| CI plan | 13 tests passed; actual report listed all 34 required stages with zero unknown classifications |
+| CI plan | 13 tests passed; actual report listed its then-current 34 required stages with zero unknown classifications |
 | Shared portal models | 120 tests passed, including registry, route and save-summary coverage |
 | Foundation browser | Nine checks passed across Firebase notice, registry fields, deep links, keyboard breadcrumbs, unsupported recovery, unsaved CMS/document preservation, save/refresh and isolated storage faults |
 | Existing keyboard browser | Nine checks passed after the shared-shell changes, preserving exact onboarding/recovery records and focus |
@@ -91,9 +146,10 @@ exact tied-path reporting, in-app handling navigation and cold Vite request-drai
 cleanup. The receipt retains their original evidence and final integrated CI,
 preflight/drift/publication results.
 
-Agent 0 accepted 17 additional items. The current catalog has exactly **1,000
-records: 24 done, 976 remaining — 146 P1, 673 P2 and 157 P3**. Remaining acceptance
-gates are **808 local, 128 operator and 40 provider**. The goal to complete every
+Agent 0 accepted 17 additional items at this checkpoint. The catalog then held
+**1,000 records: 24 done, 976 remaining — 146 P1, 673 P2 and 157 P3**. Remaining
+acceptance gates then were **808 local, 128 operator and 40 provider**. Use
+`npm run backlog:summary` for current counts. The goal to complete every
 original criterion remains active; generated reports and passing local checks
 retain their individual acceptance scope.
 
@@ -398,7 +454,8 @@ To repeat the browser checks on `/portals`:
    the preview explains whole-portal replacement, then use the newly created
    pre-undo point to recover that later edit.
 4. Repeat with CMS+CRM and all three portals. Confirm restored modules clear
-   transient forms/timers while unselected modules preserve their interface state.
+   transient forms/timers while unchecked CMS/CRM roots preserve mounted UI.
+   Leaving an HR subpage for the directory can already have cleared its route-local UI.
 5. Create enough points to exercise bounded retention. Explicitly **Clear restore
    points** and confirm history disappears through refresh while all three
    workspace exports retain their current records.
@@ -473,7 +530,8 @@ For a release check, use fictional records and verify:
    preserve all destination records and saved bytes.
 3. Select one, then two, then all three portals in separate checks. Confirm full
    replacement of selected modules and refresh restoration. Unselected current
-   records, saved bytes and active interface state must remain unchanged.
+   records and saved bytes must remain unchanged. Unchecked CMS/CRM roots retain
+   mounted interface state; consult the state contract for HR route-local resets.
 4. Verify selected unsaved forms/timers reset only after successful replacement,
    and the separate SDK session remains outside the bundle.
 5. Reject malformed JSON, unsupported format/version, missing/invalid nested
@@ -851,11 +909,12 @@ npx playwright test      # optional project e2e suite
 
 ## Full-goal foundation publishing gates — 2026-10-15
 
-The corrected foundation source passed full `npm run ci:all`, including all 34
+The corrected foundation source passed full `npm run ci:all`, including its then-current 34
 stages and 7 smoke / 9 keyboard / 9 foundation browser checks. Each browser
 report confirmed owned resources closed. Hosting preflight and final drift,
 checklist, generated-plan, template, whitespace and link checks passed.
 The [foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
 retains the discovered failures, fixes, suite counts and five filesystem skips.
-The full 1,000-item goal remains active at 24 completed / 976 remaining.
+At that checkpoint the catalog held 24 completed / 976 remaining. The full goal
+remains active; use `npm run backlog:summary` for current counts.
 Preflight left app version 3.4.0 and deployment count 0.

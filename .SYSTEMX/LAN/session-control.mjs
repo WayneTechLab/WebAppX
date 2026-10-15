@@ -2,13 +2,15 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, unlinkSync } from 'node:fs'
 import { readSession, clearSession } from './Builder/runtime/port-utils.mjs'
 import { fileURLToPath } from 'node:url'
-import { basename, resolve, sep } from 'node:path'
+import { resolve } from 'node:path'
+import { createSessionRestartPreview, executeSessionStopPlan, sessionRuntimeCleanupTarget } from './session-restart-preview.mjs'
 
 const lanRoot = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(lanRoot, '..', '..')
 const action = process.argv[2] ?? 'status'
 
 function processCommand(pid) {
+  if (!Number.isSafeInteger(pid) || pid <= 0) return ''
   try {
     return process.platform === 'win32'
       ? execFileSync('powershell.exe', ['-NoProfile', '-Command', `(Get-CimInstance Win32_Process -Filter "ProcessId = ${pid}").CommandLine`], { encoding: 'utf8' }).trim()
@@ -19,6 +21,7 @@ function processCommand(pid) {
 }
 
 function alive(pid) {
+  if (!Number.isSafeInteger(pid) || pid <= 0) return false
   try {
     process.kill(pid, 0)
     return true
@@ -43,6 +46,18 @@ function belongsToRepository(pid, name, session) {
 }
 
 const session = readSession(repoRoot)
+if (action === 'restart' || action === 'restart-preview') {
+  const argumentsAfterAction = process.argv.slice(3)
+  if ((action === 'restart' && (argumentsAfterAction.length !== 1 || argumentsAfterAction[0] !== '--preview')) ||
+      (action === 'restart-preview' && argumentsAfterAction.length)) {
+    console.error('Usage: node .SYSTEMX/LAN/session-control.mjs restart --preview')
+    process.exit(2)
+  }
+  const preview = createSessionRestartPreview({ repoRoot, session })
+  console.log(JSON.stringify(preview, null, 2))
+  process.exit(preview.canRestart ? 0 : 1)
+}
+
 if (!session) {
   console.log(JSON.stringify({ status: 'offline', reason: 'no-owned-session-record' }, null, 2))
   process.exit(0)
@@ -61,30 +76,27 @@ if (action === 'status') {
 }
 
 if (action !== 'stop') {
-  console.error('Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop]')
+  console.error('Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop|restart --preview|restart-preview]')
   process.exit(2)
 }
 
-for (const [name, pid] of Object.entries(session.processes ?? {})) {
-  if (name === 'session' || !alive(pid)) continue
-  if (!processCommand(pid).includes(repoRoot)) {
-    console.warn(`[SYSTEMX] Refusing to stop unverified process ${pid} (${name})`)
-    continue
-  }
-  process.kill(pid, 'SIGTERM')
-  console.log(`[SYSTEMX] Stopped owned ${name} process ${pid}`)
+const stop = executeSessionStopPlan({
+  repoRoot, session,
+  signalProcess: (pid, signal) => process.kill(pid, signal),
+  cleanupSession() {
+    if (JSON.stringify(readSession(repoRoot)) !== JSON.stringify(session)) throw new Error('Session changed during stop')
+    const runtime = sessionRuntimeCleanupTarget(repoRoot, session)
+    if (!runtime.allowed) throw new Error(runtime.reason)
+    if (runtime.path && existsSync(runtime.path)) unlinkSync(runtime.path)
+    if (!clearSession(repoRoot, session.sessionId)) throw new Error('Session was not cleared')
+  },
+})
+if (!stop.canStop) {
+  console.error(JSON.stringify({ ...stop, status: 'refused' }, null, 2))
+  process.exit(1)
 }
-
-const runtimeConfig = session.runtime?.firebaseConfig
-const runtimeRoot = resolve(repoRoot, '.SYSTEMX', 'state')
-if (typeof runtimeConfig === 'string') {
-  const runtimePath = resolve(runtimeConfig)
-  if (
-    runtimePath.startsWith(`${runtimeRoot}${sep}`) &&
-    basename(runtimePath).startsWith('firebase-') &&
-    existsSync(runtimePath)
-  ) unlinkSync(runtimePath)
+if (stop.cleanup) console.log('[SYSTEMX] Local exited session record cleared; unrelated projects were not touched.')
+else {
+  console.log(`[SYSTEMX] Requested owned ${stop.targets[0].role} process ${stop.targets[0].pid} to stop.`)
+  console.log(stop.guidance ?? '[SYSTEMX] Its supervisor will clear the session state during shutdown.')
 }
-
-clearSession(repoRoot, session.sessionId)
-console.log('[SYSTEMX] Local session record cleared; unrelated projects were not touched.')
