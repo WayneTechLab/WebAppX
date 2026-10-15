@@ -14,6 +14,19 @@
       "scopeSha256": "d1081adfc626e1d98666765f9d1e8b899f20594d73e7f6ccdd8bbf78f4d56d66",
       "decision": "retain",
       "rationale": "Retain the original adoption receipt as historical local evidence with its f849 starting source base; source-only guide inspection at aae records no new tests or browser observations."
+    },
+    {
+      "id": "DFR-8668fce12be1e6e5",
+      "guideId": "portal-state-contract",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "917a49129918ca3cf55cc9cc794741ea3c42a6f7",
+      "reportDigest": "9889a251babe7c6e64f30b97eb9e31066fc7105ff55e5d882413b4633fc66a08",
+      "mappingSha256": "5d5f08b0e253056f9ace8d83e71e7710fe71dc6e2156c3ffde995eba08f50a32",
+      "inputsSha256": "7321d5becf44692a7f1beed16b705ed5abdec22804bfd6e9442dea2bb7ffda8e",
+      "scopeSha256": "2fb18512b722ebff2f3258403094554586b28efc57037bf2d338e9d96ad53eea",
+      "decision": "retain",
+      "rationale": "Retain the original historical receipt within its recorded starting-source-base scope. The revised guide and mapped implementation were reviewed at this target commit; the new maturity receipt separately qualifies working-tree native browser observations and an exact committed-source adoption recheck. This source review does not rerun or promote prior browser evidence."
     }
   ]
 }

@@ -165,3 +165,20 @@ Final documentation checks passed: 733 README/SYSTEMX/wiki Markdown files,
 plus 2,116 local file links across 72 host guides. Final template, host-drift and
 generated execution-plan checks passed. The native wiki preview rendered all
 58 pages and retained the five intended changed pages.
+
+## Committed-source adoption recheck and guide review
+
+After the implementation commit `917a49129918ca3cf55cc9cc794741ea3c42a6f7`,
+the temporary HR-disabled adoption was run again against that exact committed
+public source. All **eight browser check groups passed**; the bundle emitted
+35 modules with HR, Gusto integration and the SDK excluded. Complete CMS/CRM
+UI export/import/reload, adopted bundle replacement, legacy-file refusal and
+unread/untouched old HR/history slots passed. This repeats eight existing gate
+groups at the new source revision; it does not increase the 111-check total.
+
+The revised state guide is deliberately bound to that implementation commit
+through the documentation-freshness map and an appended source-review decision.
+Historical receipt fields and the original decision remain preserved. The new
+receipt still identifies its actual starting source base and working-tree native
+browser observations; the exact committed-source adoption observation above is
+separately qualified. The review tool itself executes no browser or provider.
