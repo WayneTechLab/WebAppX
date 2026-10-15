@@ -42,7 +42,8 @@ test('saved onboarding, benefits, approved time and payroll receipts restore tog
   const state = initial()
   for (const type of ['elect-benefit', 'review-benefit', 'confirm-benefit']) state.workflow = workflow.transitionMockHr(state.workflow, avery, { type, planId: 'benefit-001', election: 'enroll' }, fixture)
   state.workflow = workflow.transitionMockHr(state.workflow, manager, { type: 'approve-time', entryId: 'time-001' }, fixture)
-  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) state.workflow = workflow.transitionMockHr(state.workflow, owner, { type }, fixture)
+  state.workflow = workflow.transitionMockHr(state.workflow, owner, { type: 'set-sample-rate', employeeId: avery.employeeId, effectiveFrom: '2026-10-01', hourlyRateCents: 3000 }, fixture)
+  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) state.workflow = workflow.transitionMockHr(state.workflow, owner, { type, ...(type === 'prepare-payroll' ? { period: { start: '2026-10-01', end: '2026-10-15' } } : {}) }, fixture)
   state.selectedEmployee = avery.employeeId
   state.managementRole = 'payroll-admin'
   state.completed = ['contractor-001:profile']

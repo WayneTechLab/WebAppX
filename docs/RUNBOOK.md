@@ -44,6 +44,52 @@ The [HR-disabled adoption walkthrough](examples/hr-disabled-adoption.md) tests a
 separate temporary CMS/CRM-only bundle and explains its incompatible combined
 backup kind and deliberately unadopted recovery controls.
 
+## Exercise portal maturity workflows
+
+Use [the maturity how-to](PORTAL-MATURITY.md) and
+[current QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) for the sixteen implemented
+criteria, exact starting scenarios and recorded focused results. The current
+wave has 79 new model cases and 13 new browser check groups; integrated CI and
+publishing gates passed as recorded in that receipt.
+
+```bash
+npm run maturity:test
+npm run browser:maturity
+```
+
+The first runs independent model/codec/path fixtures with in-memory storage.
+The second owns its loopback app and four fresh Chromium contexts, uses actual
+controls and file transfers, and retains local evidence. It does not reuse or
+clear a user's browser profile. For a manual exercise, use `npm run dev:mock`
+and keep the exact printed origin and chosen evaluation profile.
+
+1. **Set up payroll explicitly.** Under **Management → Payroll workspace**,
+   choose **Sample period start/end** and configure fictional hourly rates for
+   every otherwise-eligible employee/work date. Existing fixture compensation
+   has no inferred hourly cadence. Inspect each eligibility reason before
+   preparation. Changed inputs or a changed selected period require intentional
+   **Reprepare sample payroll** before the next stage. Submitted receipts and
+   employee statements retain their frozen period/rates.
+2. **Save history without recovering.** Enter a **Restore point name**, select
+   the portals to capture, inspect the history budget and choose **Create named
+   restore point**. This writes history only. **Point label → Save point label**
+   changes only the label, preserving the point's capture, scope and creation
+   time. Neither operation rewrites workspace saves or clears temporary forms.
+3. **Inspect before replacement.** **Inspect captured records**, combined
+   restore differences and Undo differences display counts and bounded IDs.
+   They do not write saves, history or activity. Hidden field changes can affect
+   the changed-record count without displaying those values.
+4. **Apply the intended recovery scope.** Confirming selective restore or Undo
+   replaces entire selected module states and their browser saves, after an
+   automatic pre-action point is saved. Those modules' temporary forms/timers
+   are cleared; unselected portals remain open. Undo refuses a source point
+   changed or removed after its preview, requiring refresh and review.
+
+The guide also covers time return/correction/deletion, CMS complete validation
+and keep/discard decisions, CRM import refusal and session return navigation.
+Keep these local checks separate from real payroll, provider authorization and
+the required full release gates.
+
 ## Review adopted work and upstream changes
 
 Open the LAN **Work sources** cards to inspect reusable work records, the

@@ -77,6 +77,9 @@ register('node --test tests/adoption/hr-disabled.test.mjs', temporary('Tests the
 register('node scripts/rehearse-hr-disabled.mjs', temporary('Captures allowlisted committed app blobs into an owned temporary app, applies six reviewed HR-disabled overrides, builds and runs real CMS/CRM browser journeys, then closes owned resources.'))
 register('node scripts/browser-evaluators.mjs', temporary('Runs the authored HR/CMS/CRM and selective restore/Undo evaluator demonstrations in fresh owned Chromium contexts, with actual downloads and complete saved-payload comparisons.'))
 
+register("node --test tests/hr/payroll-periods-rates.test.mjs tests/hr/time-editing.test.mjs tests/hr/selected-payroll-insights.test.mjs tests/portals/crm-import-validation.test.mjs tests/portals/manual-restore-points.test.mjs tests/portals/return-location.test.mjs tests/portals/undo-preview-binding.test.mjs tests/portals/workspace-inspection.test.mjs", temporary('Runs independent payroll periods/rates, draft time editing, frozen statements, strict CRM imports, named history, pure inspections/differences, session navigation and Undo preview binding fixtures.'))
+register('node scripts/browser-maturity.mjs', temporary('Exercises the 16 portal maturity criteria through real rendered controls and downloads in four owned isolated browser contexts; explicitly labels a navigation-only unsupported-route probe and preserves failed evidence.'))
+
 const unknown = () => ({ mutation: 'unknown', workspaces: [ROOT], note: 'Unreviewed command or shell syntax; side effects and additional dependent workspaces are unknown.' })
 
 /** Parse only the maintained literal gate loop. Never evaluate shell text. A

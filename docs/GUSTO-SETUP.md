@@ -18,6 +18,10 @@ Use [reviewed role examples](HR-ROLE-EXAMPLES.md), the proposed
 [operations readiness index](OPERATIONS-READINESS.md) when choosing an adoption
 scope. For account-free evaluation, follow the
 [HR demo](demos/HR-FIVE-MINUTE.md) and [printable worksheet](PORTAL-EVALUATOR-WORKSHEET.md).
+The [portal maturity guide](PORTAL-MATURITY.md) explains current payroll setup,
+time corrections and recovery controls; its
+[dated QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) separates focused local
+observations from integrated publishing gates.
 To adopt CMS and CRM without HR, use the deliberately separate
 [temporary app walkthrough](examples/hr-disabled-adoption.md).
 
@@ -26,7 +30,7 @@ To adopt CMS and CRM without HR, use the deliberately separate
 ```bash
 npm ci
 npm run hr:test
-npm run dev
+npm run dev:mock
 ```
 
 Open the URL printed by Vite and visit:
@@ -38,8 +42,8 @@ Open the URL printed by Vite and visit:
 | `/hr/demo/admin/employees` | Employee search, status filters and fictional records |
 | `/hr/demo/employee/onboarding` | Profile/job review, required checklist and simulated onboarding completion |
 | `/hr/demo/admin/employees/:employeeId/onboarding` | Onboarding review opened from a fictional employee's record |
-| `/hr/demo/employee/time` | Native time entry and timesheet submission |
-| `/hr/demo/manager/time` | Scoped manager review of submitted timesheets |
+| `/hr/demo/employee/time` | Native time entry, own unpaid draft editing/confirmed deletion and timesheet submission |
+| `/hr/demo/manager/time` | Scoped manager approval or return of submitted time with a reason |
 | `/hr/demo/employee/benefits` | Employee-owned sample enrollment/waiver, review and confirmation |
 | `/hr/demo/admin/benefits` | Read-only sample benefit catalog; no election authority |
 | `/hr/demo/employee/time-off` | Vacation/sick request, cancellation and reserved sample balances |
@@ -56,7 +60,7 @@ Open the URL printed by Vite and visit:
 | `/hr/demo/admin/recruiting` | Owner/HR sample job and candidate pipeline, ending in a native onboarding employee |
 | `/hr/demo/admin/performance`, `/hr/demo/employee/performance`, `/hr/demo/manager/performance` | Scoped goals and self-review/manager-publication/employee-acknowledgment cycle |
 | `/hr/demo/admin/surveys`, `/hr/demo/employee/surveys` | Identified employee feedback with draft, publish, own answer, submit and close stages |
-| `/hr/demo/admin/payroll` | Approved hours through fictional payroll calculation, review and simulated submission |
+| `/hr/demo/admin/payroll` | Explicit chosen period and employee rate timelines through eligible hours, fictional calculation, review and simulated submission |
 | `/hr/demo/sdk` | Genuine SDK directory, admin onboarding and payroll flows with local synthetic sessions |
 
 Demo roles apply only to synthetic preview data and do not alter Firebase claims.
@@ -80,8 +84,8 @@ preparing payroll if you want its illustrative deduction included.
 | --- | --- |
 | Onboarding | Select the fictional employee. Use **Review sample profile** and **Review sample job**, finish every checklist item, then **Review onboarding summary** and **Confirm simulated onboarding**. Inspect the completion receipt and active demo directory state. |
 | Benefits | In employee benefits, use **Elect sample enrollment** or **Elect sample waiver** for an available plan, **Review sample election**, then **Confirm sample election**. Inspect its `MOCK-BENEFIT-...` receipt. Management views do not elect or confirm for the employee. |
-| Timesheet | In employee time, add a valid sample entry or use the sample timer. Use **Submit own sample timesheet**, switch to its scoped manager and **Approve sample time**. Draft/submitted hours cannot enter payroll; self-approval is unavailable. |
-| Payroll | As the demo employer owner or payroll admin, use **Prepare sample payroll**, **Calculate fictional totals**, **Review simulated payroll** and **Simulate payroll submission**. Inspect its `MOCK-PAYROLL-...` receipt and linked hours. |
+| Timesheet | In employee time, add a valid sample entry or use the sample timer. Use **Submit own sample timesheet**, switch to its scoped manager and **Approve sample time**, or provide a reason and **Return sample time**. Its employee corrects a returned unpaid draft with **Edit draft**, saves, resubmits and obtains approval. Draft/submitted/returned hours cannot enter payroll; self-approval is unavailable. |
+| Payroll | As the demo employer owner or payroll admin, choose **Sample period start/end** and add an explicit dated rate for every otherwise-eligible employee. Read **Time-entry eligibility**, then use **Prepare sample payroll**, **Calculate fictional totals**, **Review simulated payroll** and **Simulate payroll submission**. Inspect its `MOCK-PAYROLL-...` receipt and frozen hours/rates. |
 
 Exercise each stage in order. A later-stage button is not a substitute for its
 prerequisites; changing an input requires review of the resulting state before
@@ -89,23 +93,67 @@ completion. Mock payroll calculations are sample arithmetic, and the receipt
 records a local simulation. Neither sends money, files taxes, enrolls insurance
 or writes an external payroll record.
 
-The fixed sample pay period is **2026-10-01 through 2026-10-15**. Only an active
-fictional employee's approved, unpaid time entries within that period qualify.
-Onboarding completion makes that employee active in the demo directory.
-Payroll preparation freezes approved hours and confirmed enrollment choices.
-Later changes need a new preparation. Entries linked to a simulated submission
-receipt are excluded from later runs, and confirmed elections/onboarding stay
-locked until Reset. The displayed rate, withholding and benefit deductions are
-deliberately fictional; use the screen's labels rather than treating them as
-real tax, wage or insurance calculations.
+### Choose the native payroll inputs explicitly
 
-For a repeatable linked example, confirm Avery's sample health enrollment, add
-eight hours dated 2026-10-15, submit them and approve them as Morgan. Preparing
-payroll as the employer owner produces eight eligible hours and one confirmed
-enrollment: fictional gross $240, illustrative withholding $48, sample benefit
-deduction $25 and simulated net $167. Review, simulate submission and inspect
-the receipt. Jordan's onboarding can be completed separately to verify its
-active directory readback. Reset clears receipts and restores the original fixture.
+1. Open **Management → Payroll workspace** as employer owner or payroll admin.
+   Choose **Sample period start** and **Sample period end**. Dates must form a
+   valid inclusive range of 1–366 calendar days. **2026-10-01 through
+   2026-10-15** is the walkthrough choice; the initial form has no selected period.
+2. In **Configure fictional hourly rates**, choose **Rate employee**, enter
+   **Fictional hourly rate (dollars)** and **Rate effective date**, then **Add
+   sample rate**. Repeat for every otherwise-eligible employee/work date. The
+   initial seed has no rates: absent means **unconfigured**, and fixture
+   `payCents` values do not declare an hourly cadence. Use an effective date on
+   or before the work date. Each later timeline change needs a strictly later
+   effective date; each time row uses the latest rate effective on its own date.
+3. Read every row in **Time-entry eligibility**. An active fictional employee's
+   valid, approved and unpaid time within the chosen period qualifies only with
+   an explicit applicable rate. Onboarding completion makes the employee active.
+   A missing rate for otherwise-eligible hours blocks preparation with a setup
+   error. It does not silently remove those hours.
+4. Prepare, calculate, review and simulate submission in order. Preparation
+   freezes the period, dates, hours, rates/effective dates and confirmed benefit
+   inputs. A changed approved input, applicable rate, eligibility or included
+   confirmed benefit makes unfinished preparation stale. Changing the selected
+   period also requires reprepare. When **Payroll preparation is stale** appears,
+   calculation/review/submission stay blocked until **Reprepare sample payroll**.
+   Recalculate and review its new totals deliberately.
+5. Inspect the submitted receipt and each included employee's **My pay**. The
+   submitted period, time/rates, benefit inputs and totals remain frozen after
+   later timeline changes. Consumed time is excluded from later runs. Flat 20%
+   illustrative withholding and $25 per confirmed enrolled plan remain sample
+   arithmetic, rounded per employee with deductions capped to that employee's
+   pay after withholding. These are not wage, overtime, tax or insurance rules.
+
+For the separate **$167 single-employee example**, use a fresh evaluation context
+with the unchanged initial seed. Confirm Avery's sample health enrollment, then
+as Morgan approve Avery's existing **time-001**, eight hours dated **2026-10-09**.
+As employer owner, choose **2026-10-01 through 2026-10-15** and explicitly add
+Avery's fictional **$30/hour** effective **2026-10-01**. Jordan's unapproved draft
+does not qualify. Prepare and calculate: eight eligible hours and one confirmed
+enrollment produce **$240 gross, $48 illustrative withholding, $25 sample benefit
+deduction and $167 simulated net**. Review, simulate submission and inspect the
+receipt and Avery's own frozen statement. The
+[paced two-employee demo](demos/HR-FIVE-MINUTE.md) and
+[maturity QA scenario](PORTAL-MATURITY-QA-2026-10-15.md) use different inputs and
+totals. Keep each scenario in its own context.
+
+### Correct or remove unpaid draft time
+
+A scoped manager returning submitted time must enter **Return reason for [entry
+ID]** and choose **Return sample time**. It becomes an unpaid draft with a
+visible retained reason, excluded until its owner corrects/resubmits it and a
+different authorized actor approves it. The employee can use **Edit draft**,
+change the date/hours and **Save draft changes**, or **Cancel draft editing**.
+Validation requires a valid date, positive hours no greater than 24, and at most
+24 combined hours for that employee/date across all entries.
+
+For an owned unpaid draft, **Delete draft** opens a confirmation. **Keep draft**
+cancels; **Confirm delete draft** removes only that draft. Editing/deleting cannot
+change submitted, approved or consumed time, submitted payroll history or frozen
+statements. Returning cannot change consumed time or approve the manager's own
+entry. See the [HR workflow guide](HR-PORTAL.md#return-correct-or-delete-unpaid-draft-time)
+for the connected correction path.
 
 Refreshing restores the last successfully saved native HR snapshot. **Reset
 sample changes** clears only HR’s saved state and restores its synthetic fixture.
@@ -120,7 +168,8 @@ data, or changing hostname/port may lose or hide samples. Tabs do not merge
 live changes; the last successful write wins. Saved data is accessible to the
 browser user, so role selectors do not make it confidential. Keep every name,
 address and free-text field fictional. Read the
-[persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) for current verification.
+[earlier persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) for its
+dated verification scope.
 The optional Firebase module retains its separately documented implementation
 and adoption gates; completing a native demo does not enable that module.
 
@@ -128,7 +177,8 @@ and adoption gates; completing a native demo does not enable that module.
 
 Save the domain actions you want to keep, then choose **Export workspace** in
 native HR. The download contains the whole native HR snapshot: recruiting/hires,
-onboarding, benefits, time/payroll, people operations, service requests,
+onboarding, benefits, time/payroll, explicit rate timelines and frozen periods,
+people operations, service requests,
 performance and surveys, plus HR’s saved role/employee choice. It excludes
 unsaved form edits, running timers and the independent SDK preview session.
 
@@ -144,6 +194,14 @@ Invalid/wrong-module files preserve current records, and a failed browser save
 keeps the prior workspace with a visible error. Files are read locally without
 an upload, login, Firebase or Gusto key. A file can move between origins, but
 subsequent saves in each browser remain independent.
+
+Existing schema-version-1 saves, individual/combined files and restore points
+remain compatible. New rate, period, frozen input and return metadata are
+optional for legacy decoding and strict when present. Old submitted receipts
+keep their original fields and historical October 1–15 period interpretation;
+an old unfinished preparation requires an explicit chosen period, configured
+rates and intentional reprepare. Import does not invent rates or rewrite a
+submitted receipt.
 
 Backups are plain-text fictional data, including private review and survey
 answer drafts and mock payroll receipts. The current preview role does not
@@ -194,7 +252,9 @@ imports, Reset and ordinary actions do not automatically create them.
 History includes plain-text fictional employee records, drafts and mock receipts.
 Use exported files to move records between browsers; local history requires no
 Gusto/Firebase account or credentials. See the [restore-point guide](TEMPLATE-PORTALS.md#automatic-restore-points-and-undo)
-and [current QA receipt](RESTORE-POINTS-QA-2026-10-14.md).
+and [earlier QA receipt](RESTORE-POINTS-QA-2026-10-14.md). The
+[maturity guide](PORTAL-MATURITY.md) covers the current named/manual capture,
+record inspection and difference-preview controls.
 
 ### Earlier refresh verification — 2026-10-14
 
@@ -372,14 +432,18 @@ fulfillment or real HR case is sent.
 
 Portal dashboards and **Reports** derive scoped workforce and native workflow
 counts from the current session. Counts of all approved/unpaid time can exceed
-payroll-ready time, which also requires active employment and the fixed sample
-pay period. Compensation amounts are available to owner/payroll admin and to an
+payroll-ready time, which also requires active employment, a configured rate and
+dates inside the prepared period. Before preparation, dashboard readiness uses
+the historical October 1–15 sample window; the payroll workspace still requires
+an explicit period choice and shows eligibility for its chosen dates.
+Compensation amounts are available to owner/payroll admin and to an
 employee for their own submitted pay; manager, HR and auditor views do not gain
 compensation authority from a dashboard link.
 
 After simulating native payroll submission, switch to an included employee and
 open `/hr/demo/employee/paystubs`. **Your simulated pay receipts** shows that
-employee's submitted totals and frozen time/benefit inputs. No statement appears
+employee's submitted period, totals and frozen time/rate/benefit inputs. Later
+rate timeline changes preserve these submitted values. No statement appears
 for merely prepared or calculated pay. Each employee's combined benefit deduction
 is capped to their own pay after illustrative withholding; employee totals sum
 to the run totals. The separate historical fixture statement does not enter

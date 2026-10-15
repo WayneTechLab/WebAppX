@@ -35,10 +35,26 @@ only read local catalog data. They do not dispatch agents, import task records,
 contact providers or change acceptance. `backlog:plan:render` explicitly writes
 the generated plan; `backlog:plan:check` verifies it without rewriting.
 
+### Portal maturity — 2026-10-15
+
+Agent 0 accepted **WX-0056, WX-0151–WX-0158, WX-0280, WX-0282, WX-0397,
+WX-0453, WX-0454, WX-0457 and WX-0458**. The catalog records **77 done /
+923 remaining**: **96 P1, 670 P2 and 157 P3**, with **756 local, 127 operator
+and 40 provider** gates remaining. Read the [maturity guide](../docs/PORTAL-MATURITY.md),
+[implementation plan](../docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md) and
+[QA receipt](../docs/PORTAL-MATURITY-QA-2026-10-15.md). Publication gates belong
+to that receipt; no provider or deployment acceptance follows from local tests.
+
+The [next safety/recovery assignment](../docs/PORTAL-SAFETY-IMPLEMENTATION-PLAN.md)
+plans twelve remaining local P1 criteria. Those criteria remain unaccepted;
+the plan retains existing-source review and manual-evidence boundaries.
+
+The following checkpoints retain their historical dates and totals.
+
 ### Evaluator and adoption foundations — 2026-10-15
 
 Agent 0 accepted WX-0503, WX-0800, WX-0859 and WX-0901–WX-0910 against their
-original criteria. The catalog records **61 done / 939 remaining**: **112 P1,
+original criteria. At that earlier checkpoint the catalog recorded **61 done / 939 remaining**: **112 P1,
 670 P2 and 157 P3**, with **772 local, 127 operator and 40 provider** gates
 remaining. Read the [evaluator/adoption receipt](../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
 for the examined source, actual checks and integrated publishing gates.
@@ -59,10 +75,8 @@ The [membership proposal](../docs/TENANT-MEMBERSHIP-PROPOSAL.md),
 deferred and observed boundaries. All **54 CI stages, 95 browser checks/check groups and Hosting preflight passed**.
 The source-derived CI planning report itself executes no gate.
 
-The [next portal implementation batch](../docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
-plans 16 dependency-ready P1 local items across payroll/time, CMS editing, CRM
-validation, recovery inspection/history and session navigation. Those items
-remain unaccepted until their original criteria have actual evidence.
+The subsequent [portal implementation plan](../docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
+assigned the 16 P1 local criteria now accepted in the maturity checkpoint above.
 
 The following checkpoints retain their historical dates and totals.
 

@@ -4,7 +4,7 @@ These are concrete synthetic examples from the reviewed fixture. Use the
 [canonical cross-portal capability matrix](PORTAL-CAPABILITIES.md) for the complete vocabulary, role scopes and provider boundary.
 A role example is an actor, resource, action and current state; opening a route does not establish permission for its domain transitions.
 
-Review basis: ` aae465ae033f3191a69ed7d40056b0c6e2159e17 ` and proposal ` WX-0908 `.
+Review basis: ` 950f9ba0c4e48faaa65056f504f105201838e3ec ` and proposal ` WX-0908 `.
 Original criterion: A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.
 
 The [reviewed fixture](../tests/fixtures/hr-capability-examples.json) supplies each action, prerequisite and literal expected result.
@@ -29,7 +29,7 @@ Importing the generator performs no I/O. It does not import application models, 
 
 Synthetic actor: ` {"role":"employer-owner"} `.
 
-Company administration uses known employee resources; it cannot impersonate a review author or assigned manager.
+Company administration uses known employee resources; simulated payroll separately requires a chosen period and explicit fictional hourly rates. It cannot impersonate a review author or assigned manager.
 
 Visible employee IDs: ` ["employee-001","employee-002","employee-003"] `. Visible document IDs: ` ["document-001","document-002","document-003"] `.
 Compensation visibility for ` employee-002 `: **visible**. A saved draft self-review for employee-002 is **excluded** in this actor’s performance helper projection.
@@ -63,7 +63,7 @@ Exact refusal: ` Only the employee can write or submit their own sample self-rev
 
 Synthetic actor: ` {"role":"payroll-admin"} `.
 
-Onboarding review and simulated payroll are separate from profile editing and time approval.
+Onboarding review and simulated payroll are separate from profile editing and time approval. This role can configure fictional rate timelines and prepare a chosen-period run, but cannot approve or return employee time.
 
 Visible employee IDs: ` ["employee-001","employee-002","employee-003"] `. Visible document IDs: ` ["document-001","document-002","document-003"] `.
 Compensation visibility for ` employee-002 `: **visible**. A saved draft self-review for employee-002 is **excluded** in this actor’s performance helper projection.
@@ -131,7 +131,7 @@ Exact refusal: ` Only the assigned direct manager can review or publish this sam
 
 Synthetic actor: ` {"role":"manager","employeeId":"employee-001"} `.
 
-The actor is employee-001; approval requires a submitted direct-report record and excludes the manager’s own entries.
+The actor is employee-001; approval or reasoned return requires submitted unpaid direct-report time and excludes the manager’s own entries. Own unpaid draft time can be corrected or explicitly deleted before resubmission.
 
 Visible employee IDs: ` ["employee-001","employee-002","employee-003"] `. Visible document IDs: ` ["document-001","document-002"] `.
 Compensation visibility for ` employee-002 `: **excluded**. A saved draft self-review for employee-002 is **excluded** in this actor’s performance helper projection.
@@ -223,7 +223,7 @@ Observable result: ` reviews.0.stage ` equals ` published `.
 
 Synthetic actor: ` {"role":"employee","employeeId":"employee-002"} `.
 
-The actor is employee-002; self service requires that exact known employee and the current workflow stage.
+The actor is employee-002; self service requires that exact known employee and the current workflow stage. Own unpaid draft time can be corrected or explicitly deleted; submitted, approved and receipted time stays protected.
 
 Visible employee IDs: ` ["employee-002"] `. Visible document IDs: ` ["document-001","document-002"] `.
 Compensation visibility for ` employee-002 `: **visible**. A saved draft self-review for employee-002 is **visible** in this actor’s performance helper projection.
@@ -332,7 +332,7 @@ Exact refusal: ` Approval requires a submitted entry within this role and team s
 
 Every preview role can export the complete saved module workspace; the shared backup codecs take complete state and no actor argument. Combined export includes all three complete workspaces without a preview identity.
 
-- Included: Saved HR performance self-review and manager drafts, survey draft answers, payroll state and mock receipts where present.
+- Included: Saved HR performance self-review and manager drafts, survey draft answers, fictional rate timelines, chosen payroll periods, time-return reasons, payroll snapshots and mock receipts where present.
 - Included: Unpublished CMS drafts and review metadata; CRM records belonging to other representatives.
 - Excluded: Unsaved form inputs, running timers, restore-point history and the separate SDK mock session.
 
@@ -347,15 +347,15 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 
 | Source | SHA-256 |
 | --- | --- |
-| [docs/PORTAL-CAPABILITIES.md](../docs/PORTAL-CAPABILITIES.md) | ` cc2053d3b5a1b871dcd21e48b5fabe079af3e313bb83bf9453932ccba7850e38 ` |
+| [docs/PORTAL-CAPABILITIES.md](../docs/PORTAL-CAPABILITIES.md) | ` 18c422225b25b4b0020946e81fd85471ad89db8d71ab508d9398a1c3f6785d69 ` |
 | [src/hr/model.ts](../src/hr/model.ts) | ` 32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e ` |
-| [src/hr/mock-workflows.ts](../src/hr/mock-workflows.ts) | ` a9b18d468e6f0dd573c06ebaa6d9558eab2e200044373bcf588821e0f21aa235 ` |
+| [src/hr/mock-workflows.ts](../src/hr/mock-workflows.ts) | ` 373b8a8ce4d34250d306095d0c6247d38e6a03646ddf708e00c5a6bf3b529659 ` |
 | [src/hr/performance.ts](../src/hr/performance.ts) | ` e4dd5404f9c826a162981904fbc0417588b64252998fa4ac1ca7c0477c8c716f ` |
 | [src/hr/surveys.ts](../src/hr/surveys.ts) | ` 5bc231e4a19c62c3a2b7520e93026f885d1f0f636e89306ccfa76d0a7f0a2b85 ` |
-| [src/hr/persistence.ts](../src/hr/persistence.ts) | ` eb7fa71d65db06407ade439897ae5bc5c9cf305c05751b9cc77f8b9681a97c62 ` |
+| [src/hr/persistence.ts](../src/hr/persistence.ts) | ` 42c45c2e3cf714d30129b44705fd9fb2c98a4b35d05f43c7710fe75239d91a01 ` |
 | [src/portals/backup.ts](../src/portals/backup.ts) | ` b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a ` |
 | [src/portals/combined-backup.ts](../src/portals/combined-backup.ts) | ` 186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726 ` |
 | [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | ` 5c1028cd8b954c77fffbc3c5ac33d2f232874109f57929911b61a9608c57dc88 ` |
-| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` 3fb8f664f402c95fa4a3f78702ec0b98ffcf5483fe1c4a3808901a572f2cb6e6 ` |
-| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` 19c10913f74471430799b57b7f45c65cab428a131a48036f82526204e572fca6 ` |
+| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` 29cf00252051dee4e172f467d2ae026fee95ed7ed48443df287f6f449141c311 ` |
+| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` 169e81c354ab72cf61fb89fa4e3244fe27e99c5efbe1742cafdd1d82c1cd2d20 ` |
 | [.SYSTEMX/GUSTO/mock/fixtures/demo-company.json](../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json) | ` 14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3 ` |

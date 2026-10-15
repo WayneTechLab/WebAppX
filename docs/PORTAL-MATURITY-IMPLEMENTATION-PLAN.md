@@ -1,11 +1,16 @@
-# Next portal implementation batch — 2026-10-15
+# Portal maturity implementation plan — 2026-10-15
 
-Status: **planned, unaccepted**. This is a bounded implementation assignment
+Status: **16 original criteria accepted locally; all 56 CI stages and Hosting preflight passed**.
+Read the [implementation and QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) for
+actual execution, independent review and integration fixes. The catalog now
+records **77 done / 923 remaining**; the full goal remains active.
+
+The original plan below is retained as a bounded implementation assignment
 under the [all-1,000 execution plan](WEBAPPX-EXECUTION-PLAN.md), using source
 baseline `aae465ae033f3191a69ed7d40056b0c6e2159e17`. The
 [canonical catalog](backlog/webappx-1000-todo.json) retains every original
-criterion, dependency and completion record. These 16 items are P1, local-gated
-TODOs with empty canonical dependency lists. The order below is an engineering
+criterion, dependency and completion record. At planning time these 16 items were P1, local-gated
+TODOs with empty canonical dependency lists; they now carry reviewed completion evidence. The order below is an engineering
 sequence, not a change to those dependencies or authority to use a provider.
 
 ## Parallel ownership and original acceptance targets
@@ -27,24 +32,24 @@ Agent 0 integrates shared provider and history/combined-backup UI changes.
 Navigation stays out of domain workflow files. Agent 0 integrates all lanes,
 checks source bindings, accepts criteria and publishes the final tested tree.
 
-## Evidence that motivates this batch
+## Historical source observations that motivated this batch
 
-A read-only planning reproduction found that the current CRM validator accepts
+A read-only planning reproduction at the recorded baseline found that the CRM validator accepted
 `['new']`, `['discovery']` and `['open']` for lead/opportunity/task enums through
 `String(value)` coercion. This is a concrete type-validation gap to repair under
 WX-0397. Existing graph checks remain valuable. Unsupported notes are currently
 rejected as unknown fields; no profile/notes schema should be invented merely
 to satisfy the item's title.
 
-HR currently uses one fixed period and one global sample hourly rate. Existing
+At that planning baseline HR used one fixed period and one global sample hourly rate. Existing
 `payCents` values do not declare an hourly cadence and must not silently acquire
 that meaning. Submitted payroll already contains useful frozen snapshots.
 Persisted individual/combined backups and recovery points need a deliberate
 compatibility design before new required fields are introduced.
 
-CMS entry selection currently remounts uncontrolled editor fields without a
-discard decision. Recovery history has no names/manual creation/detail inventory
-or entity difference preview. Directory links currently return to portal roots.
+At that baseline CMS entry selection remounted uncontrolled editor fields without
+a discard decision. Recovery history lacked names/manual creation/detail inventory
+and entity difference preview. Directory links returned to portal roots.
 These are source observations, not acceptance evidence or new browser results.
 
 ## Browser acceptance sequence

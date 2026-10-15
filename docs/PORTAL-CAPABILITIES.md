@@ -34,11 +34,11 @@ separately check subjects, reporting lines, assignments and workflow stages.
 
 | Synthetic HR role | read | create | approve | publish | export |
 | --- | --- | --- | --- | --- | --- |
-| `employer-owner` | Company employee directory/profiles, compensation and simulated payroll; people operations, recruiting, performance and surveys within their field projections | PTO for known employees; recruiting jobs/candidates; goals/review cycles; surveys. Can edit profiles and complete employee onboarding; can prepare/calculate simulated payroll | Company time and PTO decisions; review/confirm employee onboarding and simulated payroll. Cannot write another person's self-review, manager review or survey response | Jobs and surveys; cannot publish a performance review as owner | Complete HR backup |
-| `payroll-admin` | Company employee directory/profiles, compensation, time/PTO metadata, document index and simulated payroll. Benefit plans are visible; employee elections are not projected to this role | No new time/PTO/recruiting/talent records. Can complete employee onboarding and prepare/calculate simulated payroll; cannot edit employee profile email | Review/confirm employee onboarding and simulated payroll; cannot approve time or PTO | None | Complete HR backup |
+| `employer-owner` | Company employee directory/profiles, compensation and simulated payroll; people operations, recruiting, performance and surveys within their field projections | PTO for known employees; recruiting jobs/candidates; goals/review cycles; surveys. Can edit profiles, complete employee onboarding, configure dated fictional hourly rates and prepare/calculate simulated payroll for an explicitly chosen period | Company time and PTO decisions; review/confirm employee onboarding and current simulated payroll. Cannot write another person's self-review, manager review or survey response | Jobs and surveys; cannot publish a performance review as owner | Complete HR backup |
+| `payroll-admin` | Company employee directory/profiles, compensation, time/PTO metadata, document index and simulated payroll. Benefit plans are visible; employee elections are not projected to this role | No new time/PTO/recruiting/talent records. Can complete employee onboarding, configure dated fictional hourly rates and prepare/calculate simulated payroll for an explicitly chosen period; cannot edit employee profile email | Review/confirm employee onboarding and current simulated payroll; cannot approve time or PTO | None | Complete HR backup |
 | `hr-admin` | Company employee directory/profiles, people operations, recruiting, performance and surveys within their field projections; no compensation or payroll amounts | PTO for known employees; recruiting jobs/candidates; goals/review cycles; surveys. Can edit profiles and complete employee onboarding | Company time and PTO decisions; review/confirm employee onboarding. Cannot impersonate a self-review author, assigned manager reviewer or survey respondent | Jobs and surveys; cannot publish a performance review as HR admin | Complete HR backup |
-| `manager` | Own/direct-report workforce, time, leave, assignments and performance; service requests from direct reports. No employee compensation | Own time/PTO; own/direct-report goals; direct-report review cycles. Cannot create an HR help-desk request in this role | Direct-report submitted time and pending PTO, excluding self; can review the assigned direct report's performance after self submission and confirm permitted asset returns | Performance reviews only when this actor is the recorded reviewer and still the employee's direct manager | Complete HR backup |
-| `employee` | Own profile, compensation/pay statements, time, leave and assignments; own performance projection and assigned published/closed surveys; own help-desk requests | Own time/PTO, goals, help-desk requests and answers to assigned open surveys. Can edit own profile, save own self-review, and progress own goals | No decisions on others. Can review/confirm own onboarding and benefit election, submit own time/self-review/survey, and acknowledge own permitted assignments/published review | None | Complete HR backup |
+| `manager` | Own/direct-report workforce, time, leave, assignments and performance; service requests from direct reports. No employee compensation | Own time/PTO; own/direct-report goals; direct-report review cycles. Can edit or explicitly delete own unpaid draft time. Cannot create an HR help-desk request in this role | Direct-report submitted time and pending PTO, excluding self; can return submitted unpaid direct-report time with a reason, review the assigned direct report's performance after self submission and confirm permitted asset returns | Performance reviews only when this actor is the recorded reviewer and still the employee's direct manager | Complete HR backup |
+| `employee` | Own profile, compensation/pay statements, time, leave and assignments; own performance projection and assigned published/closed surveys; own help-desk requests | Own time/PTO, goals, help-desk requests and answers to assigned open surveys. Can edit own profile, edit or explicitly delete own unpaid draft time, save own self-review, and progress own goals | No decisions on others. Can review/confirm own onboarding and benefit election, submit own time/self-review/survey, and acknowledge own permitted assignments/published review | None | Complete HR backup |
 | `contractor` | Bound contractor profile, payment placeholders, document index and assigned task placeholders; no employee directory or employee compensation | No domain record creation in the contractor UI; its onboarding checklist uses local preview toggles | None | None | Complete HR backup |
 | `auditor` | Company directory, contractor directory, document index, reports and people activity; simulated payroll receipt metadata/counts without amounts. Profile details, recruiting, performance and surveys have no auditor route in the current UI | None | None | None | Complete HR backup |
 
@@ -82,6 +82,25 @@ The HR scopes have several deliberate distinctions:
   those pages. A helper's broader vocabulary does not create an accessible UI
   journey. Contractor checklist toggles are workspace UI state; their route
   presentation is not a domain authorization check.
+- **Time correction:** a manager can return submitted, unpaid time only for a
+  current direct report other than themselves, with a saved reason. The bound
+  employee or manager can edit or explicitly delete only their own unpaid
+  drafts, then resubmit corrected time for approval. Submitted, approved and
+  receipted time cannot be edited or deleted through those draft actions.
+- **Fixture compensation and fictional rates:** the existing fixture
+  compensation amount remains read-only and declares no hourly cadence.
+  Owner/payroll previews separately append explicit fictional hourly rates for
+  known employees with strictly later effective dates. Payroll chooses the
+  applicable rate by each work date; a new hire has no implied sample rate.
+- **Chosen payroll period and freshness:** new preparations require an explicit
+  period of 1–366 calendar days and a configured rate for every otherwise
+  eligible employee/work date. The eligibility table explains inclusion and
+  exclusion. Changed approved hours, eligibility, rates or confirmed benefits
+  require intentional repreparation before calculation, review or submission;
+  changing the selected period also makes the UI preparation stale. Submitted
+  receipts retain frozen dates, hours, rates, deductions and totals. Own employee
+  statements show their receipt's saved period; older receipts without a period
+  retain the legacy sample period of 2026-10-01 to 2026-10-15.
 
 ## CMS matrix
 
@@ -105,6 +124,13 @@ content, collection/entry IDs, revision and publication receipt; it excludes
 unpublished drafts, author/reviewer metadata and feedback.
 [The demo UI](../src/cms/CmsDemo.tsx) exposes both editorial and published views;
 its selected role does not turn the whole workspace into that public projection.
+The create/edit forms use the same ordered field validation as the domain and
+show every affected field, moving focus to the first invalid control. Selecting
+another entry with unsaved author changes offers **Keep editing** or **Discard
+changes and switch** before changing the editor. A successful save establishes
+a clean baseline. Surrounding title/body whitespace and slug case/whitespace
+that normalize to the saved values do not create a dirty warning. Temporary
+form buffers survive preview identity changes and remain outside saved exports.
 
 ## CRM matrix
 
@@ -124,6 +150,12 @@ belong to the creating actor; contacts and opportunities inherit the company
 owner, and tasks inherit the opportunity owner. Owner and sales manager do not
 gain a separate approval or external-publication workflow. Winning a sample
 opportunity creates no invoice, contract, payment or outbound message.
+The [CRM persistence validator](../src/crm/persistence.ts) requires recognized
+string enums and consistent ownership/relationship edges before import can
+replace a saved workspace. Unsupported properties, including notes, are refused
+rather than added to the schema; oversized notes are therefore also refused.
+Individual and combined import paths revalidate complete graphs before applying
+replacement. These compatibility checks do not grant a preview role access.
 
 ## Export boundary
 
@@ -157,10 +189,39 @@ the separate SDK mock session are excluded. Per-module import and selective
 whole-portal restore use explicit replacement confirmation, without a role or
 tenant authorization boundary.
 
+The directory's [restore history](../src/portals/RestorePointHistory.tsx) is a
+separate local facility with no preview-role check. A named manual point captures
+the explicitly selected portals' current domain state into history only;
+it does not apply a restore, rewrite workspace save slots or clear temporary
+forms. Renaming changes only a point's label while preserving its capture, scope,
+identity and creation time. Captures share the existing bounded history and may
+prune the oldest points when needed.
+
+[Record inspection and difference previews](../src/portals/WorkspaceInspection.tsx)
+show collection counts and bounded identifiers, excluding displayed field values
+such as names, emails, content, comments, answers, amounts and reasons. Differences
+compare current state to the selected target and identify added, removed or
+changed records, including changes to hidden saved fields. Inspection writes no
+state and grants no new data authority. Confirming Undo rechecks the exact point
+shown in its preview against stored history, saves a pre-Undo point, then replaces
+only the captured portal scope. Changed or missing source points are refused.
+
 This behavior belongs to the shared, account-free demo browser. Browser storage
 and imported data are editable by its user. A production export implementation
 needs its own trusted actor/resource/field scope and authorization check; the
 demo backup mechanism is not an employee, contractor or auditor export policy.
+
+## Session return locations
+
+The [portal shell](../src/pages/TemplatePortalsPage.tsx) remembers each module's
+last supported pathname within the mounted session. Directory cards and shared
+workspace links return to that subsection; query/hash values are not remembered.
+The [route helpers](../src/portals/routes.ts) revalidate that each destination
+belongs to its exact module and exclude unsupported routes, inherited map values
+and unsafe HR parameters. This temporary navigation memory is separate from
+workspace records, backup exports and restore revisions. A directory visit keeps
+the remembered HR path while the HR workspace is hidden; selective restore clears
+only the restored modules' temporary UI.
 
 ## Firebase and provider boundary
 
@@ -205,6 +266,9 @@ npm run docs:links
 ```
 
 Relevant focused suites are [HR workflow scope](../tests/hr/mock-workflows.test.mjs),
+[chosen periods and fictional rates](../tests/hr/payroll-periods-rates.test.mjs),
+[time correction](../tests/hr/time-editing.test.mjs),
+[selected-period statements](../tests/hr/selected-payroll-insights.test.mjs),
 [people operations](../tests/hr/people-operations.test.mjs),
 [service desk](../tests/hr/service-desk.test.mjs),
 [recruiting](../tests/hr/recruiting.test.mjs),
@@ -212,8 +276,12 @@ Relevant focused suites are [HR workflow scope](../tests/hr/mock-workflows.test.
 [survey respondent scope](../tests/hr/surveys.test.mjs),
 [CMS roles](../tests/portals/cms.test.mjs),
 [CRM ownership](../tests/portals/crm.test.mjs),
+[CRM import refusal](../tests/portals/crm-import-validation.test.mjs),
 [module backups](../tests/portals/backup.test.mjs) and
-[combined backups](../tests/portals/combined-backup.test.mjs).
+[combined backups](../tests/portals/combined-backup.test.mjs),
+[named history points](../tests/portals/manual-restore-points.test.mjs),
+[record inspection](../tests/portals/workspace-inspection.test.mjs) and
+[session return locations](../tests/portals/return-location.test.mjs).
 Passing these checks supplies local source/workflow evidence. It does not
 establish production authorization, confidential-data protection or provider
 activation.

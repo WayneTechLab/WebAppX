@@ -35,7 +35,8 @@ function addApprovedTime(state, actor, hours) {
   return apply(state, manager, { type: 'approve-time', entryId })
 }
 function submitPayroll(state) {
-  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) state = apply(state, owner, { type })
+  for (const person of fixture.employees) if (!state.sampleRates?.[person.id]) state = apply(state, owner, { type: 'set-sample-rate', employeeId: person.id, effectiveFrom: '2026-10-01', hourlyRateCents: 3000 })
+  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) state = apply(state, owner, { type, ...(type === 'prepare-payroll' ? { period: { start: '2026-10-01', end: '2026-10-15' } } : {}) })
   return state
 }
 
@@ -69,7 +70,7 @@ test('submitted payroll becomes frozen employee self-service receipts with match
   assert.equal(statement.employeeId, avery.employeeId)
   assert.equal(statement.hours, 8)
   assert.deepEqual([statement.grossCents, statement.illustrativeWithholdingCents, statement.benefitDeductionCents, statement.netCents], [24000, 4800, 2500, 16700])
-  assert.deepEqual(statement.entries, [{ id: 'time-001', date: '2026-10-09', hours: 8 }])
+  assert.deepEqual(statement.entries, [{ id: 'time-001', date: '2026-10-09', hours: 8, rateCents: 3000 }])
   assert.deepEqual(statement.benefitPlanTitles, [fixture.benefits.find(plan => plan.id === 'benefit-001').name])
   assert.equal(insights.projectEmployeePayStatements(jordan, fixture, state).length, 0)
   const report = insights.projectHrInsights({ actor: owner, fixture, state })

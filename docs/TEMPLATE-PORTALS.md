@@ -2,12 +2,21 @@
 
 WebAppX should support three connected business workspaces: people operations
 (HR), publishing (CMS) and customer relationships (CRM). This document records
-the source inventory and proposed adoption architecture as of October 14, 2026.
-The account-free HR talent workflows, CMS editorial core and CRM relationship
-workspace are implemented in this update. The broader adoption architecture
-and shared backend described below remain proposed. Browser and repository
+the current native source inventory and proposed adoption architecture. Source
+review: **2026-10-15**, using changed working source atop starting base
+`950f9ba0c4e48faaa65056f504f105201838e3ec`; the base commit does not already
+contain this wave's changes. The account-free HR talent workflows, CMS editorial
+core and CRM relationship workspace are implemented. The broader adoption
+architecture and shared backend described below remain proposed. The
+[maturity guide](PORTAL-MATURITY.md) covers current session return, named capture,
+labels, record inspection and differences; the
+[maturity QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) records focused execution.
+The integrated **56-stage CI and Hosting preflight passed**, including 111
+browser checks/check groups. This documentation pass adds no execution evidence.
+
+Earlier receipts remain immutable historical checkpoints. Browser and repository
 checks from the earlier talent wave are recorded in the
-[talent and portals QA receipt](HR-TALENT-QA-2026-10-14.md). Current browser-local
+[talent and portals QA receipt](HR-TALENT-QA-2026-10-14.md). Earlier browser-local
 persistence checks are recorded in the
 [persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md). Portable file backup
 checks are recorded separately in the
@@ -64,14 +73,17 @@ The restore and Undo previews are page regions; Tab continues through the page.
    moves to **Choose workspaces to restore**. A rejected import returns focus to
    **Import combined backup** with its visible error.
 2. Tab to each **Restore HR/CMS/CRM** checkbox and use Space to select a scope.
-   None is chosen automatically. The budget preview and explicit confirmation
-   rules still apply; a disabled Restore button cannot be activated.
+   None is chosen automatically. Review selected-workspace differences and the
+   budget preview before confirmation; a disabled Restore button cannot be
+   activated.
 3. Tab to **Restore selected workspaces** or **Cancel combined restore**. Success
    or cancellation returns focus to **Import combined backup**. Workspace/history
    semantics are the same as the pointer-operated flow.
 4. Activate a point's **Undo…** button. Focus moves to its Undo heading. Inspect
-   captured scope, record summaries and budget, then Tab to **Confirm undo** or
-   **Cancel undo**. Closing the preview returns focus to the opening Undo button
+   captured scope, record summaries, selected differences and budget, then Tab to
+   **Confirm undo** or **Cancel undo**. Confirmation uses the exact current point
+   shown; a changed or missing stored point requires fresh review. Closing the
+   preview returns focus to the opening Undo button
    when it remains available. If retention removed it, focus lands on
    **Restore points & Undo** instead.
 5. **Clear restore points** similarly focuses its confirmation heading.
@@ -90,7 +102,7 @@ system file-picker key sequence or establish screen-reader, every-workflow or
 whole-site WCAG acceptance. Read the
 [keyboard QA receipt](KEYBOARD-PORTALS-QA-2026-10-15.md) for exact results and gates.
 
-**Accepted local keyboard results — 2026-10-15:** **WX-0653/WX-0654** passed
+**Historical accepted local keyboard checkpoint — 2026-10-15:** **WX-0653/WX-0654** passed
 nine browser checks (three onboarding and six recovery), with 110 onboarding
 and 266 restore/Undo focus observations. Eleven keyboard driver guard tests and
 16 existing seed/runner guards passed. Empty required email created no save;
@@ -112,10 +124,11 @@ for final CI, preflight and drift results.
 | Surface | Implemented source | Current boundary |
 | --- | --- | --- |
 | Public website | [App router](../src/router.tsx), public pages and shared layout | React/Vite routes; no CMS-backed publication pipeline |
-| Demo portal directory | [Template portal shell](../src/pages/TemplatePortalsPage.tsx) | Account-free navigation between separately scoped HR, CMS and CRM samples; keeps modules mounted while switching demo portals |
+| Demo portal directory | [Template portal shell](../src/pages/TemplatePortalsPage.tsx), [session route memory](../src/portals/routes.ts) | Account-free navigation between separately scoped HR, CMS and CRM samples; keeps modules mounted and returns to the last supported subsection in that mounted session |
 | Shared portal registry | [Typed metadata](../src/portals/registry.ts) | One source for HR/CMS/CRM module identities, labels, descriptions and demo routes across the directory, navigation, cross-links and module validation |
 | Combined mock backups | [Directory controls](../src/portals/CombinedWorkspaceBackup.tsx), [bundle codec](../src/portals/combined-backup.ts), [restore adapter](../src/portals/restore-workspaces.ts) | One validated local file, explicit selective whole-portal restore and rollback attempts; no cloud/account or atomic multi-key transaction |
-| Automatic restore points | [History controls](../src/portals/RestorePointHistory.tsx), [history model](../src/portals/restore-points.ts) | Origin-local selected-scope snapshots before combined restore/Undo; latest five within 2,000,000 characters, explicit recovery confirmation and clearing |
+| Named and automatic restore points | [History controls](../src/portals/RestorePointHistory.tsx), [capture/label controls](../src/portals/RestorePointControls.tsx), [history model](../src/portals/restore-points.ts) | Manual named selected-scope capture writes history only; automatic snapshots precede combined restore/Undo. Label-only rename preserves the capture. Latest five fit within 2,000,000 characters, with explicit retention preview, recovery confirmation and clearing |
+| Recovery inspection and differences | [Detail/difference panels](../src/portals/WorkspaceInspection.tsx), [pure comparison model](../src/portals/workspace-inspection.ts) | Complete collection counts, bounded identifiers and exact omissions; selected current-to-target added/removed/changed records before whole-workspace restore/Undo; no text-value exposure or preview writes |
 | Staff entry | [Admin dashboard](../src/pages/AdminDashboardPage.tsx) | Firebase sign-in and trusted Level 4/5 claim gate; readiness cards link to local tools |
 | HR workspaces | [HR portal](HR-PORTAL.md) and host-owned `src/hr/` | Working synthetic employee/manager/management workflows; versioned browser-local snapshot, separate protected live boundary |
 | CMS workspace | [CMS demo](../src/cms/CmsDemo.tsx), [CMS transitions](../src/cms/model.ts), [CMS tests](../tests/portals/cms.test.mjs) | Working account-free draft/review/publish/retire core with frozen in-app public projection; browser-local snapshot persistence, no network publishing or server storage |
@@ -160,8 +173,15 @@ return paths and HR portal/page context. Supported trailing-slash deep links
 keep their original query and hash. Unknown descendants display a portal-specific
 unavailable-page explanation with links back to that workspace or the directory;
 showing or leaving the recovery page preserves saved fictional records.
+Directory cards and shared portal navigation return to each portal's last
+supported subsection in the mounted session. Directory, outside and unsupported
+routes cannot replace that destination. Remembered links are revalidated and
+use supported pathnames; query/hash and trailing-slash aliases are not separate
+return destinations. This introduces no localStorage/sessionStorage preference.
+A fresh document starts at default destinations, while a valid deep link can
+still open its requested subsection.
 Following **How mock data is handled** uses in-app navigation, retaining mounted
-CMS/CRM forms while showing the handling details. HR's route content follows
+portal forms while showing the handling details. HR's route content follows
 the [temporary UI lifecycle](PORTAL-STATE-CONTRACT.md#temporary-ui-and-navigation).
 
 Run **`npm run browser:foundation`** for the authored registry-card, route,
@@ -170,7 +190,7 @@ unavailable-storage cases. The
 [execution foundation receipt](EXECUTION-FOUNDATION-QA-2026-10-15.md) records
 actual outcomes and separates normal UI actions from storage-fault injection.
 
-**Accepted foundation results — 2026-10-15:** all nine authored browser checks
+**Historical accepted foundation checkpoint — 2026-10-15:** all nine authored browser checks
 passed, including optional Firebase guidance, complete registry card content,
 trailing-slash/query/hash preservation, keyboard breadcrumbs, unsupported-route
 recovery, unsaved CMS/document preservation, save/refresh summaries and isolated
@@ -207,10 +227,11 @@ those accepted records can still be exported from the open page's memory.
 
 | Boundary | Native HR | CMS and CRM |
 | --- | --- | --- |
-| Switch portal or open directory | Shared records remain; leaving an HR subpage replaces its route content with the management dashboard and clears that subpage's unsaved inputs/timer | Hidden portal roots remain mounted; the currently mounted form can retain unsaved inputs, filters and preview identity |
+| Switch portal or open directory | Shared records and the last supported HR subsection remain mounted; returning uses that subsection and can retain its current unsaved inputs/timer | Hidden portal roots remain mounted; the currently mounted form can retain unsaved inputs, filters and preview identity |
 | Change the form's route, record, tab or preview identity | The affected subpage/keyed component can remount and clear local UI | Changing entry/identity or CRM tab can remount the affected form and clear its inputs |
 | Reload or leave the entire portal shell | Saved workspace records can return; temporary UI clears | Saved workspace records can return; temporary UI clears |
 | Combined restore or Undo | Selected portal roots remount; restored HR records include its saved role/employee selections | Selected roots remount with default local UI; unchecked CMS/CRM roots retain their mounted UI |
+| Named capture or point rename | Only restore-point history changes; current records, workspace save and mounted temporary UI remain | Same history-only boundary; no workspace-save writes or portal remount |
 | Portal Reset | Recreates this portal's seed and removes its workspace save; retained restore points remain | Same saved-record/history boundary; CMS resets preview identity, while CRM retains its current preview identity and returns to Dashboard |
 
 The [capability vocabulary](PORTAL-CAPABILITIES.md) documents synthetic
@@ -336,8 +357,10 @@ file contents. Import cannot grant Firebase permissions, execute payroll, publis
 a website or create an account.
 
 Read the [per-portal backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md) for that
-feature’s earlier checks. The combined receipt below records the current scope;
-earlier refresh-only and talent receipts retain their historical scope.
+feature's earlier checks. The combined receipt below records its historical
+checkpoint; the [maturity guide](PORTAL-MATURITY.md) and
+[current wave QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) cover the newer
+inspection, difference and named-history controls.
 
 ### Combined backup and selective restore
 
@@ -356,7 +379,8 @@ The existing individual portal controls and file format remain available.
    record summaries. Even a broken module you intend to leave unselected rejects
    the file before selection.
 4. HR, CMS and CRM selection boxes start unchecked. Select at least one complete
-   portal and review the [storage-budget preview](#restore-storage-budget-preview).
+   portal and review its current-to-target **added/removed/changed** records and
+   the [storage-budget preview](#restore-storage-budget-preview).
    A valid budget enables **Restore selected workspaces**; **Cancel combined
    restore** leaves records and history unchanged.
 5. Confirming replaces the selected portals’ full domain states and saves them
@@ -365,8 +389,8 @@ The existing individual portal controls and file format remain available.
 
 Selected modules remount after a successful restore, clearing their unsaved
 forms, active timers and transient interface messages. Unselected CMS/CRM roots
-retain mounted interface state. Leaving HR for the directory can already have
-cleared its route-local forms or timer; unselected HR records remain intact.
+retain mounted interface state. Unselected HR keeps its supported subsection
+mounted while the directory is open, including that subsection's temporary UI.
 The independent SDK preview is outside the bundle. See the
 [state lifecycle](PORTAL-STATE-CONTRACT.md#temporary-ui-and-navigation) for details.
 
@@ -459,6 +483,39 @@ Firebase configuration warning remained. See the receipt for the exact sequence.
 
 ### Automatic restore points and Undo
 
+#### Manual named capture and label changes
+
+On `/portals`, **Restore points & Undo** also offers **Create named restore
+point**. Enter a **Restore point name**, explicitly select **Capture HR/CMS/CRM**
+and read the named-point storage preview. It shows the projected serialized
+history size, retained count and any oldest points that the new capture would
+remove. Choose **Create named restore point** only after reviewing those effects.
+The action saves a `manual` point for the selected portals' current accepted
+in-memory records. It writes **only** `webappx.demo.restore-points`: no import,
+workspace replacement, workspace-save write, unrelated browser write or portal
+remount occurs. Unsaved forms and running timers are outside the capture and
+remain open. A successful capture clears the capture form's name/selection.
+
+Labels are trimmed single-line text of **1–100 characters**. Empty labels,
+control characters and line separators are rejected. Every manual point needs
+a label; older unlabeled schema-1 automatic points remain readable without
+migration writes. For any existing point, edit **Point label** and choose
+**Save point label**. This changes only its label in history, retaining its ID,
+UTC creation time, kind, captured scope, complete payload and Undo source
+identity. Rename cannot remove another point to make its label fit the budget.
+
+Capture and rename reread and strictly validate the complete history before
+writing. A manual preview is pure and reserves no quota; actual capture checks
+retention and size again. Both history actions guard against a stale history
+read and confirm the saved bytes by readback. A failed write/readback attempts
+to restore the exact previous history bytes. If rollback cannot be confirmed,
+the result says history may differ; the action has not changed current workspace
+records or workspace saves. Keep the page open, export current workspaces and
+review history after storage becomes available. Invalid labels, incompatible
+history and over-budget rename/capture refuse with a reason.
+
+#### Automatic capture and recovery confirmation
+
 Each confirmed combined selective restore first saves a restore point containing
 only the selected portals’ current domain states. The point must be written to
 browser storage before any workspace is overwritten. A failed or oversized
@@ -472,33 +529,58 @@ export current in-memory workspaces before refreshing.
 On `/portals`, **Restore points & Undo** reads `webappx.demo.restore-points`.
 The history survives refresh on the same browser profile and origin; points are
 listed newest first. **Refresh restore points** reloads the current history from
-this browser address. Each point identifies its creation time and affected portals.
+this browser address. Each point identifies its label when present, capture kind,
+UTC creation time and affected portals. Labels do not change the capture.
 Undo restores the complete snapshots in that point; its scope cannot expand to
 portals that were not captured.
 
+**Inspect captured records** opens the complete collection breakdown for that
+point. All captured collections have full counts; each identifier row displays
+at most **eight IDs** and an exact omitted count. Primary records, nested
+records and metadata are distinguished so contained records are not added again
+to primary totals. Names, email values, titles, content, comments, answers,
+amounts and reasons are hidden from this view. The underlying stored JSON is
+still readable fictional data.
+
+Combined restore and Undo show **current-to-target** differences for selected
+portals only: **added** IDs occur only in the target, **removed** IDs occur only
+in current records, and **changed** IDs have different fields. Hidden-field
+changes affect the counts without revealing those values. Reordering an
+identified collection alone is unchanged. Nested changes can also change their
+parent record, so nested/metadata sections remain separate from primary entity
+totals. Detail/difference views use bounded identifiers and exact omissions and
+write no workspace saves, history or activity. These are review aids; the
+confirmed operation still replaces complete selected workspaces.
+
 1. Choose **Undo…** for the point you want to recover. Review its time, affected
-   portals, the **Current**/**Recover** record summaries and the
+   portals, the **Current**/**Recover** record summaries, **Undo workspace
+   differences** and the
    [storage-budget preview](#restore-storage-budget-preview) before choosing
    **Confirm undo**, or **Cancel undo** to keep the current records.
 2. Confirm only after reviewing the replacement scope. Undo replaces those whole
    portals, including any domain changes saved after the point was created.
-   Cancel leaves every workspace and the history intact.
+   Cancel leaves every workspace and the history intact. Confirmation is bound
+   to the exact point currently rendered: ID, capture time, kind, label, scope,
+   payload and Undo source identity. Fresh stored history is checked before any
+   workspace-save read/write. A changed or missing point refuses; refresh the
+   list and review the current capture before trying again.
 3. The app saves a new point of the affected portals’ current states before
    applying Undo. Use that newer point to reverse the Undo if needed. It must
    pass the same validation, retention and storage checks as a normal restore.
 4. Inspect the save result and refresh. The recovered records persist; selected
    modules remount and clear their unsaved forms, timers and transient messages.
    Other portals’ records and browser saves stay unchanged. Unchecked CMS/CRM
-   roots retain mounted interface state; leaving an HR subpage for the directory
-   can already have cleared its route-local UI.
+   roots retain mounted interface state; an unchecked HR root also keeps its
+   supported subsection mounted during directory navigation.
 
 This history retains at most **five points**, subject to a total **2,000,000
-serialized-character limit**, including its envelope. Oldest points are pruned
-when needed. If the newest point alone exceeds the limit, the operation is
+serialized-character limit**, including labels and its envelope. Oldest points
+are pruned when a new manual or automatic capture needs room. A rename never
+prunes history. If the newest point alone exceeds the limit, the operation is
 refused; existing history is preserved. Browser quota may impose a lower limit.
 Validation checks history format/version and the complete saved domain records.
-Malformed or unsupported history blocks combined restores and Undo. Export the
-current workspaces if you want a portable copy, then choose **Clear restore
+Malformed or unsupported history blocks named capture, rename, combined restore
+and Undo. Export the current workspaces if you want a portable copy, then choose **Clear restore
 points** and **Confirm clear restore points** to discard the rejected history
 and try again. **Keep restore points** cancels the clearing action. Clearing
 points leaves all three current workspaces and their browser saves intact.
@@ -517,8 +599,11 @@ preview role. They require no account, upload, Firebase or Gusto credentials.
 They are local recovery aids with bounded retention, not a cloud backup service.
 Avoid simultaneous edits/restores in other tabs: there is no live history merge
 or cross-tab locking. The [restore-point QA receipt](RESTORE-POINTS-QA-2026-10-14.md)
-records this update’s browser observations and automated gates separately from
-the earlier combined-backup checkpoint.
+retains its historical automatic-point checkpoint. Use the
+[maturity guide](PORTAL-MATURITY.md#named-history-inspection-and-differences) for
+the current named-capture/inspection journey and the
+[maturity QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) for this wave's focused
+results and passed integrated gates.
 
 ### Earlier persistence browser checkpoint — 2026-10-14
 
@@ -530,7 +615,7 @@ restored an editable revision 3 while retaining published revision 2 and
 with $6,500 open pipeline, three companies, three contacts and six actions.
 Native HR also restored after SDK preview and About/back. All three Reset then
 refresh checks restored only the chosen module and preserved the other modules’
-saved markers. The [current receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) retains
+saved markers. The [historical receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) retains
 exact figures and separates these UI observations from automated gates and
 production/provider acceptance.
 

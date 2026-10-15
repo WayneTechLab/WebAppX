@@ -10,9 +10,9 @@ The separate [review index](BACKLOG-EVIDENCE.md) attaches scoped historical
 receipts with examined and observation revisions. It does not accept work
 or convert an earlier browser result into a current execution.
 
-Current verified progress: **61 done / 939 remaining**.
-Remaining priorities: **112 P1 · 670 P2 · 157 P3**.
-Remaining acceptance gates: **772 local · 40 provider · 127 operator**.
+Current verified progress: **77 done / 923 remaining**.
+Remaining priorities: **96 P1 · 670 P2 · 157 P3**.
+Remaining acceptance gates: **756 local · 40 provider · 127 operator**.
 
 ## Execution and acceptance
 
@@ -51,15 +51,15 @@ coverage ships with each slice rather than waiting for the quality area.
 | Workstream | Stable IDs | Done | Remaining |
 | --- | --- | ---: | ---: |
 | Project setup and developer experience | WX-0001–WX-0050 | 11 | 39 |
-| Shared portal architecture | WX-0051–WX-0100 | 8 | 42 |
+| Shared portal architecture | WX-0051–WX-0100 | 9 | 41 |
 | HR onboarding and directory | WX-0101–WX-0150 | 0 | 50 |
-| HR payroll, benefits and time | WX-0151–WX-0200 | 0 | 50 |
+| HR payroll, benefits and time | WX-0151–WX-0200 | 8 | 42 |
 | HR talent and employee operations | WX-0201–WX-0250 | 0 | 50 |
-| CMS models and authoring | WX-0251–WX-0300 | 0 | 50 |
+| CMS models and authoring | WX-0251–WX-0300 | 2 | 48 |
 | CMS review and publication | WX-0301–WX-0350 | 0 | 50 |
-| CRM leads and contacts | WX-0351–WX-0400 | 0 | 50 |
+| CRM leads and contacts | WX-0351–WX-0400 | 1 | 49 |
 | CRM sales and service | WX-0401–WX-0450 | 0 | 50 |
-| Mock persistence, backup and recovery | WX-0451–WX-0500 | 2 | 48 |
+| Mock persistence, backup and recovery | WX-0451–WX-0500 | 6 | 44 |
 | Identity, membership and permissions | WX-0501–WX-0550 | 2 | 48 |
 | Firebase data, functions and rules | WX-0551–WX-0600 | 0 | 50 |
 | Security and privacy | WX-0601–WX-0650 | 2 | 48 |
@@ -76,11 +76,11 @@ Domain waves (the dependency graph overrides this order):
 | Wave | Areas | Done | Remaining |
 | --- | --- | ---: | ---: |
 | Foundation | setup, systemx | 20 | 80 |
-| Shared core | portal-shell, identity, security | 12 | 138 |
-| Recovery | mock-recovery | 2 | 48 |
-| Human resources | hr-onboarding, hr-payroll, hr-talent | 0 | 150 |
-| Content | cms-authoring, cms-publishing | 0 | 100 |
-| Customer relationships | crm-contacts, crm-sales | 0 | 100 |
+| Shared core | portal-shell, identity, security | 13 | 137 |
+| Recovery | mock-recovery | 6 | 44 |
+| Human resources | hr-onboarding, hr-payroll, hr-talent | 8 | 142 |
+| Content | cms-authoring, cms-publishing | 2 | 98 |
+| Customer relationships | crm-contacts, crm-sales | 1 | 99 |
 | Quality and design | quality, design | 8 | 92 |
 | Operations and delivery | operations, delivery | 8 | 92 |
 | Adoption | adoption | 11 | 39 |
@@ -115,7 +115,6 @@ or grant access, and current write ownership must be checked before selection.
 | ID | Priority / phase | Acceptance |
 | --- | --- | --- |
 | WX-0860 | P1 / foundation | A temporary adopted app with populated fictional records demonstrates that reviewed upstream imports preserve project-specific ledgers and configuration. |
-| WX-0056 | P1 / portal-maturity | Opening the directory from a portal and returning restores the last supported portal subsection in that session. |
 | WX-0059 | P1 / portal-maturity | Leaving a portal with an unsaved form offers keep editing or discard choices without intercepting a completed saved action. |
 | WX-0101 | P1 / portal-maturity | A fictional rehire creates a new employment instance while prior onboarding receipts remain attached to the original instance. |
 | WX-0102 | P1 / portal-maturity | A transfer preview shows previous and proposed department, manager and effective date before confirmation. |
@@ -127,13 +126,14 @@ or grant access, and current write ownership must be checked before selection.
 | WX-0108 | P1 / portal-maturity | A saved directory edit displays old value, new value, actor preview and change sequence. |
 | WX-0109 | P1 / portal-maturity | An employee can propose a directory correction and HR can accept or reject it with a recorded outcome. |
 | WX-0110 | P1 / portal-maturity | New hires receive the selected checklist version while existing completed onboarding retains its original version. |
-| WX-0151 | P1 / portal-maturity | Preparing a run requires a valid chosen sample period and accepts only approved unpaid time inside it. |
-| WX-0152 | P1 / portal-maturity | A run freezes each fictional employee’s configured sample rate and displays that rate beside consumed hours. |
-| WX-0153 | P1 / portal-maturity | A future-dated sample rate change leaves an already submitted payroll receipt unchanged. |
-| WX-0154 | P1 / portal-maturity | Changing approved input after preparation marks the prepared run stale and requires intentional re-preparation. |
-| WX-0155 | P1 / portal-maturity | A review table states why each time entry is included or excluded from the selected sample run. |
-| WX-0156 | P1 / portal-maturity | A manager can return submitted fictional time to its owner with a visible reason and no payroll eligibility. |
-| WX-0157 | P1 / portal-maturity | An owner can edit an unpaid draft entry and the change does not mutate approved or consumed entries. |
+| WX-0159 | P1 / portal-maturity | Closing a submitted sample period prevents new entries from silently changing its frozen payroll totals. |
+| WX-0160 | P1 / portal-maturity | A correction references the original receipt and records a separate adjustment without rewriting submitted history. |
+| WX-0201 | P1 / portal-maturity | A fictional job references an approved sample requisition with department, owner and headcount. |
+| WX-0202 | P1 / portal-maturity | A draft requisition moves through explicit sample review before its associated job can publish. |
+| WX-0203 | P1 / portal-maturity | A new fictional candidate matching an existing email shows a conflict preview without creating a duplicate application. |
+| WX-0204 | P1 / portal-maturity | One candidate can apply to two jobs while each application retains its own stages and outcome. |
+| WX-0205 | P1 / portal-maturity | A sample interview records participants, named time zone and duration without sending calendar invitations. |
+| WX-0206 | P1 / portal-maturity | An interviewer saves a private fictional scorecard and explicitly submits it to the hiring review. |
 
 ## Resume commands
 

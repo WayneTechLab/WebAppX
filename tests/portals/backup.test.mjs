@@ -39,7 +39,8 @@ function hrSnapshot() {
   const effective = recruiting.recruitingFixture(fixture, state.recruiting)
   for (const type of ['elect-benefit', 'review-benefit', 'confirm-benefit']) state.workflow = workflow.transitionMockHr(state.workflow, avery, { type, planId: 'benefit-001', election: 'enroll' }, effective)
   state.workflow = workflow.transitionMockHr(state.workflow, manager, { type: 'approve-time', entryId: 'time-001' }, effective)
-  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) state.workflow = workflow.transitionMockHr(state.workflow, owner, { type }, effective)
+  state.workflow = workflow.transitionMockHr(state.workflow, owner, { type: 'set-sample-rate', employeeId: 'employee-002', effectiveFrom: '2026-10-01', hourlyRateCents: 3000 }, effective)
+  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) state.workflow = workflow.transitionMockHr(state.workflow, owner, { type, ...(type === 'prepare-payroll' ? { period: { start: '2026-10-01', end: '2026-10-15' } } : {}) }, effective)
   state.performance = performance.transitionPerformance(state.performance, avery, { type: 'update-goal-progress', goalId: state.performance.goals[0].id, progress: 40 }, effective)
   const surveyId = state.surveys.surveys[0].id
   state.surveys = surveys.transitionSurveys(state.surveys, owner, { type: 'publish-survey', surveyId }, effective)

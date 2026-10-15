@@ -226,38 +226,49 @@ test('benefit elections require the own available plan and review before confirm
   assert.throws(() => change(state, selfActor, { type: 'elect-benefit', planId: plan.id, election: 'waive' }), /locked/)
 })
 
+const configuredPayrollState = (data = fixture) => {
+  let state = workflow.createMockHrState(data)
+  for (const person of data.employees) state = workflow.transitionMockHr(state, ownerActor, { type: 'set-sample-rate', employeeId: person.id, effectiveFrom: '2026-10-01', hourlyRateCents: 3000 }, data)
+  return state
+}
+
 test('payroll freezes approved time and elections, calculates separate fictional deductions and blocks receipt replay', () => {
-  let state = workflow.createMockHrState(fixture)
+  let state = configuredPayrollState(fixture)
   const time = state.timeEntries.find(entry => entry.employeeId === selfActor.employeeId && entry.status === 'submitted')
   const plans = fixture.benefits.filter(plan => plan.employeeIds.includes(selfActor.employeeId))
-  assert.throws(() => change(state, ownerActor, { type: 'prepare-payroll' }), /Approve at least one/)
-  for (const role of ['manager', 'employee', 'hr-admin', 'auditor', 'contractor']) assert.throws(() => change(state, { role, employeeId: selfActor.employeeId }, { type: 'prepare-payroll' }), /Only the employer/)
+  assert.throws(() => change(state, ownerActor, { type: 'prepare-payroll', period: { start: '2026-10-01', end: '2026-10-15' } }), /Approve at least one/)
+  for (const role of ['manager', 'employee', 'hr-admin', 'auditor', 'contractor']) assert.throws(() => change(state, { role, employeeId: selfActor.employeeId }, { type: 'prepare-payroll', period: { start: '2026-10-01', end: '2026-10-15' } }), /Only the employer/)
   assert.throws(() => change(state, ownerActor, { type: 'submit-payroll' }), /Review fictional/)
   state = change(state, managerActor, { type: 'approve-time', entryId: time.id })
   for (const type of ['elect-benefit', 'review-benefit', 'confirm-benefit']) state = change(state, selfActor, { type, planId: plans[0].id, election: 'enroll' })
-  state = change(state, ownerActor, { type: 'prepare-payroll' })
+  state = change(state, ownerActor, { type: 'prepare-payroll', period: { start: '2026-10-01', end: '2026-10-15' } })
   assert.equal(state.payroll.inputs.length, 1)
   assert.equal(state.payroll.inputs[0].hours, time.hours)
   assert.equal(state.payroll.benefitInputs.length, 1)
-  if (plans[1]) for (const type of ['elect-benefit', 'review-benefit', 'confirm-benefit']) state = change(state, selfActor, { type, planId: plans[1].id, election: 'enroll' })
-  assert.equal(state.payroll.benefitInputs.length, 1)
+  if (plans[1]) {
+    for (const type of ['elect-benefit', 'review-benefit', 'confirm-benefit']) state = change(state, selfActor, { type, planId: plans[1].id, election: 'enroll' })
+    assert.equal(workflow.payrollFreshness(state, fixture).stale, true)
+    assert.throws(() => change(state, ownerActor, { type: 'calculate-payroll' }), /stale/)
+    state = change(state, ownerActor, { type: 'prepare-payroll', period: { start: '2026-10-01', end: '2026-10-15' } })
+  }
+  assert.equal(state.payroll.benefitInputs.length, plans.length)
   state = change(state, ownerActor, { type: 'calculate-payroll' })
   assert.equal(state.payroll.grossCents, time.hours * 3000)
   assert.equal(state.payroll.illustrativeWithholdingCents, Math.round(time.hours * 3000 * 0.2))
-  assert.equal(state.payroll.benefitDeductionCents, 2500)
-  assert.equal(state.payroll.netCents, state.payroll.grossCents - state.payroll.illustrativeWithholdingCents - 2500)
+  assert.equal(state.payroll.benefitDeductionCents, plans.length * 2500)
+  assert.equal(state.payroll.netCents, state.payroll.grossCents - state.payroll.illustrativeWithholdingCents - plans.length * 2500)
   state = change(state, ownerActor, { type: 'review-payroll' })
   state = change(state, ownerActor, { type: 'submit-payroll' })
   assert.match(state.payroll.receipt, /^MOCK-PAYROLL-/)
   assert.equal(state.payrollHistory.length, 1)
   assert.equal(state.timeEntries.find(entry => entry.id === time.id).payrollReceipt, state.payroll.receipt)
   assert.throws(() => change(state, ownerActor, { type: 'submit-payroll' }), /Review fictional/)
-  assert.throws(() => change(state, ownerActor, { type: 'prepare-payroll' }), /Approve at least one/)
+  assert.throws(() => change(state, ownerActor, { type: 'prepare-payroll', period: { start: '2026-10-01', end: '2026-10-15' } }), /Approve at least one/)
   assert.equal(fixture.timeEntries.find(entry => entry.id === time.id).status, 'submitted')
 })
 
 test('payroll excludes inactive/onboarding employees and approved dates outside the fixed sample period', () => {
-  let state = workflow.createMockHrState(fixture)
+  let state = configuredPayrollState(fixture)
   const onboardingEmployee = fixture.employees.find(employee => employee.employmentStatus === 'onboarding')
   const onBoardActor = { role: 'employee', employeeId: onboardingEmployee.id }
   state = change(state, onBoardActor, { type: 'add-time', date: '2026-10-15', hours: 8, source: 'manual' })
@@ -268,13 +279,13 @@ test('payroll excludes inactive/onboarding employees and approved dates outside 
   const outside = state.timeEntries.at(-1)
   state = change(state, selfActor, { type: 'submit-time', entryIds: [outside.id] })
   state = change(state, managerActor, { type: 'approve-time', entryId: outside.id })
-  assert.throws(() => change(state, ownerActor, { type: 'prepare-payroll' }), /active sample employee/)
+  assert.throws(() => change(state, ownerActor, { type: 'prepare-payroll', period: { start: '2026-10-01', end: '2026-10-15' } }), /active sample employee/)
   state = change(state, onBoardActor, { type: 'review-profile', employeeId: onboardingEmployee.id })
   state = change(state, onBoardActor, { type: 'review-job', employeeId: onboardingEmployee.id })
   for (const task of onboardingEmployee.onboarding) state = change(state, onBoardActor, { type: 'check-task', employeeId: onboardingEmployee.id, taskId: task.id, complete: true })
   state = change(state, onBoardActor, { type: 'review-onboarding', employeeId: onboardingEmployee.id })
   state = change(state, onBoardActor, { type: 'complete-onboarding', employeeId: onboardingEmployee.id })
-  state = change(state, ownerActor, { type: 'prepare-payroll' })
+  state = change(state, ownerActor, { type: 'prepare-payroll', period: { start: '2026-10-01', end: '2026-10-15' } })
   assert.deepEqual(state.payroll.inputs.map(input => input.entryId), [unready.id])
   assert.equal(state.payroll.inputs.some(input => input.entryId === outside.id), false)
 })
@@ -283,7 +294,7 @@ test('payroll excludes inactive/onboarding employees and approved dates outside 
 test('payroll caps each employee benefit to their own pay and freezes reconciled statement totals', () => {
   const sample = structuredClone(fixture)
   sample.timeEntries.find(entry => entry.employeeId === selfActor.employeeId).hours = 0.01
-  let state = workflow.createMockHrState(sample)
+  let state = configuredPayrollState(sample)
   const apply = (actor, event) => { state = workflow.transitionMockHr(state, actor, event, sample) }
   apply(managerActor, { type: 'add-time', date: '2026-10-15', hours: 8, source: 'manual' })
   const own = state.timeEntries.at(-1)
@@ -292,7 +303,7 @@ test('payroll caps each employee benefit to their own pay and freezes reconciled
   apply(managerActor, { type: 'approve-time', entryId: state.timeEntries.find(entry => entry.employeeId === selfActor.employeeId).id })
   const plan = sample.benefits.find(value => value.employeeIds.includes(selfActor.employeeId))
   for (const type of ['elect-benefit', 'review-benefit', 'confirm-benefit']) apply(selfActor, { type, planId: plan.id, election: 'enroll' })
-  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) apply(ownerActor, { type })
+  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) apply(ownerActor, { type, ...(type === 'prepare-payroll' ? { period: { start: '2026-10-01', end: '2026-10-15' } } : {}) })
   const lowPay = state.payroll.employeeTotals.find(total => total.employeeId === selfActor.employeeId)
   const other = state.payroll.employeeTotals.find(total => total.employeeId === managerActor.employeeId)
   assert.equal(lowPay.grossCents, 30)

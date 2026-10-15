@@ -9,6 +9,7 @@ function record(value: unknown, required: string[], optional: string[] = []): va
 function text(value: unknown, maximum = 120): value is string { return typeof value === 'string' && value.length >= 2 && value.length <= maximum && value.trim() === value && ![...value].some(character => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127) }
 function integer(value: unknown, minimum = 1): value is number { return typeof value === 'number' && Number.isSafeInteger(value) && value >= minimum }
 function email(value: unknown) { return text(value, 160) && value === value.toLowerCase() && /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\.invalid$/.test(value) }
+function choice(value: unknown, allowed: readonly string[]): value is string { return typeof value === 'string' && allowed.includes(value) }
 
 /** Validate the complete CRM graph before restoring any labels or linked records. */
 export function isCrmState(value: unknown): value is CrmState {
@@ -28,14 +29,14 @@ export function isCrmState(value: unknown): value is CrmState {
   for (const key of ['companies', 'contacts', 'leads', 'opportunities', 'tasks'] as const) {
     const table = new Map<string, RecordValue>()
     for (const item of arrays[key]) {
-      if (!record(item, shapes[key], optional[key]) || !text(item.id, 100) || table.has(item.id) || !owners.includes(String(item.ownerId))) return false
+      if (!record(item, shapes[key], optional[key]) || !text(item.id, 100) || table.has(item.id) || !choice(item.ownerId, owners)) return false
       const kind = key === 'companies' ? 'company' : key === 'opportunities' ? 'opportunity' : key.slice(0, -1)
       if (!seedIds[key].includes(item.id) && (!new RegExp(`^${kind}-\\d{4,}$`).test(item.id) || Number(item.id.slice(kind.length + 1)) < 1 || Number(item.id.slice(kind.length + 1)) >= value.sequence)) return false
       if (key === 'companies' && !text(item.name)) return false
       if (key === 'contacts' && (!text(item.name) || !email(item.email) || !text(item.companyId))) return false
-      if (key === 'leads' && (!text(item.name) || !email(item.email) || !text(item.companyName) || !['new', 'qualified', 'converted'].includes(String(item.status)))) return false
-      if (key === 'opportunities' && (!text(item.title, 141) || !integer(item.amountCents) || item.amountCents > 100000000 || !text(item.companyId) || !text(item.contactId) || !['discovery', 'proposal', 'negotiation', 'won', 'lost'].includes(String(item.stage)))) return false
-      if (key === 'tasks' && (!text(item.title) || !text(item.opportunityId) || !['open', 'done'].includes(String(item.status)))) return false
+      if (key === 'leads' && (!text(item.name) || !email(item.email) || !text(item.companyName) || !choice(item.status, ['new', 'qualified', 'converted']))) return false
+      if (key === 'opportunities' && (!text(item.title, 141) || !integer(item.amountCents) || item.amountCents > 100000000 || !text(item.companyId) || !text(item.contactId) || !choice(item.stage, ['discovery', 'proposal', 'negotiation', 'won', 'lost']))) return false
+      if (key === 'tasks' && (!text(item.title) || !text(item.opportunityId) || !choice(item.status, ['open', 'done']))) return false
       table.set(item.id, item)
     }
     if (seedIds[key].some(id => !table.has(id))) return false
@@ -73,7 +74,7 @@ export function isCrmState(value: unknown): value is CrmState {
   }
   for (const task of tables.tasks.values()) if (tables.opportunities.get(String(task.opportunityId))?.ownerId !== task.ownerId) return false
   for (const [index, activity] of arrays.activity.entries()) {
-    if (!record(activity, ['receipt', 'ownerId', 'action', 'description']) || activity.receipt !== `MOCK-CRM-${String(value.sequence - index - 1).padStart(4, '0')}` || !owners.includes(String(activity.ownerId)) || !actions.includes(String(activity.action)) || !text(activity.description, 500)) return false
+    if (!record(activity, ['receipt', 'ownerId', 'action', 'description']) || activity.receipt !== `MOCK-CRM-${String(value.sequence - index - 1).padStart(4, '0')}` || !choice(activity.ownerId, owners) || !choice(activity.action, actions) || !text(activity.description, 500)) return false
   }
   return true
 }

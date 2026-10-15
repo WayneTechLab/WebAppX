@@ -14,6 +14,20 @@ the named environment. Activation and deployment remain specific operator
 acceptance steps. Reusable SYSTEMX adoption seeds stay blank; the host execution
 plan records this public template's work.
 
+## Current accepted checkpoint — portal maturity
+
+The catalog records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**,
+with **756 local, 127 operator and 40 provider** gates remaining. The
+[maturity guide](PORTAL-MATURITY.md) and [QA receipt](PORTAL-MATURITY-QA-2026-10-15.md)
+cover chosen payroll periods/rates, time corrections, CMS validation/dirty buffers,
+strict CRM imports, named history, record differences and session return navigation.
+The [implementation plan](PORTAL-MATURITY-IMPLEMENTATION-PLAN.md) records the
+original assignment and acceptance handoff. All earlier totals below describe
+their historical checkpoints; query the canonical catalog for current status.
+
+The [next safety and recovery plan](PORTAL-SAFETY-IMPLEMENTATION-PLAN.md) assigns
+twelve remaining local P1 criteria without changing their acceptance status.
+
 ## Open the list
 
 | Format | Use |
@@ -76,7 +90,7 @@ scope. The next wave completes **WX-0001**, the developer prerequisite report,
 **WX-0652**, the automated HR/CMS/CRM browser smoke, and its named seed-pack
 dependency **WX-0651**. See the
 [developer/browser receipt](DEVELOPER-BROWSER-QA-2026-10-14.md) for exact local
-coverage. The catalog still has **1,000 records: 24 done and 976 TODOs**, including
+coverage. At that historical foundation checkpoint the catalog had **1,000 records: 24 done and 976 TODOs**, including
 **146 P1, 673 P2 and 157 P3 TODOs**. Use `--status done` to inspect accepted
 results and `--status todo` to choose the next bounded batch.
 

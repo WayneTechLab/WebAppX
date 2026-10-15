@@ -63,6 +63,19 @@ export async function runPortalFoundation({ browser, origin, artifactDir }) {
     await expect(page.getByRole('heading', { name: 'Choose a portal.', exact: true })).toBeVisible()
     checks.push('Deep employee onboarding breadcrumbs are reachable with visible keyboard focus and Enter returns to the directory')
 
+    const beforeReturnNavigation = domainSaves(await context.storageState())
+    const returnDocument = await page.evaluate(() => performance.timeOrigin)
+    await expect(navigation(page).getByRole('link', { name: 'People & HR', exact: true })).toHaveAttribute('href', '/hr/demo/employee/onboarding')
+    await expect(page.getByRole('link', { name: 'Open People & HR', exact: true })).toHaveAttribute('href', '/hr/demo/employee/onboarding')
+    await navigation(page).getByRole('link', { name: 'Content management', exact: true }).click()
+    await expect(navigation(page).getByRole('link', { name: 'People & HR', exact: true })).toHaveAttribute('href', '/hr/demo/employee/onboarding')
+    await navigation(page).getByRole('link', { name: 'People & HR', exact: true }).click()
+    assert.equal(new URL(page.url()).pathname, '/hr/demo/employee/onboarding')
+    await expect(page.getByRole('navigation', { name: 'Employee HR pages', exact: true }).getByRole('link', { name: 'My onboarding', exact: true })).toHaveAttribute('aria-current', 'page')
+    assert.equal(await page.evaluate(() => performance.timeOrigin), returnDocument, 'Shared portal links must retain the current mounted document')
+    assert.deepEqual(domainSaves(await context.storageState()), beforeReturnNavigation, 'Remembered return pathnames are temporary shell state and must not create or change workspace/history saves')
+    checks.push('Directory card and shared navigation return to the last supported HR subsection within the same document without writing browser saves')
+
     const beforeUnsupported = domainSaves(await context.storageState())
     for (const portal of portalRegistry) {
       await page.goto(`${origin}${portal.pathRoot}/not-a-supported-page`)

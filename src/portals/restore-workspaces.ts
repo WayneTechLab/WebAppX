@@ -92,7 +92,7 @@ export function restoreDemoWorkspaces(states: DemoWorkspaces, selected: readonly
  * is synchronous; on failure we attempt to recover every attempted slot,
  * including a storage implementation that changed a key before throwing.
  */
-function checkpointRestore(current: DemoWorkspaces, targetStates: DemoWorkspaces | undefined, selected: readonly DemoModule[] | undefined, storage: DemoStorage | null | undefined, options: RestorePointOptions, sourcePointId?: string): CheckpointRestoreResult {
+function checkpointRestore(current: DemoWorkspaces, targetStates: DemoWorkspaces | undefined, selected: readonly DemoModule[] | undefined, storage: DemoStorage | null | undefined, options: RestorePointOptions, sourcePointId?: string, expectedSource?: RestorePoint): CheckpointRestoreResult {
   let target: DemoStorage
   try {
     if (!isDemoWorkspaces(current) || (sourcePointId === undefined && (!isDemoWorkspaces(targetStates) || !validRestoreSelection(selected)))) throw new Error('Invalid workspaces')
@@ -114,6 +114,10 @@ function checkpointRestore(current: DemoWorkspaces, targetStates: DemoWorkspaces
   let prepared: { key: string; raw: string; label: string }[]
   try {
     const history = previousHistory === null ? [] : parseRestorePoints(previousHistory)
+    if (expectedSource !== undefined) {
+      const source = history.find(point => point.id === sourcePointId)
+      if (!source || expectedSource.id !== sourcePointId || JSON.stringify(source) !== JSON.stringify(expectedSource)) throw new Error('The restore point changed after its preview. Refresh the list and review the current capture before undoing.')
+    }
     const result = prepareCheckpointRestore(current, targetStates, selected, history, { ...options, sourcePointId })
     if (!result.ok) throw new Error(result.message)
     if (!result.plan.budget.canRestore) throw new Error(result.plan.budget.reason)
@@ -167,7 +171,7 @@ export function restoreWithCheckpoint(currentStates: DemoWorkspaces, targetState
 /** Reapply exactly the portal scope in a saved point, recording a pre-undo
  * point first so the same workflow can undo an undo without special redo state.
  */
-export function undoRestorePoint(currentStates: DemoWorkspaces, pointId: string, storage?: DemoStorage | null, options: RestorePointOptions = {}): CheckpointRestoreResult {
+export function undoRestorePoint(currentStates: DemoWorkspaces, pointId: string, storage?: DemoStorage | null, options: RestorePointOptions = {}, expectedSource?: RestorePoint): CheckpointRestoreResult {
   if (typeof pointId !== 'string' || !pointId) return { ok: false, status: { kind: 'recovered', message: `Choose an existing restore point before undoing. ${unchanged}` } }
-  return checkpointRestore(currentStates, undefined, undefined, storage, options, pointId)
+  return checkpointRestore(currentStates, undefined, undefined, storage, options, pointId, expectedSource)
 }

@@ -1,6 +1,9 @@
 export type CmsRole = 'author' | 'reviewer' | 'publisher' | 'viewer'
 export type CmsActor = { id: string; role: CmsRole; name: string }
 export type CmsContent = { title: string; slug: string; body: string }
+export type CmsDraftField = 'collectionId' | keyof CmsContent
+export type CmsDraftIssue = { field: CmsDraftField; message: string }
+export type CmsDraftValidation = { errors: CmsDraftIssue[]; content: CmsContent | null }
 export type CmsPublication = CmsContent & { revision: number; receipt: string }
 export type CmsEntry = CmsContent & {
   id: string; collectionId: string; authorId: string; revision: number;
@@ -36,19 +39,51 @@ export function createCmsState(): CmsState {
   }
 }
 
-function cleanContent(event: CmsContent): CmsContent {
-  if (typeof event.title !== 'string' || typeof event.slug !== 'string' || typeof event.body !== 'string') throw new Error('Enter a title, slug and plain-text body.')
-  const title = event.title.trim()
-  const slug = event.slug.trim().toLowerCase()
-  const body = event.body.trim()
-  if (title.length < 3 || title.length > 100) throw new Error('The title must contain 3–100 characters.')
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 80) throw new Error('Use a slug of up to 80 lowercase letters, numbers and single hyphens.')
-  if (body.length < 10 || body.length > 8000) throw new Error('The plain-text body must contain 10–8000 characters.')
-  return { title, slug, body }
+function normalizedContent(content: CmsContent): CmsContent {
+  return { title: content.title.trim(), slug: content.slug.trim().toLowerCase(), body: content.body.trim() }
+}
+
+/** Compare the values that saving would record, so harmless surrounding space
+ * and slug case do not create a false unsaved-change warning.
+ */
+export function cmsDraftIsDirty(content: CmsContent, baseline: CmsContent): boolean {
+  const draft = normalizedContent(content)
+  const saved = normalizedContent(baseline)
+  return draft.title !== saved.title || draft.slug !== saved.slug || draft.body !== saved.body
+}
+
+function hasSlugConflict(state: CmsState, collectionId: string, slug: string, entryId?: string) {
+  return state.entries.some(entry => entry.id !== entryId && entry.collectionId === collectionId && (entry.slug.toLowerCase() === slug || entry.published?.slug.toLowerCase() === slug))
+}
+
+const slugConflictMessage = 'This collection already has that draft or published slug. Choose another slug.'
+
+/** One ordered field check for both the editor and domain transitions. Invalid
+ * drafts return every affected field and never supply content for saving.
+ */
+export function validateCmsDraft(state: CmsState, draft: CmsContent & { collectionId: string }, options: { entryId?: string } = {}): CmsDraftValidation {
+  const errors: CmsDraftIssue[] = []
+  const collectionValid = cmsCollections.some(collection => collection.id === draft.collectionId)
+  if (!collectionValid) errors.push({ field: 'collectionId', message: 'Choose a supported CMS collection.' })
+  const title = typeof draft.title === 'string' ? draft.title.trim() : ''
+  const slug = typeof draft.slug === 'string' ? draft.slug.trim().toLowerCase() : ''
+  const body = typeof draft.body === 'string' ? draft.body.trim() : ''
+  if (typeof draft.title !== 'string' || title.length < 3 || title.length > 100) errors.push({ field: 'title', message: 'The title must contain 3–100 characters.' })
+  const slugValid = typeof draft.slug === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length <= 80
+  if (!slugValid) errors.push({ field: 'slug', message: 'Use a slug of up to 80 lowercase letters, numbers and single hyphens.' })
+  else if (collectionValid && hasSlugConflict(state, draft.collectionId, slug, options.entryId)) errors.push({ field: 'slug', message: slugConflictMessage })
+  if (typeof draft.body !== 'string' || body.length < 10 || body.length > 8000) errors.push({ field: 'body', message: 'The plain-text body must contain 10–8000 characters.' })
+  return { errors, content: errors.length ? null : { title, slug, body } }
+}
+
+function requireValidDraft(state: CmsState, draft: CmsContent & { collectionId: string }, entryId?: string): CmsContent {
+  const result = validateCmsDraft(state, draft, { entryId })
+  if (!result.content) throw new Error(result.errors[0].message)
+  return result.content
 }
 
 function requireUniqueSlug(state: CmsState, collectionId: string, slug: string, entryId?: string) {
-  if (state.entries.some(entry => entry.id !== entryId && entry.collectionId === collectionId && (entry.slug.toLowerCase() === slug || entry.published?.slug.toLowerCase() === slug))) throw new Error('This collection already has that draft or published slug. Choose another slug.')
+  if (hasSlugConflict(state, collectionId, slug, entryId)) throw new Error(slugConflictMessage)
 }
 
 export function cmsPublishedEntries(state: CmsState) {
@@ -67,9 +102,7 @@ export function transitionCms(previous: CmsState, event: CmsEvent, actor: CmsAct
   }
   if (event.type === 'create-entry') {
     if (actor.role !== 'author') throw new Error('Only the author preview creates drafts.')
-    if (!cmsCollections.some(collection => collection.id === event.collectionId)) throw new Error('Choose a supported CMS collection.')
-    const content = cleanContent(event)
-    requireUniqueSlug(state, event.collectionId, content.slug)
+    const content = requireValidDraft(state, event)
     const entry: CmsEntry = { id: `cms-entry-${String(state.sequence + 1).padStart(4, '0')}`, collectionId: event.collectionId, authorId: actor.id, revision: 1, status: 'draft', approval: null, published: null, feedback: '', ...content }
     state.entries.push(entry)
     receipt(entry, 'Created draft')
@@ -80,8 +113,7 @@ export function transitionCms(previous: CmsState, event: CmsEvent, actor: CmsAct
   if (entry.revision !== event.expectedRevision) throw new Error('This revision has changed. Review the current draft before continuing.')
   if (event.type === 'edit-entry') {
     if (actor.role !== 'author' || actor.id !== entry.authorId) throw new Error('Only the assigned author can edit this draft.')
-    const content = cleanContent(event)
-    requireUniqueSlug(state, entry.collectionId, content.slug, entry.id)
+    const content = requireValidDraft(state, { ...event, collectionId: entry.collectionId }, entry.id)
     if (content.title === entry.title && content.slug === entry.slug && content.body === entry.body) throw new Error('Change the draft content before saving another revision.')
     Object.assign(entry, content, { revision: entry.revision + 1, status: 'draft', approval: null, feedback: '' })
     receipt(entry, 'Saved draft revision; previous approval invalidated')

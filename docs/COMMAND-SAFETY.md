@@ -64,6 +64,28 @@ and replaces the fixed evaluator PDF output atomically. It does not install
 packages, operate the app, publish files or run in the default CI gate. Read the
 [worksheet guide](PORTAL-EVALUATOR-WORKSHEET.md) for layout verification.
 
+## Portal maturity effects
+
+`maturity:test` runs the focused native model, codec and navigation contracts.
+Its storage writes target supplied in-memory fixtures. `browser:maturity` starts
+the shared owned loopback runner, opens four fresh Chromium contexts and writes
+temporary reports, screenshots, traces and downloads. It uses actual app controls
+and file imports/exports without an existing browser profile, accounts or keys.
+Neither command changes catalog acceptance or establishes provider authority.
+
+The [maturity workflow guide](PORTAL-MATURITY.md) distinguishes UI actions with
+different effects. New payroll preparation needs an explicit sample period and
+fictional rate timeline; fixture compensation supplies no inferred cadence.
+Creating a named point or saving a label writes only local restore history and
+preserves open workspaces, workspace save slots and temporary forms. Record
+inspection and difference previews are pure reads of the supplied snapshots;
+they display counts and bounded identifiers without applying recovery. Confirmed
+selective restore or Undo writes the selected workspace saves plus an automatic
+pre-action point, replaces those complete module states and remounts their
+temporary UI. Undo rechecks the exact previewed source point before replacement.
+Read the [current QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) for focused
+observations and the passed integrated publishing gates.
+
 ## Command effects table
 
 | Command | Mode | Scope | Filesystem, process and network effects | Git / provider / external effects | Authority | Result limits |
@@ -88,12 +110,14 @@ packages, operate the app, publish files or run in the default CI gate. Read the
 | `npm run lint:fix` | Fix | Application source selected by ESLint | May rewrite source files | No Git publication/provider action | Local | This is a source mutation; inspect the diff. It does not run the complete release gate. |
 | `npm run build`; `npm run ci:build` | Build | Root app and production artifact isolation | Writes `dist` and possible Vite cache; `build` also runs TypeScript build mode, which may emit incremental/build metadata | No commit/push/provider action | Local | LAN artifact isolation and a successful build establish local output only. `ci:build` omits the TypeScript build-mode prefix. |
 | `npm test`, `hr:test`, `portals:test`, `security:controls:test`, `systemx:tools:test`, `systemx:integration:test` and focused `*:test` scripts | Local tests | Named test fixtures and dependent workspaces | Depending on the suite, creates temporary files, Git fixtures, caches, owned loopback listeners and child processes; selected SYSTEMX tests run in temporary copies | No intended production/provider workflow; fixture Git changes are local | Local | A passing suite proves its tested behavior. Account-free HR/SDK tests do not establish live Gusto access or payroll execution. Inspect changed test commands before assuming this classification. |
+| `npm run maturity:test` | Focused native maturity contracts | Eight model/codec/path suites | Reads app source and test fixtures; synthetic workspace/history writes use supplied in-memory storage; no browser, listener, network request or command-defined file writes | No Git/provider action or user-browser save changes | Local test execution | Covers the named payroll/time/import/history/navigation/inspection contracts. CMS domain checks also remain in `portals:test`; integrated CI and publishing gates remain separate. |
 | `npm run research:validate` | Package validation | Adapted LAN research package | Reads inventory/checksums; Python runs without `-B` and may create bytecode caches | No provider operation | Inspect; allow interpreter cache writes | Inventory/checksum validation does not validate the research claims or live runtime. |
 | `npm run ci:audit`; `npm run hr:backend:audit` | Strict dependency audit | Root package; optional Gusto Functions package respectively | Contacts configured npm registry; npm may write cache/log files; does not install or fix dependencies | Registry read; no application provider operation | External read; allow npm cache/log writes | Enforces its configured high-severity threshold for the examined dependency tree, not a complete security assessment. |
 | `npm run ci:security` | Security/configuration checks | Root controls plus account-level and MFA checks | Local source checks plus nested `npm audit`; registry requests and npm cache/log writes are possible | Registry read; no live account/provider probe | External read; allow npm cache/log writes | The nested audit reports warnings on audit failure. The separate `ci:audit` gate provides strict audit enforcement. |
 | `npm run ci:all` | Complete sequential release gate | Root app, optional Gusto Functions audit and selected SYSTEMX distribution tests | Runs the stages in `scripts/check-template.sh`: temporary fixtures/processes/listeners, browser artifacts/cache, possible Python cache, registry audits and final build output | Local Git fixtures/metadata and registry reads; no intended commit/push/deploy | Local plus external registry reads | Full CI is not read-only. Chromium must already be installed. Success is local evidence, not deployment, provider, device/accessibility or operator acceptance. Use `ci:plan` to inspect the current stages. |
 | `npm run browser:install` | Explicit browser setup | Pinned Playwright Chromium installation | Downloads browser binaries and writes browser cache/install state | External browser distribution download | Local plus external download | Installs the browser prerequisite; does not execute or accept browser journeys. |
 | `npm run browser:smoke`, `browser:keyboard`, `browser:foundation`, `browser:state-contract`, `browser:lifecycles`, `browser:payroll` | Browser journeys | Isolated native portals and browser contexts | Starts owned loopback Vite/Chromium resources; writes reports, screenshots/downloads/traces and Vite cache under a fresh artifact directory; closes owned resources | Account-free synthetic local journeys; no intended provider workflow or automatic browser download | Local | Saved/transient state, CMS/CRM lifecycles, simulated payroll and keyboard evidence are scoped to the authored journeys. They do not certify whole-site accessibility, live provider behavior or real payroll execution. |
+| `npm run browser:maturity` | Native maturity browser journeys | Four fresh owned Chromium contexts and the owned loopback app | Starts owned Vite/Chromium resources, uses real controls/uploads/downloads, writes local evidence/cache and closes only owned resources | No existing browser profile, account, provider call or automatic browser download | Local | Thirteen authored check groups exercise the sixteen maturity criteria. Focused local observations do not complete integrated CI, Hosting preflight or production/provider acceptance. |
 | `npm run browser:codegen` | Interactive browser recording | `http://localhost:5173` and the chosen browser session | Starts Playwright browser tooling and opens the configured local URL; recording/output and page actions depend on operator use | Page interactions can have the effects of the app being opened | Local; any provider action needs its own scope | This is interactive tooling, not the isolated acceptance runner. Inspect which app owns the port first. |
 | `npm run mcp:chrome` | `npx ... --help` | Chrome DevTools MCP package launcher | May resolve/download the package and write npm cache/logs before printing help | Possible package-registry read/download | External read/download plus local cache work | A help argument is not an offline-install guarantee; it does not establish a running MCP connection or browser acceptance. |
 | `npm run dev:mock` | Native mock server; optional `--port` | Account-free HR/CMS/CRM on `127.0.0.1` | Forks one owned Vite worker and listener; writes/removes a temporary cache. Child environment excludes provider/LAN variables; Vite uses `configFile: false`, `envDir: false` and no proxy | No Firebase/emulator/Gusto/LAN connection configured by this launcher | Local | Fictional browser data can persist at its origin/profile. Default port 0 chooses a free port; an occupied explicit port fails without stopping another listener. |

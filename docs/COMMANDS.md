@@ -28,6 +28,23 @@ Follow [import rehearsal](SYSTEMX-IMPORT-REHEARSAL.md),
 origin identifies the evaluator's saved-storage scope. Designed five/ten-minute
 human pacing is separate from measured automated browser execution.
 
+## Portal maturity checks
+
+| Command | Behavior |
+| --- | --- |
+| `npm run maturity:test` | Focused model/codec tests for chosen payroll periods and fictional rates, time correction, selected-period statements, strict CRM imports, named history points, supported return locations, Undo source binding and pure record inspection/differences |
+| `npm run browser:maturity` | Thirteen actual browser check groups across four fresh owned Chromium contexts, using real controls, file uploads/downloads and complete saved-state comparisons for the sixteen maturity criteria |
+
+Follow [portal maturity workflows](PORTAL-MATURITY.md) for explicit payroll
+period/rate setup, CMS field errors and dirty forms, CRM import refusal, named
+history and return navigation. Fixture compensation supplies no implied hourly
+rate. Manual capture and label changes write only restore history; inspection
+and difference previews write no workspace or history state. Confirmed selective
+restore or Undo replaces the selected complete workspaces and clears only those
+modules' temporary UI. The [current QA receipt](PORTAL-MATURITY-QA-2026-10-15.md)
+records focused results and the passed integrated publishing gates. These two
+commands do not replace `ci:all` or Hosting preflight.
+
 ## Adopted work, provenance and source review
 
 | Command | Behavior |

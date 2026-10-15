@@ -25,10 +25,10 @@ export const payrollExpectation = Object.freeze({
   benefitDeductionCents: 2500,
   netCents: 40100,
   inputs: [
-    { entryId: 'time-001', employeeId: avery, hours: 8, rateCents: 3000 },
-    { entryId: 'time-002', employeeId: jordan, hours: 6, rateCents: 3000 },
-    { entryId: 'MOCK-TIME-0003', employeeId: avery, hours: 1.25, rateCents: 3000 },
-    { entryId: 'MOCK-TIME-0005', employeeId: jordan, hours: 2.5, rateCents: 3000 },
+    { entryId: 'time-001', employeeId: avery, hours: 8, rateCents: 3000, date: '2026-10-09', rateEffectiveFrom: '2026-10-01' },
+    { entryId: 'time-002', employeeId: jordan, hours: 6, rateCents: 3000, date: '2026-10-09', rateEffectiveFrom: '2026-10-01' },
+    { entryId: 'MOCK-TIME-0003', employeeId: avery, hours: 1.25, rateCents: 3000, date: '2026-10-14', rateEffectiveFrom: '2026-10-01' },
+    { entryId: 'MOCK-TIME-0005', employeeId: jordan, hours: 2.5, rateCents: 3000, date: '2026-10-14', rateEffectiveFrom: '2026-10-01' },
   ],
   benefitInputs: [{ employeeId: avery, planId: 'benefit-001', deductionCents: 2500 }],
   employeeTotals: [
@@ -65,7 +65,12 @@ export function expectedPayrollWorkspaces(states, stage = 'submitted') {
   workflow.sequence = 6
   if (stage === 'approved') return expected
   assert.ok(['prepared', 'calculated', 'reviewed', 'submitted'].includes(stage))
+  workflow.sampleRates = {
+    [avery]: [{ effectiveFrom: '2026-10-01', hourlyRateCents: 3000 }],
+    [jordan]: [{ effectiveFrom: '2026-10-01', hourlyRateCents: 3000 }],
+  }
   workflow.payroll = {
+    period: { start: '2026-10-01', end: '2026-10-15' },
     stage, inputs: structuredClone(payrollExpectation.inputs), benefitInputs: structuredClone(payrollExpectation.benefitInputs),
     employeeTotals: [], hours: 17.75, grossCents: 0, illustrativeWithholdingCents: 0, benefitDeductionCents: 0, netCents: 0,
   }
@@ -102,11 +107,12 @@ async function exportWorkspaces(page, artifactDir, label) {
 
 async function openHr(page) {
   await page.getByRole('navigation', { name: 'Template workspaces', exact: true }).getByRole('link', { name: 'People & HR', exact: true }).click()
-  await expect(page.getByRole('heading', { name: 'People workspace', exact: true })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Demo portals', exact: true })).toBeVisible()
 }
 
 async function openPayroll(page) {
   await openHr(page)
+  await portal(page, 'Management').click()
   await page.getByRole('navigation', { name: 'Management HR pages', exact: true }).getByRole('link', { name: 'Payroll workspace', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Run a simulated payroll', exact: true })).toBeVisible()
 }
@@ -167,7 +173,7 @@ async function assertStatement(page, artifactDir, employeeId) {
   await statement.getByText('View frozen time and benefit inputs', { exact: true }).click()
   const frozen = statement.locator('details')
   await expect(frozen).toHaveAttribute('open', '')
-  const entries = own ? ['2026-10-09 · 8.0000 hours · time-001', '2026-10-14 · 1.2500 hours · MOCK-TIME-0003'] : ['2026-10-09 · 6.0000 hours · time-002', '2026-10-14 · 2.5000 hours · MOCK-TIME-0005']
+  const entries = own ? ['2026-10-09 · 8.0000 hours × $30.00/hour (fictional) · time-001', '2026-10-14 · 1.2500 hours × $30.00/hour (fictional) · MOCK-TIME-0003'] : ['2026-10-09 · 6.0000 hours × $30.00/hour (fictional) · time-002', '2026-10-14 · 2.5000 hours × $30.00/hour (fictional) · MOCK-TIME-0005']
   assert.deepEqual(await frozen.getByRole('listitem').allInnerTexts(), entries)
   await expect(frozen.getByText(`Benefit plans in this snapshot: ${own ? 'Demo health plan' : 'None'}. Deductions are capped to this employee's sample pay after illustrative withholding.`, { exact: true })).toBeVisible()
   await expect(statements).not.toContainText(own ? 'Jordan Demo' : 'Avery Sample')
@@ -239,6 +245,15 @@ export async function runPayrollLifecycle({ browser, origin, artifactDir, seed }
 
     await openPayroll(page)
     for (const action of ['Calculate fictional totals', 'Review simulated payroll', 'Simulate payroll submission']) await expect(button(page, action)).toBeDisabled()
+    await page.getByLabel('Sample period start', { exact: true }).fill('2026-10-01')
+    await page.getByLabel('Sample period end', { exact: true }).fill('2026-10-15')
+    const rates = page.getByRole('form', { name: 'Configure fictional hourly rates', exact: true })
+    for (const employeeId of [avery, jordan]) {
+      await rates.getByRole('combobox', { name: /^Rate employee/ }).selectOption(employeeId)
+      await rates.getByLabel('Fictional hourly rate (dollars)', { exact: true }).fill('30')
+      await rates.getByLabel('Rate effective date', { exact: true }).fill('2026-10-01')
+      await rates.getByRole('button', { name: 'Add sample rate', exact: true }).click()
+    }
     await button(page, 'Prepare sample payroll').click()
     await expect(panel(page, 'Run a simulated payroll')).toContainText('4 approved entries · 17.75 hours')
     assert.deepEqual(await exportWorkspaces(page, artifactDir, '02-prepared-workspaces'), expectedPayrollWorkspaces(seed.workspaces, 'prepared'))
@@ -257,7 +272,14 @@ export async function runPayrollLifecycle({ browser, origin, artifactDir, seed }
     await openPayroll(page)
     await button(page, 'Simulate payroll submission').click()
     await expect(payroll.getByRole('status')).toHaveText(`Simulated submission complete · ${receipt}. No money moved and no provider was contacted.`)
-    await expect(payroll.getByRole('listitem').filter({ hasText: receipt })).toHaveText(`${receipt} · 17.75 hours · fictional net $401.00`)
+    const submittedReceipt = payroll.getByRole('listitem').filter({ hasText: receipt })
+    await expect(submittedReceipt).toContainText(`${receipt} · 2026-10-01 to 2026-10-15 · 17.75 hours · fictional net $401.00`)
+    assert.deepEqual(await submittedReceipt.getByRole('listitem').allInnerTexts(), [
+      'Avery Sample · 8 hours × $30.00/hour (fictional)',
+      'Jordan Demo · 6 hours × $30.00/hour (fictional)',
+      'Avery Sample · 1.25 hours × $30.00/hour (fictional)',
+      'Jordan Demo · 2.5 hours × $30.00/hour (fictional)',
+    ])
     await page.screenshot({ path: join(artifactDir, '05-submitted-payroll.png'), fullPage: true })
     await page.reload()
     const expected = expectedPayrollWorkspaces(seed.workspaces)

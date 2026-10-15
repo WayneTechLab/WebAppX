@@ -3,7 +3,7 @@
   "kind": "webappx-gusto-capability-gaps",
   "reviewedOn": "2026-10-15",
   "reviewBase": {
-    "revision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+    "revision": "950f9ba0c4e48faaa65056f504f105201838e3ec",
     "provenance": "integration-baseline-supplied-by-agent-0"
   },
   "evidenceScope": "source-review",
@@ -86,7 +86,12 @@
     {
       "path": "src/hr/components/HrWorkspace.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "19c10913f74471430799b57b7f45c65cab428a131a48036f82526204e572fca6"
+      "sha256": "169e81c354ab72cf61fb89fa4e3244fe27e99c5efbe1742cafdd1d82c1cd2d20"
+    },
+    {
+      "path": "src/hr/components/HrInsights.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "7bac8fac53eb4b75f65108484dcefb9c747dabaeeccc376dc075a9fbc14537d9"
     },
     {
       "path": "src/hr/gusto/GustoSdkPreview.tsx",
@@ -96,12 +101,12 @@
     {
       "path": "src/hr/insights.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "5e950e25c9af4d1d5b71b13512578f45a493ae6b8a53deecd9f913449adc923b"
+      "sha256": "2ce6ac351fdc5c8a9447e05ef485650a945bcb7bcf88be2ab8a33d5819f957c3"
     },
     {
       "path": "src/hr/mock-workflows.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "a9b18d468e6f0dd573c06ebaa6d9558eab2e200044373bcf588821e0f21aa235"
+      "sha256": "373b8a8ce4d34250d306095d0c6247d38e6a03646ddf708e00c5a6bf3b529659"
     },
     {
       "path": "src/hr/model.ts",
@@ -532,11 +537,12 @@
       "title": "Employee compensation",
       "capabilitySha256": "f364f7f7765710f49fbc4bab5c480906681151fb2d6b26775f5d82b85ad58a90",
       "native": {
-        "coverage": "read-only-mock",
-        "behavior": "Authorized preview roles can see a fixture compensation amount, or an unconfigured label for a new sample hire; cadence is not inferred and native pay editing is absent.",
+        "coverage": "partial-mock",
+        "behavior": "The fixture compensation amount stays read-only and declares no hourly cadence. Owner/payroll previews separately append explicit fictional employee hourly rates with strictly later effective dates in Payroll. Work dates select the applicable rate; new hires have no inferred rate, and submitted receipts retain their frozen rates.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
-          "src/hr/model.ts"
+          "src/hr/model.ts",
+          "src/hr/mock-workflows.ts"
         ]
       },
       "sdk": {
@@ -559,14 +565,14 @@
         "providerWork": [
           "Accept approved jobs/compensation operations and pay configuration semantics; reconcile provider versions and deny unauthorized manager/self updates."
         ],
-        "rationale": "A sample amount or onboarding mock write is not authoritative wage configuration."
+        "rationale": "Fixture compensation, explicit native fictional rate timelines and onboarding mock writes do not establish authoritative wages, accepted cadence or provider compensation configuration."
       },
       "evidence": {
         "scope": "source-review",
         "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
         "refs": [
-          "tests/hr/linked-operations.test.mjs",
-          "tests/hr/gusto-backend.test.mjs"
+          "tests/hr/payroll-periods-rates.test.mjs",
+          "docs/PORTAL-CAPABILITIES.md"
         ]
       }
     },
@@ -703,7 +709,7 @@
       "capabilitySha256": "f53e17ed9033aaf0ee4d9509b712e4f827cf834b7f466217c0f39c9b626eb217",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Approved unpaid native hours and confirmed benefit choices feed preparation, fictional calculation, review and simulated submission with per-employee totals and receipts.",
+        "behavior": "Owner/payroll previews choose a 1–366-day sample period and configure explicit fictional rates for all otherwise eligible employee/work dates. The table explains inclusion/exclusion before preparation freezes approved unpaid hours, dated rates and confirmed benefit choices. Input or eligibility changes block calculation, review and submission until intentional repreparation; receipted runs remain frozen.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/mock-workflows.ts"
@@ -742,7 +748,8 @@
         "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
         "refs": [
           "tests/hr/mock-workflows.test.mjs",
-          "tests/hr/gusto-sdk-mock.test.mjs"
+          "tests/hr/payroll-periods-rates.test.mjs",
+          "tests/hr/selected-payroll-insights.test.mjs"
         ]
       }
     },
@@ -752,9 +759,10 @@
       "capabilitySha256": "b72eb12e78aa7be722ee8c203d26e1325661d681779df468ad10faebac29c25a",
       "native": {
         "coverage": "read-only-mock",
-        "behavior": "Employee pay history projects own simulated statements from frozen submitted native payroll receipts and consumed approved entries.",
+        "behavior": "Employee pay history shows only the bound employee’s submitted native payroll statements, with the receipt’s saved period, work dates, hours, fictional rates and totals. Later rate changes leave those statements unchanged. Legacy receipts without a period keep the historical fixed sample period; a separate fixture statement remains read-only.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
+          "src/hr/components/HrInsights.tsx",
           "src/hr/insights.ts"
         ]
       },
@@ -784,7 +792,8 @@
         "scope": "source-review",
         "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
         "refs": [
-          "tests/hr/insights.test.mjs"
+          "tests/hr/insights.test.mjs",
+          "tests/hr/selected-payroll-insights.test.mjs"
         ]
       }
     },
@@ -921,7 +930,7 @@
       "capabilitySha256": "eccb86d64c41e499b1ab5a411f74f399fb8d55bfe616e90cf62ce8744c9a47f3",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Own dated entries and stopped timers become draft hours, then submitted timesheets and scoped manager approval; only eligible approved unpaid hours enter native payroll.",
+        "behavior": "Own dated entries and stopped timers become draft hours. Bound employees/managers can edit or explicitly delete only their own unpaid drafts. A different direct manager can return submitted unpaid time with a saved reason for correction and resubmission; scoped approval is still required. Submitted, approved and receipted rows resist draft edits/deletion; only eligible approved unpaid hours with explicit dated rates enter chosen-period native payroll.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/mock-workflows.ts",
@@ -952,7 +961,9 @@
         "scope": "source-review",
         "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
         "refs": [
-          "tests/hr/mock-workflows.test.mjs"
+          "tests/hr/mock-workflows.test.mjs",
+          "tests/hr/time-editing.test.mjs",
+          "tests/hr/payroll-periods-rates.test.mjs"
         ]
       }
     },
@@ -1006,7 +1017,7 @@
       "capabilitySha256": "bf42917dfd2e53b83ba8d21e8f274e1bf3c912e798a2e125e194ae09924928c4",
       "native": {
         "coverage": "read-only-mock",
-        "behavior": "Derived workforce, workflow, payroll, assignment and talent summaries respect native preview projections; sensitive amounts and private draft text are role limited.",
+        "behavior": "Derived workforce, workflow, payroll, assignment and talent summaries respect native preview projections. Payroll-ready counts require explicit effective rates and use the saved chosen period after preparation; own statements retain submitted period/rate inputs. Sensitive amounts and private draft text remain role limited.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/insights.ts"
@@ -1036,7 +1047,8 @@
         "scope": "source-review",
         "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
         "refs": [
-          "tests/hr/insights.test.mjs"
+          "tests/hr/insights.test.mjs",
+          "tests/hr/selected-payroll-insights.test.mjs"
         ]
       }
     },

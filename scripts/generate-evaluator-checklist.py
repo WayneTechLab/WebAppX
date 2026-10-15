@@ -84,6 +84,7 @@ def build():
         y = height - 221
         y = section(1, y, 'HR - onboarding to mock payroll', 'Designed for 5 min', [
             'Onboard Jordan; enroll Avery in Health and waive Jordan retirement.',
+            'Choose Oct 1-15, 2026; set Avery/Jordan at fictional $30/hour from Oct 1.',
             'Submit/approve seed time plus Avery 1.25h and Jordan 2.50h; submit mock payroll.',
         ], '17.75h; $532.50 gross; $106.50 illustrative tax; $25 benefits; $401 net.')
         y = section(2, y, 'CMS - separate review and publication', 'Designed for 5 min', [

@@ -11,6 +11,13 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+Host portal maturity extensions now provide [chosen payroll periods and fictional
+rate timelines, corrected time, CMS editing, strict CRM imports and named recovery](../docs/PORTAL-MATURITY.md).
+The [current receipt](../docs/PORTAL-MATURITY-QA-2026-10-15.md) accepts 16 more
+original criteria: **77 done / 923 remaining**. Full publication checks are
+recorded in that receipt. These host extensions retain schema-1 compatibility,
+blank reusable records and immutable selected release fingerprints.
+
 Host evaluator/adoption extensions include [paced portal demonstrations](../docs/demos/HR-FIVE-MINUTE.md),
 a [printable worksheet](../docs/PORTAL-EVALUATOR-WORKSHEET.md),
 [reviewed HR role examples](../docs/HR-ROLE-EXAMPLES.md), the
@@ -23,7 +30,7 @@ The [membership proposal](../docs/TENANT-MEMBERSHIP-PROPOSAL.md) and
 identity and deferred production responsibilities explicit. These host-owned
 extensions preserve blank seeds and selected immutable release fingerprints.
 Read the [evaluator/adoption receipt](../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md):
-13 original criteria accepted, catalog 61 done / 939 remaining, all 54 CI stages,
+the earlier checkpoint of 13 criteria accepted, catalog 61 done / 939 remaining, all 54 CI stages,
 95 browser checks/check groups and Hosting preflight passed. The full goal
 remains active.
 

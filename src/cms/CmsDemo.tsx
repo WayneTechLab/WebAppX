@@ -4,7 +4,7 @@ import { portalDirectoryHref, portalRegistry } from '@/portals/registry'
 import { usePortalWorkspace } from '@/portals/PortalWorkspaceProvider'
 import { DemoStorageNotice } from '@/portals/DemoStorageNotice'
 import { DemoWorkspaceBackup } from '@/portals/DemoWorkspaceBackup'
-import { cmsActors, cmsCollections, cmsPublishedEntries, transitionCms, type CmsActor, type CmsEntry, type CmsEvent } from './model'
+import { cmsActors, cmsCollections, cmsDraftIsDirty, cmsPublishedEntries, transitionCms, validateCmsDraft, type CmsActor, type CmsContent, type CmsDraftField, type CmsDraftIssue, type CmsEvent } from './model'
 import { isCmsState } from './persistence'
 
 const field = 'mt-2 block min-h-11 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-950 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-700'
@@ -12,16 +12,21 @@ const button = 'inline-flex min-h-11 items-center justify-center rounded-md bg-n
 const secondary = 'inline-flex min-h-11 items-center justify-center rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold text-neutral-800 hover:bg-neutral-50'
 const panel = 'rounded-xl border border-neutral-200 bg-white p-5 sm:p-6'
 
-function contentFromForm(form: HTMLFormElement) {
-  const data = new FormData(form)
-  return { title: String(data.get('title') ?? ''), slug: String(data.get('slug') ?? ''), body: String(data.get('body') ?? '') }
+type EditorDraft = { entryId: string; revision: number; baseline: CmsContent; content: CmsContent }
+const draftLabels: Record<CmsDraftField, string> = { collectionId: 'New content collection', title: 'Content title', slug: 'Content slug', body: 'Plain-text content' }
+const emptyCreateDraft = () => ({ collectionId: 'pages', title: '', slug: '', body: '' })
+
+function ValidationSummary({ errors, prefix }: { errors: CmsDraftIssue[]; prefix: 'edit' | 'create' }) {
+  if (!errors.length) return null
+  return <div role="alert" aria-label={prefix === 'edit' ? 'Edit draft validation' : 'Create draft validation'} className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900"><p className="font-semibold">Check these fields before saving:</p><ul className="mt-2 list-disc space-y-1 pl-5">{errors.map(issue => <li key={issue.field}><a className="underline" href={`#${prefix}-${issue.field}`} onClick={event => { event.preventDefault(); document.getElementById(`${prefix}-${issue.field}`)?.focus() }}>{draftLabels[issue.field]}: {issue.message}</a></li>)}</ul></div>
 }
 
-function ContentFields({ entry, prefix }: { entry?: CmsEntry; prefix: string }) {
+function ContentFields({ value, onChange, errors, prefix }: { value: CmsContent; onChange: (name: keyof CmsContent, value: string) => void; errors: CmsDraftIssue[]; prefix: string }) {
+  const issue = (name: keyof CmsContent) => errors.find(error => error.field === name)
   return <>
-    <label className="block text-sm font-medium" htmlFor={`${prefix}-title`}>Content title<input id={`${prefix}-title`} name="title" className={field} required minLength={3} maxLength={100} defaultValue={entry?.title} placeholder="A fictional studio update" /></label>
-    <label className="block text-sm font-medium" htmlFor={`${prefix}-slug`}>Content slug<input id={`${prefix}-slug`} name="slug" className={field} required maxLength={80} defaultValue={entry?.slug} placeholder="fictional-studio-update" /><span className="mt-1 block text-xs text-neutral-500">Letters, numbers and single hyphens. Unique within this collection.</span></label>
-    <label className="block text-sm font-medium" htmlFor={`${prefix}-body`}>Plain-text content<textarea id={`${prefix}-body`} name="body" className={field} required minLength={10} maxLength={8000} rows={5} defaultValue={entry?.body} placeholder="Write a fictional article or page. Do not enter real personal information." /></label>
+    <div><label className="block text-sm font-medium" htmlFor={`${prefix}-title`}>Content title</label><input id={`${prefix}-title`} name="title" className={field} required minLength={3} maxLength={100} value={value.title} onChange={event => onChange('title', event.target.value)} aria-invalid={!!issue('title')} aria-describedby={issue('title') ? `${prefix}-title-error` : undefined} placeholder="A fictional studio update" />{issue('title') && <p id={`${prefix}-title-error`} className="mt-1 text-sm text-red-800">{issue('title')!.message}</p>}</div>
+    <div><label className="block text-sm font-medium" htmlFor={`${prefix}-slug`}>Content slug</label><input id={`${prefix}-slug`} name="slug" className={field} required maxLength={80} value={value.slug} onChange={event => onChange('slug', event.target.value)} aria-invalid={!!issue('slug')} aria-describedby={`${prefix}-slug-help${issue('slug') ? ` ${prefix}-slug-error` : ''}`} placeholder="fictional-studio-update" /><p id={`${prefix}-slug-help`} className="mt-1 text-xs text-neutral-500">Letters, numbers and single hyphens. Unique within this collection.</p>{issue('slug') && <p id={`${prefix}-slug-error`} className="mt-1 text-sm text-red-800">{issue('slug')!.message}</p>}</div>
+    <div><label className="block text-sm font-medium" htmlFor={`${prefix}-body`}>Plain-text content</label><textarea id={`${prefix}-body`} name="body" className={field} required minLength={10} maxLength={8000} rows={5} value={value.body} onChange={event => onChange('body', event.target.value)} aria-invalid={!!issue('body')} aria-describedby={issue('body') ? `${prefix}-body-error` : undefined} placeholder="Write a fictional article or page. Do not enter real personal information." />{issue('body') && <p id={`${prefix}-body-error`} className="mt-1 text-sm text-red-800">{issue('body')!.message}</p>}</div>
   </>
 }
 
@@ -34,9 +39,55 @@ export function CmsDemo() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [generation, setGeneration] = useState(0)
+  const [editDraft, setEditDraft] = useState<EditorDraft | null>(null)
+  const [createDraft, setCreateDraft] = useState(emptyCreateDraft)
+  const [editErrors, setEditErrors] = useState<CmsDraftIssue[]>([])
+  const [createErrors, setCreateErrors] = useState<CmsDraftIssue[]>([])
+  const [pendingEntryId, setPendingEntryId] = useState<string | null>(null)
+  const [reviewFeedback, setReviewFeedback] = useState<Record<string, string>>({})
   const selected = state.entries.find(entry => entry.id === selectedId)
+  const editorContent = selected && editDraft?.entryId === selected.id ? editDraft.content : selected
+  const editorDirty = !!(selected && editDraft?.entryId === selected.id && cmsDraftIsDirty(editDraft.content, editDraft.baseline))
   const visible = state.entries.filter(entry => (collection === 'all' || entry.collectionId === collection) && `${entry.title} ${entry.slug}`.toLowerCase().includes(query.trim().toLowerCase()))
   const published = cmsPublishedEntries(state)
+
+  function switchEntry(entryId: string) {
+    setSelectedId(entryId)
+    setEditDraft(null)
+    setEditErrors([])
+    setPendingEntryId(null)
+  }
+  function selectEntry(entryId: string) {
+    if (entryId === selectedId) return
+    if (editorDirty) setPendingEntryId(entryId)
+    else switchEntry(entryId)
+  }
+  function updateEdit(name: keyof CmsContent, value: string) {
+    if (!selected) return
+    setEditDraft(previous => {
+      const draft = previous?.entryId === selected.id ? previous : { entryId: selected.id, revision: selected.revision, baseline: { title: selected.title, slug: selected.slug, body: selected.body }, content: { title: selected.title, slug: selected.slug, body: selected.body } }
+      return { ...draft, content: { ...draft.content, [name]: value } }
+    })
+    setEditErrors(previous => previous.filter(issue => issue.field !== name))
+  }
+  function showValidation(form: HTMLFormElement, errors: CmsDraftIssue[], kind: 'edit' | 'create') {
+    if (kind === 'edit') setEditErrors(errors)
+    else setCreateErrors(errors)
+    if (!errors.length) return false
+    setMessage('')
+    setError('')
+    const first = form.elements.namedItem(errors[0].field)
+    if (first instanceof HTMLElement) first.focus()
+    return true
+  }
+  function clearForms() {
+    setEditDraft(null)
+    setCreateDraft(emptyCreateDraft())
+    setEditErrors([])
+    setCreateErrors([])
+    setPendingEntryId(null)
+    setReviewFeedback({})
+  }
 
   function act(event: CmsEvent) {
     try {
@@ -44,7 +95,7 @@ export function CmsDemo() {
       setState(next)
       setMessage(`${next.activity.at(-1)?.receipt} · ${next.activity.at(-1)?.action}. No website or provider was changed.`)
       setError('')
-      if (event.type === 'create-entry') setSelectedId(next.entries.at(-1)!.id)
+      if (event.type === 'create-entry') selectEntry(next.entries.at(-1)!.id)
       return true
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : 'The sample CMS action failed.')
@@ -54,9 +105,19 @@ export function CmsDemo() {
   }
   function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const form = event.currentTarget
-    const data = new FormData(form)
-    if (act({ type: 'create-entry', collectionId: String(data.get('collectionId')), ...contentFromForm(form) })) form.reset()
+    const validation = validateCmsDraft(state, createDraft)
+    if (showValidation(event.currentTarget, validation.errors, 'create')) return
+    if (act({ type: 'create-entry', ...createDraft })) setCreateDraft(emptyCreateDraft())
+  }
+  function saveEdit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!selected || !editorContent) return
+    const validation = validateCmsDraft(state, { ...editorContent, collectionId: selected.collectionId }, { entryId: selected.id })
+    if (showValidation(event.currentTarget, validation.errors, 'edit')) return
+    if (act({ type: 'edit-entry', entryId: selected.id, expectedRevision: editDraft?.entryId === selected.id ? editDraft.revision : selected.revision, title: editorContent.title, slug: editorContent.slug, body: editorContent.body })) {
+      setEditDraft(null)
+      setPendingEntryId(null)
+    }
   }
   function reset() {
     resetSavedState()
@@ -66,6 +127,7 @@ export function CmsDemo() {
     setQuery('')
     setMessage('The original CMS draft and published page are restored in this view. HR and CRM samples are unchanged.')
     setError('')
+    clearForms()
     setGeneration(value => value + 1)
   }
 
@@ -79,24 +141,25 @@ export function CmsDemo() {
     <DemoStorageNotice status={storageStatus} />
     <DemoWorkspaceBackup key={generation} module="cms" state={state} validate={isCmsState} summarize={value => `${value.entries.length} content records · ${value.entries.filter(entry => entry.published).length} published snapshots · ${value.activity.length} actions`} onImport={value => {
       const result = importState(value)
-      if (result.ok) { setActor(cmsActors[0]); setSelectedId('cms-article-001'); setCollection('all'); setQuery(''); setGeneration(previous => previous + 1); setMessage(result.status.message); setError('') }
+      if (result.ok) { setActor(cmsActors[0]); setSelectedId('cms-article-001'); setCollection('all'); setQuery(''); setGeneration(previous => previous + 1); setMessage(result.status.message); setError(''); clearForms() }
       return result
     }} />
     {(message || error) && <div role={error ? 'alert' : 'status'} className={`rounded-lg border p-4 text-sm ${error ? 'border-red-200 bg-red-50 text-red-900' : 'border-emerald-200 bg-emerald-50 text-emerald-900'}`}>{error || message}</div>}
+    {pendingEntryId && <section role="region" aria-label="Unsaved CMS draft" className="rounded-lg border border-amber-300 bg-amber-50 p-5 text-amber-950"><h2 className="text-lg font-semibold">Discard unsaved changes?</h2><p className="mt-2 text-sm">Your changes to {selected?.title} have not been saved. Keep editing this draft or discard its changes and open {state.entries.find(entry => entry.id === pendingEntryId)?.title}.</p><div className="mt-4 flex flex-wrap gap-3"><button type="button" className={secondary} onClick={() => { setPendingEntryId(null); document.getElementById('edit-title')?.focus() }}>Keep editing</button><button type="button" className={button} onClick={() => switchEntry(pendingEntryId)}>Discard changes and switch</button></div></section>}
     <section aria-label="CMS metrics" className="grid grid-cols-2 gap-3 lg:grid-cols-4">{[['Drafts', state.entries.filter(entry => entry.status === 'draft').length], ['Awaiting review', state.entries.filter(entry => entry.status === 'in-review').length], ['Approved revisions', state.entries.filter(entry => entry.status === 'approved').length], ['Published samples', published.length]].map(([title, value]) => <div key={title} className={panel}><p className="text-xs font-medium text-neutral-500">{title}</p><p className="mt-2 text-3xl font-semibold text-neutral-950">{value}</p></div>)}</section>
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
       <div className="space-y-6">
-        <section className={panel}><h2 className="text-xl font-semibold text-neutral-950">Editorial collection</h2><div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium">Collection<select className={field} value={collection} onChange={event => setCollection(event.target.value)}><option value="all">All collections</option>{cmsCollections.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label className="text-sm font-medium">Search content<input className={field} type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Title or slug" /></label></div><div className="mt-5 space-y-3">{visible.map(entry => <button key={entry.id} type="button" onClick={() => setSelectedId(entry.id)} aria-pressed={entry.id === selectedId} className={`block min-h-11 w-full rounded-lg border p-4 text-left ${entry.id === selectedId ? 'border-indigo-500 bg-indigo-50' : 'border-neutral-200 hover:bg-neutral-50'}`}><span className="block font-semibold text-neutral-950">{entry.title}</span><span className="mt-1 block text-xs text-neutral-600">{entry.collectionId} / {entry.slug} · revision {entry.revision} · {entry.status.replace('-', ' ')}{entry.published ? ` · public sample v${entry.published.revision}` : ''}</span></button>)}{!visible.length && <p className="text-sm text-neutral-600">No sample content matches this collection and search.</p>}</div></section>
+        <section className={panel}><h2 className="text-xl font-semibold text-neutral-950">Editorial collection</h2><div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="text-sm font-medium">Collection<select className={field} value={collection} onChange={event => setCollection(event.target.value)}><option value="all">All collections</option>{cmsCollections.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label className="text-sm font-medium">Search content<input className={field} type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Title or slug" /></label></div><div className="mt-5 space-y-3">{visible.map(entry => <button key={entry.id} type="button" onClick={() => selectEntry(entry.id)} aria-pressed={entry.id === selectedId} className={`block min-h-11 w-full rounded-lg border p-4 text-left ${entry.id === selectedId ? 'border-indigo-500 bg-indigo-50' : 'border-neutral-200 hover:bg-neutral-50'}`}><span className="block font-semibold text-neutral-950">{entry.title}</span><span className="mt-1 block text-xs text-neutral-600">{entry.collectionId} / {entry.slug} · revision {entry.revision} · {entry.status.replace('-', ' ')}{entry.published ? ` · public sample v${entry.published.revision}` : ''}</span></button>)}{!visible.length && <p className="text-sm text-neutral-600">No sample content matches this collection and search.</p>}</div></section>
         {selected && <section className={panel} aria-label="Selected content"><div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-xl font-semibold text-neutral-950">{selected.title}</h2><p className="mt-2 text-xs text-neutral-500">{selected.id} · {selected.collectionId} · current draft revision {selected.revision}</p></div><span className="rounded-full bg-indigo-50 px-3 py-2 text-xs font-semibold capitalize text-indigo-900">{selected.status.replace('-', ' ')}</span></div>
           {selected.feedback && <p className="mt-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-950"><strong>Reviewer feedback:</strong> {selected.feedback}</p>}
           {selected.approval && <p className="mt-4 text-sm text-emerald-800">Revision {selected.approval.revision} approved by the separate reviewer · {selected.approval.receipt}</p>}
           {selected.published && selected.published.revision !== selected.revision && <p className="mt-4 rounded-lg bg-indigo-50 p-3 text-sm text-indigo-950">The published sample is still revision {selected.published.revision}. This draft has not replaced it.</p>}
-          {actor.role === 'author' ? <form key={`${selected.id}:${selected.revision}:${actor.id}:${generation}`} className="mt-5 space-y-4" onSubmit={event => { event.preventDefault(); act({ type: 'edit-entry', entryId: selected.id, expectedRevision: selected.revision, ...contentFromForm(event.currentTarget) }) }}><ContentFields entry={selected} prefix="edit" /><div className="flex flex-wrap gap-3"><button type="submit" className={button}>Save draft revision</button>{selected.status === 'draft' && <button type="button" className={secondary} onClick={() => act({ type: 'submit-review', entryId: selected.id, expectedRevision: selected.revision })}>Request review</button>}</div><p className="text-xs leading-5 text-neutral-500">Save changes before requesting review. Any saved edit returns the content to draft and invalidates the previous approval.</p></form> : <div className="mt-5 rounded-lg bg-neutral-50 p-4"><p className="text-xs font-medium text-neutral-500">Draft slug: {selected.slug}</p><p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-neutral-800">{selected.body}</p></div>}
-          {actor.role === 'reviewer' && selected.status === 'in-review' && <div className="mt-5 space-y-4"><button type="button" className={button} onClick={() => act({ type: 'approve-entry', entryId: selected.id, expectedRevision: selected.revision })}>Approve revision {selected.revision}</button><form key={`${selected.id}:${selected.revision}:feedback:${generation}`} onSubmit={event => { event.preventDefault(); const data = new FormData(event.currentTarget); act({ type: 'return-draft', entryId: selected.id, expectedRevision: selected.revision, feedback: String(data.get('feedback') ?? '') }) }}><label className="block text-sm font-medium">Review feedback<textarea name="feedback" className={field} rows={2} required minLength={3} maxLength={500} placeholder="Describe the fictional changes needed" /></label><button type="submit" className={secondary + ' mt-3'}>Return draft for changes</button></form></div>}
+          {actor.role === 'author' && editorContent ? <form noValidate className="mt-5 space-y-4" onSubmit={saveEdit}><ValidationSummary errors={editErrors} prefix="edit" /><ContentFields value={editorContent} onChange={updateEdit} errors={editErrors} prefix="edit" /><div className="flex flex-wrap gap-3"><button type="submit" className={button}>Save draft revision</button>{selected.status === 'draft' && <button type="button" className={secondary + ' disabled:opacity-40'} disabled={editorDirty} onClick={() => act({ type: 'submit-review', entryId: selected.id, expectedRevision: selected.revision })}>Request review</button>}</div><p className="text-xs leading-5 text-neutral-500">Save changes before requesting review. Any saved edit returns the content to draft and invalidates the previous approval.</p>{editorDirty && <p className="text-sm text-amber-900">This draft has unsaved changes.</p>}</form> : <div className="mt-5 rounded-lg bg-neutral-50 p-4"><p className="text-xs font-medium text-neutral-500">Draft slug: {selected.slug}</p><p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-neutral-800">{selected.body}</p>{editorDirty && <p className="mt-3 text-sm text-amber-900">Unsaved author changes are kept temporarily. Switch back to the author to continue editing.</p>}</div>}
+          {actor.role === 'reviewer' && selected.status === 'in-review' && <div className="mt-5 space-y-4"><button type="button" className={button} onClick={() => act({ type: 'approve-entry', entryId: selected.id, expectedRevision: selected.revision })}>Approve revision {selected.revision}</button><form onSubmit={event => { event.preventDefault(); if (act({ type: 'return-draft', entryId: selected.id, expectedRevision: selected.revision, feedback: reviewFeedback[selected.id] ?? '' })) setReviewFeedback(previous => ({ ...previous, [selected.id]: '' })) }}><label className="block text-sm font-medium">Review feedback<textarea name="feedback" className={field} rows={2} required minLength={3} maxLength={500} value={reviewFeedback[selected.id] ?? ''} onChange={event => setReviewFeedback(previous => ({ ...previous, [selected.id]: event.target.value }))} placeholder="Describe the fictional changes needed" /></label><button type="submit" className={secondary + ' mt-3'}>Return draft for changes</button></form></div>}
           {actor.role === 'publisher' && <div className="mt-5 flex flex-wrap gap-3"><button type="button" className={button} disabled={selected.status !== 'approved'} onClick={() => act({ type: 'publish-entry', entryId: selected.id, expectedRevision: selected.revision })}>Simulate publication</button><button type="button" className={secondary + ' disabled:opacity-40'} disabled={!selected.published} onClick={() => act({ type: 'retire-entry', entryId: selected.id, expectedRevision: selected.revision })}>Retire published sample</button></div>}
           {actor.role === 'viewer' && <p className="mt-4 text-sm text-neutral-500">Read-only editorial preview. No mutation controls are available.</p>}
         </section>}
-        {actor.role === 'author' && <section className={panel}><h2 className="text-xl font-semibold text-neutral-950">Create sample content</h2><form key={`create:${generation}`} className="mt-5 space-y-4" onSubmit={create}><label className="block text-sm font-medium">New content collection<select name="collectionId" className={field}>{cmsCollections.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><ContentFields prefix="create" /><button type="submit" className={button}>Create draft</button></form></section>}
+        {actor.role === 'author' && <section className={panel}><h2 className="text-xl font-semibold text-neutral-950">Create sample content</h2><form noValidate className="mt-5 space-y-4" onSubmit={create}><ValidationSummary errors={createErrors} prefix="create" /><div><label className="block text-sm font-medium" htmlFor="create-collectionId">New content collection</label><select id="create-collectionId" name="collectionId" className={field} value={createDraft.collectionId} onChange={event => { setCreateDraft(previous => ({ ...previous, collectionId: event.target.value })); setCreateErrors(previous => previous.filter(issue => issue.field !== 'collectionId' && issue.field !== 'slug')) }} aria-invalid={createErrors.some(issue => issue.field === 'collectionId')} aria-describedby={createErrors.some(issue => issue.field === 'collectionId') ? 'create-collectionId-error' : undefined}>{cmsCollections.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select>{createErrors.some(issue => issue.field === 'collectionId') && <p id="create-collectionId-error" className="mt-1 text-sm text-red-800">{createErrors.find(issue => issue.field === 'collectionId')!.message}</p>}</div><ContentFields value={createDraft} onChange={(name, value) => { setCreateDraft(previous => ({ ...previous, [name]: value })); setCreateErrors(previous => previous.filter(issue => issue.field !== name)) }} errors={createErrors} prefix="create" /><button type="submit" className={button}>Create draft</button></form></section>}
       </div>
       <aside className="space-y-6">
         <section className={panel} aria-label="Published sample preview"><p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Local published projection</p><h2 className="mt-2 text-xl font-semibold text-neutral-950">Published sample preview</h2><p className="mt-3 text-sm leading-6 text-neutral-600">Only frozen published snapshots appear below. Draft text, review feedback and author details are excluded. This is an in-app preview, with no network publication.</p><div className="mt-5 space-y-4">{published.map(item => <article key={item.entryId} className="rounded-lg border border-neutral-200 p-4"><p className="text-xs text-neutral-500">{item.collectionId} / {item.slug} · published revision {item.revision}</p><h3 className="mt-2 text-lg font-semibold text-neutral-950">{item.title}</h3><p className="mt-3 whitespace-pre-wrap break-words text-sm leading-6 text-neutral-700">{item.body}</p><p className="mt-4 break-words text-xs text-neutral-500">{item.receipt}</p></article>)}{!published.length && <p className="rounded-lg bg-neutral-50 p-4 text-sm text-neutral-600">No content is currently published in the local sample.</p>}</div></section>

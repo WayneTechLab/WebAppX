@@ -1,5 +1,5 @@
 import { matchHrRoute, resolveHrPath, type HrRoute } from '../hr/model'
-import { portalDirectoryHref, portalRegistry, type RegisteredPortal } from './registry'
+import { portalById, portalDirectoryHref, portalRegistry, type PortalId, type RegisteredPortal } from './registry'
 
 export type PortalRoute =
   | { kind: 'directory'; pathname: string }
@@ -29,9 +29,37 @@ export function resolvePortalRoute(location: string, hrRoutes: HrRoute[]): Porta
   if (pathname === '/hr/demo/sdk') return { kind: 'workspace', pathname, portal }
   const resolution = resolveHrPath(pathname === '/hr/demo' ? portal.href : pathname)
   const match = resolution && matchHrRoute(resolution.canonical, hrRoutes)
-  return match && resolution
+  const safeParameters = match && Object.values(match.parameters).every(value => !['__proto__', 'prototype', 'constructor'].includes(value.toLowerCase()))
+  return match && resolution && safeParameters
     ? { kind: 'workspace', pathname, portal, hrRoute: match.route, hrPortal: resolution.portal }
     : { kind: 'unsupported', pathname, portal }
+}
+
+/** Component-owned navigation memory. It is never a durable preference or a
+ * workspace field, and cannot confer access to an HR resource or route.
+ */
+export type PortalReturnLocations = Readonly<Record<PortalId, string>>
+type ReturnLocationInput = Partial<Record<PortalId, unknown>> | null | undefined
+
+/** Revalidate a remembered location before putting it in a navigation link.
+ * Only an own string property for the requested module can override its root.
+ */
+export function portalReturnHref(locations: ReturnLocationInput, id: PortalId, hrRoutes: HrRoute[]): string {
+  if (!portalRegistry.some(portal => portal.id === id)) throw new Error('Unknown portal identity')
+  const location = locations && Object.hasOwn(locations, id) ? locations[id] : undefined
+  const route = typeof location === 'string' ? resolvePortalRoute(location, hrRoutes) : undefined
+  return route?.kind === 'workspace' && route.portal.id === id ? route.pathname : portalById[id].href
+}
+
+/** Observe only supported pathnames. Directory, outside and unavailable pages
+ * keep the last supported subsection; query/hash and trailing slash aliases do
+ * not become separate return destinations. Each call returns a clean map.
+ */
+export function rememberPortalLocation(locations: ReturnLocationInput, location: unknown, hrRoutes: HrRoute[]): PortalReturnLocations {
+  const next = Object.fromEntries(portalRegistry.map(portal => [portal.id, portalReturnHref(locations, portal.id, hrRoutes)])) as Record<PortalId, string>
+  const route = typeof location === 'string' ? resolvePortalRoute(location, hrRoutes) : undefined
+  if (route?.kind === 'workspace') next[route.portal.id] = route.pathname
+  return next
 }
 
 export type PortalBreadcrumb = { label: string; href?: string }

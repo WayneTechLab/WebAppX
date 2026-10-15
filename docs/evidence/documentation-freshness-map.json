@@ -18,8 +18,14 @@
         "reviewedOn": "2026-10-15",
         "scope": "Source-only inspection of the published rebaseline guide and its implementation contract at this revision. The linked receipt retains its original starting source base; this mapping records no new test execution."
       },
-      "proposalIds": ["WX-0852"],
-      "sourceScopes": ["scripts/backlog-impact.mjs", "scripts/webappx-backlog.mjs", "tests/backlog/impact.test.mjs"],
+      "proposalIds": [
+        "WX-0852"
+      ],
+      "sourceScopes": [
+        "scripts/backlog-impact.mjs",
+        "scripts/webappx-backlog.mjs",
+        "tests/backlog/impact.test.mjs"
+      ],
       "receipts": [
         {
           "path": "docs/SYSTEMX-ADOPTION-QA-2026-10-15.md",
@@ -36,15 +42,24 @@
       "id": "portal-state-contract",
       "guide": {
         "path": "docs/PORTAL-STATE-CONTRACT.md",
-        "sha256": "8a08b87ff7de74e6cb8a3d1ed8805e3a429ffee843cadc2da6aaef570cf2cd24"
+        "sha256": "085a1b93e6c0939c9746106981df30afeec370166717613067fb05f8465bb6f6"
       },
       "examinedRevision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review of the documented browser record, temporary-input and selected replacement boundaries. This records guide/source inspection, while the original browser observations remain historical and keep their recorded starting source base."
+        "scope": "Source-only review of the revised working guide and current portal implementation atop starting base 950f9ba0c4e48faaa65056f504f105201838e3ec: session return, controlled CMS buffers, explicit payroll period/rates, time corrections, named history, bounded inspection/differences and exact-point Undo. The examined revision remains the previous committed checkpoint pending deliberate post-commit rebinding. Historical receipt dates and starting source bases are unchanged; no new execution is claimed by this mapping."
       },
-      "proposalIds": ["WX-0060", "WX-0601"],
-      "sourceScopes": ["src/portals", "src/hr/persistence.ts", "src/cms/persistence.ts", "src/crm/persistence.ts", "src/pages/TemplatePortalsPage.tsx"],
+      "proposalIds": [
+        "WX-0060",
+        "WX-0601"
+      ],
+      "sourceScopes": [
+        "src/portals",
+        "src/hr/persistence.ts",
+        "src/cms/persistence.ts",
+        "src/crm/persistence.ts",
+        "src/pages/TemplatePortalsPage.tsx"
+      ],
       "receipts": [
         {
           "path": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",

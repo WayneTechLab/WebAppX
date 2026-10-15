@@ -80,30 +80,37 @@ The two starting time rows are Avery's eight hours and Jordan's six hours dated
 
 6. **3:00–3:45 · Employer owner prepares and submits the simulation.** Open
    **Management**, keep **Employer owner** in **Synthetic management role**, then
-   open **Payroll workspace**. Use the **Run a simulated payroll** panel. Before
-   preparation, **Calculate fictional totals**, **Review simulated payroll** and
-   **Simulate payroll submission** are disabled. Activate **Prepare sample
-   payroll**; expect **4 approved entries · 17.75 hours** and **1 enrolled-plan
-   deductions in this snapshot**. Activate **Calculate fictional totals** and
+   open **Payroll workspace**. In **Run a simulated payroll**, choose **Sample
+   period start 2026-10-01** and **Sample period end 2026-10-15**. In **Configure
+   fictional hourly rates**, select Avery under **Rate employee**, enter **30**
+   under **Fictional hourly rate (dollars)** and **2026-10-01** under **Rate
+   effective date**, then activate **Add sample rate**. Repeat for Jordan. The
+   initial seed has no configured hourly rates; these explicit fictional rates
+   supply this demonstration's $30/hour arithmetic. Before preparation,
+   **Calculate fictional totals**, **Review simulated payroll** and **Simulate
+   payroll submission** are disabled. Activate **Prepare sample payroll**;
+   expect **4 approved entries · 17.75 hours** and **1 enrolled-plan deductions
+   frozen in this snapshot**. Activate **Calculate fictional totals** and
    check **Fictional gross $532.50**, **Illustrative withholding $106.50**,
    **Sample benefit deductions $25.00** and **Simulated net $401.00**. Submission
    stays disabled until **Review simulated payroll** is activated. Review, then
    activate **Simulate payroll submission**. Expect:
    `Simulated submission complete · MOCK-PAYROLL-0006. No money moved and no provider was contacted.`
    **Simulation receipts** contains exactly the new receipt row
-   `MOCK-PAYROLL-0006 · 17.75 hours · fictional net $401.00`.
+   `MOCK-PAYROLL-0006 · 2026-10-01 to 2026-10-15 · 17.75 hours · fictional net $401.00`,
+   followed by all four frozen hours/rate rows at **$30.00/hour (fictional)**.
 
 7. **3:45–4:40 · Each employee reads their own frozen statement.** Reload, open
    **Employee**, select **Avery Sample**, and open **My pay**. In **Your simulated
    pay receipts**, expect one `MOCK-PAYROLL-0006` statement for **Avery Sample ·
    2026-10-01 to 2026-10-15** with the Avery totals below. Expand **View frozen
    time and benefit inputs**: the two rows are
-   `2026-10-09 · 8.0000 hours · time-001` and
-   `2026-10-14 · 1.2500 hours · MOCK-TIME-0003`; the benefit is **Demo health
+   `2026-10-09 · 8.0000 hours × $30.00/hour (fictional) · time-001` and
+   `2026-10-14 · 1.2500 hours × $30.00/hour (fictional) · MOCK-TIME-0003`; the benefit is **Demo health
    plan**. Select **Jordan Demo**, reload, and open **My pay**. The same receipt
    now shows only Jordan's statement and totals. Its frozen rows are
-   `2026-10-09 · 6.0000 hours · time-002` and
-   `2026-10-14 · 2.5000 hours · MOCK-TIME-0005`; benefit plans read **None**.
+   `2026-10-09 · 6.0000 hours × $30.00/hour (fictional) · time-002` and
+   `2026-10-14 · 2.5000 hours × $30.00/hour (fictional) · MOCK-TIME-0005`; benefit plans read **None**.
    Each identity sees its own statement, and their totals add to the shared
    payroll receipt.
 

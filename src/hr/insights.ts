@@ -2,7 +2,7 @@ import {
   canApproveTimeEntry, canApproveTimeOff, canViewCompensation, scopedEmployees, scopedRecords,
   type HrActor, type HrFixture, type HrPortal, type HrRecord,
 } from './model'
-import { MOCK_PAY_PERIOD, type MockHrState } from './mock-workflows'
+import { MOCK_PAY_PERIOD, payrollEligibility, type MockHrState } from './mock-workflows'
 
 export type HrTalentCounts = {
   recruiting?: { publishedJobs: number; activeCandidates: number; hires: number }
@@ -25,7 +25,7 @@ export type HrPayStatement = {
   id: string; receipt: string; employeeId: string; employeeName: string;
   periodStart: string; periodEnd: string; hours: number;
   grossCents: number; illustrativeWithholdingCents: number; benefitDeductionCents: number; netCents: number;
-  entries: { id: string; date: string; hours: number }[];
+  entries: { id: string; date: string; hours: number; rateCents: number }[];
   benefitPlanTitles: string[];
 }
 
@@ -46,11 +46,11 @@ export function projectEmployeePayStatements(actor: HrActor, fixture: HrFixture,
       if (!employee || !inputs.length) return []
       const entries = inputs.map(input => {
         const entry = state.timeEntries.find(value => value.id === input.entryId)!
-        return { id: entry.id, date: entry.date, hours: input.hours }
+        return { id: entry.id, date: input.date ?? entry.date, hours: input.hours, rateCents: input.rateCents }
       })
       return [{
         id: `${payroll.receipt}:${total.employeeId}`, receipt: payroll.receipt!, employeeId: total.employeeId,
-        employeeName: `${employee.firstName} ${employee.lastName}`, periodStart: MOCK_PAY_PERIOD.start, periodEnd: MOCK_PAY_PERIOD.end,
+        employeeName: `${employee.firstName} ${employee.lastName}`, periodStart: (payroll.period ?? MOCK_PAY_PERIOD).start, periodEnd: (payroll.period ?? MOCK_PAY_PERIOD).end,
         hours: total.hours, grossCents: total.grossCents, illustrativeWithholdingCents: total.illustrativeWithholdingCents,
         benefitDeductionCents: total.benefitDeductionCents, netCents: total.netCents, entries,
         benefitPlanTitles: payroll.benefitInputs.filter(input => input.employeeId === total.employeeId).map(input => String(fixture.benefits.find(plan => plan.id === input.planId)?.name ?? fixture.benefits.find(plan => plan.id === input.planId)?.title ?? input.planId)),
@@ -91,7 +91,7 @@ export function projectHrInsights({ actor, fixture, state, requests = fixture.ti
   const unfinished = employees.filter(employee => state.onboarding[employee.id]?.stage !== 'complete')
   const approvals = time.filter(entry => canApproveTimeEntry(actor, entry, fixture.employees))
   const drafts = time.filter(entry => entry.employeeId === actor.employeeId && entry.status === 'draft')
-  const ready = time.filter(entry => entry.status === 'approved' && !entry.payrollReceipt && state.employeeStatuses[String(entry.employeeId)] === 'active' && String(entry.date) >= MOCK_PAY_PERIOD.start && String(entry.date) <= MOCK_PAY_PERIOD.end)
+  const ready = payrollEligibility(state, fixture, state.payroll.period ?? MOCK_PAY_PERIOD).filter(entry => entry.included && ids.has(entry.employeeId))
   const unconfirmedBenefits = benefits.filter(plan => !elections.some(election => election.employeeId === plan.employeeId && election.planId === plan.planId && election.stage === 'confirmed'))
   const pendingPto = pto.filter(request => ['pending', 'requested'].includes(String(request.status)))
   const ptoApprovals = pendingPto.filter(request => canApproveTimeOff(actor, request, fixture.employees))

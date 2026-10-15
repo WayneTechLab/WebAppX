@@ -139,3 +139,105 @@ test('only publisher retires a frozen publication and republication requires an 
   state = change(state, action(state, 'publish-entry', 'cms-page-001'), publisher)
   assert.equal(cms.cmsPublishedEntries(state)[0].title, content.title)
 })
+
+test('draft validation lists every invalid field in control order without changing the workspace', () => {
+  const state = cms.createCmsState()
+  const before = structuredClone(state)
+  assert.deepEqual(cms.validateCmsDraft(state, { collectionId: 'private', title: 'x', slug: '../private', body: 'short' }), {
+    content: null,
+    errors: [
+      { field: 'collectionId', message: 'Choose a supported CMS collection.' },
+      { field: 'title', message: 'The title must contain 3–100 characters.' },
+      { field: 'slug', message: 'Use a slug of up to 80 lowercase letters, numbers and single hyphens.' },
+      { field: 'body', message: 'The plain-text body must contain 10–8000 characters.' },
+    ],
+  })
+  assert.deepEqual(state, before)
+})
+
+test('field validation keeps exact length, format and runtime type constraints', () => {
+  const state = cms.createCmsState()
+  const valid = { collectionId: 'articles', title: 'Valid title', slug: 'valid-slug', body: 'A valid fictional body.' }
+  const cases = [
+    ['title', '', 'The title must contain 3–100 characters.'],
+    ['title', 'ab', 'The title must contain 3–100 characters.'],
+    ['title', 't'.repeat(101), 'The title must contain 3–100 characters.'],
+    ['title', null, 'The title must contain 3–100 characters.'],
+    ['slug', '', 'Use a slug of up to 80 lowercase letters, numbers and single hyphens.'],
+    ['slug', '-start', 'Use a slug of up to 80 lowercase letters, numbers and single hyphens.'],
+    ['slug', 'end-', 'Use a slug of up to 80 lowercase letters, numbers and single hyphens.'],
+    ['slug', 'two--hyphens', 'Use a slug of up to 80 lowercase letters, numbers and single hyphens.'],
+    ['slug', 'with_underscore', 'Use a slug of up to 80 lowercase letters, numbers and single hyphens.'],
+    ['slug', 'a'.repeat(81), 'Use a slug of up to 80 lowercase letters, numbers and single hyphens.'],
+    ['slug', 42, 'Use a slug of up to 80 lowercase letters, numbers and single hyphens.'],
+    ['body', 'b'.repeat(9), 'The plain-text body must contain 10–8000 characters.'],
+    ['body', 'b'.repeat(8001), 'The plain-text body must contain 10–8000 characters.'],
+    ['body', {}, 'The plain-text body must contain 10–8000 characters.'],
+  ]
+  for (const [field, value, message] of cases) {
+    assert.deepEqual(cms.validateCmsDraft(state, { ...valid, [field]: value }), { errors: [{ field, message }], content: null }, `${field}: ${String(value).slice(0, 30)}`)
+  }
+})
+
+test('inclusive field boundaries normalize exactly as saved content does', () => {
+  const state = cms.createCmsState()
+  assert.deepEqual(cms.validateCmsDraft(state, { collectionId: 'articles', title: '  Abc  ', slug: '  Z  ', body: '  0123456789  ' }), {
+    errors: [], content: { title: 'Abc', slug: 'z', body: '0123456789' },
+  })
+  assert.deepEqual(cms.validateCmsDraft(state, { collectionId: 'articles', title: 'T'.repeat(100), slug: 'S'.repeat(80), body: 'B'.repeat(8000) }), {
+    errors: [], content: { title: 'T'.repeat(100), slug: 's'.repeat(80), body: 'B'.repeat(8000) },
+  })
+})
+
+test('validation includes a reserved slug alongside other field errors and respects entry and collection scope', () => {
+  const state = cms.createCmsState()
+  assert.deepEqual(cms.validateCmsDraft(state, { collectionId: 'pages', title: 'x', slug: ' WELCOME ', body: '' }).errors, [
+    { field: 'title', message: 'The title must contain 3–100 characters.' },
+    { field: 'slug', message: 'This collection already has that draft or published slug. Choose another slug.' },
+    { field: 'body', message: 'The plain-text body must contain 10–8000 characters.' },
+  ])
+  assert.deepEqual(cms.validateCmsDraft(state, { collectionId: 'articles', title: 'Article title', slug: 'welcome', body: 'A different collection can use this slug.' }).errors, [])
+  assert.deepEqual(cms.validateCmsDraft(state, { collectionId: 'pages', title: 'Page title', slug: 'welcome', body: 'The same entry can retain its own slug.' }, { entryId: 'cms-page-001' }).errors, [])
+  state.entries[0].slug = 'new-private-draft'
+  assert.deepEqual(cms.validateCmsDraft(state, { collectionId: 'pages', title: 'Another page', slug: 'welcome', body: 'A frozen public slug remains reserved.' }).errors, [
+    { field: 'slug', message: 'This collection already has that draft or published slug. Choose another slug.' },
+  ])
+})
+
+test('invalid create and edit submissions preserve complete records, receipts and public snapshots', () => {
+  const state = cms.createCmsState()
+  const before = structuredClone(state)
+  const publishedBefore = structuredClone(cms.cmsPublishedEntries(state))
+  const invalid = { title: '', slug: 'two--hyphens', body: 'short' }
+  assert.throws(() => change(state, { type: 'create-entry', collectionId: 'pages', ...invalid }), { message: 'The title must contain 3–100 characters.' })
+  assert.throws(() => change(state, { type: 'edit-entry', entryId: 'cms-page-001', expectedRevision: 1, ...invalid }), { message: 'The title must contain 3–100 characters.' })
+  assert.deepEqual(state, before)
+  assert.deepEqual(cms.cmsPublishedEntries(state), publishedBefore)
+})
+
+test('dirty checks ignore save normalization and detect actual content changes including invalid drafts', () => {
+  const baseline = { title: 'Fictional title', slug: 'sample-slug', body: 'A fictional body.' }
+  assert.equal(cms.cmsDraftIsDirty({ title: '  Fictional title\n', slug: ' SAMPLE-SLUG ', body: '\nA fictional body.  ' }, baseline), false)
+  for (const draft of [
+    { ...baseline, title: 'Fictional Title' },
+    { ...baseline, slug: 'another-slug' },
+    { ...baseline, body: 'A  fictional body.' },
+    { ...baseline, title: '' },
+    { ...baseline, slug: 'two--hyphens' },
+  ]) assert.equal(cms.cmsDraftIsDirty(draft, baseline), true)
+  assert.equal(cms.cmsDraftIsDirty({ ...baseline }, baseline), false)
+})
+
+test('a successful normalized save becomes a clean baseline and leaves another entry and publication unchanged', () => {
+  const before = cms.createCmsState()
+  const draft = { title: '  New fictional article  ', slug: ' NEW-ARTICLE ', body: '  A changed fictional article body.  ' }
+  const state = change(before, { type: 'edit-entry', entryId: draftId, expectedRevision: 1, ...draft })
+  assert.equal(cms.cmsDraftIsDirty(draft, current(state)), false)
+  assert.deepEqual(current(state), {
+    id: 'cms-article-001', collectionId: 'articles', authorId: 'cms-author', revision: 2, status: 'draft', approval: null, published: null, feedback: '',
+    title: 'New fictional article', slug: 'new-article', body: 'A changed fictional article body.',
+  })
+  assert.deepEqual(state.entries[0], before.entries[0])
+  assert.deepEqual(state.activity, [{ receipt: 'MOCK-CMS-0001', entryId: 'cms-article-001', revision: 2, actorId: 'cms-author', action: 'Saved draft revision; previous approval invalidated' }])
+  assert.deepEqual(cms.cmsPublishedEntries(state), cms.cmsPublishedEntries(before))
+})

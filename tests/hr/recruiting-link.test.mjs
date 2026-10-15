@@ -50,7 +50,8 @@ function hrChange(state, actor, event, fixture) {
   return workflow.transitionMockHr(state, actor, event, fixture)
 }
 function submitPayroll(state, fixture = base) {
-  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) state = hrChange(state, owner, { type }, fixture)
+  for (const person of fixture.employees) if (!state.sampleRates?.[person.id]) state = hrChange(state, owner, { type: 'set-sample-rate', employeeId: person.id, effectiveFrom: '2026-10-01', hourlyRateCents: 3000 }, fixture)
+  for (const type of ['prepare-payroll', 'calculate-payroll', 'review-payroll', 'submit-payroll']) state = hrChange(state, owner, { type, ...(type === 'prepare-payroll' ? { period: { start: '2026-10-01', end: '2026-10-15' } } : {}) }, fixture)
   return state
 }
 function ongoingWork() {
@@ -128,7 +129,7 @@ test('a recruited employee completes onboarding, submits own hours, receives sco
   assert.equal(statements[0].periodStart, '2026-10-01')
   assert.equal(statements[0].periodEnd, '2026-10-15')
   assert.equal(statements[0].netCents, state.payroll.employeeTotals[0].netCents)
-  assert.deepEqual(statements[0].entries, [{ id: entryId, date: '2026-10-15', hours: 8 }])
+  assert.deepEqual(statements[0].entries, [{ id: entryId, date: '2026-10-15', hours: 8, rateCents: 3000 }])
   assert.equal(insights.projectEmployeePayStatements(morgan, fixture, state).length, 0)
   assert.equal(insights.projectEmployeePayStatements(avery, fixture, state).some(statement => statement.employeeId === employee.id), false)
   assert.throws(() => hrChange(state, owner, { type: 'submit-payroll' }, fixture), /Review fictional/)
@@ -144,7 +145,7 @@ test('hiring does not automatically make approved new-hire time eligible before 
   state = hrChange(state, self, { type: 'submit-time', entryIds: [entryId] }, fixture)
   state = hrChange(state, morgan, { type: 'approve-time', entryId }, fixture)
   assert.equal(state.employeeStatuses[employee.id], 'onboarding')
-  assert.throws(() => hrChange(state, owner, { type: 'prepare-payroll' }, fixture), /active sample employee/)
+  assert.throws(() => hrChange(state, owner, { type: 'prepare-payroll', period: { start: '2026-10-01', end: '2026-10-15' } }, fixture), /active sample employee/)
   assert.equal(insights.projectEmployeePayStatements(self, fixture, state).length, 0)
 })
 

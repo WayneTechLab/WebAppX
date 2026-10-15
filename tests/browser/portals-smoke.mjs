@@ -51,6 +51,10 @@ async function assertCrmDashboard(page, totals) {
 
 function navigation(page) { return page.getByRole('navigation', { name: 'Template workspaces', exact: true }) }
 async function openPortal(page, title) { await navigation(page).getByRole('link', { name: title, exact: true }).click() }
+async function openHrDashboard(page) {
+  await openPortal(page, 'People & HR')
+  await page.getByRole('navigation', { name: 'Demo portals', exact: true }).getByRole('link', { name: 'Management', exact: true }).click()
+}
 
 async function exportSnapshot(page, artifactDir, label) {
   await openPortal(page, 'Portal directory')
@@ -148,7 +152,7 @@ export async function runPortalSmoke({ browser, origin, artifactDir, seed }) {
     await expect(page.getByText(smokeChanges.goalTitle, { exact: true })).toBeVisible()
     let expected = expectedAfter(seed.workspaces, 'hr')
     assert.deepEqual(await exportSnapshot(page, artifactDir, '02-after-hr-refresh'), expected, 'HR persists its new goal; all CMS/CRM records remain unchanged')
-    await openPortal(page, 'People & HR')
+    await openHrDashboard(page)
     await assertHrDashboard(page, dashboardTotals(expected).hr)
     checks.push('HR: create goal, reload, update dashboard and compare full payload; CMS/CRM preserved')
 

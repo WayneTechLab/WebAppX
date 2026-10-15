@@ -194,7 +194,67 @@ owned browser/server cleanup. Read the
 and [coverage map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/QA-COVERAGE-MAP.md)
 for the checked source, exact records and remaining boundaries.
 
-## Rehearse the evaluator and adoption wave
+## Try the portal maturity workflows
+
+The [maturity guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY.md)
+covers the current 16-criterion wave from published base
+`950f9ba0c4e48faaa65056f504f105201838e3ec`: **WX-0056, WX-0151–WX-0158,
+WX-0280, WX-0282, WX-0397, WX-0453, WX-0454, WX-0457 and WX-0458**.
+Use `npm run dev:mock` and its printed `/portals` origin.
+
+Fresh seeds and legacy HR saves have **unconfigured fictional hourly rates**;
+older `payCents` amounts supply no hourly cadence. Before preparing native payroll:
+
+1. Open `/hr/demo/admin/payroll` as **Employer owner** or **Payroll admin**.
+   Choose **Sample period start** and **Sample period end** for 1–366 inclusive
+   calendar days; explicitly choose `2026-10-01` through `2026-10-15` for the
+   October example.
+2. Select each **Rate employee**, enter a **Fictional hourly rate (dollars)**
+   and **Rate effective date**, then choose **Add sample rate**. Cover every
+   eligible employee/work date; a rate applies from its effective date and later
+   changes need later dates.
+3. Check **Time-entry eligibility**, then prepare, calculate, review and simulate
+   submission. Prepared inputs freeze work dates, hours and the applicable rates.
+   A stale preparation blocks later steps until intentional **Reprepare sample
+   payroll**. Submitted receipts and statements retain their frozen inputs.
+
+Managers can return submitted unpaid time with a reason; its owner can edit the
+returned draft and resubmit it. Own unpaid drafts support edit/cancel and explicit
+delete/keep confirmation. Submitted, approved and paid rows stay protected.
+CMS forms expose complete field-error summaries and first-invalid focus; entry
+switching offers keep/discard when a buffer is dirty. CRM rejects malformed
+enums, unsupported/oversized notes and invalid relationships before an import
+can replace current records or save bytes.
+
+The directory card and shared navigation return to the last supported HR
+subsection in the mounted session; unsupported routes cannot replace it. Browser
+save persistence and the SDK's separate sample state keep their existing scope.
+Use **Create named restore point** to capture selected live portals without
+restoring. Creating or renaming a point changes only history, preserving workspace
+saves and unsaved forms. **Inspect captured records** shows all collection
+counts with bounded identifiers. Restore/Undo differences show current-to-target
+changes; confirmation refuses a point changed or removed since its preview.
+
+```bash
+npm run browser:install # explicit first-time Chromium installation
+npm run maturity:test
+npm run browser:maturity
+```
+
+Focused results record **79 new model tests**, the **139-test HR suite**, and
+**13 browser check groups covering all 16 criteria** passing. The maturity payroll
+scenario reconciles **10.75 hours / $298.75 gross / $239 net**, separately from
+the historical evaluator's inputs below. The
+[maturity QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-QA-2026-10-15.md)
+retains the source and local evidence boundaries.
+Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
+records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+**756 local, 127 operator and 40 provider** gates remaining. The full 1,000-item
+goal remains active; use `npm run backlog:summary` for current counts.
+
+**Integrated verification passed: all 56 CI stages, 111 browser checks/check groups and Hosting preflight.** The source-derived `ci:plan` report itself executes no gate. These are local fictional-workspace observations; provider, deployed-service, native Windows and production acceptance retain their separate evidence requirements.
+
+## Rehearse the historical evaluator and adoption wave
 
 Use `npm run dev:mock` and its printed `/portals` origin in a fresh evaluation
 context. The [printable worksheet](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-EVALUATOR-WORKSHEET.md)

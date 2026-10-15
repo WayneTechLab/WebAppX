@@ -1,18 +1,22 @@
 import { canApproveTimeEntry, canEditEmployeeProfile, validateTimeEntry, type HrActor, type HrFixture, type HrRecord } from './model'
 
 export type MockOnboarding = { profileReviewed: boolean; jobReviewed: boolean; tasks: Record<string, boolean>; stage: 'draft' | 'reviewed' | 'complete'; receipt?: string }
-export type MockTimeEntry = HrRecord & { employeeId: string; date: string; hours: number; status: 'draft' | 'submitted' | 'approved'; source: 'manual' | 'timer' | 'fixture'; payrollReceipt?: string }
+export type MockTimeEntry = HrRecord & { employeeId: string; date: string; hours: number; status: 'draft' | 'submitted' | 'approved'; source: 'manual' | 'timer' | 'fixture'; payrollReceipt?: string; returnReason?: string; returnedBy?: string }
+export type MockSamplePeriod = { start: string; end: string }
+export type MockSampleRate = { effectiveFrom: string; hourlyRateCents: number }
+export type MockPayrollInput = { entryId: string; employeeId: string; hours: number; rateCents: number; date?: string; rateEffectiveFrom?: string }
 export type MockBenefitElection = { employeeId: string; planId: string; election: 'enroll' | 'waive'; stage: 'draft' | 'reviewed' | 'confirmed'; receipt?: string }
 export type MockTimer = { employeeId: string; role: HrActor['role']; date: string; startedAt: number }
 export type MockPayrollEmployeeTotal = { employeeId: string; hours: number; grossCents: number; illustrativeWithholdingCents: number; benefitDeductionCents: number; netCents: number }
 export type MockPayroll = {
   stage: 'idle' | 'prepared' | 'calculated' | 'reviewed' | 'submitted';
-  inputs: { entryId: string; employeeId: string; hours: number; rateCents: number }[];
+  inputs: MockPayrollInput[];
+  period?: MockSamplePeriod;
   benefitInputs: { employeeId: string; planId: string; deductionCents: number }[];
   employeeTotals: MockPayrollEmployeeTotal[];
   hours: number; grossCents: number; illustrativeWithholdingCents: number; benefitDeductionCents: number; netCents: number; receipt?: string;
 }
-export type MockHrState = { onboarding: Record<string, MockOnboarding>; profileEmails: Record<string, string>; employeeStatuses: Record<string, string>; timeEntries: MockTimeEntry[]; benefitElections: MockBenefitElection[]; payroll: MockPayroll; payrollHistory: MockPayroll[]; sequence: number }
+export type MockHrState = { onboarding: Record<string, MockOnboarding>; profileEmails: Record<string, string>; employeeStatuses: Record<string, string>; timeEntries: MockTimeEntry[]; benefitElections: MockBenefitElection[]; payroll: MockPayroll; payrollHistory: MockPayroll[]; sequence: number; sampleRates?: Record<string, MockSampleRate[]> }
 export type MockHrEvent =
   | { type: 'review-profile' | 'review-job' | 'review-onboarding' | 'complete-onboarding'; employeeId: string }
   | { type: 'change-profile'; employeeId: string; workEmail: string }
@@ -20,15 +24,85 @@ export type MockHrEvent =
   | { type: 'add-time'; date: string; hours: number; source: 'manual' | 'timer' }
   | { type: 'submit-time'; entryIds: string[] }
   | { type: 'approve-time'; entryId: string }
+  | { type: 'return-time'; entryId: string; reason: string }
+  | { type: 'edit-time'; entryId: string; date: string; hours: number }
+  | { type: 'delete-time'; entryId: string; confirmed: boolean }
+  | { type: 'set-sample-rate'; employeeId: string; effectiveFrom: string; hourlyRateCents: number }
   | { type: 'elect-benefit'; planId: string; election: 'enroll' | 'waive' }
   | { type: 'review-benefit' | 'confirm-benefit'; planId: string }
-  | { type: 'prepare-payroll' | 'calculate-payroll' | 'review-payroll' | 'submit-payroll' }
+  | { type: 'prepare-payroll'; period: MockSamplePeriod }
+  | { type: 'calculate-payroll' | 'review-payroll' | 'submit-payroll' }
 
 const blankPayroll = (): MockPayroll => ({ stage: 'idle', inputs: [], benefitInputs: [], employeeTotals: [], hours: 0, grossCents: 0, illustrativeWithholdingCents: 0, benefitDeductionCents: 0, netCents: 0 })
 export const MOCK_HOURLY_RATE_CENTS = 3000
 export const MOCK_WITHHOLDING_RATE = 0.2
 export const MOCK_BENEFIT_DEDUCTION_CENTS = 2500
 export const MOCK_PAY_PERIOD = Object.freeze({ start: '2026-10-01', end: '2026-10-15' })
+
+/** Optional extensions preserve legacy save/export/history shapes. New runs
+ * must deliberately supply a period and rates; old payCents has no cadence. */
+export function validMockPeriod(value: unknown): value is MockSamplePeriod {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+  const period = value as MockSamplePeriod
+  if (Object.keys(value).length !== 2 || typeof period.start !== 'string' || typeof period.end !== 'string'
+    || !validateTimeEntry(period.start, 1).valid || !validateTimeEntry(period.end, 1).valid) return false
+  const days = (Date.parse(period.end + 'T00:00:00Z') - Date.parse(period.start + 'T00:00:00Z')) / 86400000 + 1
+  return days >= 1 && days <= 366
+}
+
+export function sampleRateFor(state: MockHrState, employeeId: string, date: string): MockSampleRate | undefined {
+  return state.sampleRates?.[employeeId]?.filter(rate => rate.effectiveFrom <= date).at(-1)
+}
+
+export function payrollEligibility(state: MockHrState, fixture: HrFixture, period: unknown) {
+  const validPeriod = validMockPeriod(period)
+  return state.timeEntries.map(entry => {
+    const reasons: string[] = []
+    if (!validPeriod) reasons.push('Choose a valid sample period (1–366 calendar days).')
+    if (entry.payrollReceipt) reasons.push(`Already consumed by ${entry.payrollReceipt}.`)
+    if (entry.status !== 'approved') reasons.push(entry.status === 'draft' && entry.returnReason ? `Returned draft: ${entry.returnReason}` : `Time is ${entry.status}, not approved.`)
+    const validEntry = validateTimeEntry(entry.date, entry.hours)
+    if (!validEntry.valid) reasons.push(validEntry.error ?? 'Invalid time entry.')
+    if (state.timeEntries.filter(value => value.employeeId === entry.employeeId && value.date === entry.date).reduce((sum, value) => sum + value.hours, 0) > 24) reasons.push('Combined employee/day hours exceed 24.')
+    if (!fixture.employees.some(employee => employee.id === entry.employeeId) || state.employeeStatuses[entry.employeeId] !== 'active') reasons.push('Employee is not active in this sample.')
+    if (validPeriod && (entry.date < period.start || entry.date > period.end)) reasons.push('Work date is outside the selected period.')
+    const baseEligible = reasons.length === 0
+    const rate = sampleRateFor(state, entry.employeeId, entry.date)
+    if (!rate) reasons.push('No explicit fictional hourly rate is configured for this work date.')
+    return { entryId: entry.id, employeeId: entry.employeeId, date: entry.date, hours: entry.hours,
+      included: reasons.length === 0, baseEligible, reasons,
+      ...(rate ? { rateCents: rate.hourlyRateCents, rateEffectiveFrom: rate.effectiveFrom } : {}) }
+  })
+}
+
+function payrollSnapshot(state: MockHrState, fixture: HrFixture, period: MockSamplePeriod) {
+  const eligibility = payrollEligibility(state, fixture, period)
+  const missing = eligibility.filter(entry => entry.baseEligible && entry.rateCents === undefined)
+  if (missing.length) throw new Error(`Configure an explicit fictional hourly rate for every eligible employee/work date: ${[...new Set(missing.map(entry => entry.employeeId))].join(', ')}.`)
+  const included = eligibility.filter(entry => entry.included)
+  const employeeIds = new Set(included.map(entry => entry.employeeId))
+  return {
+    inputs: included.map(entry => ({ entryId: entry.entryId, employeeId: entry.employeeId, date: entry.date, hours: entry.hours, rateCents: entry.rateCents!, rateEffectiveFrom: entry.rateEffectiveFrom! })),
+    benefitInputs: state.benefitElections.filter(election => election.stage === 'confirmed' && election.election === 'enroll' && employeeIds.has(election.employeeId))
+      .map(election => ({ employeeId: election.employeeId, planId: election.planId, deductionCents: MOCK_BENEFIT_DEDUCTION_CENTS })),
+  }
+}
+
+export function payrollFreshness(state: MockHrState, fixture: HrFixture): { stale: boolean; reason: string } {
+  if (state.payroll.stage === 'idle' || state.payroll.stage === 'submitted') return { stale: false, reason: '' }
+  if (!validMockPeriod(state.payroll.period) || state.payroll.inputs.some(input => !input.date || !input.rateEffectiveFrom)) {
+    return { stale: true, reason: 'Legacy preparation needs a chosen period and explicit fictional rates. Reprepare sample payroll.' }
+  }
+  try {
+    const snapshot = payrollSnapshot(state, fixture, state.payroll.period)
+    const signature = (value: Pick<MockPayroll, 'inputs' | 'benefitInputs'>) => JSON.stringify([
+      value.inputs.map(input => [input.entryId, input.employeeId, input.date, input.hours, input.rateCents, input.rateEffectiveFrom]).sort((left, right) => String(left[0]).localeCompare(String(right[0]))),
+      value.benefitInputs.map(input => [input.employeeId, input.planId, input.deductionCents]).sort((left, right) => `${left[0]}:${left[1]}`.localeCompare(`${right[0]}:${right[1]}`)),
+    ])
+    const changed = signature(snapshot) !== signature(state.payroll)
+    return { stale: changed, reason: changed ? 'Approved hours, eligibility, rates or confirmed benefits changed. Reprepare sample payroll intentionally.' : '' }
+  } catch (error) { return { stale: true, reason: error instanceof Error ? error.message + ' Reprepare sample payroll.' : 'Reprepare sample payroll.' } }
+}
 
 export function elapsedMockHours(startedAt: number, stoppedAt: number) {
   if (!Number.isFinite(startedAt) || !Number.isFinite(stoppedAt) || stoppedAt <= startedAt) throw new Error('The sample timer requires a positive elapsed duration.')
@@ -133,14 +207,56 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     const employeeId = requireOwnEmployee(actor, fixture)
     if (!event.entryIds.length || new Set(event.entryIds).size !== event.entryIds.length) throw new Error('Select at least one distinct draft entry.')
     const entries = event.entryIds.map(id => next.timeEntries.find(entry => entry.id === id))
-    if (entries.some(entry => !entry || entry.employeeId !== employeeId || entry.status !== 'draft')) throw new Error('Only your own draft entries may be submitted.')
+    if (entries.some(entry => !entry || entry.employeeId !== employeeId || entry.status !== 'draft' || entry.payrollReceipt)) throw new Error('Only your own draft entries may be submitted.')
+    for (const entry of entries) {
+      const validation = validateTimeEntry(entry!.date, entry!.hours)
+      if (!validation.valid) throw new Error(validation.error)
+      if (next.timeEntries.filter(value => value.employeeId === employeeId && value.date === entry!.date).reduce((sum, value) => sum + value.hours, 0) > 24) throw new Error('Combined employee/day hours cannot exceed 24.')
+    }
     entries.forEach(entry => { entry!.status = 'submitted' })
     return next
   }
   if (event.type === 'approve-time') {
     const entry = next.timeEntries.find(value => value.id === event.entryId)
-    if (!entry || !canApproveTimeEntry(actor, entry, fixture.employees)) throw new Error('Approval requires a submitted entry within this role and team scope; self-approval is unavailable.')
+    if (!entry || entry.payrollReceipt || !canApproveTimeEntry(actor, entry, fixture.employees)) throw new Error('Approval requires a submitted entry within this role and team scope; self-approval is unavailable.')
+    const validation = validateTimeEntry(entry.date, entry.hours)
+    if (!validation.valid) throw new Error(validation.error)
+    if (next.timeEntries.filter(value => value.employeeId === entry.employeeId && value.date === entry.date).reduce((sum, value) => sum + value.hours, 0) > 24) throw new Error('Combined employee/day hours cannot exceed 24.')
     entry.status = 'approved'
+    return next
+  }
+  if (event.type === 'return-time') {
+    const entry = next.timeEntries.find(value => value.id === event.entryId)
+    if (!entry || entry.payrollReceipt || actor.role !== 'manager' || !canApproveTimeEntry(actor, entry, fixture.employees)) throw new Error('Only a different scoped manager can return submitted unpaid time.')
+    if (typeof event.reason !== 'string' || !event.reason.trim() || event.reason.trim().length > 500 || /[\r\n]/.test(event.reason) || event.reason.includes('\0')) throw new Error('Enter a return reason of 1–500 characters.')
+    entry.status = 'draft'; entry.returnReason = event.reason.trim(); entry.returnedBy = actor.employeeId!
+    return next
+  }
+  if (event.type === 'edit-time' || event.type === 'delete-time') {
+    const employeeId = requireOwnEmployee(actor, fixture)
+    const entry = next.timeEntries.find(value => value.id === event.entryId)
+    if (!entry || entry.employeeId !== employeeId || entry.status !== 'draft' || entry.payrollReceipt) throw new Error('Only your own unpaid draft time may be edited or deleted.')
+    if (event.type === 'delete-time') {
+      if (event.confirmed !== true) throw new Error('Confirm deletion of this draft time entry.')
+      next.timeEntries = next.timeEntries.filter(value => value.id !== entry.id)
+    } else {
+      const validation = validateTimeEntry(event.date, event.hours)
+      if (!validation.valid) throw new Error(validation.error)
+      const otherHours = next.timeEntries.filter(value => value.id !== entry.id && value.employeeId === employeeId && value.date === event.date).reduce((sum, value) => sum + value.hours, 0)
+      if (otherHours + event.hours > 24) throw new Error('Combined draft, submitted and approved sample entries cannot exceed 24 hours for one employee/day.')
+      entry.date = event.date; entry.hours = event.hours
+    }
+    return next
+  }
+  if (event.type === 'set-sample-rate') {
+    requirePayrollRole(actor)
+    if (!fixture.employees.some(employee => employee.id === event.employeeId)) throw new Error('Choose a known fictional employee for the sample rate.')
+    if (typeof event.effectiveFrom !== 'string' || !validateTimeEntry(event.effectiveFrom, 1).valid) throw new Error('Enter a valid sample rate effective date.')
+    if (!Number.isSafeInteger(event.hourlyRateCents) || event.hourlyRateCents <= 0 || event.hourlyRateCents > 1_000_000) throw new Error('Enter an explicit fictional hourly rate greater than zero and no more than $10,000, in whole cents.')
+    const timeline = next.sampleRates?.[event.employeeId] ?? []
+    if (timeline.length >= 1000) throw new Error('This sample rate timeline has reached its 1,000-change limit.')
+    if (timeline.length && event.effectiveFrom <= timeline.at(-1)!.effectiveFrom) throw new Error('Add a later effective date to the sample rate timeline; previous rates are preserved.')
+    next.sampleRates = { ...next.sampleRates, [event.employeeId]: [...timeline, { effectiveFrom: event.effectiveFrom, hourlyRateCents: event.hourlyRateCents }] }
     return next
   }
   if (['elect-benefit', 'review-benefit', 'confirm-benefit'].includes(event.type)) {
@@ -169,16 +285,16 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
   }
   requirePayrollRole(actor)
   if (event.type === 'prepare-payroll') {
-    const entries = next.timeEntries.filter(entry => entry.status === 'approved' && !entry.payrollReceipt && next.employeeStatuses[entry.employeeId] === 'active' && entry.date >= MOCK_PAY_PERIOD.start && entry.date <= MOCK_PAY_PERIOD.end)
-    if (!entries.length) throw new Error(`Approve at least one unpaid time entry for an active sample employee in ${MOCK_PAY_PERIOD.start} to ${MOCK_PAY_PERIOD.end} before preparing payroll.`)
-    const employeeIds = new Set(entries.map(entry => entry.employeeId))
+    if (!validMockPeriod(event.period)) throw new Error('Choose a valid sample payroll period of 1–366 calendar days before preparing.')
+    const snapshot = payrollSnapshot(next, fixture, event.period)
+    if (!snapshot.inputs.length) throw new Error(`Approve at least one unpaid time entry for an active sample employee in ${event.period.start} to ${event.period.end} before preparing payroll.`)
     next.payroll = {
-      ...blankPayroll(), stage: 'prepared', hours: entries.reduce((sum, entry) => sum + entry.hours, 0),
-      inputs: entries.map(entry => ({ entryId: entry.id, employeeId: entry.employeeId, hours: entry.hours, rateCents: MOCK_HOURLY_RATE_CENTS })),
-      benefitInputs: next.benefitElections.filter(election => election.stage === 'confirmed' && election.election === 'enroll' && employeeIds.has(election.employeeId)).map(election => ({ employeeId: election.employeeId, planId: election.planId, deductionCents: MOCK_BENEFIT_DEDUCTION_CENTS })),
+      ...blankPayroll(), stage: 'prepared', period: { ...event.period }, hours: snapshot.inputs.reduce((sum, entry) => sum + entry.hours, 0), ...snapshot,
     }
   } else if (event.type === 'calculate-payroll') {
     if (next.payroll.stage !== 'prepared') throw new Error('Prepare approved sample inputs before calculation.')
+    const freshness = payrollFreshness(next, fixture)
+    if (freshness.stale) throw new Error('Payroll preparation is stale. ' + freshness.reason)
     next.payroll.employeeTotals = [...new Set(next.payroll.inputs.map(input => input.employeeId))].map(employeeId => {
       const inputs = next.payroll.inputs.filter(input => input.employeeId === employeeId)
       const hours = inputs.reduce((sum, input) => sum + input.hours, 0)
@@ -195,9 +311,13 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     next.payroll.stage = 'calculated'
   } else if (event.type === 'review-payroll') {
     if (next.payroll.stage !== 'calculated') throw new Error('Calculate fictional totals before review.')
+    const freshness = payrollFreshness(next, fixture)
+    if (freshness.stale) throw new Error('Payroll preparation is stale. ' + freshness.reason)
     next.payroll.stage = 'reviewed'
   } else if (event.type === 'submit-payroll') {
     if (next.payroll.stage !== 'reviewed') throw new Error('Review fictional totals before simulating submission.')
+    const freshness = payrollFreshness(next, fixture)
+    if (freshness.stale) throw new Error('Payroll preparation is stale. ' + freshness.reason)
     const entries = next.payroll.inputs.map(input => next.timeEntries.find(entry => entry.id === input.entryId))
     if (entries.some(entry => !entry || entry.status !== 'approved' || entry.payrollReceipt)) throw new Error('Prepared inputs are unavailable or already included in a simulated receipt.')
     next.payroll.receipt = receipt('PAYROLL'); next.payroll.stage = 'submitted'

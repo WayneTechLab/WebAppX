@@ -36,7 +36,59 @@ debit; it does not use the native timesheet/benefit calculation. No real
 SSN, banking data, cookies, authentication credentials or Gusto account is needed
 for these local requests.
 
-## Evaluator scripts and adoption decisions — 2026-10-15
+## Current native payroll and time setup — 2026-10-15
+
+The [portal maturity guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY.md)
+documents the current period/rate and timesheet controls. Fresh seeds and legacy
+saves have **unconfigured fictional hourly rates**. Existing `payCents` amounts
+do not declare an hourly cadence and are never converted into rates. Historical
+submitted receipts and statements retain their original captured inputs.
+
+1. Open `/hr/demo/admin/payroll` as **Employer owner** or **Payroll admin**.
+   In **Run a simulated payroll**, choose **Sample period start** and
+   **Sample period end** for 1–366 inclusive calendar days. The October sample
+   requires an explicit `2026-10-01` through `2026-10-15` selection.
+2. Choose a **Rate employee**, enter a **Fictional hourly rate (dollars)** and
+   **Rate effective date**, then choose **Add sample rate**. Configure each
+   eligible employee/work date. Rates apply by the work date; each later change
+   must have a later effective date. The timeline displays absent configuration
+   explicitly.
+3. Inspect **Time-entry eligibility**. Only active employees' approved unpaid
+   entries inside the chosen period qualify. Missing rates refuse preparation;
+   draft, returned, out-of-period, inactive and previously consumed rows show
+   exclusion reasons.
+4. Choose **Prepare sample payroll**, **Calculate fictional totals**,
+   **Review simulated payroll**, then **Simulate payroll submission**. Prepared
+   inputs freeze hours, work dates, applicable rates and confirmed benefit
+   choices. A changed selected period or changed relevant inputs makes the
+   preparation stale and blocks later steps until intentional **Reprepare sample
+   payroll**. Submitted receipts and own statements retain frozen rates and totals
+   after later timeline changes.
+
+A direct-report manager can **Return sample time** for submitted unpaid time
+with a required reason. The row becomes a draft, keeps its visible return reason and is
+excluded from payroll until resubmitted and approved. Employees and managers can
+**Edit draft** for their own unpaid draft, **Save draft changes** or cancel, and
+**Delete draft** with **Confirm delete draft** / **Keep draft**. Submitted,
+approved and paid rows cannot be edited or deleted through these actions.
+
+The current 16-criterion maturity wave starts from published base
+`950f9ba0c4e48faaa65056f504f105201838e3ec`. Focused results record **79 new model
+tests**, the complete **139-test HR suite**, and **13 browser check groups covering
+all 16 criteria** passing; its payroll fixture independently reconciles
+**10.75 hours / $298.75 gross / $239 net**. Those inputs differ from the earlier
+$401 evaluator scenario below. Run `npm run maturity:test` and
+`npm run browser:maturity` after explicit Chromium installation. The
+[maturity QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-QA-2026-10-15.md)
+retains exact scope. Agent 0 accepted all **16 original criteria locally**. The
+canonical catalog now records **77 done / 923 remaining**: **96 P1, 670 P2 and
+157 P3**, with **756 local, 127 operator and 40 provider** gates remaining. The
+full 1,000-item goal remains active; use `npm run backlog:summary` for current
+counts.
+
+**Integrated verification passed: all 56 CI stages, 111 browser checks/check groups and Hosting preflight.** The source-derived `ci:plan` report itself executes no gate. These are local fictional-workspace observations; provider, deployed-service, native Windows and production acceptance retain their separate evidence requirements.
+
+## Historical evaluator scripts and adoption decisions — 2026-10-15
 
 Use the [five-minute HR script](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/HR-FIVE-MINUTE.md)
 with the [printable evaluator worksheet](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-EVALUATOR-WORKSHEET.md)
@@ -90,16 +142,19 @@ The local host links the employee, manager and management previews:
 2. In the employee self preview, elect sample enrollment or waiver, review and
    confirm the fictional benefit election. Management views are read-only here.
 3. Enter and submit the employee timesheet, then use its scoped manager to
-   approve it. Payroll consumes approved hours rather than a draft timesheet.
-4. Prepare the payroll preview from approved hours, calculate fictional totals,
-   review it and simulate submission. Inspect the visible mock receipt.
+   approve or return it with a reason. Payroll consumes eligible approved hours;
+   returned drafts must be corrected, resubmitted and approved first.
+4. [Choose a sample period and configure explicit fictional rates](#current-native-payroll-and-time-setup--2026-10-15),
+   prepare the payroll preview, calculate fictional totals, review it and simulate
+   submission. Inspect the visible mock receipt and employee statement.
 
-Use an eligible fictional employee for benefits, time and payroll. The sample
-pay period is 2026-10-01 through
-2026-10-15; only active employees' approved, unpaid entries in that period qualify.
-Payroll preparation freezes approved time and confirmed enrollment choices;
-later changes require a new preparation. Receipted time entries cannot be used
-again, and completed onboarding/confirmed elections remain locked until Reset.
+Use an eligible fictional employee for benefits, time and payroll. Select the
+period explicitly; the historical October example uses 2026-10-01 through
+2026-10-15. Only active employees' approved, unpaid entries within the chosen
+period qualify, with an explicit applicable rate for every work date. Preparation
+freezes those inputs and confirmed enrollment choices. Relevant later changes
+require a new preparation. Receipted time entries cannot be used again, and
+completed onboarding/confirmed elections remain locked until Reset.
 
 These native host workflows save domain actions in a versioned browser-local
 snapshot. Refresh restores that saved state at the same origin; **Reset sample
@@ -158,7 +213,9 @@ navigation, module resets and production boundaries.
 The earlier talent checkpoint passed **109 HR** plus **20 CMS/CRM tests** (10
 each). Read the [persistence QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
 for current refresh and reset checks. Opening `/hr/demo/sdk` leaves its sample
-state independent; returning restores the saved native HR snapshot.
+state independent; returning restores the saved native HR snapshot. The portal
+directory card and shared navigation also remember the last supported HR
+subsection during the mounted session; unsupported routes cannot replace it.
 
 The selected talent browser paths verified Casey's hire/directory/onboarding
 connection and performance privacy through employee acknowledgment. An
@@ -285,10 +342,24 @@ and the [combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/
 Combined restores save an origin-local point of the selected portals before
 any overwrite. Select HR alone to capture only HR, or include CMS/CRM to capture
 that exact group. On `/portals`, choose **Undo…** and inspect the point’s creation
-time, portal scope and record summaries before confirming. Undo replaces the
+time, portal scope, record summaries and current-to-target differences before
+confirming. Undo replaces the
 whole captured state, including later saved employee/payroll changes. It saves
 a new point first, so that Undo can itself be reversed. Other portals and the
 independent SDK session remain unchanged.
+
+You can also enter a **Restore point name**, choose **Portals to capture** and
+**Create named restore point** without importing or restoring anything. Manual
+capture changes history only. **Point label → Save point label** renames a point
+without changing its ID, timestamp, kind, scope or captured payload; workspace
+records, workspace saves and unsaved forms remain intact. **Inspect captured
+records** shows complete collection counts and bounded IDs, with nested records
+and metadata separate from primary totals. It hides free-text values and amounts.
+
+The Undo preview derives its summary, scope, budget and differences from the
+current point. Confirmation checks fresh saved history against that reviewed
+capture; a changed label/scope/payload or a missing point is refused before any
+workspace write. Refresh and review the current history before retrying.
 
 History persists refresh and retains up to five points within 2,000,000 serialized
 characters. Oldest points are pruned as needed; a point that cannot fit or save
@@ -298,7 +369,9 @@ imports, Reset and ordinary edits do not create points. History is plain-text
 fictional records and private drafts, excludes unsaved forms/timers and SDK state,
 and is not included in portable JSON files. No Gusto/Firebase account or provider
 credentials are required. Read [Template Portals](Template-Portals.md#automatic-restore-points-and-undo)
-and the [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md).
+and the [maturity QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-QA-2026-10-15.md).
+The [earlier automatic-point receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md)
+retains its historical scope.
 
 ## Start locally
 

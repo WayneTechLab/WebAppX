@@ -164,6 +164,84 @@ Read the [operational QA receipt](OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md) for
 final gates and the [coverage map](QA-COVERAGE-MAP.md) for each invariant's
 model/browser evidence and untested boundaries.
 
+## Try the current portal maturity workflows
+
+The [portal maturity guide](PORTAL-MATURITY.md) covers **WX-0056,
+WX-0151–WX-0158, WX-0280, WX-0282, WX-0397, WX-0453, WX-0454, WX-0457 and
+WX-0458**, starting from published base
+`950f9ba0c4e48faaa65056f504f105201838e3ec`.
+Start `npm run dev:mock` and use its printed `/portals` origin.
+
+### Configure fictional payroll explicitly
+
+Fresh seeds and legacy saves have **unconfigured hourly rates**. Existing
+`payCents` values do not specify an hourly cadence; the app does not convert
+them into rates. Submitted legacy receipts keep their original captured inputs.
+
+1. Open `/hr/demo/admin/payroll` as **Employer owner** or **Payroll admin**.
+   Under **Run a simulated payroll**, enter **Sample period start** and
+   **Sample period end** for 1–366 inclusive calendar days. For the October
+   sample, explicitly choose `2026-10-01` through `2026-10-15`.
+2. Choose a **Rate employee**, enter a **Fictional hourly rate (dollars)** and
+   **Rate effective date**, then choose **Add sample rate**. Repeat for every
+   active employee with approved unpaid time in the period. An applicable rate
+   must start on or before that entry's work date. Each later rate change needs
+   a later effective date.
+3. Review **Time-entry eligibility** for included/excluded rows and reasons.
+   Choose **Prepare sample payroll**, **Calculate fictional totals**,
+   **Review simulated payroll**, then **Simulate payroll submission**. Prepared
+   inputs show each entry's hours, work date and frozen fictional rate.
+4. If approved time, eligibility, applicable rates, confirmed benefits or the
+   selected period changes, review the stale warning and choose
+   **Reprepare sample payroll** intentionally. Calculation, review and submission
+   are blocked for a stale preparation. Later rate changes do not rewrite
+   submitted receipts or employee statements.
+
+A scoped manager can **Return sample time** with a reason. It becomes an unpaid
+draft, visible with that reason and excluded from payroll until resubmitted and
+approved. The employee or manager acting on their own unpaid draft can **Edit
+draft** or **Delete draft**; deletion needs **Confirm delete draft**, and
+**Keep draft** cancels it. Submitted, approved and paid entries are protected.
+
+### Check editing, navigation and recovery
+
+- CMS create/edit forms list all independent field errors and focus the first
+  invalid field. A successful save becomes the clean baseline; when switching
+  entries with unsaved edits, keep editing or explicitly discard the buffer.
+- CRM imports reject unsupported enum values/types, unknown or oversized notes,
+  and broken record relationships before replacing current records or saves.
+- Open a supported HR subsection, visit the portal directory, then use its card
+  or shared navigation to return. That mounted session remembers the supported
+  path; unsupported paths cannot replace it. This is separate from durable
+  browser saves and the SDK's independent sample state.
+- In **Restore points & Undo**, enter a **Restore point name**, select
+  **Portals to capture**, and choose **Create named restore point**. Creating or
+  renaming a point writes history only and preserves open workspace records,
+  workspace saves and unsaved forms. **Inspect captured records** shows collection
+  counts and bounded identifiers. Restore/Undo differences run from current to
+  target; the selected whole workspaces will be replaced. Undo confirmation
+  refuses a point changed or removed after its preview, then refreshes history
+  for review. A rename preserves the point's ID, timestamp, scope and payload.
+
+After the same explicit Chromium setup:
+
+```bash
+npm run maturity:test
+npm run browser:maturity
+```
+
+Focused verification records **79 new model tests**, **139 HR tests** and
+**13 browser check groups covering all 16 criteria** passing. The maturity
+scenario's **10.75 hours / $298.75 gross / $239 net** uses different fictional
+inputs from the earlier $401 payroll scenario. Read the
+[maturity QA receipt](PORTAL-MATURITY-QA-2026-10-15.md) for exact scope.
+Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
+records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+**756 local, 127 operator and 40 provider** gates remaining. The full 1,000-item
+goal remains active; use `npm run backlog:summary` for current counts.
+
+**Integrated verification passed: all 56 CI stages, 111 browser checks/check groups and Hosting preflight.** The source-derived `ci:plan` report itself executes no gate. These are local fictional-workspace observations; provider, deployed-service, native Windows and production acceptance retain their separate evidence requirements.
+
 ## Rehearse an evaluator demonstration
 
 Start only the account-free native portals with `npm run dev:mock`. Open its
@@ -192,7 +270,7 @@ restore/Undo while HR/CRM save bytes remain unchanged. The four scripts are
 designed for five/five/five/ten minutes after setup; automated elapsed time is
 separate evidence.
 
-The accepted 13-item evaluator/adoption wave starts from
+The historical accepted 13-item evaluator/adoption wave starts from
 `aae465ae033f3191a69ed7d40056b0c6e2159e17`. Focused results record **25 evaluator
 browser checks** and **34 role-example tests** passing. All **54 CI stages,
 95 browser checks/check groups and Hosting preflight passed**; read the
@@ -229,7 +307,8 @@ clone the whole template to include managed SYSTEMX, LAN, research and kits.
 With `npm run dev` running, open `/hr` for the capability entry points or
 `/hr/demo` for synthetic management, employee, manager and contractor portals.
 Complete onboarding review, elect and confirm benefits, submit and approve
-timesheets, and prepare, review and simulate payroll receipts. These app-owned
+timesheets, then [choose a period and configure explicit fictional rates](#configure-fictional-payroll-explicitly)
+before preparing, reviewing and simulating payroll receipts. These app-owned
 changes are saved in this browser and survive refresh when local storage is
 available. Individual and combined JSON backups can move fictional workspaces
 between browsers; combined selective restores also create local restore points

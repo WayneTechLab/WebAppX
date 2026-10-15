@@ -1,6 +1,52 @@
 # Update Log
 
-## 3.4.0 evaluator and adoption wave — verified, 2026-10-15
+## 3.4.0 portal maturity wave — focused verification passed, 2026-10-15
+
+Implement **16 original criteria — WX-0056, WX-0151–WX-0158, WX-0280,
+WX-0282, WX-0397, WX-0453, WX-0454, WX-0457 and WX-0458** — from published
+base `950f9ba0c4e48faaa65056f504f105201838e3ec`. The
+[maturity guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY.md)
+and [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-QA-2026-10-15.md)
+describe the implemented workflows and verification scope.
+
+Native payroll now requires a chosen sample period and explicitly configured
+fictional employee hourly rates. Fresh seeds and legacy saves have unconfigured
+rates; historical `payCents` has no hourly cadence and is never inferred.
+Work-date eligibility explains exclusions, prepared inputs freeze their rates,
+and stale preparation blocks calculate/review/submit until intentional reprepare.
+Later rates preserve submitted receipts and statements. Add scoped manager return
+reasons, own unpaid draft edit/cancel and confirmed deletion with protected
+submitted/approved/paid records.
+
+CMS create/edit forms now summarize all field errors and focus the first invalid
+control; successful saves establish the clean baseline for keep/discard entry
+switching. CRM imports reject malformed enums, unsupported/oversized notes and
+broken relationships before replacing any records or saves. Portal directory
+cards and shared navigation remember the last supported HR subsection during
+the mounted session, excluding unsupported paths.
+
+Add named manual restore points, history-only label editing, complete captured
+collection inspection and directional current-to-target restore/Undo differences.
+Creating or renaming history preserves live workspace records, save bytes and
+temporary forms. Renaming preserves the original ID, timestamp, scope and payload.
+Undo confirmation binds to the current previewed point and refuses changed or
+missing history before any write; existing keyboard focus behavior remains.
+
+Add `maturity:test` and `browser:maturity`. Focused results passed **79 new model
+tests**, the complete **139-test HR suite**, and **13 actual browser check groups
+covering all 16 criteria**. Literal maturity payroll expectations reconcile
+**10.75 hours / $298.75 gross / $239 net**, independently from the earlier $401
+evaluator scenario. Real uploads/downloads, complete exports and raw-save checks
+use fresh owned browser contexts and loopback resources; cleanup passed.
+
+Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
+records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+**756 local, 127 operator and 40 provider** gates remaining. The full 1,000-item
+goal remains active; use `npm run backlog:summary` for current counts.
+
+**Integrated verification passed: all 56 CI stages, 111 browser checks/check groups and Hosting preflight.** The source-derived `ci:plan` report itself executes no gate. These are local fictional-workspace observations; provider, deployed-service, native Windows and production acceptance retain their separate evidence requirements.
+
+## 3.4.0 historical evaluator and adoption checkpoint — verified, 2026-10-15
 
 Accept **13 original criteria: WX-0503, WX-0800, WX-0859 and WX-0901–WX-0910** from
 published base `aae465ae033f3191a69ed7d40056b0c6e2159e17`. Agent 0 recorded
@@ -39,7 +85,7 @@ that evaluates CMS/CRM in a temporary app with deliberate bundle/backup choices.
 These documents distinguish native simulations, selected SDK mocks, source-only
 review and adopter/provider work.
 
-The canonical catalog now records **61 done / 939 remaining**:
+At that checkpoint the canonical catalog recorded **61 done / 939 remaining**:
 **112 P1, 670 P2 and 157 P3**, with **772 local, 127 operator and 40 provider**
 gates remaining. The complete 1,000-item goal remains active. The prior **48 done /
 46 CI stages / 62 browser checks** below remain historical results. This wave

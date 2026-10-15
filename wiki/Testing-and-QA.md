@@ -31,7 +31,53 @@ regressions, app/LAN gates, research inventories and public template integrity.
 It requires blank adoption seeds. `template:check` rejects populated tasks,
 context or project records by design. Use these to maintain the reusable release.
 
-## Evaluator and adoption wave — verified
+## Portal maturity wave — focused verification passed
+
+The current wave starts from published base
+`950f9ba0c4e48faaa65056f504f105201838e3ec`. The
+[maturity guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY.md)
+and [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-QA-2026-10-15.md)
+cover the implemented controls, exact source observations and remaining gates.
+
+```bash
+npm run browser:install # explicit browser setup after npm ci
+npm run maturity:test
+npm run hr:test
+npm run browser:maturity
+```
+
+| Original criteria | Focused verification boundary |
+| --- | --- |
+| WX-0151–WX-0155 | Explicit 1–366-day periods and employee hourly-rate timelines; rates selected by work date; active/approved/unpaid eligibility reasons; stale preparations block calculate/review/submit until intentional reprepare. Literal receipt expectations reconcile **10.75 hours / $298.75 gross / $239 net**, and a future rate preserves the complete submitted receipt and statements. |
+| WX-0156–WX-0158 | Scoped manager return with a visible reason, returned-draft payroll exclusion, own unpaid draft edit/cancel, and confirmed delete/keep. Submitted/approved/consumed entries remain protected after reload. |
+| WX-0280 / WX-0282 | Both CMS forms report all independent field errors and focus the first invalid field. Successful saves establish a clean baseline; keep/discard entry switching preserves the appropriate buffer and complete saved records. |
+| WX-0397 | Nine actual negative CRM uploads reject string-enum type/value failures, unsupported/oversized notes, missing references and cross-company relationships before replacement. Full current exports and every raw save byte remain unchanged. |
+| WX-0056 | Real directory/card/nav links return to the last supported HR subsection during the mounted session. The explicitly labeled History API unsupported-route probe tests route recovery only; it does not inject domain state or replace the remembered supported destination. |
+| WX-0453 / WX-0454 | A history-only label edit preserves ID, timestamp, kind, scope, payload and order. A named manual selected-portal capture preserves every workspace-save byte, open workspace state and temporary forms. |
+| WX-0457 / WX-0458 | Complete captured collection counts include zero and nested/metadata rows; identifiers are bounded with exact omission counts and free-text values stay hidden. Directional current-to-target differences cover combined restore and Undo. Model tests bind confirmation to the reviewed point and reject changed capture/scope/label or missing history before any write. |
+
+Focused results are **79 new model tests**, the complete **139-test HR suite**,
+and **13 browser check groups covering all 16 criteria**, all passed. Actual
+browser mutations use rendered controls, real uploads/downloads, handwritten
+expectations and complete state comparisons. The runner owns a temporary
+loopback Vite server and fresh Chromium contexts; its report confirms browser
+and server cleanup. It preserves user browsers and unrelated listeners.
+
+Fresh seeds and legacy saves begin with **unconfigured fictional hourly rates**.
+Choose **Sample period start/end**, configure each **Rate employee**, **Fictional
+hourly rate (dollars)** and **Rate effective date**, then **Add sample rate** before
+preparing payroll. No rate is inferred from historical `payCents`. The maturity
+scenario's $239 net result and the earlier evaluator's $401 result have different
+explicit inputs; neither is a general payroll policy or provider result.
+
+Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
+records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+**756 local, 127 operator and 40 provider** gates remaining. The full 1,000-item
+goal remains active; use `npm run backlog:summary` for current counts.
+
+**Integrated verification passed: all 56 CI stages, 111 browser checks/check groups and Hosting preflight.** The source-derived `ci:plan` report itself executes no gate. These are local fictional-workspace observations; provider, deployed-service, native Windows and production acceptance retain their separate evidence requirements.
+
+## Historical evaluator and adoption checkpoint — verified
 
 Agent 0 accepted **13 original criteria — WX-0503, WX-0800, WX-0859 and
 WX-0901–WX-0910** — from published source
@@ -70,8 +116,8 @@ recording a decision is a separate explicit action bound to report/history
 digests. It never refreshes an old browser date or converts a historical starting
 source base into an exact observed final build.
 
-All **54 configured CI stages passed**, along with Hosting preflight. The
-source-derived `ci:plan` report itself executes no stage. The catalog records
+At that checkpoint all **54 configured CI stages passed**, along with Hosting
+preflight. The source-derived `ci:plan` report itself executes no stage. The catalog then recorded
 **61 done / 939 remaining**: **112 P1, 670 P2 and 157 P3**, with **772 local,
 127 operator and 40 provider** gates remaining. The full goal remains active.
 
@@ -207,7 +253,7 @@ deployment, native Windows runtime or whole-site accessibility acceptance.
 
 This historical checkpoint retains the earlier 42 accepted proposals, 43 CI
 stages and 56 browser checks. The later historical adoption checkpoint and the
-current evaluator wave's pending gates are recorded above.
+current maturity wave's passed gates are recorded above.
 
 ```bash
 npm run environment:check

@@ -122,7 +122,9 @@
     "adoption:hr-disabled": "node scripts/rehearse-hr-disabled.mjs",
     "adoption:hr-disabled:test": "node --test tests/adoption/hr-disabled.test.mjs",
     "systemx:import:rehearse": "python3 -B scripts/systemx-import-rehearsal.py",
-    "worksheet:generate": "python3 scripts/generate-evaluator-checklist.py"
+    "worksheet:generate": "python3 scripts/generate-evaluator-checklist.py",
+    "maturity:test": "node --test tests/hr/payroll-periods-rates.test.mjs tests/hr/time-editing.test.mjs tests/hr/selected-payroll-insights.test.mjs tests/portals/crm-import-validation.test.mjs tests/portals/manual-restore-points.test.mjs tests/portals/return-location.test.mjs tests/portals/undo-preview-binding.test.mjs tests/portals/workspace-inspection.test.mjs",
+    "browser:maturity": "node scripts/browser-maturity.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

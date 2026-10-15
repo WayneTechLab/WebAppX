@@ -1,5 +1,6 @@
 import type { HrFixture, HrRole } from './model'
-import { createMockHrState, type MockHrState } from './mock-workflows'
+import { createMockHrState, validMockPeriod, type MockHrState } from './mock-workflows'
+import { validateTimeEntry } from './model'
 import { createPeopleOperations, type PeopleOperationsState } from './people-operations'
 import { createHrServiceDesk, type HrServiceDeskState } from './service-desk'
 import { createRecruitingState, type RecruitingState } from './recruiting'
@@ -90,13 +91,18 @@ function validateHrDemoState(value: unknown, base: HrFixture): boolean {
   if (hires.some(employee => candidates.filter(candidate => candidate.stage === 'hired' && candidate.employeeId === employee.id).length !== 1)) return false
 
   const knownPlan: Check = entry => typeof entry === 'string' && base.benefits.some(plan => plan.id === entry)
+  const date: Check = entry => typeof entry === 'string' && validateTimeEntry(entry, 1).valid
+  const hourlyRate: Check = entry => sequence(entry) && number(entry) && entry > 0 && entry <= 1_000_000
   const timeCheck = (entry: unknown) => fields(entry, { id, employeeId: knownEmployee, date: text, hours: item => number(item) && item <= 24, status: choice('draft', 'submitted', 'approved'), source: choice('manual', 'timer', 'fixture') }) && optional(entry.payrollReceipt, text)
+    && (entry.returnReason === undefined && entry.returnedBy === undefined || typeof entry.returnReason === 'string' && entry.returnReason.trim() === entry.returnReason && entry.returnReason.length > 0 && entry.returnReason.length <= 500 && !/[\r\n]/.test(entry.returnReason) && !entry.returnReason.includes('\0') && knownEmployee(entry.returnedBy) && entry.returnedBy !== entry.employeeId)
   const payrollCheck = (entry: unknown) => fields(entry, {
     ...nonnegativeFields, stage: choice('idle', 'prepared', 'calculated', 'reviewed', 'submitted'),
-    inputs: items => list(items, input => fields(input, { entryId: id, employeeId: knownEmployee, hours: number, rateCents: number })),
+    inputs: items => list(items, input => fields(input, { entryId: id, employeeId: knownEmployee, hours: number, rateCents: number })
+      && (input.date === undefined && input.rateEffectiveFrom === undefined || date(input.date) && date(input.rateEffectiveFrom) && String(input.rateEffectiveFrom) <= String(input.date) && hourlyRate(input.rateCents))),
     benefitInputs: items => list(items, input => fields(input, { employeeId: knownEmployee, planId: knownPlan, deductionCents: number })),
     employeeTotals: items => list(items, total => fields(total, { employeeId: knownEmployee, ...nonnegativeFields })),
-  }) && optional(entry.receipt, text)
+  }) && optional(entry.receipt, text) && optional(entry.period, validMockPeriod)
+    && (entry.period === undefined || (entry.inputs as ObjectValue[]).every(input => date(input.date) && date(input.rateEffectiveFrom) && object(entry.period) && String(input.date) >= String(entry.period.start) && String(input.date) <= String(entry.period.end)))
   const workflow = workflowValue
   if (!fields(workflow, {
     sequence,
@@ -106,6 +112,9 @@ function validateHrDemoState(value: unknown, base: HrFixture): boolean {
     benefitElections: entry => list(entry, item => fields(item, { employeeId: knownEmployee, planId: knownPlan, election: choice('enroll', 'waive'), stage: choice('draft', 'reviewed', 'confirmed') }) && optional(item.receipt, text)),
     payroll: payrollCheck, payrollHistory: entry => list(entry, item => payrollCheck(item) && object(item) && item.stage === 'submitted' && text(item.receipt)),
   })) return false
+  if (workflow.sampleRates !== undefined && (!object(workflow.sampleRates) || !Object.entries(workflow.sampleRates).every(([employeeId, timeline]) => knownEmployee(employeeId)
+    && Array.isArray(timeline) && timeline.length > 0 && timeline.length <= 1000 && timeline.every((rate, index) => fields(rate, { effectiveFrom: date, hourlyRateCents: hourlyRate })
+      && Object.keys(rate).length === 2 && (index === 0 || String(timeline[index - 1].effectiveFrom) < String(rate.effectiveFrom)))))) return false
   // Every hire must restore its workflow maps and balance in the same snapshot.
   for (const name of ['onboarding', 'profileEmails', 'employeeStatuses']) {
     const entries = workflow[name] as ObjectValue

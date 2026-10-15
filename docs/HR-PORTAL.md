@@ -14,7 +14,11 @@ Follow the [five-minute fictional HR script](demos/HR-FIVE-MINUTE.md) and
 [one-page worksheet](PORTAL-EVALUATOR-WORKSHEET.md) for expected onboarding,
 benefit, approved-time and payroll observations. Generated
 [role examples](HR-ROLE-EXAMPLES.md) explain permitted and refused synthetic
-transitions using reviewed fixtures. The [33-capability adoption map](GUSTO-CAPABILITY-GAPS.md)
+transitions using reviewed fixtures. The [portal maturity guide](PORTAL-MATURITY.md)
+covers chosen payroll periods, explicit rate timelines, time corrections and
+workspace recovery; its [dated QA receipt](PORTAL-MATURITY-QA-2026-10-15.md)
+records focused local evidence and keeps integrated publishing gates separate.
+The [33-capability adoption map](GUSTO-CAPABILITY-GAPS.md)
 identifies native behavior, actual selected SDK coverage and remaining host
 backend/provider work separately. The [tenant membership proposal](TENANT-MEMBERSHIP-PROPOSAL.md)
 defines the optional adopted identity boundary. None of these source contracts
@@ -27,9 +31,9 @@ establishes a live Gusto account, payroll authority or adopted production access
 | Dashboards | Role-scoped metrics and action inbox with links to unfinished work | Reflects current onboarding, time, elections, absence, assignments, requests and submitted payroll |
 | Employee onboarding | Profile/job review, checklist, summary and simulated completion | Completion makes the fictional employee active for payroll eligibility |
 | Benefits | Employee-owned enrollment or waiver, review, confirmation and receipt | Only confirmed enrollments enter a newly prepared payroll snapshot |
-| Time tracking | Manual entry, identity-bound timer, submission and scoped approval | Only active employees' approved, unpaid entries in the fixed sample period enter payroll |
-| Payroll | Prepare, calculate, review, simulate submission and prevent replay | Stores frozen per-employee totals and consumes only the approved input entries |
-| Pay history | Employee-owned simulated statements with time and benefit input details | Reads submitted native payroll receipts; separate historical fixture statements stay labeled |
+| Time tracking | Manual entry, identity-bound timer, own draft edit/confirmed deletion, submission, scoped approval and manager return with reason | Only active employees' approved, unpaid entries within the chosen period and with explicit fictional rates enter payroll |
+| Payroll | Choose a period, configure effective-dated employee rates, prepare, calculate, review and simulate submission | Changed approved inputs require deliberate reprepare; submission freezes per-employee totals and consumes only the approved input entries |
+| Pay history | Employee-owned simulated statements with frozen period, hours, rates and benefit input details | Reads submitted native payroll receipts; later rate changes preserve them and separate historical fixture statements stay labeled |
 | Time off | Request, approve, reject, cancel, balance reservations and overlap checks | Pending and approved leave reserve the synthetic balance; decisions update dashboards and activity |
 | People assignments | Tasks, policy/document acknowledgments, training and asset return tracking | Role-scoped status changes, assignment counts and deterministic activity receipts |
 | HR help desk | Employee request, assignment, start, resolution and reopen | Employee, direct-report manager and management views read the same request state |
@@ -44,12 +48,63 @@ requests up to 30 calendar days. It excludes holiday calendars, accruals, carryo
 jurisdiction rules and payroll absence earnings. Approved leave does **not** add
 paid time to payroll: only approved work time enters the existing calculation.
 
-The fixed sample payroll period is October 1–15, 2026. Rates remain deliberately
-fictional: $30/hour, flat 20% illustrative withholding and $25 per confirmed
-sample enrolled plan. Amounts round per employee. Benefits are capped against
-that employee's own remaining sample pay, and employee statement totals reconcile
-to the submitted run. These are development calculations, not wage/tax or
-insurance calculations.
+## Chosen payroll periods and fictional rates
+
+New payroll preparation requires **Sample period start** and **Sample period
+end**, with valid calendar dates spanning 1–366 days inclusive. October 1–15,
+2026 is a walkthrough choice, not an automatic preparation default. The initial
+seed has no configured hourly rates. An absent rate is **unconfigured**; older
+fixture compensation fields such as `payCents` declare no hourly cadence and
+cannot supply a rate.
+
+As employer owner or payroll administrator, open **Payroll workspace**. In
+**Configure fictional hourly rates**, choose **Rate employee**, enter **Fictional
+hourly rate (dollars)** and **Rate effective date**, then choose **Add sample
+rate**. Configure a rate effective on or before each otherwise-eligible work
+date. Later changes append a strictly later effective date. Each entry uses the
+latest rate effective on its own work date, so a future change does not change
+earlier work. These rates belong to the native fictional simulation and do not
+configure a Gusto employee's compensation.
+
+Read **Time-entry eligibility** before preparing. Every time row explains its
+inclusion or exclusion, including approval, paid status, employment status,
+chosen-period dates and configured-rate requirements. An otherwise-eligible
+employee without a rate blocks preparation rather than silently losing hours.
+Use **Prepare sample payroll**, **Calculate fictional totals**, **Review
+simulated payroll**, then **Simulate payroll submission** in order.
+
+Preparation freezes the chosen period, input dates/hours/rates, rate effective
+dates and confirmed enrolled-plan inputs. A later change to approved inputs,
+eligibility, an applicable rate or included confirmed benefits makes an
+unfinished preparation stale. Changing the selected period also requires
+repreparation. The visible **Payroll preparation is stale** notice blocks the
+next stages until **Reprepare sample payroll** deliberately replaces the
+prepared snapshot. Review the recalculated totals before submitting.
+
+Submitted receipts retain their frozen period, hours, rates, benefit inputs and
+totals. Included time becomes consumed and cannot enter another run. Employee
+statements read these frozen submitted inputs, so a later rate change does not
+rewrite prior pay. Illustrative withholding remains a flat **20%**, with **$25
+per confirmed enrolled sample plan**, rounded per employee and capped against
+that employee's pay after withholding. Employee statement totals reconcile to
+the submitted run. These are development calculations with no wage, overtime,
+tax or insurance engine.
+
+### Return, correct or delete unpaid draft time
+
+A different scoped manager can approve submitted time or enter **Return reason
+for [entry ID]** and choose **Return sample time**. Returning requires a reason
+and changes the entry to its owner's unpaid draft. The reason remains visible;
+returned time stays excluded until the owner corrects and resubmits it and a
+different authorized actor approves it.
+
+The employee opens their own **My time** row and chooses **Edit draft**, changes
+the date/hours, then **Save draft changes**, or **Cancel draft editing**. Dates
+must be valid, hours must be positive and at most 24, and all entries for the
+same employee/date must total at most 24 hours. Only unpaid drafts can be edited.
+**Delete draft** opens a separate confirmation: **Keep draft** cancels and
+**Confirm delete draft** removes that draft. These actions preserve submitted,
+approved and consumed time, payroll history and frozen statements.
 
 ## Portal navigation
 
@@ -60,8 +115,8 @@ snapshots. Refresh, leaving the demo area and returning, and opening another
 tab at the same origin restore each module’s last successful saved state.
 **Reset** affects only the selected module. No HR records are copied into CMS
 or CRM. See [Template Portals](TEMPLATE-PORTALS.md) for their separate roles
-and the [persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) for the
-current checked behavior.
+and the [earlier persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md)
+for that dated checkpoint's scope.
 
 The `/hr/demo/sdk` route still has an independent SDK sample session. Returning
 to native HR restores its saved snapshot; native actions never modify SDK state.
@@ -87,8 +142,9 @@ management, employees and managers.
 ## Native HR workspace files
 
 Use **Export workspace** to download native HR’s full validated domain state as
-plain-text JSON. It includes saved onboarding, benefits, time/payroll and
-receipts, people operations, service requests, talent records and HR’s saved
+plain-text JSON. It includes saved onboarding, benefits, time/payroll, configured
+rate timelines, chosen/frozen payroll periods and receipts, people operations,
+service requests, talent records and HR’s saved
 role/employee choice. Unsaved form fields, running timers and the independent
 SDK sample are excluded. The file includes private review/survey drafts;
 export is not limited to the current role projection. Use fictional data only.
@@ -101,6 +157,14 @@ the complete nested schema. Invalid/incompatible files preserve current records;
 a storage write failure preserves the prior workspace and reports an error.
 A successful import saves locally, survives refresh and leaves CMS/CRM unchanged.
 Individual portal files remain separate; there is no merge or automatic browser sync.
+
+Existing schema-version-1 HR saves, individual/combined exports and captured
+history remain readable. New rate, period, frozen input and return fields are
+optional for legacy decoding and validated strictly when present. Legacy
+submitted receipts retain their original fields and historical October 1–15
+period interpretation. A legacy unfinished preparation requires an explicit
+chosen period, configured fictional rates and deliberate reprepare before the
+next payroll stage; loading it does not migrate or rewrite old receipts.
 
 File transfer needs no account or upload, and can bridge origins/browsers. It
 does not grant trusted employee membership or execute provider operations.
@@ -149,11 +213,13 @@ does not reset any workspace. Individual HR import, Reset and ordinary domain
 actions do not automatically create points. Points contain private fictional
 drafts and mock receipts in plain text and are excluded from JSON exports.
 Read the [restore-point guide](TEMPLATE-PORTALS.md#automatic-restore-points-and-undo)
-and [current QA receipt](RESTORE-POINTS-QA-2026-10-14.md) for scope and recovery.
+and [earlier QA receipt](RESTORE-POINTS-QA-2026-10-14.md) for that checkpoint's
+scope and recovery observations. The current named/manual history and inspection
+controls are described in the [maturity guide](PORTAL-MATURITY.md).
 
 ## Earlier persistence browser checkpoint — 2026-10-14
 
-The [current receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) records successful
+The [earlier receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) records successful
 same-origin refresh checks for Casey’s hire/four-person directory, completed
 onboarding, eight submitted hours, prepared payroll and submitted
 `MOCK-PAYROLL-0003`: $240 gross, $48 illustrative withholding, $0 benefits and
@@ -198,9 +264,10 @@ navigation preserved those native records; Reset CMS left HR intact.
    compensation marked **unconfigured**. Open the directory or select that
    employee in the employee preview, review profile/job, finish the checklist,
    review the summary and explicitly confirm simulated onboarding. A hire alone
-   does not complete that review or configure real pay. The unconfigured marker
-   describes provider adoption; it does not block the deliberately fixed $30/hour
-   native fictional calculator once the employee meets its other sample gates.
+   does not complete that review or configure real pay. Configure a separate
+   explicit fictional hourly rate for the hire in **Payroll workspace** before
+   its otherwise-eligible hours can be prepared. The provider compensation marker
+   remains separate from that native rate timeline.
 5. A published job can close only after all of its candidates are hired or
    rejected. Closed jobs and terminal applications have no reopening path.
 

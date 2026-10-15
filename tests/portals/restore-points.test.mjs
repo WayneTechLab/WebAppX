@@ -230,11 +230,22 @@ test('strict history rejects invalid envelope fields, point identities, timestam
     { modules: [] }, { modules: ['CMS'] }, { modules: ['cms', 'cms'] },
     { modules: ['hr'] }, { states: {} }, { states: { ...point.states, hr: createDemoWorkspaces().hr } },
     { states: { cms: {} } },
+    { label: null }, { label: '' }, { label: 'x'.repeat(101) },
+    { kind: 'manual' }, { kind: 'manual', label: 'Valid name', sourcePointId: 'unexpected' },
   ]
   for (const change of changes) invalid.push({ schemaVersion: 1, points: [{ ...point, ...change }] })
   for (const value of invalid) assert.throws(() => parseRestorePoints(JSON.stringify(value)), /history is damaged/)
   const reserved = rawHistory([point]).replace('"title":', '"__proto__":{},"title":')
   assert.throws(() => parseRestorePoints(reserved), /history is damaged/)
+})
+
+test('optional descriptive labels preserve legacy captures and round-trip beside old unlabeled points', () => {
+  const states = createDemoWorkspaces()
+  const old = createRestorePoint(states, ['cms'], 'restore', undefined, options('old-unlabeled'))
+  const labeled = createRestorePoint(states, ['hr'], 'restore', undefined, { ...options('new-labeled'), label: '  Before HR edits  ' })
+  assert.equal(Object.hasOwn(old, 'label'), false)
+  assert.equal(labeled.label, 'Before HR edits')
+  assert.deepEqual(parseRestorePoints(rawHistory([labeled, old])), [labeled, old])
 })
 
 test('history read and clear denials are explicit and never write portal data', () => {

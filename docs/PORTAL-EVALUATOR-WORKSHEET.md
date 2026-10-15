@@ -21,7 +21,10 @@ printed local origin. Preserve your ordinary browser profile and saved work.
 These expectations describe fictional native simulations and establish no
 connected provider or real payroll acceptance.
 
-The printed HR scenario expects 17.75 hours, $532.50 gross, $106.50 illustrative
+Choose October 1–15, 2026 and explicitly configure Avery and Jordan at a
+fictional $30/hour effective October 1 before preparation. The initial legacy
+seed contains no configured hourly rates; fixture compensation has no inferred
+cadence. The printed HR scenario then expects 17.75 hours, $532.50 gross, $106.50 illustrative
 withholding, $25 benefits and $401 net. CMS freezes published revision 2 after
 a revision-3 draft edit. CRM converts a $1,750.25 opportunity and moves it through
 the stated open stages, retaining $8,250.25 open pipeline. Recovery selects only

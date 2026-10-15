@@ -772,12 +772,18 @@
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Preserve a return location when entering a portal",
       "acceptance": "Opening the directory from a portal and returning restores the last supported portal subsection in that session.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0057",
@@ -1950,96 +1956,144 @@
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add selectable fictional payroll periods",
       "acceptance": "Preparing a run requires a valid chosen sample period and accepts only approved unpaid time inside it.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0152",
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add employee-specific mock hourly rates",
       "acceptance": "A run freezes each fictional employee\u2019s configured sample rate and displays that rate beside consumed hours.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0153",
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a mock compensation change timeline",
       "acceptance": "A future-dated sample rate change leaves an already submitted payroll receipt unchanged.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0154",
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add payroll input freshness warnings",
       "acceptance": "Changing approved input after preparation marks the prepared run stale and requires intentional re-preparation.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0155",
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add payroll input eligibility explanations",
       "acceptance": "A review table states why each time entry is included or excluded from the selected sample run.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0156",
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add manager time rejection with reasons",
       "acceptance": "A manager can return submitted fictional time to its owner with a visible reason and no payroll eligibility.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0157",
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add employee draft time editing",
       "acceptance": "An owner can edit an unpaid draft entry and the change does not mutate approved or consumed entries.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0158",
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add employee draft time deletion",
       "acceptance": "Deleting a draft fictional entry requires confirmation and leaves submitted or paid entry history intact.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0159",
@@ -3512,12 +3566,18 @@
       "area": "cms-authoring",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Add draft field validation summaries",
       "acceptance": "Submitting invalid content lists each affected field and moves focus to the first invalid control.",
       "source": "src/cms/model.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0281",
@@ -3536,12 +3596,18 @@
       "area": "cms-authoring",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Protect CMS entry switching with dirty forms",
       "acceptance": "Selecting another entry with unsaved changes offers keep-editing or discard choices before changing the editor.",
       "source": "src/cms/CmsDemo.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0283",
@@ -4965,12 +5031,18 @@
       "area": "crm-contacts",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Extend CRM persistence validation for profile fields",
       "acceptance": "Import rejects unknown enum values, oversized notes and malformed relationship edges before replacing the saved workspace.",
       "source": "src/crm/persistence.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0398",
@@ -5702,24 +5774,36 @@
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add descriptive labels to restore points",
       "acceptance": "Users can label an existing local point without changing its captured workspace payload, module scope or timestamp.",
       "source": "src/portals/restore-points.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0454",
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add manual restore-point creation",
       "acceptance": "A user can create a named selected-scope point without importing a file or altering the current workspace saves.",
       "source": "src/portals/RestorePointHistory.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0455",
@@ -5750,24 +5834,36 @@
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Inspect captured records in restore-point details",
       "acceptance": "A read-only detail panel lists bounded record identifiers and a complete collection-count breakdown for the point\u2019s captured modules without applying it or exposing full free-text fields by default.",
       "source": "src/portals/RestorePointHistory.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0458",
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a structured difference preview before restore",
       "acceptance": "The preview lists added, removed and changed entity counts per selected module using identifiers without exposing full sensitive-style fields by default.",
       "source": "src/portals/CombinedWorkspaceBackup.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "950f9ba0c4e48faaa65056f504f105201838e3ec",
+        "evidence": "docs/PORTAL-MATURITY-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0459",

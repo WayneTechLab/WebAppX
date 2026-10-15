@@ -66,9 +66,50 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
-## Evaluator and adoption wave — verified
+## Portal maturity wave — focused verification passed
 
-The current wave starts from published source
+The current implementation wave starts from published source
+`950f9ba0c4e48faaa65056f504f105201838e3ec` and covers **16 original criteria**:
+**WX-0056, WX-0151–WX-0158, WX-0280, WX-0282, WX-0397, WX-0453,
+WX-0454, WX-0457 and WX-0458**. Read the [portal maturity guide](docs/PORTAL-MATURITY.md)
+for the controls and the [maturity QA receipt](docs/PORTAL-MATURITY-QA-2026-10-15.md)
+for source, review and verification boundaries.
+
+| Area | Implemented behavior |
+| --- | --- |
+| Native payroll and time | Explicit sample periods and employee rate timelines; work-date eligibility and frozen rates; stale-preparation blocking; manager return reasons; own unpaid draft editing and confirmed deletion |
+| CMS and CRM | Complete CMS field-error summaries with first-invalid focus and keep/discard entry switching; strict CRM enum, notes and relationship validation before an import can replace records |
+| Navigation and recovery | Session-only return to the last supported HR subsection; named manual points and history-only labels; captured-record inspection and directional restore/Undo differences; confirmation bound to the current reviewed point |
+
+**Payroll setup has changed:** fresh seeds and legacy saves have **unconfigured
+fictional hourly rates**. In **Run a simulated payroll**, choose **Sample period
+start** and **Sample period end**. Then select each **Rate employee**, enter a
+**Fictional hourly rate (dollars)** and **Rate effective date**, and choose
+**Add sample rate**. Configure every eligible employee/work date before
+**Prepare sample payroll**. Existing `payCents` values declare no hourly cadence
+and are never inferred as rates. Review **Time-entry eligibility**; a stale
+preparation requires intentional **Reprepare sample payroll** before calculation,
+review or simulated submission. Previously submitted receipts keep their frozen
+inputs and statements.
+
+After explicit Chromium installation, run `npm run maturity:test` and
+`npm run browser:maturity`. Focused evidence records **79 new model tests**, the
+complete **139-test HR suite**, and **13 actual browser check groups covering all
+16 criteria** passing. The maturity payroll scenario independently reconciles
+**10.75 hours / $298.75 gross / $239 net**; it uses different inputs from the
+historical $401 evaluator scenario below. The browser run uses owned isolated
+Vite/Chromium resources, complete downloads and raw-save comparisons.
+
+Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
+records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+**756 local, 127 operator and 40 provider** gates remaining. The complete
+1,000-item goal remains active; use `npm run backlog:summary` for current counts.
+
+**Integrated verification passed: all 56 CI stages, 111 browser checks/check groups and Hosting preflight.** The source-derived `ci:plan` report itself executes no gate. These are local fictional-workspace observations; provider, deployed-service, native Windows and production acceptance retain their separate evidence requirements.
+
+## Historical evaluator and adoption checkpoint — verified
+
+That wave starts from published source
 `aae465ae033f3191a69ed7d40056b0c6e2159e17` and accepts **13 original criteria**:
 **WX-0503, WX-0800, WX-0859 and WX-0901–WX-0910**. Agent 0 recorded
 their accepted evidence in the canonical catalog after review.
@@ -89,13 +130,13 @@ revision 2 after a later draft, CRM discovery→proposal→negotiation with $8,2
 open pipeline, and a CMS-only selective restore/Undo with untouched HR/CRM save
 bytes. Five/ten minutes are designed human pacing, not measured completion times.
 
-The canonical catalog now records **61 done / 939 remaining**, with **112 P1,
-670 P2 and 157 P3**, and remaining gates of **772 local, 127 operator and 40
-provider**. The complete 1,000-item goal remains active.
+At that checkpoint the canonical catalog recorded **61 done / 939 remaining**,
+with **112 P1, 670 P2 and 157 P3**, and remaining gates of **772 local, 127
+operator and 40 provider**. The complete 1,000-item goal remains active.
 The [evaluator/adoption QA receipt](docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
 records the final integrated CI, browser, Hosting preflight and preservation
-results. The [next P1 implementation plan](docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
-scopes 16 local app changes that remain TODO. The earlier **48-done / 46-stage / 62-browser-check** receipt below is
+results. The [P1 implementation plan](docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
+scopes the 16 local app changes in the current maturity wave above. The earlier **48-done / 46-stage / 62-browser-check** receipt below is
 historical. No provider, deployed service or production acceptance follows from
 this wave's local checks.
 

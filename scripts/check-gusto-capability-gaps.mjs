@@ -15,7 +15,7 @@ export const PIN_PATH = '.SYSTEMX/GUSTO/VERSION-PIN.json'
 export const SDK_PATH = 'src/hr/gusto/GustoSdkPreview.tsx'
 const requiredBindings = [CAPABILITIES_PATH, INVENTORY_PATH, PIN_PATH, SDK_PATH,
   '.SYSTEMX/GUSTO/ROUTES.json', '.SYSTEMX/GUSTO/mock/fixtures/demo-company.json',
-  'src/hr/model.ts', 'src/hr/components/HrWorkspace.tsx', 'src/hr/mock-workflows.ts',
+  'src/hr/model.ts', 'src/hr/components/HrWorkspace.tsx', 'src/hr/components/HrInsights.tsx', 'src/hr/mock-workflows.ts',
   'src/hr/insights.ts', 'src/hr/people-operations.ts', 'src/hr/service-desk.ts',
   'src/hr/recruiting.ts', 'src/hr/recruiting-link.ts', 'src/hr/performance.ts', 'src/hr/surveys.ts',
   'src/pages/HrPage.tsx', 'integrations/gusto/mock-api.mjs', 'integrations/gusto/sdk-onboarding.mjs',

@@ -4,12 +4,12 @@
   "review": {
     "proposalId": "WX-0908",
     "criterion": "A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.",
-    "sourceRevision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+    "sourceRevision": "950f9ba0c4e48faaa65056f504f105201838e3ec",
     "canonicalDocument": "docs/PORTAL-CAPABILITIES.md",
     "reviewedSources": [
       {
         "path": "docs/PORTAL-CAPABILITIES.md",
-        "sha256": "cc2053d3b5a1b871dcd21e48b5fabe079af3e313bb83bf9453932ccba7850e38"
+        "sha256": "18c422225b25b4b0020946e81fd85471ad89db8d71ab508d9398a1c3f6785d69"
       },
       {
         "path": "src/hr/model.ts",
@@ -17,7 +17,7 @@
       },
       {
         "path": "src/hr/mock-workflows.ts",
-        "sha256": "a9b18d468e6f0dd573c06ebaa6d9558eab2e200044373bcf588821e0f21aa235"
+        "sha256": "373b8a8ce4d34250d306095d0c6247d38e6a03646ddf708e00c5a6bf3b529659"
       },
       {
         "path": "src/hr/performance.ts",
@@ -29,7 +29,7 @@
       },
       {
         "path": "src/hr/persistence.ts",
-        "sha256": "eb7fa71d65db06407ade439897ae5bc5c9cf305c05751b9cc77f8b9681a97c62"
+        "sha256": "42c45c2e3cf714d30129b44705fd9fb2c98a4b35d05f43c7710fe75239d91a01"
       },
       {
         "path": "src/portals/backup.ts",
@@ -45,11 +45,11 @@
       },
       {
         "path": "src/portals/CombinedWorkspaceBackup.tsx",
-        "sha256": "3fb8f664f402c95fa4a3f78702ec0b98ffcf5483fe1c4a3808901a572f2cb6e6"
+        "sha256": "29cf00252051dee4e172f467d2ae026fee95ed7ed48443df287f6f449141c311"
       },
       {
         "path": "src/hr/components/HrWorkspace.tsx",
-        "sha256": "19c10913f74471430799b57b7f45c65cab428a131a48036f82526204e572fca6"
+        "sha256": "169e81c354ab72cf61fb89fa4e3244fe27e99c5efbe1742cafdd1d82c1cd2d20"
       },
       {
         "path": ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json",
@@ -64,7 +64,7 @@
       "actor": {
         "role": "employer-owner"
       },
-      "context": "Company administration uses known employee resources; it cannot impersonate a review author or assigned manager.",
+      "context": "Company administration uses known employee resources; simulated payroll separately requires a chosen period and explicit fictional hourly rates. It cannot impersonate a review author or assigned manager.",
       "projection": {
         "employeeIds": [
           "employee-001",
@@ -86,7 +86,7 @@
       "actor": {
         "role": "payroll-admin"
       },
-      "context": "Onboarding review and simulated payroll are separate from profile editing and time approval.",
+      "context": "Onboarding review and simulated payroll are separate from profile editing and time approval. This role can configure fictional rate timelines and prepare a chosen-period run, but cannot approve or return employee time.",
       "projection": {
         "employeeIds": [
           "employee-001",
@@ -131,7 +131,7 @@
         "role": "manager",
         "employeeId": "employee-001"
       },
-      "context": "The actor is employee-001; approval requires a submitted direct-report record and excludes the manager’s own entries.",
+      "context": "The actor is employee-001; approval or reasoned return requires submitted unpaid direct-report time and excludes the manager’s own entries. Own unpaid draft time can be corrected or explicitly deleted before resubmission.",
       "projection": {
         "employeeIds": [
           "employee-001",
@@ -153,7 +153,7 @@
         "role": "employee",
         "employeeId": "employee-002"
       },
-      "context": "The actor is employee-002; self service requires that exact known employee and the current workflow stage.",
+      "context": "The actor is employee-002; self service requires that exact known employee and the current workflow stage. Own unpaid draft time can be corrected or explicitly deleted; submitted, approved and receipted time stays protected.",
       "projection": {
         "employeeIds": [
           "employee-002"
@@ -768,7 +768,7 @@
     "contents": "complete-saved-domain-state",
     "description": "Every preview role can export the complete saved module workspace; the shared backup codecs take complete state and no actor argument. Combined export includes all three complete workspaces without a preview identity.",
     "included": [
-      "Saved HR performance self-review and manager drafts, survey draft answers, payroll state and mock receipts where present.",
+      "Saved HR performance self-review and manager drafts, survey draft answers, fictional rate timelines, chosen payroll periods, time-return reasons, payroll snapshots and mock receipts where present.",
       "Unpublished CMS drafts and review metadata; CRM records belonging to other representatives."
     ],
     "excluded": [

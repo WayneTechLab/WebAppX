@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 939 TODO · 61 done · 20 areas · 50 items per area.**
+**1000 catalog items · 923 TODO · 77 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 112 · P2: 670 · P3: 157.
+Remaining TODO priorities: P1: 96 · P2: 670 · P3: 157.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -304,10 +304,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: Deep HR views and future CMS/CRM sections show a keyboard-accessible breadcrumb back to the portal directory.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
   - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
-- [ ] **WX-0056 — Preserve a return location when entering a portal**
+- [x] **WX-0056 — Preserve a return location when entering a portal**
   - P1 · portal-maturity · local
   - Acceptance: Opening the directory from a portal and returning restores the last supported portal subsection in that session.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
 - [x] **WX-0057 — Add a shared mock-mode banner**
   - P1 · portal-maturity · local
   - Acceptance: Every native portal consistently identifies its fictional, account-free mode and links to the same data-handling explanation.
@@ -697,38 +698,46 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## HR payroll, benefits and time
 
-- [ ] **WX-0151 — Add selectable fictional payroll periods**
+- [x] **WX-0151 — Add selectable fictional payroll periods**
   - P1 · portal-maturity · local
   - Acceptance: Preparing a run requires a valid chosen sample period and accepts only approved unpaid time inside it.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
-- [ ] **WX-0152 — Add employee-specific mock hourly rates**
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
+- [x] **WX-0152 — Add employee-specific mock hourly rates**
   - P1 · portal-maturity · local
   - Acceptance: A run freezes each fictional employee’s configured sample rate and displays that rate beside consumed hours.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
-- [ ] **WX-0153 — Add a mock compensation change timeline**
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
+- [x] **WX-0153 — Add a mock compensation change timeline**
   - P1 · portal-maturity · local
   - Acceptance: A future-dated sample rate change leaves an already submitted payroll receipt unchanged.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
-- [ ] **WX-0154 — Add payroll input freshness warnings**
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
+- [x] **WX-0154 — Add payroll input freshness warnings**
   - P1 · portal-maturity · local
   - Acceptance: Changing approved input after preparation marks the prepared run stale and requires intentional re-preparation.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
-- [ ] **WX-0155 — Add payroll input eligibility explanations**
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
+- [x] **WX-0155 — Add payroll input eligibility explanations**
   - P1 · portal-maturity · local
   - Acceptance: A review table states why each time entry is included or excluded from the selected sample run.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
-- [ ] **WX-0156 — Add manager time rejection with reasons**
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
+- [x] **WX-0156 — Add manager time rejection with reasons**
   - P1 · portal-maturity · local
   - Acceptance: A manager can return submitted fictional time to its owner with a visible reason and no payroll eligibility.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
-- [ ] **WX-0157 — Add employee draft time editing**
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
+- [x] **WX-0157 — Add employee draft time editing**
   - P1 · portal-maturity · local
   - Acceptance: An owner can edit an unpaid draft entry and the change does not mutate approved or consumed entries.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
-- [ ] **WX-0158 — Add employee draft time deletion**
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
+- [x] **WX-0158 — Add employee draft time deletion**
   - P1 · portal-maturity · local
   - Acceptance: Deleting a draft fictional entry requires confirmation and leaves submitted or paid entry history intact.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
 - [ ] **WX-0159 — Add mock pay-period closure**
   - P1 · portal-maturity · local
   - Acceptance: Closing a submitted sample period prevents new entries from silently changing its frozen payroll totals.
@@ -1223,18 +1232,20 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Each heading in a sample structured document appears in document order and selects its corresponding editor block.
   - Source: [src/cms/CmsDemo.tsx](../../src/cms/CmsDemo.tsx)
-- [ ] **WX-0280 — Add draft field validation summaries**
+- [x] **WX-0280 — Add draft field validation summaries**
   - P1 · production-readiness · local
   - Acceptance: Submitting invalid content lists each affected field and moves focus to the first invalid control.
   - Source: [src/cms/model.ts](../../src/cms/model.ts)
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
 - [ ] **WX-0281 — Add unsaved draft change tracking**
   - P2 · portal-maturity · local
   - Acceptance: Editing a draft shows a dirty indicator that clears only after a successful save or explicit discard.
   - Source: [src/cms/model.ts](../../src/cms/model.ts)
-- [ ] **WX-0282 — Protect CMS entry switching with dirty forms**
+- [x] **WX-0282 — Protect CMS entry switching with dirty forms**
   - P1 · portal-maturity · local
   - Acceptance: Selecting another entry with unsaved changes offers keep-editing or discard choices before changing the editor.
   - Source: [src/cms/CmsDemo.tsx](../../src/cms/CmsDemo.tsx)
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
 - [ ] **WX-0283 — Add optional local draft autosave**
   - P2 · portal-maturity · local
   - Acceptance: When explicitly enabled, a separate pending draft buffer recovers form text without changing approved domain records.
@@ -1701,10 +1712,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Fixture packs cover one-to-many contacts, inactive accounts and duplicate candidates with stable fictional identifiers.
   - Source: [src/crm/model.ts](../../src/crm/model.ts)
-- [ ] **WX-0397 — Extend CRM persistence validation for profile fields**
+- [x] **WX-0397 — Extend CRM persistence validation for profile fields**
   - P1 · production-readiness · local
   - Acceptance: Import rejects unknown enum values, oversized notes and malformed relationship edges before replacing the saved workspace.
   - Source: [src/crm/persistence.ts](../../src/crm/persistence.ts)
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
 - [ ] **WX-0398 — Define optional live CRM identity mapping**
   - P2 · portal-maturity · local
   - Acceptance: An adoption contract maps trusted tenant identities to record owners and labels mock role selectors as non-authoritative.
@@ -1937,14 +1949,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: Before confirmation, the UI names how many older points would be removed to retain the new point within current limits.
   - Source: [src/portals/restore-points.ts](../../src/portals/restore-points.ts)
   - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md](../../docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md)
-- [ ] **WX-0453 — Add descriptive labels to restore points**
+- [x] **WX-0453 — Add descriptive labels to restore points**
   - P1 · portal-maturity · local
   - Acceptance: Users can label an existing local point without changing its captured workspace payload, module scope or timestamp.
   - Source: [src/portals/restore-points.ts](../../src/portals/restore-points.ts)
-- [ ] **WX-0454 — Add manual restore-point creation**
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
+- [x] **WX-0454 — Add manual restore-point creation**
   - P1 · portal-maturity · local
   - Acceptance: A user can create a named selected-scope point without importing a file or altering the current workspace saves.
   - Source: [src/portals/RestorePointHistory.tsx](../../src/portals/RestorePointHistory.tsx)
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
 - [ ] **WX-0455 — Add optional recovery points for individual imports**
   - P1 · portal-maturity · local
   - Acceptance: A separately enabled setting captures the destination portal before an individual import and refuses replacement if that required point cannot save.
@@ -1953,14 +1967,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P1 · portal-maturity · local
   - Acceptance: An explicitly enabled preference previews and saves the current portal before Reset while keeping the existing default behavior documented.
   - Source: [src/portals/useDemoPersistence.ts](../../src/portals/useDemoPersistence.ts)
-- [ ] **WX-0457 — Inspect captured records in restore-point details**
+- [x] **WX-0457 — Inspect captured records in restore-point details**
   - P1 · portal-maturity · local
   - Acceptance: A read-only detail panel lists bounded record identifiers and a complete collection-count breakdown for the point’s captured modules without applying it or exposing full free-text fields by default.
   - Source: [src/portals/RestorePointHistory.tsx](../../src/portals/RestorePointHistory.tsx)
-- [ ] **WX-0458 — Add a structured difference preview before restore**
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
+- [x] **WX-0458 — Add a structured difference preview before restore**
   - P1 · portal-maturity · local
   - Acceptance: The preview lists added, removed and changed entity counts per selected module using identifiers without exposing full sensitive-style fields by default.
   - Source: [src/portals/CombinedWorkspaceBackup.tsx](../../src/portals/CombinedWorkspaceBackup.tsx)
+  - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
 - [ ] **WX-0459 — Add record difference inspection for CMS restores**
   - P1 · portal-maturity · local · Depends on: WX-0458
   - Acceptance: A preview can show which fictional content revisions and publication projections would change before whole-module replacement.

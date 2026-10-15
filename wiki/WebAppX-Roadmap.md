@@ -13,7 +13,42 @@ dependency-ready candidates and remaining local/provider/operator criteria.
 The goal remains active until every item is accepted. Host planning records this
 intent while reusable SYSTEMX context, plan, task and memory seeds stay blank.
 
-## Evaluator and adoption acceptance — 2026-10-15
+## Portal maturity implementation — 2026-10-15
+
+The current wave implements **16 original local criteria — WX-0056,
+WX-0151–WX-0158, WX-0280, WX-0282, WX-0397, WX-0453, WX-0454, WX-0457 and
+WX-0458** — from published source
+`950f9ba0c4e48faaa65056f504f105201838e3ec`. The
+[implementation plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
+preserves the original acceptance requirements; the
+[maturity guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY.md)
+and [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-QA-2026-10-15.md)
+explain the resulting controls and evidence.
+
+| Original scope | Implemented local behavior |
+| --- | --- |
+| WX-0056 | Session-only return from the directory/shared navigation to the last supported HR subsection; unsupported routes cannot contaminate it |
+| WX-0151–WX-0155 | Explicit payroll periods and fictional employee rate timelines, work-date eligibility explanations, frozen inputs/receipts/statements, and stale-preparation blocking |
+| WX-0156–WX-0158 | Scoped manager return reasons, own unpaid draft edit/cancel, and confirmed draft deletion while submitted/approved/paid entries remain protected |
+| WX-0280 / WX-0282 | Complete CMS field-error summaries with first-invalid focus and clean/dirty entry-switch keep/discard behavior |
+| WX-0397 | Strict CRM enums, notes and relationship validation before import replacement |
+| WX-0453 / WX-0454 / WX-0457 / WX-0458 | History-only labels and named manual captures, complete bounded collection inspection, and current-to-target restore/Undo differences with confirmation bound to the reviewed point |
+
+Focused verification passed **79 new model tests**, the complete **139-test HR
+suite**, and **13 actual browser check groups covering all 16 criteria**, with
+owned browser/server cleanup. Fresh seeds and legacy saves require a selected
+period and explicit fictional hourly rates; no rate is inferred from `payCents`.
+The maturity scenario's **10.75 hours / $298.75 gross / $239 net** is separate
+from the historical evaluator's explicit inputs below.
+
+Agent 0 accepted all **16 original criteria locally**. The canonical catalog now
+records **77 done / 923 remaining**: **96 P1, 670 P2 and 157 P3**, with
+**756 local, 127 operator and 40 provider** gates remaining. The full 1,000-item
+goal remains active; use `npm run backlog:summary` for current counts.
+
+**Integrated verification passed: all 56 CI stages, 111 browser checks/check groups and Hosting preflight.** The source-derived `ci:plan` report itself executes no gate. These are local fictional-workspace observations; provider, deployed-service, native Windows and production acceptance retain their separate evidence requirements.
+
+## Historical evaluator and adoption acceptance — 2026-10-15
 
 Agent 0 accepted **13 original criteria: WX-0503, WX-0800, WX-0859
 and WX-0901–WX-0910**, starting from published source
@@ -33,11 +68,11 @@ tests** passing. All focused and integrated results are recorded in the
 The human scripts are designed for five/five/five/ten minutes after setup;
 automated elapsed time establishes no human stopwatch result.
 
-The canonical catalog records **61 done / 939 remaining**, with **112 P1, 670
+At that checkpoint the canonical catalog recorded **61 done / 939 remaining**, with **112 P1, 670
 P2 and 157 P3**, and **772 local, 127 operator and 40 provider** remaining gates.
 Use `npm run backlog:summary` for its current state. The
-[next P1 implementation plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
-scopes 16 local portal improvements that remain TODO.
+[P1 implementation plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
+scopes the 16 local portal improvements in the current maturity wave above.
 Source completion never transfers provider, adopted-app or production acceptance.
 
 ## Adoption, recorded work and import review — 2026-10-15
