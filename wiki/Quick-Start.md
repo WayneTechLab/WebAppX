@@ -194,6 +194,52 @@ owned browser/server cleanup. Read the
 and [coverage map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/QA-COVERAGE-MAP.md)
 for the checked source, exact records and remaining boundaries.
 
+## Rehearse the evaluator and adoption wave
+
+Use `npm run dev:mock` and its printed `/portals` origin in a fresh evaluation
+context. The [printable worksheet](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-EVALUATOR-WORKSHEET.md)
+links the paced [HR](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/HR-FIVE-MINUTE.md),
+[CMS](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/CMS-FIVE-MINUTE.md),
+[CRM](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/CRM-FIVE-MINUTE.md)
+and [recovery](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/RECOVERY-TEN-MINUTE.md)
+demonstrations. Preserve your ordinary browser profile and saved work. The
+[glossary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORKSPACE-RECOVERY-GLOSSARY.md)
+explains the different effects of save, backup, selective restore, Undo and Reset.
+
+```bash
+npm run browser:install # explicit one-time Chromium installation
+npm run browser:evaluators
+npm run hr:roles:check
+npm run hr:roles:test
+npm run gusto:capabilities:check
+```
+
+The evaluator owns its Vite server and fresh browser contexts. Focused evidence
+records **25 browser checks** passing: native payroll reconciles **17.75 hours,
+$532.50 gross and $401 net**; the CMS published projection stays at revision **2**
+after a revision-**3** draft; CRM moves the converted **$1,750.25** opportunity
+through proposal and negotiation while open pipeline remains **$8,250.25**;
+and CMS-only restore/Undo preserves HR/CRM saved bytes. Five/ten-minute script
+pacing is a human presentation design, separate from automated execution time.
+The [reviewed role examples](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-ROLE-EXAMPLES.md)
+also have **34 focused tests** reported passing.
+
+For adoption decisions, read the [Gusto capability gap matrix](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-CAPABILITY-GAPS.md),
+[proposed tenant membership contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TENANT-MEMBERSHIP-PROPOSAL.md),
+[operations readiness index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONS-READINESS.md),
+and [HR-disabled CMS/CRM walkthrough](https://github.com/WayneTechLab/WebAppX/blob/main/docs/examples/hr-disabled-adoption.md).
+The [import rehearsal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-IMPORT-REHEARSAL.md)
+uses temporary fictional records; [documentation freshness](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DOCUMENTATION-FRESHNESS.md)
+retains dated source/evidence qualifications.
+
+Agent 0 accepted **WX-0503, WX-0800, WX-0859 and WX-0901–WX-0910** from
+published base `aae465ae033f3191a69ed7d40056b0c6e2159e17`. All **54 CI stages, 95 browser checks/check groups and
+Hosting preflight passed**; read the
+[evaluator/adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EVALUATOR-ADOPTION-QA-2026-10-15.md).
+Earlier **48-done / 46-stage / 62-browser** results retain their historical
+receipt scope. Preview roles, source documentation and local simulations supply
+no provider membership or production authorization.
+
 ## Test HR and selected Gusto workflows
 
 While Vite development is running, use:
@@ -348,15 +394,15 @@ no work recorded. An exact work-seed match does not establish project identity,
 completion or running workers. See the
 [work-status contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORK-STATUS.md).
 
-The current accepted catalog is **48 done / 952 remaining**, with **125 P1,
+The historical adoption checkpoint recorded **48 done / 952 remaining**, with **125 P1,
 670 P2 and 157 P3** remaining and **784 local, 128 operator and 40 provider**
 gates. WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858 have focused
-local acceptance. The source-derived plan has 46 stages.
+local acceptance at that checkpoint. Its source-derived plan had 46 stages.
 
-**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**At that historical checkpoint, all 46 CI stages, 62 browser checks and Hosting preflight passed.**
 **Generated catalog/plan, link and preservation checks passed.** GitHub
 publication uses final repository-identity and native-wiki parity checks.
-The [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
+The [historical adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
 records 95 integration, 19 impact, 37 work-status and 13 CI-plan tests plus six
 owned LAN browser checks. Earlier 42-done/43-stage/56-browser results belong to
 the historical operational checkpoint.

@@ -4,6 +4,30 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 Read [dependency installation](DEPENDENCY-INSTALLATION.md) for runtime selection
 and root/starter versus optional Functions installation scopes.
 
+## Evaluator guides and adoption rehearsals
+
+| Command | Behavior |
+| --- | --- |
+| `npm run browser:evaluators` | Owned Chromium journeys for the four [human demonstrations](demos/HR-FIVE-MINUTE.md), actual downloads, CRM stage changes and CMS-only restore/Undo |
+| `npm run hr:roles:check`; `npm run hr:roles:test` | Check generated [role examples](HR-ROLE-EXAMPLES.md) and independent fictional actor/relationship expectations |
+| `npm run hr:roles:render` | Explicitly regenerate the role guide after reviewing canonical fixture changes; refuses stale source bindings |
+| `npm run gusto:capabilities:check`; `npm run gusto:capabilities:test` | Check the authored [33-capability gap map](GUSTO-CAPABILITY-GAPS.md), actual mounted SDK exports and reviewed source fingerprints |
+| `npm run gusto:capabilities:render` | Explicitly regenerate only the capability guide from reviewed data; no automatic fingerprint refresh |
+| `npm run docs:freshness -- --to REV` | Read-only [guide/evidence relevance preview](DOCUMENTATION-FRESHNESS.md) for an explicit local committed revision; retains historical receipts |
+| `npm run docs:freshness:test` | Temporary Git comparisons and deliberate append/locking/stale-input fixtures |
+| `npm run systemx:import:rehearse -- --limit 25 --offset 0` | Apply an actual import in an owned fictional installation and report before/after fingerprints; no existing app target option |
+| `npm run adoption:hr-disabled` | Capture public committed app blobs into an owned temporary CMS/CRM-only app, build it and exercise its actual browser flows |
+| `npm run adoption:hr-disabled:test` | Adopted bundle compatibility, complete graph, prewrite refusal, rollback and interruption fixtures |
+| `npm run worksheet:generate` | Optional ReportLab authoring command for the one-page [evaluator worksheet](PORTAL-EVALUATOR-WORKSHEET.md); not an app runtime or CI prerequisite |
+
+Follow [import rehearsal](SYSTEMX-IMPORT-REHEARSAL.md),
+[HR-disabled adoption](examples/hr-disabled-adoption.md), the
+[recovery glossary](WORKSPACE-RECOVERY-GLOSSARY.md), proposed
+[tenant membership](TENANT-MEMBERSHIP-PROPOSAL.md) and
+[operations readiness](OPERATIONS-READINESS.md). The worksheet's exact browser
+origin identifies the evaluator's saved-storage scope. Designed five/ten-minute
+human pacing is separate from measured automated browser execution.
+
 ## Adopted work, provenance and source review
 
 | Command | Behavior |

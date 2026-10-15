@@ -68,6 +68,15 @@ register('vite build', behavior('local-build-output', [], 'Writes production dis
 register('node --test tests/hr/gusto-sdk-mock.test.mjs tests/hr/mock-workflows.test.mjs tests/hr/gusto-backend.test.mjs tests/hr/people-operations.test.mjs tests/hr/insights.test.mjs tests/hr/service-desk.test.mjs tests/hr/linked-operations.test.mjs tests/hr/recruiting.test.mjs tests/hr/recruiting-link.test.mjs tests/hr/performance.test.mjs tests/hr/surveys.test.mjs tests/hr/persistence.test.mjs', temporary('Runs account-free HR models, Gusto adapter and Functions-source tests.', [GUSTO]))
 register('node --test tests/portals/cms.test.mjs tests/portals/crm.test.mjs tests/portals/storage.test.mjs tests/portals/persistence.test.mjs tests/portals/backup.test.mjs tests/portals/import-state.test.mjs tests/portals/combined-backup.test.mjs tests/portals/restore-workspaces.test.mjs tests/portals/restore-points.test.mjs tests/portals/registry.test.mjs tests/portals/restore-budget.test.mjs', temporary('Runs CMS/CRM, persistence, backup and restore model tests.'))
 
+register('node --test tests/backlog/documentation-freshness.test.mjs', temporary('Tests bound committed-catalog comparisons, original receipt qualifications, read-only previews and deliberate atomic decision appends in disposable repositories.'))
+register('node scripts/hr-role-examples.mjs --check', source('Checks reviewed HR capability examples, source bindings and generated guide without changing them.'))
+register('node --test tests/hr/role-examples.test.mjs', temporary('Exercises independent HR role/relationship expectations, source drift, portable text hashes and owned guide regeneration fixtures.'))
+register('node scripts/check-gusto-capability-gaps.mjs --check', source('Checks all 33 authored native, selected SDK, backend and provider mappings against reviewed source bindings and the exact pinned vendor inventory.'))
+register('node --test tests/hr/capability-gaps.test.mjs', temporary('Tests complete capability coverage, actual selected JSX exports, source drift, byte and text hash rules, and contained guide-only regeneration.'))
+register('node --test tests/adoption/hr-disabled.test.mjs', temporary('Tests the CMS/CRM-only adopted backup codec, refused legacy data, rollback and owned rehearsal interruption behavior; never targets an existing app.'))
+register('node scripts/rehearse-hr-disabled.mjs', temporary('Captures allowlisted committed app blobs into an owned temporary app, applies six reviewed HR-disabled overrides, builds and runs real CMS/CRM browser journeys, then closes owned resources.'))
+register('node scripts/browser-evaluators.mjs', temporary('Runs the authored HR/CMS/CRM and selective restore/Undo evaluator demonstrations in fresh owned Chromium contexts, with actual downloads and complete saved-payload comparisons.'))
+
 const unknown = () => ({ mutation: 'unknown', workspaces: [ROOT], note: 'Unreviewed command or shell syntax; side effects and additional dependent workspaces are unknown.' })
 
 /** Parse only the maintained literal gate loop. Never evaluate shell text. A

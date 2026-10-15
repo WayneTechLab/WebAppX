@@ -20,6 +20,22 @@ and restore storage-budget preview have their own
 [P1 QA receipt](PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md). No live
 business portal is activated by the HR preview or an administrator signing in.
 
+## Paced evaluation and optional adoption
+
+The [CMS](demos/CMS-FIVE-MINUTE.md), [CRM](demos/CRM-FIVE-MINUTE.md) and
+[selective recovery](demos/RECOVERY-TEN-MINUTE.md) scripts provide concrete
+fictional actions and expected outcomes. Use the
+[printable one-page worksheet](PORTAL-EVALUATOR-WORKSHEET.md) to record actual
+observations and the exact browser origin. The
+[recovery glossary](WORKSPACE-RECOVERY-GLOSSARY.md) defines save, export, import,
+restore point, Undo, Reset, history clear and origin using current behavior.
+`browser:evaluators` runs the authored automated companions with actual downloads.
+
+The [HR-disabled adoption example](examples/hr-disabled-adoption.md) builds and
+exercises a separate temporary app retaining CMS/CRM while removing HR entry
+points. It deliberately defines a new two-module combined backup kind and leaves
+recovery unadopted; default three-module backups are refused before writes.
+
 ## Keyboard onboarding and recovery
 
 Use **Tab** and **Shift+Tab** to move through normal page controls, **Enter** to

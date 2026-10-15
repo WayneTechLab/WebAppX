@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 952 TODO · 48 done · 20 areas · 50 items per area.**
+**1000 catalog items · 939 TODO · 61 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 125 · P2: 670 · P3: 157.
+Remaining TODO priorities: P1: 112 · P2: 670 · P3: 157.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -2143,10 +2143,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Provide two fictional organizations with distinct HR, CMS and CRM labels and visibly isolate the selected organization in the demo shell.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0503 — Define a proposed tenant membership contract**
+- [x] **WX-0503 — Define a proposed tenant membership contract**
   - P1 · foundation · operator
   - Acceptance: For optional operator-approved adoption: Document required tenant, user, role, status and revision fields and explicitly separate account tier from organization membership.
   - Source: [integrations/gusto/schema.json](../../integrations/gusto/schema.json)
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0504 — Design invitation lifecycle states**
   - P2 · portal-maturity · local
   - Acceptance: Specify pending, accepted, expired, revoked and superseded invitation states with sample transitions and no outbound email in the default demo.
@@ -3369,10 +3370,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P1 · production-readiness · operator · Depends on: WX-0775
   - Acceptance: For optional operator-approved adoption: An optional adoption worksheet lists recovery priorities, authorized destinations, data owners and evidence needed before restoring real services.
   - Source: [docs/RUNBOOK.md](../../docs/RUNBOOK.md)
-- [ ] **WX-0800 — Add an operations readiness review index**
+- [x] **WX-0800 — Add an operations readiness review index**
   - P1 · foundation · local · Depends on: WX-0751
   - Acceptance: Link ownership, monitoring, recovery, secrets and release rehearsal records with explicit deferred status for unadopted production services.
   - Source: [docs/MONITORING.md](../../docs/MONITORING.md)
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
 
 <a id="delivery"></a>
 
@@ -3627,10 +3629,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: Import preview summarizes selected version, exact public source commit, preserved host paths and bootstrap conflicts in a bounded report.
   - Source: [scripts/sync-systemx.py](../../scripts/sync-systemx.py)
   - Verified: 2026-10-15 · Source base: `f8494b750447af7d4e39695f4a6fceeff29f48bb` · Reviewed by: `agent.0` · Evidence: [docs/SYSTEMX-ADOPTION-QA-2026-10-15.md](../../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
-- [ ] **WX-0859 — Add a before-and-after import preservation report**
+- [x] **WX-0859 — Add a before-and-after import preservation report**
   - P1 · foundation · local
   - Acceptance: An import rehearsal lists preserved project records and host extension fingerprints without publishing their private content.
   - Source: [scripts/sync-systemx.py](../../scripts/sync-systemx.py)
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0860 — Add a reusable import rehearsal fixture**
   - P1 · foundation · local · Depends on: WX-0859
   - Acceptance: A temporary adopted app with populated fictional records demonstrates that reviewed upstream imports preserve project-specific ledgers and configuration.
@@ -3800,46 +3803,56 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## Documentation and adoption kits
 
-- [ ] **WX-0901 — Add a dated documentation evidence freshness workflow**
+- [x] **WX-0901 — Add a dated documentation evidence freshness workflow**
   - P1 · foundation · local
   - Acceptance: A maintainer can identify guides whose examined evidence predates relevant source changes, record a review decision and preserve the original dated receipts.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
-- [ ] **WX-0902 — Add a printable portal evaluator checklist**
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0902 — Add a printable portal evaluator checklist**
   - P1 · foundation · local
   - Acceptance: A one-page worksheet guides an evaluator through the three fictional portal journeys and recovery exercise with spaces for observed outcomes and exact browser origin.
   - Source: [docs/GETTING-STARTED.md](../../docs/GETTING-STARTED.md)
-- [ ] **WX-0903 — Add a glossary for workspace recovery terms**
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0903 — Add a glossary for workspace recovery terms**
   - P1 · foundation · local
   - Acceptance: The glossary distinguishes save, export, import, restore point, Undo, Reset, history clear and origin using current behavior.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
-- [ ] **WX-0904 — Add a five-minute HR demonstration script**
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0904 — Add a five-minute HR demonstration script**
   - P1 · foundation · local
   - Acceptance: A fictional scenario walks through onboarding, benefit election, approved time and mock payroll with expected visible totals.
   - Source: [docs/HR-PORTAL.md](../../docs/HR-PORTAL.md)
-- [ ] **WX-0905 — Add a five-minute CMS demonstration script**
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0905 — Add a five-minute CMS demonstration script**
   - P1 · foundation · local
   - Acceptance: A fictional scenario demonstrates separate review and publication responsibilities and verifies the frozen published projection.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
-- [ ] **WX-0906 — Add a five-minute CRM demonstration script**
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0906 — Add a five-minute CRM demonstration script**
   - P1 · foundation · local
   - Acceptance: A fictional scenario creates a lead, converts it and moves an opportunity while showing the expected linked records.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
-- [ ] **WX-0907 — Add a ten-minute recovery demonstration script**
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0907 — Add a ten-minute recovery demonstration script**
   - P1 · foundation · local
   - Acceptance: The walkthrough backs up all portals, restores one selected module and reverses it while checking untouched modules.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
-- [ ] **WX-0908 — Generate mock role documentation from capability fixtures**
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0908 — Generate mock role documentation from capability fixtures**
   - P1 · foundation · local · Depends on: WX-0501
   - Acceptance: A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.
   - Source: [docs/HR-PORTAL.md](../../docs/HR-PORTAL.md)
-- [ ] **WX-0909 — Add a per-capability connected adoption gap matrix**
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0909 — Add a per-capability connected adoption gap matrix**
   - P1 · foundation · local
   - Acceptance: Each documented Gusto capability maps to its native mock behavior, optional SDK coverage and specific adopter-owned backend or provider work with evidence scope.
   - Source: [docs/GUSTO-SETUP.md](../../docs/GUSTO-SETUP.md)
-- [ ] **WX-0910 — Add an HR-disabled app adoption walkthrough**
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0910 — Add an HR-disabled app adoption walkthrough**
   - P1 · foundation · local
   - Acceptance: A temporary adoption example removes HR entry points deliberately, retains working CMS and CRM evaluation, and lists the resulting bundle and backup compatibility decisions.
   - Source: [docs/examples/private-template-adoption.md](../../docs/examples/private-template-adoption.md)
+  - Verified: 2026-10-15 · Source base: `aae465ae033f3191a69ed7d40056b0c6e2159e17` · Reviewed by: `agent.0` · Evidence: [docs/EVALUATOR-ADOPTION-QA-2026-10-15.md](../../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0911 — Add a new-app Agent Y walkthrough transcript**
   - P2 · foundation · local
   - Acceptance: A credential-free example demonstrates selecting a bounded task, preparing its packet and reviewing a harmless local result.

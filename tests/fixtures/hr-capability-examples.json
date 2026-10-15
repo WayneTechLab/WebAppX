@@ -1,0 +1,779 @@
+{
+  "schemaVersion": 1,
+  "intent": "reviewed-mock-role-examples",
+  "review": {
+    "proposalId": "WX-0908",
+    "criterion": "A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.",
+    "sourceRevision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+    "canonicalDocument": "docs/PORTAL-CAPABILITIES.md",
+    "reviewedSources": [
+      {
+        "path": "docs/PORTAL-CAPABILITIES.md",
+        "sha256": "cc2053d3b5a1b871dcd21e48b5fabe079af3e313bb83bf9453932ccba7850e38"
+      },
+      {
+        "path": "src/hr/model.ts",
+        "sha256": "32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e"
+      },
+      {
+        "path": "src/hr/mock-workflows.ts",
+        "sha256": "a9b18d468e6f0dd573c06ebaa6d9558eab2e200044373bcf588821e0f21aa235"
+      },
+      {
+        "path": "src/hr/performance.ts",
+        "sha256": "e4dd5404f9c826a162981904fbc0417588b64252998fa4ac1ca7c0477c8c716f"
+      },
+      {
+        "path": "src/hr/surveys.ts",
+        "sha256": "5bc231e4a19c62c3a2b7520e93026f885d1f0f636e89306ccfa76d0a7f0a2b85"
+      },
+      {
+        "path": "src/hr/persistence.ts",
+        "sha256": "eb7fa71d65db06407ade439897ae5bc5c9cf305c05751b9cc77f8b9681a97c62"
+      },
+      {
+        "path": "src/portals/backup.ts",
+        "sha256": "b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a"
+      },
+      {
+        "path": "src/portals/combined-backup.ts",
+        "sha256": "186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726"
+      },
+      {
+        "path": "src/portals/DemoWorkspaceBackup.tsx",
+        "sha256": "5c1028cd8b954c77fffbc3c5ac33d2f232874109f57929911b61a9608c57dc88"
+      },
+      {
+        "path": "src/portals/CombinedWorkspaceBackup.tsx",
+        "sha256": "3fb8f664f402c95fa4a3f78702ec0b98ffcf5483fe1c4a3808901a572f2cb6e6"
+      },
+      {
+        "path": "src/hr/components/HrWorkspace.tsx",
+        "sha256": "19c10913f74471430799b57b7f45c65cab428a131a48036f82526204e572fca6"
+      },
+      {
+        "path": ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json",
+        "sha256": "14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3"
+      }
+    ],
+    "hashMode": "utf8-lf-sha256"
+  },
+  "roles": [
+    {
+      "role": "employer-owner",
+      "actor": {
+        "role": "employer-owner"
+      },
+      "context": "Company administration uses known employee resources; it cannot impersonate a review author or assigned manager.",
+      "projection": {
+        "employeeIds": [
+          "employee-001",
+          "employee-002",
+          "employee-003"
+        ],
+        "documentIds": [
+          "document-001",
+          "document-002",
+          "document-003"
+        ],
+        "compensationEmployeeId": "employee-002",
+        "compensationVisible": true,
+        "selfDraftVisible": false
+      }
+    },
+    {
+      "role": "payroll-admin",
+      "actor": {
+        "role": "payroll-admin"
+      },
+      "context": "Onboarding review and simulated payroll are separate from profile editing and time approval.",
+      "projection": {
+        "employeeIds": [
+          "employee-001",
+          "employee-002",
+          "employee-003"
+        ],
+        "documentIds": [
+          "document-001",
+          "document-002",
+          "document-003"
+        ],
+        "compensationEmployeeId": "employee-002",
+        "compensationVisible": true,
+        "selfDraftVisible": false
+      }
+    },
+    {
+      "role": "hr-admin",
+      "actor": {
+        "role": "hr-admin"
+      },
+      "context": "Company people operations exclude compensation and payroll amounts; HR cannot write an assigned manager review.",
+      "projection": {
+        "employeeIds": [
+          "employee-001",
+          "employee-002",
+          "employee-003"
+        ],
+        "documentIds": [
+          "document-001",
+          "document-002",
+          "document-003"
+        ],
+        "compensationEmployeeId": "employee-002",
+        "compensationVisible": false,
+        "selfDraftVisible": false
+      }
+    },
+    {
+      "role": "manager",
+      "actor": {
+        "role": "manager",
+        "employeeId": "employee-001"
+      },
+      "context": "The actor is employee-001; approval requires a submitted direct-report record and excludes the manager’s own entries.",
+      "projection": {
+        "employeeIds": [
+          "employee-001",
+          "employee-002",
+          "employee-003"
+        ],
+        "documentIds": [
+          "document-001",
+          "document-002"
+        ],
+        "compensationEmployeeId": "employee-002",
+        "compensationVisible": false,
+        "selfDraftVisible": false
+      }
+    },
+    {
+      "role": "employee",
+      "actor": {
+        "role": "employee",
+        "employeeId": "employee-002"
+      },
+      "context": "The actor is employee-002; self service requires that exact known employee and the current workflow stage.",
+      "projection": {
+        "employeeIds": [
+          "employee-002"
+        ],
+        "documentIds": [
+          "document-001",
+          "document-002"
+        ],
+        "compensationEmployeeId": "employee-002",
+        "compensationVisible": true,
+        "selfDraftVisible": true
+      }
+    },
+    {
+      "role": "contractor",
+      "actor": {
+        "role": "contractor",
+        "contractorId": "contractor-001"
+      },
+      "context": "The actor is contractor-001; its document projection excludes employee records. Contractor UI checklist toggles are local preview state.",
+      "projection": {
+        "employeeIds": [],
+        "documentIds": [
+          "document-003"
+        ],
+        "compensationEmployeeId": "employee-002",
+        "compensationVisible": false,
+        "selfDraftVisible": false
+      }
+    },
+    {
+      "role": "auditor",
+      "actor": {
+        "role": "auditor"
+      },
+      "context": "Company directory and metadata reads do not permit domain writes; auditor helper projections do not create additional page access.",
+      "projection": {
+        "employeeIds": [
+          "employee-001",
+          "employee-002",
+          "employee-003"
+        ],
+        "documentIds": [
+          "document-001",
+          "document-002",
+          "document-003"
+        ],
+        "compensationEmployeeId": "employee-002",
+        "compensationVisible": false,
+        "selfDraftVisible": false
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "owner-change-known-profile",
+      "actor": {
+        "role": "employer-owner"
+      },
+      "domain": "workflow",
+      "actionDescription": "Save a fictional work email for a known employee.",
+      "resource": "employee-002",
+      "statePrerequisites": [
+        "Employee exists in the synthetic fixture."
+      ],
+      "setup": [],
+      "event": {
+        "type": "change-profile",
+        "employeeId": "employee-002",
+        "workEmail": "reviewed.example@example.invalid"
+      },
+      "expected": {
+        "outcome": "allow",
+        "path": [
+          "profileEmails",
+          "employee-002"
+        ],
+        "value": "reviewed.example@example.invalid",
+        "description": "The known employee profile email changes in copied mock state."
+      }
+    },
+    {
+      "id": "owner-cannot-impersonate-self-review",
+      "actor": {
+        "role": "employer-owner"
+      },
+      "domain": "performance",
+      "actionDescription": "Attempt to save another person’s self-review.",
+      "resource": "review-seed-employee-002",
+      "statePrerequisites": [
+        "The review exists in draft; its subject is employee-002."
+      ],
+      "setup": [],
+      "event": {
+        "type": "save-self-review",
+        "reviewId": "review-seed-employee-002",
+        "comments": "Fictional self review draft."
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "Only the employee can write or submit their own sample self-review.",
+        "description": "Administrative role does not satisfy the bound self author requirement."
+      }
+    },
+    {
+      "id": "payroll-review-onboarding",
+      "actor": {
+        "role": "payroll-admin"
+      },
+      "domain": "workflow",
+      "actionDescription": "Review the profile prerequisite in employee onboarding.",
+      "resource": "employee-003",
+      "statePrerequisites": [
+        "Employee exists; onboarding stage is draft."
+      ],
+      "setup": [],
+      "event": {
+        "type": "review-profile",
+        "employeeId": "employee-003"
+      },
+      "expected": {
+        "outcome": "allow",
+        "path": [
+          "onboarding",
+          "employee-003",
+          "profileReviewed"
+        ],
+        "value": true,
+        "description": "The profile prerequisite becomes reviewed; onboarding is still draft."
+      }
+    },
+    {
+      "id": "payroll-cannot-edit-profile",
+      "actor": {
+        "role": "payroll-admin"
+      },
+      "domain": "workflow",
+      "actionDescription": "Attempt to change an employee profile email.",
+      "resource": "employee-002",
+      "statePrerequisites": [
+        "Employee exists; a payroll role does not grant profile editing."
+      ],
+      "setup": [],
+      "event": {
+        "type": "change-profile",
+        "employeeId": "employee-002",
+        "workEmail": "reviewed.example@example.invalid"
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "This demo role cannot change that employee profile.",
+        "description": "Profile editing is refused without modifying the source state."
+      }
+    },
+    {
+      "id": "hr-approve-submitted-time",
+      "actor": {
+        "role": "hr-admin"
+      },
+      "domain": "workflow",
+      "actionDescription": "Approve a known employee’s submitted time entry.",
+      "resource": "time-001",
+      "statePrerequisites": [
+        "Entry belongs to employee-002 and is submitted."
+      ],
+      "setup": [],
+      "event": {
+        "type": "approve-time",
+        "entryId": "time-001"
+      },
+      "expected": {
+        "outcome": "allow",
+        "path": [
+          "timeEntries",
+          "0",
+          "status"
+        ],
+        "value": "approved",
+        "description": "The submitted entry becomes approved in copied mock state."
+      }
+    },
+    {
+      "id": "hr-cannot-impersonate-manager-review",
+      "actor": {
+        "role": "hr-admin"
+      },
+      "domain": "performance",
+      "actionDescription": "Attempt to write the assigned manager’s review.",
+      "resource": "review-seed-employee-002",
+      "statePrerequisites": [
+        "Review records employee-001 as the assigned manager."
+      ],
+      "setup": [],
+      "event": {
+        "type": "save-manager-review",
+        "reviewId": "review-seed-employee-002",
+        "comments": "Fictional manager review."
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "Only the assigned direct manager can review or publish this sample cycle.",
+        "description": "HR administration cannot replace the assigned direct manager."
+      }
+    },
+    {
+      "id": "manager-approve-direct-report",
+      "actor": {
+        "role": "manager",
+        "employeeId": "employee-001"
+      },
+      "domain": "workflow",
+      "actionDescription": "Approve submitted time for a current direct report.",
+      "resource": "time-001",
+      "statePrerequisites": [
+        "Actor employee-001 is the current manager of employee-002.",
+        "The time entry is submitted, and its subject differs from the actor."
+      ],
+      "setup": [],
+      "event": {
+        "type": "approve-time",
+        "entryId": "time-001"
+      },
+      "expected": {
+        "outcome": "allow",
+        "path": [
+          "timeEntries",
+          "0",
+          "status"
+        ],
+        "value": "approved",
+        "description": "The direct report’s submitted entry becomes approved."
+      }
+    },
+    {
+      "id": "manager-refuse-draft-time",
+      "actor": {
+        "role": "manager",
+        "employeeId": "employee-001"
+      },
+      "domain": "workflow",
+      "actionDescription": "Attempt to approve a direct report’s draft entry.",
+      "resource": "time-002",
+      "statePrerequisites": [
+        "Actor employee-001 manages employee-003.",
+        "The time entry is draft, rather than submitted."
+      ],
+      "setup": [],
+      "event": {
+        "type": "approve-time",
+        "entryId": "time-002"
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "Approval requires a submitted entry within this role and team scope; self-approval is unavailable.",
+        "description": "The reporting line does not bypass the submitted-state prerequisite."
+      }
+    },
+    {
+      "id": "manager-refuse-unrelated-report",
+      "actor": {
+        "role": "manager",
+        "employeeId": "employee-003"
+      },
+      "domain": "workflow",
+      "actionDescription": "Attempt to approve submitted time outside the actor’s reporting line.",
+      "resource": "time-001",
+      "statePrerequisites": [
+        "Actor employee-003 is a known employee using the manager preview.",
+        "Employee-002 reports to employee-001, not employee-003."
+      ],
+      "setup": [],
+      "event": {
+        "type": "approve-time",
+        "entryId": "time-001"
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "Approval requires a submitted entry within this role and team scope; self-approval is unavailable.",
+        "description": "The manager role alone cannot approve another manager’s report."
+      }
+    },
+    {
+      "id": "manager-refuse-self-approval",
+      "actor": {
+        "role": "manager",
+        "employeeId": "employee-001"
+      },
+      "domain": "workflow",
+      "actionDescription": "Attempt to approve the manager’s own submitted time.",
+      "resource": "MOCK-TIME-0001",
+      "statePrerequisites": [
+        "Actor employee-001 creates and submits their own draft in the setup steps.",
+        "The entry is submitted but its employeeId equals the actor."
+      ],
+      "setup": [
+        {
+          "actor": {
+            "role": "manager",
+            "employeeId": "employee-001"
+          },
+          "event": {
+            "type": "add-time",
+            "date": "2026-10-15",
+            "hours": 1,
+            "source": "manual"
+          }
+        },
+        {
+          "actor": {
+            "role": "manager",
+            "employeeId": "employee-001"
+          },
+          "event": {
+            "type": "submit-time",
+            "entryIds": [
+              "MOCK-TIME-0001"
+            ]
+          }
+        }
+      ],
+      "event": {
+        "type": "approve-time",
+        "entryId": "MOCK-TIME-0001"
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "Approval requires a submitted entry within this role and team scope; self-approval is unavailable.",
+        "description": "Manager self approval is refused even after submission."
+      }
+    },
+    {
+      "id": "manager-refuse-unsubmitted-review",
+      "actor": {
+        "role": "manager",
+        "employeeId": "employee-001"
+      },
+      "domain": "performance",
+      "actionDescription": "Attempt to publish a review before self submission.",
+      "resource": "review-seed-employee-002",
+      "statePrerequisites": [
+        "The actor is the recorded reviewer and current direct manager.",
+        "The review is still draft."
+      ],
+      "setup": [],
+      "event": {
+        "type": "publish-review",
+        "reviewId": "review-seed-employee-002"
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "The employee must submit the self-review before manager review. Published reviews are locked.",
+        "description": "The correct manager cannot skip the self-submission prerequisite."
+      }
+    },
+    {
+      "id": "manager-publish-reviewed-cycle",
+      "actor": {
+        "role": "manager",
+        "employeeId": "employee-001"
+      },
+      "domain": "performance",
+      "actionDescription": "Publish a cycle after the employee submits and the assigned manager saves comments.",
+      "resource": "review-seed-employee-002",
+      "statePrerequisites": [
+        "Employee-002 saves and submits their own self-review.",
+        "Employee-001 is both the recorded reviewer and current direct manager and saves manager comments."
+      ],
+      "setup": [
+        {
+          "actor": {
+            "role": "employee",
+            "employeeId": "employee-002"
+          },
+          "event": {
+            "type": "save-self-review",
+            "reviewId": "review-seed-employee-002",
+            "comments": "Fictional self review draft."
+          }
+        },
+        {
+          "actor": {
+            "role": "employee",
+            "employeeId": "employee-002"
+          },
+          "event": {
+            "type": "submit-self-review",
+            "reviewId": "review-seed-employee-002"
+          }
+        },
+        {
+          "actor": {
+            "role": "manager",
+            "employeeId": "employee-001"
+          },
+          "event": {
+            "type": "save-manager-review",
+            "reviewId": "review-seed-employee-002",
+            "comments": "Fictional manager review."
+          }
+        }
+      ],
+      "event": {
+        "type": "publish-review",
+        "reviewId": "review-seed-employee-002"
+      },
+      "expected": {
+        "outcome": "allow",
+        "path": [
+          "reviews",
+          "0",
+          "stage"
+        ],
+        "value": "published",
+        "description": "The reviewed cycle becomes a published local sample."
+      }
+    },
+    {
+      "id": "employee-edit-own-profile",
+      "actor": {
+        "role": "employee",
+        "employeeId": "employee-002"
+      },
+      "domain": "workflow",
+      "actionDescription": "Save a fictional email for the bound employee.",
+      "resource": "employee-002",
+      "statePrerequisites": [
+        "Actor employee-002 matches the known employee resource."
+      ],
+      "setup": [],
+      "event": {
+        "type": "change-profile",
+        "employeeId": "employee-002",
+        "workEmail": "reviewed.example@example.invalid"
+      },
+      "expected": {
+        "outcome": "allow",
+        "path": [
+          "profileEmails",
+          "employee-002"
+        ],
+        "value": "reviewed.example@example.invalid",
+        "description": "The bound employee can change their own sample email."
+      }
+    },
+    {
+      "id": "employee-refuse-foreign-profile",
+      "actor": {
+        "role": "employee",
+        "employeeId": "employee-002"
+      },
+      "domain": "workflow",
+      "actionDescription": "Attempt to edit another employee’s profile using its known ID.",
+      "resource": "employee-003",
+      "statePrerequisites": [
+        "Actor remains employee-002; the target is employee-003."
+      ],
+      "setup": [],
+      "event": {
+        "type": "change-profile",
+        "employeeId": "employee-003",
+        "workEmail": "foreign.example@example.invalid"
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "This demo role cannot change that employee profile.",
+        "description": "Knowing a foreign employee ID does not satisfy ownership."
+      }
+    },
+    {
+      "id": "employee-refuse-unreviewed-benefit",
+      "actor": {
+        "role": "employee",
+        "employeeId": "employee-002"
+      },
+      "domain": "workflow",
+      "actionDescription": "Attempt to confirm an own benefit election before review.",
+      "resource": "benefit-001",
+      "statePrerequisites": [
+        "The plan is available to employee-002.",
+        "The employee has saved an election, but its stage is draft."
+      ],
+      "setup": [
+        {
+          "actor": {
+            "role": "employee",
+            "employeeId": "employee-002"
+          },
+          "event": {
+            "type": "elect-benefit",
+            "planId": "benefit-001",
+            "election": "enroll"
+          }
+        }
+      ],
+      "event": {
+        "type": "confirm-benefit",
+        "planId": "benefit-001"
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "Review the sample election before confirming.",
+        "description": "An own election still requires the review transition."
+      }
+    },
+    {
+      "id": "employee-confirm-reviewed-benefit",
+      "actor": {
+        "role": "employee",
+        "employeeId": "employee-002"
+      },
+      "domain": "workflow",
+      "actionDescription": "Confirm an own available benefit election after review.",
+      "resource": "benefit-001",
+      "statePrerequisites": [
+        "The plan is available to employee-002.",
+        "The employee elects and reviews the sample before confirmation."
+      ],
+      "setup": [
+        {
+          "actor": {
+            "role": "employee",
+            "employeeId": "employee-002"
+          },
+          "event": {
+            "type": "elect-benefit",
+            "planId": "benefit-001",
+            "election": "enroll"
+          }
+        },
+        {
+          "actor": {
+            "role": "employee",
+            "employeeId": "employee-002"
+          },
+          "event": {
+            "type": "review-benefit",
+            "planId": "benefit-001"
+          }
+        }
+      ],
+      "event": {
+        "type": "confirm-benefit",
+        "planId": "benefit-001"
+      },
+      "expected": {
+        "outcome": "allow",
+        "path": [
+          "benefitElections",
+          "0",
+          "stage"
+        ],
+        "value": "confirmed",
+        "description": "The reviewed own election becomes confirmed with a mock receipt."
+      }
+    },
+    {
+      "id": "contractor-refuse-employee-time",
+      "actor": {
+        "role": "contractor",
+        "contractorId": "contractor-001"
+      },
+      "domain": "workflow",
+      "actionDescription": "Attempt to create employee time from a contractor identity.",
+      "resource": "contractor-001",
+      "statePrerequisites": [
+        "Actor is bound to a contractor, without an employee identity."
+      ],
+      "setup": [],
+      "event": {
+        "type": "add-time",
+        "date": "2026-10-15",
+        "hours": 1,
+        "source": "manual"
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "A bound synthetic employee identity is required.",
+        "description": "Contractor page access does not grant employee time transitions."
+      }
+    },
+    {
+      "id": "auditor-refuse-time-approval",
+      "actor": {
+        "role": "auditor"
+      },
+      "domain": "workflow",
+      "actionDescription": "Attempt to approve a visible submitted company time entry.",
+      "resource": "time-001",
+      "statePrerequisites": [
+        "Entry is submitted and belongs to a known employee.",
+        "Auditor directory visibility does not grant approval."
+      ],
+      "setup": [],
+      "event": {
+        "type": "approve-time",
+        "entryId": "time-001"
+      },
+      "expected": {
+        "outcome": "deny",
+        "error": "Approval requires a submitted entry within this role and team scope; self-approval is unavailable.",
+        "description": "The auditor’s readable metadata does not permit domain mutation."
+      }
+    }
+  ],
+  "exportBoundary": {
+    "modules": [
+      "hr",
+      "cms",
+      "crm"
+    ],
+    "access": "all-preview-roles",
+    "contents": "complete-saved-domain-state",
+    "description": "Every preview role can export the complete saved module workspace; the shared backup codecs take complete state and no actor argument. Combined export includes all three complete workspaces without a preview identity.",
+    "included": [
+      "Saved HR performance self-review and manager drafts, survey draft answers, payroll state and mock receipts where present.",
+      "Unpublished CMS drafts and review metadata; CRM records belonging to other representatives."
+    ],
+    "excluded": [
+      "Unsaved form inputs, running timers, restore-point history and the separate SDK mock session."
+    ],
+    "authority": "Readable JSON backups and synthetic role choices do not authenticate a person, grant Firebase claims or tenant membership, or authorize provider access. Production export needs its own trusted actor, resource and field policy."
+  }
+}

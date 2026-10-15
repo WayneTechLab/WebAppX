@@ -1,6 +1,53 @@
 # Update Log
 
+## 3.4.0 evaluator and adoption wave — verified, 2026-10-15
+
+Accept **13 original criteria: WX-0503, WX-0800, WX-0859 and WX-0901–WX-0910** from
+published base `aae465ae033f3191a69ed7d40056b0c6e2159e17`. Agent 0 recorded
+accepted evidence. All **54 CI stages, 95 browser checks/check groups and Hosting
+preflight passed**; preservation and review details are recorded in the
+[evaluator/adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EVALUATOR-ADOPTION-QA-2026-10-15.md).
+
+Add the [proposed tenant membership contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TENANT-MEMBERSHIP-PROPOSAL.md)
+and [operations readiness index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONS-READINESS.md).
+Membership revision enforcement is proposed; deployed service ownership,
+provider acceptance and production rehearsal remain adoption responsibilities.
+
+Add the [temporary import preservation rehearsal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-IMPORT-REHEARSAL.md)
+using the real importer and public fictional host records, plus
+[documentation freshness review](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DOCUMENTATION-FRESHNESS.md).
+Digest-bound source review decisions preserve original receipt dates and
+starting-source-base qualifications and record no new browser execution.
+
+Add the [printable evaluator worksheet](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-EVALUATOR-WORKSHEET.md),
+[recovery glossary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORKSPACE-RECOVERY-GLOSSARY.md),
+and paced [HR](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/HR-FIVE-MINUTE.md),
+[CMS](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/CMS-FIVE-MINUTE.md),
+[CRM](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/CRM-FIVE-MINUTE.md)
+and [single-module recovery](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/RECOVERY-TEN-MINUTE.md)
+scripts. The actual evaluator suite passed **25 browser checks** with owned
+cleanup. Native payroll totals **17.75 hours, $532.50 gross and $401 net**;
+CMS keeps a frozen revision-2 public projection after a later draft; CRM moves a
+converted opportunity through proposal and negotiation with **$8,250.25** open
+pipeline; CMS-only restore/Undo preserves untouched HR/CRM save bytes. Script
+timings are designed human pacing, distinct from automation duration.
+
+Add generated [HR role examples](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-ROLE-EXAMPLES.md)
+with **34 focused tests** reported passing, a [per-capability adoption matrix](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-CAPABILITY-GAPS.md),
+and an [HR-disabled app walkthrough](https://github.com/WayneTechLab/WebAppX/blob/main/docs/examples/hr-disabled-adoption.md)
+that evaluates CMS/CRM in a temporary app with deliberate bundle/backup choices.
+These documents distinguish native simulations, selected SDK mocks, source-only
+review and adopter/provider work.
+
+The canonical catalog now records **61 done / 939 remaining**:
+**112 P1, 670 P2 and 157 P3**, with **772 local, 127 operator and 40 provider**
+gates remaining. The complete 1,000-item goal remains active. The prior **48 done /
+46 CI stages / 62 browser checks** below remain historical results. This wave
+records no production deployment or provider activation.
+
 ## 3.4.0 adoption, recorded work and import-review foundations — 2026-10-15
+
+This section retains the historical 48-done / 46-stage / 62-browser checkpoint.
 
 Add [reviewed backlog adoption](https://github.com/WayneTechLab/WebAppX/blob/main/docs/BACKLOG-ADOPTION.md)
 through `backlog:adopt` and its focused tests. A bounded, explicit selection maps
@@ -36,14 +83,14 @@ host paths, first-import proof and bootstrap conflicts. Preview applies no impor
 complete blocking results survive pagination.
 
 Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**.
-The catalog reaches **48 done / 952 remaining**: **125 P1, 670 P2 and 157 P3**,
+At that checkpoint the catalog reached **48 done / 952 remaining**: **125 P1, 670 P2 and 157 P3**,
 with **784 local, 128 operator and 40 provider** criteria remaining. Focused
 verification passed **95 host-integration tests** (23 adoption, 23 provenance,
 13 upstream-review and 36 prior), **19 revision-impact tests, 37 work-status
-tests, six owned LAN browser checks and 13 CI-plan tests**. The current plan has
+tests, six owned LAN browser checks and 13 CI-plan tests**. That checkpoint's plan had
 **46 stages**, all passed in the final integrated run.
 
-**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**At that historical checkpoint, all 46 CI stages, 62 browser checks and Hosting preflight passed.**
 **Generated catalog/plan, link and preservation checks passed.** GitHub
 publication uses final repository-identity and native-wiki parity checks. The [adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
 retains focused results, review corrections and dated read-only observations.
@@ -55,7 +102,7 @@ production, native Windows or whole-site accessibility acceptance.
 ## 3.4.0 operational foundations and complete portal lifecycles — 2026-10-15
 
 This is the historical 42-done / 43-stage / 56-browser-check checkpoint. The
-current adoption wave and its integrated gate results are recorded above.
+later adoption checkpoint and its integrated gate results are recorded above.
 
 Add `environment:check` / `environment:test` for the configuration schema proposal,
 tracked public examples and browser declarations. The fixed six-file inventory

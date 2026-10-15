@@ -66,6 +66,39 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
+## Evaluator and adoption wave — verified
+
+The current wave starts from published source
+`aae465ae033f3191a69ed7d40056b0c6e2159e17` and accepts **13 original criteria**:
+**WX-0503, WX-0800, WX-0859 and WX-0901–WX-0910**. Agent 0 recorded
+their accepted evidence in the canonical catalog after review.
+
+**Integrated verification passed: all 54 CI stages, 95 browser checks/check groups and Hosting preflight.**
+
+| Candidate scope | Review material and evidence boundary |
+| --- | --- |
+| WX-0503 / WX-0800 | [Proposed tenant membership](docs/TENANT-MEMBERSHIP-PROPOSAL.md) defines the adopted identity/role/status/revision contract; revision enforcement remains proposed. The [operations readiness index](docs/OPERATIONS-READINESS.md) links ownership, monitoring, recovery, secrets and release rehearsal while production responsibilities remain deferred until adoption. |
+| WX-0859 / WX-0901 | [Import preservation rehearsal](docs/SYSTEMX-IMPORT-REHEARSAL.md) uses the real importer with temporary fictional records and exact before/after fingerprints. [Documentation freshness](docs/DOCUMENTATION-FRESHNESS.md) compares committed source scopes and records deliberate digest-bound decisions while preserving original receipt dates and qualifications. |
+| WX-0902–WX-0907 | The [printable evaluator worksheet](docs/PORTAL-EVALUATOR-WORKSHEET.md), [recovery glossary](docs/WORKSPACE-RECOVERY-GLOSSARY.md), and paced [HR](docs/demos/HR-FIVE-MINUTE.md), [CMS](docs/demos/CMS-FIVE-MINUTE.md), [CRM](docs/demos/CRM-FIVE-MINUTE.md) and [recovery](docs/demos/RECOVERY-TEN-MINUTE.md) scripts provide exact fictional actors, controls and expected observations. |
+| WX-0908 / WX-0909 / WX-0910 | [Reviewed HR role examples](docs/HR-ROLE-EXAMPLES.md) use literal transition expectations; the [capability adoption gap matrix](docs/GUSTO-CAPABILITY-GAPS.md) separates native behavior, selected SDK coverage and adopter/provider work. The [HR-disabled adoption example](docs/examples/hr-disabled-adoption.md) exercises a temporary CMS/CRM app with explicit bundle/backup compatibility decisions. |
+
+Focused evidence already records **25 evaluator browser checks** and **34 HR
+role-example tests** passing. The evaluator uses the named synthetic seed and
+owned Vite/Chromium resources. It verifies $401 native payroll, frozen CMS
+revision 2 after a later draft, CRM discovery→proposal→negotiation with $8,250.25
+open pipeline, and a CMS-only selective restore/Undo with untouched HR/CRM save
+bytes. Five/ten minutes are designed human pacing, not measured completion times.
+
+The canonical catalog now records **61 done / 939 remaining**, with **112 P1,
+670 P2 and 157 P3**, and remaining gates of **772 local, 127 operator and 40
+provider**. The complete 1,000-item goal remains active.
+The [evaluator/adoption QA receipt](docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+records the final integrated CI, browser, Hosting preflight and preservation
+results. The [next P1 implementation plan](docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
+scopes 16 local app changes that remain TODO. The earlier **48-done / 46-stage / 62-browser-check** receipt below is
+historical. No provider, deployed service or production acceptance follows from
+this wave's local checks.
+
 ## Developer readiness and automated portal smoke
 
 Use **`npm run doctor`** before setup for a dependency-free, read-only report of
@@ -254,9 +287,11 @@ gates, and the complete 1,000-item goal remains active.
 
 ## Backlog adoption and recorded work
 
+This section retains the historical adoption checkpoint of 2026-10-15.
+
 Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**
-against their original local criteria. The current catalog has **48 done /
-952 remaining**, with **125 P1, 670 P2 and 157 P3** remaining. Remaining gates
+against their original local criteria. At that checkpoint the catalog had **48 done /
+952 remaining**, with **125 P1, 670 P2 and 157 P3** remaining. Remaining gates then
 are **784 local, 128 operator and 40 provider**. The complete 1,000-item goal
 remains active, and source completion does not transfer acceptance to an adopted app.
 
@@ -271,10 +306,10 @@ remains active, and source completion does not transfer acceptance to an adopted
 Focused verification passed **95 SYSTEMX integration tests** (including 23
 adoption, 23 provenance and 13 upstream-review cases), **19 impact tests**,
 **37 work-status tests**, **six owned LAN browser checks** and **13 CI-plan
-tests**. The current CI plan contains **46 stages**; planning does not execute
+tests**. That checkpoint's CI plan contained **46 stages**; planning does not execute
 them.
 
-**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**At that historical checkpoint, all 46 CI stages, 62 browser checks and Hosting preflight passed.**
 **Generated catalog/plan, link and preservation checks passed.** GitHub
 publication uses final repository-identity and native-wiki parity checks. Read the
 [adoption/status/review QA receipt](docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)

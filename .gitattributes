@@ -11,3 +11,6 @@
 # Named browser seeds have recorded byte hashes on every supported checkout.
 /tests/browser/fixtures/*.json text eol=lf
 /tests/browser/fixtures/*.sha256 text eol=lf
+
+# Generated evaluator PDFs retain exact bytes, including on CRLF checkouts.
+/output/pdf/*.pdf binary

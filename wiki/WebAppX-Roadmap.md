@@ -13,11 +13,40 @@ dependency-ready candidates and remaining local/provider/operator criteria.
 The goal remains active until every item is accepted. Host planning records this
 intent while reusable SYSTEMX context, plan, task and memory seeds stay blank.
 
+## Evaluator and adoption acceptance — 2026-10-15
+
+Agent 0 accepted **13 original criteria: WX-0503, WX-0800, WX-0859
+and WX-0901–WX-0910**, starting from published source
+`aae465ae033f3191a69ed7d40056b0c6e2159e17`. **Integrated verification passed: all 54 CI stages, 95 browser checks/check groups and Hosting preflight.**
+
+| Candidates | New review material |
+| --- | --- |
+| WX-0503 / WX-0800 | [Proposed tenant membership](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TENANT-MEMBERSHIP-PROPOSAL.md) and [operations readiness index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONS-READINESS.md), with explicit proposed/deferred provider and production boundaries |
+| WX-0859 / WX-0901 | [Temporary import preservation rehearsal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-IMPORT-REHEARSAL.md) and [documentation evidence freshness](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DOCUMENTATION-FRESHNESS.md), retaining source fingerprints and original receipt qualifications |
+| WX-0902 / WX-0903 | [Printable evaluator worksheet](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-EVALUATOR-WORKSHEET.md) and [recovery glossary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORKSPACE-RECOVERY-GLOSSARY.md) |
+| WX-0904–WX-0907 | Paced [HR](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/HR-FIVE-MINUTE.md), [CMS](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/CMS-FIVE-MINUTE.md), [CRM](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/CRM-FIVE-MINUTE.md) and [one-module recovery](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/RECOVERY-TEN-MINUTE.md) demonstrations with actual owned browser proof |
+| WX-0908–WX-0910 | [Reviewed HR roles](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-ROLE-EXAMPLES.md), [capability adoption gap matrix](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-CAPABILITY-GAPS.md), and [temporary HR-disabled CMS/CRM app](https://github.com/WayneTechLab/WebAppX/blob/main/docs/examples/hr-disabled-adoption.md) |
+
+Focused evidence records **25 evaluator browser checks** and **34 role-example
+tests** passing. All focused and integrated results are recorded in the
+[evaluator/adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EVALUATOR-ADOPTION-QA-2026-10-15.md).
+The human scripts are designed for five/five/five/ten minutes after setup;
+automated elapsed time establishes no human stopwatch result.
+
+The canonical catalog records **61 done / 939 remaining**, with **112 P1, 670
+P2 and 157 P3**, and **772 local, 127 operator and 40 provider** remaining gates.
+Use `npm run backlog:summary` for its current state. The
+[next P1 implementation plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
+scopes 16 local portal improvements that remain TODO.
+Source completion never transfers provider, adopted-app or production acceptance.
+
 ## Adoption, recorded work and import review — 2026-10-15
 
+This section retains the historical 48-done adoption checkpoint.
+
 Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**
-against their original local criteria. The catalog now holds **48 done /
-952 remaining — 125 P1, 670 P2 and 157 P3**. Remaining gates are
+against their original local criteria. At that checkpoint the catalog held **48 done /
+952 remaining — 125 P1, 670 P2 and 157 P3**. Remaining gates then were
 **784 local, 128 operator and 40 provider**. The complete goal remains active;
 source completion never transfers adopted task acceptance.
 
@@ -32,9 +61,9 @@ source completion never transfers adopted task acceptance.
 Focused verification passed **95 SYSTEMX integration tests** (23 adoption,
 23 provenance, 13 upstream-review and 36 prior cases), **19 impact tests**,
 **37 work-status tests**, **six owned LAN browser checks** and **13 CI-plan
-tests**. The source-derived plan contains **46 CI stages**.
+tests**. That checkpoint's source-derived plan contained **46 CI stages**.
 
-**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**At that historical checkpoint, all 46 CI stages, 62 browser checks and Hosting preflight passed.**
 **Generated catalog/plan, link and preservation checks passed.** GitHub
 publication uses final repository-identity and native-wiki parity checks. The
 [adoption/status/review QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)

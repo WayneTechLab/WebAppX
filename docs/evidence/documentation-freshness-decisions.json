@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "intent": "documentation-review-decisions",
+  "decisions": [
+    {
+      "id": "DFR-9e1541c0f3724fed",
+      "guideId": "backlog-rebaseline",
+      "reviewedBy": "scoped-source-review",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+      "reportDigest": "87e27031ecb4c104e2e59aed1ca8a0ee188f288688cda275b18604ea0cfd8f52",
+      "mappingSha256": "322375c672ade05f7e70df13baf8c43135dec30870bdd603300778504e290137",
+      "inputsSha256": "f09b82656667adf25b126e4b8315b45100354506d9fa4832e4a7bca5bd6f6f40",
+      "scopeSha256": "d1081adfc626e1d98666765f9d1e8b899f20594d73e7f6ccdd8bbf78f4d56d66",
+      "decision": "retain",
+      "rationale": "Retain the original adoption receipt as historical local evidence with its f849 starting source base; source-only guide inspection at aae records no new tests or browser observations."
+    }
+  ]
+}

@@ -31,10 +31,72 @@ regressions, app/LAN gates, research inventories and public template integrity.
 It requires blank adoption seeds. `template:check` rejects populated tasks,
 context or project records by design. Use these to maintain the reusable release.
 
+## Evaluator and adoption wave — verified
+
+Agent 0 accepted **13 original criteria — WX-0503, WX-0800, WX-0859 and
+WX-0901–WX-0910** — from published source
+`aae465ae033f3191a69ed7d40056b0c6e2159e17`. **Integrated verification passed: all 54 CI stages, 95 browser checks/check groups and Hosting preflight.** Use the
+[evaluator/adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+for the final record; the earlier 48-done/46-stage/62-browser checkpoint below
+retains its historical scope.
+
+| Scope | Current focused evidence and review boundary |
+| --- | --- |
+| Timed evaluator scripts | **25 browser checks passed** in owned Vite/Chromium resources. The [worksheet](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-EVALUATOR-WORKSHEET.md) links exact HR/CMS/CRM/recovery actors, controls and expected observations. Human pacing is designed, not stopwatch verified. |
+| HR role examples | **34 focused tests passed** for the [reviewed examples](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-ROLE-EXAMPLES.md), including literal outcomes against actual transitions and complete export boundaries. A preview role is not authenticated authority. |
+| Capability and membership decisions | **22 capability-matrix tests passed**. The [per-capability matrix](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-CAPABILITY-GAPS.md) separates native/SDK/backend/provider work; the [membership proposal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TENANT-MEMBERSHIP-PROPOSAL.md) names future revision behavior without claiming current enforcement. Integrated wave verification passed; the receipt retains the exact scope. |
+| Operations and maintenance | **24 freshness tests and 22 import-rehearsal tests passed**; the host integration suite passed **117 tests**. [Readiness](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONS-READINESS.md), [import preservation rehearsal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-IMPORT-REHEARSAL.md) and [documentation freshness](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DOCUMENTATION-FRESHNESS.md) retain environment, original receipt and exact source boundaries. Integrated wave verification passed; the receipt retains the exact scope. |
+| App without HR | The [temporary CMS/CRM adoption](https://github.com/WayneTechLab/WebAppX/blob/main/docs/examples/hr-disabled-adoption.md) deliberately removes HR imports/routes and defines a separate bundle contract, preserving the default three-portal template. Six adopted-app tests and eight actual browser check groups passed, including interruption cleanup. |
+
+Focused commands are available after the normal pinned dependency and explicit
+Chromium setup:
+
+```bash
+npm run browser:evaluators
+npm run hr:roles:check
+npm run hr:roles:test
+npm run gusto:capabilities:check
+npm run gusto:capabilities:test
+npm run docs:freshness -- --to REVIEWED_LOCAL_REVISION --json
+npm run docs:freshness:test
+npm run systemx:import:rehearse
+npm run adoption:hr-disabled
+npm run adoption:hr-disabled:test
+```
+
+Replace the freshness revision placeholder with an explicitly reviewed locally
+available commit. Preview reads mapped local documents and committed comparisons;
+recording a decision is a separate explicit action bound to report/history
+digests. It never refreshes an old browser date or converts a historical starting
+source base into an exact observed final build.
+
+All **54 configured CI stages passed**, along with Hosting preflight. The
+source-derived `ci:plan` report itself executes no stage. The catalog records
+**61 done / 939 remaining**: **112 P1, 670 P2 and 157 P3**, with **772 local,
+127 operator and 40 provider** gates remaining. The full goal remains active.
+
+The evaluator checks two employees' frozen payroll at **17.75 hours, $532.50
+gross, $106.50 illustrative withholding, $25 benefit deduction and $401 net**;
+CMS revision **2** remains public after revision **3** is saved; CRM moves
+`opportunity-0003` from discovery through proposal to negotiation with linked
+company/contact/follow-up records and **$8,250.25** open pipeline; recovery restores
+**CMS alone**, compares complete exports and untouched HR/CRM raw save bytes, then
+reverses it with Undo. All domain mutations use rendered controls. Existing
+HR/CMS lifecycle proof is reused alongside new movement/recovery checks.
+
+The import rehearsal's fixture Git commits and injected public-main observation
+are temporary synthetic inputs, not a current public-main check or permission
+to import a real app. The two-module rehearsal builds a temporary app and checks
+its emitted dependency graph and backup compatibility. Read the
+[recovery glossary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORKSPACE-RECOVERY-GLOSSARY.md)
+before interpreting save, Reset, history clear, import or Undo evidence.
+
 ## Adoption, recorded work and import-review foundations
 
+This section retains the historical 48-done adoption checkpoint.
+
 Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**
-against their original local criteria. The catalog now holds **48 done / 952
+against their original local criteria. At that checkpoint the catalog held **48 done / 952
 remaining**: **125 P1, 670 P2 and 157 P3**, with **784 local, 128 operator and
 40 provider** acceptance gates remaining. The complete 1,000-item goal stays
 active. The [adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)
@@ -63,11 +125,11 @@ the configured gates without executing them.
 | Revision impact | 19 passed in disposable real Git repositories |
 | Work status | 37 passed for explicit selection, validated records and independent unavailable facts |
 | Actual LAN browser | Six passed in an owned temporary fixture, including stale-response protection and unchanged reusable source seed bytes |
-| CI plan | 13 passed; the current source-derived plan lists 46 stages with no unknown command classifications |
+| CI plan | 13 passed; that checkpoint's source-derived plan listed 46 stages with no unknown command classifications |
 
-**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**At that historical checkpoint, all 46 CI stages, 62 browser checks and Hosting preflight passed.**
 **Generated catalog/plan, link and preservation checks passed.** GitHub
-publication uses final repository-identity and native-wiki parity checks. The final integrated run passed all 46 stages.
+publication uses final repository-identity and native-wiki parity checks. That checkpoint's final integrated run passed all 46 stages.
 The earlier 42-done / 43-stage / 56-browser-check checkpoint below is historical.
 
 ### Adopted TODO intake and independent action gates
@@ -144,8 +206,8 @@ deployment, native Windows runtime or whole-site accessibility acceptance.
 ## Operational foundations and complete portal lifecycles
 
 This historical checkpoint retains the earlier 42 accepted proposals, 43 CI
-stages and 56 browser checks. The current adoption wave and its integrated
-gate results are recorded above.
+stages and 56 browser checks. The later historical adoption checkpoint and the
+current evaluator wave's pending gates are recorded above.
 
 ```bash
 npm run environment:check

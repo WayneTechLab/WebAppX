@@ -109,7 +109,20 @@
     "systemx:provenance": "python3 -B scripts/systemx-provenance.py",
     "systemx:provenance:test": "python3 -B -m unittest discover -s tests/systemx -p test_provenance.py -v",
     "systemx:work-status:test": "node --test .SYSTEMX/LAN/tests/work-status.test.mjs",
-    "browser:work-status": "node .SYSTEMX/LAN/tests/work-status-browser.mjs"
+    "browser:work-status": "node .SYSTEMX/LAN/tests/work-status-browser.mjs",
+    "docs:freshness": "node scripts/documentation-freshness.mjs",
+    "docs:freshness:test": "node --test tests/backlog/documentation-freshness.test.mjs",
+    "hr:roles:check": "node scripts/hr-role-examples.mjs --check",
+    "hr:roles:render": "node scripts/hr-role-examples.mjs --write",
+    "hr:roles:test": "node --test tests/hr/role-examples.test.mjs",
+    "gusto:capabilities:check": "node scripts/check-gusto-capability-gaps.mjs --check",
+    "gusto:capabilities:render": "node scripts/check-gusto-capability-gaps.mjs --write",
+    "gusto:capabilities:test": "node --test tests/hr/capability-gaps.test.mjs",
+    "browser:evaluators": "node scripts/browser-evaluators.mjs",
+    "adoption:hr-disabled": "node scripts/rehearse-hr-disabled.mjs",
+    "adoption:hr-disabled:test": "node --test tests/adoption/hr-disabled.test.mjs",
+    "systemx:import:rehearse": "python3 -B scripts/systemx-import-rehearsal.py",
+    "worksheet:generate": "python3 scripts/generate-evaluator-checklist.py"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

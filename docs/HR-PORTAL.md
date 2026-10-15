@@ -8,6 +8,18 @@ so they survive refresh at the same origin. **Reset sample changes** clears only
 HR’s saved snapshot and restores its fixtures. Use fictional information only;
 preview role projections do not secure data saved in this browser.
 
+## Evaluator and connected adoption references
+
+Follow the [five-minute fictional HR script](demos/HR-FIVE-MINUTE.md) and
+[one-page worksheet](PORTAL-EVALUATOR-WORKSHEET.md) for expected onboarding,
+benefit, approved-time and payroll observations. Generated
+[role examples](HR-ROLE-EXAMPLES.md) explain permitted and refused synthetic
+transitions using reviewed fixtures. The [33-capability adoption map](GUSTO-CAPABILITY-GAPS.md)
+identifies native behavior, actual selected SDK coverage and remaining host
+backend/provider work separately. The [tenant membership proposal](TENANT-MEMBERSHIP-PROPOSAL.md)
+defines the optional adopted identity boundary. None of these source contracts
+establishes a live Gusto account, payroll authority or adopted production access.
+
 ## Implemented native workflows
 
 | Area | Working behavior | Connection |

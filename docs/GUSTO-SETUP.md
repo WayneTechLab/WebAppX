@@ -5,6 +5,22 @@ React SDK workflows, and an optional Firebase backend foundation. The portable s
 live in `.SYSTEMX/GUSTO/`; React code lives in `src/hr/`, and server adapters in
 `integrations/gusto/`. Read each capability's implementation status before adoption.
 
+## Review each capability before connecting
+
+The [Gusto capability adoption gap matrix](GUSTO-CAPABILITY-GAPS.md) covers all
+33 portable capability IDs with separate native mock, selected SDK, host backend,
+provider and evidence dimensions. Exactly three SDK exports are selected in the
+current preview; an endpoint inventory entry does not mean its UI is mounted.
+Run `gusto:capabilities:check` to detect source or documentation drift.
+
+Use [reviewed role examples](HR-ROLE-EXAMPLES.md), the proposed
+[tenant membership fields](TENANT-MEMBERSHIP-PROPOSAL.md) and
+[operations readiness index](OPERATIONS-READINESS.md) when choosing an adoption
+scope. For account-free evaluation, follow the
+[HR demo](demos/HR-FIVE-MINUTE.md) and [printable worksheet](PORTAL-EVALUATOR-WORKSHEET.md).
+To adopt CMS and CRM without HR, use the deliberately separate
+[temporary app walkthrough](examples/hr-disabled-adoption.md).
+
 ## Try the template without an account
 
 ```bash

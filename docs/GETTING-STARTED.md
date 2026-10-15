@@ -164,6 +164,49 @@ Read the [operational QA receipt](OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md) for
 final gates and the [coverage map](QA-COVERAGE-MAP.md) for each invariant's
 model/browser evidence and untested boundaries.
 
+## Rehearse an evaluator demonstration
+
+Start only the account-free native portals with `npm run dev:mock`. Open its
+printed `/portals` URL in a fresh context owned by your evaluation; keep the same
+scheme, hostname and port throughout. Preserve existing profiles, saved samples
+and other listeners. Use the [printable worksheet](PORTAL-EVALUATOR-WORKSHEET.md)
+with the [HR](demos/HR-FIVE-MINUTE.md), [CMS](demos/CMS-FIVE-MINUTE.md),
+[CRM](demos/CRM-FIVE-MINUTE.md) or [single-module recovery](demos/RECOVERY-TEN-MINUTE.md)
+script. The [recovery glossary](WORKSPACE-RECOVERY-GLOSSARY.md) distinguishes
+save, export, import, restore point, Undo, Reset and origin.
+
+After explicit Chromium installation, run the matching owned browser proof:
+
+```bash
+npm run browser:evaluators
+# Optional visible automation; it still uses fresh owned contexts:
+npm run browser:evaluators -- --headed
+```
+
+The named `webappx-portal-smoke-v1` baseline drives actual controls and complete
+downloaded/saved record comparisons. Expected outcomes are **17.75 hours,
+$532.50 gross and $401 net** in native payroll; frozen CMS revision **2** after
+a later revision **3** draft; a **$1,750.25** converted CRM opportunity moved to
+proposal and negotiation, retaining **$8,250.25** open pipeline; and **CMS-only**
+restore/Undo while HR/CRM save bytes remain unchanged. The four scripts are
+designed for five/five/five/ten minutes after setup; automated elapsed time is
+separate evidence.
+
+The accepted 13-item evaluator/adoption wave starts from
+`aae465ae033f3191a69ed7d40056b0c6e2159e17`. Focused results record **25 evaluator
+browser checks** and **34 role-example tests** passing. All **54 CI stages,
+95 browser checks/check groups and Hosting preflight passed**; read the
+[evaluator/adoption QA receipt](EVALUATOR-ADOPTION-QA-2026-10-15.md).
+The earlier 48-done/46-stage/62-browser checkpoint is historical.
+
+Before configuring a real app, read the [reviewed HR roles](HR-ROLE-EXAMPLES.md),
+[capability adoption gap matrix](GUSTO-CAPABILITY-GAPS.md),
+[proposed tenant membership contract](TENANT-MEMBERSHIP-PROPOSAL.md) and
+[operations readiness index](OPERATIONS-READINESS.md). For an app that omits HR,
+use the [temporary CMS/CRM adoption walkthrough](examples/hr-disabled-adoption.md)
+to review bundle and backup decisions. Source examples and synthetic roles grant
+no provider access or production membership.
+
 ## Create your app
 
 ```bash
@@ -389,15 +432,15 @@ context/memory, project identity or completion. Read [work status](WORK-STATUS.m
 for the fixed API paths and independent unavailable states.
 
 Agent 0 accepted **WX-0851, WX-0852, WX-0855, WX-0856, WX-0857 and WX-0858**
-against their original local criteria. The catalog now records **48 done /
+against their original local criteria. That historical checkpoint recorded **48 done /
 952 remaining**, with **125 P1, 670 P2 and 157 P3** remaining and **784 local,
 128 operator and 40 provider** gates. Focused checks passed **95 integration,
 19 impact, 37 work-status and 13 CI-plan tests**, plus **six owned LAN browser
-checks**. The CI plan contains **46 stages**.
+checks**. Its CI plan contained **46 stages**.
 
-**Integrated verification passed: all 46 CI stages, 62 browser checks and Hosting preflight.**
+**At that historical checkpoint, all 46 CI stages, 62 browser checks and Hosting preflight passed.**
 **Generated catalog/plan, link and preservation checks passed.** GitHub
-publication uses final repository-identity and native-wiki parity checks. See the [current QA receipt](SYSTEMX-ADOPTION-QA-2026-10-15.md) for
+publication uses final repository-identity and native-wiki parity checks. See the [historical adoption QA receipt](SYSTEMX-ADOPTION-QA-2026-10-15.md) for
 examined source, repaired cases, preservation evidence and remaining boundaries.
 Earlier 42-done/43-stage/56-browser results are historical operational evidence.
 

@@ -6,6 +6,22 @@ No private mirror is configured for WebAppX. The workflow below is available for
 a separately selected, authorized template mirror; do not apply it to an active app.
 Compare Git tree hashes for exact parity after any intentional identity changes.
 
+## Evidence freshness and disposable adoption examples
+
+Use [documentation freshness](DOCUMENTATION-FRESHNESS.md) to compare a guide's
+examined source with an explicit target, identify relevant changed paths and
+append a deliberate dated decision. Original QA receipts remain unchanged; a
+source-only review establishes no new browser/provider observation.
+
+The [import rehearsal](SYSTEMX-IMPORT-REHEARSAL.md) verifies preserved fictional
+host records and extensions across an actual importer run in owned scratch
+installations. The [HR-disabled example](examples/hr-disabled-adoption.md)
+builds and exercises a temporary CMS/CRM-only app with explicit bundle, backup
+and recovery compatibility decisions. Neither rewrites an existing adopted app.
+Run the [role](HR-ROLE-EXAMPLES.md) and [Gusto capability](GUSTO-CAPABILITY-GAPS.md)
+consistency checks after relevant source changes; fingerprints require deliberate
+review rather than automatic refresh.
+
 ## Three update paths
 
 | Path | Owner | Entry point |

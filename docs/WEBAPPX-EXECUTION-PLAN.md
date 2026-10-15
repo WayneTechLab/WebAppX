@@ -10,9 +10,9 @@ The separate [review index](BACKLOG-EVIDENCE.md) attaches scoped historical
 receipts with examined and observation revisions. It does not accept work
 or convert an earlier browser result into a current execution.
 
-Current verified progress: **48 done / 952 remaining**.
-Remaining priorities: **125 P1 · 670 P2 · 157 P3**.
-Remaining acceptance gates: **784 local · 40 provider · 128 operator**.
+Current verified progress: **61 done / 939 remaining**.
+Remaining priorities: **112 P1 · 670 P2 · 157 P3**.
+Remaining acceptance gates: **772 local · 40 provider · 127 operator**.
 
 ## Execution and acceptance
 
@@ -60,30 +60,30 @@ coverage ships with each slice rather than waiting for the quality area.
 | CRM leads and contacts | WX-0351–WX-0400 | 0 | 50 |
 | CRM sales and service | WX-0401–WX-0450 | 0 | 50 |
 | Mock persistence, backup and recovery | WX-0451–WX-0500 | 2 | 48 |
-| Identity, membership and permissions | WX-0501–WX-0550 | 1 | 49 |
+| Identity, membership and permissions | WX-0501–WX-0550 | 2 | 48 |
 | Firebase data, functions and rules | WX-0551–WX-0600 | 0 | 50 |
 | Security and privacy | WX-0601–WX-0650 | 2 | 48 |
 | Testing, quality and accessibility | WX-0651–WX-0700 | 8 | 42 |
 | Design, responsiveness and interaction | WX-0701–WX-0750 | 0 | 50 |
-| Observability, support and operations | WX-0751–WX-0800 | 3 | 47 |
+| Observability, support and operations | WX-0751–WX-0800 | 4 | 46 |
 | CI, delivery and infrastructure | WX-0801–WX-0850 | 4 | 46 |
-| SYSTEMX and agent workflows | WX-0851–WX-0900 | 8 | 42 |
-| Documentation and adoption kits | WX-0901–WX-0950 | 1 | 49 |
+| SYSTEMX and agent workflows | WX-0851–WX-0900 | 9 | 41 |
+| Documentation and adoption kits | WX-0901–WX-0950 | 11 | 39 |
 | Optional integrations, extensibility and internationalization | WX-0951–WX-1000 | 0 | 50 |
 
 Domain waves (the dependency graph overrides this order):
 
 | Wave | Areas | Done | Remaining |
 | --- | --- | ---: | ---: |
-| Foundation | setup, systemx | 19 | 81 |
-| Shared core | portal-shell, identity, security | 11 | 139 |
+| Foundation | setup, systemx | 20 | 80 |
+| Shared core | portal-shell, identity, security | 12 | 138 |
 | Recovery | mock-recovery | 2 | 48 |
 | Human resources | hr-onboarding, hr-payroll, hr-talent | 0 | 150 |
 | Content | cms-authoring, cms-publishing | 0 | 100 |
 | Customer relationships | crm-contacts, crm-sales | 0 | 100 |
 | Quality and design | quality, design | 8 | 92 |
-| Operations and delivery | operations, delivery | 7 | 93 |
-| Adoption | adoption | 1 | 49 |
+| Operations and delivery | operations, delivery | 8 | 92 |
+| Adoption | adoption | 11 | 39 |
 | Connected extensions | firebase, integrations | 0 | 100 |
 
 The current graph has **173 edges**. Longest explicit chains:
@@ -114,18 +114,7 @@ or grant access, and current write ownership must be checked before selection.
 
 | ID | Priority / phase | Acceptance |
 | --- | --- | --- |
-| WX-0800 | P1 / foundation | Link ownership, monitoring, recovery, secrets and release rehearsal records with explicit deferred status for unadopted production services. |
-| WX-0859 | P1 / foundation | An import rehearsal lists preserved project records and host extension fingerprints without publishing their private content. |
-| WX-0901 | P1 / foundation | A maintainer can identify guides whose examined evidence predates relevant source changes, record a review decision and preserve the original dated receipts. |
-| WX-0902 | P1 / foundation | A one-page worksheet guides an evaluator through the three fictional portal journeys and recovery exercise with spaces for observed outcomes and exact browser origin. |
-| WX-0903 | P1 / foundation | The glossary distinguishes save, export, import, restore point, Undo, Reset, history clear and origin using current behavior. |
-| WX-0904 | P1 / foundation | A fictional scenario walks through onboarding, benefit election, approved time and mock payroll with expected visible totals. |
-| WX-0905 | P1 / foundation | A fictional scenario demonstrates separate review and publication responsibilities and verifies the frozen published projection. |
-| WX-0906 | P1 / foundation | A fictional scenario creates a lead, converts it and moves an opportunity while showing the expected linked records. |
-| WX-0907 | P1 / foundation | The walkthrough backs up all portals, restores one selected module and reverses it while checking untouched modules. |
-| WX-0908 | P1 / foundation | A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions. |
-| WX-0909 | P1 / foundation | Each documented Gusto capability maps to its native mock behavior, optional SDK coverage and specific adopter-owned backend or provider work with evidence scope. |
-| WX-0910 | P1 / foundation | A temporary adoption example removes HR entry points deliberately, retains working CMS and CRM evaluation, and lists the resulting bundle and backup compatibility decisions. |
+| WX-0860 | P1 / foundation | A temporary adopted app with populated fictional records demonstrates that reviewed upstream imports preserve project-specific ledgers and configuration. |
 | WX-0056 | P1 / portal-maturity | Opening the directory from a portal and returning restores the last supported portal subsection in that session. |
 | WX-0059 | P1 / portal-maturity | Leaving a portal with an unsaved form offers keep editing or discard choices without intercepting a completed saved action. |
 | WX-0101 | P1 / portal-maturity | A fictional rehire creates a new employment instance while prior onboarding receipts remain attached to the original instance. |
@@ -134,6 +123,17 @@ or grant access, and current write ownership must be checked before selection.
 | WX-0104 | P1 / portal-maturity | Confirming fictional termination creates asset, access and handover assignments without calling external systems. |
 | WX-0105 | P1 / portal-maturity | The screen distinguishes retained directory identity from new employment and onboarding requirements. |
 | WX-0106 | P1 / portal-maturity | The preview lists affected direct-report scopes and prevents assigning an employee as their own manager. |
+| WX-0107 | P1 / portal-maturity | Creating a fictional reporting cycle is refused with the affected employee IDs shown. |
+| WX-0108 | P1 / portal-maturity | A saved directory edit displays old value, new value, actor preview and change sequence. |
+| WX-0109 | P1 / portal-maturity | An employee can propose a directory correction and HR can accept or reject it with a recorded outcome. |
+| WX-0110 | P1 / portal-maturity | New hires receive the selected checklist version while existing completed onboarding retains its original version. |
+| WX-0151 | P1 / portal-maturity | Preparing a run requires a valid chosen sample period and accepts only approved unpaid time inside it. |
+| WX-0152 | P1 / portal-maturity | A run freezes each fictional employee’s configured sample rate and displays that rate beside consumed hours. |
+| WX-0153 | P1 / portal-maturity | A future-dated sample rate change leaves an already submitted payroll receipt unchanged. |
+| WX-0154 | P1 / portal-maturity | Changing approved input after preparation marks the prepared run stale and requires intentional re-preparation. |
+| WX-0155 | P1 / portal-maturity | A review table states why each time entry is included or excluded from the selected sample run. |
+| WX-0156 | P1 / portal-maturity | A manager can return submitted fictional time to its owner with a visible reason and no payroll eligibility. |
+| WX-0157 | P1 / portal-maturity | An owner can edit an unpaid draft entry and the change does not mutate approved or consumed entries. |
 
 ## Resume commands
 

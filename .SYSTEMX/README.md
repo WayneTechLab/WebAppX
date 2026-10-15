@@ -11,6 +11,22 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+Host evaluator/adoption extensions include [paced portal demonstrations](../docs/demos/HR-FIVE-MINUTE.md),
+a [printable worksheet](../docs/PORTAL-EVALUATOR-WORKSHEET.md),
+[reviewed HR role examples](../docs/HR-ROLE-EXAMPLES.md), the
+[33-capability Gusto adoption map](../docs/GUSTO-CAPABILITY-GAPS.md),
+[dated documentation review](../docs/DOCUMENTATION-FRESHNESS.md),
+[fictional import preservation rehearsal](../docs/SYSTEMX-IMPORT-REHEARSAL.md)
+and a [temporary HR-disabled app](../docs/examples/hr-disabled-adoption.md).
+The [membership proposal](../docs/TENANT-MEMBERSHIP-PROPOSAL.md) and
+[operations readiness index](../docs/OPERATIONS-READINESS.md) keep proposed
+identity and deferred production responsibilities explicit. These host-owned
+extensions preserve blank seeds and selected immutable release fingerprints.
+Read the [evaluator/adoption receipt](../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md):
+13 original criteria accepted, catalog 61 done / 939 remaining, all 54 CI stages,
+95 browser checks/check groups and Hosting preflight passed. The full goal
+remains active.
+
 Host adoption/review tools now include [bounded TODO intake and gate previews](../docs/BACKLOG-ADOPTION.md),
 [revision-impact advisories](../docs/BACKLOG-REBASELINE.md), [separate work sources](../docs/WORK-STATUS.md),
 [per-path provenance](../docs/SYSTEMX-PROVENANCE.md) and [bounded upstream review](../docs/SYSTEMX-UPSTREAM-REVIEW.md).

@@ -35,9 +35,40 @@ only read local catalog data. They do not dispatch agents, import task records,
 contact providers or change acceptance. `backlog:plan:render` explicitly writes
 the generated plan; `backlog:plan:check` verifies it without rewriting.
 
+### Evaluator and adoption foundations — 2026-10-15
+
+Agent 0 accepted WX-0503, WX-0800, WX-0859 and WX-0901–WX-0910 against their
+original criteria. The catalog records **61 done / 939 remaining**: **112 P1,
+670 P2 and 157 P3**, with **772 local, 127 operator and 40 provider** gates
+remaining. Read the [evaluator/adoption receipt](../docs/EVALUATOR-ADOPTION-QA-2026-10-15.md)
+for the examined source, actual checks and integrated publishing gates.
+The [worksheet](../docs/PORTAL-EVALUATOR-WORKSHEET.md), paced
+[HR](../docs/demos/HR-FIVE-MINUTE.md), [CMS](../docs/demos/CMS-FIVE-MINUTE.md),
+[CRM](../docs/demos/CRM-FIVE-MINUTE.md) and
+[recovery](../docs/demos/RECOVERY-TEN-MINUTE.md) scripts provide concrete
+fictional evaluation. Generated [role examples](../docs/HR-ROLE-EXAMPLES.md)
+and the [33-capability gap matrix](../docs/GUSTO-CAPABILITY-GAPS.md) distinguish
+native/SDK behavior and adopted backend/provider work.
+
+Host tools add [documentation freshness review](../docs/DOCUMENTATION-FRESHNESS.md),
+[actual fictional import preservation](../docs/SYSTEMX-IMPORT-REHEARSAL.md)
+and a [temporary CMS/CRM-only app](../docs/examples/hr-disabled-adoption.md).
+The [membership proposal](../docs/TENANT-MEMBERSHIP-PROPOSAL.md),
+[readiness index](../docs/OPERATIONS-READINESS.md) and
+[recovery glossary](../docs/WORKSPACE-RECOVERY-GLOSSARY.md) preserve proposed,
+deferred and observed boundaries. All **54 CI stages, 95 browser checks/check groups and Hosting preflight passed**.
+The source-derived CI planning report itself executes no gate.
+
+The [next portal implementation batch](../docs/PORTAL-MATURITY-IMPLEMENTATION-PLAN.md)
+plans 16 dependency-ready P1 local items across payroll/time, CMS editing, CRM
+validation, recovery inspection/history and session navigation. Those items
+remain unaccepted until their original criteria have actual evidence.
+
+The following checkpoints retain their historical dates and totals.
+
 ### Adoption and review foundations — 2026-10-15
 
-The catalog now records **48 done / 952 remaining**, including accepted
+At this historical checkpoint the catalog recorded **48 done / 952 remaining**, including accepted
 WX-0851, WX-0852 and WX-0855–WX-0858. Remaining priorities are **125 P1,
 670 P2 and 157 P3**; gates are **784 local, 128 operator and 40 provider**.
 Read [adoption-foundations QA](../docs/SYSTEMX-ADOPTION-QA-2026-10-15.md)

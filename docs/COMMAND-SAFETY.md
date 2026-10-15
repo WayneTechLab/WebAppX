@@ -38,6 +38,32 @@ arguments can also change an invocation's effects. “No Git mutation” refers 
 branches, commits, index or remote publication; some commands still read Git
 metadata. Temporary writes remain writes even when cleanup succeeds.
 
+## Evaluator and rehearsal effects
+
+`hr:roles:check` and `gusto:capabilities:check` read reviewed public inputs and
+compare generated guides. Their explicit `:render` modes write only their owned
+guide after validation; neither refreshes canonical fingerprints automatically.
+`docs:freshness -- --to REV` reads committed Git objects and contained reviewed
+local guides/receipts. Its deliberate `--record-decision` mode requires the
+preview and history digests, locks/rechecks inputs and appends one dated local
+review decision. It preserves original receipts and catalog acceptance.
+
+`systemx:import:rehearse` performs real import writes only within its own
+fictional temporary source/adopted installations. Its synthetic Git commits and
+injected public-main observation are explicitly labeled. It has no existing app
+target option; before/after fingerprints contain no private record payloads.
+`adoption:hr-disabled` similarly creates its own temporary app from allowlisted
+committed public blobs, applies six reviewed overrides, builds and runs owned
+Chromium. Both clean up owned resources; their results are local rehearsal
+observations, not acceptance of an actual downstream app or provider service.
+`browser:evaluators` uses the same owned loopback browser runner as other portal
+suites and writes temporary evidence/downloads. It requires no account or keys.
+
+`worksheet:generate` requires the optional Python ReportLab authoring package
+and replaces the fixed evaluator PDF output atomically. It does not install
+packages, operate the app, publish files or run in the default CI gate. Read the
+[worksheet guide](PORTAL-EVALUATOR-WORKSHEET.md) for layout verification.
+
 ## Command effects table
 
 | Command | Mode | Scope | Filesystem, process and network effects | Git / provider / external effects | Authority | Result limits |

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "intent": "documentation-evidence-freshness",
+  "catalog": {
+    "path": "docs/backlog/webappx-1000-todo.json",
+    "revision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+    "sha256": "c42e09162b36f9ca0b46e015c681b8bf05f81770abd395db2bfb42663c642424"
+  },
+  "guides": [
+    {
+      "id": "backlog-rebaseline",
+      "guide": {
+        "path": "docs/BACKLOG-REBASELINE.md",
+        "sha256": "f12695172d8644c414f1deec691fad99b3d29c0cd35682ecde83e3e49112f369"
+      },
+      "examinedRevision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Source-only inspection of the published rebaseline guide and its implementation contract at this revision. The linked receipt retains its original starting source base; this mapping records no new test execution."
+      },
+      "proposalIds": ["WX-0852"],
+      "sourceScopes": ["scripts/backlog-impact.mjs", "scripts/webappx-backlog.mjs", "tests/backlog/impact.test.mjs"],
+      "receipts": [
+        {
+          "path": "docs/SYSTEMX-ADOPTION-QA-2026-10-15.md",
+          "sha256": "43bac480eed2be0312c1535a6f838d60af57928ee105e88bed0b6d32beac70d1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "f8494b750447af7d4e39695f4a6fceeff29f48bb",
+          "revisionBasis": "receipt-source-base",
+          "scope": "Historical receipt of the rebaseline implementation's temporary Git fixtures and local gates, recorded with the prior published starting source base. Its 19-test observation is not relabeled as a test run at the mapping's examined revision."
+        }
+      ]
+    },
+    {
+      "id": "portal-state-contract",
+      "guide": {
+        "path": "docs/PORTAL-STATE-CONTRACT.md",
+        "sha256": "8a08b87ff7de74e6cb8a3d1ed8805e3a429ffee843cadc2da6aaef570cf2cd24"
+      },
+      "examinedRevision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Source-only review of the documented browser record, temporary-input and selected replacement boundaries. This records guide/source inspection, while the original browser observations remain historical and keep their recorded starting source base."
+      },
+      "proposalIds": ["WX-0060", "WX-0601"],
+      "sourceScopes": ["src/portals", "src/hr/persistence.ts", "src/cms/persistence.ts", "src/crm/persistence.ts", "src/pages/TemplatePortalsPage.tsx"],
+      "receipts": [
+        {
+          "path": "docs/SESSION-CONTRACTS-QA-2026-10-15.md",
+          "sha256": "13d0a173eebb95d7a39ccd2f00c4d081efd98beaff222f8438ccc7366b2c6530",
+          "category": "browser",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4ca558015a66c4f7b9f50eb085f98ab62c1c8335",
+          "revisionBasis": "receipt-source-base",
+          "scope": "Historical isolated Chromium observations recorded by the session/contracts receipt, whose revision identifies a starting source base rather than an exact final observed browser build. No browser is rerun or requalified by this mapping."
+        }
+      ]
+    }
+  ]
+}

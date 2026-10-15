@@ -36,6 +36,51 @@ debit; it does not use the native timesheet/benefit calculation. No real
 SSN, banking data, cookies, authentication credentials or Gusto account is needed
 for these local requests.
 
+## Evaluator scripts and adoption decisions — 2026-10-15
+
+Use the [five-minute HR script](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/HR-FIVE-MINUTE.md)
+with the [printable evaluator worksheet](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-EVALUATOR-WORKSHEET.md)
+in a fresh context owned by the evaluation. Start the native account-free app
+with `npm run dev:mock` and keep its exact printed origin. Preserve existing
+profiles/saves and other listeners. The [recovery glossary](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WORKSPACE-RECOVERY-GLOSSARY.md)
+and [ten-minute recovery script](https://github.com/WayneTechLab/WebAppX/blob/main/docs/demos/RECOVERY-TEN-MINUTE.md)
+explain a CMS-only restore/Undo while HR and CRM retain their saved work.
+Five/ten minutes are presentation pacing designs, not measured human durations.
+
+The HR scenario completes Jordan's onboarding, confirms Avery's health
+enrollment and Jordan's waiver, and approves the seeded 8/6-hour rows plus
+1.25/2.5 new hours. `MOCK-PAYROLL-0006` freezes **17.75 hours, $532.50 gross,
+$106.50 illustrative withholding, $25 benefit deduction and $401 net**.
+Avery's statement is **$197**, Jordan's **$204**. These inputs are separate from
+the older native $167 example and the SDK's independent $200 fixture.
+
+`npm run browser:evaluators` verifies the paced HR/CMS/CRM/recovery scenarios
+with the reviewed named seed, real controls, complete exports and fresh owned
+Vite/Chromium resources. Focused evidence records **25 browser checks** passing.
+The [reviewed HR role examples](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-ROLE-EXAMPLES.md)
+have **34 focused tests** reported passing across seven roles and 18 real
+transition cases. Their permission examples bind an actor to a resource and
+workflow state; complete backup exports retain saved fictional drafts across
+preview roles.
+
+Before adopting connected HR, use the [per-capability gap matrix](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-CAPABILITY-GAPS.md)
+to distinguish native behavior, selected SDK mocks and required backend/provider
+work. The [tenant membership proposal](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TENANT-MEMBERSHIP-PROPOSAL.md)
+separates account tier from trusted organization membership and describes
+revision behavior as proposed. The [operations readiness index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/OPERATIONS-READINESS.md)
+keeps unadopted production responsibilities deferred. The
+[HR-disabled app example](https://github.com/WayneTechLab/WebAppX/blob/main/docs/examples/hr-disabled-adoption.md)
+deliberately removes HR evaluation in a temporary CMS/CRM app and documents
+incompatible combined backups without changing the default template.
+
+These accepted additions belong to the **13-item WX-0503 / WX-0800 / WX-0859 /
+WX-0901–WX-0910 wave**, starting from
+`aae465ae033f3191a69ed7d40056b0c6e2159e17`. All **54 CI stages, 95 browser checks/check groups and
+Hosting preflight passed**; read the
+[evaluator/adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EVALUATOR-ADOPTION-QA-2026-10-15.md).
+Historical receipts below retain their own inputs, dates and evidence scope;
+local simulations establish no real payroll, provider or production acceptance.
+
 ## Native account-free workflow sequence
 
 The local host links the employee, manager and management previews:

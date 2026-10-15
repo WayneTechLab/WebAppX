@@ -6337,12 +6337,18 @@
       "area": "identity",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Define a proposed tenant membership contract",
       "acceptance": "For optional operator-approved adoption: Document required tenant, user, role, status and revision fields and explicitly separate account tier from organization membership.",
       "source": "integrations/gusto/schema.json",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0504",
@@ -10093,14 +10099,20 @@
       "area": "operations",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add an operations readiness review index",
       "acceptance": "Link ownership, monitoring, recovery, secrets and release rehearsal records with explicit deferred status for unadopted production services.",
       "source": "docs/MONITORING.md",
       "gate": "local",
       "dependsOn": [
         "WX-0751"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0801",
@@ -10900,12 +10912,18 @@
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a before-and-after import preservation report",
       "acceptance": "An import rehearsal lists preserved project records and host extension fingerprints without publishing their private content.",
       "source": "scripts/sync-systemx.py",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0860",
@@ -11412,122 +11430,182 @@
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a dated documentation evidence freshness workflow",
       "acceptance": "A maintainer can identify guides whose examined evidence predates relevant source changes, record a review decision and preserve the original dated receipts.",
       "source": "docs/TEMPLATE-MAINTENANCE.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0902",
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a printable portal evaluator checklist",
       "acceptance": "A one-page worksheet guides an evaluator through the three fictional portal journeys and recovery exercise with spaces for observed outcomes and exact browser origin.",
       "source": "docs/GETTING-STARTED.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0903",
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a glossary for workspace recovery terms",
       "acceptance": "The glossary distinguishes save, export, import, restore point, Undo, Reset, history clear and origin using current behavior.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0904",
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a five-minute HR demonstration script",
       "acceptance": "A fictional scenario walks through onboarding, benefit election, approved time and mock payroll with expected visible totals.",
       "source": "docs/HR-PORTAL.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0905",
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a five-minute CMS demonstration script",
       "acceptance": "A fictional scenario demonstrates separate review and publication responsibilities and verifies the frozen published projection.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0906",
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a five-minute CRM demonstration script",
       "acceptance": "A fictional scenario creates a lead, converts it and moves an opportunity while showing the expected linked records.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0907",
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a ten-minute recovery demonstration script",
       "acceptance": "The walkthrough backs up all portals, restores one selected module and reverses it while checking untouched modules.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0908",
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Generate mock role documentation from capability fixtures",
       "acceptance": "A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.",
       "source": "docs/HR-PORTAL.md",
       "gate": "local",
       "dependsOn": [
         "WX-0501"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0909",
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a per-capability connected adoption gap matrix",
       "acceptance": "Each documented Gusto capability maps to its native mock behavior, optional SDK coverage and specific adopter-owned backend or provider work with evidence scope.",
       "source": "docs/GUSTO-SETUP.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0910",
       "area": "adoption",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add an HR-disabled app adoption walkthrough",
       "acceptance": "A temporary adoption example removes HR entry points deliberately, retains working CMS and CRM evaluation, and lists the resulting bundle and backup compatibility decisions.",
       "source": "docs/examples/private-template-adoption.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+        "evidence": "docs/EVALUATOR-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0911",

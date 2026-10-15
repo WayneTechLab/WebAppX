@@ -1,0 +1,1506 @@
+{
+  "schemaVersion": 1,
+  "kind": "webappx-gusto-capability-gaps",
+  "reviewedOn": "2026-10-15",
+  "reviewBase": {
+    "revision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+    "provenance": "integration-baseline-supplied-by-agent-0"
+  },
+  "evidenceScope": "source-review",
+  "sdk": {
+    "package": "@gusto/embedded-react-sdk",
+    "version": "0.56.6",
+    "apiVersion": "2026-06-15",
+    "selectedExports": [
+      "EmployeeManagement.EmployeeList",
+      "EmployeeOnboarding.OnboardingExecutionFlow",
+      "Payroll.PayrollExecutionFlow"
+    ]
+  },
+  "sourceBindings": [
+    {
+      "path": ".SYSTEMX/GUSTO/CAPABILITIES.json",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "5b999883e61564a3847e20e41fb59c49a795508ee80e16b889f3379badb2593d"
+    },
+    {
+      "path": ".SYSTEMX/GUSTO/ROUTES.json",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "091ba59654b31d7b85fb7983db3f97a85cc1e8b5697d99feb2141b5f4ae704bb"
+    },
+    {
+      "path": ".SYSTEMX/GUSTO/VERSION-PIN.json",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "d32508f56beb0b570e2384e231940dc74e01fa592d7909dafa2c067ca3d1a5d7"
+    },
+    {
+      "path": ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3"
+    },
+    {
+      "path": ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json",
+      "hashMode": "bytes-sha256",
+      "sha256": "42912e7c02fa0367ae92d2c8225f4ecfa3f62f5c9508604be2e3125a06fd4074"
+    },
+    {
+      "path": "integrations/gusto/functions/src/backend.mjs",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "652af6bdc7ddba6820a3d47f6eda9514e4555b0c8d1a124c5f733232c5386efa"
+    },
+    {
+      "path": "integrations/gusto/functions/src/index.mjs",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "fa240bf40cf6acb9e305c07275dd190ace393fd33b2edbbb263a024f86f92fed"
+    },
+    {
+      "path": "integrations/gusto/functions/src/security.mjs",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "48c86c7be0c53c47b0c520a6b2d2162e1d1f151423b9d7f04413dc3159b518f5"
+    },
+    {
+      "path": "integrations/gusto/functions/src/webhooks.mjs",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "ff634f7f94855a8ef9576d27edaf6fac50b3d3dda81694f8d5c5f94cc12c7af6"
+    },
+    {
+      "path": "integrations/gusto/mock-api.mjs",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "d9eabf2cfee99cfdc3f6d3439967c334f76c6b7898a9ce918ea97f0578c19ac9"
+    },
+    {
+      "path": "integrations/gusto/schema.json",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "71ea8baf9933cf0db8532b81a8313ef1766cf948005c20db1eddbcf148115079"
+    },
+    {
+      "path": "integrations/gusto/sdk-onboarding.mjs",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "f5c811c92da4b264a561eea980a3dce87c936377c4cb5dbbd5379cae41733ca9"
+    },
+    {
+      "path": "integrations/gusto/sdk-payroll.mjs",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "490afa82699de4e34dc012edd5a27f1bfe43b9fb0439d76b2d8163b9fad83e7d"
+    },
+    {
+      "path": "src/hr/components/HrWorkspace.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "19c10913f74471430799b57b7f45c65cab428a131a48036f82526204e572fca6"
+    },
+    {
+      "path": "src/hr/gusto/GustoSdkPreview.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "f23c83b15c170227ebb5d1970880d8c54c30865dbc19ccd971905a44da7df2a5"
+    },
+    {
+      "path": "src/hr/insights.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "5e950e25c9af4d1d5b71b13512578f45a493ae6b8a53deecd9f913449adc923b"
+    },
+    {
+      "path": "src/hr/mock-workflows.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "a9b18d468e6f0dd573c06ebaa6d9558eab2e200044373bcf588821e0f21aa235"
+    },
+    {
+      "path": "src/hr/model.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e"
+    },
+    {
+      "path": "src/hr/people-operations.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "739c8877aac1bc9fbc48273000ae243a448cf61b52e4a248a98ceb064a18f4bf"
+    },
+    {
+      "path": "src/hr/performance.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "e4dd5404f9c826a162981904fbc0417588b64252998fa4ac1ca7c0477c8c716f"
+    },
+    {
+      "path": "src/hr/recruiting-link.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "c501fd44e4e352a9b6e1aff37842fa50b0f3fda69db4f848907a4e6fbcf6bf04"
+    },
+    {
+      "path": "src/hr/recruiting.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "e5840b4c45ce7972db40b424aa85bd47173f15a8d63cdf78ff0bfe2369c9bb2f"
+    },
+    {
+      "path": "src/hr/service-desk.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "62108a63253416dc84059ff930126bf8f6b39bae93006e7eb020862ebbd3e2f2"
+    },
+    {
+      "path": "src/hr/surveys.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "5bc231e4a19c62c3a2b7520e93026f885d1f0f636e89306ccfa76d0a7f0a2b85"
+    },
+    {
+      "path": "src/pages/HrPage.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "daf6bf5bbc0325c253ea6d9802e76ee867b60a3ff608312c67911a18453b4292"
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "hr-overview",
+      "title": "HR overview",
+      "capabilitySha256": "f840107a03e252fbb4d73ccada5039264577c06a7ce93fe55bda5c83c63f861c",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Role-scoped dashboards derive fictional headcount, onboarding, approvals, assignments and talent counts; no provider aggregate is loaded.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/insights.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "No SDK overview component is selected; the three mounted journeys are separate destinations.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Build tenant-scoped aggregate read models, field filtering and current membership checks; define freshness for each summary."
+        ],
+        "providerRequirement": "optional",
+        "providerWork": [
+          "If provider summaries are chosen, implement authorized company/onboarding reads and reconciliation into the accepted projections."
+        ],
+        "rationale": "A host-only overview can operate without Gusto; provider-derived summaries require a separately accepted connection."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/insights.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "company-setup",
+      "title": "Company setup",
+      "capabilitySha256": "7d3ba5dd0c7282490a9baa360e3edae21fb93adfaf974e1c47c69b6465daa603",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Company setup displays fictional company name/status and a mock operating mode; payroll authorization is shown disabled.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "CompanyOnboarding.OnboardingFlow"
+        ],
+        "detail": "CompanyOnboarding.OnboardingFlow exists in the inventory but is not mounted by the preview.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Bind the verified operator to its application organization and server-owned company connection; persist onboarding readiness without secret payloads."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Adopt the company onboarding flow, approved credentials/scopes and a server token broker; accept company onboarding in the selected provider environment."
+        ],
+        "rationale": "The documented connected company setup depends on provider onboarding; fixture status grants no connection."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/gusto-backend.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "company-locations",
+      "title": "Work locations",
+      "capabilitySha256": "e1ee84154dd5d51bb5fe66870981f6872e69b9bc3a6dd94d9b89001610399de5",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Work locations show synthetic location metadata; worksite administration, jurisdiction registration and validation are absent.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "CompanyOnboarding.OnboardingFlow"
+        ],
+        "detail": "Company onboarding is inventory-only; location reads inside the selected employee-onboarding mock do not implement location administration.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Own tenant-scoped location projections, canonical app/provider mappings and privileged change validation."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Implement reviewed location reads/writes and jurisdiction prerequisites through the accepted company workflow; verify sync and ownership."
+        ],
+        "rationale": "Connected worksite state requires provider and jurisdiction acceptance, beyond displaying a sample location."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/gusto-sdk-mock.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "company-taxes",
+      "title": "Company tax setup",
+      "capabilitySha256": "a766740bd5ceab7370c886cfe712ac73457b3afb93df3f7a4c9a2e5754b13f60",
+      "native": {
+        "coverage": "not-implemented",
+        "behavior": "The native page omits sensitive values and explains that federal/state employer tax identifiers, registrations and filing setup are unavailable.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "CompanyOnboarding.OnboardingFlow"
+        ],
+        "detail": "The company onboarding candidate is unmounted; employee tax steps in another mock are not employer tax setup.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Keep employer tax values out of browser fixtures/projections; enforce privileged tenant access and redact logs and audit records."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Adopt authorized employer tax onboarding and filing-readiness checks; accept the exact provider/jurisdiction workflow without treating mock data as filed tax setup."
+        ],
+        "rationale": "Employer tax authority and compliance acceptance are provider/operator work, not native sample arithmetic."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "docs/GUSTO-FIREBASE.md"
+        ]
+      }
+    },
+    {
+      "id": "company-banking",
+      "title": "Company bank setup",
+      "capabilitySha256": "68dbaa61cf169bcac17ce2ec3c55d9395055502f8a3a96e4d3031facfeb75b40",
+      "native": {
+        "coverage": "not-implemented",
+        "behavior": "The native page states employer bank connection, account verification and funding authorization are unavailable; it collects no real bank details.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "CompanyOnboarding.OnboardingFlow"
+        ],
+        "detail": "Company onboarding is inventory-only; no employer bank setup component is selected.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement scoped connection state and safe status projections; keep bank credentials/details in the approved provider boundary."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Adopt the approved employer bank verification and funding authorization workflow with operator acceptance and recovery for partial setup."
+        ],
+        "rationale": "A displayed mock company does not authorize funding or establish a verified bank account."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "docs/GUSTO-FIREBASE.md"
+        ]
+      }
+    },
+    {
+      "id": "pay-schedules",
+      "title": "Pay schedules",
+      "capabilitySha256": "0bafcf1c5ed32dfa297acbcc8857f0d87da28b9930371b25382a1b2a59cbf5c4",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "A sample schedule table shows illustrative cadence; assignment, processing deadlines and schedule administration remain unavailable.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "CompanyOnboarding.OnboardingFlow"
+        ],
+        "detail": "The inventory references company onboarding; no schedule management flow is selected.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Persist organization/person schedule mappings, effective dates and accepted cutoff rules; validate changes on the server."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Accept provider schedule selection/assignment and processing deadlines, then reconcile provider schedule changes to app projections."
+        ],
+        "rationale": "The fixture cadence is presentation data, not an accepted provider schedule."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "docs/GUSTO-SETUP.md"
+        ]
+      }
+    },
+    {
+      "id": "employee-directory",
+      "title": "Employee directory",
+      "capabilitySha256": "2ce9aa934ed8dfc31a213e83f9a1acca4e4562b97130a620f124769413f7828a",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Search and status filters show fictional employees within the preview role scope; onboarding changes are reflected in the native roster.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/model.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "selected-mock",
+        "selectedExports": [
+          "EmployeeManagement.EmployeeList"
+        ],
+        "inventoryExports": [
+          "EmployeeManagement.EmployeeListFlow"
+        ],
+        "detail": "The actual EmployeeManagement.EmployeeList block is selected against the isolated development mock; EmployeeListFlow is an inventory candidate, not the mounted export.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Use verified membership and tenant-scoped directory projections; implement pagination, field minimization and server resource ownership."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Replace the synthetic transport with a reviewed read adapter/token broker and accept company-scoped employee listing in the selected provider environment."
+        ],
+        "rationale": "The selected SDK list and native role selector operate on fictional data and provide no provider identity or access."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/gusto-sdk-mock.test.mjs",
+          "tests/hr/gusto-backend.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "employee-profile",
+      "title": "Employee profile",
+      "capabilitySha256": "f7661e491423a3748ebc08c4a5d2a4fdf01e9131f985bbf996f54fe6b5afb766",
+      "native": {
+        "coverage": "partial-mock",
+        "behavior": "Profiles display fictional job, department and status; eligible preview actors can edit synthetic work email. Sensitive identity, tax and bank values are omitted.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/mock-workflows.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "EmployeeManagement.DashboardFlow"
+        ],
+        "detail": "EmployeeManagement.DashboardFlow is inventory-only. Selected onboarding edits some synthetic profile fields, not a mounted general profile-management dashboard.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Persist validated profile changes under current tenant/person permissions; define source authority, optimistic concurrency and redacted auditing."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Implement approved employee/job/address mapping and synchronization; separately accept allowed provider profile updates and conflict recovery."
+        ],
+        "rationale": "A saved local work email is not a provider employee update or verified identity binding."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/mock-workflows.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "employee-onboarding",
+      "title": "Employee onboarding",
+      "capabilitySha256": "eb5f8177036a8832ac3432a297fed9be20f03ff42ffaba904406b7635f2af986",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Profile/job review, checklist, summary review and confirmation produce a MOCK onboarding receipt and activate the fictional employee.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/mock-workflows.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "selected-mock",
+        "selectedExports": [
+          "EmployeeOnboarding.OnboardingExecutionFlow"
+        ],
+        "inventoryExports": [
+          "EmployeeOnboarding.OnboardingFlow",
+          "EmployeeOnboarding.OnboardingExecutionFlow",
+          "EmployeeOnboarding.SelfOnboardingFlow"
+        ],
+        "detail": "The selected admin OnboardingExecutionFlow uses synthetic endpoints plus explicit simulated forms/new-hire review; self-onboarding is off and I-9 is excluded.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Adopt authenticated invitations/person binding, scoped onboarding state, server validation and legal-document handling without exposing sensitive values."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Implement accepted provider onboarding transport, required forms/signature/new-hire steps and reconciliation; verify applicable eligibility and operator requirements."
+        ],
+        "rationale": "Synthetic completion performs no legal signature, filing, identity verification or provider activation."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/mock-workflows.test.mjs",
+          "tests/hr/gusto-sdk-mock.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "employee-compensation",
+      "title": "Employee compensation",
+      "capabilitySha256": "f364f7f7765710f49fbc4bab5c480906681151fb2d6b26775f5d82b85ad58a90",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Authorized preview roles can see a fixture compensation amount, or an unconfigured label for a new sample hire; cadence is not inferred and native pay editing is absent.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/model.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "EmployeeManagement.DashboardFlow"
+        ],
+        "detail": "The standalone EmployeeManagement.DashboardFlow is unmounted. Selected onboarding may exercise synthetic job/pay steps, not general compensation administration.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Store compensation in restricted projections with tenant/person/role checks, effective dates, revision conflicts and redacted audit."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Accept approved jobs/compensation operations and pay configuration semantics; reconcile provider versions and deny unauthorized manager/self updates."
+        ],
+        "rationale": "A sample amount or onboarding mock write is not authoritative wage configuration."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/linked-operations.test.mjs",
+          "tests/hr/gusto-backend.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "contractor-directory",
+      "title": "Contractor directory",
+      "capabilitySha256": "406624dce44dc9b8dfb80cc755b872ed0e45d3bd8fc50f78b9b60875f189407b",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "The contractor directory lists fictional contractor identities/types/onboarding states and links their sample profiles; no create/dismiss lifecycle is supplied.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "ContractorManagement.ContractorListFlow"
+        ],
+        "detail": "ContractorManagement.ContractorListFlow is in the inventory but no contractor SDK flow is selected.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement organization-scoped contractor directory projections and independent contractor/company mappings."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Adopt and accept contractor list/lifecycle operations with the correct company scope; review the unselected SDK flow before use."
+        ],
+        "rationale": "Employee directory SDK coverage does not cover contractor management."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/gusto-backend.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "contractor-profile",
+      "title": "Contractor profile",
+      "capabilitySha256": "02143be398d6b4eb7e6908edad90615620d22fadcd0a8ad4d4ab1d0268c1b564",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Contractor profiles display fictional name/email/type/onboarding state, separate from employee compensation and private employee records.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "ContractorManagement.DashboardFlow"
+        ],
+        "detail": "ContractorManagement.DashboardFlow is inventory-only; the preview mounts no contractor profile component.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Bind contractor identity to the verified user and tenant; define restricted field projections and permitted update ownership."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Implement accepted contractor detail/update mappings and scoped provider transport with version/conflict handling."
+        ],
+        "rationale": "Fictional contractor identity and profile visibility grant no live contractor resource access."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/gusto-backend.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "contractor-onboarding",
+      "title": "Contractor onboarding",
+      "capabilitySha256": "fec63d5274e5efa0e4eb33005b7502720eac7a92977b4a5b2785248d70a29f24",
+      "native": {
+        "coverage": "partial-mock",
+        "behavior": "The native contractor page offers fixture checklist acknowledgments; it does not implement provider onboarding, tax forms or legal signatures.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "ContractorOnboarding.OnboardingFlow",
+          "ContractorOnboarding.SelfOnboardingFlow"
+        ],
+        "detail": "ContractorOnboarding.OnboardingFlow and SelfOnboardingFlow are inventory candidates; neither is mounted.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement trusted contractor invitations/binding, onboarding state and document/security policy with server-owned decisions."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Adopt the selected contractor onboarding path, accepted tax/signature steps and provider reconciliation for its exact contractor type."
+        ],
+        "rationale": "Acknowledging a sample checklist is not provider onboarding completion."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "docs/GUSTO-FIREBASE.md"
+        ]
+      }
+    },
+    {
+      "id": "payroll",
+      "title": "Payroll preparation and execution",
+      "capabilitySha256": "f53e17ed9033aaf0ee4d9509b712e4f827cf834b7f466217c0f39c9b626eb217",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Approved unpaid native hours and confirmed benefit choices feed preparation, fictional calculation, review and simulated submission with per-employee totals and receipts.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/mock-workflows.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "selected-mock",
+        "selectedExports": [
+          "Payroll.PayrollExecutionFlow"
+        ],
+        "inventoryExports": [
+          "Payroll.PayrollFlow",
+          "Payroll.PayrollExecutionFlow",
+          "Payroll.OffCycleFlow",
+          "Payroll.DismissalFlow",
+          "Payroll.TransitionFlow"
+        ],
+        "detail": "PayrollExecutionFlow is selected with an isolated synthetic session and reimbursements off. Other payroll flow families are inventory-only.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement server-owned payroll preparation/version checks, role separation, immutable accepted inputs, idempotency and reconciliation of partial outcomes."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Accept actual calculation/review/submission scopes and operator authority per payroll type; verify provider Demo behavior and production approval before money or filing operations."
+        ],
+        "rationale": "Both native and SDK payroll receipts simulate values and move no money or taxes; the reference backend forwards no provider execution."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/mock-workflows.test.mjs",
+          "tests/hr/gusto-sdk-mock.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "paystubs",
+      "title": "Pay statements",
+      "capabilitySha256": "b72eb12e78aa7be722ee8c203d26e1325661d681779df468ad10faebac29c25a",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Employee pay history projects own simulated statements from frozen submitted native payroll receipts and consumed approved entries.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/insights.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "EmployeeManagement.DashboardFlow"
+        ],
+        "detail": "EmployeeManagement.DashboardFlow is inventory-only; a selected payroll mock receipt is not a mounted provider paystub/download flow.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Authorize person/payroll ownership for each statement/download, minimize stored projections and define retention/access auditing."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Implement accepted self-scoped or payroll-authorized provider paystub retrieval and short-lived download handling; verify access and expiry."
+        ],
+        "rationale": "Native illustrative statements are not real paystubs, and no provider PDF is delivered."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/insights.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "contractor-payments",
+      "title": "Contractor payments",
+      "capabilitySha256": "e73d4dae1c3cf457fa1a992b099f81077c75235e8251ba9fc50d5ce3921be2e5",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Fictional contractor payment history displays fixed amounts in the appropriate preview scope; the submit-payment control is disabled.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "ContractorManagement.PaymentFlow",
+          "ContractorManagement.CreatePaymentFlow",
+          "ContractorManagement.ViewPaymentFlow"
+        ],
+        "detail": "The three contractor payment candidates are inventory-only; none of their components is selected.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Own tenant/contractor/company bindings, restricted payment projections, approval/idempotency state and partial-payment recovery."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Adopt explicitly authorized contractor payment/history operations and accept the selected provider workflow and production money-movement authority."
+        ],
+        "rationale": "A fixed payment-history fixture initiates no payment and inherits no employee payroll authority."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/gusto-backend.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "documents",
+      "title": "Employment and tax documents",
+      "capabilitySha256": "a8950b420b263d1db5cb735ce844566a849c13fe2d66d168089d76eddcfa5a08",
+      "native": {
+        "coverage": "partial-mock",
+        "behavior": "Eligible native non-tax document records can be acknowledged; tax document pages are metadata placeholders without PDF, bank data or legal signature delivery.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/people-operations.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "EmployeeManagement.DashboardFlow",
+          "ContractorManagement.DashboardFlow"
+        ],
+        "detail": "Dashboard candidates are unmounted; explicit simulated onboarding form confirmations do not sign or retrieve real provider documents.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement confidential metadata/binary policies, per-person tenant authorization, retention and short-lived download/signature links."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Adopt approved provider forms/document/signature operations and verify viewer scopes; keep provider PDFs and secret URLs out of ordinary Firestore projections."
+        ],
+        "rationale": "Local document acknowledgment is distinct from provider signatures or tax/employment document delivery."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/people-operations.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "benefits",
+      "title": "Benefits administration and enrollment",
+      "capabilitySha256": "750522d5863c9466fde7fceecb855c494a900b62b89e74a4bb5ac845bce97cb8",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Employees enroll or waive sample plans, review and confirm own elections; confirmed enrollment adds an illustrative deduction to subsequently prepared mock payroll.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/mock-workflows.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "No dedicated benefits UI flow exists in the pinned inventory; the SDK preview links to the separate native benefits page.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement eligibility, election windows, dependent-data confidentiality, current employee authorization and versioned enrollment state."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Choose and accept the authorized benefits/carrier or provider API integration, enrollment confirmation, reconciliation and failure recovery."
+        ],
+        "rationale": "Confirming a native election does not enroll insurance or prove provider/carrier acceptance."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/mock-workflows.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "time-tracking",
+      "title": "Time tracking",
+      "capabilitySha256": "eccb86d64c41e499b1ab5a411f74f399fb8d55bfe616e90cf62ce8744c9a47f3",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Own dated entries and stopped timers become draft hours, then submitted timesheets and scoped manager approval; only eligible approved unpaid hours enter native payroll.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/mock-workflows.ts",
+          "src/hr/model.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "No dedicated general time-entry UI flow exists in the pinned inventory; the SDK preview links to the separate native time page.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement durable timesheets, authorization, approval separation, concurrency, approved-hour locking and auditable payroll linkage."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Accept payroll-hour transfer or approved-program time synchronization, mapping/version/idempotency rules and reconciliation without resubmitting consumed hours."
+        ],
+        "rationale": "Native timer/time approval is sample state; it establishes no external time-provider or payroll synchronization."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/mock-workflows.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "time-off",
+      "title": "Time off",
+      "capabilitySha256": "2ec22dbd66a6aa318b7c082a802c1e29abf3b22bfe7476f979cdc8aec245e083",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Employees request/cancel fictional vacation or sick leave; scoped managers approve/reject, with reserved balances and people-operation receipts.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/people-operations.ts",
+          "integrations/gusto/functions/src/backend.mjs"
+        ]
+      },
+      "sdk": {
+        "coverage": "inventory-only",
+        "selectedExports": [],
+        "inventoryExports": [
+          "TimeOff.TimeOffFlow"
+        ],
+        "detail": "TimeOff.TimeOffFlow exists in the inventory but is unmounted; the selected preview has no PTO SDK journey.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Adopt current membership, policy/person ownership, balance reservation, no-self-approval transactions and audit; extend beyond the reference synthetic own-request backend."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Accept provider PTO policy/balance synchronization and decision/version reconciliation for the chosen program; resolve local/provider authority conflicts."
+        ],
+        "rationale": "The optional backend supplies only a synthetic own-request path, not a complete connected leave approval/balance lifecycle."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/people-operations.test.mjs",
+          "tests/hr/gusto-backend.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "reporting",
+      "title": "HR and payroll reporting",
+      "capabilitySha256": "bf42917dfd2e53b83ba8d21e8f274e1bf3c912e798a2e125e194ae09924928c4",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Derived workforce, workflow, payroll, assignment and talent summaries respect native preview projections; sensitive amounts and private draft text are role limited.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/insights.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "No dedicated reporting SDK flow is claimed; a preview within selected payroll is limited to that synthetic payroll journey.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Build tenant-scoped reporting read models, field/export authorization, freshness, retention and reconciliation checks with accepted source provenance."
+        ],
+        "providerRequirement": "optional",
+        "providerWork": [
+          "If reports include provider data, accept scoped payroll/employee/contractor-payment reads and reconcile source versions before projecting them."
+        ],
+        "rationale": "Native host reporting needs no provider; including real provider summaries adds independent access and data-quality requirements."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/insights.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "recruiting",
+      "title": "Recruiting",
+      "capabilitySha256": "1d8cfa9a6e375dbfaa1869edf4b1fa2d385a2d7d0c985f13bbb00f15e1806b30",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Owner/HR create, edit, publish and close fictional jobs; candidates move through screening/interview/offer/hire or rejection, and accepted sample hires enter native onboarding.",
+        "refs": [
+          "src/hr/recruiting.ts",
+          "src/hr/recruiting-link.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "Recruiting is host native, with no dedicated recruiting SDK flow in the pinned inventory.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Adopt tenant recruiting storage, candidate consent/retention, role policy, valid stage transitions and idempotent hire/person linkage."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "The recruiting pipeline is host-owned; a later provider employee-onboarding handoff is separately selected work."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/recruiting.test.mjs",
+          "tests/hr/recruiting-link.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "organization",
+      "title": "Organization and teams",
+      "capabilitySha256": "0b9578357a6c46cdf27e55c6f68d5c23e65c24cc391b76f1ba65821ceb09b7f6",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Department lists are derived from fictional employees; manager/team scope affects visible people, while department/location administration is not implemented.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/model.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "Organization/team administration is host native; no dedicated SDK flow is selected or claimed for it.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement tenant-owned departments/reporting lines, effective changes, relationship validation and field-scoped team authorization."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "Host organization structure can operate independently; any chosen provider job/location mapping is separate integration work."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/insights.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "tasks",
+      "title": "People tasks",
+      "capabilitySha256": "7f13a360efebb3b8b19d9d15d3cf55999a90064e2e7c541568e50450047bef8b",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Scoped fictional task assignments can be completed and append people-operation receipts; they are separate from SYSTEMX agent TASK records.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/people-operations.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "People checklists are host-native records; no dedicated SDK task flow is claimed.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Persist assigned tasks under tenant/person policy, immutable completion/audit records, due rules and cancellation/reassignment decisions."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "Host task execution does not require a payroll provider or grant SYSTEMX worker authority."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/people-operations.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "policies",
+      "title": "Policies and acknowledgments",
+      "capabilitySha256": "e41f860cacdb4d6a5cb2d1289a54a95e01140160e90b686e6810cacf4526fcf5",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Eligible employees acknowledge assigned fictional policy records with activity receipts; policy authoring, edition rollout and legally accepted signatures are absent.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/people-operations.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "Policy publication and acknowledgment are host-native capabilities with no dedicated SDK flow.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement version-bound policy publication, audience/effective dates, immutable acknowledgments and tenant/retention access policy."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "Host policy acknowledgments need no Gusto call; legal acceptance and retention must be defined by the adopter."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/people-operations.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "assets",
+      "title": "Assets and equipment",
+      "capabilitySha256": "70d81f5088ca67abdd4f3a617d37c6d8d1d980eee2fa73868e20277307c195aa",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Scoped employees acknowledge assigned sample assets and request returns; authorized managers confirm sample returns and activity is recorded.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/people-operations.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "Equipment custody is host native and has no dedicated SDK flow.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Adopt tenant inventory/custody records, allowed handoffs, assignment/return concurrency and auditable lifecycle ownership."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "Equipment operations require adopter-owned storage and policy, independently of payroll-provider access."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/people-operations.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "access",
+      "title": "Access and invitations",
+      "capabilitySha256": "b92fada063f70c8ba5f1d92dafb7be7d91f90d88398ac1fa3c15109b102dbb9c",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Native access pages display fixture invitations/permissions; preview role choices do not provision identities, send invitations or grant backend membership.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/pages/HrPage.tsx",
+          "integrations/gusto/functions/src/security.mjs"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "IAM and invitations are host-owned; no SDK membership/authorization flow is selected.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement verified authentication, audited server membership/invitation administration, tenant/resource policy, revocation and explicitly accepted revision behavior."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "Host membership grants no Gusto scope; provider connection and company/resource approval are separate capabilities."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/gusto-backend.test.mjs",
+          "docs/TENANT-MEMBERSHIP-PROPOSAL.md"
+        ]
+      }
+    },
+    {
+      "id": "training",
+      "title": "Training",
+      "capabilitySha256": "fc356e13f30c18d3bb43853625d8e95ab01c753d363c167ed3b079daa824e1d9",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Scoped sample training assignments can be completed with people-operation receipts; no hosted course delivery or certification validation is provided.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/hr/people-operations.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "Course/training administration is host native with no dedicated SDK flow.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement tenant course editions, assignment/access rules, valid completion evidence, expiry and retention without treating button presses as verified certification."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "Training needs an adopted host workflow or chosen LMS, not a required Gusto operation."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/people-operations.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "performance",
+      "title": "Performance and goals",
+      "capabilitySha256": "12729b8d6bbb8863f7ffebf063fe6a4c898ec883150a12b1f08143b8fbd6aee0",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Goals and private self-review drafts progress through self submission, assigned manager publication and employee acknowledgment under native relationship checks.",
+        "refs": [
+          "src/hr/performance.ts",
+          "src/hr/model.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "Performance reviews are host native; no dedicated performance SDK flow is claimed.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Adopt confidential review storage, current manager/employee bindings, draft-field privacy, cycle/version transitions and retention/auditing."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "Performance cycles operate independently of payroll APIs; preview visibility is not production confidentiality."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/performance.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "cases",
+      "title": "People cases",
+      "capabilitySha256": "32061dea6eb7c3d81e2a8b7cb63a3b9332c7403bcfa8dc9cb7ab7337f8c1f1ad",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "The fictional service desk supports employee equipment/access/general requests, scoped manager triage and owner/HR assignment, start, resolution and reopening.",
+        "refs": [
+          "src/hr/service-desk.ts",
+          "src/hr/components/HrWorkspace.tsx"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "People cases/service requests are host native; no dedicated payroll SDK case flow is claimed.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement confidential case and attachment storage, tenant/case ACLs, assignment/escalation, retention and auditable transition policy."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "The synthetic help desk is not an accepted confidential HR case-management service and requires no payroll API."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/service-desk.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "surveys",
+      "title": "People surveys",
+      "capabilitySha256": "b43b91222d06511c5717e50836ea48421d7ea8b611ff80bfbed583e54f4cb328",
+      "native": {
+        "coverage": "interactive-mock",
+        "behavior": "Owner/HR draft, publish and close sample surveys; identified assigned employees save drafts and submit own answers. Responses are not anonymous.",
+        "refs": [
+          "src/hr/surveys.ts"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "Survey creation and feedback are host native; no dedicated survey SDK flow is claimed.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Adopt audience authorization, response/draft privacy, consent/retention, immutable publication and explicit aggregate/anonymity policy if required."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "No Gusto API is needed for host feedback; anonymity requires a new accepted design, not a label."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/surveys.test.mjs"
+        ]
+      }
+    },
+    {
+      "id": "automation",
+      "title": "People automation",
+      "capabilitySha256": "02e6a3e647cbfce4851bc81dc110287001c9f8087d19d4b2ac0d0de23b4ba604",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "Automation pages show fictional rule/schedule records only; they do not start jobs, execute queued rules or authorize payroll actions.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "People automation is host native and has no selected SDK flow.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement reviewed rule/version storage, scheduler/worker ownership, bounded retries/idempotency, authorization rechecks and execution receipts before enabling rules."
+        ],
+        "providerRequirement": "not-required",
+        "providerWork": [],
+        "rationale": "Host automation requires its own runtime; any future provider action also needs a separately accepted adapter and operation authority."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "docs/PORTAL-CAPABILITIES.md"
+        ]
+      }
+    },
+    {
+      "id": "provider-connection",
+      "title": "Gusto connection",
+      "capabilitySha256": "829cf597ef5b62f5514a52d1e9d3ffde16bc308f1cacf9815e0ce7f6ada46c2b",
+      "native": {
+        "coverage": "read-only-mock",
+        "behavior": "The native integration panel shows mock/disconnected and unprovisioned state; protected live routes remain unavailable and the reference backend reports no provider/payroll connection.",
+        "refs": [
+          "src/hr/components/HrWorkspace.tsx",
+          "src/pages/HrPage.tsx",
+          "integrations/gusto/functions/src/backend.mjs"
+        ]
+      },
+      "sdk": {
+        "coverage": "none",
+        "selectedExports": [],
+        "inventoryExports": [],
+        "detail": "The selected SDK GustoProvider wraps a local development mock, not an OAuth/company-connection UI or production proxy.",
+        "refs": [
+          "src/hr/gusto/GustoSdkPreview.tsx",
+          ".SYSTEMX/GUSTO/sdk/endpoint-inventory.json"
+        ]
+      },
+      "adopter": {
+        "backendWork": [
+          "Implement tenant-bound OAuth/token brokerage, secret storage, narrowly authorized transport, mapping ownership, webhook/reconciliation workers and safe health/disable controls."
+        ],
+        "providerRequirement": "required",
+        "providerWork": [
+          "Obtain the accepted program/application/environment scopes, verify Demo company connection and wire contracts, then obtain explicit production and operation acceptance."
+        ],
+        "rationale": "Configuration flags, package exports and synthetic sessions are insufficient to establish credentials, provider connection or payroll authority."
+      },
+      "evidence": {
+        "scope": "source-review",
+        "limitation": "Authored source and test-case review only; no new browser, emulator, provider or production execution is recorded for this capability.",
+        "refs": [
+          "tests/hr/gusto-backend.test.mjs",
+          "docs/GUSTO-SETUP.md"
+        ]
+      }
+    }
+  ]
+}

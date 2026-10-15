@@ -19,6 +19,31 @@ Use `npm run environment:check` for the reviewed public-example proposal and
 the [QA coverage map](QA-COVERAGE-MAP.md) to choose relevant authored browser
 and unit scenarios. Keep reports/downloads/traces in local artifact storage.
 
+## Evaluate portals and review readiness
+
+Use the [printable worksheet](PORTAL-EVALUATOR-WORKSHEET.md) with the paced
+[HR](demos/HR-FIVE-MINUTE.md), [CMS](demos/CMS-FIVE-MINUTE.md),
+[CRM](demos/CRM-FIVE-MINUTE.md) and [recovery](demos/RECOVERY-TEN-MINUTE.md)
+scripts. Record the exact scheme, host and port; a different browser profile or
+origin has independent local saved data. Review the
+[recovery glossary](WORKSPACE-RECOVERY-GLOSSARY.md) before importing real files.
+Use fictional data for these account-free exercises.
+
+Run `browser:evaluators` for the automated companions. Before adopting selected
+HR features, inspect [role examples](HR-ROLE-EXAMPLES.md), the
+[capability gap map](GUSTO-CAPABILITY-GAPS.md) and proposed
+[membership contract](TENANT-MEMBERSHIP-PROPOSAL.md). The
+[operations readiness index](OPERATIONS-READINESS.md) keeps unadopted production
+owners, secrets and services explicitly deferred.
+
+For source updates, run the [documentation freshness preview](DOCUMENTATION-FRESHNESS.md)
+against the exact reviewed target and deliberately record a source review
+without changing earlier observation dates. Use the
+[fictional import rehearsal](SYSTEMX-IMPORT-REHEARSAL.md) for preservation proof.
+The [HR-disabled adoption walkthrough](examples/hr-disabled-adoption.md) tests a
+separate temporary CMS/CRM-only bundle and explains its incompatible combined
+backup kind and deliberately unadopted recovery controls.
+
 ## Review adopted work and upstream changes
 
 Open the LAN **Work sources** cards to inspect reusable work records, the
