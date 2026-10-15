@@ -121,6 +121,125 @@ class ImportIntegration(unittest.TestCase):
         return {path.relative_to(root).as_posix(): path.read_bytes()
                 for path in root.rglob('*') if path.is_file()}
 
+    def clone_source(self):
+        scratch = tempfile.TemporaryDirectory()
+        self.addCleanup(scratch.cleanup)
+        source = Path(scratch.name) / 'upstream'
+        subprocess.run(['git', 'clone', '-q', '--no-hardlinks', str(self.source), str(source)], check=True)
+        for args in [
+            ['remote', 'set-url', 'origin', importer.UPSTREAM],
+            ['config', 'user.name', 'Import Test'],
+            ['config', 'user.email', 'test@example.com'],
+        ]:
+            subprocess.run(['git', '-C', str(source), *args], check=True)
+        return source
+
+    def commit_source(self, source, message):
+        subprocess.run(['git', '-C', str(source), 'add', '.'], check=True)
+        subprocess.run(['git', '-C', str(source), 'commit', '-qm', message], check=True)
+        self.commit = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
+        return self.commit
+
+    def test_docs_only_revision_preserves_first_receipt_and_reports_current_source(self):
+        source = self.clone_source()
+        original_commit = self.commit
+        importer.sync(self.target, source, True, expected_commit=original_commit)
+        receipt = self.target / '.SYSTEMX/imports' / (self.version + '.json')
+        original_receipt = receipt.read_bytes()
+        (source / 'README.md').write_text('Reviewed standalone documentation update\n')
+        current_commit = self.commit_source(source, 'Documentation only')
+        before = self.file_bytes(self.target)
+        preview = importer.sync(self.target, source, expected_commit=current_commit)
+        self.assertFalse(preview['applied'])
+        self.assertEqual(self.file_bytes(self.target), before)
+        self.assertEqual(preview['commit'], current_commit)
+        self.assertEqual(preview['receiptCommit'], original_commit)
+        self.assertIs(preview['identicalSourceTree'], True)
+        self.assertEqual(preview['add'], [])
+        self.assertEqual(preview['bootstrap']['replace'], [])
+        result = importer.sync(self.target, source, True, expected_commit=current_commit)
+        self.assertTrue(result['applied'])
+        self.assertEqual(result['commit'], current_commit)
+        self.assertEqual(result['receiptCommit'], original_commit)
+        self.assertIs(result['identicalSourceTree'], True)
+        self.assertEqual(receipt.read_bytes(), original_receipt)
+        self.assertEqual(json.loads(receipt.read_text())['commit'], original_commit)
+
+    def test_unlisted_systemx_change_is_rejected_even_with_identical_manifest(self):
+        source = self.clone_source()
+        importer.sync(self.target, source, True)
+        manifest = (source / '.SYSTEMX/config/distribution.json').read_bytes()
+        (source / '.SYSTEMX/unlisted-source.md').write_text('This change requires a new version\n')
+        self.commit_source(source, 'Unlisted source change')
+        self.assertEqual((source / '.SYSTEMX/config/distribution.json').read_bytes(), manifest)
+        before = self.file_bytes(self.target)
+        for apply in (False, True):
+            with self.subTest(apply=apply):
+                with self.assertRaisesRegex(ValueError, r'Version receipt differs;.*source tree changed'):
+                    importer.sync(self.target, source, apply, expected_commit=self.commit)
+                self.assertEqual(self.file_bytes(self.target), before)
+
+    def test_changed_managed_tree_with_valid_same_version_manifest_is_rejected(self):
+        source = self.clone_source()
+        importer.sync(self.target, source, True)
+        defaults = source / '.SYSTEMX'
+        readme = defaults / 'README.md'
+        readme.write_bytes(readme.read_bytes() + b'\nChanged same-version managed default\n')
+        manifest_path = defaults / 'config/distribution.json'
+        manifest = json.loads(manifest_path.read_text())
+        manifest['files']['README.md'] = hashlib.sha256(readme.read_bytes()).hexdigest()
+        manifest_path.write_text(json.dumps(manifest) + '\n')
+        self.commit_source(source, 'Changed same-version distribution')
+        before = self.file_bytes(self.target)
+        for apply in (False, True):
+            with self.subTest(apply=apply):
+                with self.assertRaises(ValueError):
+                    importer.sync(self.target, source, apply, expected_commit=self.commit)
+                self.assertEqual(self.file_bytes(self.target), before)
+
+    def test_invalid_receipt_identity_is_rejected_before_any_write(self):
+        importer.sync(self.target, self.source, True)
+        receipt = self.target / '.SYSTEMX/imports' / (self.version + '.json')
+        original = json.loads(receipt.read_text())
+        changes = [
+            {'commit': 'different'}, {'commit': self.commit[:12]}, {'commit': None},
+            {'repository': 'https://github.com/other/dotSYSTEMX.git'},
+            {'version': '0.0.0'}, {'manifestSha256': '0' * 64},
+        ]
+        for change in changes:
+            receipt.write_text(json.dumps({**original, **change}) + '\n')
+            before = self.file_bytes(self.target)
+            for apply in (False, True):
+                with self.subTest(change=change, apply=apply):
+                    with self.assertRaisesRegex(ValueError, 'Version receipt differs'):
+                        importer.sync(self.target, self.source, apply)
+                    self.assertEqual(self.file_bytes(self.target), before)
+
+    def test_unavailable_receipt_commit_is_rejected_before_any_write(self):
+        importer.sync(self.target, self.source, True)
+        receipt = self.target / '.SYSTEMX/imports' / (self.version + '.json')
+        original = json.loads(receipt.read_text())
+        receipt.write_text(json.dumps({**original, 'commit': 'f' * 40}) + '\n')
+        before = self.file_bytes(self.target)
+        for apply in (False, True):
+            with self.subTest(apply=apply):
+                with self.assertRaisesRegex(ValueError, 'original receipt commit is unavailable'):
+                    importer.sync(self.target, self.source, apply)
+                self.assertEqual(self.file_bytes(self.target), before)
+
+    def test_docs_only_revision_still_requires_the_reviewed_expected_commit(self):
+        source = self.clone_source()
+        original_commit = self.commit
+        importer.sync(self.target, source, True)
+        (source / 'README.md').write_text('Reviewed documentation update\n')
+        self.commit_source(source, 'Documentation only')
+        before = self.file_bytes(self.target)
+        for apply in (False, True):
+            with self.subTest(apply=apply):
+                with self.assertRaisesRegex(ValueError, 'reviewed expected commit'):
+                    importer.sync(self.target, source, apply, expected_commit=original_commit)
+                self.assertEqual(self.file_bytes(self.target), before)
+
     def test_legacy_upgrade_refreshes_stock_bootstraps_with_exact_backups(self):
         legacy = self.install_legacy()
         outer = self.target / '.SYSTEMX'

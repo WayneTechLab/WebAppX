@@ -19,7 +19,7 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 
 | Command or route | Behavior |
 | --- | --- |
-| `npm run dev` then `/hr/demo` | Synthetic HR portals and app-owned actions; React state resets on refresh |
+| `npm run dev` then `/hr/demo` | Synthetic HR portals and app-owned actions; saved domain changes survive refresh when browser storage is available |
 | `/hr/demo/sdk` under Vite development | Genuine Gusto SDK 0.56.6 directory reads against local fixtures; no provider credentials or writes |
 | `npm run hr:test` | Synthetic HR workflows, local SDK request/response contract and backend authorization/projection tests |
 | `npm run hr:backend:audit` | Dependency audit for the isolated optional Gusto Firebase functions package |
@@ -75,6 +75,23 @@ process termination. Core PowerShell commands and role/job previews remain
 available. macOS checks alone do not prove Windows x64/ARM64 runtime acceptance.
 
 ## Validation and maintenance
+
+### Proposed WebAppX backlog
+
+| Command | Scope |
+| --- | --- |
+| `npm run backlog:summary` | Counts for 1,000 proposed TODOs by area, priority, phase and gate |
+| `npm run backlog -- --area mock-recovery --priority P1 --limit 10` | Read a bounded group of proposals |
+| `npm run backlog -- --id WX-0151` | Inspect one proposal's acceptance, source and dependencies |
+| `npm run backlog:render` | Regenerate Markdown/CSV from the canonical JSON catalog |
+| `npm run backlog:check` | Validate count, identities, sources, dependencies and generated-view parity |
+| `npm run backlog:test` | Catalog metadata, invalid-input and query regression tests |
+
+The [roadmap](WEBAPPX-ROADMAP.md) is planning data. These commands leave the
+blank reusable SYSTEMX task/context/plan/memory records intact and do not start
+agents or provider operations.
+
+### Repository gates
 
 | Command | Scope |
 | --- | --- |

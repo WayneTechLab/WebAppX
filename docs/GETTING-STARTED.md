@@ -42,8 +42,12 @@ With `npm run dev` running, open `/hr` for the capability entry points or
 `/hr/demo` for synthetic management, employee, manager and contractor portals.
 Complete onboarding review, elect and confirm benefits, submit and approve
 timesheets, and prepare, review and simulate payroll receipts. These app-owned
-changes live in React state and reset on refresh. Keep real employee information
-out of these previews.
+changes are saved in this browser and survive refresh when local storage is
+available. Individual and combined JSON backups can move fictional workspaces
+between browsers; combined selective restores also create local restore points
+with Undo. Unsaved form fields and running timers remain temporary. Keep real
+employee information out of these previews. See the
+[portal guide](TEMPLATE-PORTALS.md) and [1,000-item roadmap](WEBAPPX-ROADMAP.md).
 
 `/hr/demo/sdk` uses genuine Gusto React SDK 0.56.6 directory, administrative
 onboarding and payroll execution components against an isolated local mock.

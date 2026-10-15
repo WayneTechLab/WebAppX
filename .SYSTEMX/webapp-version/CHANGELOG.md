@@ -1,3 +1,16 @@
+# 3.4.0 follow-up — SYSTEMX refresh and 1,000-item roadmap — 2026-10-14
+
+- Verify public dotSYSTEMX main still provides alpha.6 with an identical complete
+  `.SYSTEMX` Git tree; preserve original import receipt and immutable snapshots.
+- Accept documentation-only source advancement only after receipt identity,
+  manifest, historical commit identity and full SYSTEMX tree equality checks.
+- Add 1,000 proposed TODOs across 20 areas with concrete acceptance/source,
+  priorities, phases, dependencies and local/provider/operator gates.
+- Generate Markdown and CSV from canonical JSON; add local query, schema,
+  validation and CI checks while keeping reusable context/task/memory seeds blank.
+- Refresh README/wiki, host planning links, managed integration and quick-start
+  persistence wording. App version 3.4.0 and deployment count 0 remain unchanged.
+
 # 3.4.0 follow-up — Automatic restore points and Undo — 2026-10-14
 
 - Save a validated browser-local point of only the selected portals before each

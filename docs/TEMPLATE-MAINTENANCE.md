@@ -33,6 +33,15 @@ only relative bootstrap filenames and the import commit/fingerprint.
 Add `-- --expected-commit <reviewed-public-main-sha>` to both npm upstream
 commands to bind preview and apply to the reviewed revision.
 
+Documentation-only public-main advancement outside `.SYSTEMX` does not require a
+new managed version. The importer verifies the original receipt's repository,
+version and manifest and proves its available historical commit has the identical
+complete `.SYSTEMX` Git tree. It reports the reviewed `commit`, original
+`receiptCommit` and `identicalSourceTree`, preserving first-import bytes. A
+different tree remains a conflict, even if a manifest fingerprint matches. When
+the preview has no additions or bootstrap changes and the selected release
+already matches, retain the existing installation rather than reapplying it.
+
 Customized bootstraps and altered retained snapshots are conflicts. Preserve
 downstream context, plans, tasks, memory, configured commands, original releases
 and host extensions. The new blank access/map seeds and optional Agent Y guides
@@ -43,6 +52,12 @@ after matching the old retained release. That maintenance step does not add
 blanket replacement of downstream files to the importer.
 
 ## Review and validate the source
+
+The [WebAppX roadmap](WEBAPPX-ROADMAP.md) contains 1,000 proposed improvements
+in a separate planning catalog. Query one area with `npm run backlog`, review
+its current applicability and only activate bounded work in an adopted project's
+canonical ledger. `npm run backlog:check` validates the catalog and generated
+Markdown/CSV as part of full CI; template task/context/memory seeds stay blank.
 
 Confirm the branch, remotes, live main revisions and local changes before work.
 Preserve existing changes and ignored state. Reconcile public-only and

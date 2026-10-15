@@ -1,5 +1,24 @@
 # Update Log
 
+## 3.4.0 SYSTEMX refresh and 1,000-item roadmap — 2026-10-14
+
+Verify current public dotSYSTEMX main against the original alpha.6 import. The
+complete `.SYSTEMX` source tree is identical; retain the selected release and
+original receipt. The host importer now accepts documentation-only advancement
+outside `.SYSTEMX` only with matching identity/manifest and complete historical
+tree proof. Changed same-version trees remain rejected.
+
+Publish [1,000 proposed TODOs](WebAppX-Roadmap.md), 50 in each of 20 areas, with
+stable IDs, priorities, phases, acceptance checks, source pointers and dependencies.
+JSON is canonical; Markdown/CSV and local filter queries support review. CI
+checks exact count, sources, uniqueness, dependencies and generated views. These
+are unstarted proposals; reusable SYSTEMX records remain blank. Optional live
+work retains explicit provider/operator adoption gates.
+
+Refresh README, maintenance/integration docs, roadmap navigation and stale
+Getting Started persistence wording. The app remains 3.4.0 with deploy count 0.
+Read the [verification receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ROADMAP-QA-2026-10-14.md).
+
 ## 3.4.0 automatic restore points and Undo — 2026-10-14
 
 Save an origin-local restore point before each combined selective restore. Each

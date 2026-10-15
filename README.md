@@ -71,6 +71,33 @@ the outer `.SYSTEMX` or an explicitly selected child `.SYSTEMXP`.
 | Verified manual updates | Preview/import exact public source, back up recognized stock launchers, retain immutable snapshots and adopted records |
 | HR and Gusto | Portable `.SYSTEMX/GUSTO/` contracts, complete native synthetic journeys and selected pinned SDK workflow previews |
 
+## Roadmap and 1,000 proposed TODOs
+
+The [WebAppX roadmap](docs/WEBAPPX-ROADMAP.md) now links **exactly 1,000 proposed
+TODO items across 20 areas**, covering HR, CMS, CRM, local recovery, security,
+Firebase adoption, design, quality, operations, SYSTEMX and integrations.
+Each has a stable `WX-0001`–`WX-1000` ID, priority, phase, specific acceptance
+check, existing source pointer, acceptance gate and dependencies.
+
+- [Read the complete list](docs/backlog/WEBAPPX-1000-TODO.md)
+- [Canonical JSON](docs/backlog/webappx-1000-todo.json) · [CSV](docs/backlog/webappx-1000-todo.csv)
+- [SYSTEMX planning pointer](.SYSTEMX/WEBAPPX-ROADMAP.md)
+
+Run `npm run backlog:summary`, or query one area with
+`npm run backlog -- --area mock-recovery --priority P1 --limit 10`.
+`npm run backlog:check` validates the exact count, IDs, sources, dependencies and
+generated views as part of `ci:all`. These are future proposals, not 1,000
+implemented features or active agent jobs. The reusable SYSTEMX records stay
+blank; optional provider/operator work requires its own reviewed adoption scope.
+
+The current SYSTEMX refresh verifies public main
+`3fb59429c878268f1081ca255a1f32fafc5dcfba`. Its `.SYSTEMX` tree is identical to
+the original **1.9.0-alpha.6** import, so the selected version and receipt stay
+intact. Documentation-only upstream commits can now pass the update check when
+their complete SYSTEMX source trees and manifest fingerprints match. Different
+same-version source trees remain rejected. See the
+[refresh/roadmap receipt](docs/SYSTEMX-ROADMAP-QA-2026-10-14.md).
+
 ## Gusto, employees and management
 
 The new [Gusto setup guide](docs/GUSTO-SETUP.md) and

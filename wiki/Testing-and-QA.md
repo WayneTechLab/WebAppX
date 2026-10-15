@@ -77,6 +77,29 @@ and webhook foundation boundaries. It uses local fixtures and app/backend code;
 it does not contact Gusto or establish Firebase deployment acceptance.
 `hr:backend:audit` audits the isolated optional functions package's dependencies.
 
+### SYSTEMX refresh and roadmap checks
+
+The [refresh/roadmap receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ROADMAP-QA-2026-10-14.md)
+records the provenance check and 1,000-item planning catalog. The current host
+SYSTEMX integration suite passes 36 cases, including 19 importer cases. The
+documentation-only source-advance case preserves the first receipt; changed
+same-version trees, malformed identity, missing history and expected-commit drift
+remain rejected.
+
+`npm run backlog:check` validates 1,000 ordered proposals in 20 groups of 50,
+unique title/acceptance, existing source paths, earlier dependencies and exact
+Markdown/CSV generation. Six `backlog:test` cases cover malformed metadata/date,
+counts/IDs/areas, duplicate content, unsafe sources/dependencies and CLI queries.
+The catalog remains proposed work, separate from blank reusable SYSTEMX records.
+See [WebAppX Roadmap](WebAppX-Roadmap.md). Existing browser receipts below retain
+their checked revision and scope; this tooling update claims no new browser run.
+
+Full `npm run ci:all` and Hosting preflight passed for this update, including
+six catalog regressions, 235 shared SYSTEMX cases (five filesystem-specific skips),
+36 host integration cases, 116 HR cases and 96 portal cases, plus the security,
+type, build, seed/research integrity and documentation gates. Final SYSTEMX drift
+reported no changes. Version remains 3.4.0/deploy count 0.
+
 ### Restore-point and Undo checks
 
 The [restore-point QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md)

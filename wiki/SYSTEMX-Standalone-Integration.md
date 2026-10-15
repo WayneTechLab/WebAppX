@@ -1,7 +1,7 @@
 # Managed SYSTEMX in the unified webapp template
 
 This repository is Wayne Tech Lab's public webapp integration template, version
-3.2.0. It consumes the public [dotSYSTEMX](https://github.com/WayneTechLab/dotSYSTEMX)
+3.4.0. It consumes the public [dotSYSTEMX](https://github.com/WayneTechLab/dotSYSTEMX)
 operating standard while retaining its React/Vite/Firebase app, local LAN builder,
 production kits and sanitized examples. It combines the public webapp and private integration features in a reusable release.
 
@@ -19,13 +19,26 @@ production kits and sanitized examples. It combines the public webapp and privat
 | `.SYSTEMX/status/` | Retained LAN feature roadmap/history, not the integration task authority |
 
 `npm run systemx:status` reports the authoritative selected defaults and integrity.
-The selected release is **1.9.0-alpha.5**, imported from public main
-`aba9620ac07c9fe27572fd37ba80df8d1deeded4` with distribution manifest SHA-256
-`483e564855c8f3ecd9255a06fdb7994a0df85cc23fa3a531ecd638746378cd37`.
-The original 1.8.6-alpha.1 snapshot remains retained. Upstream is alpha; review
+The selected release is **1.9.0-alpha.6**, imported from public main
+`7f0d82b7ba8531ac04d897209d8c1ed263ee29cb` with distribution manifest SHA-256
+`009e6b6c2f1359fa4c88e3961164d28cc89f65cea2a6682200fb2953caf326e3`.
+The original 1.8.6-alpha.1 and previous 1.9.0-alpha.5 snapshots remain retained. Upstream is alpha; review
 changes before selecting a new release. Do not edit snapshots or regenerate their
 manifests to hide modifications. A changed distribution needs a new upstream version.
 The root `VERSION` is an initial seed, preserved by the upstream installer.
+
+### Reviewed refresh — 2026-10-14
+
+Public main `3fb59429c878268f1081ca255a1f32fafc5dcfba` changes README/wiki
+content outside `.SYSTEMX` after the original alpha.6 import. Its complete
+`.SYSTEMX` Git tree equals the original receipt commit's tree:
+`30baa1a6f6140776751b1cbb036ac323c4dd301c`. The reviewed preview has no
+additions or bootstrap replacements, so no import application is needed.
+The selected version, manual pin, first receipt and immutable snapshots remain
+intact. Read the [refresh receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-ROADMAP-QA-2026-10-14.md).
+
+The host-owned [WebAppX roadmap](WebAppX-Roadmap.md) catalogs 1,000 proposed
+improvements outside the blank reusable task/context/plan/memory records.
 
 ## Current standalone capabilities
 
@@ -46,6 +59,24 @@ hashes media and unknown files byte for byte. Historical schema 1 snapshots
 keep their original manifest contract and fingerprints. Current guidance and
 new media live in the selected release; existing outer project files survive.
 
+The selected defaults include optional `.SYSTEMX/GUSTO/` contracts: 64 route
+specifications, 33 capabilities, seven roles, synthetic fixtures and the pinned
+SDK inventory/license. Importing them installs no Gusto runtime or credentials.
+WebAppX's host code provides complete account-free onboarding, payroll, benefits
+and timesheet simulations plus selected development SDK workflows. These are
+host extensions; the alpha.6 distribution and its original import receipt remain
+unchanged. Follow [Gusto setup](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md) and
+[the optional Firebase model](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-FIREBASE.md). Preserve outer package copies
+as adopted project data during later imports. Narrow Git attributes preserve
+vendor inventory/license bytes across line-ending conversions.
+
+The host runs the unchanged upstream test suite in a temporary copy. Its
+packaging-entry-point test also needs upstream `pyproject.toml`, which is outside
+the portable distribution. The versioned fixture under `tests/systemx/fixtures/`
+retains those exact bytes, with a hash and source commit matching the import
+receipt. Refresh that reviewed fixture when selecting another upstream release;
+the runner verifies it before execution and leaves snapshots untouched.
+
 ## Updating public standalone, then importing here
 
 1. Finish and validate the standalone project in its own repository. Commit and
@@ -58,7 +89,7 @@ new media live in the selected release; existing outer project files survive.
    # Explicit source location works on other computers too:
    python3 -B scripts/sync-systemx.py --source "/path/to/dotSYSTEMX"
    # Bind preview and apply to an exact reviewed public main revision:
-   npm run systemx:upstream:check -- --expected-commit aba9620ac07c9fe27572fd37ba80df8d1deeded4
+   npm run systemx:upstream:check -- --expected-commit 3fb59429c878268f1081ca255a1f32fafc5dcfba
    ```
 
 4. Review added/preserved paths, the stock bootstrap refresh plan and release
@@ -81,6 +112,16 @@ exact revision. It never fetches, pulls, commits or pushes the source repository
 A stale or dirty standalone checkout produces an actionable error.
 The optional `--expected-commit` rejects a public-main revision different from
 the reviewed commit; pass the same value to the apply command when pinning a review.
+
+A later public commit with the same release may pass only when the receipt's
+repository/version/manifest match, its original full commit object is available,
+and both commits have the identical complete `.SYSTEMX` Git tree. The report
+then exposes `receiptCommit` and `identicalSourceTree: true`, while `commit`
+identifies the newly reviewed public main. The original receipt bytes and
+timestamp are retained. Matching a manifest alone is insufficient: source-tree
+changes, including unlisted files or Git tree metadata, remain conflicts requiring
+a new upstream release. If the historical commit is absent from a shallow
+checkout, obtain the reviewed history before retrying; do not rewrite provenance.
 
 Preview leaves the target untouched. For a managed target, it also previews
 the upstream manager's explicit `bootstrap-refresh` for eight stock manager and
@@ -163,7 +204,7 @@ collisions, and never commits or pushes. Verify parity with
 Historical source receipts remain provenance for their examined revisions.
 The reusable tree carries blank records and reviewed import provenance. See
 [the release feature map](https://github.com/WayneTechLab/WebAppX/blob/main/docs/UNIFIED-TEMPLATE.md) and the historical
-[3.1.0 validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.1.0.md); that receipt does not validate 3.2.0.
+[3.1.0 validation receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/VALIDATION-3.1.0.md); that receipt does not validate 3.4.0.
 
 ## Dependency refresh
 

@@ -43,13 +43,18 @@ While Vite development is running, use:
 | `/hr/demo/sdk` | Genuine Gusto React SDK 0.56.6 directory, administrative onboarding and payroll execution with isolated local mock records |
 
 The native HR actions complete onboarding, benefit elections, timesheet approval
-and simulated payroll receipts in synthetic React state, which resets on refresh.
+and simulated payroll receipts with fictional records saved in this browser.
+Saved domain changes survive refresh when local storage is available. HR, CMS
+and CRM support individual/combined JSON backups, selective restore and automatic
+restore points with Undo. Unsaved forms and running timers remain temporary.
 The SDK mock is development-only; it is absent from Hosting and `npm run preview`.
 Other SDK workflows and live payroll remain separate adoption work. Connected
 portals require trusted identity/memberships and an adopted backend. The optional
 Firebase module is disabled by default. Read
 [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md) and
 [the setup guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md).
+Use [WebAppX Roadmap](WebAppX-Roadmap.md) to review the 1,000 proposed follow-on
+items without activating them in the reusable SYSTEMX ledger.
 
 ```bash
 npm run hr:test

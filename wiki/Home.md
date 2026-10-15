@@ -6,6 +6,13 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
+The [WebAppX roadmap](WebAppX-Roadmap.md) now catalogs exactly **1,000 proposed
+TODO items**, 50 in each of 20 areas, with priorities, source pointers, acceptance
+checks and dependencies. JSON, Markdown and CSV views are available with local
+query/validation commands. These future proposals leave reusable SYSTEMX seeds
+blank and do not activate 1,000 tasks or provider operations. The reviewed
+SYSTEMX refresh retains alpha.6 because upstream changed only external docs.
+
 The retained guides below cover Firebase, the LAN builder, Gusto/HR and production kits.
 They describe available workflows; project adoption still requires configuration
 and scoped verification. Public derivatives are reviewed and published separately.

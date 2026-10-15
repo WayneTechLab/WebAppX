@@ -11,6 +11,11 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+For public template improvement planning, use the host-owned
+[WebAppX roadmap pointer](WEBAPPX-ROADMAP.md) and its 1,000 proposed TODO items.
+Read one bounded area at a time. The catalog does not populate the reusable
+task, context, plan or memory seeds and does not start agents or providers.
+
 # .SYSTEMX — WebAppX operational system
 
 This directory is the **operational control layer** for the template: the launcher

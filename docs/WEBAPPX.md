@@ -13,9 +13,9 @@ The source template and private webapp-stack-g1 repository remain separate.
 
 The React/TypeScript/Vite/Tailwind/Firebase app, LAN builder, agent coordination,
 kits, setup workflows, research manifests and reviewed security fixes are retained.
-Host 3.2.0 selects managed SYSTEMX 1.9.0-alpha.5 from public
-`aba9620ac07c9fe27572fd37ba80df8d1deeded4`; the original 1.8.6-alpha.1 snapshot
-remains immutable alongside it. The import preserves downstream records and
+Host 3.4.0 selects managed SYSTEMX 1.9.0-alpha.6, first imported from public
+`7f0d82b7ba8531ac04d897209d8c1ed263ee29cb`; the original 1.8.6-alpha.1 and
+previous 1.9.0-alpha.5 snapshots remain immutable alongside it. The import preserves downstream records and
 uses backed-up recognized stock bootstrap migration. Historical validation and
 security receipts describe their original source revisions. Upstream licenses,
 notices and research attribution remain intact. See the

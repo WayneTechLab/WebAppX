@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -17,6 +18,31 @@ UPSTREAM = 'https://github.com/WayneTechLab/dotSYSTEMX.git'
 
 def git(source, *args):
     return subprocess.check_output(['git', '-C', str(source), *args], text=True).strip()
+
+
+def verify_receipt(source, existing, commit, version, manifest_sha256):
+    """Keep first-import provenance while proving a later source tree is identical."""
+    conflict = 'Version receipt differs; publish a new upstream version'
+    if not isinstance(existing, dict):
+        raise ValueError(conflict)
+    receipt_commit = existing.get('commit')
+    if (existing.get('repository') != UPSTREAM
+            or existing.get('version') != version
+            or existing.get('manifestSha256') != manifest_sha256
+            or not isinstance(receipt_commit, str)
+            or not re.fullmatch(r'(?:[0-9a-f]{40}|[0-9a-f]{64})', receipt_commit)):
+        raise ValueError(conflict)
+    if receipt_commit == commit:
+        return False
+    try:
+        historical_commit = git(source, 'rev-parse', '--verify', receipt_commit + '^{commit}')
+        historical_tree = git(source, 'rev-parse', '--verify', receipt_commit + ':.SYSTEMX')
+        reviewed_tree = git(source, 'rev-parse', '--verify', commit + ':.SYSTEMX')
+    except subprocess.CalledProcessError as error:
+        raise ValueError(conflict + '; original receipt commit is unavailable') from error
+    if historical_commit != receipt_commit or historical_tree != reviewed_tree:
+        raise ValueError(conflict + '; .SYSTEMX source tree changed')
+    return True
 
 
 def sync(target, source, apply=False, expected_commit=None):
@@ -73,8 +99,9 @@ def sync(target, source, apply=False, expected_commit=None):
             raise ValueError('Import receipt parent must be a directory')
         if receipt.exists():
             existing = manager.decode(manager.regular_bytes(receipt))
-            if (existing['commit'], existing['manifestSha256']) != (commit, bundle['manifestSha256']):
-                raise ValueError('Version receipt differs; publish a new upstream version')
+            if verify_receipt(source, existing, commit, version, bundle['manifestSha256']):
+                report['receiptCommit'] = existing['commit']
+                report['identicalSourceTree'] = True
         if apply:
             backup = None
             if state:
@@ -95,8 +122,7 @@ def sync(target, source, apply=False, expected_commit=None):
             # Identical reimports retain their first receipt and timestamp.
             if receipt.exists():
                 existing = manager.decode(manager.regular_bytes(receipt))
-                if (existing['commit'], existing['manifestSha256']) != (commit, bundle['manifestSha256']):
-                    raise ValueError('Version receipt differs; publish a new upstream version')
+                verify_receipt(source, existing, commit, version, bundle['manifestSha256'])
             else:
                 descriptor, temporary = tempfile.mkstemp(prefix=version + '-', suffix='.tmp', dir=imports)
                 try:
