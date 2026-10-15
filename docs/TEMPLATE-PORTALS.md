@@ -13,7 +13,9 @@ persistence checks are recorded in the
 checks are recorded separately in the
 [per-portal backup QA receipt](PORTAL-BACKUP-QA-2026-10-14.md). Combined files and
 selective restores are recorded in the
-[combined backup QA receipt](COMBINED-BACKUP-QA-2026-10-14.md). No live
+[combined backup QA receipt](COMBINED-BACKUP-QA-2026-10-14.md). Automatic local
+restore-point and Undo checks are recorded in the
+[restore-point QA receipt](RESTORE-POINTS-QA-2026-10-14.md). No live
 business portal is activated by the HR preview or an administrator signing in.
 
 ## What exists today
@@ -23,6 +25,7 @@ business portal is activated by the HR preview or an administrator signing in.
 | Public website | [App router](../src/router.tsx), public pages and shared layout | React/Vite routes; no CMS-backed publication pipeline |
 | Demo portal directory | [Template portal shell](../src/pages/TemplatePortalsPage.tsx) | Account-free navigation between separately scoped HR, CMS and CRM samples; keeps modules mounted while switching demo portals |
 | Combined mock backups | [Directory controls](../src/portals/CombinedWorkspaceBackup.tsx), [bundle codec](../src/portals/combined-backup.ts), [restore adapter](../src/portals/restore-workspaces.ts) | One validated local file, explicit selective whole-portal restore and rollback attempts; no cloud/account or atomic multi-key transaction |
+| Automatic restore points | [History controls](../src/portals/RestorePointHistory.tsx), [history model](../src/portals/restore-points.ts) | Origin-local selected-scope snapshots before combined restore/Undo; latest five within 2,000,000 characters, explicit recovery confirmation and clearing |
 | Staff entry | [Admin dashboard](../src/pages/AdminDashboardPage.tsx) | Firebase sign-in and trusted Level 4/5 claim gate; readiness cards link to local tools |
 | HR workspaces | [HR portal](HR-PORTAL.md) and host-owned `src/hr/` | Working synthetic employee/manager/management workflows; versioned browser-local snapshot, separate protected live boundary |
 | CMS workspace | [CMS demo](../src/cms/CmsDemo.tsx), [CMS transitions](../src/cms/model.ts), [CMS tests](../tests/portals/cms.test.mjs) | Working account-free draft/review/publish/retire core with frozen in-app public projection; browser-local snapshot persistence, no network publishing or server storage |
@@ -85,7 +88,8 @@ is replaced by the next successfully saved action or removed by Reset.
 
 No login, Firebase emulator, cloud storage, provider key or external service is
 required. Local storage does not implement trusted memberships, server rules,
-managed backup schedules, encryption, retention or production authorization. Read the
+managed backup schedules, encryption, production retention policies or production
+authorization. Read the
 [persistence QA receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) for checked browser
 paths and their limits; earlier QA receipts retain their original behavior.
 
@@ -198,6 +202,66 @@ in it. Structural validation does not authenticate editable records or prove a
 provider action. No account, upload, Firebase/Gusto connection, cloud restore or
 production publication is introduced. See the
 [combined backup QA receipt](COMBINED-BACKUP-QA-2026-10-14.md) for tested scope.
+
+### Automatic restore points and Undo
+
+Each confirmed combined selective restore first saves a restore point containing
+only the selected portals’ current domain states. The point must be written to
+browser storage before any workspace is overwritten. A failed or oversized
+checkpoint refuses the restore and keeps the workspaces active. Saving a point
+is separate from the selected workspace writes; those writes retain the rollback
+and partial-storage warning behavior described above. Rollback attempts include
+both the history key and attempted selected workspace keys. If that rollback
+fails, the warning identifies the uncertain browser slots; keep the tab open and
+export current in-memory workspaces before refreshing.
+
+On `/portals`, **Restore points & Undo** reads `webappx.demo.restore-points`.
+The history survives refresh on the same browser profile and origin; points are
+listed newest first. **Refresh restore points** reloads the current history from
+this browser address. Each point identifies its creation time and affected portals.
+Undo restores the complete snapshots in that point; its scope cannot expand to
+portals that were not captured.
+
+1. Choose **Undo…** for the point you want to recover. Review its time, affected
+   portals and the **Current**/**Recover** record summaries before choosing
+   **Confirm undo**, or **Cancel undo** to keep the current records.
+2. Confirm only after reviewing the replacement scope. Undo replaces those whole
+   portals, including any domain changes saved after the point was created.
+   Cancel leaves every workspace and the history intact.
+3. The app saves a new point of the affected portals’ current states before
+   applying Undo. Use that newer point to reverse the Undo if needed. It must
+   pass the same validation, retention and storage checks as a normal restore.
+4. Inspect the save result and refresh. The recovered records persist; selected
+   modules remount and clear their unsaved forms, timers and transient messages.
+   Other portals’ records, browser saves and interface state stay unchanged.
+
+This history retains at most **five points**, subject to a total **2,000,000
+serialized-character limit**, including its envelope. Oldest points are pruned
+when needed. If the newest point alone exceeds the limit, the operation is
+refused; existing history is preserved. Browser quota may impose a lower limit.
+Validation checks history format/version and the complete saved domain records.
+Malformed or unsupported history blocks combined restores and Undo. Export the
+current workspaces if you want a portable copy, then choose **Clear restore
+points** and **Confirm clear restore points** to discard the rejected history
+and try again. **Keep restore points** cancels the clearing action. Clearing
+points leaves all three current workspaces and their browser saves intact.
+
+Points capture domain snapshots, including current in-memory domain state if an
+earlier normal save failed. They do not capture exact old storage bytes, unsaved
+forms, active timers or the independent SDK session. Restoring initial fixtures
+through Undo creates a valid saved snapshot. Individual portal imports, normal
+edits and Reset do not automatically create points. Points are not included in
+either JSON backup format; export workspace files separately to move records to
+another browser. Clearing site data also clears this origin’s history.
+
+Like the workspaces, points are inspectable plain-text fictional records,
+including private drafts, survey responses and mock receipts regardless of
+preview role. They require no account, upload, Firebase or Gusto credentials.
+They are local recovery aids with bounded retention, not a cloud backup service.
+Avoid simultaneous edits/restores in other tabs: there is no live history merge
+or cross-tab locking. The [restore-point QA receipt](RESTORE-POINTS-QA-2026-10-14.md)
+records this update’s browser observations and automated gates separately from
+the earlier combined-backup checkpoint.
 
 ### Earlier persistence browser checkpoint — 2026-10-14
 

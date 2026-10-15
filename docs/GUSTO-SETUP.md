@@ -158,6 +158,28 @@ portals. Browser storage has no atomic multi-key transaction. See the
 and [combined QA receipt](COMBINED-BACKUP-QA-2026-10-14.md). This account-free,
 local-file flow requires no Gusto/Firebase credentials or upload.
 
+### Recover a selective restore without an account
+
+Before overwriting selected portals from a combined file, the directory saves a
+restore point of those portals’ current domain states. History persists refresh
+on the same browser/origin. Choose **Undo…**, review the point’s time, scope and
+record summaries, then confirm or cancel. Undo replaces every captured portal
+in full, including changes saved afterward. It first saves a new point so the
+Undo can be reversed. Selecting HR alone leaves CMS/CRM and SDK state untouched.
+
+At most five points fit within a 2,000,000-character serialized history budget;
+oldest points are pruned as needed. If the newest point is too large or browser
+storage refuses it, restore/Undo stops before changing workspaces. Damaged or
+unsupported history blocks these operations until explicit **Clear restore
+points**, which leaves current workspaces intact. Points exclude unsaved forms,
+timers and SDK sessions, and are not exported in either JSON format. Individual
+imports, Reset and ordinary actions do not automatically create them.
+
+History includes plain-text fictional employee records, drafts and mock receipts.
+Use exported files to move records between browsers; local history requires no
+Gusto/Firebase account or credentials. See the [restore-point guide](TEMPLATE-PORTALS.md#automatic-restore-points-and-undo)
+and [current QA receipt](RESTORE-POINTS-QA-2026-10-14.md).
+
 ### Earlier refresh verification — 2026-10-14
 
 The [persistence browser receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) verified

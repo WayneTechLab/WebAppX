@@ -1,5 +1,31 @@
 # Update Log
 
+## 3.4.0 automatic restore points and Undo — 2026-10-14
+
+Save an origin-local restore point before each combined selective restore. Each
+point contains only the selected portals’ current domain states; it must validate
+and save before any workspace overwrite. The `/portals` history survives refresh.
+Choose **Undo…**, inspect time/scope/record summaries and explicitly confirm or
+cancel. Undo replaces every captured portal, including later saved changes, and
+first creates another point so that Undo can itself be reversed. Other portals’
+records, saved bytes and transient interface state stay intact.
+
+Keep at most five points within 2,000,000 serialized characters, pruning oldest
+points as needed. An oversized newest point or failed checkpoint write refuses
+the operation. Invalid history blocks restore/Undo until explicit **Clear restore
+points**; clearing history leaves all current workspaces intact. Selected writes
+retain rollback attempts and honest partial-storage warnings.
+
+Points contain plain-text fictional records and private drafts, exclude unsaved
+forms/timers and SDK sessions, and are not included in either JSON backup format.
+Individual imports, Reset and ordinary edits do not automatically create points.
+No account, upload, cloud or provider credentials are introduced. Read
+[Template Portals](Template-Portals.md#automatic-restore-points-and-undo) and the
+[restore-point QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md)
+for this update’s browser evidence and automated gates. Earlier receipts retain
+their original scope. Version remains 3.4.0 with deploy count 0; managed releases,
+research fingerprints and blank reusable adoption seeds remain preserved.
+
 ## 3.4.0 combined mock backups and selective restore — 2026-10-14
 
 Add **Export all workspaces** and **Import combined backup** on `/portals`.

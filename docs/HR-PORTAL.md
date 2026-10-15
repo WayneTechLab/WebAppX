@@ -118,6 +118,27 @@ trusted identities or provider evidence. No account/upload/cloud action is neede
 Read the [combined backup guide](TEMPLATE-PORTALS.md#combined-backup-and-selective-restore)
 and [combined QA receipt](COMBINED-BACKUP-QA-2026-10-14.md) for details.
 
+## Undo a selective HR restore
+
+A confirmed combined restore first saves a browser-local point of the selected
+portals’ current domain states. Selecting HR alone captures only HR; selecting
+HR with CMS/CRM captures that exact scope. On `/portals`, choose **Undo…** for a
+point, review its creation time and record summaries, then confirm or cancel.
+Undo replaces the whole captured HR state, including later saved onboarding,
+payroll, benefits, time, recruiting, review and survey changes. It saves a new
+point before applying, allowing the Undo to be reversed. Unselected portals and
+the SDK session stay unchanged.
+
+History persists refresh and retains at most five points within 2,000,000
+serialized characters, pruning oldest points as needed. A point that cannot fit
+or be saved refuses the operation before workspace overwrite. Invalid history
+blocks restore/Undo until explicit **Clear restore points**; clearing history
+does not reset any workspace. Individual HR import, Reset and ordinary domain
+actions do not automatically create points. Points contain private fictional
+drafts and mock receipts in plain text and are excluded from JSON exports.
+Read the [restore-point guide](TEMPLATE-PORTALS.md#automatic-restore-points-and-undo)
+and [current QA receipt](RESTORE-POINTS-QA-2026-10-14.md) for scope and recovery.
+
 ## Earlier persistence browser checkpoint — 2026-10-14
 
 The [current receipt](PORTAL-PERSISTENCE-QA-2026-10-14.md) records successful

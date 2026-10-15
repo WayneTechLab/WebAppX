@@ -199,6 +199,24 @@ provider action occurs. Read [Template Portals](Template-Portals.md#combined-bac
 and the [combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md)
 for the current workflow and checked scope.
 
+### Restore points and Undo
+
+Combined selective restores automatically save a browser-local restore point
+before overwriting the selected portals. On `/portals`, choose **Undo…** for a
+point, review its time/scope/counts and confirm whole-portal replacement. Undo
+also saves a new point before applying, so it can be reversed; it replaces later
+saved changes in that captured scope. Other portals remain unchanged.
+
+History survives refresh and keeps at most five points within 2,000,000 serialized
+characters, pruning oldest entries as needed. If a point cannot fit or save, the
+operation stops before overwrite. Invalid history blocks restore/Undo until
+explicit **Clear restore points**; clearing history leaves workspaces intact.
+Points contain plain-text fictional domain records and are excluded from JSON
+exports. Individual import, Reset and ordinary edits do not create points. See
+[Template Portals](Template-Portals.md#automatic-restore-points-and-undo) and the
+[restore-point QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md)
+for workflow, retention, recovery and verification scope.
+
 ## Included route model
 
 The current template ships with a fuller public route baseline:

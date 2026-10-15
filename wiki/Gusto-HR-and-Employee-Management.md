@@ -235,6 +235,26 @@ No Gusto/Firebase account, upload or provider action is required. Read
 [Template Portals](Template-Portals.md#combined-backup-and-selective-restore)
 and the [combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md).
 
+## Undo a selective HR restore
+
+Combined restores save an origin-local point of the selected portals before
+any overwrite. Select HR alone to capture only HR, or include CMS/CRM to capture
+that exact group. On `/portals`, choose **Undo…** and inspect the point’s creation
+time, portal scope and record summaries before confirming. Undo replaces the
+whole captured state, including later saved employee/payroll changes. It saves
+a new point first, so that Undo can itself be reversed. Other portals and the
+independent SDK session remain unchanged.
+
+History persists refresh and retains up to five points within 2,000,000 serialized
+characters. Oldest points are pruned as needed; a point that cannot fit or save
+refuses the operation before overwrite. Invalid history blocks restore/Undo until
+explicit **Clear restore points**, which does not reset workspaces. Individual
+imports, Reset and ordinary edits do not create points. History is plain-text
+fictional records and private drafts, excludes unsaved forms/timers and SDK state,
+and is not included in portable JSON files. No Gusto/Firebase account or provider
+credentials are required. Read [Template Portals](Template-Portals.md#automatic-restore-points-and-undo)
+and the [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md).
+
 ## Start locally
 
 ```bash

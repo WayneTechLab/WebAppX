@@ -133,6 +133,43 @@ upload or live provider action is involved. Read the
 [combined QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/COMBINED-BACKUP-QA-2026-10-14.md)
 and [detailed guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#combined-backup-and-selective-restore).
 
+### Automatic restore points and Undo
+
+Before a combined selective restore overwrites records, it saves a browser-local
+point containing only the selected portals’ current domain states. The history
+under **Restore points & Undo** on `/portals` survives refresh on the same browser
+profile and origin. Points appear newest first; **Refresh restore points** reads
+this browser address’s latest history (`webappx.demo.restore-points`).
+
+1. Choose **Undo…** for a point and inspect its time, affected portals and record
+   summaries. Its scope is fixed to the portals captured before that restore.
+2. Choose **Confirm undo**, or **Cancel undo** to leave records/history intact.
+   Undo replaces later saved changes in the captured portals too.
+3. Undo first saves a new point of those portals’ current states. Use the newer
+   point to reverse it. If that point cannot validate or save, Undo is refused.
+4. Check the result and refresh. Restored portals’ unsaved forms/timers reset;
+   unselected portals’ domain data, saved bytes and interface state stay intact.
+
+History keeps at most **five points** within **2,000,000 serialized characters**,
+pruning oldest points as needed. If the newest point alone cannot fit, existing
+history and workspaces remain intact. Browser quota may be lower. Invalid or
+unsupported history blocks restores/Undo until explicit **Clear restore points**
+and **Confirm clear restore points**. **Keep restore points** cancels clearing.
+Clearing history does not reset HR, CMS or CRM. Failed writes attempt rollback of
+history and attempted selected workspace keys. A failed rollback warns about
+potentially partial browser storage, as described above; export current memory
+before refreshing.
+
+Points are plain-text fictional domain records, including private drafts and
+mock receipts; preview roles do not protect them. They exclude unsaved forms,
+active timers and SDK state. Individual imports, Reset and ordinary edits do not
+automatically create points. Neither JSON format includes history: export files
+separately for portable backups. Avoid simultaneous changes in other tabs. No
+account, upload, cloud storage or provider key is required. Read the
+[restore-point guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#automatic-restore-points-and-undo)
+and [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md)
+for this update. The following checkpoints retain their historical scope.
+
 ### Combined browser checkpoint — 2026-10-14
 
 The source downloaded a combined file carrying HR’s submitted

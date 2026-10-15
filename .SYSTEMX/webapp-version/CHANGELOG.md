@@ -1,3 +1,21 @@
+# 3.4.0 follow-up — Automatic restore points and Undo — 2026-10-14
+
+- Save a validated browser-local point of only the selected portals before each
+  combined restore. Refuse overwrite if the checkpoint cannot fit or save.
+- Persist history through refresh and show time, affected portals and summaries
+  before explicit Undo confirmation. Undo replaces full captured portals and
+  first saves a new point, allowing the Undo to be reversed.
+- Retain at most five points within 2,000,000 serialized characters with oldest
+  pruning. Reject malformed/unsupported history until explicit history clearing;
+  clearing points leaves all current workspaces intact.
+- Preserve unselected records/saved bytes/interface state, existing import and
+  Reset behavior, JSON formats, and selected-write rollback warnings.
+- Keep plain-text history origin-local and out of exported files; use fictional
+  data only. No account, cloud upload or provider authority is added.
+- Record this update’s checks in the [restore-point QA receipt](../../docs/RESTORE-POINTS-QA-2026-10-14.md).
+  Version 3.4.0/deploy count 0, managed releases, research fingerprints and blank
+  adoption seeds remain unchanged.
+
 # 3.4.0 follow-up — Combined backups and selective restore — 2026-10-14
 
 - Add directory-level combined HR/CMS/CRM JSON export, including current fixtures

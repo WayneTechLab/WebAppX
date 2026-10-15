@@ -319,6 +319,47 @@ Read the [combined backup guide](docs/TEMPLATE-PORTALS.md#combined-backup-and-se
 and [combined QA receipt](docs/COMBINED-BACKUP-QA-2026-10-14.md) for the feature’s
 verification scope. Earlier per-portal results follow separately.
 
+### Automatic restore points and Undo
+
+Before **Restore selected workspaces** overwrites anything, WebAppX saves a
+browser-local restore point of only the selected portals’ current domain states.
+If that point cannot be validated or saved, the restore is refused. On `/portals`,
+**Restore points & Undo** survives refresh and lists each point’s time and affected
+portals, newest first. **Refresh restore points** reloads browser history.
+
+Choose **Undo…** for a point, inspect its scope and record summaries, then choose
+**Confirm undo**, or **Cancel undo** to keep the current records. Undo replaces
+the captured portals, including changes saved after the point was made. It first saves another point
+of their current states, so that Undo can itself be reversed. Other portals’
+records, saved bytes and unsaved interface state stay unchanged; the restored
+portals’ forms/timers reset after success.
+
+History retains at most **five points** within **2,000,000 serialized characters**;
+oldest points are pruned when needed. A newest point that cannot fit is refused
+without overwriting workspaces or discarding existing history. Browser quota may
+be smaller. Invalid or unsupported history blocks restore/Undo until you
+explicitly **Clear restore points** and **Confirm clear restore points**. Clearing
+history does not reset HR, CMS or CRM. Workspace-write failures retain the
+rollback and partial-storage warning behavior described above.
+
+Restore points are origin-local plain-text fictional domain records, including
+private drafts and mock receipts. They exclude unsaved forms/timers and SDK
+state, and are not included in JSON exports. Individual imports, Reset and
+ordinary edits do not automatically create points. Use exported files for
+portable backups and fictional data throughout; no account, cloud or provider
+credentials are required. Read the [restore-point guide](docs/TEMPLATE-PORTALS.md#automatic-restore-points-and-undo)
+and [current QA receipt](docs/RESTORE-POINTS-QA-2026-10-14.md) for this update’s
+verification. The combined-backup results below describe the earlier checkpoint.
+
+Browser checks passed for HR-only, CMS/CRM and all-three restore/Undo, Undo after
+refresh, cancellation, retention, and clearing history without changing workspace
+records. An unselected unsaved CMS draft survived HR Undo; reversing another Undo
+recovered a later saved CMS edit. Complete exported payloads matched the expected
+snapshots. The portal suite passes 96 cases, including 17 restore-point cases;
+quota and rollback fault injection use automated storage doubles. Full
+`npm run ci:all` passed with 116 HR + 96 portal tests (212 total), and Hosting
+preflight passed with version 3.4.0/deploy count 0.
+
 ### Combined backup browser verification — 2026-10-14
 
 Full `npm run ci:all` passed, including **116 HR + 79 portal/storage/backup

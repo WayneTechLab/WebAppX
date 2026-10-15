@@ -77,6 +77,51 @@ and webhook foundation boundaries. It uses local fixtures and app/backend code;
 it does not contact Gusto or establish Firebase deployment acceptance.
 `hr:backend:audit` audits the isolated optional functions package's dependencies.
 
+### Restore-point and Undo checks
+
+The [restore-point QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RESTORE-POINTS-QA-2026-10-14.md)
+records this update’s actual browser observations and repository gates. Earlier
+receipts below describe their own checked revisions; they do not establish the
+new history behavior.
+
+To repeat the browser checks on `/portals`:
+
+1. Save identifiable HR, CMS and CRM changes and export a combined baseline.
+   Import a different valid bundle and restore HR alone. Confirm a point records
+   only HR, then refresh and verify history and restored HR persist.
+2. Choose **Undo…**, inspect HR’s time/counts/scope, and cancel. Re-export to confirm
+   no workspace changed. Confirm Undo and compare HR with its baseline, with
+   CMS/CRM unchanged. Refresh and compare again.
+3. Make a later saved edit in a captured portal before confirming Undo. Verify
+   the preview explains whole-portal replacement, then use the newly created
+   pre-undo point to recover that later edit.
+4. Repeat with CMS+CRM and all three portals. Confirm restored modules clear
+   transient forms/timers while unselected modules preserve their interface state.
+5. Create enough points to exercise bounded retention. Explicitly **Clear restore
+   points** and confirm history disappears through refresh while all three
+   workspace exports retain their current records.
+6. Confirm existing individual imports, Reset and combined export formats remain
+   compatible. Exported JSON does not include restore-point history.
+
+Automated storage fakes must cover history schema/graph validation, five-point and
+2,000,000-character pruning, oversized newest-point refusal, blocked reads/writes,
+failed history save before workspace overwrite, and existing selected-key rollback
+failures. Browser checks and automated fault injection are separate evidence. Use
+fictional data only; plain-text local points include private drafts and mock
+receipts. Read [Template Portals](Template-Portals.md#automatic-restore-points-and-undo)
+for recovery and privacy boundaries.
+
+Observed browser results passed for HR-only, CMS/CRM and all-three recovery,
+Undo after refresh, Undo of Undo, later saved-edit recovery, unselected unsaved
+CMS fields, five-point retention, cancellation and history-only clearing. Full
+downloaded workspace payloads matched the expected snapshots. The portal suite
+passes 96 tests, including 17 new restore-point cases. Storage quota, corruption
+and rollback failures are covered with automated storage doubles.
+
+Full `npm run ci:all` passed with **116 HR + 96 portal/storage/backup tests
+(212 total)**, lint, TypeScript, template integrity, security checks and production
+build/LAN isolation. Hosting preflight passed with version 3.4.0/deploy count 0.
+
 ### Combined backup and selective restore checks
 
 Full `npm run ci:all` passed, including **116 HR + 79 portal/storage/backup

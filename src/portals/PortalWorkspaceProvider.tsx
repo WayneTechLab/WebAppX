@@ -2,14 +2,19 @@ import { createContext, useCallback, useContext, useState, type ReactNode } from
 import { useDemoPersistence } from './useDemoPersistence'
 import { createDemoWorkspaces, demoWorkspaceValidators, type DemoWorkspaces } from './workspaces'
 import type { DemoModule } from './persistence'
-import { restoreDemoWorkspaces } from './restore-workspaces'
+import { restoreWithCheckpoint, undoRestorePoint } from './restore-workspaces'
+import { clearRestorePoints, loadRestorePoints, type RestorePointsLoad } from './restore-points'
 
 type PortalWorkspace<K extends DemoModule> = ReturnType<typeof useDemoPersistence<DemoWorkspaces[K]>>
 type WorkspaceRevisions = Record<DemoModule, number>
 type WorkspaceBundle = {
   states: DemoWorkspaces
   revisions: WorkspaceRevisions
-  restore: (states: DemoWorkspaces, selected: readonly DemoModule[]) => ReturnType<typeof restoreDemoWorkspaces>
+  restore: (states: DemoWorkspaces, selected: readonly DemoModule[]) => ReturnType<typeof restoreWithCheckpoint>
+  history: RestorePointsLoad
+  undo: (pointId: string) => ReturnType<typeof undoRestorePoint>
+  clearHistory: () => ReturnType<typeof clearRestorePoints>
+  refreshHistory: () => void
 }
 type WorkspaceHandles = { [K in DemoModule]: PortalWorkspace<K> }
 type WorkspaceContext = WorkspaceHandles & { bundle: WorkspaceBundle }
@@ -27,13 +32,15 @@ export function PortalWorkspaceProvider({ children }: { children: ReactNode }) {
   const cms = useDemoPersistence('cms', createCms, demoWorkspaceValidators.cms)
   const crm = useDemoPersistence('crm', createCrm, demoWorkspaceValidators.crm)
   const [revisions, setRevisions] = useState<WorkspaceRevisions>({ hr: 0, cms: 0, crm: 0 })
+  const [history, setHistory] = useState(() => loadRestorePoints())
   const { acceptStoredState: acceptHr } = hr
   const { acceptStoredState: acceptCms } = cms
   const { acceptStoredState: acceptCrm } = crm
 
-  const restore = useCallback<WorkspaceBundle['restore']>((states, selected) => {
-    const result = restoreDemoWorkspaces(states, selected)
+  const acceptRestore = useCallback((result: ReturnType<typeof restoreWithCheckpoint>) => {
+    setHistory(loadRestorePoints())
     if (!result.ok) return result
+    const { states, modules: selected } = result
     // The helper saves all selected portals first. React batches these updates
     // with the revision change, remounting only restored portals' temporary UI.
     if (selected.includes('hr')) acceptHr(states.hr, result.status)
@@ -47,7 +54,17 @@ export function PortalWorkspaceProvider({ children }: { children: ReactNode }) {
     return result
   }, [acceptHr, acceptCms, acceptCrm])
 
-  return <PortalWorkspaceContext.Provider value={{ hr, cms, crm, bundle: { states: { hr: hr.state, cms: cms.state, crm: crm.state }, revisions, restore } }}>{children}</PortalWorkspaceContext.Provider>
+  const states = { hr: hr.state, cms: cms.state, crm: crm.state }
+  const restore: WorkspaceBundle['restore'] = (target, selected) => acceptRestore(restoreWithCheckpoint(states, target, selected))
+  const undo: WorkspaceBundle['undo'] = pointId => acceptRestore(undoRestorePoint(states, pointId))
+  const clearHistory = () => {
+    const result = clearRestorePoints()
+    setHistory(loadRestorePoints())
+    return result
+  }
+  const refreshHistory = () => setHistory(loadRestorePoints())
+
+  return <PortalWorkspaceContext.Provider value={{ hr, cms, crm, bundle: { states, revisions, restore, history, undo, clearHistory, refreshHistory } }}>{children}</PortalWorkspaceContext.Provider>
 }
 
 // These hooks deliberately share the provider's private context.
