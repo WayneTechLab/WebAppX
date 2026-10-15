@@ -35,7 +35,55 @@ only read local catalog data. They do not dispatch agents, import task records,
 contact providers or change acceptance. `backlog:plan:render` explicitly writes
 the generated plan; `backlog:plan:check` verifies it without rewriting.
 
-### Current confirmation checkpoint — locally accepted
+### Current recruiting lifecycle checkpoint — locally accepted
+
+Agent 0 accepted **WX-0201–WX-0210 and the separately scoped WX-0951** against
+all eleven original local criteria. Read the [recruiting how-to](../docs/HR-RECRUITING-LIFECYCLE.md)
+and [dated recruiting QA receipt](../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+for the controls, exact acceptance mapping and evidence boundaries.
+
+**All 63 CI stages passed with terminal exit 0** on committed application source
+`7337709b79b995c3f1e76254aa51fd86bbd1f215`. Independent review confirmed
+**198 actual browser checks/check groups**. Hosting preflight passed with exit
+**0** on the same source. App **3.4.0** retains **deploy count 0**; no deployment
+occurred.
+
+The canonical catalog now records **122 done / 878 remaining**: **58 P1, 664 P2
+and 156 P3**, with **711 local, 127 operator and 40 provider** gates remaining.
+The full 1,000-item goal remains active. Source/wiki publication and provider,
+production, native Windows and manual screen-reader acceptance retain their
+separate evidence requirements.
+
+Account-free native recruiting has an optional **explicit preview/confirm
+adoption**. After adoption, approved requisitions govern new job publication;
+duplicate-email conflicts create no identity or application, and a deliberate existing-person
+choice can add another independently tracked application. Local interviews
+capture participants, named time zone and duration without delivery. Rejection
+and withdrawal retain reasons and prior events; stage durations use recorded
+UTC boundaries and an explicit optional observation rather than receipt sequence
+or the current clock. Exact hire previews list the directory, onboarding and
+balance records before their atomic acceptance.
+
+The assigned interviewer shell shows only that fictional author's assigned
+context and private own scorecards. Saving a private draft and submitting its
+saved revision are separate actions; hiring review receives only submitted
+content. **Complete HR saves, deliberate exports and recovery points still
+contain saved private scorecards and draft history.** Preview privacy is local
+projection behavior, not authentication or protection from the browser owner.
+
+The typed optional provider interface separates native commands, provider
+results, manual retry states and unsupported operations. Its fixed default
+factory remains **mock/unconfigured** and returns unsupported; it activates no
+credentials, transport, automatic retry or live payroll execution. The backend
+and genuine SDK retain their separate fail-closed boundaries.
+
+```bash
+npm run hr:test
+npm run portals:test
+npm run browser:recruiting
+```
+
+### Historical confirmation checkpoint — locally accepted
 
 Agent 0 accepted **WX-0708**, then its dependent **WX-0717**, for reversible-action
 scope/effect/cancel previews and predictable Undo preview keyboard navigation
@@ -49,16 +97,16 @@ confirmed **183 actual browser checks/check groups**: **169 common, 8 HR-disable
 and 6 owned LAN**. Hosting preflight passed on the same commit. App **3.4.0**
 retains **deploy count 0**; no deployment occurred.
 
-The canonical catalog now records **111 done / 889 remaining**: **69 P1, 664 P2
+At that confirmation checkpoint, the canonical catalog recorded **111 done / 889 remaining**: **69 P1, 664 P2
 and 156 P3**, with **722 local, 127 operator and 40 provider** gates remaining.
 The full 1,000-item goal remains active. Source and wiki publication require
 separate direct remote parity checks. These local results establish no provider,
 production or manual screen-reader acceptance.
 
-Recruiting lifecycle work is **IN DEVELOPMENT** in an isolated worktree. Its
-original **WX-0201–WX-0210 plus WX-0951 remain TODO**; the
-[recruiting plan](../docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) supplies planning context,
-without acceptance or publication of that development work.
+At that confirmation checkpoint, recruiting lifecycle work was still in
+isolated development and **WX-0201–WX-0210 plus WX-0951 remained TODO**. The
+[recruiting plan](../docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) retains that planning
+basis; the later recruiting acceptance is recorded above.
 
 ### Historical lifecycle checkpoint — locally accepted
 
@@ -80,7 +128,7 @@ preflight passed on the same final runtime before that harness-only commit;
 no deployment occurred. Agent 0 accepted the sixteen feature criteria plus
 audited **WX-0467/WX-0487**, eighteen local criteria in total. At that lifecycle checkpoint, the catalog recorded
 **109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**, with **724 local,
-127 operator and 40 provider** gates remaining. The later confirmation checkpoint and current recruiting development status are
+127 operator and 40 provider** gates remaining. The later confirmation checkpoint and current recruiting acceptance are
 recorded above. Original dated receipts retain their source, observation and
 acceptance scope.
 

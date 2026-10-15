@@ -13,10 +13,10 @@
         "path": "docs/BACKLOG-REBASELINE.md",
         "sha256": "f12695172d8644c414f1deec691fad99b3d29c0cd35682ecde83e3e49112f369"
       },
-      "examinedRevision": "aae465ae033f3191a69ed7d40056b0c6e2159e17",
+      "examinedRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only inspection of the published rebaseline guide and its implementation contract at this revision. The linked receipt retains its original starting source base; this mapping records no new test execution."
+        "scope": "Source-only re-review confirms this guide and all three mapped implementation/test files are byte-identical between aae465a and 7337709; all original catalog definitions and WX-0852 remain unchanged. The existing contract remains current. Narrowing the explicitly examined source follows that review without changing the finite comparison limit. The historical receipt retains its original f849 starting source base, date and bytes; no new test or browser execution is inferred."
       },
       "proposalIds": [
         "WX-0852"
@@ -42,12 +42,12 @@
       "id": "portal-state-contract",
       "guide": {
         "path": "docs/PORTAL-STATE-CONTRACT.md",
-        "sha256": "d465fa1ba863032740a8de09b74007131b5bc7d36d9a344f3f1519ae3935e910"
+        "sha256": "e7bc60f89976d706add07e1597ba074fc529e1e762394342c7a120b07951a707"
       },
-      "examinedRevision": "998674759f11e17765c6724edfe2dae3d1c58c5a",
+      "examinedRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review of unchanged native state behavior plus current destructive-preview scope/effect/cancel and exact-opener focus evidence. Three harness files add independent assertions without changing the 100 application sources. Historical receipts retain original dates and qualifications; the current confirmation receipt separately binds full CI and targeted browser observations. Mapping review runs no tests."
+        "scope": "Source-only review of current optional authoritative recruiting, strict JSON actors, own-interviewer mode and Keep/Discard, detached retained CMS/CRM children, complete private-history exports and first-instance onboarding provenance at this committed source. Original dated receipt objects and observation revisions remain unchanged; fresh recruiting CI/browser/preflight evidence is separately mapped on its own guide. This mapping review performs no tests or provider, production or manual screen-reader acceptance."
       },
       "proposalIds": [
         "WX-0060",
@@ -119,12 +119,12 @@
       "id": "portal-lifecycle",
       "guide": {
         "path": "docs/PORTAL-LIFECYCLE.md",
-        "sha256": "bd41b495ff37635074e351b940d041d62b8894326304ca5106c25910c41528bc"
+        "sha256": "e2e405caf67c2b447db91c60859095bf9e3494c3e3dbe6a2001c75e5d3f81345"
       },
-      "examinedRevision": "998674759f11e17765c6724edfe2dae3d1c58c5a",
+      "examinedRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only follow-up after three confirmation harness files changed: the 100-file HR/CMS/CRM lifecycle runtime, imported quality audit/render helpers and user contracts remain unchanged. The dated lifecycle receipt retains its exact earlier committed-harness observations and standalone source qualifications. Current confirmation CI has a separate receipt on the state contract; no old execution is relabeled and this mapping performs no tests."
+        "scope": "Source-only review of current optional authoritative recruiting, strict JSON actors, own-interviewer mode and Keep/Discard, detached retained CMS/CRM children, complete private-history exports and first-instance onboarding provenance at this committed source. Original dated receipt objects and observation revisions remain unchanged; fresh recruiting CI/browser/preflight evidence is separately mapped on its own guide. This mapping review performs no tests or provider, production or manual screen-reader acceptance."
       },
       "proposalIds": [
         "WX-0101",
@@ -167,6 +167,56 @@
           "observationRevision": "fdf60124e49659e9c33d30db59e45ff8369a38e1",
           "revisionBasis": "examined-source",
           "scope": "Current full 62-stage CI and 180 browser checks/groups bind this committed harness; the lifecycle stage separately rehashes 100 runtime sources, ten harness sources and 178 artifacts. The earlier standalone execution has identical runtime and 46 identical status PNGs; its observation is not relabeled. Hosting preflight ran on the same final-runtime working tree before harness-only changes. These are local mock results, without provider, production, native Windows or manual screen-reader acceptance."
+        }
+      ]
+    },
+    {
+      "id": "hr-recruiting-lifecycle",
+      "guide": {
+        "path": "docs/HR-RECRUITING-LIFECYCLE.md",
+        "sha256": "a809c4896bac5e7d3d0d37764ebedcb7d344e65306871f9a38764b96a112a9c9"
+      },
+      "examinedRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Source-only guide review at committed recruiting source 7337709 and exact freeze-4 public manifest of 123 runtime files. Eleven original local criteria have separate Agent 0 acceptance in the linked QA receipt, which records fresh completed CI, browser reports and preflight. The earlier standalone observation remains freeze 3; current CI uses freeze 4. This mapping review executes no product tests or provider actions."
+      },
+      "proposalIds": [
+        "WX-0201",
+        "WX-0202",
+        "WX-0203",
+        "WX-0204",
+        "WX-0205",
+        "WX-0206",
+        "WX-0207",
+        "WX-0208",
+        "WX-0209",
+        "WX-0210",
+        "WX-0951"
+      ],
+      "sourceScopes": [
+        "src/hr",
+        "src/portals",
+        "src/components/layout/Layout.tsx",
+        "src/pages/TemplatePortalsPage.tsx",
+        "scripts/browser-recruiting.mjs",
+        "scripts/ci-plan.mjs",
+        "scripts/check-template.sh",
+        "tests/hr",
+        "tests/portals",
+        "tests/browser/recruiting.mjs",
+        "tests/browser/recruiting-expected.mjs",
+        "tests/browser/portal-quality.mjs"
+      ],
+      "receipts": [
+        {
+          "path": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+          "sha256": "59d8748eccee66364f4a46892e91f87477803197121e505090420169d0c95dfa",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+          "revisionBasis": "examined-source",
+          "scope": "Completed 63-stage CI and separately completed Hosting preflight on exact committed source 7337709. Independent audit sums 184 groups across fourteen common browser suites, HR-disabled 8 and LAN 6 to 198; recruiting binds 123 runtime, 12 harness and 152 artifact files with 42 status meanings. Original standalone freeze-3 observation remains qualified. Agent 0 accepts only WX-0201 through WX-0210 plus separate WX-0951; no provider, production, native Windows or manual screen-reader acceptance."
         }
       ]
     }

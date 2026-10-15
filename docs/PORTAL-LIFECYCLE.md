@@ -1,13 +1,18 @@
 # Account-free employment, release and ownership workflows
 
-Status: **locally accepted source guide; verification complete**.
-This guide describes the integrated HR employment lifecycle, CMS
-release bundles and CRM ownership transfers at app source `458a045`, followed
-by harness-only `fdf6012`. The [current QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md)
-records standalone and integrated execution with their limits. All 62 CI stages
-passed on committed source `fdf60124e49659e9c33d30db59e45ff8369a38e1`; Agent 0
-recorded the eighteen local criteria in the catalog. This does not establish
-main/wiki publication, production deployment or provider acceptance.
+Status: **original lifecycle workflows and recruiting integration locally
+accepted**. This guide retains the accepted HR employment lifecycle,
+CMS releases and CRM ownership workflows and their
+[original dated QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md). Its source
+description was additionally reviewed against
+`7337709b79b995c3f1e76254aa51fd86bbd1f215` (**123-source freeze 4**) for optional
+recruiting, later first-instance onboarding provenance and scoped retained
+presentation. That review is source-only and does not relabel the earlier
+100-source browser observation. Current recruiting execution is recorded in the
+[recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md). Agent 0 accepted
+its eleven original criteria on that source; the catalog now records **122 done /
+878 remaining**. Source review alone establishes no new acceptance, main/wiki
+publication, production deployment or provider authority.
 
 Use fictional information only. Start `npm run dev:mock`, open the exact local
 origin printed by the command and choose `/portals`. No account is required for
@@ -56,6 +61,19 @@ definitions, completion flags and receipts keep their version. Selecting the
 already selected version is a no-op refusal. An original saved workspace can
 still complete its existing onboarding and original recruiting journey without
 first choosing a lifecycle date; unknown original dates remain unknown.
+
+A recruiting-only hire does not create employment history automatically.
+Ordinary onboarding may finish before employment is first materialized. A later
+meaningful lifecycle action or **Save sample profile** can capture that new
+hire's original instance 1 from its actual checklist/flags/receipt. Previously
+completed onboarding remains active with unknown historical actor/date; it is
+not restarted or assigned an invented completion event. A hire made while
+employment history already exists instead creates its reviewed original
+instance/event immediately. Later rehire always creates a new incomplete
+captured checklist and retains the prior instance's onboarding history. See the
+[recruiting how-to](HR-RECRUITING-LIFECYCLE.md),
+[first-instance baseline](../src/hr/recruiting-employment-baseline.ts) and
+[hire adapter](../src/hr/recruiting-hire.ts).
 
 ## HR: preview a transfer or employment transition
 
@@ -232,10 +250,14 @@ is sent.
 
 ## Saved state, restore inspection and temporary work
 
-The extensions are optional for older valid saves. Reading a legacy workspace or
-opening a preview does not migrate its bytes. A meaningful accepted action adds
-the relevant records. Original employment starts and completion dates can remain
-unknown; the application does not invent dates from the clock or old receipts.
+The extensions are optional for older valid saves. Optional employment/release/
+ownership records are added by their supported accepted actions. Recruiting
+instead requires its separate explicit adoption preview/confirmation; reads,
+ordinary legacy actions and previews do not adopt. Original employment starts
+and completion dates can remain unknown; the application does not invent dates
+from the clock or old receipts. The
+[shared recruiting contract](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
+governs its immutable adoption and authoritative event records.
 
 Individual/combined import, selected restore and Undo validate complete saved
 records before replacement. HR instance/template links, sequences, reporting
@@ -260,13 +282,24 @@ replacement. Reset and optional replacement checkpoints follow the existing
 [state contract](PORTAL-STATE-CONTRACT.md) and
 [recovery glossary](WORKSPACE-RECOVERY-GLOSSARY.md).
 
+Complete HR captures can include saved private recruiting cards and their
+draft-save history. Default inspection exposes only bounded safe metadata and
+compares hidden content; exports are complete, not filtered by preview identity.
+In assigned-interviewer mode, dirty own cards/previews offer Keep/Discard without
+a retained-draft exit. CMS/CRM nested children stay mounted but detached from the
+connected document until the ordinary shell returns, preserving temporary
+selections/previews without exposing them in that scoped DOM/accessibility-tree
+view. This is local preview presentation, not authentication. See the
+[retained surfaces](../src/portals/RetainedPortalSurface.tsx) and
+[recruiting how-to](HR-RECRUITING-LIFECYCLE.md).
+
 A successful in-memory action can coexist with a browser persistence warning.
 Keep the page open and export accepted records before refreshing when storage
 is unavailable. These local workflows send no external email, disable no real
 account, move no asset, execute no payroll and grant no provider access. Production
 authentication, server authorization and provider adoption remain separate work.
 
-## Scope and evidence
+## Original lifecycle scope and historical evidence
 
 The [wave implementation plan](PORTAL-LIFECYCLE-IMPLEMENTATION-PLAN.md) retains
 the sixteen original criteria and dependencies. The
@@ -280,7 +313,7 @@ npm run portals:test
 npm run browser:portal-lifecycle
 ```
 
-The [current lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) records the
+The [dated lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) records the
 standalone **20/20 checks/check groups** on a freeze of **100 runtime sources**,
 with digest
 `48fb5c3a1b0aeebbb6d52f982aa95c5689c9c26b1b9e325c8c39b0b4a99d4882`.
@@ -291,14 +324,20 @@ quality **6/6** runs passed after actual native-picker focus observation and
 literal profile-history fixture corrections. These figures describe their
 retained scenarios; they are not global coverage or manual accessibility claims.
 
-**Current verification is complete: all 62 CI stages passed with terminal exit
+**At the accepted lifecycle checkpoint, all 62 CI stages passed with terminal exit
 0 on `fdf60124e49659e9c33d30db59e45ff8369a38e1`.** Independent report review
 confirmed **180 actual browser checks/check groups**. Hosting preflight passed on
 the same final runtime before that harness-only commit; deployment was skipped.
 Agent 0 accepted all sixteen feature criteria and the separately audited
-**WX-0467/WX-0487**, eighteen original local criteria. The catalog records
+**WX-0467/WX-0487**, eighteen original local criteria. At that historical checkpoint,
+the catalog recorded
 **109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**, with **724 local,
 127 operator and 40 provider** gates remaining. Source and wiki publication require separate direct remote parity checks.
-The [next ten recruiting criteria](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
-have a design proposal only; implementation has not begun. Earlier dated QA
-receipts retain their original sources and observation scopes.
+The integrated [recruiting implementation](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md)
+has a separate eleven-criterion local acceptance, including the optional provider
+contract. Its evidence is not this guide's original eighteen-criterion receipt.
+Use the
+[recruiting how-to](HR-RECRUITING-LIFECYCLE.md) and
+[current recruiting QA](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) for that scope.
+Current catalog progress comes from the [execution plan](WEBAPPX-EXECUTION-PLAN.md).
+Earlier dated QA receipts retain their original sources and observation scopes.

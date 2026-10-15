@@ -1,10 +1,15 @@
 # Native HR recruiting lifecycle
 
-Status: **implemented source under verification — 2026-10-15**. The application
-source is frozen for independent browser/integration review. **WX-0201–WX-0210
-and the separately scoped WX-0951 remain TODO**. This how-to describes source
-behavior; it supplies no completed browser, full-CI, provider or production
-acceptance. Follow the authoritative
+Status: **locally accepted — 2026-10-15**. Agent 0 accepted **WX-0201–WX-0210
+and the separately scoped WX-0951**, eleven original criteria, on source
+`7337709b79b995c3f1e76254aa51fd86bbd1f215`. The catalog now records **122 done /
+878 remaining**; the full 1,000-item goal remains active. The
+[dated recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) records
+the completed **63-stage CI**, **198 actual browser checks/groups** (184 across
+fourteen common suites, 8 HR-disabled and 6 LAN) and Hosting preflight, all with
+terminal exit 0. The application remains **3.4.0**, deploy **0**; no deployment
+or provider activation occurred. Source/wiki publication requires separate
+remote parity verification. Follow the authoritative
 [shared contract, section 12](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
 and the [implementation plan](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md).
 
@@ -260,8 +265,10 @@ This source contract accepts no provider integration or activation.
 ## Verification references
 
 `npm run hr:test`, `npm run portals:test` and `npm run browser:recruiting` expose
-the focused and browser checks after normal setup. Prepared source/tests and
-this how-to are not execution receipts. Agent 0 must review actual reports,
-final source bindings, the 63-stage full CI, Hosting preflight and each original
-criterion before changing completion or publication status. Existing dated QA
-receipts remain historical observations at their original revisions.
+the focused and browser checks after normal setup. The
+[dated recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) binds the
+actual reports, final source, independently audited 63-stage CI and browser
+results, Hosting preflight and Agent 0's eleven criterion decisions. This how-to
+is not an additional execution receipt. Earlier dated QA receipts remain
+historical observations at their original revisions. Local acceptance supplies
+no provider, production, other-platform or manual screen-reader acceptance.

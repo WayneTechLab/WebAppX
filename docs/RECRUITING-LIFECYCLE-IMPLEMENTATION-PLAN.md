@@ -1,23 +1,27 @@
 # Recruiting lifecycle implementation plan
 
-Planning and status date: **2026-10-15**. Status: **IN DEVELOPMENT in an isolated
-worktree; implementation present, final verification and acceptance incomplete**.
+Planning and status date: **2026-10-15**. Status: **integrated and locally
+accepted for eleven original criteria**.
 The authoritative [shared contract, section 12](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
 governs final types, authority, privacy and compatibility. Earlier design
 illustrations retained below are historical and cannot override that section or
 the [implemented shared types](../src/hr/recruiting-lifecycle-types.ts).
 
-The published primary checkpoint is **111 done / 889 remaining**, including the
-accepted lifecycle wave and subsequent **WX-0708 → WX-0717** confirmation review.
-The full 1,000-item goal remains active. **WX-0201–WX-0210 remain TODO**, as does
-the separately scoped **WX-0951** optional provider adapter criterion. Isolated
-source, focused test results and this documentation do not accept or publish
-those eleven items. Earlier dated QA receipts retain their own source and
-observation scope.
+Agent 0 accepted **WX-0201–WX-0210** and the separately scoped **WX-0951** optional
+provider adapter criterion on source
+`7337709b79b995c3f1e76254aa51fd86bbd1f215`. The catalog now records **122 done /
+878 remaining**; the full 1,000-item goal remains active. The preceding **111 done /
+889 remaining** confirmation checkpoint remains historical. The
+[recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) records completed
+**63-stage CI**, **198 actual browser checks/groups** (184 across fourteen common
+suites, 8 HR-disabled and 6 LAN) and Hosting preflight, all with terminal exit 0.
+The application remains **3.4.0**, deploy **0**; no deployment or provider
+activation occurred. Source/wiki publication is verified separately by remote
+parity. Earlier dated QA receipts retain their own source and observation scope.
 
 ## Current implementation and verification boundary
 
-| Isolated implementation present | Source and scope |
+| Integrated implementation | Source and scope |
 | --- | --- |
 | Explicit adoption and one event authority | [Core](../src/hr/recruiting-lifecycle.ts) and [replay](../src/hr/recruiting-lifecycle-replay.ts) require a separate `adopt` preview/confirm command before extension actions. Reads and ordinary legacy actions do not adopt. Captured legacy records remain the compatibility base. |
 | Requisition and publication workflow | [Handler](../src/hr/recruiting-requisitions.ts) and [management UI](../src/hr/components/HrRecruitingRequisitions.tsx) implement explicit review, immutable approval/publication captures, separate owner/manager choices and bounded headcount planning. |
@@ -27,37 +31,33 @@ observation scope.
 | Recovery and scoped shell | [Inspection](../src/portals/workspace-inspection.ts) inventories the optional collections and hidden payloads. The [preview provider](../src/hr/RecruitingPreviewProvider.tsx) keeps volatile identity selection in HR; shared layout consumes only [generic boolean chrome state](../src/portals/ScopedPortalChrome.tsx). |
 | Separate WX-0951 contract | [Provider adapter](../src/hr/provider-adapter.ts) separates native commands, provider outcomes, retry states and unsupported operations. Its supplied implementation stays mock/unconfigured, performs no transport and grants no provider authority. |
 
-Focused lane/model/callback checks have been executed during implementation.
-For example, the requisition handoff recorded **23 focused tests** plus scoped
-lint and a then-current TypeScript pass. These are implementation observations,
-not a final frozen-source or whole-wave verification receipt. The prepared
+Focused lane/model/callback checks were executed during implementation. The
+requisition handoff's **23 focused tests**, scoped lint and then-current
+TypeScript pass remain intermediate observations. Final acceptance instead uses
+the reviewed source bindings and completed integration/browser evidence in the
+[recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md), including the
 [host tests](../tests/hr/recruiting-lifecycle-host.test.mjs),
 [integration tests](../tests/hr/recruiting-integration.test.mjs) and
-[independent browser journey](../tests/browser/recruiting.mjs) identify further
-boundaries to review; their presence is not evidence that the final gates passed.
-This documentation update executes no new application test or browser journey.
+[independent browser journey](../tests/browser/recruiting.mjs). This documentation
+update executes no new application test or browser journey.
 
-Remaining integration steps, owned and accepted by Agent 0:
+Integration and acceptance checkpoint, owned by Agent 0:
 
-1. Complete independent host/source review, strict persistence and all four
-   recruiting/employment extension combinations, including later profile and
-   onboarding changes. Resolve findings before the final runtime freeze.
-2. Freeze actual source and harness bytes, record their bindings, then run the
-   owned `browser:recruiting` journey and affected existing browser regressions.
-   Verify literal complete records, privacy, keyboard/large-text/monochrome
-   observations and cleanup; preserve every failed diagnostic. No manual
-   screen-reader or other-platform acceptance is inferred.
-3. Recheck final source/evidence bindings after corrections. Run the configured
-   **63-stage** full `ci:all`, Hosting preflight, SYSTEMX drift, template and link
-   gates on the final reviewed source. Record terminal outcomes and independently
-   audit stage/report coverage; a configured plan is not a successful run.
-4. Review each original WX-0201–WX-0210 criterion and the separately scoped
-   WX-0951 contract. Only accepted evidence can change canonical completion;
-   then regenerate derived views and finalize a new dated QA receipt and current
-   guides. Preserve all earlier receipt bytes and observation qualifications.
-5. Integrate and publish source/wiki documentation under Agent 0, verify direct
-   remote parity, and retain the full-goal remainder. Preflight and local
-   acceptance never authorize production deployment or provider activation.
+1. Independent host/source review and strict persistence review covered optional
+   recruiting/employment combinations and later profile/onboarding changes.
+   Final source is bound to **123-source freeze 4** at the revision above.
+2. The owned recruiting journey and affected browser regressions completed;
+   the aggregate is **198 actual checks/groups**, independently audited against
+   the reports. Failed diagnostics and earlier receipt bytes remain preserved.
+   No manual screen-reader or other-platform acceptance is inferred.
+3. The final **63-stage** `ci:all` and Hosting preflight both reached terminal
+   exit 0 on that source. The dated QA records the execution and source bindings.
+4. Agent 0 reviewed and accepted the ten original recruiting criteria and the
+   separate WX-0951 local contract. Canonical progress is **122 done / 878
+   remaining**; original criterion definitions and dependencies remain intact.
+5. Source/wiki publication requires its own direct remote parity verification.
+   Local acceptance and preflight supply no production deployment authorization,
+   provider activation or operational adoption.
 
 ## Original canonical scope
 
@@ -67,7 +67,9 @@ original `sourceCommit` `8359285c99069349d6218fe871868baab76868e5`. That origina
 source commit identifies the proposal basis; it is not an execution or browser
 observation revision.
 
-These canonical fields are identical for all ten selected items:
+These proposal-origin fields were identical for all ten selected items. The
+original `todo` value below is historical; current completion is the eleven-item
+acceptance recorded above and in the canonical catalog.
 
 | Field | Original value |
 | --- | --- |
@@ -98,8 +100,8 @@ engineering sequence later in this plan does not add canonical dependencies.
 
 The historical candidate-selection review also identified WX-0159/WX-0160,
 WX-0656 and WX-0951. Pay-period corrections and manual screen-reader evidence
-remain separate work. WX-0951 is now a separately scoped local contract in the
-current development wave, with its original definition intact:
+remain separate work. WX-0951 is now an accepted, separately scoped local
+contract in this wave, with its original definition intact:
 
 | Field | Original WX-0951 value |
 | --- | --- |
@@ -112,7 +114,7 @@ current development wave, with its original definition intact:
 ## Historical source observations — before implementation
 
 This table preserves the planning-era baseline and its then-missing work. It
-does not describe the current isolated implementation listed above, and supplies
+does not describe the current integrated implementation listed above, and supplies
 no new execution or acceptance evidence.
 
 | Source | Existing behavior observed in source | Gap relevant to this proposal |
@@ -303,11 +305,12 @@ Original suggested order, retained as historical design:
 5. F records independent UI outcomes. Agent 0 reviews each original criterion,
    then makes any deliberate catalog/evidence updates and publication decision.
 
-## Required verification before acceptance
+## Retained acceptance checklist
 
-The list below remains the acceptance checklist. Focused implementation checks
-may cover parts of it, but this table supplies no final host/browser/freeze,
-63-stage CI, preflight or catalog acceptance result.
+The original verification boundaries below remain the acceptance checklist.
+Completed results, final source bindings and Agent 0's eleven criterion decisions
+are recorded in the [recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md).
+This retained checklist adds no execution observation or criterion definition.
 
 | Boundary | Required evidence |
 | --- | --- |
@@ -321,8 +324,8 @@ may cover parts of it, but this table supplies no final host/browser/freeze,
 | Dirty forms/accessibility | Keep/Discard and identity/subpage/replacement scope; meaningful accessible labels and focus; no hidden-module duplicate status feedback; readable monochrome and x-large evidence for new controls/statuses. Manual screen-reader acceptance remains its own evidence requirement. |
 | Browser independence | Use owned isolated contexts, actual forms and controls, downloads/uploads where required and literal expected complete records. Keep fixture rendering, source review, model execution and observed UI facts distinct. Preserve earlier dated receipts and all failed diagnostics. |
 
-Agent 0 must run the repository's required integration, full CI, Hosting
-preflight, SYSTEMX drift, template and link gates at the appropriate final
-boundary. Their required future execution is not a pass claim in this plan.
-No completion, gate success, provider activation, deployment or operational
-adoption follows from preparing or approving this local design.
+Agent 0 completed the final 63-stage CI and Hosting preflight on the reviewed
+source and accepted the eleven original local criteria using the separately
+recorded QA evidence. The historical design itself was not acceptance evidence.
+Source/wiki publication, provider activation, deployment and operational adoption
+remain separate boundaries.

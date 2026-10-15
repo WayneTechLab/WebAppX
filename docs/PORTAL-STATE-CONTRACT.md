@@ -3,16 +3,22 @@
 This contract describes the native, account-free HR, CMS and CRM demos. It
 addresses WX-0060 and WX-0601, including guarded navigation, controlled drafts,
 optional replacement checkpoints, sample payroll/time corrections and recovery
-inspection, together with the optional employment lifecycle, CMS release and
-CRM ownership records integrated at `458a045`. This is a **current source
-contract** for that 100-file application implementation. The
-[safety QA receipt](PORTAL-SAFETY-QA-2026-10-15.md) retains its earlier scope;
-the [lifecycle QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) records the new local
-evidence. Full configured CI subsequently passed on committed harness source
-`fdf60124e49659e9c33d30db59e45ff8369a38e1`, with the same 100 application
-sources. The dated receipt records Agent 0's acceptance of the sixteen new
-criteria and two recovery criteria. This source description alone supplies no
-additional browser observation or acceptance.
+inspection, together with optional employment/recruiting history, CMS releases
+and CRM ownership. This is a **current source contract**, reviewed against
+`7337709b79b995c3f1e76254aa51fd86bbd1f215` and its **123-source freeze 4**.
+The [safety](PORTAL-SAFETY-QA-2026-10-15.md),
+[lifecycle](PORTAL-LIFECYCLE-QA-2026-10-15.md) and
+[confirmation](PORTAL-CONFIRMATION-QA-2026-10-15.md) QA receipts retain their
+original revisions and observations. In particular, the lifecycle receipt's
+100-source runtime and eighteen accepted criteria are historical evidence,
+not observations relabeled to this review revision. Current recruiting execution
+is recorded separately in the [recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md);
+Agent 0 accepted its eleven original criteria on that source, bringing the
+catalog to **122 done / 878 remaining**. This source-only description supplies
+no additional browser observation or criterion acceptance. Read the
+[recruiting how-to](HR-RECRUITING-LIFECYCLE.md) and authoritative
+[contract section 12](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
+for that workflow's controls and final authority decisions.
 
 A **saved draft** is a workspace record created by
 an application action, even when its workflow stage is still `draft`. An
@@ -38,6 +44,16 @@ only; preview identities do not provide authentication or provider authority.
 | `webappx.demo.restore-points` | Complete **current record snapshots for the selected portals only**, captured manually, before combined selective restore/Undo, or before individual import/Reset when its separate checkpoint option is enabled; point ID, UTC creation time, `manual`/`restore`/`undo`/`import`/`reset` kind, selected module IDs, optional label and (for Undo) source point ID. These snapshots can contain all of the private mock drafts and fictional contact details listed above. They contain no unsaved forms or running timers. |
 | `webappx.demo.recovery-preferences` | Separate schema-version-1 booleans `beforeImport` and `beforeReset`, shared by native portals at this origin. Both are off when the slot is absent. Explicit setting changes persist both choices; workspace exports and restore-point snapshots exclude them. Unreadable or malformed settings are an error, rather than evidence that either option is off. |
 
+Optional `recruiting.lifecycle` additionally stores explicit adoption facts,
+stable people and independent applications, requisitions/approvals, authoritative
+jobs and publication captures, interviews, scorecards, hire bindings and
+append-only events. Only a separate `adopt` preview/confirm action creates this
+extension; reads, ordinary legacy actions and refusals do not. Legacy
+job/candidate arrays, activity and sequence stay frozen. The original
+hired-employee prefix remains exact while new authoritative hires append captured
+employees. A malformed present extension refuses instead of falling back to
+legacy behavior.
+
 The native schemas are defined by
 [`HrDemoState`](../src/hr/persistence.ts),
 [`CmsState`](../src/cms/model.ts),
@@ -52,7 +68,9 @@ they do not establish a second storage allowance.
 ## Temporary UI and navigation
 
 Within the same mounted portal shell, all three native portals stay mounted
-while hidden. The shell remembers each portal's last supported pathname;
+while hidden. Assigned-interviewer mode additionally detaches the entire CMS/CRM
+surface from the connected document while preserving those mounted children,
+as described below. The shell remembers each portal's last supported pathname;
 directory cards and shared portal links return there. Hidden HR keeps that
 pathname, so its current subpage's forms and live timer remain mounted during a
 visit to CMS, CRM or the directory. Unavailable routes do not overwrite the
@@ -77,6 +95,17 @@ Moving to another portal or the directory can also offer **Leave and keep
 draft**, because the owning portal remains mounted. That choice keeps its
 temporary inputs in the open document. Same-portal subpage/SDK changes and
 destructive tab/identity transitions do not promise this retained option.
+Retention is offered only when every affected registered group permits it,
+including a fresh check when the decision resolves. Own interviewer scorecard
+groups refuse retention and count a live preview as dirty work. Enter/change/
+leave interviewer mode uses the HR-scoped Keep/Discard decision. Keep cancels
+the transition and preserves exact inputs and selected identity; Discard cancels
+its preview, clears temporary changes and then leaves. It does not delete an
+already saved private scorecard. Mode/route generation checks prevent a deferred
+decision from binding those inputs to another identity. See the
+[mode owner](../src/hr/RecruitingPreviewProvider.tsx) and
+[own scorecard group](../src/hr/components/HrRecruitingOwnScorecards.tsx).
+
 Leaving the whole portal shell considers dirty groups in all retained portals;
 exiting it clears volatile session slots. Browser Back/Forward and app links
 use the same guarded navigation driver. Closing/reloading uses the browser's
@@ -131,6 +160,18 @@ CMS/CRM preview identities in the table are excluded from `localStorage`, JSON
 workspace downloads and restore points. HR's management role, employee identity
 and optional manager identity are the explicit saved-selection exceptions. A
 reload clears temporary UI even when saved workspace records return.
+
+Assigned interviewer identity, live recruiting previews and command handles are
+volatile UI state, not additional saved HR role/employee/manager selections.
+While that shell is active, CMS/CRM React children stay mounted in stable
+detached portal surfaces. Their entire connected DOM/accessibility-tree content,
+including nested dirty forms and live release/ownership previews, is removed;
+ordinary hidden styling alone is insufficient. Leaving reattaches the same
+targets/children and preserves temporary inputs and registered dirty participants.
+This changes presentation, not saved records or domain authority. Selected
+replacement still advances module keys under the existing reset rules. See
+[retained surfaces](../src/portals/RetainedPortalSurface.tsx) and
+[shell composition](../src/pages/TemplatePortalsPage.tsx).
 
 CMS validates controlled create/edit drafts before a saved action. Invalid
 submissions retain the buffer, identify field errors, and focus the first
@@ -289,6 +330,31 @@ changes alter current report scope and must preserve unfinished-review
 relationships; imports enforce the same relationship. The optional
 `selectedManager` is a saved preview choice, not an authenticated identity.
 
+Recruiting commands, events, captured source and actor bindings accept plain
+JSON only: undefined/function values, getters, inherited/custom objects, hidden
+properties, sparse arrays and coercion are refused. Optional native actor IDs
+are omitted when absent, rather than serialized as explicit `undefined`. The
+trusted host owns complete state/update callbacks and gives scoped children only
+authorized DTOs and command ports. Confirmation rechecks source, raw fixture,
+actor, replacement epoch and mode generation before accepting once. This is a
+maintainer contract, not account authentication. See the
+[strict value boundary](../src/hr/recruiting-lifecycle-value.ts),
+[trusted host](../src/hr/components/HrRecruitingLifecycleHost.tsx) and
+[controller](../src/hr/recruiting-controller.ts).
+
+A new recruiting hire with no employment extension records immutable
+`employmentAtHire: absent` and leaves employment absent. If a later meaningful
+native lifecycle/profile action materializes employment, only its original
+instance 1 may capture a `recruiting-baseline`: the original hire/checklist plus
+observed onboarding flags/receipt. A valid prior completion can start that
+instance active, with historical actor unknown and date null; no old hire or
+completion event is fabricated. Adopted legacy hires, employment-present hires
+and subsequent rehire instances do not gain this arm. Later directory changes
+preserve raw hire email and anchor the history chain at that original value.
+See the [hire adapter](../src/hr/recruiting-hire.ts),
+[first-instance baseline](../src/hr/recruiting-employment-baseline.ts) and
+[cross-domain validation](../src/hr/recruiting-lifecycle-validation.ts).
+
 Static template definitions remain source data; an instance stores its actual
 captured task definitions/version. Later template selection affects subsequent
 hires/rehires without rewriting earlier flags or receipts. Reading an older
@@ -355,6 +421,13 @@ extension. Comparisons include optional collections in both directions,
 including supported absent-versus-present-empty metadata, while preserving
 stable identified collection ordering. New nested captures and ID references
 do not inflate primary record totals.
+
+Optional recruiting inspection includes ten primary collections and one
+adoption/sequence metadata record. Embedded snapshots and references do not
+create additional people/jobs/hires. Safe metadata hides names/emails, ratings,
+comments and reasons while complete hidden records decide differences in both
+absent/present directions. Saved private cards and draft-save histories remain
+in the underlying complete capture.
 
 Selective restore and Undo show current-to-target added, removed and changed
 entity counts for selected modules before confirmation. Identity determines
@@ -429,6 +502,10 @@ including seed records, saved drafts and accepted changes whose browser save
 failed. They exclude unsaved UI, running timers, recovery history, unrelated
 browser settings and the separate SDK session. They are readable JSON files on
 the device; exporting does not upload records or write a workspace save.
+Saved private recruiting drafts and draft-save event history are accepted
+workspace records and occur in complete saves, exports and recovery points.
+Management/interviewer projections do not filter portable files. Unsaved fields,
+preview handles and the selected interviewer mode remain temporary and excluded.
 See the [single codec](../src/portals/backup.ts),
 [combined codec](../src/portals/combined-backup.ts) and
 [backup controls](../src/portals/CombinedWorkspaceBackup.tsx).

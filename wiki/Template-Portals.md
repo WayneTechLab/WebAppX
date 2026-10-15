@@ -5,7 +5,32 @@ fictional browser-local records and require no Gusto account, Firebase sign-in,
 provider credentials or external service. Use sample names/content and `.invalid`
 addresses; validation does not remove personal information from free text.
 
-## Current confirmation checkpoint — locally accepted
+## Current recruiting lifecycle checkpoint — locally accepted
+
+Agent 0 accepted **eleven original local criteria: WX-0201–WX-0210 and
+WX-0951**. The [HR Recruiting Lifecycle walkthrough](HR-Recruiting-Lifecycle.md)
+explains explicit adoption, approved requisitions, separate applications for one
+person, scoped interviews/private scorecards, and preview-confirmed hiring into
+onboarding. The typed optional provider adapter keeps native mock commands,
+provider results, retry states and unsupported operations separate; mock mode
+remains the default.
+
+**All 63 configured CI stages passed with terminal exit 0** on committed source
+`7337709b79b995c3f1e76254aa51fd86bbd1f215`. Independent report review confirmed
+**198 actual browser checks/check groups**. Hosting preflight passed with exit
+0 on that source. Deployment was skipped: app **3.4.0** retains **deploy count 0**.
+Read the [dated recruiting QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+for source/report bindings, executed scope and evidence limits.
+
+The canonical catalog now records **122 done / 878 remaining**: **58 P1,
+664 P2 and 156 P3**, with **711 local, 127 operator and 40 provider** gates
+remaining. The complete 1,000-item goal remains active. Run `npm run browser:recruiting` after dependency
+and Chromium setup to repeat the local fictional-workspace journey. These
+results and the adapter contract establish no provider access, production
+deployment, native Windows or manual screen-reader acceptance. Source and wiki
+publication retain their separate direct remote parity checks.
+
+## Historical confirmation checkpoint — locally accepted
 
 Agent 0 accepted **WX-0708**, then its dependent **WX-0717**, for reversible-action
 scope/effect/cancel previews and predictable Undo preview keyboard navigation
@@ -19,16 +44,16 @@ confirmed **183 actual browser checks/check groups**: **169 common, 8 HR-disable
 and 6 owned LAN**. Hosting preflight passed on the same commit. App **3.4.0**
 retains **deploy count 0**; no deployment occurred.
 
-The canonical catalog now records **111 done / 889 remaining**: **69 P1, 664 P2
+At that confirmation checkpoint, the canonical catalog recorded **111 done / 889 remaining**: **69 P1, 664 P2
 and 156 P3**, with **722 local, 127 operator and 40 provider** gates remaining.
 The full 1,000-item goal remains active. Source and wiki publication require
 separate direct remote parity checks. These local results establish no provider,
 production or manual screen-reader acceptance.
 
-Recruiting lifecycle work is **IN DEVELOPMENT** in an isolated worktree. Its
-original **WX-0201–WX-0210 plus WX-0951 remain TODO**; the
-[recruiting plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) supplies planning context,
-without acceptance or publication of that development work.
+At that confirmation checkpoint, recruiting lifecycle work was in development
+and **WX-0201–WX-0210 plus WX-0951 remained TODO**. The
+[recruiting plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md) retains the original implementation context;
+the accepted recruiting checkpoint is recorded above.
 
 ## Historical lifecycle workflows — locally accepted
 
@@ -57,7 +82,7 @@ before the harness-only commit; no deployment occurred. Agent 0 accepted the
 sixteen feature criteria plus audited **WX-0467/WX-0487**, eighteen local criteria.
 At that lifecycle checkpoint, the catalog recorded
 **109 done / 891 remaining**: **70 P1, 665 P2 and 156 P3**,
-with **724 local, 127 operator and 40 provider** gates remaining. The later confirmation checkpoint and current recruiting development status are
+with **724 local, 127 operator and 40 provider** gates remaining. The later confirmation and accepted recruiting checkpoints are
 recorded above. Original dated receipts retain their source, observation and
 acceptance scope.
 

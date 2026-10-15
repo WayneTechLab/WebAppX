@@ -1,9 +1,15 @@
 # HR Recruiting Lifecycle
 
-**Implemented source under verification — 2026-10-15.** This walkthrough
-describes the isolated recruiting implementation. **WX-0201–WX-0210 and separate
-WX-0951 remain TODO**. It claims no completed browser/full-CI acceptance or
-publication of that work. The
+**Locally accepted — 2026-10-15.** Agent 0 accepted the integrated recruiting
+implementation for **WX-0201–WX-0210 and separate WX-0951**, eleven original
+criteria, on source `7337709b79b995c3f1e76254aa51fd86bbd1f215`. The catalog now
+records **122 done / 878 remaining**. The
+[recruiting QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+records **63 CI stages**, **198 actual browser checks/groups** (184 across
+fourteen common suites, 8 HR-disabled and 6 LAN) and Hosting preflight, all with
+terminal exit 0. The application remains **3.4.0**, deploy **0**. No deployment
+or provider activation occurred; source/wiki publication is verified separately
+by remote parity. The
 [full source how-to](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-RECRUITING-LIFECYCLE.md)
 contains precise fields, limits, recovery and provider-contract details; the
 [shared contract, section 12](https://github.com/WayneTechLab/WebAppX/blob/main/docs/RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
@@ -138,7 +144,10 @@ local workflow enables no backend, SDK integration or provider operation. Read
 [Gusto setup](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md)
 for the separate adoption boundaries.
 
-`npm run browser:recruiting` is the prepared owned browser journey. Its existence
-and this page are not execution evidence. Final source bindings, independent
-browser reports, 63-stage CI, preflight and criterion acceptance remain with
-Agent 0; earlier dated receipts retain their original scope.
+`npm run browser:recruiting` is the owned browser journey. The
+[recruiting QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+records final source bindings, independently reviewed browser reports, 63-stage
+CI, preflight and Agent 0's eleven criterion decisions. This walkthrough adds
+no execution observation. Earlier dated receipts retain their original scope;
+provider, production, other-platform and manual screen-reader acceptance remain
+separate.

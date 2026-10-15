@@ -10,9 +10,9 @@ The separate [review index](BACKLOG-EVIDENCE.md) attaches scoped historical
 receipts with examined and observation revisions. It does not accept work
 or convert an earlier browser result into a current execution.
 
-Current verified progress: **111 done / 889 remaining**.
-Remaining priorities: **69 P1 · 664 P2 · 156 P3**.
-Remaining acceptance gates: **722 local · 40 provider · 127 operator**.
+Current verified progress: **122 done / 878 remaining**.
+Remaining priorities: **58 P1 · 664 P2 · 156 P3**.
+Remaining acceptance gates: **711 local · 40 provider · 127 operator**.
 
 ## Execution and acceptance
 
@@ -54,7 +54,7 @@ coverage ships with each slice rather than waiting for the quality area.
 | Shared portal architecture | WX-0051–WX-0100 | 10 | 40 |
 | HR onboarding and directory | WX-0101–WX-0150 | 10 | 40 |
 | HR payroll, benefits and time | WX-0151–WX-0200 | 8 | 42 |
-| HR talent and employee operations | WX-0201–WX-0250 | 0 | 50 |
+| HR talent and employee operations | WX-0201–WX-0250 | 10 | 40 |
 | CMS models and authoring | WX-0251–WX-0300 | 3 | 47 |
 | CMS review and publication | WX-0301–WX-0350 | 3 | 47 |
 | CRM leads and contacts | WX-0351–WX-0400 | 4 | 46 |
@@ -69,7 +69,7 @@ coverage ships with each slice rather than waiting for the quality area.
 | CI, delivery and infrastructure | WX-0801–WX-0850 | 5 | 45 |
 | SYSTEMX and agent workflows | WX-0851–WX-0900 | 10 | 40 |
 | Documentation and adoption kits | WX-0901–WX-0950 | 11 | 39 |
-| Optional integrations, extensibility and internationalization | WX-0951–WX-1000 | 0 | 50 |
+| Optional integrations, extensibility and internationalization | WX-0951–WX-1000 | 1 | 49 |
 
 Domain waves (the dependency graph overrides this order):
 
@@ -78,13 +78,13 @@ Domain waves (the dependency graph overrides this order):
 | Foundation | setup, systemx | 21 | 79 |
 | Shared core | portal-shell, identity, security | 14 | 136 |
 | Recovery | mock-recovery | 12 | 38 |
-| Human resources | hr-onboarding, hr-payroll, hr-talent | 18 | 132 |
+| Human resources | hr-onboarding, hr-payroll, hr-talent | 28 | 122 |
 | Content | cms-authoring, cms-publishing | 6 | 94 |
 | Customer relationships | crm-contacts, crm-sales | 4 | 96 |
 | Quality and design | quality, design | 13 | 87 |
 | Operations and delivery | operations, delivery | 12 | 88 |
 | Adoption | adoption | 11 | 39 |
-| Connected extensions | firebase, integrations | 0 | 100 |
+| Connected extensions | firebase, integrations | 1 | 99 |
 
 The current graph has **173 edges**. Longest explicit chains:
 
@@ -116,24 +116,24 @@ or grant access, and current write ownership must be checked before selection.
 | --- | --- | --- |
 | WX-0159 | P1 / portal-maturity | Closing a submitted sample period prevents new entries from silently changing its frozen payroll totals. |
 | WX-0160 | P1 / portal-maturity | A correction references the original receipt and records a separate adjustment without rewriting submitted history. |
-| WX-0201 | P1 / portal-maturity | A fictional job references an approved sample requisition with department, owner and headcount. |
-| WX-0202 | P1 / portal-maturity | A draft requisition moves through explicit sample review before its associated job can publish. |
-| WX-0203 | P1 / portal-maturity | A new fictional candidate matching an existing email shows a conflict preview without creating a duplicate application. |
-| WX-0204 | P1 / portal-maturity | One candidate can apply to two jobs while each application retains its own stages and outcome. |
-| WX-0205 | P1 / portal-maturity | A sample interview records participants, named time zone and duration without sending calendar invitations. |
-| WX-0206 | P1 / portal-maturity | An interviewer saves a private fictional scorecard and explicitly submits it to the hiring review. |
-| WX-0207 | P1 / portal-maturity | Rejected or withdrawn sample applications record a visible reason and preserve prior stage activity. |
-| WX-0208 | P1 / portal-maturity | A fictional timeline reports time in stage from recorded timestamps rather than inferred sequence numbers. |
-| WX-0209 | P1 / portal-maturity | A withdrawn application cannot be hired and remains distinct from an employer rejection. |
-| WX-0210 | P1 / portal-maturity | Before mock hire, the screen lists directory, onboarding and balance records that will be created atomically. |
 | WX-0656 | P1 / portal-maturity | Manual evidence records storage save, import refusal, restore success and Undo result announcements without duplicate announcements from hidden modules. |
-| WX-0951 | P1 / extensions | A typed contract separates native HR commands, provider results, retry states and unsupported operations while mock mode stays the default. |
 | WX-0011 | P2 / foundation | A new developer can follow distinct instructions for dependency install, runtime mismatch, occupied port and emulator startup failures. |
 | WX-0012 | P2 / foundation | The guide identifies which generated dependency paths can be rebuilt and preserves ignored environment and emulator state. |
 | WX-0013 | P2 / foundation | A read-only command lists maintained scripts by setup, app, portal, SYSTEMX, wiki and release purpose using the real manifest. |
 | WX-0015 | P2 / foundation | A developer starting the template can see links for the public app, three mock portals and optional local control plane with their distinct prerequisites. |
 | WX-0016 | P2 / foundation | A read-only command lists fictional fixture sources and identifies which reset action restores each source. |
 | WX-0017 | P2 / foundation | The app can run an explicitly selected walkthrough session that never writes mock saves and clearly labels refresh behavior. |
+| WX-0018 | P2 / foundation | A preview lists only WebAppX-owned mock keys and the portal/history effect of clearing each key without deleting browser data. |
+| WX-0019 | P2 / foundation | The template check groups app, dependency, asset and configuration differences so a maintainer can locate the relevant starter drift. |
+| WX-0020 | P2 / foundation | New-app adoption lists repository name, package name, site branding, deployment target and project records that require deliberate replacement. |
+| WX-0021 | P2 / foundation | An adoption command previews identity substitutions in a temporary copy and leaves the original template and ignored files unchanged. |
+| WX-0022 | P2 / foundation | A source check identifies new script call sites that build executable shell strings and points maintainers to argument-array examples. |
+| WX-0023 | P2 / foundation | A temporary-copy smoke run installs no services and verifies key setup commands from a repository path containing spaces. |
+| WX-0024 | P2 / foundation | Temporary-copy checks exercise project configuration and read-only status from a path containing Unicode characters. |
+| WX-0701 | P2 / foundation | HR, CMS and CRM use documented surface, spacing and emphasis tokens with one sample page demonstrating each token. |
+| WX-0702 | P2 / foundation | A local preference changes row spacing without hiding record labels or action controls and survives refresh. |
+| WX-0703 | P2 / foundation | Section headings expose consistent hierarchy and support metric, action and descriptive text slots without duplicate page titles. |
+| WX-0704 | P2 / foundation | Each invalid field has a linked error message and the form summary targets the same control. |
 
 ## Resume commands
 

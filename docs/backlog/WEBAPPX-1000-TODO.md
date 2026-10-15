@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 889 TODO · 111 done · 20 areas · 50 items per area.**
+**1000 catalog items · 878 TODO · 122 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 69 · P2: 664 · P3: 156.
+Remaining TODO priorities: P1: 58 · P2: 664 · P3: 156.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -922,46 +922,56 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## HR talent and employee operations
 
-- [ ] **WX-0201 — Add reusable recruiting requisition records**
+- [x] **WX-0201 — Add reusable recruiting requisition records**
   - P1 · portal-maturity · local
   - Acceptance: A fictional job references an approved sample requisition with department, owner and headcount.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
-- [ ] **WX-0202 — Add recruiting requisition approval previews**
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0202 — Add recruiting requisition approval previews**
   - P1 · portal-maturity · local
   - Acceptance: A draft requisition moves through explicit sample review before its associated job can publish.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
-- [ ] **WX-0203 — Add candidate duplicate detection**
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0203 — Add candidate duplicate detection**
   - P1 · portal-maturity · local
   - Acceptance: A new fictional candidate matching an existing email shows a conflict preview without creating a duplicate application.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
-- [ ] **WX-0204 — Add multiple applications per fictional candidate**
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0204 — Add multiple applications per fictional candidate**
   - P1 · portal-maturity · local
   - Acceptance: One candidate can apply to two jobs while each application retains its own stages and outcome.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
-- [ ] **WX-0205 — Add interview scheduling without delivery**
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0205 — Add interview scheduling without delivery**
   - P1 · portal-maturity · local
   - Acceptance: A sample interview records participants, named time zone and duration without sending calendar invitations.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
-- [ ] **WX-0206 — Add structured interview scorecards**
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0206 — Add structured interview scorecards**
   - P1 · portal-maturity · local
   - Acceptance: An interviewer saves a private fictional scorecard and explicitly submits it to the hiring review.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
-- [ ] **WX-0207 — Add candidate stage transition reasons**
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0207 — Add candidate stage transition reasons**
   - P1 · portal-maturity · local
   - Acceptance: Rejected or withdrawn sample applications record a visible reason and preserve prior stage activity.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
-- [ ] **WX-0208 — Add recruiting stage duration metrics**
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0208 — Add recruiting stage duration metrics**
   - P1 · portal-maturity · local
   - Acceptance: A fictional timeline reports time in stage from recorded timestamps rather than inferred sequence numbers.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
-- [ ] **WX-0209 — Add candidate withdrawal as a terminal outcome**
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0209 — Add candidate withdrawal as a terminal outcome**
   - P1 · portal-maturity · local
   - Acceptance: A withdrawn application cannot be hired and remains distinct from an employer rejection.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
-- [ ] **WX-0210 — Add hiring preview validation summaries**
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
+- [x] **WX-0210 — Add hiring preview validation summaries**
   - P1 · portal-maturity · local
   - Acceptance: Before mock hire, the screen lists directory, onboarding and balance records that will be created atomically.
   - Source: [src/hr/recruiting.ts](../../src/hr/recruiting.ts)
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
 - [ ] **WX-0211 — Add fictional job posting versions**
   - P2 · portal-maturity · local
   - Acceptance: Editing a published sample posting creates a revision while applications retain the version they saw.
@@ -4069,10 +4079,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## Optional integrations, extensibility and internationalization
 
-- [ ] **WX-0951 — Define an optional provider adapter interface**
+- [x] **WX-0951 — Define an optional provider adapter interface**
   - P1 · extensions · local
   - Acceptance: A typed contract separates native HR commands, provider results, retry states and unsupported operations while mock mode stays the default.
   - Source: [docs/GUSTO-SETUP.md](../../docs/GUSTO-SETUP.md)
+  - Verified: 2026-10-15 · Source base: `7337709b79b995c3f1e76254aa51fd86bbd1f215` · Reviewed by: `agent.0` · Evidence: [docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md](../../docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
 - [ ] **WX-0952 — Add optional Gusto connection setup previews**
   - P1 · extensions · operator
   - Acceptance: An adoption screen describes required app-specific configuration and remains disabled until an operator supplies approved connection settings.

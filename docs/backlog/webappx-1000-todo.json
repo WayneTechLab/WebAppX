@@ -2670,120 +2670,180 @@
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add reusable recruiting requisition records",
       "acceptance": "A fictional job references an approved sample requisition with department, owner and headcount.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0202",
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add recruiting requisition approval previews",
       "acceptance": "A draft requisition moves through explicit sample review before its associated job can publish.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0203",
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add candidate duplicate detection",
       "acceptance": "A new fictional candidate matching an existing email shows a conflict preview without creating a duplicate application.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0204",
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add multiple applications per fictional candidate",
       "acceptance": "One candidate can apply to two jobs while each application retains its own stages and outcome.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0205",
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add interview scheduling without delivery",
       "acceptance": "A sample interview records participants, named time zone and duration without sending calendar invitations.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0206",
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add structured interview scorecards",
       "acceptance": "An interviewer saves a private fictional scorecard and explicitly submits it to the hiring review.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0207",
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add candidate stage transition reasons",
       "acceptance": "Rejected or withdrawn sample applications record a visible reason and preserve prior stage activity.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0208",
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add recruiting stage duration metrics",
       "acceptance": "A fictional timeline reports time in stage from recorded timestamps rather than inferred sequence numbers.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0209",
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add candidate withdrawal as a terminal outcome",
       "acceptance": "A withdrawn application cannot be hired and remains distinct from an employer rejection.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0210",
       "area": "hr-talent",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add hiring preview validation summaries",
       "acceptance": "Before mock hire, the screen lists directory, onboarding and balance records that will be created atomically.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0211",
@@ -12410,12 +12470,18 @@
       "area": "integrations",
       "priority": "P1",
       "phase": "extensions",
-      "status": "todo",
+      "status": "done",
       "title": "Define an optional provider adapter interface",
       "acceptance": "A typed contract separates native HR commands, provider results, retry states and unsupported operations while mock mode stays the default.",
       "source": "docs/GUSTO-SETUP.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+        "evidence": "docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0952",
