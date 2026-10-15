@@ -6,7 +6,22 @@ import { expect } from '@playwright/test'
 import { newIsolatedContext } from './portals-smoke.mjs'
 
 const nav = page => page.getByRole('navigation', { name: 'Template workspaces', exact: true })
-const open = (page, name) => nav(page).getByRole('link', { name, exact: true }).click()
+async function open(page, name, decision) {
+  await nav(page).getByRole('link', { name, exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Leave with unsaved changes?', exact: true })
+  if (decision) {
+    assert.ok(decision.drafts.length > 0 && ['Keep editing', 'Discard and leave', 'Leave and keep draft'].includes(decision.choice), 'An intentional unsaved transition must declare its exact draft owners and decision')
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByRole('listitem')).toHaveText(decision.drafts)
+    const before = await slots(page.context(), new URL(page.url()).origin)
+    if (decision.capturePath) await dialog.screenshot({ path: decision.capturePath })
+    await button(dialog, decision.choice).click()
+    await expect(dialog).not.toBeVisible()
+    assert.deepEqual(await slots(page.context(), new URL(page.url()).origin), before, 'The declared temporary draft decision must preserve every saved workspace/history/preference byte')
+  } else {
+    await expect(dialog, `Unexpected unsaved work while opening ${name}; completed actions must leave a clean baseline`).not.toBeVisible()
+  }
+}
 const button = (scope, name) => scope.getByRole('button', { name, exact: true })
 const backupRegion = (page, module) => page.getByRole('region', { name: `${module} workspace backup`, exact: true })
 const upload = (name, value) => ({ name, mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(value)) })
@@ -17,16 +32,15 @@ async function download(page, control, artifactDir, name) {
   const remaining = 150 - (Date.now() - (lastDownloadClick.get(page) ?? 0))
   if (remaining > 0) await delay(remaining)
   lastDownloadClick.set(page, Date.now())
-  const waiting = page.waitForEvent('download')
-  await control.click()
-  const result = await waiting
+  const [result] = await Promise.all([page.waitForEvent('download'), control.click()])
   const path = join(artifactDir, `${name}.json`)
   await result.saveAs(path)
   assert.equal(await result.failure(), null, 'The real JSON download must finish')
   return JSON.parse(await readFile(path, 'utf8'))
 }
-async function snapshot(page, artifactDir, name) {
-  await open(page, 'Portal directory')
+async function snapshot(page, artifactDir, name, decision) {
+  await open(page, 'Portal directory', decision && { ...decision, capturePath: join(artifactDir, `${name}-declared-unsaved-choice.png`) })
+  await expect(page).toHaveURL(new URL('/portals', page.url()).href)
   const envelope = await download(page, button(page.getByRole('region', { name: 'Combined workspace backup', exact: true }), 'Export all workspaces'), artifactDir, name)
   assert.deepEqual(Object.keys(envelope).sort(), ['exportedAt', 'format', 'schemaVersion', 'workspaces'])
   assert.equal(envelope.format, 'webappx-mock-workspaces')
@@ -114,7 +128,9 @@ async function hrJourney({ page, context, origin, artifactDir, seed, checks }) {
   await expect(button(page, 'Prepare sample payroll')).toBeDisabled()
   await period(page)
   await expect(eligibilityRow(page, 'time-001')).toContainText('Excluded: Returned draft: Correct the fictional hours before approval.')
-  assert.deepEqual(await snapshot(page, artifactDir, 'hr-01-returned-time-excluded'), expected)
+  // Eligibility inspection intentionally changed the period without preparing
+  // payroll. Explicitly discard only that temporary choice before exporting.
+  assert.deepEqual(await snapshot(page, artifactDir, 'hr-01-returned-time-excluded', { drafts: ['Chosen payroll period'], choice: 'Discard and leave' }), expected)
   checks.push('WX-0156: a scoped manager returns submitted seed time with a visible reason; the returned draft is excluded from payroll')
   await employeeTime(page, 'employee-002')
   await button(timeEntry(page, 'time-001'), 'Edit draft').click()
@@ -246,7 +262,9 @@ async function cmsJourney({ page, context, origin, artifactDir, seed, checks }) 
   await choose(content.title)
   await expect(page.locator('#edit-title')).toHaveValue(content.title)
   assert.deepEqual(await slots(context, origin), saved, 'Keep/discard may change only the ephemeral editor, never saved records')
-  assert.deepEqual(await snapshot(page, artifactDir, 'cms-01-clean-baseline-dirty-decisions'), expected)
+  // The invalid create form from the validation probe was never submitted.
+  // The saved editor and its entry-switch decisions must already be clean.
+  assert.deepEqual(await snapshot(page, artifactDir, 'cms-01-clean-baseline-dirty-decisions', { drafts: ['CMS new content form'], choice: 'Discard and leave' }), expected)
   checks.push('WX-0282: a successful save is a clean baseline; keep-editing retains the unsaved buffer and discard switches without changing complete saved records')
   return { invalidFields: 3, forms: 2, savedReceipt: 'MOCK-CMS-0001', expectedCms: expected.cms }
 }
