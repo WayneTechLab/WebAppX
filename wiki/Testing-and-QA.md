@@ -30,6 +30,73 @@ regressions, app/LAN gates, research inventories and public template integrity.
 It requires blank adoption seeds. `template:check` rejects populated tasks,
 context or project records by design. Use these to maintain the reusable release.
 
+## Execution-foundation contracts and reports
+
+```bash
+npm run development:check
+npm run development:test
+npm run dev:mock:test
+npm run backlog:plan:check
+npm run backlog:plan:test
+npm run ci:plan
+npm run ci:plan:test
+npm run browser:foundation
+```
+
+The root and starter pin Node **24.22.0**, retain the doctor-aligned minimum
+**>=24.0.0** and declare **npm 11.11.0**. Development checks compare package/lock
+and runtime-pin parity, public client-variable coverage and ignored local
+environment rules without reading private `.env` values. The mock launcher
+tests cover arguments, sanitized child configuration, explicit busy-port failure,
+owned server/cache cleanup and honest failure status after forced termination.
+
+The execution planner checks complete 1,000-ID coverage, dependency-ready order,
+selected graph closure, exact longest-chain counts, bounded examples and generated
+plan parity. Catalog validation requires all declared dependencies to be completed
+before accepting a dependent item. Read-only plan/ready/graph commands neither
+dispatch workers nor update completion state.
+
+The CI plan derives actual stage order from the maintained runner and expands
+reviewed npm commands, including dependent Gusto/managed-SYSTEMX scopes and
+mutation categories. Unknown syntax/commands remain explicitly unreviewed. The
+report runs no gates; reading a plan does not establish success. Audits/builds and
+test fixtures retain their documented network/output/process behavior when run.
+
+The foundation browser journey covers registered card content, unset-Firebase
+guidance, normalized deep links, keyboard breadcrumbs, unsupported-page recovery,
+in-app handling links and Ready/Saved/Recovered/Unavailable save summaries.
+Normal domain changes use real controls; malformed/denied-storage cases use
+isolated synthetic platform fault injection. This differs from the keyboard
+journeys' strict no-state-injection boundary. The
+[foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+records actual test/browser results, accepted IDs and final publication gates.
+
+### Accepted foundation results — 2026-10-15
+
+| Focused gate | Verified result |
+| --- | --- |
+| Development contracts | 15 tests passed, including runtime/example drift and ignored-file privacy fixtures |
+| Native mock launcher | 14 tests passed, including actual cold-module startup, occupied-listener preservation, signal failure reporting and shared server/cache cleanup |
+| Execution planner | Eight tests passed, including dependency order, exact large tied-path counts, bounded output and preserved source/seeds |
+| Catalog | 14 tests passed, including rejection of unfinished dependencies on a completed item |
+| CI plan | 13 tests passed; actual report listed all 34 required stages with zero unknown classifications |
+| Shared portal models | 120 tests passed, including registry, route and save-summary coverage |
+| Foundation browser | Nine checks passed across Firebase notice, registry fields, deep links, keyboard breadcrumbs, unsupported recovery, unsaved CMS/document preservation, save/refresh and isolated storage faults |
+| Existing keyboard browser | Nine checks passed after the shared-shell changes, preserving exact onboarding/recovery records and focus |
+
+Browser runs reported no unexpected backend/provider traffic, failed requests or
+uncaught errors; only the expected unset-Firebase warning appeared. Owned browser
+and server cleanup succeeded. Review corrections include honest signal failure,
+exact tied-path reporting, in-app handling navigation and cold Vite request-drain
+cleanup. The receipt retains their original evidence and final integrated CI,
+preflight/drift/publication results.
+
+Agent 0 accepted 17 additional items. The current catalog has exactly **1,000
+records: 24 done, 976 remaining — 146 P1, 673 P2 and 157 P3**. Remaining acceptance
+gates are **808 local, 128 operator and 40 provider**. The goal to complete every
+original criterion remains active; generated reports and passing local checks
+retain their individual acceptance scope.
+
 ## Automated developer and portal smoke checks
 
 ```bash
@@ -171,8 +238,8 @@ observed. Independent source review had no unresolved findings. Clear-history
 focus is implemented but was not part of these nine browser checks. Consult the
 keyboard receipt for final CI, Hosting preflight and SYSTEMX drift outcomes.
 
-**WX-0653/WX-0654 are complete.** The catalog retains exactly **1,000 records**:
-**seven completed, 993 remaining — 160 P1, 675 P2 and 158 P3**. Earlier completions
+**WX-0653/WX-0654 are complete.** At that keyboard checkpoint the catalog retained
+exactly **1,000 records: seven completed, 993 remaining — 160 P1, 675 P2 and 158 P3**. Earlier completions
 and their original evidence remain intact; blank reusable SYSTEMX seeds stay blank.
 
 Final local publication gates passed `npm run ci:all` and Hosting preflight,
@@ -780,3 +847,15 @@ npx playwright test      # optional project e2e suite
   each has e2e coverage.
 - If a popup, account prompt, or tool apply dialog blocks automation, record the
   blocker in the SYSTEMX recovery format instead of silently clicking through.
+
+
+## Full-goal foundation publishing gates — 2026-10-15
+
+The corrected foundation source passed full `npm run ci:all`, including all 34
+stages and 7 smoke / 9 keyboard / 9 foundation browser checks. Each browser
+report confirmed owned resources closed. Hosting preflight and final drift,
+checklist, generated-plan, template, whitespace and link checks passed.
+The [foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+retains the discovered failures, fixes, suite counts and five filesystem skips.
+The full 1,000-item goal remains active at 24 completed / 976 remaining.
+Preflight left app version 3.4.0 and deployment count 0.

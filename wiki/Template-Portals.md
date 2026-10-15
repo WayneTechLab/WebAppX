@@ -114,6 +114,48 @@ warned. Independent review had no unresolved findings. Clear-history focus
 handling is outside these nine browser checks; final publication gates are
 recorded in the receipt.
 
+## Shared directory and route recovery
+
+Use **`npm run dev:mock`** to launch only native account-free HR/CMS/CRM. It
+prints its own `127.0.0.1` portal URL, ignores environment files and inherited
+provider configuration, and disables Firebase/emulator/LAN integrations. Choose
+`-- --port 5185` when retaining an exact browser-save origin between sessions.
+An occupied requested port fails without stopping the existing listener.
+The app's unset-Firebase notice links to the portals and optional sign-in setup.
+
+Directory cards use the registry's descriptions, workflows and preview roles.
+Each shows its own provider-backed save summary:
+
+| State | Meaning |
+| --- | --- |
+| Ready | Fixtures active, including after successful Reset |
+| Saved | Current domain state saved or loaded from this browser origin; details explain which |
+| Recovered | Invalid/incompatible save rejected; fixtures active and rejected bytes retained until a successful action or explicit Reset |
+| Unavailable | Browser storage could not be read/written; memory may remain usable without guaranteed persistence |
+
+The directory does not save fresh fixtures by merely displaying them. Shared
+**Account-free mock workspace** notices link to handling details. Breadcrumbs
+return to the directory, workspace and HR portal/page context. Trailing-slash
+deep links preserve query/hash; unsupported descendants show workspace-specific
+recovery links while retaining fictional saves. Following **How mock data is
+handled** uses in-app navigation and preserves mounted unsaved portal forms.
+
+Run **`npm run browser:foundation`** for the authored shell/route/save-state
+journey, including scoped synthetic storage faults. Read the
+[foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+and [detailed guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/TEMPLATE-PORTALS.md#shared-directory-and-route-recovery)
+for exact outcomes and evidence boundaries.
+
+**Accepted foundation checkpoint — 2026-10-15:** nine browser checks passed
+across unset-Firebase guidance, registry cards, normalized deep links, keyboard
+breadcrumbs, unsupported routes, in-app handling links, unsaved CMS/document
+preservation and save summaries. Corrupt/denied-storage cases displayed the
+expected Recovered/Unavailable messages in isolated contexts. All 121 portal
+model tests and nine existing keyboard checks passed; owned cleanup succeeded
+and only the expected Firebase warning appeared. The receipt records exact
+evidence and final publication gates. The full goal stays active at **24 done /
+976 remaining** in the 1,000-item catalog.
+
 ## Back up, restore or move a workspace
 
 Use **Export workspace** in HR, CMS or CRM to download that portal’s validated

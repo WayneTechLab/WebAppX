@@ -2,8 +2,8 @@
 
 Planning baseline: `8359285c99069349d6218fe871868baab76868e5`. Created 2026-10-14.
 
-This catalog tracks proposals and evidence for the WebAppX template. Unchecked
-items remain proposals. Checked items require completion metadata and a review
+The owner authorized execution of the full catalog on 2026-10-15. Unchecked
+items await implementation and acceptance. Checked items require completion metadata and a review
 receipt within their acceptance gate; a check does not establish deployment or
 provider access. Existing portal capabilities remain documented in source and
 their scoped QA receipts.
@@ -13,7 +13,9 @@ The [CSV](webappx-1000-todo.csv) and this page are generated with
 `npm run backlog:render`; run `npm run backlog:check` to validate all 1,000
 IDs, source paths, unique titles/acceptance, dependencies, completion records
 and generated views.
-Read the [roadmap](../WEBAPPX-ROADMAP.md) for sequencing and bounded activation.
+Read the [execution plan](../WEBAPPX-EXECUTION-PLAN.md) for the full goal,
+dependency-ready selection and acceptance boundaries, and the
+[roadmap](../WEBAPPX-ROADMAP.md) for catalog conventions.
 
 ## Reading the list
 
@@ -26,11 +28,11 @@ Read the [roadmap](../WEBAPPX-ROADMAP.md) for sequencing and bounded activation.
 
 ## Counts
 
-**1000 catalog items · 993 TODO · 7 done · 20 areas · 50 items per area.**
+**1000 catalog items · 976 TODO · 24 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 160 · P2: 675 · P3: 158.
+Remaining TODO priorities: P1: 146 · P2: 673 · P3: 157.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -66,26 +68,31 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: One command reports Node, npm, Git and Python versions against the documented baseline without installing or changing anything.
   - Source: [docs/GETTING-STARTED.md](../../docs/GETTING-STARTED.md)
   - Verified: 2026-10-14 · Source base: `4731702ec7bfdcaec60ac4d42e23b03f330f5d74` · Reviewed by: `agent.0` · Evidence: [docs/DEVELOPER-BROWSER-QA-2026-10-14.md](../../docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
-- [ ] **WX-0002 — Provide explicit runtime version pins**
+- [x] **WX-0002 — Provide explicit runtime version pins**
   - P1 · foundation · local
   - Acceptance: A fresh shell can select the documented Node baseline from a checked-in runtime pin and the setup guide explains the supported range.
   - Source: [package.json](../../package.json)
-- [ ] **WX-0003 — Validate root and starter runtime declarations together**
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+- [x] **WX-0003 — Validate root and starter runtime declarations together**
   - P1 · foundation · local · Depends on: WX-0002
   - Acceptance: A maintenance check reports mismatched engine or package-manager declarations between the root app and starter copy.
   - Source: [.SYSTEMX/Template/starter/package.json](../../.SYSTEMX/Template/starter/package.json)
-- [ ] **WX-0004 — Add an environment example coverage check**
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+- [x] **WX-0004 — Add an environment example coverage check**
   - P1 · foundation · local
   - Acceptance: Every documented client environment variable is represented in the example or explicitly marked optional, with no secret values read.
   - Source: [src/vite-env.d.ts](../../src/vite-env.d.ts)
-- [ ] **WX-0005 — Explain unset Firebase configuration in the app**
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+- [x] **WX-0005 — Explain unset Firebase configuration in the app**
   - P1 · foundation · local
   - Acceptance: Starting without Firebase configuration shows that account-free portals remain available and names the optional setup step for sign-in.
   - Source: [src/config/firebase.ts](../../src/config/firebase.ts)
-- [ ] **WX-0006 — Provide a dependency-free mock quick-start command**
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+- [x] **WX-0006 — Provide a dependency-free mock quick-start command**
   - P1 · foundation · local
   - Acceptance: The command starts the native mock portals with provider and emulator integrations disabled and prints the portal URL.
   - Source: [package.json](../../package.json)
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
 - [ ] **WX-0007 — Add a stable local origin option**
   - P1 · foundation · local
   - Acceptance: A developer can request a fixed loopback host and port and receives an actionable occupied-port error rather than silently changing origin.
@@ -226,10 +233,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P3 · production-readiness · local
   - Acceptance: A local developer view displays both independent versions and their different update responsibilities.
   - Source: [src/pages/SystemStatePage.tsx](../../src/pages/SystemStatePage.tsx)
-- [ ] **WX-0042 — Document optional provider adoption boundaries in setup**
+- [x] **WX-0042 — Document optional provider adoption boundaries in setup**
   - P3 · production-readiness · local
   - Acceptance: The first-run guide separates account-free tasks from later provider registration, secret placement and operator-approved activation.
   - Source: [docs/GUSTO-SETUP.md](../../docs/GUSTO-SETUP.md)
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md](../../docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md)
 - [ ] **WX-0043 — Provide a minimal local contributor checklist**
   - P3 · extensions · local
   - Acceptance: A contributor can identify the source scope, focused checks, docs affected and required prepublication commands from one short checklist.
@@ -272,34 +280,40 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: HR, CMS and CRM navigation labels, routes, descriptions and module identifiers resolve from one checked structure.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
   - Verified: 2026-10-14 · Source base: `a9e78672d707e198dc10193972b17a76958abeb5` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md](../../docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
-- [ ] **WX-0052 — Generate portal directory cards from the registry**
+- [x] **WX-0052 — Generate portal directory cards from the registry**
   - P1 · portal-maturity · local · Depends on: WX-0051
   - Acceptance: Changing one portal registry entry updates its card and navigation without a second duplicated definition.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0053 — Add route normalization coverage for portal entry points**
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+- [x] **WX-0053 — Add route normalization coverage for portal entry points**
   - P1 · portal-maturity · local
   - Acceptance: Trailing slashes, query strings and supported deep links resolve to the intended portal without losing the requested route.
   - Source: [src/router.tsx](../../src/router.tsx)
-- [ ] **WX-0054 — Add distinct unsupported portal route states**
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+- [x] **WX-0054 — Add distinct unsupported portal route states**
   - P1 · portal-maturity · local
   - Acceptance: An unknown CMS, CRM or HR demo subroute explains the missing route and offers a link to the relevant workspace.
   - Source: [src/router.tsx](../../src/router.tsx)
-- [ ] **WX-0055 — Add portal route breadcrumbs**
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+- [x] **WX-0055 — Add portal route breadcrumbs**
   - P1 · portal-maturity · local
   - Acceptance: Deep HR views and future CMS/CRM sections show a keyboard-accessible breadcrumb back to the portal directory.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
 - [ ] **WX-0056 — Preserve a return location when entering a portal**
   - P1 · portal-maturity · local
   - Acceptance: Opening the directory from a portal and returning restores the last supported portal subsection in that session.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0057 — Add a shared mock-mode banner**
+- [x] **WX-0057 — Add a shared mock-mode banner**
   - P1 · portal-maturity · local
   - Acceptance: Every native portal consistently identifies its fictional, account-free mode and links to the same data-handling explanation.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0058 — Add a workspace save summary in the directory**
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+- [x] **WX-0058 — Add a workspace save summary in the directory**
   - P1 · portal-maturity · local
   - Acceptance: The directory shows ready, saved, recovered or unavailable status for each module from current provider status.
   - Source: [src/portals/PortalWorkspaceProvider.tsx](../../src/portals/PortalWorkspaceProvider.tsx)
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
 - [ ] **WX-0059 — Add an unsaved form navigation prompt**
   - P1 · portal-maturity · local
   - Acceptance: Leaving a portal with an unsaved form offers keep editing or discard choices without intercepting a completed saved action.
@@ -1913,10 +1927,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: The combined preview reports selected serialized workspace size and projected history size before a user confirms replacement.
   - Source: [src/portals/CombinedWorkspaceBackup.tsx](../../src/portals/CombinedWorkspaceBackup.tsx)
   - Verified: 2026-10-14 · Source base: `a9e78672d707e198dc10193972b17a76958abeb5` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md](../../docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
-- [ ] **WX-0452 — Show restore-point retention effects in preview**
+- [x] **WX-0452 — Show restore-point retention effects in preview**
   - P1 · portal-maturity · local · Depends on: WX-0451
   - Acceptance: Before confirmation, the UI names how many older points would be removed to retain the new point within current limits.
   - Source: [src/portals/restore-points.ts](../../src/portals/restore-points.ts)
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md](../../docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md)
 - [ ] **WX-0453 — Add descriptive labels to restore points**
   - P1 · portal-maturity · local
   - Acceptance: Users can label an existing local point without changing its captured workspace payload, module scope or timestamp.
@@ -3271,10 +3286,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A local form creates a concise handoff containing selected portal state, unresolved sample issues and next action without storing secrets.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0783 — Create a browser-origin troubleshooting guide**
+- [x] **WX-0783 — Create a browser-origin troubleshooting guide**
   - P2 · portal-maturity · local
   - Acceptance: The guide explains why a workspace saved at localhost differs from 127.0.0.1 and how to move it with a combined backup.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md](../../docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md)
 - [ ] **WX-0784 — Prepare optional provider outage fallback contract**
   - P1 · production-readiness · provider
   - Acceptance: For optional adoption after operator approval and provider setup: The adoption design defines read-only cached status, timestamps and disabled writes while ensuring stale data cannot be presented as live payroll state.
@@ -3348,10 +3364,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## CI, delivery and infrastructure
 
-- [ ] **WX-0801 — Add a CI execution plan report**
+- [x] **WX-0801 — Add a CI execution plan report**
   - P1 · foundation · local
   - Acceptance: A local command prints the existing ci:all stages, their dependent workspaces and mutation characteristics without executing or weakening any gate.
   - Source: [scripts/check-template.sh](../../scripts/check-template.sh)
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
 - [ ] **WX-0802 — Create an optional GitHub Actions adoption workflow design**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: A reviewed plan runs the existing required gates on pull requests with explicit permissions and no production deployment credentials.
@@ -3561,10 +3578,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P1 · foundation · local
   - Acceptance: Comparing two source revisions lists proposals whose referenced scopes changed and requests review without changing canonical task state or marking work complete.
   - Source: [scripts/validate-template.py](../../scripts/validate-template.py)
-- [ ] **WX-0853 — Add dependency critical-path visualization**
+- [x] **WX-0853 — Add dependency critical-path visualization**
   - P1 · foundation · local
   - Acceptance: A read-only view shows the selected proposal dependency graph, longest dependency chains and unresolved external gates without assigning or dispatching workers.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
 - [ ] **WX-0854 — Link proposals to scoped feature evidence**
   - P1 · foundation · local
   - Acceptance: A review index can attach examined revision and local, browser, provider or operator evidence references to a proposal without converting historical evidence into current completion.
@@ -3882,10 +3900,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: The Gusto guide names the steps a separately authorized adopter must complete before real development credentials can be used.
   - Source: [docs/GUSTO-SETUP.md](../../docs/GUSTO-SETUP.md)
-- [ ] **WX-0932 — Add a no-shared-test-key explanation**
+- [x] **WX-0932 — Add a no-shared-test-key explanation**
   - P2 · portal-maturity · local
   - Acceptance: The guide explains that local mocks need no key and that provider-issued development access belongs to the adopter's approved environment.
   - Source: [docs/GUSTO-SETUP.md](../../docs/GUSTO-SETUP.md)
+  - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md](../../docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md)
 - [ ] **WX-0933 — Add a production data prohibition banner to demo tutorials**
   - P2 · portal-maturity · local
   - Acceptance: Tutorials clearly instruct use of fictional names and .invalid addresses before any sample data entry.

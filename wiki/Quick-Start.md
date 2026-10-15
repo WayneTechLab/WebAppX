@@ -9,6 +9,7 @@ Gusto/HR contracts in `.SYSTEMX/GUSTO/`.
 ## Prerequisites
 
 - Node.js >=24.0.0, npm and Git with parseable installed versions.
+- Root/starter runtime pins select Node **24.22.0**; package metadata pins npm **11.11.0**.
 - Python >=3.12.0 for host import/mirror tooling and validation.
 - GitHub CLI optionally, to create a repository from the template.
 - Firebase CLI and its emulator Java prerequisites for `dev:systemx`.
@@ -33,6 +34,22 @@ npm run dev
 Alternatively, clone `https://github.com/WayneTechLab/WebAppX.git`
 into your chosen directory, then run the same commands. Open Vite's printed URL.
 
+For only the native account-free HR/CMS/CRM portals, use:
+
+```bash
+npm run dev:mock
+# Keep the same origin across sessions when needed:
+npm run dev:mock -- --port 5185
+```
+
+The launcher prints its own `127.0.0.1` portal URL and ignores `.env` files and
+inherited provider/client configuration. Firebase, emulator and LAN integrations
+stay disabled. The default uses a free port; an occupied requested port fails
+without stopping the existing listener. Ctrl+C cleans up only this launcher's
+resources. Browser saves belong to the exact origin, so use the printed address
+or choose a consistent port deliberately. With Firebase unset, the visible
+**Account-free mode** notice links to the portals and optional sign-in setup.
+
 ## Check tools and run the account-free browser smoke
 
 `npm run doctor` is a dependency-free, read-only report of installed Node.js,
@@ -42,6 +59,12 @@ The command installs nothing and does not prove platform runtime acceptance.
 The quiet JSON command suppresses npm's headers. If npm is missing, run
 `node scripts/developer-prerequisites.mjs` directly; project dependencies are
 not required for this report.
+
+`npm run development:check` verifies root/starter runtime pins, supported engine
+and package-manager declarations, public client-variable example coverage and
+ignored local environment-file rules. It reads tracked source/examples without
+opening private `.env` files or reporting secret values. Select Node 24.22.0
+with an installed version manager for the checked-in baseline, then use `npm ci`.
 
 After `npm ci`:
 
@@ -106,6 +129,24 @@ receipt/state, selective restore/Undo and raw saved/exported payloads survived
 their reload checks; unselected records stayed intact and focus returned to the
 expected opener or retained-history fallback. Both owned resources closed.
 **WX-0653/WX-0654** are complete; final publication gates remain in the receipt.
+
+### Check the shared portal foundation
+
+Run **`npm run browser:foundation`** for directory cards, deep-link normalization,
+breadcrumbs, unsupported-page return links and save-summary states. Cards show
+registry-defined workflows/roles and **Ready / Saved / Recovered / Unavailable**.
+The shared fictional-data banner links to handling details. The authored test
+uses isolated synthetic storage faults for recovery/unavailability and preserves
+existing user browsers. Read [Template Portals](Template-Portals.md#shared-directory-and-route-recovery)
+and the [foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md).
+
+**Accepted locally — 2026-10-15:** 15 contract and 14 mock-launcher tests passed,
+including actual cold-module startup and owned cleanup. All nine foundation
+browser checks and nine existing keyboard checks passed; 121 portal model tests
+also passed. The receipt records exact planner/CI metadata checks and final
+publication gates. The full 1,000-item goal remains active at **24 completed /
+976 remaining**; consult the [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
+for dependency-ready work.
 
 ## Test HR and selected Gusto workflows
 

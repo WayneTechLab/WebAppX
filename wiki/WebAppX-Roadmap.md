@@ -2,14 +2,21 @@
 
 The public template has a structured catalog of **exactly 1,000 items** with
 `todo` or `done` status, covering 20 areas with 50 items each. Existing HR, CMS, CRM,
-persistence, backups and restore/Undo remain the implemented baseline. The list
-describes future improvements and focused verification, not 1,000 completed
-features, known defects or automatically authorized jobs. Completed catalog
-items require reviewed evidence within their stated acceptance gate.
+persistence, backups and restore/Undo remain the implemented baseline. The owner
+has authorized completing the full catalog. The active goal covers each original
+acceptance criterion, and completed items require reviewed evidence within their
+stated acceptance gate and accepted dependencies.
+
+The [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
+partitions all stable IDs into workstreams and waves, with current counts,
+dependency-ready candidates and remaining local/provider/operator criteria.
+The goal remains active until every item is accepted. Host planning records this
+intent while reusable SYSTEMX context, plan, task and memory seeds stay blank.
 
 ## Read and filter
 
 - [Roadmap and sequencing](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-ROADMAP.md)
+- [Full execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
 - [Complete 1,000-item list](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/WEBAPPX-1000-TODO.md)
 - [Canonical JSON](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/webappx-1000-todo.json)
 - [Spreadsheet CSV](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/webappx-1000-todo.csv)
@@ -25,6 +32,12 @@ npm run backlog -- --status done --limit 10
 npm run backlog -- --id WX-0151
 npm run backlog:render
 npm run backlog:check
+npm run backlog:plan
+npm run backlog:ready
+npm run backlog:ready -- --gate all --priority P1 --limit 30
+npm run backlog:graph -- --id WX-0654 --id WX-0551
+npm run backlog:plan:render
+npm run backlog:plan:check
 ```
 
 The JSON is canonical; Markdown and CSV are generated. The CI check verifies
@@ -32,6 +45,11 @@ the exact count, ordered IDs, 20 groups of 50, unique titles/acceptance, existin
 source paths, earlier dependencies, completion records and synchronized views.
 Summary counts distinguish TODO/done and show remaining priority counts.
 Queries remain local.
+
+Plan and ready reports return JSON. Graph output includes a selected dependency
+closure, longest chains and unresolved nonlocal acceptance criteria. These reports
+only read the local catalog; they start no workers and change no task statuses.
+The explicit plan-render command writes the generated execution document.
 
 ## Completion and the first P1 batch
 
@@ -41,6 +59,8 @@ repository-relative `evidence` file and `reviewedBy` set to `agent.0` or `user`.
 TODO items prohibit this metadata. The CLI checks calendar validity and file
 resolution, including paths through symbolic links; unsupported reviewers and
 missing or extra fields fail validation.
+Every dependency of a completed item must itself be completed. Recording a source
+base and evidence file without meeting the original criterion does not accept work.
 
 Generated Markdown uses a checked box for a completed item and links its
 evidence beside the verification date, source base and reviewer. CSV preserves
@@ -62,8 +82,9 @@ explicitly install Chromium with `npm run browser:install`, then run
 `npm run browser:smoke`. The runner uses an owned loopback server and clean
 contexts; it preserves existing previews and saved workspaces.
 
-Exactly **1,000 records** remain in the catalog: **7 done and 993 TODOs,
-including 160 P1, 675 P2 and 158 P3 TODOs**. Completion applies
+Exactly **1,000 records** remain in the catalog: **24 done and 976 TODOs,
+including 146 P1, 673 P2 and 157 P3 TODOs**. Remaining acceptance gates are
+**808 local, 128 operator and 40 provider**. Completion applies
 only to the evidence's scope; it supplies no provider credentials, deployment
 acceptance or permission to activate optional services. The remaining proposals
 keep their individual status, and all reusable SYSTEMX task/context/plan/memory
@@ -81,6 +102,22 @@ and harness boundaries. Both commands are included in `ci:all`; the existing HR/
 
 ## Scope and activation
 
+### Execution foundations — 2026-10-15
+
+The current foundation wave adds runtime/environment contract checks, isolated
+mock startup, shared portal routes/cards/breadcrumbs/save summaries, read-only
+CI planning and dependency-aware execution reports. Read the
+[foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+for the accepted item IDs and their exact verification.
+
+Agent 0 accepted **WX-0002–WX-0006, WX-0042, WX-0052–WX-0055, WX-0057–WX-0058,
+WX-0452, WX-0783, WX-0801, WX-0853 and WX-0932**. Focused checks passed 15
+development-contract, 14 mock-launcher, eight planner, 14 catalog, 13 CI-plan and
+121 portal model tests. The actual CI report listed all 34 stages without unknown
+classifications. Nine foundation and nine existing keyboard browser checks
+passed with successful owned cleanup. Read the receipt for final publication
+gates; completing the remaining 976 items is still the active goal.
+
 The areas cover setup, portal architecture, three HR groups, two CMS groups,
 two CRM groups, mock recovery, identity, Firebase, security/privacy, quality and
 accessibility, design, operations, delivery, SYSTEMX, adoption documentation and
@@ -88,8 +125,10 @@ optional integrations/localization.
 
 P1/P2/P3 prioritize review. The phases are foundation, portal maturity,
 production readiness and extensions. Local checks use synthetic evidence;
-provider and operator gates require separately approved optional environments.
-Read source before activating a proposal. Create only a bounded set of canonical
+provider and operator criteria require their own concrete environment and proof.
+Many describe local designs or disabled contracts that can be prepared now.
+Actual provider/platform proof remains required where the original criterion
+calls for it. Read source before activating a proposal. Create only a bounded set of canonical
 tasks in an adopted app, with actual acceptance and assignment. The public
 template's SYSTEMX context, plan, task and memory seeds remain blank.
 

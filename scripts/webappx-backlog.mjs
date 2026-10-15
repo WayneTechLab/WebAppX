@@ -61,6 +61,7 @@ export async function validate(catalog) {
   const acceptance = new Set()
   const checkedSources = new Set()
   const checkedEvidence = new Set()
+  const completedIds = new Set(catalog.items.filter(item => item?.status === 'done').map(item => item.id))
   const actualRoot = await realpath(root)
   for (const [index, item] of catalog.items.entries()) {
     const expectedId = idFor(index + 1)
@@ -90,6 +91,7 @@ export async function validate(catalog) {
       } catch { errors.push(`${expectedId}: source does not resolve inside this repository: ${item.source}`) }
     }
     if (item.status === 'done') {
+      if (Array.isArray(item.dependsOn) && item.dependsOn.some(id => !completedIds.has(id))) errors.push(`${expectedId}: done requires completed dependencies`)
       const completed = item.completion
       if (!exactKeys(completed, completionKeys) || !validDay(completed.verifiedOn)
         || typeof completed.sourceBase !== 'string' || !/^[0-9a-f]{40}$/.test(completed.sourceBase)
@@ -130,8 +132,8 @@ export function render(catalog) {
   const lines = [
     '# WebAppX — 1,000-item improvement catalog', '',
     `Planning baseline: \`${catalog.sourceCommit}\`. Created ${catalog.createdOn}.`, '',
-    'This catalog tracks proposals and evidence for the WebAppX template. Unchecked',
-    'items remain proposals. Checked items require completion metadata and a review',
+    'The owner authorized execution of the full catalog on 2026-10-15. Unchecked',
+    'items await implementation and acceptance. Checked items require completion metadata and a review',
     'receipt within their acceptance gate; a check does not establish deployment or',
     'provider access. Existing portal capabilities remain documented in source and',
     'their scoped QA receipts.', '',
@@ -140,7 +142,9 @@ export function render(catalog) {
     '`npm run backlog:render`; run `npm run backlog:check` to validate all 1,000',
     'IDs, source paths, unique titles/acceptance, dependencies, completion records',
     'and generated views.',
-    'Read the [roadmap](../WEBAPPX-ROADMAP.md) for sequencing and bounded activation.', '',
+    'Read the [execution plan](../WEBAPPX-EXECUTION-PLAN.md) for the full goal,',
+    'dependency-ready selection and acceptance boundaries, and the',
+    '[roadmap](../WEBAPPX-ROADMAP.md) for catalog conventions.', '',
     '## Reading the list', '',
     '- **P1**: first candidates to review; **P2**: subsequent maturity work; **P3**: optional expansion.',
     '- **foundation**, **portal-maturity**, **production-readiness**, **extensions** are planning phases.',

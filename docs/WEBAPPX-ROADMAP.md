@@ -1,18 +1,24 @@
 # WebAppX roadmap and 1,000 improvement items
 
-This is a planning catalog for improving the public WebAppX template from source
-baseline `8359285c99069349d6218fe871868baab76868e5`. It contains exactly **1,000
-catalog items across 20 areas**, with 50 items in each area. Their `todo` or
-`done` status distinguishes remaining proposals from reviewed completion. It does not
-claim that every proposal is a required feature, an existing defect, or accepted
-implementation scope. Recheck its source pointers and current implementation
-before selecting work; some proposals may become unnecessary after another
-change. Optional product modules are selected by an adopting app's owner.
+The owner authorized completion of the full **1,000-item catalog** on
+**2026-10-15**. The [execution plan](WEBAPPX-EXECUTION-PLAN.md) now sets the
+full goal, complete area coverage, dependency-ready selection and acceptance
+rules. Canonical `todo`/`done` status and evidence remain in the original JSON;
+its proposal-origin metadata and source baseline are retained for traceability.
+
+Implementation proceeds through dependency-aware waves across all 20 areas.
+Every item must meet its original acceptance criterion before completion.
+Provider/operator items are reviewed individually: local plans and disabled
+contracts can be built now, while actual platform/provider observations require
+the named environment. Activation and deployment remain specific operator
+acceptance steps. Reusable SYSTEMX adoption seeds stay blank; the host execution
+plan records this public template's work.
 
 ## Open the list
 
 | Format | Use |
 | --- | --- |
+| [Full execution plan](WEBAPPX-EXECUTION-PLAN.md) | Current goal, twenty workstreams, derived progress, dependency frontier and resume commands |
 | [All 1,000 improvement items](backlog/WEBAPPX-1000-TODO.md) | Read by area, ID and priority; each item has a specific acceptance check and source pointer |
 | [Canonical JSON](backlog/webappx-1000-todo.json) | Edit proposals and inspect structured dependencies, phases, acceptance gates and completion evidence |
 | [CSV](backlog/webappx-1000-todo.csv) | Filter or review in a spreadsheet without changing the canonical catalog |
@@ -70,8 +76,8 @@ scope. The next wave completes **WX-0001**, the developer prerequisite report,
 **WX-0652**, the automated HR/CMS/CRM browser smoke, and its named seed-pack
 dependency **WX-0651**. See the
 [developer/browser receipt](DEVELOPER-BROWSER-QA-2026-10-14.md) for exact local
-coverage. The catalog still has **1,000 records: 7 done and 993 TODOs**, including
-**160 P1, 675 P2 and 158 P3 TODOs**. Use `--status done` to inspect accepted
+coverage. The catalog still has **1,000 records: 24 done and 976 TODOs**, including
+**146 P1, 673 P2 and 157 P3 TODOs**. Use `--status done` to inspect accepted
 results and `--status todo` to choose the next bounded batch.
 
 ```bash
@@ -195,3 +201,14 @@ tree matches the original receipt commit, so no import application is needed.
 The updater now recognizes that case while preserving the original receipt.
 See [managed integration](SYSTEMX-INTEGRATION.md) and the
 [refresh/roadmap verification receipt](SYSTEMX-ROADMAP-QA-2026-10-14.md).
+
+## Full-goal foundation checkpoint — 2026-10-15
+
+The [foundation QA receipt](EXECUTION-FOUNDATION-QA-2026-10-15.md) records the
+seventeen newly accepted IDs, runtime/environment contracts, isolated mock
+startup, portal shell behavior, source-derived CI report and dependency graph.
+The [existing-feature acceptance review](EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md)
+closes four exact baseline criteria and leaves WX-0717 pending its prerequisite.
+The execution plan and checklist derive their current twenty-area counts and
+next dependency-ready candidates from the same JSON. The full goal remains
+active; a published wave does not finish the other 976 criteria.

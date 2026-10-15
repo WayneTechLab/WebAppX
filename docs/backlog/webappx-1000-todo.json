@@ -28,62 +28,92 @@
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Provide explicit runtime version pins",
       "acceptance": "A fresh shell can select the documented Node baseline from a checked-in runtime pin and the setup guide explains the supported range.",
       "source": "package.json",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0003",
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Validate root and starter runtime declarations together",
       "acceptance": "A maintenance check reports mismatched engine or package-manager declarations between the root app and starter copy.",
       "source": ".SYSTEMX/Template/starter/package.json",
       "gate": "local",
       "dependsOn": [
         "WX-0002"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0004",
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add an environment example coverage check",
       "acceptance": "Every documented client environment variable is represented in the example or explicitly marked optional, with no secret values read.",
       "source": "src/vite-env.d.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0005",
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Explain unset Firebase configuration in the app",
       "acceptance": "Starting without Firebase configuration shows that account-free portals remain available and names the optional setup step for sign-in.",
       "source": "src/config/firebase.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0006",
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Provide a dependency-free mock quick-start command",
       "acceptance": "The command starts the native mock portals with provider and emulator integrations disabled and prints the portal URL.",
       "source": "package.json",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0007",
@@ -512,12 +542,18 @@
       "area": "setup",
       "priority": "P3",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Document optional provider adoption boundaries in setup",
       "acceptance": "The first-run guide separates account-free tasks from later provider registration, secret placement and operator-approved activation.",
       "source": "docs/GUSTO-SETUP.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0043",
@@ -638,50 +674,74 @@
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Generate portal directory cards from the registry",
       "acceptance": "Changing one portal registry entry updates its card and navigation without a second duplicated definition.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
       "dependsOn": [
         "WX-0051"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0053",
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add route normalization coverage for portal entry points",
       "acceptance": "Trailing slashes, query strings and supported deep links resolve to the intended portal without losing the requested route.",
       "source": "src/router.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0054",
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add distinct unsupported portal route states",
       "acceptance": "An unknown CMS, CRM or HR demo subroute explains the missing route and offers a link to the relevant workspace.",
       "source": "src/router.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0055",
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add portal route breadcrumbs",
       "acceptance": "Deep HR views and future CMS/CRM sections show a keyboard-accessible breadcrumb back to the portal directory.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0056",
@@ -700,24 +760,36 @@
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a shared mock-mode banner",
       "acceptance": "Every native portal consistently identifies its fictional, account-free mode and links to the same data-handling explanation.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0058",
       "area": "portal-shell",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a workspace save summary in the directory",
       "acceptance": "The directory shows ready, saved, recovered or unavailable status for each module from current provider status.",
       "source": "src/portals/PortalWorkspaceProvider.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0059",
@@ -5580,14 +5652,20 @@
       "area": "mock-recovery",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Show restore-point retention effects in preview",
       "acceptance": "Before confirmation, the UI names how many older points would be removed to retain the new point within current limits.",
       "source": "src/portals/restore-points.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0451"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0453",
@@ -9719,12 +9797,18 @@
       "area": "operations",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Create a browser-origin troubleshooting guide",
       "acceptance": "The guide explains why a workspace saved at localhost differs from 127.0.0.1 and how to move it with a combined backup.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0784",
@@ -9939,12 +10023,18 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a CI execution plan report",
       "acceptance": "A local command prints the existing ci:all stages, their dependent workspaces and mutation characteristics without executing or weakening any gate.",
       "source": "scripts/check-template.sh",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0802",
@@ -10588,12 +10678,18 @@
       "area": "systemx",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add dependency critical-path visualization",
       "acceptance": "A read-only view shows the selected proposal dependency graph, longest dependency chains and unresolved external gates without assigning or dispatching workers.",
       "source": "docs/TEMPLATE-MAINTENANCE.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXECUTION-FOUNDATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0854",
@@ -11554,12 +11650,18 @@
       "area": "adoption",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a no-shared-test-key explanation",
       "acceptance": "The guide explains that local mocks need no key and that provider-issued development access belongs to the adopter's approved environment.",
       "source": "docs/GUSTO-SETUP.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "0469e11bcb17ec67b118099a73958e039c759979",
+        "evidence": "docs/EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0933",

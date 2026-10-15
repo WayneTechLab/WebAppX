@@ -1,5 +1,49 @@
 # Update Log
 
+## 3.4.0 full-catalog execution and portal foundations — 2026-10-15
+
+The owner authorizes completing **all 1,000 original catalog items**. Publish
+the generated [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
+with workstream/wave coverage, dependency-ready selections, longest chains and
+remaining acceptance gates. Add read-only `backlog:plan`, `backlog:ready` and
+`backlog:graph`, with explicit plan render/check commands. Completed entries must
+retain their original criteria and accepted dependencies. The goal remains
+active until every item is accepted; reusable SYSTEMX execution seeds stay blank.
+
+Pin root/starter Node **24.22.0** and npm **11.11.0**, retaining the documented
+Node >=24.0.0 minimum. Add public runtime/environment contract validation and
+an owned `dev:mock` launcher with sanitized child configuration, ignored `.env`
+files, free/explicit strict loopback ports and provider/emulator/LAN integrations
+disabled. Show unset-Firebase guidance linking to mock portals and optional setup.
+
+Extend shared portal cards, normalized routes, unsupported-page recovery,
+breadcrumbs, fictional-data notices and provider-backed Ready/Saved/Recovered/
+Unavailable save summaries. Handling links preserve mounted unsaved portal forms.
+Add `browser:foundation` alongside smoke/keyboard coverage, with explicit isolated
+storage fault cases. Add source-derived `ci:plan` to explain actual stage order,
+dependent workspaces and reviewed mutation behavior without executing gates.
+
+Read [WebAppX Roadmap](WebAppX-Roadmap.md), [Template Portals](Template-Portals.md)
+and the [foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+for accepted IDs, exact counts and actual verification. App 3.4.0, deploy count 0,
+immutable alpha.6 releases, research inventories and blank adoption seeds remain
+preserved. Local evidence and prepared designs retain their stated provider,
+operator and platform boundaries.
+
+Accept **17 additional IDs**: **WX-0002–WX-0006, WX-0042, WX-0052–WX-0055,
+WX-0057–WX-0058, WX-0452, WX-0783, WX-0801, WX-0853 and WX-0932**. The catalog
+retains **1,000 records: 24 done, 976 remaining — 146 P1, 673 P2 and 157 P3**.
+Remaining gates are **808 local, 128 operator and 40 provider**; the full goal
+remains active.
+
+Focused verification passed **15 contract, 14 launcher, eight planner, 14 catalog,
+13 CI-plan and 121 portal model tests**. The CI report described all **34 stages**
+with **zero unknown classifications**. **Nine foundation and nine existing
+keyboard browser checks passed**, including unsaved-state preservation and
+isolated storage faults. Owned cleanup succeeded; only expected Firebase setup
+warning appeared. The receipt records review corrections and final integrated
+publication gates separately.
+
 ## 3.4.0 keyboard onboarding and selective recovery — 2026-10-15
 
 Add **WX-0653** native onboarding and **WX-0654** selective restore/Undo keyboard
@@ -33,7 +77,7 @@ after retention. Both owned resources closed; only the expected Firebase warning
 appeared. Independent source review had no unresolved findings. Final publication
 gates are recorded separately in the receipt.
 
-The catalog keeps **1,000 records**: **seven completed, 993 remaining — 160 P1,
+At that keyboard checkpoint the catalog keeps **1,000 records**: **seven completed, 993 remaining — 160 P1,
 675 P2 and 158 P3**. Existing completion evidence remains preserved.
 
 ## 3.4.0 developer prerequisite report and automated portal smoke — 2026-10-14

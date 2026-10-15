@@ -76,7 +76,20 @@
     "browser:smoke": "node scripts/browser-smoke.mjs",
     "browser:smoke:test": "node --test tests/browser/seed-pack.test.mjs",
     "browser:keyboard": "node scripts/browser-keyboard.mjs",
-    "browser:keyboard:test": "node --test tests/browser/keyboard-driver.test.mjs"
+    "browser:keyboard:test": "node --test tests/browser/keyboard-driver.test.mjs",
+    "backlog:plan": "node scripts/backlog-execution.mjs --summary",
+    "backlog:ready": "node scripts/backlog-execution.mjs --ready",
+    "backlog:graph": "node scripts/backlog-execution.mjs --graph",
+    "backlog:plan:render": "node scripts/backlog-execution.mjs --write",
+    "backlog:plan:check": "node scripts/backlog-execution.mjs --check",
+    "backlog:plan:test": "node --test tests/backlog/execution.test.mjs",
+    "development:check": "node scripts/check-development-contracts.mjs",
+    "development:test": "node --test tests/setup/development-contracts.test.mjs",
+    "dev:mock": "node scripts/dev-mock.mjs",
+    "dev:mock:test": "node --test tests/setup/dev-mock.test.mjs",
+    "ci:plan": "node scripts/ci-plan.mjs",
+    "ci:plan:test": "node --test tests/setup/ci-plan.test.mjs",
+    "browser:foundation": "node scripts/browser-foundation.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",
@@ -104,5 +117,9 @@
   },
   "overrides": {
     "@grpc/grpc-js": "^1.14.5"
-  }
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "npm@11.11.0"
 }

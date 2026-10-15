@@ -1,3 +1,33 @@
+# 3.4.0 follow-up — Full-catalog execution and portal foundations — 2026-10-15
+
+- Record the owner-authorized goal to complete all 1,000 original acceptance
+  criteria in a generated host execution plan; preserve blank reusable ledgers.
+- Add local dependency-ready JSON reports, selected graph closure/longest-chain
+  views and explicit plan render/check commands. Require completed dependencies
+  before accepting a dependent catalog item.
+- Pin Node 24.22.0/npm 11.11.0 across root/starter, retain Node >=24.0.0 policy,
+  and validate runtime/environment contracts without reading private env values.
+- Add owned `dev:mock` startup with sanitized child environment, ignored env
+  files, free/explicit strict loopback ports and provider/emulator/LAN disabled.
+  Show unset-Firebase guidance with links to portals and optional sign-in setup.
+- Add registry-driven cards, normalized deep links, unsupported-page recovery,
+  breadcrumbs, shared mock notices and Ready/Saved/Recovered/Unavailable summaries.
+  Keep handling-link navigation inside the app to preserve mounted unsaved forms.
+- Add `browser:foundation` with scoped synthetic storage faults and read-only
+  `ci:plan` describing actual stages, dependent workspaces and mutation categories.
+- Accept 17 additional IDs, retaining exactly 1,000 records: 24 done and 976
+  remaining, comprising 146 P1, 673 P2 and 157 P3. Remaining gates are 808 local,
+  128 operator and 40 provider; the full goal remains active.
+- Focused checks passed 15 contracts, 14 launcher, eight planner, 14 catalog,
+  13 CI-plan and 121 portal model tests. Nine foundation and nine existing
+  keyboard browser checks passed with owned cleanup. CI planning covered all
+  34 required stages without unknown classifications. Record final integrated
+  publication gates separately in the receipt.
+- Update README/wiki and host guidance; record exact acceptance and checks in the
+  [foundation QA receipt](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md).
+  The full goal remains active; version 3.4.0/deploy count 0, immutable alpha.6,
+  research inventories and blank adoption seeds remain preserved.
+
 # 3.4.0 follow-up — Keyboard onboarding and selective recovery — 2026-10-15
 
 - Add WX-0653 native onboarding and WX-0654 selective restore/Undo journeys with

@@ -17,5 +17,7 @@ export function navigate(to: string) {
   const target = to.startsWith('/') ? to : `/${to}`
   window.history.pushState({}, '', target)
   window.dispatchEvent(new Event(NAVIGATION_EVENT))
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    || document.documentElement.dataset.wtlMotion === 'reduced'
+  window.scrollTo({ top: 0, behavior: reducedMotion ? 'instant' : 'smooth' })
 }

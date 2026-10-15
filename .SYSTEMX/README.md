@@ -19,10 +19,31 @@ Verified completions link their evidence. **WX-0051 and WX-0451** complete the
 first P1 follow-up with a shared registry and restore storage-budget preview.
 **WX-0001, WX-0651 and WX-0652** add verified developer readiness, named seeds
 and automated browser smoke. **WX-0653/WX-0654** add accepted keyboard journeys.
-The catalog retains exactly **1,000 records**, with **seven completed and 993
-remaining: 160 P1, 675 P2 and 158 P3**.
+The catalog retains exactly **1,000 records**, with **24 completed and 976
+remaining: 146 P1, 673 P2 and 157 P3**. Remaining gates are **808 local, 128
+operator and 40 provider**.
 The host pointer links implementation and local browser/QA evidence
 without changing selected upstream defaults.
+
+The owner has authorized implementation and verification of **all 1,000 items**.
+The [host execution plan](../docs/WEBAPPX-EXECUTION-PLAN.md) partitions every
+stable ID into workstreams/waves and computes dependency-ready candidates.
+`npm run backlog:plan`, `backlog:ready` and `backlog:graph` inspect scope without
+dispatching workers or changing completion status. The goal stays active until
+all original criteria have accepted evidence. Blank reusable execution seeds
+remain preserved; provider/operator requirements retain their exact proof scope.
+
+The current foundation adds root/starter Node 24.22.0 and npm 11.11.0 contracts,
+`development:check`, isolated `dev:mock`, normalized portal routes, shared cards/
+breadcrumbs/notices and provider-backed save summaries. `ci:plan` reads the actual
+CI stages, dependent workspaces and reviewed mutation categories without running
+them. The [foundation QA receipt](../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+records accepted IDs, local evidence and publication gates.
+The foundation accepted 17 additional IDs after 15 contract, 14 launcher, eight
+planner, 14 catalog, 13 CI-plan and 121 portal model tests passed. Nine foundation
+and nine existing keyboard browser checks passed; the CI report covered all 34
+stages with zero unknown classifications. Owned cleanup succeeded. Final
+integrated publication gates remain recorded in the receipt.
 
 Host-owned developer checks now include `npm run doctor` (or
 `npm run --silent doctor -- --json`) for read-only prerequisite versions and

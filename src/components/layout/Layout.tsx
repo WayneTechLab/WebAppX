@@ -5,6 +5,7 @@ import { PageSnapMenu } from '@/components/shell/PageSnapMenu'
 import { HelpDeskChat } from '@/components/shell/HelpDeskChat'
 import { AccessibilityPageControl } from '@/components/shell/AccessibilityPageControl'
 import { siteControls } from '@/config/siteControls'
+import { FirebaseSetupNotice } from './FirebaseSetupNotice'
 
 type LayoutProps = {
   children: ReactNode
@@ -18,6 +19,7 @@ export function Layout({ children, currentPath }: LayoutProps) {
       {...(import.meta.env.DEV ? { 'data-systemx-name': 'App Layout' } : {})}
     >
       <Navbar key={`navbar:${currentPath}`} currentPath={currentPath} />
+      <FirebaseSetupNotice />
       <main
         id="content"
         tabIndex={-1}

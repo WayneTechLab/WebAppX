@@ -114,6 +114,55 @@ The LAN is a developer/operator control plane. Deployed CMS and CRM portals
 should be application routes with their own scoped services and records.
 Keep LAN routes and source-edit capabilities outside production bundles.
 
+### Shared directory and route recovery
+
+Start only the native account-free workspaces with **`npm run dev:mock`**.
+It prints its `/portals` URL, ignores environment files and inherited provider
+configuration, and keeps Firebase/emulators/LAN connections disabled. Use
+`npm run dev:mock -- --port 5185` when a stable browser-save origin is needed.
+An occupied explicit port fails without replacing another listener. When the
+app has no Firebase configuration, the visible **Account-free mode** notice
+keeps the portals reachable and explains the optional sign-in setup.
+
+Directory cards show the shared registry's description, workflows and preview
+roles alongside each workspace's current save summary:
+
+| Summary | Meaning |
+| --- | --- |
+| Ready | Sample fixtures are active; no successful domain save is required to browse, including after a successful Reset |
+| Saved | A domain state saved successfully or loaded from the current browser origin; the detailed message distinguishes those cases |
+| Recovered | A malformed/incompatible save was rejected and fixtures are active with an explanation; existing rejected bytes remain until a later successful action or explicit Reset replaces/removes them |
+| Unavailable | Browser storage could not be read or written; current mock records may be usable in memory, but persistence is not guaranteed |
+
+The summaries read the same provider state used inside each portal. Navigating
+to the directory does not save fresh fixtures. They report local browser storage
+and do not imply provider or cloud readiness.
+
+A shared **Account-free mock workspace** banner appears across portal pages and
+links to **How mock data is handled**. Breadcrumbs provide directory/workspace
+return paths and HR portal/page context. Supported trailing-slash deep links
+keep their original query and hash. Unknown descendants display a portal-specific
+unavailable-page explanation with links back to that workspace or the directory;
+showing or leaving the recovery page preserves saved fictional records.
+Following **How mock data is handled** uses in-app navigation, retaining mounted
+unsaved portal forms while showing the handling details.
+
+Run **`npm run browser:foundation`** for the authored registry-card, route,
+breadcrumb and save-summary checks, including isolated synthetic malformed/
+unavailable-storage cases. The
+[execution foundation receipt](EXECUTION-FOUNDATION-QA-2026-10-15.md) records
+actual outcomes and separates normal UI actions from storage-fault injection.
+
+**Accepted foundation results — 2026-10-15:** all nine authored browser checks
+passed, including optional Firebase guidance, complete registry card content,
+trailing-slash/query/hash preservation, keyboard breadcrumbs, unsupported-route
+recovery, unsaved CMS/document preservation, save/refresh summaries and isolated
+corrupted/denied-storage states. The 120 portal model tests and existing nine
+keyboard browser checks also passed. Owned browser/server cleanup succeeded;
+only the expected unset-Firebase warning appeared. The receipt records review
+corrections, the 17 accepted IDs and final publication gates. The complete goal
+remains active at **24 done / 976 remaining** across the 1,000-item catalog.
+
 ### Shared portal registry
 
 `src/portals/registry.ts` is the source for the native demo portals' module

@@ -66,6 +66,31 @@ to diagnose the installed tools. The quiet npm JSON command omits npm's headers.
 The report does not install tools, configure services or establish platform
 runtime acceptance.
 
+The root app and reusable starter pin **Node 24.22.0** in `.nvmrc` and
+`.node-version`, declare the supported minimum **Node >=24.0.0**, and record
+**npm 11.11.0** as the package manager. Select the checked-in runtime pin with
+your installed version manager, then use `npm ci`. **`npm run development:check`**
+compares root/starter runtime declarations, public client environment-variable
+coverage and ignored local environment-file rules. It reads checked-in source
+and examples without opening private environment files or returning secret values.
+
+### Start only the native account-free portals
+
+```bash
+npm run dev:mock
+# Optional stable origin for saved samples:
+npm run dev:mock -- --port 5185
+```
+
+The launcher prints its `/portals` URL on `127.0.0.1`, uses a free port by
+default and strictly binds an explicitly chosen port. An occupied port produces
+an error and preserves the existing listener. Its child ignores `.env` files
+and inherited provider/client configuration, with Firebase, emulators, LAN and
+provider integrations disabled. Ctrl+C stops only this launcher's resources.
+Use the same browser origin to retain saves across runs; changing the port
+selects separate browser storage. When Firebase is unset, the app's visible
+**Account-free mode** notice links to the portals and the optional sign-in setup.
+
 After `npm ci`, run **`npm run browser:install`** once to install the Chromium
 browser for the exact pinned **Playwright 1.64.1** dependency. Then run
 **`npm run browser:smoke`**. It starts its own Vite server on an available
@@ -151,19 +176,21 @@ the outer `.SYSTEMX` or an explicitly selected child `.SYSTEMXP`.
 | Verified manual updates | Preview/import exact public source, back up recognized stock launchers, retain immutable snapshots and adopted records |
 | HR and Gusto | Portable `.SYSTEMX/GUSTO/` contracts, complete native synthetic journeys and selected pinned SDK workflow previews |
 
-## Roadmap and 1,000 improvement items
+## Roadmap and execution of all 1,000 items
 
 The [WebAppX roadmap](docs/WEBAPPX-ROADMAP.md) links **exactly 1,000 improvement
 items across 20 areas**, covering HR, CMS, CRM, local recovery, security,
 Firebase adoption, design, quality, operations, SYSTEMX and integrations.
 Each has a stable `WX-0001`–`WX-1000` ID, priority, phase, specific acceptance
 check, existing source pointer, acceptance gate and dependencies.
-Verified completions include their evidence in the canonical catalog; unstarted
-items remain proposals. **Seven items are completed: WX-0001, WX-0051, WX-0451,
-WX-0651, WX-0652, WX-0653 and WX-0654.** The catalog still contains exactly
-**1,000 records**; **993 remain: 160 P1, 675 P2 and 158 P3**.
+Verified completions include their evidence in the canonical catalog; unfinished
+items remain open work. The catalog contains exactly **1,000 records**:
+**24 completed, 976 remaining — 146 P1, 673 P2 and 157 P3**. The remaining
+acceptance gates are **808 local, 128 operator and 40 provider**. Completion
+evidence and accepted dependencies remain attached to each completed ID.
 
 - [Read the complete list](docs/backlog/WEBAPPX-1000-TODO.md)
+- [Execution plan for the full catalog](docs/WEBAPPX-EXECUTION-PLAN.md)
 - [Canonical JSON](docs/backlog/webappx-1000-todo.json) · [CSV](docs/backlog/webappx-1000-todo.csv)
 - [SYSTEMX planning pointer](.SYSTEMX/WEBAPPX-ROADMAP.md)
 
@@ -175,6 +202,46 @@ planning scope; delivered items are tracked in the roadmap with their evidence.
 It does not represent 1,000 implemented features or active agent jobs. The
 reusable SYSTEMX records stay blank; optional provider/operator work requires
 its own reviewed adoption scope.
+
+The owner authorized completing the entire catalog on **2026-10-15**. The active
+goal covers all 1,000 original acceptance criteria and requires reviewed
+implementation and evidence for each item. The generated execution plan partitions every stable
+ID into workstreams and waves and reports dependency-ready candidates. Run
+**`npm run backlog:plan`**, **`npm run backlog:ready`**, or
+**`npm run backlog:graph -- --id WX-0654 --id WX-0551`** to inspect scope and
+dependencies without starting workers or changing completion state. Provider and
+operator criteria retain their specific proof and activation boundaries.
+The goal remains active until every item is accepted; the host execution plan
+records this intent while reusable SYSTEMX task/context/plan/memory seeds stay blank.
+
+### Foundation workflow
+
+The portal directory now shows registry-defined descriptions, workflows and roles,
+plus **Ready / Saved / Recovered / Unavailable** browser-save summaries for each
+workspace. Shared mock notices and breadcrumbs explain local fictional records
+and provide return paths. Trailing-slash deep links retain their query/hash;
+unsupported portal pages offer recovery links without changing saved records.
+Use **`npm run browser:foundation`** for the authored shell, route and save-state
+journey alongside the existing smoke and keyboard commands.
+
+**`npm run ci:plan`** reads the actual `ci:all` runner and package declarations
+to report stage order, dependent workspaces and reviewed mutation behavior.
+It executes no gates and labels unreviewed commands as unknown. Use the
+[foundation QA receipt](docs/EXECUTION-FOUNDATION-QA-2026-10-15.md) for this wave's
+actual checks, acceptance IDs and publication evidence.
+
+**Foundation verification — 2026-10-15:** 15 development-contract tests,
+14 mock-launcher tests, eight planner tests, 14 catalog tests and 121 portal
+model tests passed. The CI report passed 13 tests and described all 34 required
+stages with no unknown classifications. All nine foundation browser checks and
+the existing nine keyboard checks passed, including unset-Firebase guidance,
+normalized routes, keyboard breadcrumbs, unsaved-form preservation and synthetic
+storage recovery/unavailability. Owned cleanup succeeded; only the expected
+unset-Firebase warning appeared. Full `ci:all`, Hosting preflight and final
+host drift/plan/checklist checks passed; the receipt retains the diagnosed
+failures, corrections and final suite results. The full goal remains active.
+Agent 0 accepted 17 additional IDs, bringing the total to 24. The full goal remains
+active; the receipt holds final integrated CI, preflight and publication results.
 
 ### First P1 portal improvements
 

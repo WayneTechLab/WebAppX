@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useState, type ReactNode } from 'react'
 import { useDemoPersistence } from './useDemoPersistence'
 import { createDemoWorkspaces, demoWorkspaceValidators, type DemoWorkspaces } from './workspaces'
-import type { DemoModule } from './persistence'
+import type { DemoModule, DemoStorageStatus } from './persistence'
 import { restoreWithCheckpoint, undoRestorePoint } from './restore-workspaces'
 import { clearRestorePoints, loadRestorePoints, type RestorePointsLoad } from './restore-points'
 
@@ -10,6 +10,7 @@ type WorkspaceRevisions = Record<DemoModule, number>
 type WorkspaceBundle = {
   states: DemoWorkspaces
   revisions: WorkspaceRevisions
+  statuses: Record<DemoModule, DemoStorageStatus>
   restore: (states: DemoWorkspaces, selected: readonly DemoModule[]) => ReturnType<typeof restoreWithCheckpoint>
   history: RestorePointsLoad
   undo: (pointId: string) => ReturnType<typeof undoRestorePoint>
@@ -64,7 +65,8 @@ export function PortalWorkspaceProvider({ children }: { children: ReactNode }) {
   }
   const refreshHistory = () => setHistory(loadRestorePoints())
 
-  return <PortalWorkspaceContext.Provider value={{ hr, cms, crm, bundle: { states, revisions, restore, history, undo, clearHistory, refreshHistory } }}>{children}</PortalWorkspaceContext.Provider>
+  const statuses = { hr: hr.status, cms: cms.status, crm: crm.status }
+  return <PortalWorkspaceContext.Provider value={{ hr, cms, crm, bundle: { states, revisions, statuses, restore, history, undo, clearHistory, refreshHistory } }}>{children}</PortalWorkspaceContext.Provider>
 }
 
 // These hooks deliberately share the provider's private context.

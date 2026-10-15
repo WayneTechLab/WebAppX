@@ -14,6 +14,16 @@ The Firebase emulator session also needs Firebase CLI and the Java runtime
 required by your installed Firebase emulator tooling. Optional browser/cloud
 CLIs are installed separately through the setup playbook.
 
+The reproducible Node selection is **24.22.0**, recorded in both `.nvmrc` and
+`.node-version` at the app root and in the starter copy. With `nvm-sh` already
+installed, run `nvm install` once and `nvm use` in the repository before `npm ci`.
+On Windows, select the version printed by `Get-Content .node-version` in your
+installed Node version manager. `packageManager` records **npm 11.11.0**;
+the engine minimum remains **Node >=24.0.0**, matching the doctor. A matching
+declaration or version report does not establish runtime acceptance on every
+Node version or target platform. See [development contracts](DEVELOPMENT-CONTRACTS.md)
+for the read-only root/starter and environment coverage checks.
+
 macOS and Windows x64/ARM64 are target platforms. Historical host verification
 was recorded on macOS Apple Silicon; use current checks for your selected
 revision. Core PowerShell launchers and record tools are included. Native Windows

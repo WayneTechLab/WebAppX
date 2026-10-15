@@ -4,6 +4,7 @@ This host-owned page links the public template's improvement catalog. It is not
 a selected upstream default, project memory seed or active task ledger.
 
 - [Roadmap and sequencing](../docs/WEBAPPX-ROADMAP.md)
+- [Full-catalog execution plan](../docs/WEBAPPX-EXECUTION-PLAN.md)
 - [Exactly 1,000 improvement items](../docs/backlog/WEBAPPX-1000-TODO.md)
 - [Canonical JSON](../docs/backlog/webappx-1000-todo.json)
 - [Refresh and backlog verification](../docs/SYSTEMX-ROADMAP-QA-2026-10-14.md)
@@ -16,6 +17,51 @@ canonical tasks in an adopted app. Provider/operator gates remain separate.
 
 `WORK/TASKS.json`, context, plan, project memory and agent memory remain blank
 reusable seeds. No active tasks or roles are created by publishing the catalog.
+
+## Active goal: complete all 1,000 items — 2026-10-15
+
+The owner authorized implementing every remaining item against its original
+acceptance criteria. The host [execution plan](../docs/WEBAPPX-EXECUTION-PLAN.md)
+covers every stable ID, workstream and wave. The canonical catalog owns
+completion evidence; the plan/checklist/CSV are generated views. This goal stays
+active until every item has reviewed acceptance. Provider/operator criteria
+retain their named environment, proof and activation boundaries; local design
+and disabled-contract work proceeds where its original criterion permits it.
+
+Use `npm run backlog:plan` for JSON scope/progress, `backlog:ready` for bounded
+dependency-ready candidates and `backlog:graph -- --id WX-0654 --id WX-0551`
+for a selected dependency closure and unresolved nonlocal criteria. These reports
+only read local catalog data. They do not dispatch agents, import task records,
+contact providers or change acceptance. `backlog:plan:render` explicitly writes
+the generated plan; `backlog:plan:check` verifies it without rewriting.
+
+### Execution foundations
+
+The current wave adds runtime/environment contracts, sanitized account-free
+startup, shared portal cards/routes/breadcrumbs/notices/save summaries and
+source-derived CI planning. Node 24.22.0/npm 11.11.0 are pinned across root and
+starter; the supported Node minimum remains >=24.0.0. `dev:mock` prints an owned
+loopback portal URL with provider/emulator/LAN integrations disabled. Shared
+browser state distinguishes Ready, Saved, Recovered and Unavailable. The authored
+`browser:foundation` journey includes scoped synthetic storage-fault checks.
+
+`ci:plan` explains actual stage order and reviewed mutation categories without
+running the gates. Read the
+[foundation QA receipt](../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md) for accepted
+items, original evidence and publication results. Managed snapshots, research
+fingerprints and blank task/context/plan/memory seeds remain intact.
+
+Agent 0 accepted **WX-0002–WX-0006, WX-0042, WX-0052–WX-0055, WX-0057–WX-0058,
+WX-0452, WX-0783, WX-0801, WX-0853 and WX-0932**. The current catalog contains
+exactly **1,000 records: 24 done, 976 remaining — 146 P1, 673 P2 and 157 P3**.
+Remaining gates are **808 local, 128 operator and 40 provider**. The full goal
+stays active until each remaining original criterion is accepted.
+
+Focused checks passed 15 contracts, 14 launcher, eight planner, 14 catalog,
+13 CI-plan and 121 portal model tests. Nine foundation and nine existing
+keyboard browser checks passed; owned cleanup succeeded. The actual CI report
+covered all 34 stages with zero unknown classifications. The receipt records
+original evidence and final integrated publication gates.
 
 ## Keyboard onboarding and selective recovery — 2026-10-15
 
@@ -47,7 +93,7 @@ intact and opener/history-heading focus returns passed. Both owned resources
 closed; independent review had no unresolved findings. Final publication gates
 remain in the receipt.
 
-The current catalog retains **1,000 records**: **seven completed, 993 remaining —
+At that keyboard checkpoint the catalog retains **1,000 records**: **seven completed, 993 remaining —
 160 P1, 675 P2 and 158 P3**. Earlier checkpoints below preserve their original totals.
 
 ## Developer readiness and automated browser smoke — 2026-10-14

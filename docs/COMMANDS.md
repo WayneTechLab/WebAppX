@@ -15,6 +15,9 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 | `npm run browser:smoke -- --output /path/to/local/artifacts` | Create a fresh artifact directory under the chosen parent |
 | `npm run browser:keyboard` | Isolated Chromium onboarding and selective restore/Undo journeys using real Tab traversal, Enter/Space, keyboard typing and visible-focus checks |
 | `npm run browser:keyboard:test` | Focused guard checks for the keyboard driver |
+| `npm run development:check` | Read-only root/starter runtime, public client environment coverage and ignored local environment-file contract check |
+| `npm run development:test` | Focused runtime/environment contract regressions |
+| `npm run browser:foundation` | Isolated portal cards, normalized routes, breadcrumbs, unsupported-page recovery and save-summary browser journey |
 
 The doctor requires Node.js >=24.0.0 and Python >=3.12.0; npm/Git must be present
 with parseable versions, without a specified minimum. It installs nothing and
@@ -42,11 +45,28 @@ recovery), **11 driver guard tests** and **16 existing seed/runner guard tests**
 It recorded 110 onboarding and 266 recovery focus observations. The keyboard
 receipt records exact outputs, limitations and final publication gates.
 
+The root and starter runtime pin is Node **24.22.0**, with the supported minimum
+**>=24.0.0** and exact package-manager declaration **npm 11.11.0**. The development
+contract check reads tracked source/examples and variable names; private `.env`
+files and secret values stay outside its inputs. The foundation browser journey
+uses the same owned server/cache and clean-context isolation as existing browser
+commands. Its synthetic storage-fault cases are scoped evidence for visible
+Recovered/Unavailable states. Read the
+[foundation QA receipt](EXECUTION-FOUNDATION-QA-2026-10-15.md).
+Accepted focused verification passed 15 contract tests, 14 mock-launcher tests,
+eight planner tests, 14 catalog tests and 121 portal model tests. CI planning
+passed 13 tests and reported all 34 stages with zero unknown classifications.
+Nine foundation browser checks and nine existing keyboard checks passed; final
+integrated gates remain recorded in the receipt.
+
 ## App and local session
 
 | Command | Behavior |
 | --- | --- |
 | `npm run dev` | Vite webapp only; use its printed URL |
+| `npm run dev:mock` | Owned native HR/CMS/CRM server on a free `127.0.0.1` port, with `.env` files and provider/emulator/LAN integrations disabled |
+| `npm run dev:mock -- --port 5185` | Request a stable local origin; an occupied explicit port fails without stopping its listener |
+| `npm run dev:mock:test` | Mock-launcher argument, environment, ownership and shutdown regressions |
 | `npm run dev:systemx` | Owned app + LAN + Firebase emulator session with available loopback ports |
 | `npm run dev:firebase` | Alias for the integrated local session |
 | `npm run systemx:lan` | Direct LAN service only |
@@ -126,22 +146,41 @@ available. macOS checks alone do not prove Windows x64/ARM64 runtime acceptance.
 | `npm run backlog:render` | Regenerate Markdown/CSV from the canonical JSON catalog |
 | `npm run backlog:check` | Validate count, identities, sources, dependencies and generated-view parity |
 | `npm run backlog:test` | Catalog metadata, invalid-input and query regression tests |
+| `npm run backlog:plan` | Read-only JSON execution report covering all 1,000 IDs, waves, priorities and remaining acceptance gates |
+| `npm run backlog:ready` | Dependency-ready local candidates, ordered by priority, phase and stable ID |
+| `npm run backlog:ready -- --gate all --priority P1 --limit 30` | Inspect a bounded selection across local/provider/operator gates; this does not grant readiness or access |
+| `npm run backlog:graph -- --id WX-0654 --id WX-0551` | Read-only Mermaid view of selected dependency closure, longest chains and unresolved nonlocal criteria |
+| `npm run backlog:plan:render` | Explicitly regenerate the host execution-plan Markdown from canonical statuses/evidence |
+| `npm run backlog:plan:check` | Verify exact generated execution-plan parity without rewriting it |
+| `npm run backlog:plan:test` | Dependency ordering, report modes and generated-plan regression tests |
 
 The [roadmap](WEBAPPX-ROADMAP.md) is planning data. These commands leave the
 blank reusable SYSTEMX task/context/plan/memory records intact and do not start
 agents or provider operations. Verified completed entries retain their stable
-IDs and link completion evidence; unstarted entries remain proposals. Inspect
+IDs and link completion evidence; unfinished entries remain open work. Inspect
 the first P1 portal follow-up with `npm run backlog -- --id WX-0051` and
 `npm run backlog -- --id WX-0451`.
-Both entries remain completed with evidence, joined by **WX-0001, WX-0651,
-WX-0652, WX-0653 and WX-0654**. The catalog contains exactly **1,000 records**,
-with **seven completed and 993 remaining: 160 P1, 675 P2 and 158 P3**.
+Those earlier entries remain completed with their evidence. The foundation wave
+accepts 17 additional IDs; the catalog contains exactly **1,000 records**, with
+**24 completed and 976 remaining: 146 P1, 673 P2 and 157 P3**. Remaining gates
+are **808 local, 128 operator and 40 provider**.
+
+The owner has authorized completing the entire catalog. The
+[host execution plan](WEBAPPX-EXECUTION-PLAN.md) covers every original criterion
+while reusable execution seeds remain blank. Plan/ready/graph commands inspect
+local catalog data only; they do not dispatch agents, contact providers, apply
+ledger records or accept work. Read each proposed item's source, acceptance,
+write ownership and gate before acting. Canonical completion requires accepted
+dependencies as well as evidence.
 
 ### Repository gates
 
 | Command | Scope |
 | --- | --- |
 | `npm run ci:lint` / `npm run ci:typecheck` | App source quality |
+| `npm run ci:plan` | Read actual CI stage order, dependent workspaces and reviewed mutation categories without running or weakening gates |
+| `npm run --silent ci:plan -- --json` | Machine-readable CI plan without npm command headers |
+| `npm run ci:plan:test` | Source parsing, delegation and unknown-behavior report regressions |
 | `npm test` | Local LAN characterization and managed-status contract |
 | `npm run ci:audit` | Strict dependency audit |
 | `npm run docs:links` | Local Markdown/wiki links, including managed distribution docs |

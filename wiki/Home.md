@@ -6,6 +6,29 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
+The owner has authorized completing **all 1,000 catalog items**. The
+[execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
+maps every stable ID into workstreams and dependency-aware waves. The goal stays
+active until each original acceptance criterion has reviewed evidence. Use
+`backlog:plan`, `backlog:ready` and `backlog:graph` to inspect local scope and
+dependencies; these reports do not dispatch workers or change completion state.
+Provider/operator criteria retain their item-specific proof and activation scope.
+
+New foundations include a pinned **Node 24.22.0** / **npm 11.11.0** setup,
+`development:check`, an isolated **`npm run dev:mock`** launcher, shared portal
+cards/breadcrumbs/recovery pages and **Ready / Saved / Recovered / Unavailable**
+save summaries. **`npm run ci:plan`** explains the actual CI stages and mutation
+categories without executing them. Read [Quick Start](Quick-Start.md),
+[Template Portals](Template-Portals.md#shared-directory-and-route-recovery) and
+the [foundation QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
+for exact behavior and checked evidence.
+
+Accepted foundation checks passed 15 development contracts, 14 launcher cases,
+eight planner cases, 14 catalog cases and 121 portal model cases. CI planning
+passed 13 cases and reported all 34 stages without unknown classifications.
+Nine foundation and nine existing keyboard browser checks passed with owned
+cleanup successful. The receipt records final integrated publication gates.
+
 New local developer checks: **`npm run doctor`** reports prerequisite versions
 without installing tools; **`npm run --silent doctor -- --json`** provides structured
 output. After `npm ci` and the explicit **`npm run browser:install`**, run
@@ -45,10 +68,9 @@ query/validation commands. The catalog tracks delivered items with completion
 evidence while leaving reusable SYSTEMX seeds blank; it does not activate 1,000
 tasks or provider operations. The reviewed
 SYSTEMX refresh retains alpha.6 because upstream changed only external docs.
-**Seven items are completed: WX-0001, WX-0051, WX-0451, WX-0651, WX-0652,
-WX-0653 and WX-0654.**
-The catalog retains exactly **1,000 records** with completion evidence;
-**993 remain: 160 P1, 675 P2 and 158 P3**.
+The catalog retains exactly **1,000 records** with completion evidence:
+**24 completed, 976 remaining — 146 P1, 673 P2 and 157 P3**. Remaining acceptance
+gates are **808 local, 128 operator and 40 provider**. The full goal remains active.
 
 The first P1 portal follow-up adds a shared typed HR/CMS/CRM registry and a
 **Storage budget preview** before combined selective restore and Undo. Review

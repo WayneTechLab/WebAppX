@@ -20,6 +20,13 @@ template. Use it to spin up a new production-ready web app in minutes.
 
 ## Quick start
 
+Use the checked-in `.nvmrc` or `.node-version` to select **Node 24.22.0**.
+With `nvm-sh` already installed, run `nvm install` and `nvm use` in this
+directory. On Windows, select the version printed by `Get-Content .node-version`
+in your installed Node version manager. `engines.node` requires **>=24.0.0**;
+`packageManager` records **npm 11.11.0**. Matching declarations do not establish
+runtime verification on every Node version or platform.
+
 ```bash
 # 1. Create your project from this template (UI button or CLI):
 gh repo create my-app --template WayneTechLab/WebAppX --private --clone

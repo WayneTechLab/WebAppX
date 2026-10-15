@@ -72,6 +72,14 @@ test('done requires complete metadata while todo prohibits completion fields', a
   }
 })
 
+test('done cannot bypass an unfinished catalog dependency', async () => {
+  const value = completedCopy()
+  value.items[0].status = 'todo'
+  delete value.items[0].completion
+  value.items[1] = { ...value.items[1], status: 'done', dependsOn: [value.items[0].id], completion: completion() }
+  await assert.rejects(validate(value), /done requires completed dependencies/)
+})
+
 test('completion dates, source bases and reviewer identities reject coercion and invented values', async () => {
   for (const patch of [
     { verifiedOn: ['2026-10-14'] }, { verifiedOn: '2026-02-30' }, { verifiedOn: '2026-10-32' }, { verifiedOn: '2026-2-1' },

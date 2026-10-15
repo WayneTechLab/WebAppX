@@ -131,3 +131,38 @@ See [release provenance](UNIFIED-TEMPLATE.md),
 [managed integration](SYSTEMX-INTEGRATION.md) and the
 historical [3.1.0 validation receipt](VALIDATION-3.1.0.md). That receipt covers
 its examined revision and does not validate the 3.4.0 update.
+
+
+## Execute the complete WebAppX backlog
+
+The owner-selected full goal and twenty-area coverage are in the
+[execution plan](WEBAPPX-EXECUTION-PLAN.md). Read current counts and
+local dependency-ready candidates with:
+
+```bash
+npm run backlog:plan
+npm run backlog:ready -- --limit 20
+npm run backlog:ready -- --gate all --priority P1 --limit 30
+npm run backlog:graph -- --id WX-0317 --id WX-0409 --id WX-0551
+```
+
+The graph includes selected predecessors, edges, longest chains and unresolved
+nonlocal acceptance criteria. It does not dispatch workers, infer provider
+access or change checklist status. Explicit item selection is limited to forty
+IDs per graph; ordinary candidates are bounded to fifty per query. Source and
+acceptance must still be reviewed. Done entries cannot bypass unfinished
+catalog dependencies.
+
+After accepted completions, regenerate every derived view together:
+
+```bash
+npm run backlog:render
+npm run backlog:plan:render
+npm run backlog:check
+npm run backlog:plan:check
+```
+
+Keep `docs/backlog/webappx-1000-todo.json` canonical. Do not copy a second
+maintained task-status ledger into the blank reusable SYSTEMX records. The
+execution plan is deterministic and its check fails if the rendered counts,
+area coverage or dependency-ready candidates are stale.
