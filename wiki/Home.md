@@ -6,6 +6,22 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
+New local developer checks: **`npm run doctor`** reports prerequisite versions
+without installing tools; **`npm run --silent doctor -- --json`** provides structured
+output. After `npm ci` and the explicit **`npm run browser:install`**, run
+**`npm run browser:smoke`** for deterministic HR/CMS/CRM baseline, UI mutation,
+refresh and complete-export checks in its own Chromium context and loopback
+server. No provider account is needed. See [Quick Start](Quick-Start.md#check-tools-and-run-the-account-free-browser-smoke),
+[Testing & QA](Testing-and-QA.md#automated-developer-and-portal-smoke-checks) and
+the [developer/browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
+for the checked scope and results.
+
+Local verification passed 18 doctor cases, 16 seed/runner cases and all seven
+authored browser checks, including a second clean context and successful owned
+browser/server cleanup. Only the expected unconfigured-Firebase warning appeared;
+independent source review had no unresolved findings. The receipt records final
+publication-gate outcomes separately.
+
 The [WebAppX roadmap](WebAppX-Roadmap.md) catalogs exactly **1,000 improvement
 items**, 50 in each of 20 areas, with priorities, source pointers, acceptance
 checks and dependencies. JSON, Markdown and CSV views are available with local
@@ -13,8 +29,9 @@ query/validation commands. The catalog tracks delivered items with completion
 evidence while leaving reusable SYSTEMX seeds blank; it does not activate 1,000
 tasks or provider operations. The reviewed
 SYSTEMX refresh retains alpha.6 because upstream changed only external docs.
-**WX-0051 and WX-0451 are completed; 998 items remain, including 164 P1.**
-The catalog retains exactly 1,000 records with completion evidence.
+**Five items are completed: WX-0001, WX-0051, WX-0451, WX-0651 and WX-0652.**
+The catalog retains exactly **1,000 records** with completion evidence;
+**995 remain: 162 P1, 675 P2 and 158 P3**.
 
 The first P1 portal follow-up adds a shared typed HR/CMS/CRM registry and a
 **Storage budget preview** before combined selective restore and Undo. Review

@@ -1,3 +1,28 @@
+# 3.4.0 follow-up — Developer prerequisite report and portal browser smoke — 2026-10-14
+
+- Add WX-0001's dependency-free, read-only `doctor` command with JSON reporting:
+  Node.js >=24.0.0, Python >=3.12.0 and parseable installed npm/Git versions.
+- Add WX-0651's deterministic named portal baseline and WX-0652's automated
+  HR/CMS/CRM smoke with exact pinned Playwright 1.64.1, owned ephemeral loopback
+  Vite server and clean Chromium context.
+- Check seed/hash/dashboard totals, UI domain changes, reload persistence and
+  complete exports; print temporary reports, screenshots and traces. Close only
+  owned resources, preserving existing listeners and user browser records.
+- Require explicit `browser:install` Chromium setup; `browser:smoke` never
+  auto-downloads. Include doctor regressions, seed checks and smoke in `ci:all`.
+- Complete WX-0001/WX-0651/WX-0652 after local acceptance: 18 doctor and 16
+  seed/runner tests plus all seven authored browser gates passed. Verify complete
+  exports after HR goal/CMS draft/CRM lead changes and reload, a second clean
+  context, request/error guards and both owned cleanup checks. Independent
+  review had no unresolved findings; only expected missing Firebase config warned.
+- Retain exactly 1,000 catalog records: five completed and 995 remaining,
+  comprising 162 P1, 675 P2 and 158 P3. Earlier completion evidence stays intact.
+- Document commands and limits in README, startup guides, wiki and host pointers.
+  Record actual verification in the
+  [developer/browser QA receipt](../../docs/DEVELOPER-BROWSER-QA-2026-10-14.md).
+  No provider account/emulator, deployment, Windows-runtime claim, version bump,
+  immutable-release mutation or populated adoption seed is introduced.
+
 # 3.4.0 follow-up — P1 portal registry and restore storage-budget preview — 2026-10-14
 
 - Implement WX-0051 with typed HR/CMS/CRM metadata shared by the directory,
@@ -12,8 +37,8 @@
   write failures and explicit warnings when browser storage may be partial.
 - Link the two stable catalog IDs' completion evidence without changing the
   1,000-item count, blank adoption seeds or immutable upstream snapshots.
-- Complete WX-0051 and WX-0451: 998 records remain, including 164 P1. Local
-  browser checks passed navigation/scope, preview cancellation, selective restore,
+- Complete WX-0051 and WX-0451: at this checkpoint, 998 records remain, including
+  164 P1. Local browser checks passed navigation/scope, preview cancellation, selective restore,
   Undo after refresh, projected retention/pruning and oversized recovery-point
   refusal with full exported-payload preservation. Focused checks passed 114
   portal and 13 backlog cases; final publication gates remain in the QA receipt.

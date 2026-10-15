@@ -17,8 +17,14 @@ const completion = () => ({
   evidence: 'docs/SYSTEMX-ROADMAP-QA-2026-10-14.md',
   reviewedBy: 'agent.0',
 })
-const completedCopy = () => {
+const unstartedCopy = () => {
   const value = copy()
+  value.items[0].status = 'todo'
+  delete value.items[0].completion
+  return value
+}
+const completedCopy = () => {
+  const value = unstartedCopy()
   value.items[0] = { ...value.items[0], status: 'done', completion: completion() }
   return value
 }
@@ -56,9 +62,9 @@ test('duplicate proposals, forward dependencies and escaped or missing sources c
 })
 
 test('done requires complete metadata while todo prohibits completion fields', async () => {
-  const missing = copy(); missing.items[0].status = 'done'
+  const missing = completedCopy(); delete missing.items[0].completion
   await assert.rejects(validate(missing), /done items require completion/)
-  const unstarted = copy(); unstarted.items[0] = { ...unstarted.items[0], status: 'todo', completion: completion() }
+  const unstarted = unstartedCopy(); unstarted.items[0].completion = completion()
   await assert.rejects(validate(unstarted), /todo items prohibit/)
   for (const metadata of [null, {}, { ...completion(), extra: 'unrecognized' }]) {
     const value = completedCopy(); value.items[0].completion = metadata
@@ -159,8 +165,9 @@ test('exact ID and combined priority/area/limit queries return only matching pro
   const query = run('--area', 'mock-recovery', '--priority', 'P1', '--status', 'todo', '--limit', '2')
   assert.equal(query.status, 0, query.stderr)
   const result = JSON.parse(query.stdout)
-  assert.ok(result.matches >= result.items.length)
-  assert.ok(result.items.length <= 2 && result.items.length > 0)
+  const matching = catalog.items.filter(item => item.area === 'mock-recovery' && item.priority === 'P1' && item.status === 'todo')
+  assert.equal(result.matches, matching.length)
+  assert.deepEqual(result.items, matching.slice(0, 2))
   assert.ok(result.items.every(item => item.area === 'mock-recovery' && item.priority === 'P1' && item.status === 'todo'))
   const done = run('--status', 'done', '--limit', '1000')
   assert.equal(done.status, 0, done.stderr)

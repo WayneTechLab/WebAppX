@@ -66,9 +66,27 @@ completion does not populate the reusable SYSTEMX ledger or start agents.
 The first P1 batch is complete: **WX-0051**, the shared portal registry, and
 **WX-0451**, the restore storage-budget preview. The
 [QA receipt](PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md) records their accepted local
-scope. Exactly **1,000 catalog records** remain, with **2 done and 998 TODOs,
-including 164 P1 TODOs**. Use `--status done` to inspect accepted results and
-`--status todo` to choose the next bounded batch.
+scope. The next wave completes **WX-0001**, the developer prerequisite report,
+**WX-0652**, the automated HR/CMS/CRM browser smoke, and its named seed-pack
+dependency **WX-0651**. See the
+[developer/browser receipt](DEVELOPER-BROWSER-QA-2026-10-14.md) for exact local
+coverage. The catalog still has **1,000 records: 5 done and 995 TODOs**, including
+**162 P1, 675 P2 and 158 P3 TODOs**. Use `--status done` to inspect accepted
+results and `--status todo` to choose the next bounded batch.
+
+```bash
+npm run doctor
+npm run --silent doctor -- --json
+npm run browser:install
+npm run browser:smoke
+```
+
+The developer report performs bounded local version probes. The browser command
+uses the reviewed synthetic seed, its own available loopback port and fresh
+Chromium contexts, then changes one domain record per portal through the UI and
+verifies complete payloads after refresh. It saves local evidence in a temporary
+directory and closes owned resources. `ci:all` includes both focused guard suites
+and the browser journey; install the pinned Chromium binary explicitly first.
 
 ## Planning phases
 
@@ -124,10 +142,10 @@ Start with a small local batch, then reassess the dependent portal work:
 
 | Proposal | Review outcome |
 | --- | --- |
-| WX-0001 | Read-only developer prerequisite report |
+| WX-0001 | Completed: read-only developer prerequisite report; see the developer/browser receipt |
 | WX-0051 | Completed: typed shared portal registry; see the P1 QA receipt |
 | WX-0451 | Completed: storage-budget preview; see the P1 QA receipt |
-| WX-0652 | Repeatable automated cross-portal browser smoke journey |
+| WX-0652 | Completed with WX-0651: automated cross-portal browser smoke; see the developer/browser receipt |
 | WX-0151 | Selectable fictional payroll periods |
 | WX-0280 | CMS draft field validation summaries |
 | WX-0371 | Atomic fictional CRM contact merges |

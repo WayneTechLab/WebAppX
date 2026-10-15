@@ -37,8 +37,8 @@
     "account-levels:check": "node .SYSTEMX/scripts/account-level-check.mjs",
     "auth:mfa:check": "node .SYSTEMX/scripts/auth-mfa-readiness-check.mjs",
     "ai:standard:check": "node .SYSTEMX/scripts/agent-standard-check.mjs",
-    "browser:install": "npx playwright install chromium",
-    "browser:codegen": "npx playwright codegen http://localhost:5173",
+    "browser:install": "playwright install chromium",
+    "browser:codegen": "playwright codegen http://localhost:5173",
     "mcp:chrome": "npx chrome-devtools-mcp --help",
     "ci:lint": "eslint . --max-warnings=0",
     "ci:typecheck": "tsc --noEmit -p tsconfig.json",
@@ -70,7 +70,11 @@
     "backlog:check": "node scripts/webappx-backlog.mjs --check",
     "backlog:render": "node scripts/webappx-backlog.mjs --write",
     "backlog:summary": "node scripts/webappx-backlog.mjs --summary",
-    "backlog:test": "node --test tests/backlog/catalog.test.mjs"
+    "backlog:test": "node --test tests/backlog/catalog.test.mjs",
+    "doctor": "node scripts/developer-prerequisites.mjs",
+    "doctor:test": "node --test tests/setup/developer-prerequisites.test.mjs",
+    "browser:smoke": "node scripts/browser-smoke.mjs",
+    "browser:smoke:test": "node --test tests/browser/seed-pack.test.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",
@@ -82,6 +86,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@playwright/test": "1.64.1",
     "@tailwindcss/vite": "^4.1.18",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",

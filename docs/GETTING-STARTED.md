@@ -7,8 +7,9 @@ then configure your project.
 
 ## Prerequisites
 
-Use the documented Node.js 24 baseline, npm, Git and Python 3.12 or newer for
-the host import/mirror tools. GitHub CLI is optional for creating a repository.
+Use Node.js **24.0.0 or newer**, npm, Git and Python **3.12.0 or newer** for
+the host import/mirror tools. npm and Git require parseable installed versions;
+no minimum versions are specified for them. GitHub CLI is optional for creating a repository.
 The Firebase emulator session also needs Firebase CLI and the Java runtime
 required by your installed Firebase emulator tooling. Optional browser/cloud
 CLIs are installed separately through the setup playbook.
@@ -20,11 +21,65 @@ Agent Y `run --apply` remains unavailable pending verified descendant-process
 termination. Read the wiki platform pages for launcher and runtime limits;
 macOS checks do not establish Windows runtime acceptance.
 
+## Developer check and browser smoke
+
+Run the dependency-free prerequisite report before installing packages:
+
+```bash
+npm run doctor
+npm run --silent doctor -- --json
+```
+
+The quiet JSON form omits npm's command headers. If npm is missing, use
+`node scripts/developer-prerequisites.mjs` directly to diagnose the installed
+tools; the report does not depend on packages from `node_modules`.
+
+The doctor reads installed Node.js, npm, Git and Python versions against the
+policy above. It does not install or update tools, write configuration, start
+services or require accounts. A successful version report establishes version
+readiness only; it does not verify every platform or an app's runtime behavior.
+
+After `npm ci`, install the pinned Playwright browser explicitly and run the
+account-free portal smoke:
+
+```bash
+npm run browser:install
+npm run browser:smoke
+# Optional visible browser or chosen artifact parent directory:
+npm run browser:smoke -- --headed
+npm run browser:smoke -- --output /path/to/local/artifacts
+```
+
+`browser:install` downloads Chromium for the exact **Playwright 1.64.1** dependency.
+The smoke never auto-downloads; if Chromium is missing, it fails with installation
+guidance. It owns a Vite server bound to `127.0.0.1` on an available port and a
+fresh Chromium context. It does not reuse a user's running server or browser
+profile and needs no Firebase emulators, provider accounts or credentials.
+
+The smoke verifies the named synthetic seed pack and its hash/expected dashboard
+totals, changes a domain record through each HR/CMS/CRM interface, reloads and
+compares complete exported payloads. Temporary reports, screenshots and trace
+paths are printed by the command. Cleanup closes only its own browser and server.
+Use these synthetic records for testing; the smoke is separate from your saved
+mock workspaces. See [Testing & QA](../wiki/Testing-and-QA.md#automated-developer-and-portal-smoke-checks)
+and the [QA receipt](DEVELOPER-BROWSER-QA-2026-10-14.md) for coverage and current
+verification outcomes. No Windows runtime or provider acceptance follows from
+a local Chromium run.
+
+**Local verification — 2026-10-14:** the prerequisite report and its 18 tests
+passed, as did 16 seed/runner tests and all seven authored Chromium checks.
+HR goal creation, CMS draft revision and CRM lead creation survived reload with
+complete expected exports and unselected portals preserved. A second context
+started from the clean seed, request/error guards passed and both owned resources
+closed. Only the expected missing Firebase configuration warning appeared.
+The receipt holds final release-gate results; earlier receipts remain historical.
+
 ## Create your app
 
 ```bash
 gh repo create my-app --template WayneTechLab/WebAppX --private --clone
 cd my-app
+npm run doctor
 npm ci
 npm run systemx:status
 npm run systemx:validate
@@ -121,6 +176,8 @@ npm run ci:lint
 npm run ci:typecheck
 npm test
 npm run hr:test
+npm run portals:test
+npm run browser:smoke
 npm run ci:audit
 npm run build
 ```

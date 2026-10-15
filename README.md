@@ -10,7 +10,9 @@ history based on the reviewed SFWA-WTL-TEMPLATE release. See the
 [WebAppX provenance and ownership record](docs/WEBAPPX.md).
 
 ```bash
+npm run doctor         # read-only local prerequisite report; no dependencies needed
 npm ci
+npm run browser:install # explicit first-time Chromium download
 npm run systemx:status
 npm run systemx:validate
 npm run ci:all          # reusable-template release checks; seeds must remain blank
@@ -53,6 +55,48 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
+## Developer readiness and automated portal smoke
+
+Use **`npm run doctor`** before setup for a dependency-free, read-only report of
+installed Node.js, npm, Git and Python versions. **`npm run --silent doctor -- --json`**
+returns machine-readable results. The policy requires **Node.js 24.0.0 or newer**
+and **Python 3.12.0 or newer**; npm and Git must be present with parseable versions.
+If npm is missing, run **`node scripts/developer-prerequisites.mjs`** directly
+to diagnose the installed tools. The quiet npm JSON command omits npm's headers.
+The report does not install tools, configure services or establish platform
+runtime acceptance.
+
+After `npm ci`, run **`npm run browser:install`** once to install the Chromium
+browser for the exact pinned **Playwright 1.64.1** dependency. Then run
+**`npm run browser:smoke`**. It starts its own Vite server on an available
+`127.0.0.1` port and uses a fresh Chromium context, leaving existing app listeners
+and browser saves intact. The smoke checks the named synthetic seed pack/hash
+and expected dashboard totals, makes a domain change through each HR/CMS/CRM
+interface, reloads and compares complete exported states. No provider account,
+credentials or Firebase emulators are required.
+
+The smoke prints the location of its temporary report, screenshots and trace,
+and cleans up only the browser/server it owns. It never downloads a browser
+automatically; a missing installation fails with the explicit install command.
+`ci:all` includes the prerequisite regressions, deterministic seed checks and
+browser smoke. Read [Getting Started](docs/GETTING-STARTED.md#developer-check-and-browser-smoke),
+[Testing & QA](wiki/Testing-and-QA.md#automated-developer-and-portal-smoke-checks)
+and the [developer/browser QA receipt](docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
+for the checked revision and evidence. These local checks do not verify Windows
+runtime, live Firebase/Gusto integration or production deployment.
+
+**Verified locally — 2026-10-14:** all 18 doctor regressions and 16 seed/runner
+regressions passed. The Mac prerequisite report passed with Node 25.8.1, npm
+11.11.0, Git 2.54.0 and Python 3.14.5. All seven authored browser checks passed:
+fresh named baseline, HR goal/CMS draft/CRM lead changes with reload and complete
+payload comparisons, exact saves without account cookies, a second clean context
+and request/error isolation. Both owned browser and Vite cleanup checks passed;
+only the expected unconfigured-Firebase warning appeared. Independent source
+review had no unresolved findings. Full `ci:all`, Hosting preflight and SYSTEMX
+drift checks passed, including the integrated seven-gate browser run with an
+isolated optimizer cache. The receipt records all suite counts and five
+filesystem-specific skips. No production deployment ran.
+
 ## Current SYSTEMX features
 
 WebAppX 3.4.0 includes the pinned dotSYSTEMX 1.9.0-alpha.6 distribution. Its
@@ -79,8 +123,9 @@ Firebase adoption, design, quality, operations, SYSTEMX and integrations.
 Each has a stable `WX-0001`–`WX-1000` ID, priority, phase, specific acceptance
 check, existing source pointer, acceptance gate and dependencies.
 Verified completions include their evidence in the canonical catalog; unstarted
-items remain proposals. **WX-0051 and WX-0451 are completed: 998 items remain,
-including 164 P1 items.** The catalog still contains exactly 1,000 records.
+items remain proposals. **Five items are completed: WX-0001, WX-0051, WX-0451,
+WX-0651 and WX-0652.** The catalog still contains exactly **1,000 records**;
+**995 remain: 162 P1, 675 P2 and 158 P3**.
 
 - [Read the complete list](docs/backlog/WEBAPPX-1000-TODO.md)
 - [Canonical JSON](docs/backlog/webappx-1000-todo.json) · [CSV](docs/backlog/webappx-1000-todo.csv)

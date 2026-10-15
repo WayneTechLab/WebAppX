@@ -7,3 +7,7 @@
 # Retain Markdown hard breaks in the original public research entry points.
 /.SYSTEMX/LAN/WEB-BUILDER-UX-RESEARCH.md whitespace=-trailing-space
 /.SYSTEMX/LAN/WEBFLOW-DEEP-RESEARCH-MASTER-PLAN.md whitespace=-trailing-space
+
+# Named browser seeds have recorded byte hashes on every supported checkout.
+/tests/browser/fixtures/*.json text eol=lf
+/tests/browser/fixtures/*.sha256 text eol=lf

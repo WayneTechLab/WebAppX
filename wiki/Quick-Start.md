@@ -8,8 +8,8 @@ Gusto/HR contracts in `.SYSTEMX/GUSTO/`.
 
 ## Prerequisites
 
-- Node.js 24 baseline, npm and Git.
-- Python 3.12 or newer for host import/mirror tooling and validation.
+- Node.js >=24.0.0, npm and Git with parseable installed versions.
+- Python >=3.12.0 for host import/mirror tooling and validation.
 - GitHub CLI optionally, to create a repository from the template.
 - Firebase CLI and its emulator Java prerequisites for `dev:systemx`.
 
@@ -23,6 +23,7 @@ and complete template gate use Bash; the webapp/LAN supervisor uses Node.
 ```bash
 gh repo create my-app --template WayneTechLab/WebAppX --private --clone
 cd my-app
+npm run doctor
 npm ci
 npm run systemx:status
 npm run systemx:validate
@@ -31,6 +32,49 @@ npm run dev
 
 Alternatively, clone `https://github.com/WayneTechLab/WebAppX.git`
 into your chosen directory, then run the same commands. Open Vite's printed URL.
+
+## Check tools and run the account-free browser smoke
+
+`npm run doctor` is a dependency-free, read-only report of installed Node.js,
+npm, Git and Python versions. Use `npm run --silent doctor -- --json` for structured
+output. Node/Python use the minimums above; npm/Git have no specified minimum.
+The command installs nothing and does not prove platform runtime acceptance.
+The quiet JSON command suppresses npm's headers. If npm is missing, run
+`node scripts/developer-prerequisites.mjs` directly; project dependencies are
+not required for this report.
+
+After `npm ci`:
+
+```bash
+npm run browser:install
+npm run browser:smoke
+# Optional:
+npm run browser:smoke -- --headed
+npm run browser:smoke -- --output /path/to/local/artifacts
+```
+
+The first command explicitly installs Chromium for exact pinned Playwright
+**1.64.1**. The smoke never auto-downloads browsers; missing Chromium fails with
+the install instruction. It launches its own Vite server on an available
+`127.0.0.1` port and a fresh Chromium context, preserving running app listeners
+and the user's browser records. No accounts, provider credentials or Firebase
+emulators are required.
+
+The run checks a named deterministic synthetic seed/hash and expected dashboard
+totals, makes an HR/CMS/CRM domain change through each interface, reloads and
+compares complete exports. It prints temporary report, screenshots and trace
+paths, then cleans up only its browser/server. Read [Testing & QA](Testing-and-QA.md#automated-developer-and-portal-smoke-checks)
+and the [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
+for checked behavior. A macOS Chromium result does not verify Windows runtime
+or live provider integration.
+
+**Local verification — 2026-10-14:** the actual doctor report, 18 doctor
+regressions, 16 seed/runner regressions and all seven browser checks passed.
+The run created an HR goal, saved a CMS draft revision and created a CRM lead;
+reloads and complete exports matched expected records. A second context retained
+the untouched baseline, browser/network error checks passed and owned browser
+and server cleanup both succeeded. The only warning was expected missing
+Firebase configuration. Consult the receipt for final publication gates.
 
 ## Test HR and selected Gusto workflows
 
@@ -53,8 +97,8 @@ portals require trusted identity/memberships and an adopted backend. The optiona
 Firebase module is disabled by default. Read
 [Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md) and
 [the setup guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/GUSTO-SETUP.md).
-Use [WebAppX Roadmap](WebAppX-Roadmap.md) to review the 1,000 proposed follow-on
-items without activating them in the reusable SYSTEMX ledger.
+Use [WebAppX Roadmap](WebAppX-Roadmap.md) to review the stable 1,000-item catalog
+and completion evidence without activating tasks in the reusable SYSTEMX ledger.
 
 ```bash
 npm run hr:test
@@ -109,6 +153,9 @@ npm run systemx:validate
 npm run ci:lint
 npm run ci:typecheck
 npm test
+npm run hr:test
+npm run portals:test
+npm run browser:smoke
 npm run ci:audit
 npm run build
 npm run preview

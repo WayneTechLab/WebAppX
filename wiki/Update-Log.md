@@ -1,5 +1,43 @@
 # Update Log
 
+## 3.4.0 developer prerequisite report and automated portal smoke — 2026-10-14
+
+Add **WX-0001**'s dependency-free, read-only prerequisite report with
+`npm run doctor` and `npm run --silent doctor -- --json`. Require Node.js >=24.0.0 and
+Python >=3.12.0; npm/Git require parseable installed versions without a specified
+minimum. Version readiness does not install tools or establish platform/runtime
+acceptance.
+
+Add the **WX-0651** deterministic named seed baseline and **WX-0652** automated
+HR/CMS/CRM browser smoke. Exact pinned Playwright **1.64.1** uses an owned Vite
+server on an available `127.0.0.1` port and a fresh Chromium context. Check the
+seed/hash/dashboard totals, change a domain record in each interface, reload and
+compare complete exported states. Preserve existing app listeners and user
+browser records; no provider account, credentials or Firebase emulators are needed.
+
+`npm run browser:install` explicitly downloads Chromium after `npm ci`.
+`npm run browser:smoke` never auto-downloads and fails with installation guidance
+when Chromium is missing. Temporary report/screenshots/trace paths are printed,
+and cleanup closes only the run's browser and server. Full `ci:all` includes
+doctor regressions, seed checks and browser smoke. Read [Quick Start](Quick-Start.md)
+and the [developer/browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
+for the checked revision and actual outcomes. Existing receipts below remain
+historical. App 3.4.0, deployment count 0, immutable alpha.6 and blank adoption
+seeds retain their existing boundaries; local Chromium does not verify Windows
+runtime, live integrations or production deployment.
+
+Local verification passed the actual Mac prerequisite report, **18 doctor tests,
+16 seed/runner tests and all seven authored browser checks**. HR goal creation,
+CMS draft revision and CRM lead creation survived reload with complete expected
+exports and unselected portals intact; a second context exported the clean seed.
+Request/error isolation and owned browser/server cleanup passed. Only expected
+missing Firebase configuration warned, and independent review had no unresolved
+findings. The receipt records final publication gates separately.
+
+Complete **WX-0001, WX-0651 and WX-0652** with evidence, retaining previous
+**WX-0051/WX-0451** completion. The catalog still contains **1,000 records**:
+**five completed, 995 remaining — 162 P1, 675 P2 and 158 P3**.
+
 ## 3.4.0 P1 portal registry and restore storage-budget preview — 2026-10-14
 
 Implement **WX-0051** with one typed registry for HR/CMS/CRM module identities,
@@ -22,9 +60,9 @@ save their recovery point before replacing workspaces. Failed writes retain the
 rollback attempt and explicit partial-storage warning behavior. Undo still
 replaces whole captured portals and saves a new recovery point first.
 
-Complete the existing **WX-0051 and WX-0451** catalog IDs with evidence: exactly
-**1,000 records**, **998 remaining, including 164 P1**. Preserve blank reusable
-SYSTEMX records. Update host guidance,
+Complete the existing **WX-0051 and WX-0451** catalog IDs with evidence. At that
+checkpoint: exactly **1,000 records**, **998 remaining, including 164 P1**.
+Preserve blank reusable SYSTEMX records. Update host guidance,
 README and wiki. Read [Template Portals](Template-Portals.md) and the
 [P1 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
 for the actual browser checks and repository gates. App version remains 3.4.0

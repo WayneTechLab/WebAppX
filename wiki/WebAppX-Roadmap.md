@@ -48,10 +48,22 @@ the original ten columns and adds `completion`, containing JSON for completed
 items or an empty cell for TODOs. The JSON remains canonical.
 
 The first implementation batch completed **WX-0051**, the shared portal
-registry, and **WX-0451**, the restore storage-budget preview. Exactly **1,000
-records** remain in the catalog: **2 done and 998 TODOs, including 164 P1 TODOs**.
-Read the [P1 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
-for accepted results. Completion applies
+registry, and **WX-0451**, the restore storage-budget preview. Read the
+[P1 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md)
+for that wave's accepted results.
+
+The developer/browser wave completes **WX-0001**, the read-only prerequisite
+report, **WX-0652**, the automated HR/CMS/CRM smoke journey, and dependency
+**WX-0651**, its named synthetic seed pack. The
+[developer/browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
+records the local version checks, exact seed hash and dashboard totals, real UI
+mutations and full saved-payload comparisons after refresh. Run `npm run doctor`,
+explicitly install Chromium with `npm run browser:install`, then run
+`npm run browser:smoke`. The runner uses an owned loopback server and clean
+contexts; it preserves existing previews and saved workspaces.
+
+Exactly **1,000 records** remain in the catalog: **5 done and 995 TODOs,
+including 162 P1, 675 P2 and 158 P3 TODOs**. Completion applies
 only to the evidence's scope; it supplies no provider credentials, deployment
 acceptance or permission to activate optional services. The remaining proposals
 keep their individual status, and all reusable SYSTEMX task/context/plan/memory

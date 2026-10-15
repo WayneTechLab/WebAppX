@@ -1,0 +1,446 @@
+{
+  "schemaVersion": 1,
+  "name": "webappx-portal-smoke-v1",
+  "createdAt": "2026-10-15T12:00:00.000Z",
+  "dashboardTotals": {
+    "hr": {
+      "people": 3,
+      "timeAwaitingApproval": 1,
+      "confirmedBenefitElections": 0,
+      "submittedPayrollReceipts": 0,
+      "goals": 1,
+      "openReviews": 2
+    },
+    "cms": {
+      "drafts": 1,
+      "awaitingReview": 0,
+      "approvedRevisions": 0,
+      "publishedSamples": 1
+    },
+    "crm": {
+      "activeLeads": 2,
+      "openPipelineCents": 650000,
+      "wonCents": 0,
+      "openFollowUps": 1
+    }
+  },
+  "workspaces": {
+    "hr": {
+      "workflow": {
+        "onboarding": {
+          "employee-001": {
+            "profileReviewed": false,
+            "jobReviewed": false,
+            "stage": "draft",
+            "tasks": {
+              "intro": true
+            }
+          },
+          "employee-002": {
+            "profileReviewed": false,
+            "jobReviewed": false,
+            "stage": "draft",
+            "tasks": {
+              "profile": true,
+              "policy": false
+            }
+          },
+          "employee-003": {
+            "profileReviewed": false,
+            "jobReviewed": false,
+            "stage": "draft",
+            "tasks": {
+              "profile": false
+            }
+          }
+        },
+        "profileEmails": {
+          "employee-001": "morgan@example.invalid",
+          "employee-002": "avery@example.invalid",
+          "employee-003": "jordan@example.invalid"
+        },
+        "employeeStatuses": {
+          "employee-001": "active",
+          "employee-002": "active",
+          "employee-003": "onboarding"
+        },
+        "timeEntries": [
+          {
+            "id": "time-001",
+            "employeeId": "employee-002",
+            "date": "2026-10-09",
+            "hours": 8,
+            "status": "submitted",
+            "source": "fixture"
+          },
+          {
+            "id": "time-002",
+            "employeeId": "employee-003",
+            "date": "2026-10-09",
+            "hours": 6,
+            "status": "draft",
+            "source": "fixture"
+          }
+        ],
+        "benefitElections": [],
+        "payroll": {
+          "stage": "idle",
+          "inputs": [],
+          "benefitInputs": [],
+          "employeeTotals": [],
+          "hours": 0,
+          "grossCents": 0,
+          "illustrativeWithholdingCents": 0,
+          "benefitDeductionCents": 0,
+          "netCents": 0
+        },
+        "payrollHistory": [],
+        "sequence": 1
+      },
+      "operations": {
+        "ptoRequests": [
+          {
+            "id": "pto-001",
+            "employeeId": "employee-002",
+            "startDate": "2026-10-22",
+            "endDate": "2026-10-23",
+            "type": "vacation",
+            "hours": 16,
+            "status": "pending"
+          }
+        ],
+        "balances": {
+          "employee-001": {
+            "vacation": 40,
+            "sick": 24
+          },
+          "employee-002": {
+            "vacation": 40,
+            "sick": 24
+          },
+          "employee-003": {
+            "vacation": 40,
+            "sick": 24
+          }
+        },
+        "records": {
+          "tasks": [
+            {
+              "id": "task-001",
+              "title": "Review welcome policy",
+              "employeeId": "employee-002",
+              "status": "pending",
+              "dueDate": "2026-10-16"
+            },
+            {
+              "id": "task-002",
+              "title": "Complete starter training",
+              "employeeId": "employee-003",
+              "status": "pending",
+              "dueDate": "2026-10-19"
+            },
+            {
+              "id": "task-003",
+              "title": "Review services brief",
+              "contractorId": "contractor-001",
+              "status": "pending",
+              "dueDate": "2026-10-16"
+            }
+          ],
+          "policies": [
+            {
+              "id": "policy-001",
+              "title": "Demo welcome policy",
+              "version": "example-1",
+              "status": "published",
+              "employeeId": "employee-002"
+            }
+          ],
+          "training": [
+            {
+              "id": "training-001",
+              "title": "Demo workplace orientation",
+              "employeeId": "employee-002",
+              "status": "in-progress"
+            },
+            {
+              "id": "training-002",
+              "title": "Demo starter training",
+              "employeeId": "employee-003",
+              "status": "pending"
+            }
+          ],
+          "assets": [
+            {
+              "id": "asset-001",
+              "name": "Demo laptop",
+              "title": "Demo laptop",
+              "employeeId": "employee-002",
+              "status": "assigned"
+            },
+            {
+              "id": "asset-002",
+              "name": "Demo monitor",
+              "title": "Demo monitor",
+              "employeeId": "employee-003",
+              "status": "pending"
+            }
+          ],
+          "documents": [
+            {
+              "id": "document-001",
+              "title": "Demo welcome acknowledgment",
+              "type": "policy",
+              "employeeId": "employee-002",
+              "status": "pending",
+              "downloadAvailable": false
+            },
+            {
+              "id": "document-002",
+              "title": "Demo tax document placeholder",
+              "type": "tax",
+              "employeeId": "employee-002",
+              "status": "placeholder",
+              "downloadAvailable": false
+            },
+            {
+              "id": "document-003",
+              "title": "Contractor document placeholder",
+              "type": "tax",
+              "contractorId": "contractor-001",
+              "status": "placeholder",
+              "downloadAvailable": false
+            }
+          ]
+        },
+        "activity": [],
+        "sequence": 1
+      },
+      "serviceDesk": {
+        "requests": [
+          {
+            "id": "request-seed-1",
+            "title": "Demo equipment request",
+            "details": "Fictional company request imported from the sample fixture. No employee private information is included.",
+            "category": "equipment",
+            "status": "open",
+            "assigneeId": "hr-team",
+            "activity": []
+          }
+        ],
+        "sequence": 0
+      },
+      "recruiting": {
+        "jobs": [
+          {
+            "id": "job-001",
+            "title": "Demo support specialist",
+            "department": "Operations",
+            "managerId": "employee-001",
+            "status": "draft",
+            "activity": []
+          }
+        ],
+        "candidates": [
+          {
+            "id": "candidate-seed-001",
+            "jobId": "job-001",
+            "firstName": "Casey",
+            "lastName": "Fiction",
+            "workEmail": "casey.fiction@example.invalid",
+            "stage": "applied",
+            "activity": []
+          },
+          {
+            "id": "candidate-seed-002",
+            "jobId": "job-001",
+            "firstName": "Riley",
+            "lastName": "Sample",
+            "workEmail": "riley.sample@example.invalid",
+            "stage": "applied",
+            "activity": []
+          }
+        ],
+        "hiredEmployees": [],
+        "sequence": 0
+      },
+      "performance": {
+        "goals": [
+          {
+            "id": "performance-001",
+            "employeeId": "employee-002",
+            "title": "Demo quarterly goal",
+            "progress": 0,
+            "status": "draft",
+            "activity": []
+          }
+        ],
+        "reviews": [
+          {
+            "id": "review-seed-employee-002",
+            "employeeId": "employee-002",
+            "managerId": "employee-001",
+            "title": "Demo Q4 review",
+            "stage": "draft",
+            "activity": []
+          },
+          {
+            "id": "review-seed-employee-003",
+            "employeeId": "employee-003",
+            "managerId": "employee-001",
+            "title": "Demo Q4 review",
+            "stage": "draft",
+            "activity": []
+          }
+        ],
+        "sequence": 0
+      },
+      "surveys": {
+        "surveys": [
+          {
+            "id": "survey-001",
+            "title": "Demo onboarding feedback",
+            "status": "draft",
+            "audienceIds": [
+              "employee-001",
+              "employee-002",
+              "employee-003"
+            ],
+            "questions": {
+              "ratingPrompt": "How clear are the sample onboarding next steps?",
+              "textPrompt": "What would improve this fictional onboarding experience?"
+            },
+            "responses": [],
+            "activity": []
+          }
+        ],
+        "sequence": 0
+      },
+      "completed": [],
+      "acknowledgements": [],
+      "managementRole": "employer-owner",
+      "selectedEmployee": "employee-002"
+    },
+    "cms": {
+      "sequence": 0,
+      "activity": [],
+      "entries": [
+        {
+          "id": "cms-page-001",
+          "collectionId": "pages",
+          "authorId": "cms-author",
+          "revision": 1,
+          "status": "published",
+          "approval": {
+            "revision": 1,
+            "reviewerId": "cms-reviewer",
+            "receipt": "SEED-CMS-REVIEW"
+          },
+          "published": {
+            "title": "Welcome to the sample studio",
+            "slug": "welcome",
+            "body": "This fictional public page is a published sample. Create a draft, ask another preview role to review it, then simulate publication.",
+            "revision": 1,
+            "receipt": "SEED-CMS-PUBLICATION"
+          },
+          "feedback": "",
+          "title": "Welcome to the sample studio",
+          "slug": "welcome",
+          "body": "This fictional public page is a published sample. Create a draft, ask another preview role to review it, then simulate publication."
+        },
+        {
+          "id": "cms-article-001",
+          "collectionId": "articles",
+          "authorId": "cms-author",
+          "revision": 1,
+          "status": "draft",
+          "approval": null,
+          "published": null,
+          "feedback": "",
+          "title": "A fictional team update",
+          "slug": "team-update",
+          "body": "Share a fictional company update here. This draft is visible in the editorial workspace and is excluded from the published sample."
+        }
+      ]
+    },
+    "crm": {
+      "companies": [
+        {
+          "id": "company-harbor",
+          "name": "Fictional Harbor Studio",
+          "ownerId": "sales-riley"
+        },
+        {
+          "id": "company-orbit",
+          "name": "Example Orbit Workshop",
+          "ownerId": "sales-sam"
+        }
+      ],
+      "contacts": [
+        {
+          "id": "contact-avery",
+          "name": "Avery Fiction",
+          "email": "avery@harbor.invalid",
+          "companyId": "company-harbor",
+          "ownerId": "sales-riley"
+        },
+        {
+          "id": "contact-jordan",
+          "name": "Jordan Example",
+          "email": "jordan@orbit.invalid",
+          "companyId": "company-orbit",
+          "ownerId": "sales-sam"
+        }
+      ],
+      "leads": [
+        {
+          "id": "lead-jules",
+          "name": "Jules Sample",
+          "email": "jules@meadow.invalid",
+          "companyName": "Sample Meadow Lab",
+          "ownerId": "sales-riley",
+          "status": "new"
+        },
+        {
+          "id": "lead-robin",
+          "name": "Robin Fiction",
+          "email": "robin@ridge.invalid",
+          "companyName": "Example Ridge Studio",
+          "ownerId": "sales-sam",
+          "status": "qualified"
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "opportunity-harbor",
+          "title": "Sample portal discovery",
+          "companyId": "company-harbor",
+          "contactId": "contact-avery",
+          "ownerId": "sales-riley",
+          "amountCents": 250000,
+          "stage": "discovery"
+        },
+        {
+          "id": "opportunity-orbit",
+          "title": "Fictional workflow workshop",
+          "companyId": "company-orbit",
+          "contactId": "contact-jordan",
+          "ownerId": "sales-sam",
+          "amountCents": 400000,
+          "stage": "proposal"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "task-harbor",
+          "title": "Prepare fictional discovery notes",
+          "ownerId": "sales-riley",
+          "opportunityId": "opportunity-harbor",
+          "status": "open"
+        }
+      ],
+      "activity": [],
+      "sequence": 1
+    }
+  }
+}

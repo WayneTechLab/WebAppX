@@ -1,9 +1,9 @@
 # Testing & QA
 
-The baseline ships Node suites for SYSTEMX LAN and Gusto/HR contracts, plus
-TypeScript, ESLint, build, audit, and security gates. Vitest/Testing Library
-and Playwright are optional playbook additions that projects enable when their
-application needs them.
+The baseline ships Node suites for SYSTEMX LAN and Gusto/HR contracts, an
+automated Playwright HR/CMS/CRM smoke, plus TypeScript, ESLint, build, audit and
+security gates. Vitest/Testing Library and broader end-to-end/a11y coverage remain
+playbook additions that adopted applications enable for their needs.
 
 > Detailed source:
 > [Step 10 — Testing & QA](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/Template/steps/10-testing-qa.md).
@@ -11,14 +11,16 @@ application needs them.
 ## What ships in the baseline vs. the playbook
 
 - **Baseline (repo root):** LAN characterization, selected standalone-tool tests,
-  import/mirror regressions, synthetic HR/SDK/backend contract tests, TypeScript,
+  import/mirror regressions, developer prerequisite regressions, deterministic
+  named portal seeds, Playwright browser smoke, synthetic HR/SDK/backend contract tests, TypeScript,
   ESLint, strict dependency audit, research
   validation, documentation links, immutable integrity and build isolation.
-- **Playbook (Step 10):** adds Vitest, Playwright, and a11y/security audits.
+- **Playbook (Step 10):** adds Vitest, wider Playwright scenarios and a11y/security audits.
 
 ## Reusable-template release checks
 
 ```bash
+npm run browser:install # explicit browser setup after npm ci; no auto-download in smoke
 npm run ci:all
 npm run deploy -- hosting --preflight
 ```
@@ -27,6 +29,89 @@ npm run deploy -- hosting --preflight
 regressions, app/LAN gates, research inventories and public template integrity.
 It requires blank adoption seeds. `template:check` rejects populated tasks,
 context or project records by design. Use these to maintain the reusable release.
+
+## Automated developer and portal smoke checks
+
+```bash
+npm run doctor
+npm run --silent doctor -- --json
+npm run browser:install
+npm run browser:smoke
+# Optional visible browser / chosen artifact parent:
+npm run browser:smoke -- --headed
+npm run browser:smoke -- --output /path/to/local/artifacts
+```
+
+The doctor runs without installed project dependencies and only reads tool
+versions. Node.js must be >=24.0.0 and Python >=3.12.0; npm and Git must be
+present with parseable versions but have no specified minimum. It does not
+install/update tools, write configuration, start services or prove platform
+runtime behavior.
+The quiet npm form emits the JSON report without npm headers. To diagnose
+missing npm, use `node scripts/developer-prerequisites.mjs` directly; no installed
+project dependencies are required.
+
+`npm ci` installs exact pinned **Playwright 1.64.1**. The separate
+`browser:install` command downloads its Chromium browser explicitly; the smoke
+fails with that instruction if the browser is missing and never downloads one
+automatically. The smoke launches its own Vite server at `127.0.0.1` on an
+available port and a fresh Chromium context. Existing user listeners and browser
+profiles are separate. No provider accounts, credentials or Firebase emulators
+are required.
+The dependency optimizer cache stays inside that run's temporary artifact
+directory, separate from an existing development server's cache.
+The OS allocator selects a positive port before Vite binds strictly; if another
+listener wins that race, the run fails instead of reusing or stopping it. Requests
+to external/provider/backend services and unrelated WebSockets are blocked;
+the runner's dedicated local HMR connection remains allowed.
+
+The deterministic named seed pack provides an identified baseline, hash and
+expected dashboard totals. The smoke checks that baseline, makes one domain
+record change through each HR/CMS/CRM interface, reloads and compares complete
+exported states. It produces a temporary report, screenshots and trace with
+paths printed in the command output. Cleanup closes only its own browser and
+Vite server. Browser artifacts contain synthetic records; they are test evidence,
+not new application saves or provider receipts.
+
+`ci:all` includes doctor regressions, named-seed validation and the browser smoke.
+Keep Chromium installed in the environment that runs the full gate. For the
+checked revision, exact observations and command outcomes, read the
+[developer/browser QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/DEVELOPER-BROWSER-QA-2026-10-14.md).
+The browser smoke checks local account-free native portal behavior; it does not
+cover every workflow, the separate Gusto SDK UI, live Firebase/Gusto connections,
+deployment, Windows runtime or whole-site accessibility.
+
+### Observed developer/browser results — 2026-10-14
+
+The actual Mac prerequisite report passed with **Node 25.8.1, npm 11.11.0,
+Git 2.54.0 and Python 3.14.5**. All **18 doctor regressions** and **16 named-seed/
+runner regressions** passed. The final authored browser run passed all seven
+checks:
+
+| Browser gate | Observed result |
+| --- | --- |
+| Fresh baseline | Complete exported payload matched the reviewed named seed |
+| HR | Created Avery's fictional goal, reloaded and matched the full expected payload/dashboard; CMS/CRM stayed intact |
+| CMS | Saved the fictional article as revision 2, reloaded and matched the full expected payload; HR/CRM stayed intact |
+| CRM | Created a fictional `.invalid` lead, reloaded and matched the expected payload/dashboard; HR/CMS stayed intact |
+| Exact saves and identity | All three browser-save envelopes matched expected synthetic data; no account cookies |
+| Second clean context | Exported the unchanged seed with no inherited workspace saves |
+| Requests and errors | No external/provider/backend requests, failed HTTP requests, console errors or uncaught exceptions |
+
+Full **`ci:all`, Hosting preflight and SYSTEMX drift checks passed**, including
+the integrated browser journey with its isolated optimizer cache. The receipt
+records all suite counts, five filesystem-specific skips and release boundaries.
+No production deployment ran.
+
+Owned **browser cleanup and Vite server cleanup both passed**. Only the expected
+unconfigured-Firebase warning appeared. Independent source review left no
+unresolved findings. These are focused local results; consult the canonical
+receipt for full CI, Hosting preflight and SYSTEMX drift outcomes.
+
+The catalog retains exactly **1,000 records**, now **five completed and 995
+remaining: 162 P1, 675 P2 and 158 P3**. This wave completes **WX-0001** and
+**WX-0652**, including **WX-0651**'s named-seed dependency; earlier **WX-0051**
+and **WX-0451** remain complete. Blank reusable SYSTEMX records stay unchanged.
 
 ## Adopted-project checks
 
@@ -130,9 +215,10 @@ Lint, TypeScript, dependency audits, documentation links and the production buil
 passed. **Hosting preflight and SYSTEMX drift checks passed**; no deployment ran.
 The receipt records exact scope and the separate provider/browser-quota limits.
 
-The stable catalog contains exactly **1,000 records**, with **WX-0051 and
-WX-0451 completed** and **998 remaining, including 164 P1**. Completed entries
-link their evidence. See the [roadmap](WebAppX-Roadmap.md); blank reusable SYSTEMX
+At that first P1 checkpoint, the stable catalog contained exactly **1,000
+records**, with **WX-0051 and WX-0451 completed** and **998 remaining, including
+164 P1**. Completed entries link their evidence. See the
+[roadmap](WebAppX-Roadmap.md) for current totals; blank reusable SYSTEMX
 task/context/plan/memory records remain unchanged.
 
 ### SYSTEMX refresh and roadmap checks

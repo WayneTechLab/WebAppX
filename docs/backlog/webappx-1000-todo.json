@@ -10,12 +10,18 @@
       "area": "setup",
       "priority": "P1",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a read-only developer prerequisite report",
       "acceptance": "One command reports Node, npm, Git and Python versions against the documented baseline without installing or changing anything.",
       "source": "docs/GETTING-STARTED.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-14",
+        "sourceBase": "4731702ec7bfdcaec60ac4d42e23b03f330f5d74",
+        "evidence": "docs/DEVELOPER-BROWSER-QA-2026-10-14.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0002",
@@ -8048,26 +8054,38 @@
       "area": "quality",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a deterministic browser scenario seed pack",
       "acceptance": "Each documented HR, CMS and CRM browser journey starts from a named synthetic snapshot with a recorded hash and expected dashboard totals.",
       "source": "tests/portals",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-14",
+        "sourceBase": "4731702ec7bfdcaec60ac4d42e23b03f330f5d74",
+        "evidence": "docs/DEVELOPER-BROWSER-QA-2026-10-14.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0652",
       "area": "quality",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Automate the cross-portal browser smoke journey",
       "acceptance": "A browser run loads all three portals, changes one record per portal and verifies refresh persistence in an isolated origin context.",
       "source": "docs/PORTAL-PERSISTENCE-QA-2026-10-14.md",
       "gate": "local",
       "dependsOn": [
         "WX-0651"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-14",
+        "sourceBase": "4731702ec7bfdcaec60ac4d42e23b03f330f5d74",
+        "evidence": "docs/DEVELOPER-BROWSER-QA-2026-10-14.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0653",

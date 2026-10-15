@@ -26,11 +26,11 @@ Read the [roadmap](../WEBAPPX-ROADMAP.md) for sequencing and bounded activation.
 
 ## Counts
 
-**1000 catalog items · 998 TODO · 2 done · 20 areas · 50 items per area.**
+**1000 catalog items · 995 TODO · 5 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 164 · P2: 676 · P3: 158.
+Remaining TODO priorities: P1: 162 · P2: 675 · P3: 158.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -61,10 +61,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## Project setup and developer experience
 
-- [ ] **WX-0001 — Add a read-only developer prerequisite report**
+- [x] **WX-0001 — Add a read-only developer prerequisite report**
   - P1 · foundation · local
   - Acceptance: One command reports Node, npm, Git and Python versions against the documented baseline without installing or changing anything.
   - Source: [docs/GETTING-STARTED.md](../../docs/GETTING-STARTED.md)
+  - Verified: 2026-10-14 · Source base: `4731702ec7bfdcaec60ac4d42e23b03f330f5d74` · Reviewed by: `agent.0` · Evidence: [docs/DEVELOPER-BROWSER-QA-2026-10-14.md](../../docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
 - [ ] **WX-0002 — Provide explicit runtime version pins**
   - P1 · foundation · local
   - Acceptance: A fresh shell can select the documented Node baseline from a checked-in runtime pin and the setup guide explains the supported range.
@@ -2728,14 +2729,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
 ## Testing, quality and accessibility
 
-- [ ] **WX-0651 — Add a deterministic browser scenario seed pack**
+- [x] **WX-0651 — Add a deterministic browser scenario seed pack**
   - P2 · portal-maturity · local
   - Acceptance: Each documented HR, CMS and CRM browser journey starts from a named synthetic snapshot with a recorded hash and expected dashboard totals.
   - Source: [tests/portals](../../tests/portals)
-- [ ] **WX-0652 — Automate the cross-portal browser smoke journey**
+  - Verified: 2026-10-14 · Source base: `4731702ec7bfdcaec60ac4d42e23b03f330f5d74` · Reviewed by: `agent.0` · Evidence: [docs/DEVELOPER-BROWSER-QA-2026-10-14.md](../../docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
+- [x] **WX-0652 — Automate the cross-portal browser smoke journey**
   - P1 · portal-maturity · local · Depends on: WX-0651
   - Acceptance: A browser run loads all three portals, changes one record per portal and verifies refresh persistence in an isolated origin context.
   - Source: [docs/PORTAL-PERSISTENCE-QA-2026-10-14.md](../../docs/PORTAL-PERSISTENCE-QA-2026-10-14.md)
+  - Verified: 2026-10-14 · Source base: `4731702ec7bfdcaec60ac4d42e23b03f330f5d74` · Reviewed by: `agent.0` · Evidence: [docs/DEVELOPER-BROWSER-QA-2026-10-14.md](../../docs/DEVELOPER-BROWSER-QA-2026-10-14.md)
 - [ ] **WX-0653 — Add keyboard-only onboarding browser coverage**
   - P1 · portal-maturity · local · Depends on: WX-0651
   - Acceptance: The sample employee completes required onboarding fields, review and confirmation using keyboard navigation with visible focus at every step.

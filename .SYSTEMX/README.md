@@ -17,9 +17,24 @@ Read one bounded area at a time. The catalog does not populate the reusable
 task, context, plan or memory seeds and does not start agents or providers.
 Verified completions link their evidence. **WX-0051 and WX-0451** complete the
 first P1 follow-up with a shared registry and restore storage-budget preview.
-The catalog retains exactly **1,000 records**, with **998 remaining, including
-164 P1**. The host pointer links implementation and local browser/QA evidence
+**WX-0001, WX-0651 and WX-0652** add verified developer readiness, named seeds
+and automated browser smoke. The catalog retains exactly **1,000 records**, with
+**five completed and 995 remaining: 162 P1, 675 P2 and 158 P3**.
+The host pointer links implementation and local browser/QA evidence
 without changing selected upstream defaults.
+
+Host-owned developer checks now include `npm run doctor` (or
+`npm run --silent doctor -- --json`) for read-only prerequisite versions and
+`npm run browser:smoke` for deterministic
+HR/CMS/CRM browser checks. Install Chromium explicitly after `npm ci` with
+`npm run browser:install`; the smoke never auto-downloads. It owns an available
+loopback Vite server and fresh Chromium context, without provider accounts or
+emulators. Read the [command guide](../docs/COMMANDS.md#developer-prerequisites-and-browser-smoke)
+and [QA receipt](../docs/DEVELOPER-BROWSER-QA-2026-10-14.md). These host tools do
+not mutate immutable defaults or activate reusable task/agent records.
+Local focused verification passed 18 doctor tests, 16 seed/runner tests and all
+seven authored browser gates, with both owned resources cleaned up. Independent
+review had no unresolved findings; final publication gates remain in the receipt.
 
 # .SYSTEMX — WebAppX operational system
 

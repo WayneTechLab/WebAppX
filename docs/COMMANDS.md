@@ -2,6 +2,31 @@
 
 Run from the repository root. Use `npm ci` for the committed lockfile.
 
+## Developer prerequisites and browser smoke
+
+| Command | Behavior |
+| --- | --- |
+| `npm run doctor` | Dependency-free, read-only installed-version report for Node.js, npm, Git and Python |
+| `npm run --silent doctor -- --json` | Same report as machine-readable JSON without npm command headers |
+| `node scripts/developer-prerequisites.mjs` | Direct dependency-free report when diagnosing a missing npm executable |
+| `npm run browser:install` | Explicit Chromium download for exact pinned Playwright 1.64.1; run after `npm ci` |
+| `npm run browser:smoke` | Owned loopback Vite server and fresh Chromium context; named seed/hash/totals, HR/CMS/CRM UI changes, reload persistence and complete export comparisons |
+| `npm run browser:smoke -- --headed` | Run the same checks with a visible Chromium window |
+| `npm run browser:smoke -- --output /path/to/local/artifacts` | Create a fresh artifact directory under the chosen parent |
+
+The doctor requires Node.js >=24.0.0 and Python >=3.12.0; npm/Git must be present
+with parseable versions, without a specified minimum. It installs nothing and
+does not establish platform runtime readiness. The smoke needs no accounts,
+provider credentials or emulators. It never auto-downloads browsers, reuses a
+user's browser saves or stops unrelated listeners. A missing Chromium install
+fails with the explicit install instruction. Report/screenshots/trace paths are
+printed in temporary storage; cleanup owns only the command's server and browser.
+See [Getting Started](GETTING-STARTED.md#developer-check-and-browser-smoke) and
+the [QA receipt](DEVELOPER-BROWSER-QA-2026-10-14.md).
+Observed local verification passed 18 doctor cases, 16 seed/runner cases and
+seven authored browser checks with successful browser/server cleanup. Final
+publication-gate outcomes are recorded in the receipt.
+
 ## App and local session
 
 | Command | Behavior |
@@ -93,8 +118,9 @@ agents or provider operations. Verified completed entries retain their stable
 IDs and link completion evidence; unstarted entries remain proposals. Inspect
 the first P1 portal follow-up with `npm run backlog -- --id WX-0051` and
 `npm run backlog -- --id WX-0451`.
-Both entries are completed with evidence: the catalog contains exactly 1,000
-records, with **998 remaining, including 164 P1**.
+Both entries remain completed with evidence, joined by **WX-0001, WX-0651 and
+WX-0652**. The catalog contains exactly **1,000 records**, with **five completed
+and 995 remaining: 162 P1, 675 P2 and 158 P3**.
 
 ### Repository gates
 
@@ -109,7 +135,7 @@ records, with **998 remaining, including 164 P1**.
 | `npm run systemx:tools:test` | Test the selected immutable standalone distribution |
 | `npm run systemx:integration:test` | Import preservation and reusable-template mirror regressions |
 | `npm run template:check` | Blank template seeds, snapshots, versions and both research inventories |
-| `npm run ci:all` | Complete reusable-template release gate; requires blank seeds |
+| `npm run ci:all` | Complete reusable-template release gate, including doctor regressions, seed checks and browser smoke; requires blank seeds and explicitly installed Chromium |
 | `npm run deploy -- hosting --preflight` | Deployment gates without commit, push or hosting deployment |
 | `npm run wiki:check` / `npm run wiki:sync` | Preview / publish checked-in pages to this checkout's GitHub wiki |
 
