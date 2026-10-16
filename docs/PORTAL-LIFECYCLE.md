@@ -1,5 +1,9 @@
 # Account-free employment, release and ownership workflows
 
+**CRM source/documentation compatibility supplement.** CRM source compatibility was reviewed at `4e025a3b5c21d0accef4e2e02add2c7eff54d589` against the145-source CRM freeze3 manifest. Existing HR and CMS implementations are unchanged. Existing CRM ownership commands now participate in an optional ordered journal after a first merge; earlier activity keeps its recorded fields. The separate [CRM duplicates and merges guide](CRM-DUPLICATES-AND-MERGES.md) describes merge direction, historical privacy and whole-workspace recovery. This source-only supplement does not relabel the earlier lifecycle, recruiting or payroll observations or accept the new CRM criteria.
+
+This additive header is a source/documentation review on 2026-10-15 at metadata commit `3ae29392709778a6f552d26dcb4222f4977f26fb`. The [dated CRM adoption receipt](CRM-ADOPTION-QA-2026-10-15.md) independently qualifies observations of implementation `4e025a3b5c21d0accef4e2e02add2c7eff54d589`. It is not execution at this metadata commit. Earlier source audits retain their examined basis `8308237b6bff9e5c6b8c6beb1b54b5c91c82a683`; any later harness-only execution-source changes need their separately reviewed receipt scope.
+
 Status: **original lifecycle workflows and recruiting integration locally
 accepted**. Their [original lifecycle QA](PORTAL-LIFECYCLE-QA-2026-10-15.md) and
 [recruiting QA](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) retain their original

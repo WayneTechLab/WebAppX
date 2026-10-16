@@ -1,5 +1,9 @@
 # Unified template command reference
 
+**CRM source/documentation compatibility supplement.** Source-only CRM integration review: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` preserves existing command names and the68-stage CI order. Existing `portals:test` and `browser:smoke:test` include the new CRM suites, and the composed lifecycle runner includes the CRM journey. These are reviewed source changes; completed execution belongs to its separately bound dated receipt. Earlier setup examples, parity observations and platform qualifications retain their original scope.
+
+This additive header is a source/documentation review on 2026-10-15 at metadata commit `3ae29392709778a6f552d26dcb4222f4977f26fb`. The [dated CRM adoption receipt](CRM-ADOPTION-QA-2026-10-15.md) independently qualifies observations of implementation `4e025a3b5c21d0accef4e2e02add2c7eff54d589`. It is not execution at this metadata commit. Earlier source audits retain their examined basis `8308237b6bff9e5c6b8c6beb1b54b5c91c82a683`; any later harness-only execution-source changes need their separately reviewed receipt scope.
+
 Run from the repository root. Use `npm ci` for the committed lockfile.
 Read [dependency installation](DEPENDENCY-INSTALLATION.md) for runtime selection
 and root/starter versus optional Functions installation scopes.

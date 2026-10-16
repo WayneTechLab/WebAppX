@@ -3,8 +3,8 @@
   "intent": "documentation-evidence-freshness",
   "catalog": {
     "path": "docs/backlog/webappx-1000-todo.json",
-    "revision": "917a49129918ca3cf55cc9cc794741ea3c42a6f7",
-    "sha256": "4f6d1464bd0645d00de63c891046fdde2cb199b5c2dc46b2bfd2d61b9ccbf08f"
+    "revision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
+    "sha256": "a670f464b3188fa2c2ec9f5c9f86a129b7545b03731822dcddd248b71d9607de"
   },
   "guides": [
     {
@@ -13,10 +13,10 @@
         "path": "docs/BACKLOG-REBASELINE.md",
         "sha256": "f12695172d8644c414f1deec691fad99b3d29c0cd35682ecde83e3e49112f369"
       },
-      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only re-review confirms the rebaseline guide and all three mapped implementation/test files remain byte-identical from 7337709 to 42818dd; all 1000 original definitions and WX-0852 remain unchanged. The original f849 receipt retains its dates, source base and bytes. No new execution is inferred."
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. The three mapped rebaseline implementation/test files remain unchanged. Original definitions and the original receipt keep their dates, source base and bytes. This review records no new rebaseline execution. No execution is relabeled to metadata; no provider or production acceptance is inferred."
       },
       "proposalIds": [
         "WX-0852"
@@ -42,12 +42,12 @@
       "id": "portal-state-contract",
       "guide": {
         "path": "docs/PORTAL-STATE-CONTRACT.md",
-        "sha256": "ef86581a9c0b4b9e2efe9101dc9201e03ce4591eaee27039de949a90732e2255"
+        "sha256": "25c4e23739c0071b56fd65206f88ffb740c607b849e1badcc0838ebd1dfc13bf"
       },
-      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review at committed 42818dd and the exact 130-file payroll freeze 3 confirms optional immutable payroll anchors, cumulative correction events, company-window locks, scoped projections and complete recovery coexist with this contract. Current guide headers qualify the earlier 122/878 recruiting checkpoint. Original dated receipt objects, observation revisions and bytes remain unchanged; fresh 68-stage CI and 211 browser/rehearsal checks belong to the separate payroll/setup receipt. No provider, production, Windows or manual screen-reader acceptance is inferred."
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. Optional CRM first-merge baseline, ordered journal and immutable captures coexist with complete saves/exports/recovery and bounded hidden-content inspection. HR/CMS/navigation/provider source is unchanged. Original receipt objects remain exact; the new dated CRM receipt retains its own implementation observation scope. No execution is relabeled to metadata; no provider or production acceptance is inferred."
       },
       "proposalIds": [
         "WX-0060",
@@ -112,6 +112,15 @@
           "observationRevision": "998674759f11e17765c6724edfe2dae3d1c58c5a",
           "revisionBasis": "examined-source",
           "scope": "Current 62-stage CI and 183 browser checks/groups on the committed three-file confirmation harness, with unchanged 100-file runtime; targeted executions preceded the commit on exactly matching reviewed bytes. Actual keyboard Keep and Undo focus, distinct-payload import cancellation and enabled Reset scope/effect/cancel preserve complete independent records and saved bytes. Hosting preflight passed on this commit; no provider or production acceptance."
+        },
+        {
+          "path": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+          "sha256": "50ad15d96aafe8b9110a46201a4871e0e86cc29ccdfe2e029add4cf47faf9ac1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+          "revisionBasis": "examined-source",
+          "scope": "This dated local CRM/adoption receipt records evidence and qualifications for implementation 4e025a3b5c21d0accef4e2e02add2c7eff54d589. Its actual terminal results and observation counts are stated in the bound receipt. Historical standalone observations keep their original freezes; source/documentation review at the later metadata commit performs no execution and grants no provider, production, Windows or manual screen-reader acceptance."
         }
       ]
     },
@@ -119,12 +128,12 @@
       "id": "portal-lifecycle",
       "guide": {
         "path": "docs/PORTAL-LIFECYCLE.md",
-        "sha256": "7ed8409db3db2949441ff63f90ad86b0194d689aef7ab395b2d04d3327aa0e5c"
+        "sha256": "364acc2b829d808af2cd0dd0d4201f6eaee1da3dccae80a142cbea44f44eec3e"
       },
-      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review at committed 42818dd and the exact 130-file payroll freeze 3 confirms optional immutable payroll anchors, cumulative correction events, company-window locks, scoped projections and complete recovery coexist with this contract. Current guide headers qualify the earlier 122/878 recruiting checkpoint. Original dated receipt objects, observation revisions and bytes remain unchanged; fresh 68-stage CI and 211 browser/rehearsal checks belong to the separate payroll/setup receipt. No provider, production, Windows or manual screen-reader acceptance is inferred."
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. Existing HR/CMS workflows and ownership behavior coexist with the optional CRM journal. Shared persistence/inspection and composed runner changes were reviewed. Earlier lifecycle/recruiting/payroll receipts retain exact observation scope; new CRM observations belong to their separate dated receipt. No execution is relabeled to metadata; no provider or production acceptance is inferred."
       },
       "proposalIds": [
         "WX-0101",
@@ -167,6 +176,15 @@
           "observationRevision": "fdf60124e49659e9c33d30db59e45ff8369a38e1",
           "revisionBasis": "examined-source",
           "scope": "Current full 62-stage CI and 180 browser checks/groups bind this committed harness; the lifecycle stage separately rehashes 100 runtime sources, ten harness sources and 178 artifacts. The earlier standalone execution has identical runtime and 46 identical status PNGs; its observation is not relabeled. Hosting preflight ran on the same final-runtime working tree before harness-only changes. These are local mock results, without provider, production, native Windows or manual screen-reader acceptance."
+        },
+        {
+          "path": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+          "sha256": "50ad15d96aafe8b9110a46201a4871e0e86cc29ccdfe2e029add4cf47faf9ac1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+          "revisionBasis": "examined-source",
+          "scope": "This dated local CRM/adoption receipt records evidence and qualifications for implementation 4e025a3b5c21d0accef4e2e02add2c7eff54d589. Its actual terminal results and observation counts are stated in the bound receipt. Historical standalone observations keep their original freezes; source/documentation review at the later metadata commit performs no execution and grants no provider, production, Windows or manual screen-reader acceptance."
         }
       ]
     },
@@ -174,12 +192,12 @@
       "id": "hr-recruiting-lifecycle",
       "guide": {
         "path": "docs/HR-RECRUITING-LIFECYCLE.md",
-        "sha256": "a9c46db2141f131246395a659f7674ec74a69d057b38a673a7f4004ff23d7108"
+        "sha256": "024699a0380083c3fcdd4f59a4b73cf061559b8e0cc96d65397db855f9f40560"
       },
-      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review at committed 42818dd and the exact 130-file payroll freeze 3 confirms optional immutable payroll anchors, cumulative correction events, company-window locks, scoped projections and complete recovery coexist with this contract. Current guide headers qualify the earlier 122/878 recruiting checkpoint. Original dated receipt objects, observation revisions and bytes remain unchanged; fresh 68-stage CI and 211 browser/rehearsal checks belong to the separate payroll/setup receipt. No provider, production, Windows or manual screen-reader acceptance is inferred."
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. Native HR and the recruiting runner/literal browser expectations are unchanged; shared persistence/inspection and ancillary CRM test/CI changes were reviewed. Recruiting private-draft/export rules remain. Original recruiting receipt dates, source, freeze and counts are not relabeled. No execution is relabeled to metadata; no provider or production acceptance is inferred."
       },
       "proposalIds": [
         "WX-0201",
@@ -217,6 +235,15 @@
           "observationRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
           "revisionBasis": "examined-source",
           "scope": "Completed 63-stage CI and separately completed Hosting preflight on exact committed source 7337709. Independent audit sums 184 groups across fourteen common browser suites, HR-disabled 8 and LAN 6 to 198; recruiting binds 123 runtime, 12 harness and 152 artifact files with 42 status meanings. Original standalone freeze-3 observation remains qualified. Agent 0 accepts only WX-0201 through WX-0210 plus separate WX-0951; no provider, production, native Windows or manual screen-reader acceptance."
+        },
+        {
+          "path": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+          "sha256": "50ad15d96aafe8b9110a46201a4871e0e86cc29ccdfe2e029add4cf47faf9ac1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+          "revisionBasis": "examined-source",
+          "scope": "This dated local CRM/adoption receipt records evidence and qualifications for implementation 4e025a3b5c21d0accef4e2e02add2c7eff54d589. Its actual terminal results and observation counts are stated in the bound receipt. Historical standalone observations keep their original freezes; source/documentation review at the later metadata commit performs no execution and grants no provider, production, Windows or manual screen-reader acceptance."
         }
       ]
     },
@@ -224,12 +251,12 @@
       "id": "native-payroll-controls",
       "guide": {
         "path": "docs/HR-PAYROLL-CONTROLS.md",
-        "sha256": "cfd559c3d5332f241974609cb3d1d57dcb017c3261ab1b7dafaaa5375da009f9"
+        "sha256": "cfc9a3a0f6091f02d35fc64750dfa7ada9c57da713180f7b9e5ca507cb3d964c"
       },
-      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Reviewed native model, UI, private latest-state controller, strict optional persistence, complete export/recovery and bounded inspection at committed 42818dd. Original closure/correction criteria were accepted from the dedicated local receipt after all required gates; source review itself performs no tests or provider operation."
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. Native HR/payroll-control source and the payroll runner are unchanged; shared portal inspection/persistence and broader CRM test directories were reviewed. Complete payroll anchors/events and recovery remain. The original payroll/setup receipt and its actual results retain their source scope. No execution is relabeled to metadata; no provider or production acceptance is inferred."
       },
       "proposalIds": [
         "WX-0159",
@@ -256,6 +283,15 @@
           "observationRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
           "revisionBasis": "examined-source",
           "scope": "Local acceptance of twelve original criteria at committed 42818dd: complete 68-stage CI, 211 actual browser/rehearsal checks and separate Hosting preflight. Standalone OlwijH and fresh CI GORDlT each record 21 payroll groups and 35 statuses against matching freeze-3 bytes. Earlier failed/visually unaccepted diagnostics retain their scope. Metadata follow-up and publication are separate; no provider, production, Windows or manual screen-reader acceptance."
+        },
+        {
+          "path": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+          "sha256": "50ad15d96aafe8b9110a46201a4871e0e86cc29ccdfe2e029add4cf47faf9ac1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+          "revisionBasis": "examined-source",
+          "scope": "This dated local CRM/adoption receipt records evidence and qualifications for implementation 4e025a3b5c21d0accef4e2e02add2c7eff54d589. Its actual terminal results and observation counts are stated in the bound receipt. Historical standalone observations keep their original freezes; source/documentation review at the later metadata commit performs no execution and grants no provider, production, Windows or manual screen-reader acceptance."
         }
       ]
     },
@@ -263,12 +299,12 @@
       "id": "developer-setup-contracts",
       "guide": {
         "path": "docs/COMMANDS.md",
-        "sha256": "b47eeec0082d1fc407b247ed3db2018c6189c60174157b6ca77ccb70d08d1226"
+        "sha256": "8cccc8cb287bca4d3fc86814f6a64dae801a7ba9a6d703c8b2ec0b6191721f86"
       },
-      "examinedRevision": "490043553fd567a0d96add8f5d3f0c4a630a6154",
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Reviewed final script-purpose discovery, bounded documentation contexts, fictional source/reset inventory, grouped starter parity, AST review and macOS spaces/Unicode smoke contracts. The examined metadata commit includes the separately reviewed README fingerprint and ten unchanged command-context occurrence rebindings after CI at 42818dd. Original 68-stage execution remains at 42818dd; targeted metadata checks do not relabel that run. Seeds and immutable releases remain unchanged."
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. Existing command names and CI order remain; portal/browser aliases append CRM suites and the composed runner gains CRM coverage. COMMANDS includes the reviewed 30-to-32 inventory-count correction at ba858064; its historical focused proof remains separate. Old setup receipts/platform limits, blank seeds and immutable releases remain unchanged. No execution is relabeled to metadata; no provider or production acceptance is inferred."
       },
       "proposalIds": [
         "WX-0011",
@@ -305,6 +341,201 @@
           "observationRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
           "revisionBasis": "examined-source",
           "scope": "Local acceptance of twelve original criteria at committed 42818dd: complete 68-stage CI, 211 actual browser/rehearsal checks and separate Hosting preflight. Standalone OlwijH and fresh CI GORDlT each record 21 payroll groups and 35 statuses against matching freeze-3 bytes. Earlier failed/visually unaccepted diagnostics retain their scope. Metadata follow-up and publication are separate; no provider, production, Windows or manual screen-reader acceptance."
+        },
+        {
+          "path": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+          "sha256": "50ad15d96aafe8b9110a46201a4871e0e86cc29ccdfe2e029add4cf47faf9ac1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+          "revisionBasis": "examined-source",
+          "scope": "This dated local CRM/adoption receipt records evidence and qualifications for implementation 4e025a3b5c21d0accef4e2e02add2c7eff54d589. Its actual terminal results and observation counts are stated in the bound receipt. Historical standalone observations keep their original freezes; source/documentation review at the later metadata commit performs no execution and grants no provider, production, Windows or manual screen-reader acceptance."
+        }
+      ]
+    },
+    {
+      "id": "crm-duplicates-and-merges",
+      "guide": {
+        "path": "docs/CRM-DUPLICATES-AND-MERGES.md",
+        "sha256": "76936b19d4b0e4e570351dee5a14c83e0b21f5b32d253450143734a0273bd21f"
+      },
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. Reviewed scoped duplicate reports, complete same-owner previews, private latest-source handles, atomic graph/journal changes, strict import replay, historical projections and recovery inspection. The focused freeze-2 observation remains historical. The final dated receipt records actual implementation observations; this review performs no execution. No execution is relabeled to metadata; no provider or production acceptance is inferred."
+      },
+      "proposalIds": [
+        "WX-0369",
+        "WX-0370",
+        "WX-0371",
+        "WX-0372",
+        "WX-0373"
+      ],
+      "sourceScopes": [
+        "src/crm",
+        "src/portals",
+        "tests/crm",
+        "tests/portals",
+        "tests/browser",
+        "scripts/browser-portal-lifecycle.mjs",
+        "scripts/ci-plan.mjs",
+        "package.json",
+        "docs/CRM-MERGE-CONTRACT.md"
+      ],
+      "receipts": [
+        {
+          "path": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+          "sha256": "50ad15d96aafe8b9110a46201a4871e0e86cc29ccdfe2e029add4cf47faf9ac1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+          "revisionBasis": "examined-source",
+          "scope": "This dated local CRM/adoption receipt records evidence and qualifications for implementation 4e025a3b5c21d0accef4e2e02add2c7eff54d589. Its actual terminal results and observation counts are stated in the bound receipt. Historical standalone observations keep their original freezes; source/documentation review at the later metadata commit performs no execution and grants no provider, production, Windows or manual screen-reader acceptance."
+        }
+      ]
+    },
+    {
+      "id": "optional-adoption-contracts",
+      "guide": {
+        "path": "docs/ADOPTION-CONTRACTS.md",
+        "sha256": "536c23e3aa279edff5ef80acb8752365a8ddc9271f0b8ff68ef44efb8353ffa5"
+      },
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. The public companion inventory binds fourteen design guides and seventeen original criteria. Historical inventories and the paper matrix remain qualified. Eleven original code scopes plus the exact companion inventory avoid a freshness-bookkeeping self-dependency. Runtime adoption and actual operator/provider selections remain separate. No execution is relabeled to metadata; no provider or production acceptance is inferred."
+      },
+      "proposalIds": [
+        "WX-0511",
+        "WX-0527",
+        "WX-0534",
+        "WX-0637",
+        "WX-0612",
+        "WX-0617",
+        "WX-0517",
+        "WX-0635",
+        "WX-0627",
+        "WX-0953",
+        "WX-0760",
+        "WX-0820",
+        "WX-0628",
+        "WX-0802",
+        "WX-0814",
+        "WX-0830",
+        "WX-0850"
+      ],
+      "sourceScopes": [
+        "src",
+        "integrations/gusto",
+        ".SYSTEMX",
+        "scripts",
+        "package.json",
+        "package-lock.json",
+        "firebase.json",
+        "firestore.rules",
+        "storage.rules",
+        "index.html",
+        "vite.config.ts",
+        "docs/evidence/adoption-contract-source-review.json"
+      ],
+      "receipts": [
+        {
+          "path": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+          "sha256": "50ad15d96aafe8b9110a46201a4871e0e86cc29ccdfe2e029add4cf47faf9ac1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+          "revisionBasis": "examined-source",
+          "scope": "This dated local CRM/adoption receipt records evidence and qualifications for implementation 4e025a3b5c21d0accef4e2e02add2c7eff54d589. Its actual terminal results and observation counts are stated in the bound receipt. Historical standalone observations keep their original freezes; source/documentation review at the later metadata commit performs no execution and grants no provider, production, Windows or manual screen-reader acceptance."
+        }
+      ]
+    },
+    {
+      "id": "adoption-artifact-guides-a",
+      "guide": {
+        "path": "docs/IDENTITY-ADOPTION-CONTRACTS.md",
+        "sha256": "4649061dc6a7a28e26c93ed4282a2b0dd0c118af69b0dfc67958b286f6533d71"
+      },
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. Source-only coverage part A binds the first seven exact public artifact paths, the adoption index and its fingerprint inventory. This separate entry retains all prior artifact bytes while making future guide edits visible within the unchanged per-entry scope limit. It is documentation/design review, not runtime enforcement or provider execution. No execution is relabeled to metadata; no provider or production acceptance is inferred."
+      },
+      "proposalIds": [
+        "WX-0511",
+        "WX-0527",
+        "WX-0534",
+        "WX-0637",
+        "WX-0612",
+        "WX-0617",
+        "WX-0517",
+        "WX-0635",
+        "WX-0627",
+        "WX-0953"
+      ],
+      "sourceScopes": [
+        "docs/IDENTITY-ADOPTION-CONTRACTS.md",
+        "docs/CSP-REPORT-ONLY-ADOPTION-PROPOSAL.md",
+        "docs/WEBHOOK-RETENTION-ADOPTION-PROPOSAL.md",
+        "docs/OWNER-RECOVERY-RUNBOOK.md",
+        "docs/INCIDENT-EVIDENCE-CAPTURE.md",
+        "docs/DOWNLOAD-AUTHORIZATION-ADOPTION-CONTRACT.md",
+        "docs/OAUTH-STATE-BINDING-ADOPTION-TEST-CONTRACT.md",
+        "docs/ADOPTION-CONTRACTS.md",
+        "docs/evidence/adoption-contract-source-review.json"
+      ],
+      "receipts": [
+        {
+          "path": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+          "sha256": "50ad15d96aafe8b9110a46201a4871e0e86cc29ccdfe2e029add4cf47faf9ac1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+          "revisionBasis": "examined-source",
+          "scope": "This dated local CRM/adoption receipt records evidence and qualifications for implementation 4e025a3b5c21d0accef4e2e02add2c7eff54d589. Its actual terminal results and observation counts are stated in the bound receipt. Historical standalone observations keep their original freezes; source/documentation review at the later metadata commit performs no execution and grants no provider, production, Windows or manual screen-reader acceptance."
+        }
+      ]
+    },
+    {
+      "id": "adoption-artifact-guides-b",
+      "guide": {
+        "path": "docs/ERROR-TELEMETRY-ADAPTER-CONTRACT.md",
+        "sha256": "67eec8f0593bbd634ca257f98a7126c2123d8f834545328ac9921614e005cf85"
+      },
+      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. Source-only coverage part B binds the remaining seven exact public artifact paths, the adoption index and its fingerprint inventory. Together the two parts cover all fourteen guides once without broad docs or freshness-bookkeeping scopes. All prior artifact bytes remain exact; design review is not runtime adoption or external execution. No execution is relabeled to metadata; no provider or production acceptance is inferred."
+      },
+      "proposalIds": [
+        "WX-0760",
+        "WX-0820",
+        "WX-0628",
+        "WX-0802",
+        "WX-0814",
+        "WX-0830",
+        "WX-0850"
+      ],
+      "sourceScopes": [
+        "docs/ERROR-TELEMETRY-ADAPTER-CONTRACT.md",
+        "docs/WINDOWS-X64-ARM64-RUNNER-MATRIX.md",
+        "docs/PRIVATE-PREVIEW-PUBLICATION-CHECKLIST.md",
+        "docs/GITHUB-ACTIONS-ADOPTION-DESIGN.md",
+        "docs/DEPLOYMENT-IDENTITY-SEPARATION.md",
+        "docs/FIREBASE-RULES-DRY-RUN-CHECKLIST.md",
+        "docs/RELEASE-READINESS-DECISION-WORKSHEET.md",
+        "docs/ADOPTION-CONTRACTS.md",
+        "docs/evidence/adoption-contract-source-review.json"
+      ],
+      "receipts": [
+        {
+          "path": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+          "sha256": "50ad15d96aafe8b9110a46201a4871e0e86cc29ccdfe2e029add4cf47faf9ac1",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+          "revisionBasis": "examined-source",
+          "scope": "This dated local CRM/adoption receipt records evidence and qualifications for implementation 4e025a3b5c21d0accef4e2e02add2c7eff54d589. Its actual terminal results and observation counts are stated in the bound receipt. Historical standalone observations keep their original freezes; source/documentation review at the later metadata commit performs no execution and grants no provider, production, Windows or manual screen-reader acceptance."
         }
       ]
     }

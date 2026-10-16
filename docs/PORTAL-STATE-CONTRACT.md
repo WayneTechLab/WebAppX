@@ -1,5 +1,9 @@
 # Portal state and browser retention contract
 
+**CRM source/documentation compatibility supplement.** Source-only CRM compatibility review: committed `4e025a3b5c21d0accef4e2e02add2c7eff54d589` matches the145-source CRM freeze3 manifest (SHA-256 `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`). Optional `mergeHistory` additionally retains the accepted first-merge legacy baseline, ordered commands and immutable merge captures. Complete exports and recovery snapshots include these private records for all owners; scoped screens do not redact portable files. Default restore inspection exposes bounded IDs/counts/safe metadata while comparing complete hidden content. Read [CRM duplicates and merges](CRM-DUPLICATES-AND-MERGES.md) for this additive extension. Earlier payroll/recruiting/lifecycle QA paragraphs remain historical; this review establishes no new execution or acceptance.
+
+This additive header is a source/documentation review on 2026-10-15 at metadata commit `3ae29392709778a6f552d26dcb4222f4977f26fb`. The [dated CRM adoption receipt](CRM-ADOPTION-QA-2026-10-15.md) independently qualifies observations of implementation `4e025a3b5c21d0accef4e2e02add2c7eff54d589`. It is not execution at this metadata commit. Earlier source audits retain their examined basis `8308237b6bff9e5c6b8c6beb1b54b5c91c82a683`; any later harness-only execution-source changes need their separately reviewed receipt scope.
+
 This contract describes the native, account-free HR, CMS and CRM demos. It
 addresses WX-0060 and WX-0601, including guarded navigation, controlled drafts,
 optional replacement checkpoints, sample payroll/time corrections and recovery

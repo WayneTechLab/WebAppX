@@ -1,5 +1,9 @@
 # Native HR recruiting lifecycle
 
+**CRM source/documentation compatibility supplement.** A source-only coexistence review at `4e025a3b5c21d0accef4e2e02add2c7eff54d589` checked the145-source CRM freeze3 and its shared persistence/inspection changes. The HR recruiting implementation, recruiting runner and its literal browser expectations are unchanged. The original recruiting acceptance and its63-stage/198-check receipt retain their original source and date; the new CRM work supplies no new recruiting execution or provider authority.
+
+This additive header is a source/documentation review on 2026-10-15 at metadata commit `3ae29392709778a6f552d26dcb4222f4977f26fb`. The [dated CRM adoption receipt](CRM-ADOPTION-QA-2026-10-15.md) independently qualifies observations of implementation `4e025a3b5c21d0accef4e2e02add2c7eff54d589`. It is not execution at this metadata commit. Earlier source audits retain their examined basis `8308237b6bff9e5c6b8c6beb1b54b5c91c82a683`; any later harness-only execution-source changes need their separately reviewed receipt scope.
+
 Status: **recruiting locally accepted — 2026-10-15**. Agent 0 accepted
 **WX-0201–WX-0210 and the separately scoped WX-0951**, eleven original criteria,
 on source `7337709b79b995c3f1e76254aa51fd86bbd1f215`. At that accepted checkpoint,

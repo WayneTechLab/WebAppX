@@ -1,5 +1,9 @@
 # Native mock payroll closures and corrections
 
+**CRM source/documentation compatibility supplement.** Source-only compatibility review at `4e025a3b5c21d0accef4e2e02add2c7eff54d589` checked the145-source CRM freeze3 and its shared persistence/inspection updates. Native HR/payroll-control source and the payroll browser runner are unchanged. The accepted42818dd payroll/setup results above remain observations of that earlier source. New CRM history and inspection support does not rewrite payroll anchors/events or establish another payroll, provider or production result.
+
+This additive header is a source/documentation review on 2026-10-15 at metadata commit `3ae29392709778a6f552d26dcb4222f4977f26fb`. The [dated CRM adoption receipt](CRM-ADOPTION-QA-2026-10-15.md) independently qualifies observations of implementation `4e025a3b5c21d0accef4e2e02add2c7eff54d589`. It is not execution at this metadata commit. Earlier source audits retain their examined basis `8308237b6bff9e5c6b8c6beb1b54b5c91c82a683`; any later harness-only execution-source changes need their separately reviewed receipt scope.
+
 **Locally accepted — 2026-10-15.** Agent 0 accepted original criteria
 **WX-0159 — Add mock pay-period closure** and **WX-0160 — Add fictional
 payroll correction runs** after the final 21-group/35-status browser journey,
