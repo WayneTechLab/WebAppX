@@ -1,18 +1,9 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import ts from 'typescript'
+import { loadMockModel } from '../browser/model-loader.mjs'
 
-async function load(path) {
-  const source = readFileSync(new URL(path, import.meta.url), 'utf8')
-  let compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-  if (path.endsWith('/portals/persistence.ts')) {
-    const registrySource = readFileSync(new URL('../../src/portals/registry.ts', import.meta.url), 'utf8')
-    const registry = ts.transpileModule(registrySource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-    compiled = compiled.replace("'./registry'", JSON.stringify(`data:text/javascript;base64,${Buffer.from(registry).toString('base64')}`))
-  }
-  return import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`)
-}
+const load = path => loadMockModel(new URL(path, import.meta.url))
+
 const [cms, crm, cmsValidation, crmValidation, storage] = await Promise.all([
   load('../../src/cms/model.ts'), load('../../src/crm/model.ts'),
   load('../../src/cms/persistence.ts'), load('../../src/crm/persistence.ts'), load('../../src/portals/persistence.ts'),

@@ -15,7 +15,7 @@ let fixture, codec, workspaces, backup
 const timestamp = '2026-10-15T12:00:00.000Z'
 before(async () => {
   fixture = await mkdtemp(join(tmpdir(), 'webappx-adopted-codec-'))
-  const files = ['cms/model.ts', 'cms/persistence.ts', 'crm/model.ts', 'crm/persistence.ts', 'portals/backup.ts', 'portals/persistence.ts', 'portals/registry.ts', 'portals/workspaces.ts', 'portals/combined-backup.ts']
+  const files = ['cms/model.ts', 'cms/persistence.ts', 'crm/model.ts', 'crm/persistence.ts', 'crm/types.ts', 'crm/kernel.ts', 'crm/legacy-validation.ts', 'crm/merge-types.ts', 'crm/merge-value.ts', 'crm/merge-history.ts', 'crm/merge-projection.ts', 'crm/merge-public-types.ts', 'crm/merge-report.ts', 'portals/backup.ts', 'portals/persistence.ts', 'portals/registry.ts', 'portals/workspaces.ts', 'portals/combined-backup.ts']
   for (const file of files) {
     const overridden = ['portals/registry.ts', 'portals/workspaces.ts', 'portals/combined-backup.ts'].includes(file)
     await mkdir(join(fixture, 'src', file, '..'), { recursive: true })
