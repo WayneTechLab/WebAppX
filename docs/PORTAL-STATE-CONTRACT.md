@@ -3,22 +3,26 @@
 This contract describes the native, account-free HR, CMS and CRM demos. It
 addresses WX-0060 and WX-0601, including guarded navigation, controlled drafts,
 optional replacement checkpoints, sample payroll/time corrections and recovery
-inspection, together with optional employment/recruiting history, CMS releases
-and CRM ownership. This is a **current source contract**, reviewed against
-`7337709b79b995c3f1e76254aa51fd86bbd1f215` and its **123-source freeze 4**.
+inspection, together with optional employment/recruiting history, CMS releases,
+CRM ownership and implemented optional payroll controls. This is a **source
+contract**, reviewed against `42818dd7baf3d335f27c401c37d048bd842617fa` and its
+**130-source payroll freeze 3**. The [runtime source manifest](evidence/payroll-control-runtime-2026-10-15.json)
+has SHA-256 `6adc613e9cb4681668200c742b08716259833a678ba03cc95c9ea7fdb5af8666`.
+This source review is separate from CI/browser execution and criterion acceptance.
+
 The [safety](PORTAL-SAFETY-QA-2026-10-15.md),
-[lifecycle](PORTAL-LIFECYCLE-QA-2026-10-15.md) and
-[confirmation](PORTAL-CONFIRMATION-QA-2026-10-15.md) QA receipts retain their
-original revisions and observations. In particular, the lifecycle receipt's
-100-source runtime and eighteen accepted criteria are historical evidence,
-not observations relabeled to this review revision. Current recruiting execution
-is recorded separately in the [recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md);
-Agent 0 accepted its eleven original criteria on that source, bringing the
-catalog to **122 done / 878 remaining**. This source-only description supplies
-no additional browser observation or criterion acceptance. Read the
+[lifecycle](PORTAL-LIFECYCLE-QA-2026-10-15.md),
+[confirmation](PORTAL-CONFIRMATION-QA-2026-10-15.md) and
+[recruiting](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) QA receipts retain their
+original dates, revisions, runtime freezes and observations. The recruiting
+receipt records eleven accepted criteria on `7337709b79b995c3f1e76254aa51fd86bbd1f215`;
+at that checkpoint the catalog recorded **122 done / 878 remaining**. Use the
+[execution plan](WEBAPPX-EXECUTION-PLAN.md) for current catalog progress. The
+new payroll criteria WX-0159/WX-0160 have their own accepted local
+[QA receipt](PAYROLL-SETUP-QA-2026-10-15.md) on the source above. Read [payroll controls](HR-PAYROLL-CONTROLS.md), the
 [recruiting how-to](HR-RECRUITING-LIFECYCLE.md) and authoritative
-[contract section 12](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
-for that workflow's controls and final authority decisions.
+[recruiting contract section 12](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
+for those workflows' separate controls and authority boundaries.
 
 A **saved draft** is a workspace record created by
 an application action, even when its workflow stage is still `draft`. An
@@ -38,7 +42,7 @@ only; preview identities do not provide authentication or provider authority.
 
 | Browser slot | Retained categories after a successful saved action |
 | --- | --- |
-| `webappx.demo.hr` | Onboarding profile/job/task checks, stages and receipts; edited synthetic work email and employee status; draft, submitted and approved time entries, including stopped timers added as records, saved date/hour corrections and manager return reasons/identity; optional effective-dated fictional hourly rate timelines; draft/reviewed/confirmed benefit elections; the current payroll simulation, chosen sample period, frozen dated/rated inputs, calculated totals and submitted payroll history; time-off requests, balances, task/policy/training/asset/document records and people-operation activity; service requests, assignments, resolution text and activity; recruiting draft/published/closed jobs, candidate details/stages/activity and linked hired employees; performance goals and saved private self/manager review comments, stages and activity; survey drafts, questions, audience IDs, saved draft and submitted identified answers, receipts and activity; completed fixture checklist keys and acknowledgements; selected management preview role and employee preview identity; optional selected manager identity and employment lifecycle instances, captured checklists, archived onboarding, transitions, directory history/correction requests/outcomes, and offboarding assignments with linked ordinary tasks. |
+| `webappx.demo.hr` | Onboarding profile/job/task checks, stages and receipts; edited synthetic work email and employee status; draft, submitted and approved time entries, including stopped timers added as records, saved date/hour corrections and manager return reasons/identity; optional effective-dated fictional hourly rate timelines; draft/reviewed/confirmed benefit elections; the current payroll simulation, chosen sample period, frozen dated/rated inputs, calculated totals and submitted payroll history; time-off requests, balances, task/policy/training/asset/document records and people-operation activity; service requests, assignments, resolution text and activity; recruiting draft/published/closed jobs, candidate details/stages/activity and linked hired employees; performance goals and saved private self/manager review comments, stages and activity; survey drafts, questions, audience IDs, saved draft and submitted identified answers, receipts and activity; completed fixture checklist keys and acknowledgements; selected management preview role and employee preview identity; optional selected manager identity and employment lifecycle instances, captured checklists, archived onboarding, transitions, directory history/correction requests/outcomes, and offboarding assignments with linked ordinary tasks. Optional payroll controls retain exact original-receipt anchors and ordered closure/correction events, with writer/date/reason, company-window receipt references, or employee/original/previous-adjustment links and previous/proposed/signed-delta amounts. |
 | `webappx.demo.cms` | All editorial entries: draft title/slug/body, current revision and status, author ID, reviewer feedback, approval revision/reviewer/receipt, and frozen published title/slug/body/revision/receipt where present; CMS action receipts/activity and sequence; optional named release bundles, their status/creator/preparation and activation sequences, approved member content/approval/prior-publication snapshots and activated publication captures. Published snapshots remain readable beside later draft edits until replaced or retired by an application action. |
 | `webappx.demo.crm` | Fictional company names and owner IDs; contact names, email addresses, company/owner links; lead names, emails, company names, status and conversion links; opportunity titles, amounts, stages, company/contact/owner/lead links; follow-up task titles, owners, opportunity links and status; CRM activity receipts/descriptions and sequence; optional ownership-change metadata recording the acting identity, old/new assignees, target record and affected company/contact/lead/opportunity/task ID references. |
 | `webappx.demo.restore-points` | Complete **current record snapshots for the selected portals only**, captured manually, before combined selective restore/Undo, or before individual import/Reset when its separate checkpoint option is enabled; point ID, UTC creation time, `manual`/`restore`/`undo`/`import`/`reset` kind, selected module IDs, optional label and (for Undo) source point ID. These snapshots can contain all of the private mock drafts and fictional contact details listed above. They contain no unsaved forms or running timers. |
@@ -54,8 +58,9 @@ hired-employee prefix remains exact while new authoritative hires append capture
 employees. A malformed present extension refuses instead of falling back to
 legacy behavior.
 
-The next payroll implementation, currently under verification, adds optional
-`workflow.payrollControl`. Its first accepted closure or monetary correction
+Implemented optional `workflow.payrollControl` is locally verified in its
+[dedicated QA receipt](PAYROLL-SETUP-QA-2026-10-15.md).
+Its first accepted closure or monetary correction
 captures exact original receipt anchors and appends an ordered event; reading,
 previewing and refusing leave absence intact. Company-window closure blocks
 late time and overlapping ordinary preparation. Corrections retain separate
@@ -147,7 +152,14 @@ leave, request, recruiting, performance and survey form groups. New groups cover
 employment simulation date, template selection, transfer, reasoned transition,
 rehire, directory edit, correction proposal and correction outcome. Its
 role/identity changes and affected record-local actions guard the corresponding
-scope. CMS registers the editor, create form and separate per-entry feedback,
+scope.
+
+Separate payroll closure and correction forms register their own controlled
+drafts. Changing a submitted-period/receipt/employee target guards only that
+form. Editing or discarding its fields invalidates its live preview; successful
+acceptance rebases only that form.
+
+CMS registers the editor, create form and separate per-entry feedback,
 including hidden author inputs, plus the new release name/member-selection form.
 CMS identity switching itself retains these controlled buffers. CRM registers
 controlled lead, conversion amount, company, contact, opportunity and follow-up
@@ -303,6 +315,25 @@ preserve existing legacy save shapes. Legacy unsubmitted preparation needs an
 explicit period and rates before it can continue. Legacy submitted statements
 retain the historical fixed-period fallback. All calculations are fictional
 local examples, outside provider payroll, funding, tax or legal acceptance.
+
+An explicitly closed company window additionally refuses time creation and
+changes in that window, including draft edits/deletes, submission, approval,
+return and timer addition; moving an entry into or out of it refuses. Ordinary
+preparation refuses the whole requested period if it overlaps a closed window,
+before choosing eligible rows. A saved overlapping preparation remains readable
+and import-valid but stale; calculate/review/submit refuse. Closure applies to
+later hires and employment instances too. Original submitted receipts, consumed
+time and their historical participants remain unchanged.
+
+Before final closure, the trusted host asks Keep/Discard about the current
+period/rate and known employee manual-time/timer/correction/return groups.
+Keep preserves those drafts and does not call confirmation. Explicit Discard
+clears only the disclosed groups before the latest-source confirmation; those
+discards remain effective if confirmation then refuses. The closure form's own
+inputs remain. Separate monetary corrections record manual cumulative targets
+and signed deltas linked to their original; they neither reopen a window nor
+rewrite original hours, rates or submitted history. See
+[payroll controls](HR-PAYROLL-CONTROLS.md).
 
 ## Lifecycle captures and source fixture authority
 
@@ -524,6 +555,10 @@ Saved private recruiting drafts and draft-save event history are accepted
 workspace records and occur in complete saves, exports and recovery points.
 Management/interviewer projections do not filter portable files. Unsaved fields,
 preview handles and the selected interviewer mode remain temporary and excluded.
+Complete exports and captures also include accepted payroll original-receipt
+anchors and ordered closure/correction events in `workflow.payrollControl`'s
+`anchors` and `events` arrays. Temporary closure/correction fields and their
+private preview handles remain excluded.
 See the [single codec](../src/portals/backup.ts),
 [combined codec](../src/portals/combined-backup.ts) and
 [backup controls](../src/portals/CombinedWorkspaceBackup.tsx).

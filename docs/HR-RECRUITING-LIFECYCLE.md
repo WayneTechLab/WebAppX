@@ -1,15 +1,21 @@
 # Native HR recruiting lifecycle
 
-Status: **locally accepted — 2026-10-15**. Agent 0 accepted **WX-0201–WX-0210
-and the separately scoped WX-0951**, eleven original criteria, on source
-`7337709b79b995c3f1e76254aa51fd86bbd1f215`. The catalog now records **122 done /
-878 remaining**; the full 1,000-item goal remains active. The
+Status: **recruiting locally accepted — 2026-10-15**. Agent 0 accepted
+**WX-0201–WX-0210 and the separately scoped WX-0951**, eleven original criteria,
+on source `7337709b79b995c3f1e76254aa51fd86bbd1f215`. At that accepted checkpoint,
+the catalog recorded **122 done / 878 remaining**. The
 [dated recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) records
-the completed **63-stage CI**, **198 actual browser checks/groups** (184 across
-fourteen common suites, 8 HR-disabled and 6 LAN) and Hosting preflight, all with
-terminal exit 0. The application remains **3.4.0**, deploy **0**; no deployment
-or provider activation occurred. Source/wiki publication requires separate
-remote parity verification. Follow the authoritative
+its completed **63-stage CI**, **198 actual browser checks/groups** and Hosting
+preflight. Those are observations of that recruiting source and remain unchanged.
+Use the [execution plan](WEBAPPX-EXECUTION-PLAN.md) for current progress.
+
+The recruiting source contract was re-reviewed against
+`42818dd7baf3d335f27c401c37d048bd842617fa` and the **130-source payroll freeze 3**
+for optional payroll-control coexistence. This review records no new CI/browser
+observation, payroll acceptance, deployment or provider activation. The separate
+[payroll guide](HR-PAYROLL-CONTROLS.md) links its separately accepted
+[QA receipt](PAYROLL-SETUP-QA-2026-10-15.md).
+Follow the authoritative
 [shared contract, section 12](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
 and the [implementation plan](RECRUITING-LIFECYCLE-IMPLEMENTATION-PLAN.md).
 
@@ -209,6 +215,12 @@ instance can use a `recruiting-baseline` capture of the actual onboarding
 flags/tasks/receipt. A prior completed checklist has unknown historical actor
 and date; the app does not invent hire/completion events or approvals for it.
 Later rehire remains the separate [employment lifecycle](PORTAL-LIFECYCLE.md).
+
+A later authoritative hire is still subject to any closed company payroll
+window. Hiring/onboarding neither reopens that window nor substitutes the new
+employment instance for a historical receipt participant. Original receipts and
+separate cumulative monetary adjustments retain their own captured links; see
+[payroll controls](HR-PAYROLL-CONTROLS.md).
 
 ## 7. Refresh, export and recover deliberately
 

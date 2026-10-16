@@ -14,58 +14,58 @@
     },
     {
       "path": "README.md",
-      "line": 1037,
+      "line": 1068,
       "column": 1,
       "script": "systemx:status",
       "commandSha256": "a8e86e82b72f5949f41921a4c4a59ffe17d7dfe3326b2942c9893e4a330e4187",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "f488de848fb3a9b6a76e082f15ba98179a9659b7f10c3738c5b77d727b2e7448"
+      "documentSha256": "dd14f64b5b60a678b5584224f64abbc873dc476401374bd0361d2179c0fe0338"
     },
     {
       "path": "README.md",
-      "line": 1038,
+      "line": 1069,
       "column": 1,
       "script": "systemx:validate",
       "commandSha256": "a05373f654c10af05f755645518e79f060496cc630300dbfad6f7488d57323a0",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "f488de848fb3a9b6a76e082f15ba98179a9659b7f10c3738c5b77d727b2e7448"
+      "documentSha256": "dd14f64b5b60a678b5584224f64abbc873dc476401374bd0361d2179c0fe0338"
     },
     {
       "path": "README.md",
-      "line": 1041,
+      "line": 1072,
       "column": 1,
       "script": "systemx",
       "commandSha256": "93c8c999478a70f1328a2e510c9f704cc61b86e05246686f93c34c842bda8f2c",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "f488de848fb3a9b6a76e082f15ba98179a9659b7f10c3738c5b77d727b2e7448"
+      "documentSha256": "dd14f64b5b60a678b5584224f64abbc873dc476401374bd0361d2179c0fe0338"
     },
     {
       "path": "README.md",
-      "line": 1042,
+      "line": 1073,
       "column": 1,
       "script": "systemx",
       "commandSha256": "448740874fa8c654579c80c6754a07c87ad50f37c6b2bb21713c8b2586d76a8b",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "f488de848fb3a9b6a76e082f15ba98179a9659b7f10c3738c5b77d727b2e7448"
+      "documentSha256": "dd14f64b5b60a678b5584224f64abbc873dc476401374bd0361d2179c0fe0338"
     },
     {
       "path": "README.md",
-      "line": 1043,
+      "line": 1074,
       "column": 1,
       "script": "systemx",
       "commandSha256": "f83162501cb069d29454020456f93bc8c0a1108eb1e3069d89657ffa713d2b9f",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "f488de848fb3a9b6a76e082f15ba98179a9659b7f10c3738c5b77d727b2e7448"
+      "documentSha256": "dd14f64b5b60a678b5584224f64abbc873dc476401374bd0361d2179c0fe0338"
     },
     {
       "path": "docs/GETTING-STARTED.md",
@@ -113,58 +113,58 @@
     },
     {
       "path": "docs/SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md",
-      "line": 76,
+      "line": 86,
       "column": 81,
       "script": "NAME",
       "commandSha256": "8bf738cd9f64be61338d1ab38435272802a4cfa9a9314330251b599d1dc12050",
       "context": "placeholder",
       "reason": "Explicit parser grammar example in the reviewed working-tree implementation plan; not an available root script.",
       "sourceRevision": null,
-      "documentSha256": "aea503cafbe2a96cd4c4cb0bd7b35c2a80b17519cab9396bd4dac1a75ae1693e"
+      "documentSha256": "11b0cfcd12fd7a889b069609b844afee7c58b22ab2a500814e4299cd87dde7db"
     },
     {
       "path": "docs/SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md",
-      "line": 76,
+      "line": 86,
       "column": 97,
       "script": "NAME",
       "commandSha256": "c087991e9e37b95576047685474a985b5ff0aca929803221c782849267e33ac7",
       "context": "placeholder",
       "reason": "Explicit parser grammar example in the reviewed working-tree implementation plan; not an available root script.",
       "sourceRevision": null,
-      "documentSha256": "aea503cafbe2a96cd4c4cb0bd7b35c2a80b17519cab9396bd4dac1a75ae1693e"
+      "documentSha256": "11b0cfcd12fd7a889b069609b844afee7c58b22ab2a500814e4299cd87dde7db"
     },
     {
       "path": "docs/SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md",
-      "line": 76,
+      "line": 86,
       "column": 194,
       "script": "start",
       "commandSha256": "06bf4af99102538af9f1c2cfd5a5b45875901167dc38dd2d4b425a3ce76adecc",
       "context": "placeholder",
       "reason": "Explicit parser grammar example in the reviewed working-tree implementation plan; not an available root script.",
       "sourceRevision": null,
-      "documentSha256": "aea503cafbe2a96cd4c4cb0bd7b35c2a80b17519cab9396bd4dac1a75ae1693e"
+      "documentSha256": "11b0cfcd12fd7a889b069609b844afee7c58b22ab2a500814e4299cd87dde7db"
     },
     {
       "path": "docs/SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md",
-      "line": 76,
+      "line": 86,
       "column": 206,
       "script": "stop",
       "commandSha256": "39b07ec5bc18b4414a7161a68ae5163b936f8af68c2641460d27ee98bb611b07",
       "context": "placeholder",
       "reason": "Explicit parser grammar example in the reviewed working-tree implementation plan; not an available root script.",
       "sourceRevision": null,
-      "documentSha256": "aea503cafbe2a96cd4c4cb0bd7b35c2a80b17519cab9396bd4dac1a75ae1693e"
+      "documentSha256": "11b0cfcd12fd7a889b069609b844afee7c58b22ab2a500814e4299cd87dde7db"
     },
     {
       "path": "docs/SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md",
-      "line": 76,
+      "line": 86,
       "column": 217,
       "script": "restart",
       "commandSha256": "f78b7452ac1a369aef6325538ecc0797d50316332c500e802b7221e87a8991ec",
       "context": "placeholder",
       "reason": "Explicit parser grammar example in the reviewed working-tree implementation plan; not an available root script.",
       "sourceRevision": null,
-      "documentSha256": "aea503cafbe2a96cd4c4cb0bd7b35c2a80b17519cab9396bd4dac1a75ae1693e"
+      "documentSha256": "11b0cfcd12fd7a889b069609b844afee7c58b22ab2a500814e4299cd87dde7db"
     },
     {
       "path": "docs/examples/private-template-adoption.md",

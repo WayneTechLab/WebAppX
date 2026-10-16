@@ -66,7 +66,38 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
-## Current recruiting lifecycle checkpoint — locally accepted
+## Current payroll and developer setup checkpoint — locally accepted
+
+Agent 0 accepted **twelve original criteria**: **WX-0159/WX-0160** and
+**WX-0011–WX-0014, WX-0016, WX-0019, WX-0020, WX-0022–WX-0024**.
+Read the [payroll walkthrough](docs/HR-PAYROLL-CONTROLS.md),
+[setup contract plan](docs/SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md) and
+[dated QA receipt](docs/PAYROLL-SETUP-QA-2026-10-15.md) for exact acceptance and evidence.
+
+Account-free payroll now supports explicit company-window closure and separate
+cumulative monetary corrections linked to immutable original receipts. Employee
+views show only their own adjustments; auditors use metadata-only Payroll
+History. Complete saves, backups, selective restore and Undo retain these records.
+
+Developer tools list all 134 real package scripts by purpose, validate maintained
+npm examples, inventory fictional sources and Reset actions, report grouped
+starter drift, and statically review child-process construction. Use
+`npm run scripts:list`, `npm run docs:commands:check`, `npm run fixtures:list`
+and `npm run source:shell:check`; see the command reference for effects and limits.
+
+**All 68 CI stages passed with terminal exit 0** on committed source
+`42818dd7baf3d335f27c401c37d048bd842617fa`. Independent review confirmed **211 actual browser
+checks/check groups**: **197 common, 8 HR-disabled and 6 LAN**. The fresh payroll
+suite passed **21 groups and all 35 status meanings**. Hosting preflight exited
+**0** on that source; app **3.4.0** retains **deploy count 0**, with deployment skipped.
+
+The canonical catalog records **134 done / 866 remaining**: **56 P1, 654 P2
+and 156 P3**, with **699 local, 127 operator and 40 provider** gates remaining.
+The full 1,000-item goal remains active. Source/wiki publication requires its
+separate direct remote parity check. These local results establish no provider,
+production, native Windows or manual screen-reader acceptance.
+
+## Historical recruiting lifecycle checkpoint — locally accepted
 
 Agent 0 accepted **WX-0201–WX-0210 and the separately scoped WX-0951** against
 all eleven original local criteria. Read the [recruiting how-to](docs/HR-RECRUITING-LIFECYCLE.md)
@@ -79,7 +110,7 @@ for the controls, exact acceptance mapping and evidence boundaries.
 **0** on the same source. App **3.4.0** retains **deploy count 0**; no deployment
 occurred.
 
-The canonical catalog now records **122 done / 878 remaining**: **58 P1, 664 P2
+At that recruiting checkpoint, the catalog recorded **122 done / 878 remaining**: **58 P1, 664 P2
 and 156 P3**, with **711 local, 127 operator and 40 provider** gates remaining.
 The full 1,000-item goal remains active. Source/wiki publication and provider,
 production, native Windows and manual screen-reader acceptance retain their

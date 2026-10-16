@@ -1,10 +1,12 @@
 # Native mock payroll closures and corrections
 
-**Implementation under browser verification — 2026-10-15.** Original local
-criteria **WX-0159 — Add mock pay-period closure** and **WX-0160 — Add fictional
-payroll correction runs** remain **TODO until Agent 0 accepts their evidence**.
-This guide describes the implemented controls. It records no new full-CI,
-publication, deployment or provider acceptance result.
+**Locally accepted — 2026-10-15.** Agent 0 accepted original criteria
+**WX-0159 — Add mock pay-period closure** and **WX-0160 — Add fictional
+payroll correction runs** after the final 21-group/35-status browser journey,
+68-stage CI and Hosting preflight on committed source
+`42818dd7baf3d335f27c401c37d048bd842617fa`. Read the
+[dated QA receipt](PAYROLL-SETUP-QA-2026-10-15.md) for source and observation
+bindings. No production deployment or provider acceptance is implied.
 
 The approved [payroll control contract](PAYROLL-CONTROL-CONTRACT.md), especially
 section 12, governs the model and integration boundaries. The shorter
@@ -251,8 +253,9 @@ npm run portals:test
 
 The payroll core, controller, UI/host, native guards/codecs and inspection tests
 have distinct scopes. A command in this guide is not evidence that it passed.
-Browser results, final CI, preflight and criterion acceptance must be recorded
-by Agent 0 after verification; **WX-0159 and WX-0160 remain TODO here**.
+The [dated QA receipt](PAYROLL-SETUP-QA-2026-10-15.md) records the completed
+browser, CI, preflight and original-criterion acceptance against the committed
+source above. Repeating a command is a separate observation.
 
 For provider adoption, use [Gusto setup](GUSTO-SETUP.md). These native controls
 perform no provider request, filing, funding, bank transfer, debit or reversal.

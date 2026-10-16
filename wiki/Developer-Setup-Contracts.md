@@ -1,5 +1,15 @@
 # Developer setup contracts
 
+## Accepted developer setup checkpoint
+
+Agent 0 accepted the ten original setup criteria WX-0011–WX-0014, WX-0016,
+WX-0019, WX-0020 and WX-0022–WX-0024 after the complete 68-stage CI and
+Hosting preflight on source `42818dd7baf3d335f27c401c37d048bd842617fa`.
+The [dated QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PAYROLL-SETUP-QA-2026-10-15.md)
+separates the early focused observations below from that fresh integrated run,
+original-criterion acceptance and publication. Windows execution remains unobserved.
+
+
 WebAppX provides source checks for command discovery, documented npm names,
 fictional defaults, starter parity and child-process construction. Use
 [Getting Started](../docs/GETTING-STARTED.md) to install and run the app,

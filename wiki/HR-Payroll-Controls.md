@@ -1,9 +1,11 @@
 # HR Payroll Controls
 
-**Implementation under browser verification — 2026-10-15.** Original local
-criteria **WX-0159** and **WX-0160 remain TODO until Agent 0 accepts the evidence**.
-This walkthrough records no new browser/full-CI pass, publication, deployment
-or provider acceptance. See the
+**Locally accepted — 2026-10-15.** Agent 0 accepted **WX-0159/WX-0160**
+after 21 payroll browser groups, all 35 status meanings, 68-stage CI and Hosting
+preflight on source `42818dd7baf3d335f27c401c37d048bd842617fa`. Read the
+[dated QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PAYROLL-SETUP-QA-2026-10-15.md)
+for exact source, observations and limits. No deployment or provider acceptance
+is implied. See the
 [complete source guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PAYROLL-CONTROLS.md)
 and [approved contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PAYROLL-CONTROL-CONTRACT.md)
 for the precise compatibility, arithmetic and authority boundaries.

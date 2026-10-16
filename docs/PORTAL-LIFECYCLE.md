@@ -1,18 +1,22 @@
 # Account-free employment, release and ownership workflows
 
 Status: **original lifecycle workflows and recruiting integration locally
-accepted**. This guide retains the accepted HR employment lifecycle,
-CMS releases and CRM ownership workflows and their
-[original dated QA receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md). Its source
-description was additionally reviewed against
-`7337709b79b995c3f1e76254aa51fd86bbd1f215` (**123-source freeze 4**) for optional
-recruiting, later first-instance onboarding provenance and scoped retained
-presentation. That review is source-only and does not relabel the earlier
-100-source browser observation. Current recruiting execution is recorded in the
-[recruiting QA receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md). Agent 0 accepted
-its eleven original criteria on that source; the catalog now records **122 done /
-878 remaining**. Source review alone establishes no new acceptance, main/wiki
-publication, production deployment or provider authority.
+accepted**. Their [original lifecycle QA](PORTAL-LIFECYCLE-QA-2026-10-15.md) and
+[recruiting QA](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) retain their original
+observations, revisions and runtime freezes. The recruiting acceptance on
+`7337709b79b995c3f1e76254aa51fd86bbd1f215` brought the catalog to
+**122 done / 878 remaining at that checkpoint**. See the
+[execution plan](WEBAPPX-EXECUTION-PLAN.md) for current progress.
+
+This guide's source contract was re-reviewed against
+`42818dd7baf3d335f27c401c37d048bd842617fa` and the **130-source payroll freeze 3**
+for coexistence with optional payroll closure/correction records. This is a
+source-only review; it does not relabel the earlier 100-source lifecycle or
+123-source recruiting browser observations. [Payroll controls](HR-PAYROLL-CONTROLS.md)
+have separate verification and acceptance in the
+[payroll/setup QA receipt](PAYROLL-SETUP-QA-2026-10-15.md). No new CI/browser result,
+criterion acceptance, source/wiki publication, production deployment or provider
+authority is established by this source review.
 
 Use fictional information only. Start `npm run dev:mock`, open the exact local
 origin printed by the command and choose `/portals`. No account is required for
@@ -258,6 +262,15 @@ and completion dates can remain unknown; the application does not invent dates
 from the clock or old receipts. The
 [shared recruiting contract](RECRUITING-LIFECYCLE-CONTRACT.md#12-final-agent-0-integration-decisions)
 governs its immutable adoption and authoritative event records.
+
+Optional payroll controls coexist in the same complete HR snapshot. Accepted
+employment changes and later hires do not erase original payroll anchors or
+reopen a closed company date window. Individual/combined import, selected
+restore and Undo validate a present payroll-control arm and replay its complete
+events; older valid absence stays absent. Whole-HR replacement can intentionally
+restore an earlier pre-closure snapshot. Default inspection hides its amounts
+and reasons while comparing the complete payload. See
+[payroll controls](HR-PAYROLL-CONTROLS.md).
 
 Individual/combined import, selected restore and Undo validate complete saved
 records before replacement. HR instance/template links, sequences, reporting

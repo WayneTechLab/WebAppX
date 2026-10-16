@@ -6,18 +6,38 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
-## Assigned payroll and developer setup work
+## Current payroll and developer setup checkpoint — locally accepted
 
-The next implementation wave covers sample payroll closure and separate
-correction runs, plus ten developer setup criteria. Read
-[Payroll Closures and Corrections](HR-Payroll-Controls.md) and
-[Developer Setup Contracts](Developer-Setup-Contracts.md) for the controls and
-verification boundaries. The [full execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
-keeps the complete 1,000-item goal and dependency sequencing visible.
-The canonical checklist retains each original acceptance criterion; these
-implementation guides do not establish completion.
+Agent 0 accepted **twelve original criteria**: **WX-0159/WX-0160** and
+**WX-0011–WX-0014, WX-0016, WX-0019, WX-0020, WX-0022–WX-0024**.
+Read the [payroll walkthrough](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-PAYROLL-CONTROLS.md),
+[setup contract plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md) and
+[dated QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/PAYROLL-SETUP-QA-2026-10-15.md) for exact acceptance and evidence.
 
-## Current recruiting lifecycle checkpoint — locally accepted
+Account-free payroll now supports explicit company-window closure and separate
+cumulative monetary corrections linked to immutable original receipts. Employee
+views show only their own adjustments; auditors use metadata-only Payroll
+History. Complete saves, backups, selective restore and Undo retain these records.
+
+Developer tools list all 134 real package scripts by purpose, validate maintained
+npm examples, inventory fictional sources and Reset actions, report grouped
+starter drift, and statically review child-process construction. Use
+`npm run scripts:list`, `npm run docs:commands:check`, `npm run fixtures:list`
+and `npm run source:shell:check`; see the command reference for effects and limits.
+
+**All 68 CI stages passed with terminal exit 0** on committed source
+`42818dd7baf3d335f27c401c37d048bd842617fa`. Independent review confirmed **211 actual browser
+checks/check groups**: **197 common, 8 HR-disabled and 6 LAN**. The fresh payroll
+suite passed **21 groups and all 35 status meanings**. Hosting preflight exited
+**0** on that source; app **3.4.0** retains **deploy count 0**, with deployment skipped.
+
+The canonical catalog records **134 done / 866 remaining**: **56 P1, 654 P2
+and 156 P3**, with **699 local, 127 operator and 40 provider** gates remaining.
+The full 1,000-item goal remains active. Source/wiki publication requires its
+separate direct remote parity check. These local results establish no provider,
+production, native Windows or manual screen-reader acceptance.
+
+## Historical recruiting lifecycle checkpoint — locally accepted
 
 Agent 0 accepted **eleven original local criteria: WX-0201–WX-0210 and
 WX-0951**. The [HR Recruiting Lifecycle walkthrough](HR-Recruiting-Lifecycle.md)
@@ -34,7 +54,7 @@ remains the default.
 Read the [dated recruiting QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
 for source/report bindings, executed scope and evidence limits.
 
-The canonical catalog now records **122 done / 878 remaining**: **58 P1,
+At that recruiting checkpoint, the catalog recorded **122 done / 878 remaining**: **58 P1,
 664 P2 and 156 P3**, with **711 local, 127 operator and 40 provider** gates
 remaining. The complete 1,000-item goal remains active. Run `npm run browser:recruiting` after dependency
 and Chromium setup to repeat the local fictional-workspace journey. These

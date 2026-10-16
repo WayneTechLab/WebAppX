@@ -10,9 +10,9 @@ The separate [review index](BACKLOG-EVIDENCE.md) attaches scoped historical
 receipts with examined and observation revisions. It does not accept work
 or convert an earlier browser result into a current execution.
 
-Current verified progress: **122 done / 878 remaining**.
-Remaining priorities: **58 P1 · 664 P2 · 156 P3**.
-Remaining acceptance gates: **711 local · 40 provider · 127 operator**.
+Current verified progress: **134 done / 866 remaining**.
+Remaining priorities: **56 P1 · 654 P2 · 156 P3**.
+Remaining acceptance gates: **699 local · 40 provider · 127 operator**.
 
 ## Assigned implementation plans
 
@@ -58,10 +58,10 @@ coverage ships with each slice rather than waiting for the quality area.
 
 | Workstream | Stable IDs | Done | Remaining |
 | --- | --- | ---: | ---: |
-| Project setup and developer experience | WX-0001–WX-0050 | 11 | 39 |
+| Project setup and developer experience | WX-0001–WX-0050 | 21 | 29 |
 | Shared portal architecture | WX-0051–WX-0100 | 10 | 40 |
 | HR onboarding and directory | WX-0101–WX-0150 | 10 | 40 |
-| HR payroll, benefits and time | WX-0151–WX-0200 | 8 | 42 |
+| HR payroll, benefits and time | WX-0151–WX-0200 | 10 | 40 |
 | HR talent and employee operations | WX-0201–WX-0250 | 10 | 40 |
 | CMS models and authoring | WX-0251–WX-0300 | 3 | 47 |
 | CMS review and publication | WX-0301–WX-0350 | 3 | 47 |
@@ -83,10 +83,10 @@ Domain waves (the dependency graph overrides this order):
 
 | Wave | Areas | Done | Remaining |
 | --- | --- | ---: | ---: |
-| Foundation | setup, systemx | 21 | 79 |
+| Foundation | setup, systemx | 31 | 69 |
 | Shared core | portal-shell, identity, security | 14 | 136 |
 | Recovery | mock-recovery | 12 | 38 |
-| Human resources | hr-onboarding, hr-payroll, hr-talent | 28 | 122 |
+| Human resources | hr-onboarding, hr-payroll, hr-talent | 30 | 120 |
 | Content | cms-authoring, cms-publishing | 6 | 94 |
 | Customer relationships | crm-contacts, crm-sales | 4 | 96 |
 | Quality and design | quality, design | 13 | 87 |
@@ -122,26 +122,26 @@ or grant access, and current write ownership must be checked before selection.
 
 | ID | Priority / phase | Acceptance |
 | --- | --- | --- |
-| WX-0159 | P1 / portal-maturity | Closing a submitted sample period prevents new entries from silently changing its frozen payroll totals. |
-| WX-0160 | P1 / portal-maturity | A correction references the original receipt and records a separate adjustment without rewriting submitted history. |
 | WX-0656 | P1 / portal-maturity | Manual evidence records storage save, import refusal, restore success and Undo result announcements without duplicate announcements from hidden modules. |
-| WX-0011 | P2 / foundation | A new developer can follow distinct instructions for dependency install, runtime mismatch, occupied port and emulator startup failures. |
-| WX-0012 | P2 / foundation | The guide identifies which generated dependency paths can be rebuilt and preserves ignored environment and emulator state. |
-| WX-0013 | P2 / foundation | A read-only command lists maintained scripts by setup, app, portal, SYSTEMX, wiki and release purpose using the real manifest. |
 | WX-0015 | P2 / foundation | A developer starting the template can see links for the public app, three mock portals and optional local control plane with their distinct prerequisites. |
-| WX-0016 | P2 / foundation | A read-only command lists fictional fixture sources and identifies which reset action restores each source. |
 | WX-0017 | P2 / foundation | The app can run an explicitly selected walkthrough session that never writes mock saves and clearly labels refresh behavior. |
 | WX-0018 | P2 / foundation | A preview lists only WebAppX-owned mock keys and the portal/history effect of clearing each key without deleting browser data. |
-| WX-0019 | P2 / foundation | The template check groups app, dependency, asset and configuration differences so a maintainer can locate the relevant starter drift. |
-| WX-0020 | P2 / foundation | New-app adoption lists repository name, package name, site branding, deployment target and project records that require deliberate replacement. |
 | WX-0021 | P2 / foundation | An adoption command previews identity substitutions in a temporary copy and leaves the original template and ignored files unchanged. |
-| WX-0022 | P2 / foundation | A source check identifies new script call sites that build executable shell strings and points maintainers to argument-array examples. |
-| WX-0023 | P2 / foundation | A temporary-copy smoke run installs no services and verifies key setup commands from a repository path containing spaces. |
-| WX-0024 | P2 / foundation | Temporary-copy checks exercise project configuration and read-only status from a path containing Unicode characters. |
 | WX-0701 | P2 / foundation | HR, CMS and CRM use documented surface, spacing and emphasis tokens with one sample page demonstrating each token. |
 | WX-0702 | P2 / foundation | A local preference changes row spacing without hiding record labels or action controls and survives refresh. |
 | WX-0703 | P2 / foundation | Section headings expose consistent hierarchy and support metric, action and descriptive text slots without duplicate page titles. |
 | WX-0704 | P2 / foundation | Each invalid field has a linked error message and the form summary targets the same control. |
+| WX-0705 | P2 / foundation | A disabled sample action has nearby text explaining the exact unmet prerequisite without requiring hover. |
+| WX-0706 | P2 / foundation | Domain confirmations show action, affected record and receipt with a keyboard-operable copy control. |
+| WX-0707 | P2 / foundation | The shell shows saved, memory-only and pending-form states without collapsing distinct storage errors into success. |
+| WX-0861 | P2 / foundation | The host records its supported managed release range and an import preview warns when a new release is outside that reviewed range. |
+| WX-0862 | P2 / foundation | A refused downgrade reports the active version, requested version and safe review alternatives without rewriting retained snapshots. |
+| WX-0863 | P2 / foundation | A read-only comparison export lists retained versions, manifest schemas and observed fingerprint results at two examined host revisions without rewriting snapshots. |
+| WX-0864 | P2 / foundation | A read-only tool shows which outer instructional files differ from selected defaults and labels host-owned customization rather than overwriting it. |
+| WX-0865 | P2 / foundation | A temporary-copy check demonstrates using ignored original bootstrap backups to recover from a deliberately interrupted refresh. |
+| WX-0866 | P2 / foundation | SYSTEMX tool checks report which temporary copies were created and whether each was removed after success or retained for a failed check. |
+| WX-0867 | P2 / foundation | The context command can explain the byte or line contribution of each record without automatically loading more project history. |
+| WX-0868 | P2 / foundation | A fictional secret-marker fixture proves resume packets omit excluded local runtime and private prompt files. |
 
 ## Resume commands
 

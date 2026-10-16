@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 878 TODO · 122 done · 20 areas · 50 items per area.**
+**1000 catalog items · 866 TODO · 134 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 58 · P2: 664 · P3: 156.
+Remaining TODO priorities: P1: 56 · P2: 654 · P3: 156.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -113,30 +113,35 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: The session summary distinguishes a usable Vite app from each emulator becoming ready, with component-specific failure messages.
   - Source: [.SYSTEMX/LAN/dev-session.mjs](../../.SYSTEMX/LAN/dev-session.mjs)
   - Verified: 2026-10-15 · Source base: `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` · Reviewed by: `agent.0` · Evidence: [docs/SESSION-CONTRACTS-QA-2026-10-15.md](../../docs/SESSION-CONTRACTS-QA-2026-10-15.md)
-- [ ] **WX-0011 — Add a setup troubleshooting decision tree**
+- [x] **WX-0011 — Add a setup troubleshooting decision tree**
   - P2 · foundation · local
   - Acceptance: A new developer can follow distinct instructions for dependency install, runtime mismatch, occupied port and emulator startup failures.
   - Source: [docs/GETTING-STARTED.md](../../docs/GETTING-STARTED.md)
-- [ ] **WX-0012 — Document recovery from an interrupted dependency install**
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
+- [x] **WX-0012 — Document recovery from an interrupted dependency install**
   - P2 · foundation · local
   - Acceptance: The guide identifies which generated dependency paths can be rebuilt and preserves ignored environment and emulator state.
   - Source: [docs/RUNBOOK.md](../../docs/RUNBOOK.md)
-- [ ] **WX-0013 — Add a package-script discovery command**
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
+- [x] **WX-0013 — Add a package-script discovery command**
   - P2 · foundation · local
   - Acceptance: A read-only command lists maintained scripts by setup, app, portal, SYSTEMX, wiki and release purpose using the real manifest.
   - Source: [package.json](../../package.json)
-- [ ] **WX-0014 — Validate command examples against package scripts**
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
+- [x] **WX-0014 — Validate command examples against package scripts**
   - P2 · foundation · local · Depends on: WX-0013
   - Acceptance: A documentation check flags npm script names in maintained command examples that do not exist in the root manifest.
   - Source: [docs/COMMANDS.md](../../docs/COMMANDS.md)
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
 - [ ] **WX-0015 — Add a concise first-run success page**
   - P2 · foundation · local
   - Acceptance: A developer starting the template can see links for the public app, three mock portals and optional local control plane with their distinct prerequisites.
   - Source: [src/pages/DocsPage.tsx](../../src/pages/DocsPage.tsx)
-- [ ] **WX-0016 — Add a fixture seed inventory command**
+- [x] **WX-0016 — Add a fixture seed inventory command**
   - P2 · foundation · local
   - Acceptance: A read-only command lists fictional fixture sources and identifies which reset action restores each source.
   - Source: [src/portals/workspaces.ts](../../src/portals/workspaces.ts)
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
 - [ ] **WX-0017 — Offer a nonpersistent walkthrough mode**
   - P2 · foundation · local
   - Acceptance: The app can run an explicitly selected walkthrough session that never writes mock saves and clearly labels refresh behavior.
@@ -145,30 +150,35 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · foundation · local
   - Acceptance: A preview lists only WebAppX-owned mock keys and the portal/history effect of clearing each key without deleting browser data.
   - Source: [src/portals/persistence.ts](../../src/portals/persistence.ts)
-- [ ] **WX-0019 — Report starter parity by feature group**
+- [x] **WX-0019 — Report starter parity by feature group**
   - P2 · foundation · local
   - Acceptance: The template check groups app, dependency, asset and configuration differences so a maintainer can locate the relevant starter drift.
   - Source: [scripts/validate-template.py](../../scripts/validate-template.py)
-- [ ] **WX-0020 — Add a scaffold identity checklist**
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
+- [x] **WX-0020 — Add a scaffold identity checklist**
   - P2 · foundation · local
   - Acceptance: New-app adoption lists repository name, package name, site branding, deployment target and project records that require deliberate replacement.
   - Source: [docs/examples/private-template-adoption.md](../../docs/examples/private-template-adoption.md)
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
 - [ ] **WX-0021 — Provide a local-only adoption dry run**
   - P2 · foundation · local
   - Acceptance: An adoption command previews identity substitutions in a temporary copy and leaves the original template and ignored files unchanged.
   - Source: [scripts/sync-template.py](../../scripts/sync-template.py)
-- [ ] **WX-0022 — Verify shell-free child process examples**
+- [x] **WX-0022 — Verify shell-free child process examples**
   - P2 · foundation · local
   - Acceptance: A source check identifies new script call sites that build executable shell strings and points maintainers to argument-array examples.
   - Source: [scripts/check-template.sh](../../scripts/check-template.sh)
-- [ ] **WX-0023 — Add filenames-with-spaces setup coverage**
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
+- [x] **WX-0023 — Add filenames-with-spaces setup coverage**
   - P2 · foundation · local
   - Acceptance: A temporary-copy smoke run installs no services and verifies key setup commands from a repository path containing spaces.
   - Source: [tests/systemx](../../tests/systemx)
-- [ ] **WX-0024 — Add non-ASCII project path coverage**
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
+- [x] **WX-0024 — Add non-ASCII project path coverage**
   - P2 · foundation · local
   - Acceptance: Temporary-copy checks exercise project configuration and read-only status from a path containing Unicode characters.
   - Source: [tests/systemx](../../tests/systemx)
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
 - [ ] **WX-0025 — Add Windows x64 setup evidence**
   - P2 · foundation · operator
   - Acceptance: A recorded Windows x64 run demonstrates prerequisite reporting, dependency installation, app startup and mock portal navigation with exact versions.
@@ -749,14 +759,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: Deleting a draft fictional entry requires confirmation and leaves submitted or paid entry history intact.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
   - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
-- [ ] **WX-0159 — Add mock pay-period closure**
+- [x] **WX-0159 — Add mock pay-period closure**
   - P1 · portal-maturity · local
   - Acceptance: Closing a submitted sample period prevents new entries from silently changing its frozen payroll totals.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
-- [ ] **WX-0160 — Add fictional payroll correction runs**
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
+- [x] **WX-0160 — Add fictional payroll correction runs**
   - P1 · portal-maturity · local
   - Acceptance: A correction references the original receipt and records a separate adjustment without rewriting submitted history.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
+  - Verified: 2026-10-15 · Source base: `42818dd7baf3d335f27c401c37d048bd842617fa` · Reviewed by: `agent.0` · Evidence: [docs/PAYROLL-SETUP-QA-2026-10-15.md](../../docs/PAYROLL-SETUP-QA-2026-10-15.md)
 - [ ] **WX-0161 — Add hourly and salaried simulation modes**
   - P2 · portal-maturity · local
   - Acceptance: Payroll clearly labels the selected fictional mode and shows the inputs used for its illustrative calculation.

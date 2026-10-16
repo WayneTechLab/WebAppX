@@ -192,50 +192,74 @@
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a setup troubleshooting decision tree",
       "acceptance": "A new developer can follow distinct instructions for dependency install, runtime mismatch, occupied port and emulator startup failures.",
       "source": "docs/GETTING-STARTED.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0012",
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Document recovery from an interrupted dependency install",
       "acceptance": "The guide identifies which generated dependency paths can be rebuilt and preserves ignored environment and emulator state.",
       "source": "docs/RUNBOOK.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0013",
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a package-script discovery command",
       "acceptance": "A read-only command lists maintained scripts by setup, app, portal, SYSTEMX, wiki and release purpose using the real manifest.",
       "source": "package.json",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0014",
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Validate command examples against package scripts",
       "acceptance": "A documentation check flags npm script names in maintained command examples that do not exist in the root manifest.",
       "source": "docs/COMMANDS.md",
       "gate": "local",
       "dependsOn": [
         "WX-0013"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0015",
@@ -254,12 +278,18 @@
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a fixture seed inventory command",
       "acceptance": "A read-only command lists fictional fixture sources and identifies which reset action restores each source.",
       "source": "src/portals/workspaces.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0017",
@@ -290,24 +320,36 @@
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Report starter parity by feature group",
       "acceptance": "The template check groups app, dependency, asset and configuration differences so a maintainer can locate the relevant starter drift.",
       "source": "scripts/validate-template.py",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0020",
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a scaffold identity checklist",
       "acceptance": "New-app adoption lists repository name, package name, site branding, deployment target and project records that require deliberate replacement.",
       "source": "docs/examples/private-template-adoption.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0021",
@@ -326,36 +368,54 @@
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Verify shell-free child process examples",
       "acceptance": "A source check identifies new script call sites that build executable shell strings and points maintainers to argument-array examples.",
       "source": "scripts/check-template.sh",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0023",
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add filenames-with-spaces setup coverage",
       "acceptance": "A temporary-copy smoke run installs no services and verifies key setup commands from a repository path containing spaces.",
       "source": "tests/systemx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0024",
       "area": "setup",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add non-ASCII project path coverage",
       "acceptance": "Temporary-copy checks exercise project configuration and read-only status from a path containing Unicode characters.",
       "source": "tests/systemx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0025",
@@ -2166,24 +2226,36 @@
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add mock pay-period closure",
       "acceptance": "Closing a submitted sample period prevents new entries from silently changing its frozen payroll totals.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0160",
       "area": "hr-payroll",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add fictional payroll correction runs",
       "acceptance": "A correction references the original receipt and records a separate adjustment without rewriting submitted history.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "evidence": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0161",
