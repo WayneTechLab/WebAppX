@@ -1,8 +1,9 @@
 import { createServer } from 'vite'
 
-const [root, cacheDir, portText, hmrPath] = process.argv.slice(2)
+const [root, cacheDir, portText, hmrPath, walkthroughFlag, ...extra] = process.argv.slice(2)
+const walkthrough = walkthroughFlag === '--walkthrough'
 const port = Number(portText)
-if (!root || !cacheDir || !Number.isInteger(port) || port < 1 || port > 65535 || hmrPath !== '/__webappx_smoke_hmr' || !process.send) {
+if (!root || !cacheDir || !Number.isInteger(port) || port < 1 || port > 65535 || hmrPath !== '/__webappx_smoke_hmr' || (walkthroughFlag !== undefined && !walkthrough) || extra.length > 0 || !process.send) {
   throw new Error('The owned preview worker requires its parent IPC and explicit loopback configuration.')
 }
 let server
@@ -35,11 +36,11 @@ starting = (async () => {
   // this frozen verification process also disables HMR updates. Vite's client
   // still needs its owned socket for connection/error messages. The ordinary
   // dev server retains normal watching and hot updates.
-  server = await createServer({ root, cacheDir, envDir: false, mode: 'test', clearScreen: false, logLevel: 'warn', server: { host: '127.0.0.1', port, strictPort: true, open: false, watch: null, hmr: false, ws: { path: hmrPath } } })
+  server = await createServer({ root, cacheDir, envDir: false, define: { __WEBAPPX_WALKTHROUGH__: walkthrough }, mode: 'test', clearScreen: false, logLevel: 'warn', server: { host: '127.0.0.1', port, strictPort: true, open: false, watch: null, hmr: false, ws: { path: hmrPath } } })
   await server.listen()
   const address = server.httpServer?.address()
   if (!address || typeof address === 'string' || address.address !== '127.0.0.1' || address.port !== port) throw new Error('Owned preview did not bind its requested loopback listener.')
-  if (!stopping && process.connected) process.send({ type: 'ready', pid: process.pid, runnerPid: process.ppid, address: '127.0.0.1', port })
+  if (!stopping && process.connected) process.send({ type: 'ready', pid: process.pid, runnerPid: process.ppid, address: '127.0.0.1', port, walkthrough })
 })()
 try { await starting }
 catch (error) {

@@ -1,3 +1,5 @@
+import { usePortalRuntime } from './portal-runtime-context'
+import { storagePresentationMessage } from './storage-presentation'
 import { useState, type ReactNode } from 'react'
 import type { DemoModule, DemoStorageStatus } from './persistence'
 import { portalById } from './registry'
@@ -14,6 +16,7 @@ export function DemoWorkspaceReset({ module, recovery, onReset, children, classN
   children?: ReactNode
   className?: string
 }) {
+  const { mode } = usePortalRuntime()
   const [confirming, setConfirming] = useState(false)
   const [feedback, setFeedback] = useState<{ message: string; error: boolean } | null>(null)
   const preview = confirming && recovery ? recovery.previewReset() : undefined
@@ -21,7 +24,7 @@ export function DemoWorkspaceReset({ module, recovery, onReset, children, classN
     const result = onReset(preview?.confirmation)
     if (result) {
       if (result.ok) setConfirming(false)
-      setFeedback({ message: result.status.message, error: !result.ok })
+      setFeedback({ message: storagePresentationMessage(result.status.message, mode), error: !result.ok })
     } else setConfirming(false)
   }
   function start() {
@@ -33,9 +36,9 @@ export function DemoWorkspaceReset({ module, recovery, onReset, children, classN
     <button type="button" onClick={start} className={className}>{children ?? `Reset ${portalById[module].label} demo`}</button>
     {confirming && <div role="region" aria-label={`${portalById[module].label} Reset confirmation`} className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-4">
       <h2 className="font-semibold text-amber-950">Reset {portalById[module].label} workspace?</h2>
-      <p className="mt-2 text-sm leading-6 text-amber-950">{preview?.required ? `This captures the complete current ${portalById[module].label} records first, then restores` : 'This restores'} its original fictional records and removes only its browser save. Unsaved forms and timers are not captured. Other portals remain unchanged.</p>
+      <p className="mt-2 text-sm leading-6 text-amber-950">{preview?.required ? `This captures the complete current ${portalById[module].label} records first, then restores` : 'This restores'} its original fictional records and removes only its {mode === 'browser' ? 'browser save' : 'walkthrough memory save; existing browser saves are untouched and refresh starts fresh while walkthrough mode stays on'}. Unsaved forms and timers are not captured. Other portals remain unchanged.</p>
       {preview && <RecoveryCheckpointPreview preview={preview} />}
-      <div className="mt-3 flex flex-wrap gap-3"><button type="button" className={button} disabled={!preview?.ok || !preview.canReplace} onClick={apply}>Confirm Reset {portalById[module].label}</button><button type="button" className={button} onClick={() => { setConfirming(false); setFeedback({ message: 'Reset canceled. Workspace saves and history are unchanged.', error: false }) }}>Keep {portalById[module].label} workspace</button></div>
+      <div className="mt-3 flex flex-wrap gap-3"><button type="button" className={button} disabled={!preview?.ok || !preview.canReplace} onClick={apply}>Confirm Reset {portalById[module].label}</button><button type="button" className={button} onClick={() => { setConfirming(false); setFeedback({ message: mode === 'browser' ? 'Reset canceled. Workspace saves and history are unchanged.' : 'Reset canceled. Walkthrough memory saves and history are unchanged. Existing browser saves are untouched.', error: false }) }}>Keep {portalById[module].label} workspace</button></div>
     </div>}
     {feedback && <p role={feedback.error ? 'alert' : 'status'} className="mt-2 text-sm leading-6">{feedback.message}</p>}
   </div>

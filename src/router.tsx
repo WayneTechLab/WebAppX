@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { Layout } from '@/components/layout/Layout'
-import { NAVIGATION_EVENT, normalizePath } from '@/lib/navigation'
+import { NAVIGATION_EVENT, getNavigationCommit, normalizePath, subscribeNavigationCommits } from '@/lib/navigation'
 import { HomePage } from '@/pages/HomePage'
 import { AboutPage } from '@/pages/AboutPage'
 import { ServicesPage } from '@/pages/ServicesPage'
@@ -18,6 +18,14 @@ import { resolvePortalRoute } from '@/portals/routes'
 import { hrRoutes } from '@/hr/catalog'
 import { UnsavedWorkProvider } from '@/portals/unsaved-work'
 import { RecruitingPreviewProvider } from '@/hr/RecruitingPreviewProvider'
+import { createPortalRuntime } from '@/portals/portal-runtime'
+import { PortalRuntimeProvider } from '@/portals/portal-runtime-context'
+
+// The selected server mode survives routing; each new document gets fresh
+// walkthrough memory. Browser mode deliberately resolves storage per operation.
+const portalRuntime = createPortalRuntime(
+  typeof __WEBAPPX_WALKTHROUGH__ !== 'undefined' && __WEBAPPX_WALKTHROUGH__ === true ? 'walkthrough' : 'browser',
+)
 
 function getPathname() {
   return normalizePath(window.location.pathname)
@@ -67,6 +75,10 @@ function renderPage(pathname: string) {
 
 function RoutedContent() {
   const [pathname, setPathname] = useState(getPathname)
+  const commit = useSyncExternalStore(subscribeNavigationCommits, getNavigationCommit, () => null)
+  // A store notification can precede the router's pathname update. Focus only
+  // after this render contains the accepted destination, including same-path hashes.
+  const renderedCommit = commit && normalizePath(commit.location.split(/[?#]/, 1)[0]) === pathname ? commit : null
 
   useEffect(() => {
     const handleNavigation = () => setPathname(getPathname())
@@ -80,7 +92,7 @@ function RoutedContent() {
 
   return (
     <RecruitingPreviewProvider pathname={pathname}>
-      <Layout currentPath={pathname}>
+      <Layout currentPath={pathname} navigationCommit={renderedCommit}>
         {renderPage(pathname)}
       </Layout>
     </RecruitingPreviewProvider>
@@ -88,5 +100,5 @@ function RoutedContent() {
 }
 
 export function AppRouter() {
-  return <UnsavedWorkProvider><RoutedContent /></UnsavedWorkProvider>
+  return <PortalRuntimeProvider runtime={portalRuntime}><UnsavedWorkProvider><RoutedContent /></UnsavedWorkProvider></PortalRuntimeProvider>
 }

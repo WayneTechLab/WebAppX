@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ArrowUpRight, FileText, Handshake, Users } from 'lucide-react'
 import { AppLink } from '@/components/navigation/AppLink'
 import { CmsDemo } from '@/cms/CmsDemo'
@@ -14,6 +14,9 @@ import { hrRoutes } from '@/hr/catalog'
 import { useUnsavedOwnerLocations } from '@/portals/unsaved-work'
 import { useRecruitingPreview } from '@/hr/RecruitingPreviewProvider'
 import { RetainedPortalSurface } from '@/portals/RetainedPortalSurface'
+import { usePortalRuntime } from '@/portals/portal-runtime-context'
+import { MockStoragePreview } from '@/portals/MockStoragePreview'
+import { PortalDesignTokens } from '@/portals/PortalDesignTokens'
 
 const portalIcons = { users: Users, 'file-text': FileText, handshake: Handshake } as const
 
@@ -22,6 +25,7 @@ export function TemplatePortalsPage({ pathname }: { pathname: string }) {
 }
 
 function TemplatePortalsContent({ pathname }: { pathname: string }) {
+  const { mode } = usePortalRuntime()
   const { interviewerEmployeeId } = useRecruitingPreview()
   const interviewer = interviewerEmployeeId !== null && pathname === '/hr/demo/admin/recruiting'
   const { revisions, statuses } = usePortalWorkspaceBundle()
@@ -38,12 +42,6 @@ function TemplatePortalsContent({ pathname }: { pathname: string }) {
     setNavigation({ pathname, locations: returnLocations })
   }
   useUnsavedOwnerLocations(returnLocations)
-  useEffect(() => {
-    if (route.kind !== 'directory' || window.location.hash !== '#mock-data-handling') return
-    const explanation = document.getElementById('mock-data-handling')
-    explanation?.focus({ preventScroll: true })
-    explanation?.scrollIntoView({ block: 'start' })
-  }, [pathname, route.kind])
   return <>
     {!interviewer && <nav aria-label="Template workspaces" className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-4 pt-6">
       <AppLink to={portalDirectoryHref} aria-current={active === 'directory' ? 'page' : undefined} className={`inline-flex min-h-11 items-center rounded-md px-4 py-2 text-sm font-semibold ${active === 'directory' ? 'bg-neutral-950 text-white' : 'border border-neutral-200 text-neutral-700'}`}>Portal directory</AppLink>
@@ -59,7 +57,9 @@ function TemplatePortalsContent({ pathname }: { pathname: string }) {
       <div className="mt-9 grid gap-5 lg:grid-cols-3">{portalRegistry.map(portal => { const Icon = portalIcons[portal.icon]; return <article key={portal.id} className={`flex flex-col rounded-xl border p-6 ${portal.tone}`}><Icon className="h-7 w-7 text-neutral-800" aria-hidden="true" /><h2 className="mt-5 text-2xl font-semibold text-neutral-950">{portal.title}</h2><p className="mt-3 text-sm leading-6 text-neutral-700">{portal.description}</p><p className="mt-4 text-sm font-medium leading-6 text-neutral-900">{portal.workflows}</p><p className="mt-3 text-xs leading-5 text-neutral-600">{portal.roles}</p><WorkspaceSaveSummary label={portal.label} status={statuses[portal.id]} /><AppLink to={returnLocations[portal.id]} className="mt-6 inline-flex min-h-11 items-center justify-between gap-4 rounded-md bg-neutral-950 px-4 py-3 text-sm font-semibold text-white">Open {portal.title}<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></AppLink></article> })}</div>
       <CombinedWorkspaceBackup />
       <RestorePointHistory />
-      <div id="mock-data-handling" tabIndex={-1} className="mt-7 scroll-mt-24 rounded-xl border border-amber-200 bg-amber-50 p-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-800"><h2 className="text-base font-semibold text-amber-950">Saved in this browser, with separate records</h2><p className="mt-2 max-w-4xl text-sm leading-6 text-amber-950">Saved actions in HR, CMS and CRM survive refresh and return visits in this browser. Each Reset removes only its own saved sample. Use Export workspace and Import workspace inside each portal to move its mock records between browsers. HR people, CMS content and CRM contacts stay separate. Browser saves belong to this address and are accessible to anyone using this browser profile. Preview roles do not authenticate a user or authorize a provider. Use fictional information only.</p></div>
+      <div id="mock-data-handling" data-nav-focus="portals:mock-data-handling" tabIndex={-1} className="mt-7 scroll-mt-24 rounded-xl border border-amber-200 bg-amber-50 p-5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-800"><h2 className="text-base font-semibold text-amber-950">{mode === 'walkthrough' ? 'Walkthrough memory, with separate records' : 'Saved in this browser, with separate records'}</h2><p className="mt-2 max-w-4xl text-sm leading-6 text-amber-950">{mode === 'walkthrough' ? 'Saved actions in HR, CMS and CRM stay in this document’s memory during navigation. Refresh starts fresh fictional records, settings and history while keeping walkthrough mode on. Each Reset clears only its own walkthrough sample. Existing browser saves are untouched.' : 'Saved actions in HR, CMS and CRM survive refresh and return visits in this browser. Each Reset removes only its own saved sample.'} Use Export workspace and Import workspace inside each portal to move its mock records between browsers. HR people, CMS content and CRM contacts stay separate. {mode === 'browser' && 'Browser saves belong to this address and are accessible to anyone using this browser profile. '}Preview roles do not authenticate a user or authorize a provider. Use fictional information only.</p></div>
+      <MockStoragePreview />
+      <PortalDesignTokens />
     </section>}
     {/* Keep each account-free module mounted so portal navigation preserves its
         session while each module also saves its fictional records separately. */}

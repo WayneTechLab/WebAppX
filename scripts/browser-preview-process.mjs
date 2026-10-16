@@ -7,8 +7,8 @@ const workerFile = fileURLToPath(new URL('./browser-preview-worker.mjs', import.
 /** One exact spawned handle owns this preview. Never search by port, name or PID.
  * Closing waits for that child; escalation is restricted to the same handle.
  */
-export function ownedPreviewProcess({ root, cacheDir, port, hmrPath = '/__webappx_smoke_hmr' }, { spawnWorker = fork, environment = process.env, startupTimeoutMs = 30000, shutdownTimeoutMs = 10000 } = {}) {
-  if (typeof root !== 'string' || !root || typeof cacheDir !== 'string' || !cacheDir || !Number.isInteger(port) || port < 1 || port > 65535 || hmrPath !== '/__webappx_smoke_hmr') throw new Error('Use an explicit owned preview root, cache and positive loopback port.')
+export function ownedPreviewProcess({ root, cacheDir, port, hmrPath = '/__webappx_smoke_hmr', walkthrough = false }, { spawnWorker = fork, environment = process.env, startupTimeoutMs = 30000, shutdownTimeoutMs = 10000 } = {}) {
+  if (typeof root !== 'string' || !root || typeof cacheDir !== 'string' || !cacheDir || !Number.isInteger(port) || port < 1 || port > 65535 || hmrPath !== '/__webappx_smoke_hmr' || typeof walkthrough !== 'boolean') throw new Error('Use an explicit owned preview root, cache and positive loopback port.')
   let child
   let ready
   let closing
@@ -26,8 +26,8 @@ export function ownedPreviewProcess({ root, cacheDir, port, hmrPath = '/__webapp
       ready = new Promise((resolve, reject) => {
         let settled = false
         const fail = error => { if (!settled) { settled = true; clearTimeout(startupTimer); reject(error) } }
-        child = spawnWorker(workerFile, [root, cacheDir, String(port), hmrPath], { cwd: root, env: createMockEnvironment(environment), stdio: ['ignore', 'inherit', 'inherit', 'ipc'], execArgv: [] })
-        if (Number.isInteger(child.pid) && child.pid > 0) handle = { mode: 'child-process', pid: child.pid, runnerPid: process.pid, host: '127.0.0.1', port, exited: false, exitCode: null, signal: null }
+        child = spawnWorker(workerFile, [root, cacheDir, String(port), hmrPath, ...(walkthrough ? ['--walkthrough'] : [])], { cwd: root, env: createMockEnvironment(environment), stdio: ['ignore', 'inherit', 'inherit', 'ipc'], execArgv: [] })
+        if (Number.isInteger(child.pid) && child.pid > 0) handle = { mode: 'child-process', pid: child.pid, runnerPid: process.pid, host: '127.0.0.1', port, exited: false, exitCode: null, signal: null, ...(walkthrough ? { walkthrough: true } : {}) }
         closedPromise = new Promise(done => { settleClose = done })
         child.once('error', fail)
         child.once('close', (code, signal) => {
@@ -41,7 +41,7 @@ export function ownedPreviewProcess({ root, cacheDir, port, hmrPath = '/__webapp
           if (settled) return
           if (message?.type === 'failed') { fail(new Error('Owned preview startup failed: ' + String(message.message))); return }
           if (message?.type !== 'ready') return
-          if (message.pid !== child.pid || message.runnerPid !== process.pid || message.address !== '127.0.0.1' || message.port !== port) { fail(new Error('Owned preview worker readiness did not match its process handle and listener.')); return }
+          if (message.pid !== child.pid || message.runnerPid !== process.pid || message.address !== '127.0.0.1' || message.port !== port || (walkthrough ? message.walkthrough !== true : message.walkthrough !== undefined && message.walkthrough !== false)) { fail(new Error('Owned preview worker readiness did not match its process handle and listener.')); return }
           settled = true; clearTimeout(startupTimer)
           address = { address: '127.0.0.1', port }
           resolve()

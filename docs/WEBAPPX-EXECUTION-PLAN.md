@@ -45,7 +45,7 @@ An unchecked candidate has no completion metadata and is not included in the del
 | [x] PORTAL-CONFIRMATION-QA-2026-10-15 | 2 | `7a582ed4a5396d54aa94e3ca780667d1b07f179e` | [Receipt](PORTAL-CONFIRMATION-QA-2026-10-15.md) |
 | [x] SYSTEMX-ADOPTION-QA-2026-10-15 | 6 | `f8494b750447af7d4e39695f4a6fceeff29f48bb` | [Receipt](SYSTEMX-ADOPTION-QA-2026-10-15.md) |
 
-## CRM and adoption candidate checklist
+## CRM and adoption accepted checklist
 
 - [x] **WX-0369** — Add a CRM duplicate candidate report ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
 - [x] **WX-0370** — Preview same-owner contact merges ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
@@ -70,11 +70,23 @@ An unchecked candidate has no completion metadata and is not included in the del
 - [x] **WX-0850** — Create a release readiness decision worksheet ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
 - [x] **WX-0953** — Add an optional OAuth state-binding design ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
 
-The next prepared foundation slice covers WX-0015, WX-0017, WX-0018,
-WX-0021, WX-0061, WX-0701 and WX-0715. WX-0715 waits for WX-0061 and
-WX-0701. Work starts from the tested and published predecessor; source or
-plan preparation alone does not establish completion. WX-0656 retains its
-separate manual screen-reader evidence requirement.
+## Foundation implementation checklist
+
+Implementation started from tested and published predecessor
+`db6f078ed5b705b8787ab5f704f6f701d9d5923d` (179 accepted items).
+These checkboxes read canonical acceptance; implementation, focused checks
+and a prepared browser journey do not establish completion.
+
+- [ ] **WX-0015** — Add a concise first-run success page — implementation and verification in progress; Agent 0 acceptance pending.
+- [ ] **WX-0017** — Offer a nonpersistent walkthrough mode — implementation and verification in progress; Agent 0 acceptance pending.
+- [ ] **WX-0018** — Add a developer reset preview — implementation and verification in progress; Agent 0 acceptance pending.
+- [ ] **WX-0021** — Provide a local-only adoption dry run — implementation and verification in progress; Agent 0 acceptance pending.
+- [ ] **WX-0061** — Add focus restoration after portal navigation — implementation and verification in progress; Agent 0 acceptance pending.
+- [ ] **WX-0701** — Create shared portal visual tokens — implementation and verification in progress; Agent 0 acceptance pending.
+- [ ] **WX-0715** — Add focus fallback for removed route targets — implementation and verification in progress; Agent 0 acceptance pending.
+
+WX-0715 waits for WX-0061 and WX-0701. WX-0656 retains its separate
+manual screen-reader evidence requirement.
 
 ## Assigned implementation plans
 
