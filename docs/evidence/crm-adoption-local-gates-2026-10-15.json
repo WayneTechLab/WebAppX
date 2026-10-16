@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "kind": "root-final-local-gate-facts",
+  "observedOn": "2026-10-15",
+  "examinedRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+  "ci": {
+    "examinedRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+    "terminalExitCode": 0,
+    "log": {
+      "basename": "webappx-crm-adoption-ci-all-68-run5.log",
+      "bytes": 284827,
+      "sha256": "066d306b255b1dc6ce98eb79ada2b4924272c574575e6f159289ec94f2f56061"
+    },
+    "requiredStages": [
+      "development:check",
+      "development:test",
+      "scripts:check",
+      "docs:commands:check",
+      "fixtures:check",
+      "source:shell:check",
+      "setup:contracts:test",
+      "environment:check",
+      "environment:test",
+      "repository:identity:test",
+      "dev:mock:test",
+      "systemx:session:test",
+      "ci:plan:test",
+      "backlog:plan:check",
+      "backlog:plan:test",
+      "backlog:evidence:check",
+      "backlog:evidence:test",
+      "backlog:impact:test",
+      "docs:freshness:test",
+      "systemx:work-status:test",
+      "doctor",
+      "doctor:test",
+      "browser:smoke:test",
+      "browser:keyboard:test",
+      "backlog:check",
+      "backlog:test",
+      "template:check",
+      "systemx:status",
+      "systemx:validate",
+      "sync:system:check",
+      "research:validate",
+      "systemx:tools:test",
+      "systemx:integration:test",
+      "security:controls:test",
+      "ci:lint",
+      "ci:typecheck",
+      "ci:test",
+      "hr:test",
+      "hr:roles:check",
+      "hr:roles:test",
+      "gusto:capabilities:check",
+      "gusto:capabilities:test",
+      "portals:test",
+      "maturity:test",
+      "safety:test",
+      "adoption:hr-disabled:test",
+      "adoption:hr-disabled",
+      "browser:smoke",
+      "browser:keyboard",
+      "browser:foundation",
+      "browser:state-contract",
+      "browser:lifecycles",
+      "browser:portal-lifecycle",
+      "browser:recruiting",
+      "browser:payroll",
+      "browser:evaluators",
+      "browser:maturity",
+      "browser:safety",
+      "browser:quality",
+      "browser:sdk-quality",
+      "browser:recovery-drill",
+      "browser:work-status",
+      "hr:backend:audit",
+      "docs:links",
+      "ci:security",
+      "ci:ai",
+      "ci:audit",
+      "build"
+    ],
+    "requiredStagesCompleted": 68
+  },
+  "hostingPreflight": {
+    "examinedRevision": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+    "command": [
+      "npm",
+      "run",
+      "deploy",
+      "--",
+      "hosting",
+      "--preflight"
+    ],
+    "scope": "Owned exact-commit local clone, separate build outputs; no production deployment.",
+    "terminalExitCode": 0,
+    "log": {
+      "basename": "webappx-crm-adoption-hosting-preflight-4e.log",
+      "sha256": "550f76c44d1ae0c97806ccb575ba2daf9e7a85c79afea60718663ab3a49c6529"
+    },
+    "runtimeFilesVerified": 145,
+    "trackedWorkingTreeUnchanged": true,
+    "version": "3.4.0",
+    "deployCount": 0,
+    "deploymentSkipped": true,
+    "pushSkipped": true,
+    "innerLogs": [
+      {
+        "basename": "webappx-crm-preflight-4e-inner-1.log",
+        "sha256": "049610d30f890fd16b49fe3419f2d03f5b477ad5f1a24ce8172785a9228819e9"
+      }
+    ],
+    "cleanup": "Owned clone and dependency link removed; primary dependency target not traversed."
+  },
+  "browser": {
+    "nativeSuites": [
+      {
+        "suite": "smoke",
+        "checks": 7,
+        "artifactDirectory": "webappx-browser-smoke-WwJoX6",
+        "reportSha256": "e992b0fb2166b7809c07a7707216586d14925ca0d10787470853871a904e717f"
+      },
+      {
+        "suite": "keyboard",
+        "checks": 10,
+        "artifactDirectory": "webappx-browser-keyboard-2RC3qk",
+        "reportSha256": "dc2aaea6d0b429e23cc2e172cdc08c195e81e973feb3360ce8cb141d8cf779f9"
+      },
+      {
+        "suite": "foundation",
+        "checks": 10,
+        "artifactDirectory": "webappx-browser-foundation-Ipqfd4",
+        "reportSha256": "23bcd796fb07b4d9a5473bfcd3c73783ce42b9bd27a451083fa1726f259c6d8c"
+      },
+      {
+        "suite": "state-contract",
+        "checks": 13,
+        "artifactDirectory": "webappx-browser-state-contract-GJjdJZ",
+        "reportSha256": "95ec1c15260da2472171be7396df77ce73a0bc81d8ec537f050d8b257f34f160"
+      },
+      {
+        "suite": "lifecycles",
+        "checks": 12,
+        "artifactDirectory": "webappx-browser-lifecycles-FDBkSS",
+        "reportSha256": "54b908a92261fe0a08da9579e0cc7181556265f1a9a73dd14ebba59fdaf7e575"
+      },
+      {
+        "suite": "portal-lifecycle",
+        "checks": 35,
+        "artifactDirectory": "webappx-browser-portal-lifecycle-h5Tzs8",
+        "reportSha256": "7dd52ddd3445c6a63bfdbc1a4b89cc8e960e64cf999f8a5d4be40d0258473408"
+      },
+      {
+        "suite": "recruiting",
+        "checks": 15,
+        "artifactDirectory": "webappx-browser-recruiting-aPQxLr",
+        "reportSha256": "a18b26e2178753d79c415ad759f7be45cd833846a329c3f2c5fd040170a33014"
+      },
+      {
+        "suite": "payroll",
+        "checks": 21,
+        "artifactDirectory": "webappx-browser-payroll-jDdLNC",
+        "reportSha256": "d1d581e5be56d2f028b9901da7484b238e7c45771fbed2f12cbd99ad15ffa91e"
+      },
+      {
+        "suite": "evaluators",
+        "checks": 25,
+        "artifactDirectory": "webappx-browser-evaluators-g6Ip9v",
+        "reportSha256": "17e9e73da7d9bf0670418685abda640c545d4807f72ed14446b83db17ff2548b"
+      },
+      {
+        "suite": "maturity",
+        "checks": 13,
+        "artifactDirectory": "webappx-browser-maturity-NM1bP5",
+        "reportSha256": "e15fba8d8c1c2a9d5ad6d4ba547ef1e5565166eca3d06d54f8ec48adbba5f419"
+      },
+      {
+        "suite": "safety",
+        "checks": 31,
+        "artifactDirectory": "webappx-browser-safety-vSj76t",
+        "reportSha256": "ee456303a4ed714b908b69dad60ca94af899902585ea0ab2e7387d3c25598fa8"
+      },
+      {
+        "suite": "quality",
+        "checks": 7,
+        "artifactDirectory": "webappx-browser-quality-ad52QF",
+        "reportSha256": "0f994a5560324f61a50679737459b507a83d1269e1e31a9efb89a2b60c7377b8"
+      },
+      {
+        "suite": "sdk-quality",
+        "checks": 5,
+        "artifactDirectory": "webappx-browser-sdk-quality-Xu4ca4",
+        "reportSha256": "d4fa30aa7bea9d0a506b669933db2f8385eeec1222de5153aff5823c50ad0cd2"
+      },
+      {
+        "suite": "recovery-drill",
+        "checks": 8,
+        "artifactDirectory": "webappx-browser-recovery-drill-PbRstw",
+        "reportSha256": "8a2a2e47d7a029942b33f0e0dc070bbed757fab28038ca1e261bf5a4a31bfca3"
+      }
+    ],
+    "nativeChecks": 212,
+    "hrDisabledRehearsalChecks": 8,
+    "hrDisabledSourceManifestSha256": "f516c8e05a67e7e2b0d449362c7b2d0c193d1ce04b83bb2cd9cf5bbffacdac05",
+    "hrDisabledCopiedFiles": 150,
+    "hrDisabledEmittedModules": 55,
+    "lanStatusChecks": 6,
+    "lanStatusArtifactDirectory": "webappx-work-status-browser-U5u9HK",
+    "lanStatusResultSha256": "b96f3c15014d1a76c6a599313e32f9fcaffa9aecac7cb14ab712275287e27a9f",
+    "totalBrowserAndRehearsalChecks": 226
+  },
+  "runtime": {
+    "manifest": "docs/evidence/crm-merge-runtime-2026-10-15.json",
+    "manifestSha256": "f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e",
+    "files": 145,
+    "verifiedCurrent": true
+  },
+  "independentFinalReview": {
+    "basename": "webappx-crm-adoption-ci-verification.json",
+    "sha256": "58bcf57c53b94637a5c3a4fca8263824e39cf8dcfdc983e74a880b7aa3ff35d9",
+    "status": "local-ci-and-preflight-verified",
+    "scope": "Independent read-only stage, source, report, artifact, trace, original-image and owned-cleanup review; no new browser/provider execution by reviewer."
+  },
+  "publication": "Source and native wiki publication are verified separately after this receipt is committed."
+}

@@ -66,8 +66,7 @@ because these guides are linked. The dated
 [CRM adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/CRM-ADOPTION-QA-2026-10-15.md)
 records the separate focused runtime-2 browser pass of 35 groups. That local
 native observation does not execute these fourteen optional adoption designs.
-Current source consistency, integrated CI, Hosting preflight, independent browser
-review and any later acceptance remain separate pending decisions.
+Agent 0 subsequently accepted all seventeen original artifact criteria after current-source review, all 68 CI stages, separate Hosting preflight and independent browser review at `4e025a3b5c21d0accef4e2e02add2c7eff54d589`. The same receipt records 226 actual browser/rehearsal groups and the final scope. These gates do not execute the fourteen optional designs or select real operators/providers.
 
 Local native mocks remain account-free and use fictional records. Optional
 provider and backend examples retain their fail-closed boundaries. A local test

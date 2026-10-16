@@ -28,11 +28,11 @@ dependency-ready selection and acceptance boundaries, and the
 
 ## Counts
 
-**1000 catalog items · 866 TODO · 134 done · 20 areas · 50 items per area.**
+**1000 catalog items · 821 TODO · 179 done · 20 areas · 50 items per area.**
 
 Priorities: P1: 166 · P2: 676 · P3: 158.
 
-Remaining TODO priorities: P1: 56 · P2: 654 · P3: 156.
+Remaining TODO priorities: P1: 38 · P2: 633 · P3: 150.
 
 Acceptance gates: local: 832 · provider: 40 · operator: 128.
 
@@ -387,10 +387,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Portal headings, role controls, save notices and backup actions align through reusable shell components at desktop and mobile widths.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
-- [ ] **WX-0073 — Add a compact mobile portal switcher**
+- [x] **WX-0073 — Add a compact mobile portal switcher**
   - P2 · portal-maturity · local
   - Acceptance: At narrow widths, switching portals remains available without a horizontal overflow trap or obscured active label.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0074 — Add responsive directory evidence**
   - P2 · portal-maturity · local
   - Acceptance: Recorded browser checks cover the directory and backup/history controls at narrow, medium and wide viewports.
@@ -443,14 +444,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · production-readiness · local
   - Acceptance: A user can inspect how display roles differ from trusted server membership before entering a connected adoption path.
   - Source: [src/auth/accountLevels.ts](../../src/auth/accountLevels.ts)
-- [ ] **WX-0087 — Specify trusted portal membership contracts**
+- [x] **WX-0087 — Specify trusted portal membership contracts**
   - P3 · production-readiness · local
   - Acceptance: The proposed connected model defines tenant, module, role and revocation fields separately from existing account levels and mock selectors.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
-- [ ] **WX-0088 — Specify tenant selection behavior**
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
+- [x] **WX-0088 — Specify tenant selection behavior**
   - P3 · production-readiness · local · Depends on: WX-0087
   - Acceptance: The adoption contract describes explicit tenant selection and prohibits implicitly sharing records between tenants or demo storage.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0089 — Define a connected workspace adapter interface**
   - P3 · production-readiness · local
   - Acceptance: A typed contract separates reads, mutations, validation and identity context from the native mock state implementation.
@@ -917,10 +920,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P3 · portal-maturity · local
   - Acceptance: With an injected clock, a selected fictional policy distinguishes future leave from leave that has already started, explains allowed cancellation outcomes, and retains the existing reservation release, separate receipt and replay refusal behavior.
   - Source: [src/hr/people-operations.ts](../../src/hr/people-operations.ts)
-- [ ] **WX-0198 — Add a payroll-ready time reconciliation report**
+- [x] **WX-0198 — Add a payroll-ready time reconciliation report**
   - P3 · portal-maturity · local
   - Acceptance: The report compares approved unpaid hours, included payroll hours and consumed entries for a selected period.
   - Source: [src/hr/mock-workflows.ts](../../src/hr/mock-workflows.ts)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0199 — Add scenario presets for payroll edge cases**
   - P3 · portal-maturity · local
   - Acceptance: Selecting zero-pay, multiple-plan or fractional-hour fixtures produces named repeatable mock scenarios.
@@ -1270,10 +1274,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: Submitting invalid content lists each affected field and moves focus to the first invalid control.
   - Source: [src/cms/model.ts](../../src/cms/model.ts)
   - Verified: 2026-10-15 · Source base: `950f9ba0c4e48faaa65056f504f105201838e3ec` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-MATURITY-QA-2026-10-15.md](../../docs/PORTAL-MATURITY-QA-2026-10-15.md)
-- [ ] **WX-0281 — Add unsaved draft change tracking**
+- [x] **WX-0281 — Add unsaved draft change tracking**
   - P2 · portal-maturity · local
   - Acceptance: Editing a draft shows a dirty indicator that clears only after a successful save or explicit discard.
   - Source: [src/cms/model.ts](../../src/cms/model.ts)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [x] **WX-0282 — Protect CMS entry switching with dirty forms**
   - P1 · portal-maturity · local
   - Acceptance: Selecting another entry with unsaved changes offers keep-editing or discard choices before changing the editor.
@@ -1637,26 +1642,31 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A named segment stores filter criteria and recomputes membership from accessible current records.
   - Source: [src/crm/model.ts](../../src/crm/model.ts)
-- [ ] **WX-0369 — Add a CRM duplicate candidate report**
+- [x] **WX-0369 — Add a CRM duplicate candidate report**
   - P2 · portal-maturity · local
   - Acceptance: The report identifies normalized company-name and email candidates within the actor's scope without merging automatically.
   - Source: [src/crm/model.ts](../../src/crm/model.ts)
-- [ ] **WX-0370 — Preview same-owner contact merges**
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0370 — Preview same-owner contact merges**
   - P2 · portal-maturity · local
   - Acceptance: A merge proposal shows retained fields and linked records, and refuses incompatible ownership before confirmation.
   - Source: [src/crm/CrmDemo.tsx](../../src/crm/CrmDemo.tsx)
-- [ ] **WX-0371 — Apply contact merges atomically**
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0371 — Apply contact merges atomically**
   - P1 · portal-maturity · local · Depends on: WX-0370
   - Acceptance: A confirmed local merge redirects valid references once and leaves no dangling opportunity or lead contact IDs.
   - Source: [src/crm/model.ts](../../src/crm/model.ts)
-- [ ] **WX-0372 — Preview company merge consequences**
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0372 — Preview company merge consequences**
   - P2 · portal-maturity · local
   - Acceptance: The proposal lists contacts, opportunities and duplicate-name conflicts before any account records change.
   - Source: [src/crm/CrmDemo.tsx](../../src/crm/CrmDemo.tsx)
-- [ ] **WX-0373 — Apply company merges with receipts**
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0373 — Apply company merges with receipts**
   - P2 · portal-maturity · local · Depends on: WX-0372
   - Acceptance: A valid same-owner merge moves all supported graph edges atomically and records source and retained IDs.
   - Source: [src/crm/model.ts](../../src/crm/model.ts)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0374 — Add a lead source field**
   - P2 · portal-maturity · local
   - Acceptance: Leads can use a bounded fictional source taxonomy that appears in the queue and survives conversion.
@@ -2029,10 +2039,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: A preview can show changed fictional companies, contacts, lead states and opportunities before whole-module replacement.
   - Source: [src/crm/persistence.ts](../../src/crm/persistence.ts)
   - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
-- [ ] **WX-0461 — Add record difference inspection for HR restores**
+- [x] **WX-0461 — Add record difference inspection for HR restores**
   - P2 · portal-maturity · local · Depends on: WX-0458
   - Acceptance: A preview can show changed fictional employee counts, time approvals, benefit elections and payroll receipts before whole-module replacement.
   - Source: [src/hr/persistence.ts](../../src/hr/persistence.ts)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0462 — Add explicit stale-preview detection**
   - P2 · portal-maturity · local
   - Acceptance: A restore preview that outlives a domain edit requires a fresh comparison or confirmation against the current destination state.
@@ -2238,10 +2249,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local · Depends on: WX-0509
   - Acceptance: A reviewer can confirm or remove a fictional membership and see an immutable local decision receipt.
   - Source: [src/hr/components/HrServiceDesk.tsx](../../src/hr/components/HrServiceDesk.tsx)
-- [ ] **WX-0511 — Specify trusted membership provisioning boundaries**
+- [x] **WX-0511 — Specify trusted membership provisioning boundaries**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: A design records which backend creates memberships, who can approve assignments and how client-controlled role fields are ignored.
   - Source: [integrations/gusto/functions/src/security.mjs](../../integrations/gusto/functions/src/security.mjs)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0512 — Prototype an emulator membership provisioner**
   - P2 · foundation · operator · Depends on: WX-0503, WX-0511
   - Acceptance: For optional operator-approved adoption: The optional emulator-only command creates fictional scoped memberships and refuses non-loopback endpoints and non-demo projects.
@@ -2262,10 +2274,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A fictional departure lists organization membership, app sessions and provider mapping review as separate tasks with independent completion receipts.
   - Source: [src/hr/people-operations.ts](../../src/hr/people-operations.ts)
-- [ ] **WX-0517 — Design optional owner recovery procedures**
+- [x] **WX-0517 — Design optional owner recovery procedures**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: A runbook identifies owner recovery prerequisites, evidence and independent approval before any real identity is restored or elevated.
   - Source: [docs/RUNBOOK.md](../../docs/RUNBOOK.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0518 — Add a mock emergency access request**
   - P2 · portal-maturity · local · Depends on: WX-0509
   - Acceptance: The sample flow requires a reason, bounded expiry and a separate approver before showing temporary fixture capabilities.
@@ -2302,10 +2315,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · production-readiness · provider
   - Acceptance: For optional adoption after operator approval and provider setup: Document explicit provider IDs, tenant binding, deprovisioning expectations and failure evidence before any organization connects SSO.
   - Source: [src/auth/firebaseAuth.ts](../../src/auth/firebaseAuth.ts)
-- [ ] **WX-0527 — Define optional custom-token issuer contract**
+- [x] **WX-0527 — Define optional custom-token issuer contract**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: The contract requires trusted issuer identity, audience, lifetime and scope while keeping token generation outside browser code.
   - Source: [src/auth/firebaseAuth.ts](../../src/auth/firebaseAuth.ts)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0528 — Model a mock identity linking conflict**
   - P2 · portal-maturity · local
   - Acceptance: Two fictional accounts claiming the same employee mapping enter a review state and cannot silently merge employee records.
@@ -2330,10 +2344,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An adoption worksheet lists service principal purpose, owner, allowed operations and revocation path without generating credentials.
   - Source: [docs/SECRETS.md](../../docs/SECRETS.md)
-- [ ] **WX-0534 — Define optional portal-specific permission bundles**
+- [x] **WX-0534 — Define optional portal-specific permission bundles**
   - P1 · production-readiness · operator · Depends on: WX-0501, WX-0503
   - Acceptance: For optional operator-approved adoption: A reviewed design groups CMS publication, CRM assignment and HR administration capabilities without deriving them solely from paid account level.
   - Source: [src/auth/accountLevels.ts](../../src/auth/accountLevels.ts)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0535 — Add a synthetic membership audit timeline**
   - P2 · portal-maturity · local · Depends on: WX-0504
   - Acceptance: Fictional invitation, activation, role change and suspension events can be filtered by organization and person.
@@ -2487,10 +2502,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · production-readiness · operator
   - Acceptance: An adopted API returns a bounded page and cursor whose organization and filter bindings are validated.
   - Source: [docs/GUSTO-FIREBASE.md](../../docs/GUSTO-FIREBASE.md)
-- [ ] **WX-0572 — Add optional safe directory field projections**
+- [x] **WX-0572 — Add optional safe directory field projections**
   - P2 · production-readiness · operator
   - Acceptance: An adopted projection test fails when an unapproved restricted field appears in the directory response.
   - Source: [docs/GUSTO-FIREBASE.md](../../docs/GUSTO-FIREBASE.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0573 — Add optional HR document metadata service**
   - P2 · production-readiness · operator
   - Acceptance: An adopted service returns metadata only after checking current organization and subject access.
@@ -2653,10 +2669,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Explain shared-device access, extensions, origin storage and file downloads as separate exposure boundaries without claiming encryption or provider isolation.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
-- [ ] **WX-0612 — Define optional content security policy adoption**
+- [x] **WX-0612 — Define optional content security policy adoption**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: Produce a report-only policy proposal listing required Firebase, SDK, image and font origins; activation remains an operator-reviewed hosting change.
   - Source: [firebase.json](../../firebase.json)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0613 — Prepare optional browser security header review**
   - P2 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An adoption checklist records intended framing, referrer and MIME behavior and tests them on an authorized preview channel before production.
@@ -2669,14 +2686,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A local script reports changed package names, lifecycle scripts and registry hosts between two explicit lockfile revisions without installing packages.
   - Source: [package-lock.json](../../package-lock.json)
-- [ ] **WX-0616 — Inventory optional SDK network destinations**
+- [x] **WX-0616 — Inventory optional SDK network destinations**
   - P2 · portal-maturity · local
   - Acceptance: A source-backed document separates account-free mock endpoints from destinations an adopted real Gusto adapter could contact.
   - Source: [integrations/gusto/README.md](../../integrations/gusto/README.md)
-- [ ] **WX-0617 — Define optional webhook retention controls**
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
+- [x] **WX-0617 — Define optional webhook retention controls**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An adoption design bounds stored webhook payload duration, redacts unnecessary provider fields and requires operator selection before collection.
   - Source: [integrations/gusto/functions/src/webhooks.mjs](../../integrations/gusto/functions/src/webhooks.mjs)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0618 — Add webhook quarantine review design**
   - P2 · production-readiness · provider
   - Acceptance: For optional adoption after operator approval and provider setup: A specification separates invalid signature, unknown tenant and unrecognized event reasons and forbids replay without an authorized provider adoption.
@@ -2713,14 +2732,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · extensions · operator
   - Acceptance: For optional operator-approved adoption: An adoption proposal states where future uploaded HR/CMS attachments would be quarantined and reviewed; no scanner or upload bucket is enabled by the plan.
   - Source: [.SYSTEMX/deploy/storage-policy.md](../../.SYSTEMX/deploy/storage-policy.md)
-- [ ] **WX-0627 — Design optional download authorization contracts**
+- [x] **WX-0627 — Design optional download authorization contracts**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: A future attachment design binds each download to tenant, resource and expiry rather than trusting a displayed URL or demo role.
   - Source: [storage.rules](../../storage.rules)
-- [ ] **WX-0628 — Prepare a private preview publication checklist**
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
+- [x] **WX-0628 — Prepare a private preview publication checklist**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An operator adoption checklist verifies fictional data, no secrets, indexing choice and access controls before exposing a preview beyond loopback.
   - Source: [.SYSTEMX/deploy/canary-plan.md](../../.SYSTEMX/deploy/canary-plan.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0629 — Add synthetic consent and notice version records**
   - P2 · portal-maturity · local
   - Acceptance: A fictional employee can acknowledge a named notice version and a later version remains pending without claiming legal compliance.
@@ -2733,10 +2754,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · extensions · operator
   - Acceptance: For optional operator-approved adoption: A worksheet captures connector purpose, transmitted fields, scope, owner and revocation path before operator approval of any added service.
   - Source: [docs/SECRETS.md](../../docs/SECRETS.md)
-- [ ] **WX-0632 — Document origin migration privacy implications**
+- [x] **WX-0632 — Document origin migration privacy implications**
   - P2 · portal-maturity · local
   - Acceptance: Explain that localhost and 127.0.0.1 have separate saves and that moving JSON files creates additional copies beyond the app's erase controls.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0633 — Design optional production export authorization**
   - P1 · production-readiness · operator · Depends on: WX-0606
   - Acceptance: For optional operator-approved adoption: An adoption contract distinguishes permission to view a record from permission to bulk-export it and requires tenant-bound server enforcement.
@@ -2745,26 +2767,29 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local · Depends on: WX-0633
   - Acceptance: A fictional reviewer can approve a scoped export request with expiry and an independent audit receipt while default demo exports remain account-free.
   - Source: [src/hr/service-desk.ts](../../src/hr/service-desk.ts)
-- [ ] **WX-0635 — Prepare optional incident evidence capture guidance**
+- [x] **WX-0635 — Prepare optional incident evidence capture guidance**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: The runbook specifies revision, time, affected synthetic scope and redacted logs to preserve before any approved production incident changes.
   - Source: [docs/RUNBOOK.md](../../docs/RUNBOOK.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0636 — Create a security release delta checklist**
   - P2 · portal-maturity · local
   - Acceptance: Compare the current release against the last reviewed baseline for auth, imports, files, provider requests and secrets without reclassifying all prior controls as missing.
   - Source: [docs/SECURITY-REVIEW.md](../../docs/SECURITY-REVIEW.md)
-- [ ] **WX-0637 — Design optional session step-up requirements**
+- [x] **WX-0637 — Design optional session step-up requirements**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An adoption matrix identifies which sensitive export or owner action should require recent authentication and leaves enforcement disabled until reviewed.
   - Source: [src/auth/firebaseAuth.ts](../../src/auth/firebaseAuth.ts)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0638 — Add mock device trust indicators**
   - P2 · portal-maturity · local
   - Acceptance: A fictional device list shows unknown, trusted and revoked states with no actual browser fingerprinting or tracking.
   - Source: [src/pages/LoginPage.tsx](../../src/pages/LoginPage.tsx)
-- [ ] **WX-0639 — Define optional privileged action reason policy**
+- [x] **WX-0639 — Define optional privileged action reason policy**
   - P2 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: The adopted app plan requires a human-readable reason and scoped target for selected owner actions without accepting reason text as authorization.
   - Source: [src/pages/AdminDashboardPage.tsx](../../src/pages/AdminDashboardPage.tsx)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0640 — Build a fixture privacy provenance check**
   - P2 · portal-maturity · local
   - Acceptance: A local check verifies synthetic HR and CRM fixtures identify their fictional source and do not reference project runtime exports.
@@ -3205,10 +3230,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Terms such as frozen publication, qualified lead and approved time link to short contextual explanations near their first use.
   - Source: [src/index.css](../../src/index.css)
-- [ ] **WX-0744 — Add a responsive portal directory comparison**
+- [x] **WX-0744 — Add a responsive portal directory comparison**
   - P2 · portal-maturity · local
   - Acceptance: Users can compare portal workflows, roles and account-free boundaries with a layout that stacks labels on small screens.
   - Source: [src/pages/TemplatePortalsPage.tsx](../../src/pages/TemplatePortalsPage.tsx)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0745 — Add browser zoom visual verification fixtures**
   - P2 · portal-maturity · local
   - Acceptance: A local receipt records supported zoom-level screenshots and any outstanding clipping issues for shared portal controls.
@@ -3269,18 +3295,20 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: A worked synthetic example explains uncertain browser slots, exporting current memory before reload and verifying each portal independently.
   - Source: [src/portals/restore-workspaces.ts](../../src/portals/restore-workspaces.ts)
   - Verified: 2026-10-15 · Source base: `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` · Reviewed by: `agent.0` · Evidence: [docs/PORTAL-SAFETY-QA-2026-10-15.md](../../docs/PORTAL-SAFETY-QA-2026-10-15.md)
-- [ ] **WX-0758 — Document local session ownership diagnosis**
+- [x] **WX-0758 — Document local session ownership diagnosis**
   - P2 · portal-maturity · local
   - Acceptance: A runbook shows how to identify the checkout, command and owner of a listener before choosing another port or using the owned stop control.
   - Source: [docs/RUNBOOK.md](../../docs/RUNBOOK.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0759 — Add expected-versus-observed readiness notes**
   - P2 · portal-maturity · local
   - Acceptance: The admin dashboard separates detected CLI availability from verified provider connectivity and links each observed state to its evidence source.
   - Source: [src/pages/AdminDashboardPage.tsx](../../src/pages/AdminDashboardPage.tsx)
-- [ ] **WX-0760 — Design optional application error telemetry adapter**
+- [x] **WX-0760 — Design optional application error telemetry adapter**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An opt-in adapter contract lists approved redacted fields, event volume limits and transport failure behavior before any external telemetry is configured.
   - Source: [docs/MONITORING.md](../../docs/MONITORING.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0761 — Define optional tracing correlation identifiers**
   - P2 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: A downstream design links approved frontend and backend requests with opaque IDs without embedding employee IDs or credentials in traces.
@@ -3432,10 +3460,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A mock case can become overdue under an injected clock and surface in the scoped inbox without sending alerts or assuming real service commitments.
   - Source: [src/hr/service-desk.ts](../../src/hr/service-desk.ts)
-- [ ] **WX-0798 — Document SDK preview and HR demo data separation**
+- [x] **WX-0798 — Document SDK preview and HR demo data separation**
   - P2 · portal-maturity · local
   - Acceptance: Support guidance explicitly explains why SDK session fixtures and persisted HR workspace data do not automatically reflect one another.
   - Source: [docs/GUSTO-SETUP.md](../../docs/GUSTO-SETUP.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0799 — Create a disaster recovery decision worksheet**
   - P1 · production-readiness · operator · Depends on: WX-0775
   - Acceptance: For optional operator-approved adoption: An optional adoption worksheet lists recovery priorities, authorized destinations, data owners and evidence needed before restoring real services.
@@ -3455,10 +3484,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - Acceptance: A local command prints the existing ci:all stages, their dependent workspaces and mutation characteristics without executing or weakening any gate.
   - Source: [scripts/check-template.sh](../../scripts/check-template.sh)
   - Verified: 2026-10-15 · Source base: `0469e11bcb17ec67b118099a73958e039c759979` · Reviewed by: `agent.0` · Evidence: [docs/EXECUTION-FOUNDATION-QA-2026-10-15.md](../../docs/EXECUTION-FOUNDATION-QA-2026-10-15.md)
-- [ ] **WX-0802 — Create an optional GitHub Actions adoption workflow design**
+- [x] **WX-0802 — Create an optional GitHub Actions adoption workflow design**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: A reviewed plan runs the existing required gates on pull requests with explicit permissions and no production deployment credentials.
   - Source: [scripts/check-template.sh](../../scripts/check-template.sh)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0803 — Design CI job partitioning with preserved coverage**
   - P2 · portal-maturity · local · Depends on: WX-0801
   - Acceptance: Document independent lint, domain, integration and build jobs and prove their aggregate invokes every required existing ci:all gate.
@@ -3504,10 +3534,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · production-readiness · operator · Depends on: WX-0802
   - Acceptance: For optional operator-approved adoption: A reviewed CI design creates only operator-approved preview channels, records expiry and removes only its own channels without production promotion.
   - Source: [.SYSTEMX/deploy/canary-plan.md](../../.SYSTEMX/deploy/canary-plan.md)
-- [ ] **WX-0814 — Prepare optional deployment identity separation**
+- [x] **WX-0814 — Prepare optional deployment identity separation**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An adoption design assigns distinct preview and production identities with minimal reviewed permissions and no secrets committed to workflow source.
   - Source: [docs/SECRETS.md](../../docs/SECRETS.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0815 — Add deployment target display to release receipts**
   - P2 · portal-maturity · local
   - Acceptance: The local preflight summary records the explicitly selected target and declared project without interpreting successful preflight as a deployment.
@@ -3528,10 +3559,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: A documented local rehearsal verifies dependency install, required gates and loopback preview on a named ARM64 environment without assuming cross-platform acceptance.
   - Source: [docs/GETTING-STARTED.md](../../docs/GETTING-STARTED.md)
-- [ ] **WX-0820 — Prepare Windows x64 and ARM64 CI acceptance matrix**
+- [x] **WX-0820 — Prepare Windows x64 and ARM64 CI acceptance matrix**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: An optional runner plan identifies which host, import, test and build checks must run on each architecture and records unavailable runner coverage explicitly.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0821 — Add case-sensitive filesystem release verification plan**
   - P2 · portal-maturity · local
   - Acceptance: A local or optional CI rehearsal executes the existing case-sensitive boundary checks on a suitable volume and records their actual outcomes.
@@ -3568,10 +3600,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P1 · production-readiness · operator · Depends on: WX-0828
   - Acceptance: For optional operator-approved adoption: The plan identifies a specific authorized environment, last known good revision and verification steps before any real rollback action.
   - Source: [docs/RUNBOOK.md](../../docs/RUNBOOK.md)
-- [ ] **WX-0830 — Add Firebase rules dry-run evidence checklist**
+- [x] **WX-0830 — Add Firebase rules dry-run evidence checklist**
   - P1 · production-readiness · operator
   - Acceptance: For optional operator-approved adoption: Document emulator policy evidence, target project review and deployment approval separately so local passing tests do not imply deployed rule acceptance.
   - Source: [firestore.rules](../../firestore.rules)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0831 — Add Gusto backend packaging inventory**
   - P2 · portal-maturity · local
   - Acceptance: A local command lists deployable source, dependency lock and omitted fixture/runtime files without uploading a function or provider configuration.
@@ -3651,10 +3684,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local · Depends on: WX-0808, WX-0835
   - Acceptance: A local command packages selected gate summaries, artifact hashes and revision metadata while excluding secrets, downloaded user backups and absolute machine paths.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
-- [ ] **WX-0850 — Create a release readiness decision worksheet**
+- [x] **WX-0850 — Create a release readiness decision worksheet**
   - P1 · production-readiness · operator · Depends on: WX-0835
   - Acceptance: For optional operator-approved adoption: The worksheet records required local gates, optional provider evidence, unresolved blockers and operator deployment approval as distinct decisions.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 
 <a id="systemx"></a>
 
@@ -3722,10 +3756,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · foundation · local
   - Acceptance: A read-only comparison export lists retained versions, manifest schemas and observed fingerprint results at two examined host revisions without rewriting snapshots.
   - Source: [.SYSTEMX/manager.py](../../.SYSTEMX/manager.py)
-- [ ] **WX-0864 — Add an outer-versus-selected guidance diff view**
+- [x] **WX-0864 — Add an outer-versus-selected guidance diff view**
   - P2 · foundation · local
   - Acceptance: A read-only tool shows which outer instructional files differ from selected defaults and labels host-owned customization rather than overwriting it.
   - Source: [scripts/sync-systemx.py](../../scripts/sync-systemx.py)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0865 — Add a bootstrap recovery rehearsal**
   - P2 · foundation · local
   - Acceptance: A temporary-copy check demonstrates using ignored original bootstrap backups to recover from a deliberately interrupted refresh.
@@ -3758,10 +3793,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · foundation · local · Depends on: WX-0871
   - Acceptance: A documented temporary task exercises packet preparation, process-handle recording and evidence review with a harmless local CLI fixture.
   - Source: [tests/systemx](../../tests/systemx)
-- [ ] **WX-0873 — Add handoff scope comparison**
+- [x] **WX-0873 — Add handoff scope comparison**
   - P2 · foundation · local
   - Acceptance: A review helper compares the accepted task paths with an Agent Y result's actual changed paths and reports unapproved expansion.
   - Source: [.SYSTEMX/AGENTS/agent.y](../../.SYSTEMX/AGENTS/agent.y)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0874 — Add checkpoint completeness validation**
   - P2 · foundation · local
   - Acceptance: A local check flags handoff reports missing the exact revision, live handle, original acceptance, known limits or next action.
@@ -3770,10 +3806,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · foundation · local
   - Acceptance: The status panel distinguishes source checks, browser checks, provider checks and operator acceptance without inferring one from another.
   - Source: [src/components/systemx/LocalStackStatus.tsx](../../src/components/systemx/LocalStackStatus.tsx)
-- [ ] **WX-0876 — Add a versioned host evidence index**
+- [x] **WX-0876 — Add a versioned host evidence index**
   - P2 · production-readiness · local
   - Acceptance: A maintained index links historical QA receipts to their examined commit and scope without presenting old evidence as current acceptance.
   - Source: [docs/TEMPLATE-MAINTENANCE.md](../../docs/TEMPLATE-MAINTENANCE.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0877 — Add stale-evidence warnings for task review**
   - P2 · production-readiness · local
   - Acceptance: A review preview flags evidence tied to a different source revision and asks the coordinator to judge the changed scope.
@@ -3782,10 +3819,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · production-readiness · local
   - Acceptance: A worked example shows reusing the same Agent Z report when acceptance, source and policy remain unchanged.
   - Source: [.SYSTEMX/AGENTS/agent.z](../../.SYSTEMX/AGENTS/agent.z)
-- [ ] **WX-0879 — Add event-time interpretation examples**
+- [x] **WX-0879 — Add event-time interpretation examples**
   - P2 · production-readiness · local
   - Acceptance: Examples distinguish scheduled due time, event occurrence, recorded time and observed execution without starting schedules.
   - Source: [.SYSTEMX/AGENTS/agent.x](../../.SYSTEMX/AGENTS/agent.x)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0880 — Add a resource ownership checklist for delegated work**
   - P2 · production-readiness · local
   - Acceptance: A task packet identifies compiler, browser, listener, database and Git integration owners when the assignment uses those shared resources.
@@ -3826,14 +3864,16 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P3 · production-readiness · local
   - Acceptance: Maintainers can compare two import receipts by version, source commit, fingerprint and refreshed bootstrap filenames without loading snapshot contents.
   - Source: [.SYSTEMX/imports](../../.SYSTEMX/imports)
-- [ ] **WX-0890 — Add explicit public versus private publication examples**
+- [x] **WX-0890 — Add explicit public versus private publication examples**
   - P3 · production-readiness · local
   - Acceptance: The adoption guide demonstrates retaining private project records downstream and publishing only reviewed reusable source upstream.
   - Source: [docs/examples/private-template-adoption.md](../../docs/examples/private-template-adoption.md)
-- [ ] **WX-0891 — Add task acceptance examples for portal work**
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
+- [x] **WX-0891 — Add task acceptance examples for portal work**
   - P3 · production-readiness · local
   - Acceptance: Examples define observable HR, CMS, CRM and recovery outcomes while separating implementation from browser and provider acceptance.
   - Source: [.SYSTEMX/WORK/README.md](../../.SYSTEMX/WORK/README.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0892 — Add dependency cycle diagnostics for planning import**
   - P3 · production-readiness · local
   - Acceptance: A planning validation command prints the exact cycle path rather than only a generic dependency error.
@@ -3941,10 +3981,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · foundation · local
   - Acceptance: Wrong module, unsupported version, oversized file, denied storage and damaged history each map to a concrete user recovery action.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
-- [ ] **WX-0915 — Add a recovery limits summary card**
+- [x] **WX-0915 — Add a recovery limits summary card**
   - P2 · foundation · local
   - Acceptance: The user guide summarizes per-module, combined-file and history limits with exact current values and their distinct units.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0916 — Add a maintenance guide for QA receipts**
   - P2 · foundation · local
   - Acceptance: The guide shows how to create a new dated receipt, bind it to a revision and retain older receipts without silently rewriting historical claims.
@@ -3997,10 +4038,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local · Depends on: WX-0926
   - Acceptance: The guide identifies public app code, host extensions, immutable SYSTEMX releases, research packages and ignored runtime folders.
   - Source: [wiki/Project-Structure.md](../../wiki/Project-Structure.md)
-- [ ] **WX-0929 — Add a short nondeveloper evaluation guide**
+- [x] **WX-0929 — Add a short nondeveloper evaluation guide**
   - P2 · portal-maturity · local
   - Acceptance: An evaluator can start an already-installed local app and complete fictional portal journeys without using backend or cloud tooling.
   - Source: [docs/GETTING-STARTED.md](../../docs/GETTING-STARTED.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0930 — Add a maintainer release handoff checklist**
   - P2 · portal-maturity · local
   - Acceptance: The handoff includes source revision, checks, wiki state, unresolved adoption gates and exact next action.
@@ -4018,10 +4060,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P2 · portal-maturity · local
   - Acceptance: Tutorials clearly instruct use of fictional names and .invalid addresses before any sample data entry.
   - Source: [docs/HR-PORTAL.md](../../docs/HR-PORTAL.md)
-- [ ] **WX-0934 — Add a mock workspace portability guide**
+- [x] **WX-0934 — Add a mock workspace portability guide**
   - P2 · portal-maturity · local
   - Acceptance: The guide demonstrates moving a real exported combined file between two independent origins and verifying selected records after refresh.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0935 — Add a quick reference for export contents**
   - P2 · portal-maturity · local
   - Acceptance: A table states which saved records, roles, unsaved fields, timers, SDK state and history are included or excluded by each export type.
@@ -4058,10 +4101,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P3 · extensions · local
   - Acceptance: Two-tab fictional instructions demonstrate last-writer behavior and the supported export-before-reload recovery path.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
-- [ ] **WX-0944 — Add a training exercise for storage denial**
+- [x] **WX-0944 — Add a training exercise for storage denial**
   - P3 · extensions · local
   - Acceptance: A controlled test profile demonstrates visible save warnings and explains which in-memory actions can be lost on refresh.
   - Source: [docs/TEMPLATE-PORTALS.md](../../docs/TEMPLATE-PORTALS.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md](../../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
 - [ ] **WX-0945 — Add an upgrade compatibility table**
   - P3 · extensions · local
   - Acceptance: The table relates app release, selected SYSTEMX release, local save version and portable backup versions without implying synchronized version numbers.
@@ -4100,10 +4144,11 @@ Acceptance gates: local: 832 · provider: 40 · operator: 128.
   - P1 · extensions · operator
   - Acceptance: An adoption screen describes required app-specific configuration and remains disabled until an operator supplies approved connection settings.
   - Source: [docs/GUSTO-SETUP.md](../../docs/GUSTO-SETUP.md)
-- [ ] **WX-0953 — Add an optional OAuth state-binding design**
+- [x] **WX-0953 — Add an optional OAuth state-binding design**
   - P1 · extensions · provider
   - Acceptance: An adoption test contract binds state, organization, initiating user, expiry and one-use callback without exposing a client secret.
   - Source: [docs/GUSTO-SETUP.md](../../docs/GUSTO-SETUP.md)
+  - Verified: 2026-10-15 · Source base: `4e025a3b5c21d0accef4e2e02add2c7eff54d589` · Reviewed by: `agent.0` · Evidence: [docs/CRM-ADOPTION-QA-2026-10-15.md](../../docs/CRM-ADOPTION-QA-2026-10-15.md)
 - [ ] **WX-0954 — Add an optional server token-vault adapter**
   - P1 · extensions · provider
   - Acceptance: An adopted provider flow stores tokens outside browser state and excludes token fields from API responses and logs.

@@ -6,18 +6,23 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
-## CRM merge and adoption contract candidate — verification in progress
+## CRM merges and checklist reconciliation — locally accepted
 
-The assigned batch covers **WX-0369–WX-0373** and seventeen adoption artifact
-criteria. The [CRM walkthrough](CRM-Duplicates-and-Merges.md) explains scoped
-duplicate reports, deliberate contact/company preview and apply, complete local
-history, retained drafts and workspace recovery. The [adoption guides](Adoption-Contracts.md)
-provide fourteen reviewed design/runbook artifacts with operator selections unconfigured.
+The [CRM walkthrough](CRM-Duplicates-and-Merges.md) covers scoped duplicates,
+contact/company preview and atomic apply, complete history, retained drafts and recovery.
+The [adoption guides](Adoption-Contracts.md) cover fourteen reviewed optional designs.
 
-This candidate starts from published source
-`317f47806b7f86dce00f15ee5ced7c0e0bae6116`. Final browser, CI, Hosting preflight
-and Agent 0 acceptance are pending. The canonical checklist remains **134 done /
-866 remaining** and the complete 1,000-item goal remains active.
+Current progress: **179 done / 821 remaining**; **+45** from the published 134-item baseline.
+Agent 0 accepted 22 CRM/adoption criteria and 23 additional existing-work criteria.
+Remaining: **38 P1 · 633 P2 · 150 P3**, with **673 local · 109 operator · 39 provider** gates.
+
+All **68 CI stages** and separate Hosting preflight passed on
+`4e025a3b5c21d0accef4e2e02add2c7eff54d589`. Independent review confirmed **226 named browser/rehearsal groups**:
+212 native, 8 HR-disabled and 6 owned LAN. App **3.4.0**, deploy count **0**.
+Read the [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/CRM-ADOPTION-QA-2026-10-15.md),
+[complete reconciliation](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
+and [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md).
+Optional designs remain unadopted runtime services. The complete 1,000-item goal remains active.
 
 ## Historical payroll and developer setup checkpoint — locally accepted
 

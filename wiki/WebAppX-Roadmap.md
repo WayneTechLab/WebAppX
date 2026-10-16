@@ -13,7 +13,25 @@ dependency-ready candidates and remaining local/provider/operator criteria.
 The goal remains active until every item is accepted. Host planning records this
 intent while reusable SYSTEMX context, plan, task and memory seeds stay blank.
 
-## Current recruiting lifecycle checkpoint — locally accepted
+## CRM merges and checklist reconciliation — locally accepted
+
+The [CRM walkthrough](CRM-Duplicates-and-Merges.md) covers scoped duplicates,
+contact/company preview and atomic apply, complete history, retained drafts and recovery.
+The [adoption guides](Adoption-Contracts.md) cover fourteen reviewed optional designs.
+
+Current progress: **179 done / 821 remaining**; **+45** from the published 134-item baseline.
+Agent 0 accepted 22 CRM/adoption criteria and 23 additional existing-work criteria.
+Remaining: **38 P1 · 633 P2 · 150 P3**, with **673 local · 109 operator · 39 provider** gates.
+
+All **68 CI stages** and separate Hosting preflight passed on
+`4e025a3b5c21d0accef4e2e02add2c7eff54d589`. Independent review confirmed **226 named browser/rehearsal groups**:
+212 native, 8 HR-disabled and 6 owned LAN. App **3.4.0**, deploy count **0**.
+Read the [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/CRM-ADOPTION-QA-2026-10-15.md),
+[complete reconciliation](https://github.com/WayneTechLab/WebAppX/blob/main/docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
+and [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md).
+Optional designs remain unadopted runtime services. The complete 1,000-item goal remains active.
+
+## Historical recruiting lifecycle checkpoint — locally accepted
 
 Agent 0 accepted **eleven original local criteria: WX-0201–WX-0210 and
 WX-0951**. The [HR Recruiting Lifecycle walkthrough](HR-Recruiting-Lifecycle.md)
@@ -30,7 +48,7 @@ remains the default.
 Read the [dated recruiting QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md)
 for source/report bindings, executed scope and evidence limits.
 
-The canonical catalog now records **122 done / 878 remaining**: **58 P1,
+At that recruiting checkpoint, the canonical catalog recorded **122 done / 878 remaining**: **58 P1,
 664 P2 and 156 P3**, with **711 local, 127 operator and 40 provider** gates
 remaining. The complete 1,000-item goal remains active. Run `npm run browser:recruiting` after dependency
 and Chromium setup to repeat the local fictional-workspace journey. These

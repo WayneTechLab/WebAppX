@@ -11,15 +11,13 @@ explains every preview section, warning, limit and recovery choice. The
 [merge contract](https://github.com/WayneTechLab/WebAppX/blob/main/docs/CRM-MERGE-CONTRACT.md)
 records the original WX-0369–WX-0373 criteria and exact source rules.
 
-**Focused local observation — 2026-10-15:** the composed browser run passed
-35 groups, comprising 20 preserved lifecycle groups and 15 new CRM groups.
-Seven owned CRM contexts covered 24 literal status witnesses on
-[runtime freeze 2](https://github.com/WayneTechLab/WebAppX/blob/main/docs/evidence/crm-merge-runtime-freeze-2-2026-10-15.json).
-The current freeze 3 contains an EOF-only cleanup; this focused result is not a
-freeze-3 execution claim. Independent browser review, integrated CI, Hosting
-preflight and Agent 0 acceptance remain pending in the dated
-[CRM adoption QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/CRM-ADOPTION-QA-2026-10-15.md).
-No deployment or provider activation occurred in this local observation.
+**Locally accepted — 2026-10-15:** all five original CRM criteria are complete.
+All 68 CI stages and separate Hosting preflight passed on `4e025a3b5c21d0accef4e2e02add2c7eff54d589`.
+The fresh composed lifecycle suite passed 35 groups: 20 preserved + 15 CRM,
+with all 24 CRM status witnesses on runtime freeze 3. Independent review confirmed
+226 total native/LAN/adoption browser groups and the complete artifact bindings.
+Read the [dated QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/CRM-ADOPTION-QA-2026-10-15.md).
+The earlier freeze-2 observation remains historical. Deployment count is 0.
 
 ## Review the report
 
@@ -132,8 +130,7 @@ npm run browser:portal-lifecycle
 The first command runs the configured portal tests. The second is the existing
 composed native lifecycle suite with fresh owned browser contexts and local
 preview cleanup, including existing flows and the new CRM journeys. These
-examples are verification entry points; the focused observation above does not
-replace pending final integrated receipts. Provider operation, native Windows, manual screen-reader acceptance
+examples are verification entry points; the dated receipt above records the completed integrated gates. Provider operation, native Windows, manual screen-reader acceptance
 and production deployment remain separate.
 
 - [Template Portals](Template-Portals.md)

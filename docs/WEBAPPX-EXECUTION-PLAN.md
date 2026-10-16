@@ -10,16 +10,16 @@ The separate [review index](BACKLOG-EVIDENCE.md) attaches scoped historical
 receipts with examined and observation revisions. It does not accept work
 or convert an earlier browser result into a current execution.
 
-Current verified progress: **134 done / 866 remaining**.
-Remaining priorities: **56 P1 · 654 P2 · 156 P3**.
-Remaining acceptance gates: **699 local · 40 provider · 127 operator**.
+Current verified progress: **179 done / 821 remaining**.
+Remaining priorities: **38 P1 · 633 P2 · 150 P3**.
+Remaining acceptance gates: **673 local · 39 provider · 109 operator**.
 
 ## Completion delta and accepted work
 
 Published baseline `317f47806b7f86dce00f15ee5ced7c0e0bae6116` records
 **134 done / 866 remaining**. The prior recruiting checkpoint had 122 done;
 the accepted payroll/setup delta added twelve original criteria.
-Delta from the 134-item published baseline: **+0 verified completions**, with **866 remaining**.
+Delta from the 134-item published baseline: **+45 verified completions**, with **821 remaining**.
 
 Every checked batch below is computed from canonical completion records.
 The linked checklist contains the individual checked IDs and original criteria.
@@ -35,8 +35,10 @@ An unchecked candidate has no completion metadata and is not included in the del
 | [x] PORTAL-REGISTRY-BUDGET-QA-2026-10-14 | 2 | `a9e78672d707e198dc10193972b17a76958abeb5` | [Receipt](PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md) |
 | [x] PORTAL-MATURITY-QA-2026-10-15 | 16 | `950f9ba0c4e48faaa65056f504f105201838e3ec` | [Receipt](PORTAL-MATURITY-QA-2026-10-15.md) |
 | [x] PORTAL-SAFETY-QA-2026-10-15 | 14 | `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` | [Receipt](PORTAL-SAFETY-QA-2026-10-15.md) |
+| [x] EXISTING-WORK-RECONCILIATION-QA-2026-10-15 | 23 | `4e025a3b5c21d0accef4e2e02add2c7eff54d589` | [Receipt](EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md) |
 | [x] PORTAL-LIFECYCLE-QA-2026-10-15 | 18 | `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` | [Receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) |
 | [x] HR-RECRUITING-LIFECYCLE-QA-2026-10-15 | 11 | `7337709b79b995c3f1e76254aa51fd86bbd1f215` | [Receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) |
+| [x] CRM-ADOPTION-QA-2026-10-15 | 22 | `4e025a3b5c21d0accef4e2e02add2c7eff54d589` | [Receipt](CRM-ADOPTION-QA-2026-10-15.md) |
 | [x] EVALUATOR-ADOPTION-QA-2026-10-15 | 13 | `aae465ae033f3191a69ed7d40056b0c6e2159e17` | [Receipt](EVALUATOR-ADOPTION-QA-2026-10-15.md) |
 | [x] OPERATIONAL-FOUNDATIONS-QA-2026-10-15 | 9 | `f197affabfe125321c439d8a50854abe684c2355` | [Receipt](OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md) |
 | [x] KEYBOARD-PORTALS-QA-2026-10-15 | 2 | `cae18da251b0a9c4418a4fbebf2bd514ccd2dcdd` | [Receipt](KEYBOARD-PORTALS-QA-2026-10-15.md) |
@@ -45,28 +47,28 @@ An unchecked candidate has no completion metadata and is not included in the del
 
 ## CRM and adoption candidate checklist
 
-- [ ] **WX-0369** — Add a CRM duplicate candidate report — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0370** — Preview same-owner contact merges — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0371** — Apply contact merges atomically — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0372** — Preview company merge consequences — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0373** — Apply company merges with receipts — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0511** — Specify trusted membership provisioning boundaries — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0517** — Design optional owner recovery procedures — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0527** — Define optional custom-token issuer contract — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0534** — Define optional portal-specific permission bundles — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0612** — Define optional content security policy adoption — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0617** — Define optional webhook retention controls — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0627** — Design optional download authorization contracts — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0628** — Prepare a private preview publication checklist — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0635** — Prepare optional incident evidence capture guidance — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0637** — Design optional session step-up requirements — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0760** — Design optional application error telemetry adapter — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0802** — Create an optional GitHub Actions adoption workflow design — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0814** — Prepare optional deployment identity separation — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0820** — Prepare Windows x64 and ARM64 CI acceptance matrix — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0830** — Add Firebase rules dry-run evidence checklist — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0850** — Create a release readiness decision worksheet — final verification and Agent 0 acceptance pending.
-- [ ] **WX-0953** — Add an optional OAuth state-binding design — final verification and Agent 0 acceptance pending.
+- [x] **WX-0369** — Add a CRM duplicate candidate report ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0370** — Preview same-owner contact merges ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0371** — Apply contact merges atomically ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0372** — Preview company merge consequences ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0373** — Apply company merges with receipts ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0511** — Specify trusted membership provisioning boundaries ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0517** — Design optional owner recovery procedures ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0527** — Define optional custom-token issuer contract ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0534** — Define optional portal-specific permission bundles ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0612** — Define optional content security policy adoption ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0617** — Define optional webhook retention controls ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0627** — Design optional download authorization contracts ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0628** — Prepare a private preview publication checklist ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0635** — Prepare optional incident evidence capture guidance ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0637** — Design optional session step-up requirements ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0760** — Design optional application error telemetry adapter ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0802** — Create an optional GitHub Actions adoption workflow design ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0814** — Prepare optional deployment identity separation ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0820** — Prepare Windows x64 and ARM64 CI acceptance matrix ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0830** — Add Firebase rules dry-run evidence checklist ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0850** — Create a release readiness decision worksheet ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
+- [x] **WX-0953** — Add an optional OAuth state-binding design ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
 
 The next prepared foundation slice covers WX-0015, WX-0017, WX-0018,
 WX-0021, WX-0061, WX-0701 and WX-0715. WX-0715 waits for WX-0061 and
@@ -129,40 +131,40 @@ coverage ships with each slice rather than waiting for the quality area.
 | Workstream | Stable IDs | Done | Remaining |
 | --- | --- | ---: | ---: |
 | Project setup and developer experience | WX-0001–WX-0050 | 21 | 29 |
-| Shared portal architecture | WX-0051–WX-0100 | 10 | 40 |
+| Shared portal architecture | WX-0051–WX-0100 | 13 | 37 |
 | HR onboarding and directory | WX-0101–WX-0150 | 10 | 40 |
-| HR payroll, benefits and time | WX-0151–WX-0200 | 10 | 40 |
+| HR payroll, benefits and time | WX-0151–WX-0200 | 11 | 39 |
 | HR talent and employee operations | WX-0201–WX-0250 | 10 | 40 |
-| CMS models and authoring | WX-0251–WX-0300 | 3 | 47 |
+| CMS models and authoring | WX-0251–WX-0300 | 4 | 46 |
 | CMS review and publication | WX-0301–WX-0350 | 3 | 47 |
-| CRM leads and contacts | WX-0351–WX-0400 | 4 | 46 |
+| CRM leads and contacts | WX-0351–WX-0400 | 9 | 41 |
 | CRM sales and service | WX-0401–WX-0450 | 0 | 50 |
-| Mock persistence, backup and recovery | WX-0451–WX-0500 | 12 | 38 |
-| Identity, membership and permissions | WX-0501–WX-0550 | 2 | 48 |
-| Firebase data, functions and rules | WX-0551–WX-0600 | 0 | 50 |
-| Security and privacy | WX-0601–WX-0650 | 2 | 48 |
+| Mock persistence, backup and recovery | WX-0451–WX-0500 | 13 | 37 |
+| Identity, membership and permissions | WX-0501–WX-0550 | 6 | 44 |
+| Firebase data, functions and rules | WX-0551–WX-0600 | 1 | 49 |
+| Security and privacy | WX-0601–WX-0650 | 11 | 39 |
 | Testing, quality and accessibility | WX-0651–WX-0700 | 9 | 41 |
-| Design, responsiveness and interaction | WX-0701–WX-0750 | 4 | 46 |
-| Observability, support and operations | WX-0751–WX-0800 | 7 | 43 |
-| CI, delivery and infrastructure | WX-0801–WX-0850 | 5 | 45 |
-| SYSTEMX and agent workflows | WX-0851–WX-0900 | 10 | 40 |
-| Documentation and adoption kits | WX-0901–WX-0950 | 11 | 39 |
-| Optional integrations, extensibility and internationalization | WX-0951–WX-1000 | 1 | 49 |
+| Design, responsiveness and interaction | WX-0701–WX-0750 | 5 | 45 |
+| Observability, support and operations | WX-0751–WX-0800 | 10 | 40 |
+| CI, delivery and infrastructure | WX-0801–WX-0850 | 10 | 40 |
+| SYSTEMX and agent workflows | WX-0851–WX-0900 | 16 | 34 |
+| Documentation and adoption kits | WX-0901–WX-0950 | 15 | 35 |
+| Optional integrations, extensibility and internationalization | WX-0951–WX-1000 | 2 | 48 |
 
 Domain waves (the dependency graph overrides this order):
 
 | Wave | Areas | Done | Remaining |
 | --- | --- | ---: | ---: |
-| Foundation | setup, systemx | 31 | 69 |
-| Shared core | portal-shell, identity, security | 14 | 136 |
-| Recovery | mock-recovery | 12 | 38 |
-| Human resources | hr-onboarding, hr-payroll, hr-talent | 30 | 120 |
-| Content | cms-authoring, cms-publishing | 6 | 94 |
-| Customer relationships | crm-contacts, crm-sales | 4 | 96 |
-| Quality and design | quality, design | 13 | 87 |
-| Operations and delivery | operations, delivery | 12 | 88 |
-| Adoption | adoption | 11 | 39 |
-| Connected extensions | firebase, integrations | 1 | 99 |
+| Foundation | setup, systemx | 37 | 63 |
+| Shared core | portal-shell, identity, security | 30 | 120 |
+| Recovery | mock-recovery | 13 | 37 |
+| Human resources | hr-onboarding, hr-payroll, hr-talent | 31 | 119 |
+| Content | cms-authoring, cms-publishing | 7 | 93 |
+| Customer relationships | crm-contacts, crm-sales | 9 | 91 |
+| Quality and design | quality, design | 14 | 86 |
+| Operations and delivery | operations, delivery | 20 | 80 |
+| Adoption | adoption | 15 | 35 |
+| Connected extensions | firebase, integrations | 3 | 97 |
 
 The current graph has **173 edges**. Longest explicit chains:
 
@@ -207,11 +209,11 @@ or grant access, and current write ownership must be checked before selection.
 | WX-0861 | P2 / foundation | The host records its supported managed release range and an import preview warns when a new release is outside that reviewed range. |
 | WX-0862 | P2 / foundation | A refused downgrade reports the active version, requested version and safe review alternatives without rewriting retained snapshots. |
 | WX-0863 | P2 / foundation | A read-only comparison export lists retained versions, manifest schemas and observed fingerprint results at two examined host revisions without rewriting snapshots. |
-| WX-0864 | P2 / foundation | A read-only tool shows which outer instructional files differ from selected defaults and labels host-owned customization rather than overwriting it. |
 | WX-0865 | P2 / foundation | A temporary-copy check demonstrates using ignored original bootstrap backups to recover from a deliberately interrupted refresh. |
 | WX-0866 | P2 / foundation | SYSTEMX tool checks report which temporary copies were created and whether each was removed after success or retained for a failed check. |
 | WX-0867 | P2 / foundation | The context command can explain the byte or line contribution of each record without automatically loading more project history. |
 | WX-0868 | P2 / foundation | A fictional secret-marker fixture proves resume packets omit excluded local runtime and private prompt files. |
+| WX-0869 | P2 / foundation | A read-only child context preview displays the explicit project selector and record root before returning task context. |
 
 ## Resume commands
 

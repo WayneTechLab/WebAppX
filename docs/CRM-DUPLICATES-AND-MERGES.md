@@ -5,15 +5,14 @@ merge two fictional contacts or companies. Open `/crm/demo`, then choose
 **Duplicates & merges**. No account, external lookup, email or provider write is
 required. Use fictional names, `.invalid` addresses and sample amounts only.
 
-**Verification status — 2026-10-15:** the focused composed browser run passed
-35 groups: 20 preserved lifecycle groups and 15 new CRM groups, with seven owned
-CRM contexts and 24 literal status witnesses. That observation is bound to
-[runtime freeze 2](evidence/crm-merge-runtime-freeze-2-2026-10-15.json).
-The current source is freeze 3 after an EOF-only cleanup; the focused result is
-not relabeled as a freeze-3 run. Independent browser review, integrated CI,
-Hosting preflight and Agent 0 acceptance remain pending in the dated
-[CRM adoption QA receipt](CRM-ADOPTION-QA-2026-10-15.md). The
-[merge contract](CRM-MERGE-CONTRACT.md) records the reviewed source rules.
+**Locally accepted — 2026-10-15:** all five original CRM criteria are complete.
+Fresh final CI on `4e025a3b5c21d0accef4e2e02add2c7eff54d589` passed all 68 stages and
+226 browser/rehearsal groups. The composed lifecycle suite passed 35 groups
+(20 preserved + 15 CRM), including all 24 CRM status witnesses on runtime freeze 3.
+Independent source/artifact/browser review and separate Hosting preflight passed.
+Read the dated [QA receipt](CRM-ADOPTION-QA-2026-10-15.md) and
+[merge contract](CRM-MERGE-CONTRACT.md) for the exact evidence and boundaries.
+The earlier focused freeze-2 result remains historical; deployment count is 0.
 
 ## Open the local preview
 
@@ -242,8 +241,7 @@ integration and inspection tests. `browser:portal-lifecycle` runs the existing
 composed native lifecycle browser suite, including CRM journeys, against an owned
 local preview with fresh owned browser contexts and cleanup. It also covers
 existing lifecycle flows; it is not a CRM-only shortcut. Neither command deploys
-or activates a provider. The focused browser observation above is separate from
-pending integrated CI, preflight and acceptance; authored tests and these command
+or activates a provider. The dated receipt above records completed integrated CI, preflight and acceptance; authored tests and these command
 examples are not additional execution receipts. Native Windows and manual screen-reader acceptance
 are not established by local source review or macOS automation.
 

@@ -1071,12 +1071,18 @@
       "area": "portal-shell",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a compact mobile portal switcher",
       "acceptance": "At narrow widths, switching portals remains available without a horizontal overflow trap or obscured active label.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0074",
@@ -1246,26 +1252,38 @@
       "area": "portal-shell",
       "priority": "P3",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Specify trusted portal membership contracts",
       "acceptance": "The proposed connected model defines tenant, module, role and revocation fields separately from existing account levels and mock selectors.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0088",
       "area": "portal-shell",
       "priority": "P3",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Specify tenant selection behavior",
       "acceptance": "The adoption contract describes explicit tenant selection and prohibits implicitly sharing records between tenants or demo storage.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
       "dependsOn": [
         "WX-0087"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0089",
@@ -1640,7 +1658,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Add effective-dated location transfers",
-      "acceptance": "Future location changes display separately from the employee\u2019s current assignment until the sample date advances.",
+      "acceptance": "Future location changes display separately from the employee’s current assignment until the sample date advances.",
       "source": "src/hr/components/HrWorkspace.tsx",
       "gate": "local",
       "dependsOn": []
@@ -2102,7 +2120,7 @@
       "phase": "portal-maturity",
       "status": "done",
       "title": "Add employee-specific mock hourly rates",
-      "acceptance": "A run freezes each fictional employee\u2019s configured sample rate and displays that rate beside consumed hours.",
+      "acceptance": "A run freezes each fictional employee’s configured sample rate and displays that rate beside consumed hours.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
       "dependsOn": [],
@@ -2420,7 +2438,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Add a local payroll register export",
-      "acceptance": "A fictional export reconciles employee rows to the selected receipt\u2019s gross, deductions and net totals.",
+      "acceptance": "A fictional export reconciles employee rows to the selected receipt’s gross, deductions and net totals.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
       "dependsOn": []
@@ -2706,12 +2724,18 @@
       "area": "hr-payroll",
       "priority": "P3",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a payroll-ready time reconciliation report",
       "acceptance": "The report compares approved unpaid hours, included payroll hours and consumed entries for a selected period.",
       "source": "src/hr/mock-workflows.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0199",
@@ -2972,7 +2996,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Add candidate consent notice previews",
-      "acceptance": "A local candidate intake preview shows the adopted app\u2019s configurable notice text without collecting a real application.",
+      "acceptance": "A local candidate intake preview shows the adopted app’s configurable notice text without collecting a real application.",
       "source": "src/hr/recruiting.ts",
       "gate": "local",
       "dependsOn": []
@@ -3782,12 +3806,18 @@
       "area": "cms-authoring",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add unsaved draft change tracking",
       "acceptance": "Editing a draft shows a dirty indicator that clears only after a successful save or explicit discard.",
       "source": "src/cms/model.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0282",
@@ -4899,64 +4929,94 @@
       "area": "crm-contacts",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a CRM duplicate candidate report",
       "acceptance": "The report identifies normalized company-name and email candidates within the actor's scope without merging automatically.",
       "source": "src/crm/model.ts",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0370",
       "area": "crm-contacts",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Preview same-owner contact merges",
       "acceptance": "A merge proposal shows retained fields and linked records, and refuses incompatible ownership before confirmation.",
       "source": "src/crm/CrmDemo.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0371",
       "area": "crm-contacts",
       "priority": "P1",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Apply contact merges atomically",
       "acceptance": "A confirmed local merge redirects valid references once and leaves no dangling opportunity or lead contact IDs.",
       "source": "src/crm/model.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0370"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0372",
       "area": "crm-contacts",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Preview company merge consequences",
       "acceptance": "The proposal lists contacts, opportunities and duplicate-name conflicts before any account records change.",
       "source": "src/crm/CrmDemo.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0373",
       "area": "crm-contacts",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Apply company merges with receipts",
       "acceptance": "A valid same-owner merge moves all supported graph edges atomically and records source and retained IDs.",
       "source": "src/crm/model.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0372"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0374",
@@ -6088,7 +6148,7 @@
       "phase": "portal-maturity",
       "status": "done",
       "title": "Inspect captured records in restore-point details",
-      "acceptance": "A read-only detail panel lists bounded record identifiers and a complete collection-count breakdown for the point\u2019s captured modules without applying it or exposing full free-text fields by default.",
+      "acceptance": "A read-only detail panel lists bounded record identifiers and a complete collection-count breakdown for the point’s captured modules without applying it or exposing full free-text fields by default.",
       "source": "src/portals/RestorePointHistory.tsx",
       "gate": "local",
       "dependsOn": [],
@@ -6162,14 +6222,20 @@
       "area": "mock-recovery",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add record difference inspection for HR restores",
       "acceptance": "A preview can show changed fictional employee counts, time approvals, benefit elections and payroll receipts before whole-module replacement.",
       "source": "src/hr/persistence.ts",
       "gate": "local",
       "dependsOn": [
         "WX-0458"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0462",
@@ -6819,12 +6885,18 @@
       "area": "identity",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Specify trusted membership provisioning boundaries",
       "acceptance": "For optional operator-approved adoption: A design records which backend creates memberships, who can approve assignments and how client-controlled role fields are ignored.",
       "source": "integrations/gusto/functions/src/security.mjs",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0512",
@@ -6896,12 +6968,18 @@
       "area": "identity",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Design optional owner recovery procedures",
       "acceptance": "For optional operator-approved adoption: A runbook identifies owner recovery prerequisites, evidence and independent approval before any real identity is restored or elevated.",
       "source": "docs/RUNBOOK.md",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0518",
@@ -7021,12 +7099,18 @@
       "area": "identity",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Define optional custom-token issuer contract",
       "acceptance": "For optional operator-approved adoption: The contract requires trusted issuer identity, audience, lifetime and scope while keeping token generation outside browser code.",
       "source": "src/auth/firebaseAuth.ts",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0528",
@@ -7105,7 +7189,7 @@
       "area": "identity",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Define optional portal-specific permission bundles",
       "acceptance": "For optional operator-approved adoption: A reviewed design groups CMS publication, CRM assignment and HR administration capabilities without deriving them solely from paid account level.",
       "source": "src/auth/accountLevels.ts",
@@ -7113,7 +7197,13 @@
       "dependsOn": [
         "WX-0501",
         "WX-0503"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0535",
@@ -7577,12 +7667,18 @@
       "area": "firebase",
       "priority": "P2",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Add optional safe directory field projections",
       "acceptance": "An adopted projection test fails when an unapproved restricted field appears in the directory response.",
       "source": "docs/GUSTO-FIREBASE.md",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0573",
@@ -7615,7 +7711,7 @@
       "phase": "production-readiness",
       "status": "todo",
       "title": "Add optional short-lived document access service",
-      "acceptance": "An adopted server rechecks access for each issued link and denies requests for another organization\u2019s file.",
+      "acceptance": "An adopted server rechecks access for each issued link and denies requests for another organization’s file.",
       "source": "docs/GUSTO-FIREBASE.md",
       "gate": "operator",
       "dependsOn": []
@@ -7639,7 +7735,7 @@
       "phase": "production-readiness",
       "status": "todo",
       "title": "Add optional report download authorization",
-      "acceptance": "An adopted server denies a completed report after the requester\u2019s membership is revoked.",
+      "acceptance": "An adopted server denies a completed report after the requester’s membership is revoked.",
       "source": "docs/GUSTO-FIREBASE.md",
       "gate": "operator",
       "dependsOn": []
@@ -7879,7 +7975,7 @@
       "phase": "production-readiness",
       "status": "todo",
       "title": "Add optional server export redaction profiles",
-      "acceptance": "An adopted export includes only approved fields for its purpose and never inherits the public mock backup\u2019s unrestricted shape.",
+      "acceptance": "An adopted export includes only approved fields for its purpose and never inherits the public mock backup’s unrestricted shape.",
       "source": "docs/GUSTO-FIREBASE.md",
       "gate": "operator",
       "dependsOn": []
@@ -8074,12 +8170,18 @@
       "area": "security",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Define optional content security policy adoption",
       "acceptance": "For optional operator-approved adoption: Produce a report-only policy proposal listing required Firebase, SDK, image and font origins; activation remains an operator-reviewed hosting change.",
       "source": "firebase.json",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0613",
@@ -8122,24 +8224,36 @@
       "area": "security",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Inventory optional SDK network destinations",
       "acceptance": "A source-backed document separates account-free mock endpoints from destinations an adopted real Gusto adapter could contact.",
       "source": "integrations/gusto/README.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0617",
       "area": "security",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Define optional webhook retention controls",
       "acceptance": "For optional operator-approved adoption: An adoption design bounds stored webhook payload duration, redacts unnecessary provider fields and requires operator selection before collection.",
       "source": "integrations/gusto/functions/src/webhooks.mjs",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0618",
@@ -8258,24 +8372,36 @@
       "area": "security",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Design optional download authorization contracts",
       "acceptance": "For optional operator-approved adoption: A future attachment design binds each download to tenant, resource and expiry rather than trusting a displayed URL or demo role.",
       "source": "storage.rules",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0628",
       "area": "security",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Prepare a private preview publication checklist",
       "acceptance": "For optional operator-approved adoption: An operator adoption checklist verifies fictional data, no secrets, indexing choice and access controls before exposing a preview beyond loopback.",
       "source": ".SYSTEMX/deploy/canary-plan.md",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0629",
@@ -8318,12 +8444,18 @@
       "area": "security",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Document origin migration privacy implications",
       "acceptance": "Explain that localhost and 127.0.0.1 have separate saves and that moving JSON files creates additional copies beyond the app's erase controls.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0633",
@@ -8358,12 +8490,18 @@
       "area": "security",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Prepare optional incident evidence capture guidance",
       "acceptance": "For optional operator-approved adoption: The runbook specifies revision, time, affected synthetic scope and redacted logs to preserve before any approved production incident changes.",
       "source": "docs/RUNBOOK.md",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0636",
@@ -8382,12 +8520,18 @@
       "area": "security",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Design optional session step-up requirements",
       "acceptance": "For optional operator-approved adoption: An adoption matrix identifies which sensitive export or owner action should require recent authentication and leaves enforcement disabled until reviewed.",
       "source": "src/auth/firebaseAuth.ts",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0638",
@@ -8406,12 +8550,18 @@
       "area": "security",
       "priority": "P2",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Define optional privileged action reason policy",
       "acceptance": "For optional operator-approved adoption: The adopted app plan requires a human-readable reason and scoped target for selected owner actions without accepting reason text as authorization.",
       "source": "src/pages/AdminDashboardPage.tsx",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0640",
@@ -9014,7 +9164,7 @@
       "phase": "portal-maturity",
       "status": "todo",
       "title": "Automate deterministic service request browser regression",
-      "acceptance": "A repeatable browser test loads the named seed, creates, triages, resolves and reopens a fictional case and asserts actor-scoped timelines, exact inbox counts and refusal of an unrelated employee\u2019s mutation.",
+      "acceptance": "A repeatable browser test loads the named seed, creates, triages, resolves and reopens a fictional case and asserts actor-scoped timelines, exact inbox counts and refusal of an unrelated employee’s mutation.",
       "source": "src/hr/components/HrServiceDesk.tsx",
       "gate": "local",
       "dependsOn": [
@@ -9793,12 +9943,18 @@
       "area": "design",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a responsive portal directory comparison",
       "acceptance": "Users can compare portal workflows, roles and account-free boundaries with a layout that stacks labels on small screens.",
       "source": "src/pages/TemplatePortalsPage.tsx",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0745",
@@ -9987,12 +10143,18 @@
       "area": "operations",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Document local session ownership diagnosis",
       "acceptance": "A runbook shows how to identify the checkout, command and owner of a listener before choosing another port or using the owned stop control.",
       "source": "docs/RUNBOOK.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0759",
@@ -10011,12 +10173,18 @@
       "area": "operations",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Design optional application error telemetry adapter",
       "acceptance": "For optional operator-approved adoption: An opt-in adapter contract lists approved redacted fields, event volume limits and transport failure behavior before any external telemetry is configured.",
       "source": "docs/MONITORING.md",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0761",
@@ -10493,12 +10661,18 @@
       "area": "operations",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Document SDK preview and HR demo data separation",
       "acceptance": "Support guidance explicitly explains why SDK session fixtures and persisted HR workspace data do not automatically reflect one another.",
       "source": "docs/GUSTO-SETUP.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0799",
@@ -10557,12 +10731,18 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Create an optional GitHub Actions adoption workflow design",
       "acceptance": "For optional operator-approved adoption: A reviewed plan runs the existing required gates on pull requests with explicit permissions and no production deployment credentials.",
       "source": "scripts/check-template.sh",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0803",
@@ -10713,12 +10893,18 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Prepare optional deployment identity separation",
       "acceptance": "For optional operator-approved adoption: An adoption design assigns distinct preview and production identities with minimal reviewed permissions and no secrets committed to workflow source.",
       "source": "docs/SECRETS.md",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0815",
@@ -10785,12 +10971,18 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Prepare Windows x64 and ARM64 CI acceptance matrix",
       "acceptance": "For optional operator-approved adoption: An optional runner plan identifies which host, import, test and build checks must run on each architecture and records unavailable runner coverage explicitly.",
       "source": "docs/TEMPLATE-MAINTENANCE.md",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0821",
@@ -10913,12 +11105,18 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Add Firebase rules dry-run evidence checklist",
       "acceptance": "For optional operator-approved adoption: Document emulator policy evidence, target project review and deployment approval separately so local passing tests do not imply deployed rule acceptance.",
       "source": "firestore.rules",
       "gate": "operator",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0831",
@@ -11180,14 +11378,20 @@
       "area": "delivery",
       "priority": "P1",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Create a release readiness decision worksheet",
       "acceptance": "For optional operator-approved adoption: The worksheet records required local gates, optional provider evidence, unresolved blockers and operator deployment approval as distinct decisions.",
       "source": "docs/TEMPLATE-MAINTENANCE.md",
       "gate": "operator",
       "dependsOn": [
         "WX-0835"
-      ]
+      ],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0851",
@@ -11412,12 +11616,18 @@
       "area": "systemx",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add an outer-versus-selected guidance diff view",
       "acceptance": "A read-only tool shows which outer instructional files differ from selected defaults and labels host-owned customization rather than overwriting it.",
       "source": "scripts/sync-systemx.py",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0865",
@@ -11522,12 +11732,18 @@
       "area": "systemx",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add handoff scope comparison",
       "acceptance": "A review helper compares the accepted task paths with an Agent Y result's actual changed paths and reports unapproved expansion.",
       "source": ".SYSTEMX/AGENTS/agent.y",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0874",
@@ -11558,12 +11774,18 @@
       "area": "systemx",
       "priority": "P2",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Add a versioned host evidence index",
       "acceptance": "A maintained index links historical QA receipts to their examined commit and scope without presenting old evidence as current acceptance.",
       "source": "docs/TEMPLATE-MAINTENANCE.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0877",
@@ -11594,12 +11816,18 @@
       "area": "systemx",
       "priority": "P2",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Add event-time interpretation examples",
       "acceptance": "Examples distinguish scheduled due time, event occurrence, recorded time and observed execution without starting schedules.",
       "source": ".SYSTEMX/AGENTS/agent.x",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0880",
@@ -11728,24 +11956,36 @@
       "area": "systemx",
       "priority": "P3",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Add explicit public versus private publication examples",
       "acceptance": "The adoption guide demonstrates retaining private project records downstream and publishing only reviewed reusable source upstream.",
       "source": "docs/examples/private-template-adoption.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0891",
       "area": "systemx",
       "priority": "P3",
       "phase": "production-readiness",
-      "status": "todo",
+      "status": "done",
       "title": "Add task acceptance examples for portal work",
       "acceptance": "Examples define observable HR, CMS, CRM and recovery outcomes while separating implementation from browser and provider acceptance.",
       "source": ".SYSTEMX/WORK/README.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0892",
@@ -12094,12 +12334,18 @@
       "area": "adoption",
       "priority": "P2",
       "phase": "foundation",
-      "status": "todo",
+      "status": "done",
       "title": "Add a recovery limits summary card",
       "acceptance": "The user guide summarizes per-module, combined-file and history limits with exact current values and their distinct units.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0916",
@@ -12268,12 +12514,18 @@
       "area": "adoption",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a short nondeveloper evaluation guide",
       "acceptance": "An evaluator can start an already-installed local app and complete fictional portal journeys without using backend or cloud tooling.",
       "source": "docs/GETTING-STARTED.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0930",
@@ -12334,12 +12586,18 @@
       "area": "adoption",
       "priority": "P2",
       "phase": "portal-maturity",
-      "status": "todo",
+      "status": "done",
       "title": "Add a mock workspace portability guide",
       "acceptance": "The guide demonstrates moving a real exported combined file between two independent origins and verifying selected records after refresh.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0935",
@@ -12458,12 +12716,18 @@
       "area": "adoption",
       "priority": "P3",
       "phase": "extensions",
-      "status": "todo",
+      "status": "done",
       "title": "Add a training exercise for storage denial",
       "acceptance": "A controlled test profile demonstrates visible save warnings and explains which in-memory actions can be lost on refresh.",
       "source": "docs/TEMPLATE-PORTALS.md",
       "gate": "local",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0945",
@@ -12572,12 +12836,18 @@
       "area": "integrations",
       "priority": "P1",
       "phase": "extensions",
-      "status": "todo",
+      "status": "done",
       "title": "Add an optional OAuth state-binding design",
       "acceptance": "An adoption test contract binds state, organization, initiating user, expiry and one-use callback without exposing a client secret.",
       "source": "docs/GUSTO-SETUP.md",
       "gate": "provider",
-      "dependsOn": []
+      "dependsOn": [],
+      "completion": {
+        "verifiedOn": "2026-10-15",
+        "sourceBase": "4e025a3b5c21d0accef4e2e02add2c7eff54d589",
+        "evidence": "docs/CRM-ADOPTION-QA-2026-10-15.md",
+        "reviewedBy": "agent.0"
+      }
     },
     {
       "id": "WX-0954",

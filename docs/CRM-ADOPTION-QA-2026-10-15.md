@@ -1,408 +1,175 @@
 # CRM merge and optional adoption artifact verification — 2026-10-15
 
-Status: **PRE-ACCEPTANCE — provisional focused/source receipt.** The canonical catalog
-remains **134 done / 866 TODO**. All twenty-two original criteria below remain TODO.
-Agent 0 acceptance, complete CI, separate
-Hosting preflight and final source/documentation metadata are **PENDING**. This
-draft supplies no new completion count or forecast acceptance total.
+**Agent 0 acceptance: 22 original criteria complete at the scopes recorded below.**
+Five criteria cover native fictional CRM behavior; seventeen cover reviewed optional designs,
+contracts, runbooks and checklists. All required local gates passed on `4e025a3b5c21d0accef4e2e02add2c7eff54d589`.
+The separate [existing-work reconciliation](EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md) accepts 23
+additional original criteria. Together they add **45 completions** to the published 134-item
+baseline: **179 done / 821 remaining**. The complete 1,000-item goal remains active.
 
-The active project objective remains completing the original 1,000 criteria.
-This receipt covers the bounded current wave: five fictional native CRM criteria
-and seventeen optional adoption artifact criteria. It does not equate reviewed
-source, authored paper examples, local browser observations, adopted operator
-services or provider evidence.
+## Source and completed gates
 
-## Published basis and current source boundary
-
-The supplied actual published checkpoint is
-`317f47806b7f86dce00f15ee5ced7c0e0bae6116`. Agent 0 reported clean/direct main
-parity before creating the isolated CRM checkout. That is the starting source,
-not a claim that the current working implementation is unchanged or already
-published. The preceding [payroll/setup receipt](PAYROLL-SETUP-QA-2026-10-15.md)
-retains its own implementation revision, 68-stage/211-browser-rehearsal and
-preflight observations. Those historical gates do not test this CRM wave.
-
-| Current implementation reference | Examined value |
+| Observation | Exact result |
 | --- | --- |
-| Supplied published base | `317f47806b7f86dce00f15ee5ced7c0e0bae6116` |
-| Current runtime | 145 source files, freeze 3 |
-| Current exact-byte manifest | [crm-merge-runtime-2026-10-15.json](evidence/crm-merge-runtime-2026-10-15.json) |
-| Freeze-3 manifest SHA-256 | `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e` |
-| Historical focused-browser freeze 2 | [preserved exact manifest](evidence/crm-merge-runtime-freeze-2-2026-10-15.json), SHA-256 `872a55c7fbf25bde442fbd7fa5f171f16a2bdf59c739d96785dd10a81f711999` |
-| Receipt-preparation source check | All 145 listed files rehashed equal to freeze 3; no mismatches |
-| Preserved earlier manifest | [crm-merge-runtime-freeze-1-2026-10-15.json](evidence/crm-merge-runtime-freeze-1-2026-10-15.json) |
-| Freeze-1 SHA-256 | `42cbf700c7880316b206832555809c5d6a1eea2a775084258703b8d16aedef5a` |
-| Final examined implementation commit | **PENDING — Agent 0 to record after integration** |
-| Final accepted browser/runtime/harness/artifact verification | **PENDING** |
+| Published predecessor | `317f47806b7f86dce00f15ee5ced7c0e0bae6116` |
+| Final examined source | `4e025a3b5c21d0accef4e2e02add2c7eff54d589` |
+| Complete CI | `npm run ci:all`; terminal **0**, all **68 stages** in maintained order |
+| CI log | `webappx-crm-adoption-ci-all-68-run5.log`; SHA-256 `066d306b255b1dc6ce98eb79ada2b4924272c574575e6f159289ec94f2f56061` |
+| Separate Hosting preflight | `npm run deploy -- hosting --preflight`; terminal **0** on the same source in an owned exact-commit clone |
+| Preflight log | `webappx-crm-adoption-hosting-preflight-4e.log`; SHA-256 `550f76c44d1ae0c97806ccb575ba2daf9e7a85c79afea60718663ab3a49c6529` |
+| Independent final review | `webappx-crm-adoption-ci-verification.json`; SHA-256 `58bcf57c53b94637a5c3a4fca8263824e39cf8dcfdc983e74a880b7aa3ff35d9` |
+| Exact runtime | **145 files**, [freeze 3](evidence/crm-merge-runtime-2026-10-15.json), SHA-256 `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e` |
+| App / deployment | **3.4.0 / deploy count 0**; preflight skipped push and deployment |
 
-Freeze 1→2 changes only `src/crm/CrmDemo.tsx` and `src/crm/CrmMerges.tsx`.
-Actual browser AX diagnostics found that unavailable-selection helper text became
-part of a select's accessible name. Agent 0 separated stable explicit field
-labels from helper descriptions through `aria-describedby`. The freeze receipt
-records typecheck and scoped lint exit 0. No domain, controller, replay, provider
-or replacement-epoch behavior changed in that repair. The earlier runtime and
-failed browser evidence remain preserved. The focused composed browser run 5
-passed on freeze 2. Freeze 3 removes exactly one extra trailing LF from
-`src/crm/model.ts`; every preceding byte is unchanged and the other 144 source
-files are exact. Full CI must execute freeze 3; the focused run is not relabeled.
-
-Runtime manifests hash exact bytes. A source manifest is not execution or
-acceptance evidence. Historical artifact drafting fingerprints at `42818dd…`
-remain their original source observations, described separately below.
+The [machine-readable local-gate facts](evidence/crm-adoption-local-gates-2026-10-15.json)
+retain the complete 68-stage list and individual browser report fingerprints. CI executes
+the committed source before this status/documentation follow-up. Publication and metadata
+checks retain their separate receipts. No production deployment was authorized or performed.
 
 ## Exact original criteria and dependencies
 
-The tables below transcribe the current canonical
-[catalog](backlog/webappx-1000-todo.json) directly. Every selected row is still
-`todo`; original definitions, priorities, phases, sources, gates and dependencies
-are preserved. No artifact-only output is relabeled a deployed service.
-
-### Native CRM scope
-
-All five rows have phase `portal-maturity`, area `crm-contacts`, gate `local`.
-WX-0371 still depends on WX-0370, and WX-0373 on WX-0372; those prerequisite rows
-are selected TODOs, not already accepted by this receipt.
-
-| Original ID / priority and exact title | Exact original acceptance | Exact original dependencies | Focused evidence / remaining observation |
-| --- | --- | --- | --- |
-| WX-0369 / P2 — Add a CRM duplicate candidate report | The report identifies normalized company-name and email candidates within the actor's scope without merging automatically. | `[]` | Scoped deterministic report/projection tests and reviewed finite page/member/choice DTOs. Actual final composed browser observation remains pending. |
-| WX-0370 / P2 — Preview same-owner contact merges | A merge proposal shows retained fields and linked records, and refuses incompatible ownership before confirmation. | `[]` | Complete source/retained capture and linked graph preview; same-owner authority, hidden-collision refusal and private handle tests. Final actual Preview/Cancel/focus observations pending. |
-| WX-0371 / P1 — Apply contact merges atomically | A confirmed local merge redirects valid references once and leaves no dangling opportunity or lead contact IDs. | `["WX-0370"]` | Independent full contact result, exact reciprocal redirects, chronological replay and complete codecs. Final UI confirmation/reload/recovery observations pending. |
-| WX-0372 / P2 — Preview company merge consequences | The proposal lists contacts, opportunities and duplicate-name conflicts before any account records change. | `[]` | Explicit company graph/context and contact/company-name conflict classifications, with no secondary merge. Final actual consequence rendering/focus pending. |
-| WX-0373 / P2 — Apply company merges with receipts | A valid same-owner merge moves all supported graph edges atomically and records source and retained IDs. | `["WX-0372"]` | Same-owner complete company result, immutable source/retained captures, later work/transfer replay and recovery codec proof. Final browser and full gates pending. |
-
-### Optional adoption artifact scope
-
-The sixteen operator-gated rows and one provider-gated row retain their literal
-gates. They are P1 original criteria whose requested outputs are designs,
-contracts, plans or checklists. Artifact-design review can assess those requested
-outputs without claiming that an operator adopted the service or a provider
-workflow ran. Agent 0's current artifact-design review is recorded in the
-[adoption index](ADOPTION-CONTRACTS.md); catalog acceptance remains pending.
-WX-0534 retains WX-0501/WX-0503 and WX-0850 retains WX-0835. Those previously
-completed dependencies retain their separate historical receipts; no new
-candidate identity or operational evidence is inferred from them.
-
-| Original ID and exact title | Exact original acceptance | Original gate / exact dependencies | Curated artifact |
-| --- | --- | --- | --- |
-| WX-0511 — Specify trusted membership provisioning boundaries | For optional operator-approved adoption: A design records which backend creates memberships, who can approve assignments and how client-controlled role fields are ignored. | operator / `[]` | [IDENTITY-ADOPTION-CONTRACTS.md](IDENTITY-ADOPTION-CONTRACTS.md) |
-| WX-0517 — Design optional owner recovery procedures | For optional operator-approved adoption: A runbook identifies owner recovery prerequisites, evidence and independent approval before any real identity is restored or elevated. | operator / `[]` | [OWNER-RECOVERY-RUNBOOK.md](OWNER-RECOVERY-RUNBOOK.md) |
-| WX-0527 — Define optional custom-token issuer contract | For optional operator-approved adoption: The contract requires trusted issuer identity, audience, lifetime and scope while keeping token generation outside browser code. | operator / `[]` | [IDENTITY-ADOPTION-CONTRACTS.md](IDENTITY-ADOPTION-CONTRACTS.md) |
-| WX-0534 — Define optional portal-specific permission bundles | For optional operator-approved adoption: A reviewed design groups CMS publication, CRM assignment and HR administration capabilities without deriving them solely from paid account level. | operator / `["WX-0501","WX-0503"]` | [IDENTITY-ADOPTION-CONTRACTS.md](IDENTITY-ADOPTION-CONTRACTS.md) |
-| WX-0612 — Define optional content security policy adoption | For optional operator-approved adoption: Produce a report-only policy proposal listing required Firebase, SDK, image and font origins; activation remains an operator-reviewed hosting change. | operator / `[]` | [CSP-REPORT-ONLY-ADOPTION-PROPOSAL.md](CSP-REPORT-ONLY-ADOPTION-PROPOSAL.md) |
-| WX-0617 — Define optional webhook retention controls | For optional operator-approved adoption: An adoption design bounds stored webhook payload duration, redacts unnecessary provider fields and requires operator selection before collection. | operator / `[]` | [WEBHOOK-RETENTION-ADOPTION-PROPOSAL.md](WEBHOOK-RETENTION-ADOPTION-PROPOSAL.md) |
-| WX-0627 — Design optional download authorization contracts | For optional operator-approved adoption: A future attachment design binds each download to tenant, resource and expiry rather than trusting a displayed URL or demo role. | operator / `[]` | [DOWNLOAD-AUTHORIZATION-ADOPTION-CONTRACT.md](DOWNLOAD-AUTHORIZATION-ADOPTION-CONTRACT.md) |
-| WX-0628 — Prepare a private preview publication checklist | For optional operator-approved adoption: An operator adoption checklist verifies fictional data, no secrets, indexing choice and access controls before exposing a preview beyond loopback. | operator / `[]` | [PRIVATE-PREVIEW-PUBLICATION-CHECKLIST.md](PRIVATE-PREVIEW-PUBLICATION-CHECKLIST.md) |
-| WX-0635 — Prepare optional incident evidence capture guidance | For optional operator-approved adoption: The runbook specifies revision, time, affected synthetic scope and redacted logs to preserve before any approved production incident changes. | operator / `[]` | [INCIDENT-EVIDENCE-CAPTURE.md](INCIDENT-EVIDENCE-CAPTURE.md) |
-| WX-0637 — Design optional session step-up requirements | For optional operator-approved adoption: An adoption matrix identifies which sensitive export or owner action should require recent authentication and leaves enforcement disabled until reviewed. | operator / `[]` | [IDENTITY-ADOPTION-CONTRACTS.md](IDENTITY-ADOPTION-CONTRACTS.md) |
-| WX-0760 — Design optional application error telemetry adapter | For optional operator-approved adoption: An opt-in adapter contract lists approved redacted fields, event volume limits and transport failure behavior before any external telemetry is configured. | operator / `[]` | [ERROR-TELEMETRY-ADAPTER-CONTRACT.md](ERROR-TELEMETRY-ADAPTER-CONTRACT.md) |
-| WX-0802 — Create an optional GitHub Actions adoption workflow design | For optional operator-approved adoption: A reviewed plan runs the existing required gates on pull requests with explicit permissions and no production deployment credentials. | operator / `[]` | [GITHUB-ACTIONS-ADOPTION-DESIGN.md](GITHUB-ACTIONS-ADOPTION-DESIGN.md) |
-| WX-0814 — Prepare optional deployment identity separation | For optional operator-approved adoption: An adoption design assigns distinct preview and production identities with minimal reviewed permissions and no secrets committed to workflow source. | operator / `[]` | [DEPLOYMENT-IDENTITY-SEPARATION.md](DEPLOYMENT-IDENTITY-SEPARATION.md) |
-| WX-0820 — Prepare Windows x64 and ARM64 CI acceptance matrix | For optional operator-approved adoption: An optional runner plan identifies which host, import, test and build checks must run on each architecture and records unavailable runner coverage explicitly. | operator / `[]` | [WINDOWS-X64-ARM64-RUNNER-MATRIX.md](WINDOWS-X64-ARM64-RUNNER-MATRIX.md) |
-| WX-0830 — Add Firebase rules dry-run evidence checklist | For optional operator-approved adoption: Document emulator policy evidence, target project review and deployment approval separately so local passing tests do not imply deployed rule acceptance. | operator / `[]` | [FIREBASE-RULES-DRY-RUN-CHECKLIST.md](FIREBASE-RULES-DRY-RUN-CHECKLIST.md) |
-| WX-0850 — Create a release readiness decision worksheet | For optional operator-approved adoption: The worksheet records required local gates, optional provider evidence, unresolved blockers and operator deployment approval as distinct decisions. | operator / `["WX-0835"]` | [RELEASE-READINESS-DECISION-WORKSHEET.md](RELEASE-READINESS-DECISION-WORKSHEET.md) |
-| WX-0953 — Add an optional OAuth state-binding design | An adoption test contract binds state, organization, initiating user, expiry and one-use callback without exposing a client secret. | provider / `[]` | [OAUTH-STATE-BINDING-ADOPTION-TEST-CONTRACT.md](OAUTH-STATE-BINDING-ADOPTION-TEST-CONTRACT.md) |
-
-## Native CRM behavior examined by source and focused tests
-
-The [implementation contract](CRM-MERGE-CONTRACT.md) fixes the four reviewed
-policies: fully same-owner graph authority; retain-target-v1 with whole-operation
-hidden converted-email collision refusal; a truthful first-merge legacy boundary
-plus typed future forward replay; and one accepted memory result / one native
-save attempt with separate browser-storage feedback.
-
-- The duplicate report is read-only and scoped. Company normalization trims,
-  collapses internal whitespace and lowercases; email normalization trims and
-  lowercases. Punctuation/accents/suffixes/plus tags/dots are preserved. Reciprocal
-  conversion pairs are explicitly expected links; a report match does not grant
-  merge permission. Accessible group/member/choice/history pages are finite, with
-  source-version refusal and no hidden full-array/global-count DTO.
-- Contact merge retains the target's complete current fields, retires only the
-  source and redirects source opportunities plus converted lead contact/company/
-  email links. Company merge retains the target company, retires the source and
-  moves explicit company-linked contacts/opportunities/converted leads. Closed
-  opportunities and done tasks participate; unconverted company-name text is
-  never an edge. Exact changed/context/source/retained sets, warning groups and
-  the 200-record review closure are derived from the complete pre-state.
-- Truly absent history retains the old legacy validator and seed behavior.
-  Successful first merge captures a complete `legacy-at-first-merge` baseline;
-  every later ordinary/ownership/merge command appends to one chronological
-  receipt sequence. Imported history replays the actual concrete kernel and must
-  equal the complete final graph/activity/sequence. Baseline facts are honestly
-  accepted legacy provenance, not reconstructed past commands or cryptographic
-  authenticity. Coherently authored fictional branches remain an import capability.
-- Present history requires bounded descriptor-first plain JSON and exact shapes.
-  Limits are 100 merges, 1,000 journal steps, 200 closure records, arrays of 10,000,
-  depth 100, 300,000 inspected nodes and a complete native save envelope of
-  2,000,000 characters. Current implementation rebuilds indexed graph views and
-  clones snapshots per replay step. It does not claim once-built index reuse,
-  worst-case browser latency or Windows performance.
-- Private opaque handles bind whole source content, actor, selection, policy,
-  public facts, epoch and generation. They are one-use, finite and expire. Actual
-  latest functional acceptance rechecks authority/content rather than replacing
-  render-captured state. Hidden route/tab commands refuse; stale same-sequence or
-  identical-data replacement cannot reuse an old handle. Confirmation feedback
-  says accepted in memory and points to the existing storage notice; no automatic
-  retry, second save, provider write or stricter browser transaction is introduced.
-- Current graph and historical merge scope are separate. Owner/manager/auditor
-  may receive captured historical facts. Representatives receive only recorded-
-  owner safe IDs/counts and fixed text, without raw mergeChange/names/emails/money
-  or hidden current joins. A new owner does not acquire prior other-owner captures.
-  Complete local backups remain explicitly complete; preview roles do not create
-  trusted authentication or secrecy from the browser owner.
-- Contact and company draft groups are independent. Edits/cancel/refusal retain
-  exact selections; only actual accepted memory rebases the submitting form.
-  Retired IDs remain visibly unavailable without silent alias/default replacement.
-  Ordinary callbacks use synchronous latest-state updates, preserving the journal.
-  The retained form owner survives capacity refusal while old private DTOs are
-  removed. Existing intentional replacement/Discard/epoch behavior remains intact.
-- Shared inspection adds nested typed captures and metadata, preserving active
-  primary totals. Private full contents affect differences without entering safe
-  detail DTOs. Legacy absence, changed-count symmetry and existing recovery codec/
-  selected-write/Undo/preference boundaries remain separate from inspection.
-
-These are source/focused observations. Actual final DOM, file upload/download,
-keyboard/focus/layout, save-fault and full-gate observations must be recorded by
-their owning executed runs before original acceptance.
-
-## Focused local verification — preserve run scopes
-
-All executed evidence below is local macOS. Earlier overlapping runs are not
-summed into a distinct assertion total. Reports/receipts are read evidence;
-explicit tool-only rows have no invented standalone TAP filename.
-
-| Run / scope | Actual recorded result | Receipt and qualification |
+| Checked ID / original title | Exact original acceptance | Original gate / dependencies |
 | --- | --- | --- |
-| Core initial combined run | 48/48 passed, zero failures/skips: 18 new core cases + 30 preserved old model/ownership/import cases | `webappx-crm-core-final-focused.log`, terminal 0. Historical focused source before the added lead-only test and subsequent UI-label changes. |
-| Additional post-boundary lead proof | **One targeted test passed**, zero failures/skips | `webappx-crm-post-boundary-lead-focused.log`, terminal 0. Literal full-state create→qualify→owner assignment→new-owner conversion; exact receipts/commands/ownership metadata/prior captures and actual backup/native save-load replay. It is separate from the prior 48, not a fresh 49-test run. |
-| Initial report/projection/controller | 17/17 passed, terminal 0 | `webappx-crm-controller-focused-verification.json`, tool chunk `d021e5`; source receipt with actual commands/hashes, not a separately saved TAP log. |
-| Amended projection/controller | 18/18 passed, terminal 0 | `webappx-crm-controller-amendment-final-verification.json`, tool chunk `b4dc9c`. Runs only the two amended suites; overlaps initial tests. Four prior report tests remain prior evidence. **Do not add 17+18.** |
-| Root private host lifecycle | Owner-reported 3/3 passed, terminal 0 | Tool receipt `25e16d`, recorded by the independent controller/UI repair review; no separate saved TAP log read for this draft. Old disposed ports, live route/tab and synchronous content/epoch invalidation. |
-| Inspection extension + regressions | Owner-reported 68/68 passed: 12 new + 56 old | Inspection-owner handoff; independent review reads all twelve new tests/source but did not execute them. No standalone saved TAP log supplied to this draft. |
-| CI source planner | Owner-reported 14/14 passed | Source-plan classification evidence; no full CI execution inferred. A durable final gate log remains pending. |
-| Browser harness source contract | Freeze-4 receipt records nine focused tests, zero failures, and lint pass | `webappx-crm-browser-harness-freeze-4.json`. This historical freeze-4 source inventory preceded the final 24-status, seven-context focused browser run 5 recorded below; no older execution is relabeled. |
-| Core source checks | Full isolated TypeScript and scoped ESLint exited 0 | Author-observed tool results after the initial 48-test core scope; no separate lint/typecheck log invented. |
-| Controller amendments source checks | Full TypeScript / scoped ESLint exited 0 | Amended receipt tool chunks `984052` / `8b1da5`; limited to that receipt's source. |
-| Runtime label repair | Full TypeScript / scoped lint exited 0 | Agent 0 freeze-2 receipt; focused browser run 5 passed at freeze 2, with integrated freeze-3 execution pending. |
+| [x] **WX-0369** — Add a CRM duplicate candidate report | The report identifies normalized company-name and email candidates within the actor's scope without merging automatically. | local / `[]` |
+| [x] **WX-0370** — Preview same-owner contact merges | A merge proposal shows retained fields and linked records, and refuses incompatible ownership before confirmation. | local / `[]` |
+| [x] **WX-0371** — Apply contact merges atomically | A confirmed local merge redirects valid references once and leaves no dangling opportunity or lead contact IDs. | local / `["WX-0370"]` |
+| [x] **WX-0372** — Preview company merge consequences | The proposal lists contacts, opportunities and duplicate-name conflicts before any account records change. | local / `[]` |
+| [x] **WX-0373** — Apply company merges with receipts | A valid same-owner merge moves all supported graph edges atomically and records source and retained IDs. | local / `["WX-0372"]` |
+| [x] **WX-0511** — Specify trusted membership provisioning boundaries | For optional operator-approved adoption: A design records which backend creates memberships, who can approve assignments and how client-controlled role fields are ignored. | operator / `[]` |
+| [x] **WX-0517** — Design optional owner recovery procedures | For optional operator-approved adoption: A runbook identifies owner recovery prerequisites, evidence and independent approval before any real identity is restored or elevated. | operator / `[]` |
+| [x] **WX-0527** — Define optional custom-token issuer contract | For optional operator-approved adoption: The contract requires trusted issuer identity, audience, lifetime and scope while keeping token generation outside browser code. | operator / `[]` |
+| [x] **WX-0534** — Define optional portal-specific permission bundles | For optional operator-approved adoption: A reviewed design groups CMS publication, CRM assignment and HR administration capabilities without deriving them solely from paid account level. | operator / `["WX-0501", "WX-0503"]` |
+| [x] **WX-0612** — Define optional content security policy adoption | For optional operator-approved adoption: Produce a report-only policy proposal listing required Firebase, SDK, image and font origins; activation remains an operator-reviewed hosting change. | operator / `[]` |
+| [x] **WX-0617** — Define optional webhook retention controls | For optional operator-approved adoption: An adoption design bounds stored webhook payload duration, redacts unnecessary provider fields and requires operator selection before collection. | operator / `[]` |
+| [x] **WX-0627** — Design optional download authorization contracts | For optional operator-approved adoption: A future attachment design binds each download to tenant, resource and expiry rather than trusting a displayed URL or demo role. | operator / `[]` |
+| [x] **WX-0628** — Prepare a private preview publication checklist | For optional operator-approved adoption: An operator adoption checklist verifies fictional data, no secrets, indexing choice and access controls before exposing a preview beyond loopback. | operator / `[]` |
+| [x] **WX-0635** — Prepare optional incident evidence capture guidance | For optional operator-approved adoption: The runbook specifies revision, time, affected synthetic scope and redacted logs to preserve before any approved production incident changes. | operator / `[]` |
+| [x] **WX-0637** — Design optional session step-up requirements | For optional operator-approved adoption: An adoption matrix identifies which sensitive export or owner action should require recent authentication and leaves enforcement disabled until reviewed. | operator / `[]` |
+| [x] **WX-0760** — Design optional application error telemetry adapter | For optional operator-approved adoption: An opt-in adapter contract lists approved redacted fields, event volume limits and transport failure behavior before any external telemetry is configured. | operator / `[]` |
+| [x] **WX-0802** — Create an optional GitHub Actions adoption workflow design | For optional operator-approved adoption: A reviewed plan runs the existing required gates on pull requests with explicit permissions and no production deployment credentials. | operator / `[]` |
+| [x] **WX-0814** — Prepare optional deployment identity separation | For optional operator-approved adoption: An adoption design assigns distinct preview and production identities with minimal reviewed permissions and no secrets committed to workflow source. | operator / `[]` |
+| [x] **WX-0820** — Prepare Windows x64 and ARM64 CI acceptance matrix | For optional operator-approved adoption: An optional runner plan identifies which host, import, test and build checks must run on each architecture and records unavailable runner coverage explicitly. | operator / `[]` |
+| [x] **WX-0830** — Add Firebase rules dry-run evidence checklist | For optional operator-approved adoption: Document emulator policy evidence, target project review and deployment approval separately so local passing tests do not imply deployed rule acceptance. | operator / `[]` |
+| [x] **WX-0850** — Create a release readiness decision worksheet | For optional operator-approved adoption: The worksheet records required local gates, optional provider evidence, unresolved blockers and operator deployment approval as distinct decisions. | operator / `["WX-0835"]` |
+| [x] **WX-0953** — Add an optional OAuth state-binding design | An adoption test contract binds state, organization, initiating user, expiry and one-use callback without exposing a client secret. | provider / `[]` |
 
-Core independent oracles include complete legacy fixtures and contact result,
-literal company rows/warnings, unchanged source bytes, genuine exact 200/201
-closures, coherent 100/101 merge and 1,000/1,001 journal boundaries, exact
-2,000,000-character acceptance versus 2,000,003 refusal, both merge orders and
-later ordinary/ownership changes. Real single/combined codecs, selected restore
-and Undo preserve complete branches and untouched HR/CMS/preference strings.
-The precise 300,000/300,001 node boundary is enforced in source but was not
-isolated as an exact runtime threshold test. No exhaustive latency claim follows.
+WX-0370 precedes WX-0371; WX-0372 precedes WX-0373. Previously accepted
+WX-0501/WX-0503 and WX-0835 retain their original completion records. Every original
+definition, priority, phase, source, gate and dependency is preserved.
 
-## Independent reviews and corrected source findings
+## Native CRM contract and exercised behavior
 
-### Core and ordinary legacy compatibility
+- Duplicate reporting uses scoped normalized company names and emails. Reporting does not mutate records.
+- Contact preview captures complete source/retained fields, linked opportunities and converted leads; incompatible ownership and hidden collisions refuse without disclosure.
+- Company preview lists contacts, opportunities and duplicate-name consequences before confirmation. Apply redirects all supported edges atomically, retires only the source, and records source/retained IDs.
+- The first accepted merge captures the complete accepted legacy baseline. Ordered subsequent commands and immutable captures replay to the exact final tables, order, receipts and sequence.
+- Private one-use previews bind current state, actor, selection, policy, replacement epoch and controller lifetime. Confirmation rechecks the latest root inside its synchronous update boundary.
+- Scoped report/preview/history screens expose finite approved DTOs; complete saves, exports, restore points and Undo retain private captures across owners.
+- Raw selected IDs and unsaved text remain explicit when records retire. Dirty owners, Keep editing, preview Cancel and hidden retained surfaces preserve their existing focus and draft boundaries.
+- Present optional history rejects unsupported shapes before structural reads. Legacy saves without history retain their original acceptance behavior.
 
-`webappx-crm-core-independent-review.md`, SHA-256
-`88c13cb64d645133159acbd48ea858207fc4b304acd79a06acb2ca1614187a58`,
-cleared the ten frozen core files at source/coverage scope. It preserved a
-confirmed separately owned projection issue: new history capacity limits were
-being applied to history-absent ordinary directory reads. The amended projector
-at SHA-256 `44ce54fe7eb4ccd8cada15822fcc377477745ec67e53f7f3c61c937eaa705401`
-now uses an iterative descriptor-safe unbounded-by-new-journal-caps legacy branch
-and structured detached copies. Its valid 10,001-company / 9,999-activity legacy
-fixture fits the old save limit and remains visible/unchanged; new merge
-capabilities truthfully refuse unsupported capacity. Present history retains
-strict scanning/replay. The amendment receipt and final controller/UI review
-record the repair; the core review's original finding is not rewritten away.
+Read the [full merge contract](CRM-MERGE-CONTRACT.md) and
+[walkthrough](CRM-DUPLICATES-AND-MERGES.md) for exact policy, privacy and capacity limits.
+Source/controller/inspection reviews and independent literal expected browser fixtures cover
+complete graphs, exports and raw saved envelopes. Tests do not construct their expected
+accepted result by invoking the implementation reducer.
 
-The same core report noted missing independently exercised post-boundary lead
-create/qualify/assign/convert paths in its historical eighteen new cases. The
-separate one-test receipt above closes precisely that coverage gap with a
-literal whole-state oracle and actual codecs; it does not become a reviewer
-rerun or retroactively change the old 48-test log.
+## Actual browser and rehearsal evidence
 
-### Controller, host and retained UI owners
+**226 named check groups:** 212 across fourteen native suites, eight in the owned
+HR-disabled adoption rehearsal, and six in the owned LAN work-status browser.
+All 226 group strings are unique. A group may contain several assertions; status/workflow
+coverage overlaps and is not summed into a larger product-coverage total.
 
-`webappx-crm-controller-ui-independent-review.md`, SHA-256
-`565ec824b534387c6044283d0c8f1850a3941288a5745e40e4e65c2b816f3e1f`,
-preserves its original 14,393-byte issue-analysis prefix and appends a final
-source-clear repair review at runtime freeze 1:
+| Fresh native suite | Check groups | Report directory basename | SHA-256 |
+| --- | ---: | --- | --- |
+| smoke | 7 | `webappx-browser-smoke-WwJoX6` | `e992b0fb2166b7809c07a7707216586d14925ca0d10787470853871a904e717f` |
+| keyboard | 10 | `webappx-browser-keyboard-2RC3qk` | `dc2aaea6d0b429e23cc2e172cdc08c195e81e973feb3360ce8cb141d8cf779f9` |
+| foundation | 10 | `webappx-browser-foundation-Ipqfd4` | `23bcd796fb07b4d9a5473bfcd3c73783ce42b9bd27a451083fa1726f259c6d8c` |
+| state-contract | 13 | `webappx-browser-state-contract-GJjdJZ` | `95ec1c15260da2472171be7396df77ce73a0bc81d8ec537f050d8b257f34f160` |
+| lifecycles | 12 | `webappx-browser-lifecycles-FDBkSS` | `54b908a92261fe0a08da9579e0cc7181556265f1a9a73dd14ebba59fdaf7e575` |
+| portal-lifecycle | 35 | `webappx-browser-portal-lifecycle-h5Tzs8` | `7dd52ddd3445c6a63bfdbc1a4b89cc8e960e64cf999f8a5d4be40d0258473408` |
+| recruiting | 15 | `webappx-browser-recruiting-aPQxLr` | `a18b26e2178753d79c415ad759f7be45cd833846a329c3f2c5fd040170a33014` |
+| payroll | 21 | `webappx-browser-payroll-jDdLNC` | `d1d581e5be56d2f028b9901da7484b238e7c45771fbed2f12cbd99ad15ffa91e` |
+| evaluators | 25 | `webappx-browser-evaluators-g6Ip9v` | `17e9e73da7d9bf0670418685abda640c545d4807f72ed14446b83db17ff2548b` |
+| maturity | 13 | `webappx-browser-maturity-NM1bP5` | `e15fba8d8c1c2a9d5ad6d4ba547ef1e5565166eca3d06d54f8ec48adbba5f419` |
+| safety | 31 | `webappx-browser-safety-vSj76t` | `ee456303a4ed714b908b69dad60ca94af899902585ea0ab2e7387d3c25598fa8` |
+| quality | 7 | `webappx-browser-quality-ad52QF` | `0f994a5560324f61a50679737459b507a83d1269e1e31a9efb89a2b60c7377b8` |
+| sdk-quality | 5 | `webappx-browser-sdk-quality-Xu4ca4` | `d4fa30aa7bea9d0a506b669933db2f8385eeec1222de5153aff5823c50ad0cd2` |
+| recovery-drill | 8 | `webappx-browser-recovery-drill-PbRstw` | `8a2a2e47d7a029942b33f0e0dc070bbed757fab28038ca1e261bf5a4a31bfca3` |
 
-1. A stopped/restarted host could previously let an old forwarding capability
-   address a fresh controller. Ports now bind one concrete lifetime; old methods
-   remain disposed and cannot preview, consume/cancel a fresh nonce or confirm.
-2. A capacity-refused view could previously unmount the dirty merge form owner.
-   The same keyed form owner now remains mounted with raw selected IDs and dirty
-   registration, while old choices/full previews/private facts are withheld.
+The composed lifecycle result is **35 = 20 preserved lifecycle + 15 CRM groups**.
+Fresh CRM coverage observes all **24** declared status meanings once, including real
+preview/cancel/confirmation, complete exports/reload, retained drafts, role changes,
+selective recovery and storage refusal. Nine strict focus observations and two scoped
+accessible-name ambiguity audits pass at 390px width.
 
-Its three host tests and added real-browser capacity scenario were read as
-source; only the host tests have the owner-reported executed receipt above.
-The independent narrow appendix preserves the exact 22,795-byte freeze-1
-review prefix and clears the two freeze-2 accessible-label repairs. All 145
-current source files matched freeze 2, with exactly those two changed files and
-143 unchanged. No freeze-1 source copies were available for a literal textual
-diff; the appendix qualifies its prior readings/current inspection and manifest
-comparison. Actual focused browser run 5 is separately recorded below.
+The independent review rehashed six manifests: composed 145 runtime/18 harness/284 artifacts;
+legacy subset 145/10/178; CRM subset 145/16/104; recruiting 145/12/152;
+payroll 145/14/184; SDK quality seven selected source files/133 artifacts.
+The SDK manifest is a selected-source dictionary. Older runner receipts without full
+runtime dictionaries are qualified separately; the independent review verifies the full
+145-file committed/current runtime and preserved harness bindings.
 
-### Recovery inspection
+All fifty retained trace archives were inspected: **20,655 owned loopback resource events**
+and **347 download events**, with no unowned origins, native API paths, action errors or
+console errors. The unconfigured Firebase warning is expected. Ten fresh original PNGs
+were visually readable. All 28 recorded native runner/preview PIDs were absent and their
+fourteen ports had no listeners. The LAN fixture was removed and no matching fixture
+server remained; its unrecorded PID/port metadata is not invented.
 
-`webappx-crm-inspection-independent-review.md`, SHA-256
-`aa65c7fc1a0e57d38c7a91f1b23da6f974133626a641c1cc89f250c7d509c276`,
-clears the frozen inspection extension. Four-part identities are allowed only
-for the new CRM receipt/side/kind/ID capture collection; older three-part limits
-remain intact. Captures/context are nested, history/baseline/steps metadata,
-complete hidden fingerprints include ordered provenance, returned details are
-allowlisted and both comparison directions preserve omission/removal semantics.
-This was source/test review, not an independent rerun or browser observation.
+The HR-disabled rehearsal captures 150 committed public files at this source and emits
+55 modules. Its eight real browser groups verify CMS/CRM edit/save/reload/export/import,
+the distinct two-module backup, rejected old HR/recovery imports and unread preserved
+legacy browser slots. It does not adopt generic recovery or provider services.
 
-## Optional adoption artifacts — reviewed designs, runtime unadopted
+## Reviewed optional artifacts
 
-Fourteen guides cover the seventeen original artifact criteria. The exact
-curated mapping and fingerprints are in the
-[source-review record](evidence/adoption-contract-source-review.json). Its
-historical drafting basis remains `42818dd7baf3d335f27c401c37d048bd842617fa`,
-with the original implementation-era catalog hash; neither is relabeled the
-current 134/866 catalog or a new runtime result.
+The [fourteen-guide index](ADOPTION-CONTRACTS.md) covers seventeen original artifact criteria.
+Identity provisioning, custom-token issuing, permission bundles, session step-up, owner
+recovery, CSP, retention, downloads, OAuth, telemetry, Windows verification and delivery
+are complete at their requested design/checklist scope. Runtime adoption remains disabled
+or unselected. The 79-case identity matrix and sanitized protocol fixtures are paper
+examples. They do not execute authorization, enrollment, callback exchange or telemetry.
+Historical curation metadata and fingerprints remain preserved in the
+[source-review record](evidence/adoption-contract-source-review.json). Its pending/draft
+fields describe their recorded checkpoints; this receipt and the canonical catalog record
+the later local gate and design-criterion acceptance.
 
-| Curated guide | Original criteria | Recorded public artifact SHA-256 |
-| --- | --- | --- |
-| [IDENTITY-ADOPTION-CONTRACTS.md](IDENTITY-ADOPTION-CONTRACTS.md) | WX-0511, WX-0527, WX-0534, WX-0637 | `4649061dc6a7a28e26c93ed4282a2b0dd0c118af69b0dfc67958b286f6533d71` |
-| [CSP-REPORT-ONLY-ADOPTION-PROPOSAL.md](CSP-REPORT-ONLY-ADOPTION-PROPOSAL.md) | WX-0612 | `1270bc35042b93f45c46053aef635e814c81d723482d37b8d72e9671c0529483` |
-| [WEBHOOK-RETENTION-ADOPTION-PROPOSAL.md](WEBHOOK-RETENTION-ADOPTION-PROPOSAL.md) | WX-0617 | `00bc93f99e8bb9f7cbdb42ac0c06e9f27642ce52c4694ba09aee3b50dcec8e93` |
-| [OWNER-RECOVERY-RUNBOOK.md](OWNER-RECOVERY-RUNBOOK.md) | WX-0517 | `f4566733faa9181d42c9619b5d4a050b1608a0dd0e01c37b78ce4a85c263b07b` |
-| [INCIDENT-EVIDENCE-CAPTURE.md](INCIDENT-EVIDENCE-CAPTURE.md) | WX-0635 | `81ad04c6984c4960d97446f57a00842832045adbca4f8bb9b52d721c15aa2eb6` |
-| [DOWNLOAD-AUTHORIZATION-ADOPTION-CONTRACT.md](DOWNLOAD-AUTHORIZATION-ADOPTION-CONTRACT.md) | WX-0627 | `a8b3cd5a774225696348904e189a907c9ced7e9d61f25d080f9a8b529609f4cd` |
-| [OAUTH-STATE-BINDING-ADOPTION-TEST-CONTRACT.md](OAUTH-STATE-BINDING-ADOPTION-TEST-CONTRACT.md) | WX-0953 | `795e9cf2a1e50c5aa63f2f809b802cda5f4602c0561c3bf1195edace159b29ae` |
-| [ERROR-TELEMETRY-ADAPTER-CONTRACT.md](ERROR-TELEMETRY-ADAPTER-CONTRACT.md) | WX-0760 | `67eec8f0593bbd634ca257f98a7126c2123d8f834545328ac9921614e005cf85` |
-| [WINDOWS-X64-ARM64-RUNNER-MATRIX.md](WINDOWS-X64-ARM64-RUNNER-MATRIX.md) | WX-0820 | `40ed731fb214d95bd453c38e6fc803b346b4d68df53ea9f37521e3c8b21745c2` |
-| [PRIVATE-PREVIEW-PUBLICATION-CHECKLIST.md](PRIVATE-PREVIEW-PUBLICATION-CHECKLIST.md) | WX-0628 | `6ac34c9fa20e972a79ea58258683cd40e81f5d9c08d5aa29364f4073e595f8ae` |
-| [GITHUB-ACTIONS-ADOPTION-DESIGN.md](GITHUB-ACTIONS-ADOPTION-DESIGN.md) | WX-0802 | `59bed8d5fa78d336f98079d3045d950603eb5d7d49fcef033c23db4709476199` |
-| [DEPLOYMENT-IDENTITY-SEPARATION.md](DEPLOYMENT-IDENTITY-SEPARATION.md) | WX-0814 | `28c56d6ca87fe05a1a486d18559625972a0db6c0dba56dd2a9883efb4be8b34a` |
-| [FIREBASE-RULES-DRY-RUN-CHECKLIST.md](FIREBASE-RULES-DRY-RUN-CHECKLIST.md) | WX-0830 | `46157a7a9c566ee3936b745a21e0ff7c5e8f999ff71feda1647bb38bef92246b` |
-| [RELEASE-READINESS-DECISION-WORKSHEET.md](RELEASE-READINESS-DECISION-WORKSHEET.md) | WX-0850 | `69bd3359c5ff59b885cccff9d1883c108a9a7980f43fd1174067fb659b06a0e7` |
+## Preserved failed attempts and narrow repairs
 
-The [identity matrix](evidence/identity-adoption-matrix.json) remains exactly
-68,716 bytes, SHA-256
-`0fc05bb008b5b6980fdb333f6cb3f772389d60958a2b9850ec82db4020218980`,
-with **79 literal paper cases** and real operator selections null. Its original
-draft/TODO metadata is preserved. No authorization evaluator or identity service
-executed those examples. Curation retains the policies/fixture tables/fenced
-blocks and changes public pointers, provenance and review-state wording only,
-including the separately disclosed one identity review-status cell.
+| CI attempt / source | Actual outcome | Preserved log SHA-256 | Repair |
+| --- | --- | --- | --- |
+| 1 / 6537c010 | Exit 1 at fixture source inventory | `576a7b5664ab070796450dfbeaceafae01637e6daf8b9083f9356898e718327b` | Inventory follows extracted CRM kernel/types; 30 → 32 finite source bindings |
+| 2 / ba858064 | Exit 1 at SYSTEMX setup-copy integration | `3c31e01a5ce69d751db5461d51473ebe20e9d6533264c31db7e61f420d4f38ec` | Add the two actual public inventory sources to the bounded setup-copy list |
+| 3 / 3b8bb8eb | Exit 1 at portal test loading | `b13ab3be978ee801f8aba5c10c63915ae3da1d9579f70fc52a02c8c4168513fb` | Use the maintained module loader, exact enum source, and bounded adoption-copy closure |
+| 4 / 8308237b | Exit 1 at stage 62 LAN status loading assertion; prior native suites passed | `b56d16003a0322320ba9b957cb681c7ba448a37ebc71f6a1f5bfc443a4ea3354` | Align locator assertions with the existing 15s page/action deadline |
+| 5 / 4e025a3b | **Exit 0, all 68 stages** | `066d306b255b1dc6ce98eb79ada2b4924272c574575e6f159289ec94f2f56061` | Final examined source |
 
-Independent artifact reviews and their narrow amendments record:
+The LAN repair changes one import/configuration header. All six original assertion groups,
+real API requests, stale-response checks, malformed-data checks, 90-second global cap and
+cleanup body remain exact. Its official focused six-group run and scoped lint exited 0.
+The independent static review is `webappx-lan-status-independent-review.json`,
+SHA-256 `881ba61c8fc31e3203e3a157b37a331aa0c80c6d6af90628b506043056e9bea9`.
+Separate diagnostic API durations of 877–3061ms do not measure the failed CI4 request.
 
-| Artifact scope | Review outcome and actual boundary |
-| --- | --- |
-| Identity: memberships, custom-token issuer, capability bundles, step-up | Four designs and 79 paper examples clear for artifact review. Actual principals/approvers/project/issuer/signer/verifier remain unselected; no membership or token service installed. |
-| CSP and webhook retention | Clear at proposal scope. No header/report collector, payload collection, subscription, retention worker or TTL is activated. |
-| Download and OAuth v2 | Three original findings resolved: atomic current-authority/stream fence, sensitive incoming callback versus clean controlled outputs, and a separate sanitized literal verification/grant oracle. Six amended JSON blocks / 43 named paper cases; combined four security proposals contain nine JSON blocks / 69 named cases. These are specified tests, not executed protocol assertions. |
-| Owner recovery and incident evidence | Clear runbook/guidance scope: prerequisites, evidence and independent approval are explicit. No real identity restored/elevated and no production incident collection or mutation performed. |
-| Telemetry v2 | Explicit terminal-result/cancellation/late-settlement quarantine contract closes the asynchronous lifecycle gap. Literal future cases do not install or execute telemetry; endpoint/transport remains unconfigured. |
-| Windows x64/ARM64 v2 | Explicit native pwsh prerequisite and launcher/teardown/LAN/path coverage gaps. All 68 source-stage rows retain unavailable U/U architecture coverage; no native Windows runner, PowerShell launcher or browser execution is claimed. |
-| Preview, deployment identity, rules and release worksheet | Four requested checklists/designs clear at artifact scope. No preview exposure, actual IAM subject/grant, emulator-policy receipt, selected deployment project, deployed rules, candidate approval packet or operator deployment approval is supplied. |
-| GitHub Actions v2 | PR-retarget finding resolved by explicit opened/synchronize/reopened/edited events and fresh base/head/merge-tree binding, including title-only edited events. Four added literal scenarios are reviewed specifications. No workflow installed, action pins chosen, runner/account policies configured or remote Actions job executed. |
+Historical composed browser run 5 passed 35 groups at runtime freeze 2. Its independent
+review `d14bd57b503a5b663a39267ddb5111a4aecd1536eef53e02015852ff62003fc6` remains qualified to that source.
+Four earlier browser failures and two label diagnostics remain retained. Freeze 2 repairs
+two accessible labels; freeze 3 removes one extra terminal LF from the model facade.
+The fresh final run above executes freeze 3. No failed or historical result is relabeled.
 
-The curation proofs preserve original v1 drafts and reviewed v2 artifacts,
-original review records and source inventories. The delivery extension preserves
-the preceding nine guides and matrix byte-for-byte, adds five reviewed guides,
-and records 58 valid relative links, 32 source rows across nineteen unique
-historically observed files and no runtime/provider operation. The matrix and
-fixture parsing/hash checks are documentary consistency evidence, not service
-execution or full CI.
+## Preservation and acceptance limits
 
-The historical package digest is kept distinct from the integration package.
-The same 134 script names/ordering have two reviewed append-only alias changes:
-`portals:test` adds the seven merge/inspection test files; `browser:smoke:test`
-adds the harness-contract test. The maintained 68-stage source table and focused
-planner result do not execute or accept changed stage contents. Final source
-re-review after CRM freeze, full gates and final metadata remain pending. The
-existing operator/provider gate labels are unchanged; actual downstream
-adoption selections and runtime/provider acceptance remain separate decisions.
+Selected SYSTEMX remains 1.9.0-alpha.6 with installation/release fingerprint
+`009e6b6c2f1359fa4c88e3961164d28cc89f65cea2a6682200fb2953caf326e3`.
+Immutable releases, both research packages/checksums and blank reusable project seeds
+are preserved. All 1,000 original criteria and the prior 134 completion records remain
+exact. Package names, dependency pins, 134 script names and the 68-stage sequence remain
+unchanged. The production build reports a nonblocking chunk-size warning; no performance
+criterion is accepted from that build.
 
-## Browser diagnostics and completed focused run
-
-The first composed run used freeze 1 and the existing portal-lifecycle suite
-followed by new CRM groups. Its original regression subset and three new groups
-completed before a locator timeout. The overall report remains **failed**.
-Successful subsets cannot establish the five new CRM criteria.
-
-| Preserved observation | Actual result and resource boundary |
-| --- | --- |
-| `webappx-browser-portal-lifecycle-fC1qbb/report.json` | Overall failed: exact `getByLabel('Source contact')` did not identify the wrapped select as expected. Legacy suite completed and three new groups recorded before failure. Report SHA-256 `233b9d21f66e6c88490415e40d9297b2f02c0c3a6b1c0d723c9fab435b5e6c63`. All owned browser/server resources closed; preview PID 74982 / runner 74924 / port 60354 exited 0, both PIDs and port independently confirmed absent/free. |
-| `webappx-browser-crm-label-diagnostic-UQR3XX` | Focused actual label/AX diagnosis, not the full CRM journey. Evidence SHA-256 `e04873ea51026535a95f1e47f89b50bb29e7a1d15407facb5545519fbc3230f7`; owned PID 91432 / runner 91365 / port 61103 cleaned and independently confirmed absent/free. |
-| `webappx-browser-crm-label-unavailable-diagnostic-B0EO6Z` | Actual unavailable-selection AX diagnosis confirmed appended helper text in the field name. Evidence SHA-256 `c63c6342dec16e2a02f50a244231954cc7c9165449462dab528405c8563e913e`; owned PID 94240 / runner 94172 / port 61167 cleaned and independently confirmed absent/free. |
-| Composed run 2 — `7qaDVz` | Overall failed on a guessed refusal substring; the UI uses the fixed privacy-safe text `The selected CRM records cannot be merged. No records changed.` The harness now asserts that exact text. Owned preview PID 9310 / runner 9248 absent; no listener on port 61479. A later plain bind encountered TIME_WAIT, which is not a listening process. |
-| Composed run 3 — `S3MZjq` | Overall failed on a test selector counting a nested changed-pair article as a second receipt. The correction scopes the receipt article by its exact level-3 receipt heading and retains complete field assertions. Preview PID 20268 / runner 20210 absent; no listener on port 61810. |
-| Composed run 4 — `GHa1gJ` | Overall failed when the harness tried to click an intentionally disabled opportunity action after its company retired. The corrected test asserts disabled UI prevention, native Enter, unchanged raw drafts and exact complete saves. Preview PID 43380 / runner 43314 absent; no listener on port 62692. |
-| Composed run 5 — `97N2AD` | **PASS, terminal exit 0: 35 actual groups, existing lifecycle 20 plus CRM 15.** Seven new CRM contexts cover all 24 authored status meanings. Runtime freeze 2; combined manifest SHA-256 `159b1015d2ce49290023aa3b1c82de526f4df70b86691cd80e4d8b31ad4f35cd` binds 145 runtime files, 18 harness files and 284 artifacts. New CRM manifest SHA-256 `ca7c159ac2505544d12693d867a756abe05ae3278124f9d594d0f3226186a31b` binds 145 runtime files, 16 harness files and 104 artifacts. Independent artifact/cleanup review remains pending in this preliminary receipt. |
-
-The harness now locates real controls by exact combobox role/name and uses actual
-alert roles. Product labels/descriptions were separately repaired in freeze 2;
-expected complete domain records were not changed to mask the locator issue.
-Harness freeze 4 records nine focused source tests and authored inventory, not a
-successful browser run. Failed reports, logs and the two diagnostic sessions are
-preserved in their own evidence artifacts. The completed run compares exact complete records/raw slots and retains
-scoped DOM/AX, focus/layout and status witnesses. Independent artifact and cleanup
-review is a separate pending gate at this preliminary receipt.
-
-## Evidence fingerprints at this provisional checkpoint
-
-Local artifact basenames below identify the actual retained receipts; their
-bytes are not shipped as permanent downloads. Runtime-generated local paths
-remain outside this public source. Hashes bind
-these versions only. In particular, an eventual appended review or final browser
-report needs its own updated row, without overwriting the earlier observation.
-
-| Retained local artifact basename | SHA-256 |
-| --- | --- |
-| `webappx-crm-core-final-focused.log` | `82e177c1d30a3f87e25d20993972f838727a9d707dbbfa67f579152ed79005f8` |
-| `webappx-crm-post-boundary-lead-focused.log` | `2783407a414ce78e04c21e3da51fa6a9aa78d4a09b288c203ffa3efd7dfef2b2` |
-| `webappx-crm-core-independent-review.md` | `88c13cb64d645133159acbd48ea858207fc4b304acd79a06acb2ca1614187a58` |
-| `webappx-crm-controller-focused-verification.json` | `1a2354af6bd5a7c65be7ad8c4da143cb6aca0ab15e5704fec5f9c1b11764e2a9` |
-| `webappx-crm-controller-amendment-final-verification.json` | `87092abdccf32820f4a32d404a54461128b3b69cd823c3f1ca5c9a562814c446` |
-| `webappx-crm-controller-ui-independent-review.md` | `565ec824b534387c6044283d0c8f1850a3941288a5745e40e4e65c2b816f3e1f` |
-| `webappx-crm-inspection-independent-review.md` | `aa65c7fc1a0e57d38c7a91f1b23da6f974133626a641c1cc89f250c7d509c276` |
-| `webappx-crm-runtime-freeze-1.json` | `3f3a3bc6c78b1f1acad931a5ff139bb378d4bc9fc59122dea7a910384b29c3c5` |
-| `webappx-crm-runtime-freeze-2.json` | `37e66dd4610fa9e07a52eb63e98c2b147acb2c011e57fb60b72de49cdeedc82c` |
-| `webappx-crm-browser-harness-freeze-3.json` | `89df2e451831b407debac49c1e5f9f9e497ab7dea6887f9ee54b0f8cec9814e1` |
-| `webappx-crm-browser-harness-freeze-4.json` | `4904cf9506961b3caf803951a787567f8b011d556e3ecf45b1481589abf2255e` |
-| `webappx-crm-browser-run-history.json` — earlier draft snapshot | `0ec940fa81ef9c0679d76211b96394228f5b2962b9e74f307151605e507189a7` |
-| `webappx-crm-label-diagnostics-verified.json` | `1e82843fa6fb30df4d22b83e8c542a06e4830a55027713c5ce885ecbb7950e58` |
-| `webappx-crm-browser-composed-run1.log` | `82e76a0cc848588df5cdeff3e2f17b321864d45332c1a119d21d885d0674500b` |
-| `webappx-p1-identity-independent-review.md` | `320dd14a3a5148e451d2ce570bb635eedd2602f3e48b877802ff802e1837e015` |
-| `webappx-p1-security-independent-review.md` | `034013ac0aacda089bf765321cb8a99f9c0902c1a347f6b0f01ea753292bd01c` |
-| `webappx-p1-security-v2-independent-review.md` | `16b7855e96d9bfbd0e1549dd643f2fea17bd747ccd2bd541a42dd00884117f79` |
-| `webappx-p1-operations-independent-review.md` | `b1d1af51a9930dd550aee5be05c0b9e26938942bcde0130ac6539b059e3b2b13` |
-| `webappx-p1-delivery-independent-review.md` | `d8939e9cdc481a9e0ed17773e95fff7d5763a9739e99c1a6bcd8f0264b77c5d9` |
-| `webappx-p1-delivery-v2-independent-review.md` | `6bb050133d65735d6f0b9fd71e13bc30335ca3a5091270db5e946708b9aa8861` |
-| `webappx-adoption-curation-final-proof.json` | `022bf8ad92dc255b48b500e3f6331eb42ccf25388693af312c5ef0816c3c95ed` |
-| `webappx-adoption-curation-security-v2.json` | `cacb75d61dfab30d3beed4bf6af4206cd4338573815d6f515e6ffe81799d5039` |
-| `webappx-adoption-delivery-curation-proof.json` | `bc0188677505f93bc0c8748c1bde4454e1e09963bd970eb5b4b73eb7d0296908` |
-
-The current public source-review record is
-`docs/evidence/adoption-contract-source-review.json`, SHA-256
-`4d90a9edc8d9f57e0b0bd3855a47af6fe51318336358d401897344106c7e965f`;
-the adoption index is SHA-256
-`536c23e3aa279edff5ef80acb8752365a8ddc9271f0b8ff68ef44efb8353ffa5`.
-The earlier nine-guide curation proof retains its then-current index/source-record
-hashes; the later delivery proof explicitly extends them. Do not describe the
-earlier proof as the current fourteen-guide file hash.
-
-## Final gates — reserved for Agent 0
-
-| Required conclusion | Current actual result / final receipt field |
-| --- | --- |
-| Final implementation revision and exact runtime source | **PENDING** — final commit: `________`; final runtime manifest: `________` |
-| Final composed browser run and full literal exports/raw storage | **PENDING** — report: `________`; result/counts: `________` |
-| Final visual, AX, keyboard, narrow/x-large and status-witness review | **PENDING** — reviewed artifacts and findings: `________` |
-| Independent final runtime/harness/artifact/cleanup verification | **PENDING** — receipt and SHA-256: `________` |
-| Mandatory complete local CI preserving prior stages | **PENDING** — actual source/command/terminal result/log hash: `________` |
-| Separate Hosting preflight | **PENDING** — actual source/terminal result/log hash: `________`; no production deployment authorized by this receipt |
-| Final artifact current-source re-review and maintained docs/source bindings | **PENDING** — separate metadata/source qualification: `________` |
-| Final canonical original-criterion acceptance | **PENDING** — all 22 selected rows remain TODO; current catalog 134 done / 866 TODO |
-| Publication / direct remote parity / wiki | **PENDING** — no current-wave publication or parity claim |
-
-No real customer/person consolidation, provider lookup/write, membership grant,
-owner elevation, OAuth exchange, custom-token minting, telemetry collection,
-Windows x64/ARM64 execution, deployed rules, live Hosting, manual screen-reader
-or business/operator runtime acceptance is inferred. Native synthetic roles,
-complete local exports, optional adoption designs and provider/backend examples
-retain their explicit separate boundaries. All earlier QA receipts remain
-historical; this temporary draft changes none of them.
+This receipt establishes local native behavior and reviewed artifact criteria. Provider
+operation, deployed rules/Hosting, actual Windows/device tests, manual screen-reader
+announcements and business/operator runtime acceptance retain their separate requirements.
+Source and native wiki publication are verified after committing this receipt.

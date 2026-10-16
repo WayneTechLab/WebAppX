@@ -11,26 +11,35 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
-## CRM merge and adoption contract candidate — verification in progress
+## CRM merges and complete checklist reconciliation — locally accepted
 
-The next assigned batch covers five original CRM criteria, **WX-0369–WX-0373**,
-and seventeen original adoption artifact criteria. Open `/crm/demo` and choose
-**Duplicates & merges** for scoped duplicate reports and deliberate contact or
-company previews. Apply keeps the complete retained record, redirects the
-reviewed linked records and creates a fictional merge receipt. Complete saves
-and recovery retain the first-merge legacy capture and subsequent command history.
+Open `/crm/demo` → **Duplicates & merges** for scoped duplicate reports,
+complete contact/company previews, atomic graph updates and fictional merge receipts.
+Saves, exports, selective restore and Undo retain the full legacy baseline, ordered
+commands and immutable captures. The [walkthrough](../docs/CRM-DUPLICATES-AND-MERGES.md)
+explains the controls, ownership boundaries, retained drafts and recovery limits.
 
-Read the [CRM walkthrough](../docs/CRM-DUPLICATES-AND-MERGES.md),
-[implementation contract](../docs/CRM-MERGE-CONTRACT.md) and
-[adoption contract index](../docs/ADOPTION-CONTRACTS.md).
-The fourteen adoption guides cover identity, recovery, security, telemetry,
-Windows verification and delivery decisions. They are reviewable designs and
-runbooks; operator selections remain unconfigured.
+Agent 0 accepted **22 original CRM/adoption criteria** and **23 existing-work criteria**
+after reviewing all 1,000 IDs. Progress is **179 done / 821 remaining**: **+45** from the
+published 134-item baseline. Remaining: **38 P1 · 633 P2 · 150 P3** and
+**673 local · 109 operator · 39 provider** gates.
 
-This candidate starts from published source
-`317f47806b7f86dce00f15ee5ced7c0e0bae6116`. Its final composed browser run,
-full CI, Hosting preflight and Agent 0 acceptance are pending. The canonical
-checklist remains **134 done / 866 remaining**. The 1,000-item goal remains active.
+All **68 CI stages** passed on `4e025a3b5c21d0accef4e2e02add2c7eff54d589`.
+Independent review confirmed **226 named browser/rehearsal groups**: 212 native,
+8 HR-disabled and 6 owned LAN. Separate Hosting preflight passed on the same source.
+App **3.4.0** retains **deploy count 0**.
+
+Read the [current QA receipt](../docs/CRM-ADOPTION-QA-2026-10-15.md),
+[whole-catalog reconciliation](../docs/EXISTING-WORK-RECONCILIATION-QA-2026-10-15.md)
+and [execution plan](../docs/WEBAPPX-EXECUTION-PLAN.md).
+The [fourteen adoption guides](../docs/ADOPTION-CONTRACTS.md) complete their requested
+design/checklist scopes; actual services, people and provider selections remain
+unadopted. Historical curation fields retain their recorded scope.
+
+WX-0750 remains blocked by WX-0718, and WX-0877 retains its task-review warning gap.
+The complete 1,000-item goal remains active. Next prepared work covers first-run
+guidance, a volatile walkthrough, a reset-effect inventory, identity adoption rehearsal,
+shared portal tokens and keyboard focus restoration.
 
 ## Historical payroll and developer setup checkpoint — locally accepted
 

@@ -14,58 +14,58 @@
     },
     {
       "path": "README.md",
-      "line": 1089,
+      "line": 1098,
       "column": 1,
       "script": "systemx:status",
       "commandSha256": "a8e86e82b72f5949f41921a4c4a59ffe17d7dfe3326b2942c9893e4a330e4187",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "a0d833c2d1aeb1ccd1c3bcdda3f29578b534bf6c19f3dcb3340be1dd33d01335"
+      "documentSha256": "3da9dc84d012f9fbfa77951a5c5061a6aa029e6b1c02d5cb084033cca4c7861e"
     },
     {
       "path": "README.md",
-      "line": 1090,
+      "line": 1099,
       "column": 1,
       "script": "systemx:validate",
       "commandSha256": "a05373f654c10af05f755645518e79f060496cc630300dbfad6f7488d57323a0",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "a0d833c2d1aeb1ccd1c3bcdda3f29578b534bf6c19f3dcb3340be1dd33d01335"
+      "documentSha256": "3da9dc84d012f9fbfa77951a5c5061a6aa029e6b1c02d5cb084033cca4c7861e"
     },
     {
       "path": "README.md",
-      "line": 1093,
+      "line": 1102,
       "column": 1,
       "script": "systemx",
       "commandSha256": "93c8c999478a70f1328a2e510c9f704cc61b86e05246686f93c34c842bda8f2c",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "a0d833c2d1aeb1ccd1c3bcdda3f29578b534bf6c19f3dcb3340be1dd33d01335"
+      "documentSha256": "3da9dc84d012f9fbfa77951a5c5061a6aa029e6b1c02d5cb084033cca4c7861e"
     },
     {
       "path": "README.md",
-      "line": 1094,
+      "line": 1103,
       "column": 1,
       "script": "systemx",
       "commandSha256": "448740874fa8c654579c80c6754a07c87ad50f37c6b2bb21713c8b2586d76a8b",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "a0d833c2d1aeb1ccd1c3bcdda3f29578b534bf6c19f3dcb3340be1dd33d01335"
+      "documentSha256": "3da9dc84d012f9fbfa77951a5c5061a6aa029e6b1c02d5cb084033cca4c7861e"
     },
     {
       "path": "README.md",
-      "line": 1095,
+      "line": 1104,
       "column": 1,
       "script": "systemx",
       "commandSha256": "f83162501cb069d29454020456f93bc8c0a1108eb1e3069d89657ffa713d2b9f",
       "context": "root",
       "reason": "This exact adoption/worktree example uses the reviewed WebAppX template manifest after its deliberately chosen directory change.",
       "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-      "documentSha256": "a0d833c2d1aeb1ccd1c3bcdda3f29578b534bf6c19f3dcb3340be1dd33d01335"
+      "documentSha256": "3da9dc84d012f9fbfa77951a5c5061a6aa029e6b1c02d5cb084033cca4c7861e"
     },
     {
       "path": "docs/GETTING-STARTED.md",
