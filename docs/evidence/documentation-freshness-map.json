@@ -301,10 +301,10 @@
         "path": "docs/COMMANDS.md",
         "sha256": "8cccc8cb287bca4d3fc86814f6a64dae801a7ba9a6d703c8b2ec0b6191721f86"
       },
-      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
+      "examinedRevision": "0ce1647a6203a6a126c3e6fb936a25fce6fd1292",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. Existing command names and CI order remain; portal/browser aliases append CRM suites and the composed runner gains CRM coverage. COMMANDS includes the reviewed 30-to-32 inventory-count correction at ba858064; its historical focused proof remains separate. Old setup receipts/platform limits, blank seeds and immutable releases remain unchanged. No execution is relabeled to metadata; no provider or production acceptance is inferred."
+        "scope": "Pause-checkpoint source/documentation review at 0ce1647a6203a6a126c3e6fb936a25fce6fd1292. Only the outer SYSTEMX README/savepoint guide, execution-plan renderer and exact README parity/command-window metadata changed in mapped source scopes. Existing commands, application, provider, policy designs, reviewed guides and source inventory are unchanged. The Git bundle is an inert unaccepted backup. Existing receipts retain original observations; this review performs no feature test, adoption activation, provider or production operation."
       },
       "proposalIds": [
         "WX-0011",
@@ -400,10 +400,10 @@
         "path": "docs/ADOPTION-CONTRACTS.md",
         "sha256": "536c23e3aa279edff5ef80acb8752365a8ddc9271f0b8ff68ef44efb8353ffa5"
       },
-      "examinedRevision": "3ae29392709778a6f552d26dcb4222f4977f26fb",
+      "examinedRevision": "0ce1647a6203a6a126c3e6fb936a25fce6fd1292",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review at metadata 3ae29392 of implementation 4e025a3b and its exact 145-file CRM freeze 3. The public companion inventory binds fourteen design guides and seventeen original criteria. Historical inventories and the paper matrix remain qualified. Eleven original code scopes plus the exact companion inventory avoid a freshness-bookkeeping self-dependency. Runtime adoption and actual operator/provider selections remain separate. No execution is relabeled to metadata; no provider or production acceptance is inferred."
+        "scope": "Pause-checkpoint source/documentation review at 0ce1647a6203a6a126c3e6fb936a25fce6fd1292. Only the outer SYSTEMX README/savepoint guide, execution-plan renderer and exact README parity/command-window metadata changed in mapped source scopes. Existing commands, application, provider, policy designs, reviewed guides and source inventory are unchanged. The Git bundle is an inert unaccepted backup. Existing receipts retain original observations; this review performs no feature test, adoption activation, provider or production operation."
       },
       "proposalIds": [
         "WX-0511",

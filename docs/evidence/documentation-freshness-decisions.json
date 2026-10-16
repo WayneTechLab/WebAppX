@@ -404,6 +404,32 @@
       "scopeSha256": "b0a22e13b91e4b0eec2484da992e3ed06a6fc1529c9c915e8e22100f07a9d2ad",
       "decision": "retain",
       "rationale": "Retain after explicit source/document review at metadata 3ae29392709778a6f552d26dcb4222f4977f26fb. Implementation execution belongs to 4e025a3b5c21d0accef4e2e02add2c7eff54d589 and the separately hashed dated CRM receipt; original observations, receipt objects and prior decisions keep their exact qualifications. Five additive headers preserve current guide bodies, including only the separately pinned historical COMMANDS correction; four new entries map native CRM, the adoption index and two finite artifact-source coverage parts. This review runs no tests and establishes no provider, deployment, native Windows or manual screen-reader acceptance."
+    },
+    {
+      "id": "DFR-f372c012a40f5b1c",
+      "guideId": "developer-setup-contracts",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "0ce1647a6203a6a126c3e6fb936a25fce6fd1292",
+      "reportDigest": "cd9ea6e4096c3e32bb316ce9de985a43c988a556e7755e7a6c582e9760e29431",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "98912ae8ad59b4051713bcae170b6be3dc1f63e9501774998d4a2b2f93eadbed",
+      "decision": "retain",
+      "rationale": "Retain after reviewing the five exact mapped pause-checkpoint paths. Existing commands, application and adoption designs remain unchanged; the bundle preserves unfinished code without applying it. Original receipts and31 earlier decisions remain exact. This source review records no feature execution, provider, production or further backlog acceptance."
+    },
+    {
+      "id": "DFR-0ce1b2217bc66c1a",
+      "guideId": "optional-adoption-contracts",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "0ce1647a6203a6a126c3e6fb936a25fce6fd1292",
+      "reportDigest": "cd9ea6e4096c3e32bb316ce9de985a43c988a556e7755e7a6c582e9760e29431",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "0ed152dce0e0cb779189c07f45974eb2476a0e2b14ca022555f848fb85998c07",
+      "decision": "retain",
+      "rationale": "Retain after reviewing the five exact mapped pause-checkpoint paths. Existing commands, application and adoption designs remain unchanged; the bundle preserves unfinished code without applying it. Original receipts and31 earlier decisions remain exact. This source review records no feature execution, provider, production or further backlog acceptance."
     }
   ]
 }

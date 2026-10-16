@@ -16,3 +16,5 @@ Read the [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs
 then explicitly ask to resume this checkpoint. No active goal or automatic
 continuation is running. Reusable SYSTEMX records remain blank and managed
 releases, research checksums, version 3.4.0 and zero deployment count are preserved.
+
+Permanent main checkpoint tag: `savepoint/webappx-full-stop-2026-10-15`.
