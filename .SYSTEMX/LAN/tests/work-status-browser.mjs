@@ -8,7 +8,10 @@ import { dirname, join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { setTimeout as delay } from 'node:timers/promises'
-import { chromium, expect } from '@playwright/test'
+import { chromium, expect as browserExpect } from '@playwright/test'
+
+// Locator assertions have their own deadline, independent of page timeouts.
+const expect = browserExpect.configure({ timeout: 15000 })
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
 const temporary = mkdtempSync(join(tmpdir(), 'webappx-work-status-browser-'))
