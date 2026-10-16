@@ -11,6 +11,17 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+## Current assigned payroll and developer setup wave
+
+The full 1,000-item goal remains active. The next assigned work is
+WX-0159/WX-0160 (sample payroll closure and separate correction runs), plus
+WX-0011–0014, WX-0016, WX-0019, WX-0020 and WX-0022–0024 (developer setup).
+Read the [payroll contract](../docs/PAYROLL-CONTROL-CONTRACT.md),
+[setup implementation plan](../docs/SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md)
+and [complete execution plan](../docs/WEBAPPX-EXECUTION-PLAN.md).
+These are implementation assignments; the canonical catalog and dated
+acceptance receipts determine completion. Reusable project records remain blank.
+
 ## Current recruiting lifecycle checkpoint — locally accepted
 
 Agent 0 accepted **WX-0201–WX-0210 and the separately scoped WX-0951** against

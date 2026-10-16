@@ -11,7 +11,8 @@ function plan(scripts, names = Object.keys(scripts).filter(name => name !== 'ci:
   return buildCiPlan({ shellSource: runner(names), packageJson: { scripts: { 'ci:all': 'bash scripts/check-template.sh', ...scripts }, engines: { node: '>=24.0.0' } }, gustoPackageJson: { engines: { node: '22' } }, installation: { activeVersion: '1.9.0-alpha.6' } })
 }
 
-// Literal pre-recruiting gate order protects every existing stage during this insertion.
+// Literal published 63-stage order protects every prior stage during setup insertion.
+const addedSetupGates = ['scripts:check', 'docs:commands:check', 'fixtures:check', 'source:shell:check', 'setup:contracts:test']
 const previousGateOrder = [
   'development:check',
   'development:test',
@@ -61,6 +62,7 @@ const previousGateOrder = [
   'browser:state-contract',
   'browser:lifecycles',
   'browser:portal-lifecycle',
+  'browser:recruiting',
   'browser:payroll',
   'browser:evaluators',
   'browser:maturity',
@@ -86,8 +88,9 @@ test('reads all current required gates in the existing shell order', async () =>
   ])
   const report = buildCiPlan({ shellSource, packageJson: JSON.parse(packageText), gustoPackageJson: JSON.parse(gustoText), installation: JSON.parse(installationText) })
   assert.deepEqual(report.stages.map(stage => stage.name), parseGateOrder(shellSource))
-  assert.equal(report.stages.length, 63)
-  assert.deepEqual(report.stages.filter(stage => stage.name !== 'browser:recruiting').map(stage => stage.name), previousGateOrder, 'all prior 62 stages retain their exact relative order')
+  assert.equal(report.stages.length, 68)
+  assert.deepEqual(report.stages.filter(stage => !addedSetupGates.includes(stage.name)).map(stage => stage.name), previousGateOrder, 'all prior 63 stages retain their exact relative order')
+  for (const name of addedSetupGates) assert.equal(report.stages.filter(stage => stage.name === name).length, 1, name)
   assert.deepEqual(report.stages.map(stage => stage.number), Array.from({ length: report.stages.length }, (_, index) => index + 1))
   assert.ok(report.stages.find(stage => stage.name === 'hr:backend:audit').workspaces.includes('gusto-functions'))
   assert.ok(report.stages.find(stage => stage.name === 'systemx:tools:test').workspaces.includes('systemx-managed'))
@@ -107,7 +110,8 @@ test('required lifecycle suites run once without replacing existing recovery or 
   const names = parseGateOrder(shellSource)
   const report = buildCiPlan({ shellSource, packageJson })
   const required = {
-    'browser:smoke:test': ['tests/browser/seed-pack.test.mjs', 'tests/browser/preview-process.test.mjs', 'tests/browser/recruiting-harness.test.mjs'],
+    'setup:contracts:test': ['tests/setup/package-script-discovery.test.mjs', 'tests/setup/doc-commands.test.mjs', 'tests/setup/fixture-inventory.test.mjs', 'tests/setup/child-processes.test.mjs'],
+    'browser:smoke:test': ['tests/browser/seed-pack.test.mjs', 'tests/browser/preview-process.test.mjs', 'tests/browser/recruiting-harness.test.mjs', 'tests/browser/payroll-control-harness.test.mjs'],
     'hr:test': [
       'tests/hr/lifecycle.test.mjs', 'tests/hr/employment-lifecycle-ui.test.mjs', 'tests/hr/directory-corrections-ui.test.mjs',
       'tests/hr/recruiting-core.test.mjs',
@@ -123,8 +127,9 @@ test('required lifecycle suites run once without replacing existing recovery or 
       'tests/hr/recruiting-persistence.test.mjs',
       'tests/hr/recruiting-lifecycle-host.test.mjs',
       'tests/hr/recruiting-integration.test.mjs',
+      'tests/hr/payroll-control.test.mjs', 'tests/hr/payroll-control-ui.test.mjs', 'tests/hr/payroll-control-integration.test.mjs', 'tests/hr/payroll-control-host.test.mjs',
     ],
-    'portals:test': ['tests/portals/cms-releases.test.mjs', 'tests/portals/cms-release-callbacks.test.mjs', 'tests/portals/crm-ownership.test.mjs', 'tests/portals/lifecycle-inspection.test.mjs', 'tests/portals/recruiting-inspection.test.mjs', 'tests/portals/retained-surface.test.mjs'],
+    'portals:test': ['tests/portals/cms-releases.test.mjs', 'tests/portals/cms-release-callbacks.test.mjs', 'tests/portals/crm-ownership.test.mjs', 'tests/portals/lifecycle-inspection.test.mjs', 'tests/portals/recruiting-inspection.test.mjs', 'tests/portals/retained-surface.test.mjs', 'tests/portals/payroll-control-inspection.test.mjs'],
     'maturity:test': ['tests/portals/workspace-inspection.test.mjs'],
     'safety:test': ['tests/portals/domain-differences.test.mjs'],
   }

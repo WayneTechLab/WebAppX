@@ -1,0 +1,675 @@
+{
+  "schemaVersion": 1,
+  "scripts": [
+    {
+      "name": "account-levels:check",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "adoption:hr-disabled",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "adoption:hr-disabled:test",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "ai:standard:check",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "auth:mfa:check",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:adopt",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:adopt:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:check",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:evidence",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:evidence:check",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:evidence:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:graph",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:impact",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:impact:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:plan",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:plan:check",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:plan:render",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:plan:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:ready",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:render",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:summary",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "backlog:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "browser:codegen",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "browser:evaluators",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:foundation",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:install",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "browser:keyboard",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:keyboard:test",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:lifecycles",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:maturity",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:payroll",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:portal-lifecycle",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:quality",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:recovery-drill",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:recruiting",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:safety",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:sdk-quality",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:smoke",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:smoke:test",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:state-contract",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "browser:work-status",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "build",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "ci:ai",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "ci:all",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "ci:audit",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "ci:build",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "ci:lint",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "ci:plan",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "ci:plan:test",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "ci:security",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "ci:test",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "ci:typecheck",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "deploy",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "dev",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "dev:firebase",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "dev:firebase:raw",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "dev:mock",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "dev:mock:test",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "dev:systemx",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "development:check",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "development:test",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "docs:commands:check",
+      "purpose": "setup",
+      "description": "Inspect developer setup source contracts without executing the listed examples."
+    },
+    {
+      "name": "docs:freshness",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "docs:freshness:test",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "docs:links",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "doctor",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "doctor:test",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "emulators",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "emulators:export",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "environment:check",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "environment:test",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "fixtures:check",
+      "purpose": "setup",
+      "description": "Inspect developer setup source contracts without executing the listed examples."
+    },
+    {
+      "name": "fixtures:list",
+      "purpose": "setup",
+      "description": "Inspect developer setup source contracts without executing the listed examples."
+    },
+    {
+      "name": "gusto:capabilities:check",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "gusto:capabilities:render",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "gusto:capabilities:test",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "hr:backend:audit",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "hr:roles:check",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "hr:roles:render",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "hr:roles:test",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "hr:test",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "lan",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "lint",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "lint:fix",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "maturity:test",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "mcp:chrome",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "portals:test",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "preview",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "repository:identity",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "repository:identity:test",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "research:validate",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "safety:test",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    },
+    {
+      "name": "scripts:check",
+      "purpose": "setup",
+      "description": "Inspect developer setup source contracts without executing the listed examples."
+    },
+    {
+      "name": "scripts:list",
+      "purpose": "setup",
+      "description": "Inspect developer setup source contracts without executing the listed examples."
+    },
+    {
+      "name": "security:controls:test",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "security:rules:test",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "setup:contracts:test",
+      "purpose": "setup",
+      "description": "Inspect developer setup source contracts without executing the listed examples."
+    },
+    {
+      "name": "setup:packet:export",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "setup:packet:import",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "setup:test-users",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "setup:test-users:write",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "setup:unified:scrape",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "setup:unified:scrape:dry-run",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "setup:unified:scrape:list",
+      "purpose": "setup",
+      "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
+    },
+    {
+      "name": "source:shell:check",
+      "purpose": "setup",
+      "description": "Inspect developer setup source contracts without executing the listed examples."
+    },
+    {
+      "name": "sync:system",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "sync:system:check",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "system:audit",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:check",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:context",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:import:rehearse",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:integration:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:lan",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:provenance",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:provenance:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:session:restart:preview",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:session:status",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:session:stop",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:session:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:status",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:tools:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:upstream:check",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:upstream:import",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:validate",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "systemx:work-status:test",
+      "purpose": "SYSTEMX",
+      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "template:check",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "template:sync",
+      "purpose": "release",
+      "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."
+    },
+    {
+      "name": "test",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "typecheck",
+      "purpose": "app",
+      "description": "Develop, inspect or verify the application and its optional local runtime."
+    },
+    {
+      "name": "wiki:check",
+      "purpose": "wiki",
+      "description": "Review or publish the separately maintained wiki documentation."
+    },
+    {
+      "name": "wiki:sync",
+      "purpose": "wiki",
+      "description": "Review or publish the separately maintained wiki documentation."
+    },
+    {
+      "name": "worksheet:generate",
+      "purpose": "portal",
+      "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
+    }
+  ]
+}

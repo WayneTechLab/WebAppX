@@ -3,7 +3,7 @@
   "kind": "webappx-gusto-capability-gaps",
   "reviewedOn": "2026-10-15",
   "reviewBase": {
-    "revision": "7a582ed4a5396d54aa94e3ca780667d1b07f179e",
+    "revision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
     "provenance": "integration-baseline-supplied-by-agent-0"
   },
   "evidenceScope": "source-review",
@@ -86,12 +86,12 @@
     {
       "path": "src/hr/components/HrWorkspace.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "d37bc8bc39d8bd1af1a6b075f7193dda802dd8d7b184d0af90a87bac566749c3"
+      "sha256": "f09c81627ae7767a4b2e8aa9587dcf00cb55ae9da9870e4c01438ae28b3db13a"
     },
     {
       "path": "src/hr/components/HrInsights.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "7bac8fac53eb4b75f65108484dcefb9c747dabaeeccc376dc075a9fbc14537d9"
+      "sha256": "923fd14fbee0f903b547f0e5a036166dad705aa5363e6b951e05e87c84c5b876"
     },
     {
       "path": "src/hr/gusto/GustoSdkPreview.tsx",
@@ -106,7 +106,7 @@
     {
       "path": "src/hr/mock-workflows.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "4197404a605b370245d4a7542aba9a31ed620c852f1643e330cb42288c638136"
+      "sha256": "ab87d8c22e622785196d083ed40036ad5c1853dcd4fbfc96fa551410f78546db"
     },
     {
       "path": "src/hr/model.ts",
@@ -256,7 +256,7 @@
     {
       "path": "src/hr/persistence.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "052a06301f32565b5c89e8bdde9f2d075752ff08cd172293408116cb8e3a2d1f"
+      "sha256": "1c313c6ebd78b7eccec8cb6373e1b2e510f12a744883b6f8054fe0c112e6a8e0"
     },
     {
       "path": "src/hr/linked-operations.ts",
@@ -266,7 +266,7 @@
     {
       "path": "src/portals/workspace-inspection.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "6af90c859a293c5cc6f1d80b702333af1aa39ce8dfc662139fefbf9f759b4a11"
+      "sha256": "0163551a49238c81a9a16aa5de80eeedd723ce257885f4fae6d585958b7a2e46"
     },
     {
       "path": "src/portals/WorkspaceInspection.tsx",
@@ -402,6 +402,41 @@
       "path": "src/portals/CombinedWorkspaceBackup.tsx",
       "hashMode": "utf8-lf-sha256",
       "sha256": "cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51"
+    },
+    {
+      "path": "src/hr/payroll-control-types.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "8f6867ae6723d5929e0d85ab4cbedda8d7b89dd247fc662782a1e1acada3c68d"
+    },
+    {
+      "path": "src/hr/payroll-control-value.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "a470bbee2013a153f9d2f208fada3b6bb4e3519341555d286a6c1cd9872b014a"
+    },
+    {
+      "path": "src/hr/payroll-control.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "d754c27c69a5050cad26a952666b38fb08efd86409fa8feed8ef7750b0b25059"
+    },
+    {
+      "path": "src/hr/payroll-control-controller.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "5dd06613faf50dc6e525f4aeb8f65c8378582ed9f48aa6388527a3457e7a1970"
+    },
+    {
+      "path": "src/hr/payroll-control-host.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "13771680bcb323fc58a9ffa20fd3b159d79cd305316bbce1108fd5bf387e97e6"
+    },
+    {
+      "path": "src/hr/components/HrPayrollControl.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "cc089b5d3a77db56d9697da8c3c33d97696dc0a65cb6663669bb7a5303238a4d"
+    },
+    {
+      "path": "src/hr/components/HrPayrollControlHost.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "57e81d72dc665fa24fcb9893c19c755f1634e61e5320f9fa559a9591ce0dde3b"
     }
   ],
   "capabilities": [
@@ -977,7 +1012,7 @@
       "capabilitySha256": "f53e17ed9033aaf0ee4d9509b712e4f827cf834b7f466217c0f39c9b626eb217",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/payroll previews choose a 1–366-day sample period and configure explicit fictional rates for all otherwise eligible employee/work dates. Independent rate/period form groups track unsaved inputs. Preparation freezes approved unpaid hours, dated rates and confirmed benefit choices; the table explains exclusions. Changed inputs, current lifecycle eligibility or selected period block calculation, review and submission until intentional repreparation. Rehire retains rate timelines and balances without inferring compensation; submitted inputs, totals and receipts remain frozen.",
+        "behavior": "Owner/payroll previews choose a 1\u2013366-day sample period and configure explicit fictional rates for all otherwise eligible employee/work dates. Independent rate/period form groups track unsaved inputs. Preparation freezes approved unpaid hours, dated rates and confirmed benefit choices; the table explains exclusions. Changed inputs, current lifecycle eligibility or selected period block calculation, review and submission until intentional repreparation. Rehire retains rate timelines and balances without inferring compensation; submitted inputs, totals and receipts remain frozen.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/mock-workflows.ts",
@@ -1029,7 +1064,7 @@
       "capabilitySha256": "b72eb12e78aa7be722ee8c203d26e1325661d681779df468ad10faebac29c25a",
       "native": {
         "coverage": "read-only-mock",
-        "behavior": "Employee pay history shows only the bound employee’s submitted native payroll statements, with the receipt’s saved period, work dates, hours, fictional rates and totals. Later rate changes leave those statements unchanged. Legacy receipts without a period keep the historical fixed sample period; a separate fixture statement remains read-only.",
+        "behavior": "Employee pay history shows only the bound employee\u2019s submitted native payroll statements, with the receipt\u2019s saved period, work dates, hours, fictional rates and totals. Later rate changes leave those statements unchanged. Legacy receipts without a period keep the historical fixed sample period; a separate fixture statement remains read-only.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/components/HrInsights.tsx",
@@ -1332,7 +1367,7 @@
       "capabilitySha256": "1d8cfa9a6e375dbfaa1869edf4b1fa2d385a2d7d0c985f13bbb00f15e1806b30",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/HR create, edit, publish and close fictional jobs; candidates move through screening/interview/offer/hire or rejection. An accepted hire atomically initializes its directory, workflow and balances, capturing the selected onboarding version when the lifecycle extension is present; old calls retain their legacy checklist. Current manager relationships supply action checks. Job/candidate forms have independent dirty groups, and closing the candidate form’s selected published job is guarded first.",
+        "behavior": "Owner/HR create, edit, publish and close fictional jobs; candidates move through screening/interview/offer/hire or rejection. An accepted hire atomically initializes its directory, workflow and balances, capturing the selected onboarding version when the lifecycle extension is present; old calls retain their legacy checklist. Current manager relationships supply action checks. Job/candidate forms have independent dirty groups, and closing the candidate form\u2019s selected published job is guarded first.",
         "refs": [
           "src/hr/recruiting.ts",
           "src/hr/recruiting-link.ts",
@@ -1612,7 +1647,7 @@
       "capabilitySha256": "12729b8d6bbb8863f7ffebf063fe6a4c898ec883150a12b1f08143b8fbd6aee0",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Goals and private self-review drafts progress through self submission, assigned manager publication and employee acknowledgment under current native relationship checks. Independent goal/cycle/progress/self/manager form groups require current text to be saved before submission/publication. A transfer or rehire that changes an unfinished review’s direct manager is refused until that review is acknowledged; captured comments, manager identity and published content are not rewritten.",
+        "behavior": "Goals and private self-review drafts progress through self submission, assigned manager publication and employee acknowledgment under current native relationship checks. Independent goal/cycle/progress/self/manager form groups require current text to be saved before submission/publication. A transfer or rehire that changes an unfinished review\u2019s direct manager is refused until that review is acknowledged; captured comments, manager identity and published content are not rewritten.",
         "refs": [
           "src/hr/performance.ts",
           "src/hr/model.ts",
@@ -1693,7 +1728,7 @@
       "capabilitySha256": "b43b91222d06511c5717e50836ea48421d7ea8b611ff80bfbed583e54f4cb328",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/HR draft, publish and close sample surveys; identified assigned employees save drafts and submit own answers. Questions/audience and response inputs have separate normalized dirty groups. Publication/submission requires the current draft or answers to be saved first; accepted Save clears that form’s baseline. Saved private answers remain domain records, and responses are not anonymous.",
+        "behavior": "Owner/HR draft, publish and close sample surveys; identified assigned employees save drafts and submit own answers. Questions/audience and response inputs have separate normalized dirty groups. Publication/submission requires the current draft or answers to be saved first; accepted Save clears that form\u2019s baseline. Saved private answers remain domain records, and responses are not anonymous.",
         "refs": [
           "src/hr/surveys.ts",
           "src/hr/components/HrSurveys.tsx",

@@ -54,6 +54,17 @@ hired-employee prefix remains exact while new authoritative hires append capture
 employees. A malformed present extension refuses instead of falling back to
 legacy behavior.
 
+The next payroll implementation, currently under verification, adds optional
+`workflow.payrollControl`. Its first accepted closure or monetary correction
+captures exact original receipt anchors and appends an ordered event; reading,
+previewing and refusing leave absence intact. Company-window closure blocks
+late time and overlapping ordinary preparation. Corrections retain separate
+signed deltas and cumulative balances without rewriting original receipts.
+Present data requires complete plain-JSON and replay validation through saves,
+individual/combined backups and replacement history. Read
+[payroll controls](HR-PAYROLL-CONTROLS.md) for the implemented limits, writer,
+employee and auditor scopes, dirty-work decisions and current acceptance status.
+
 The native schemas are defined by
 [`HrDemoState`](../src/hr/persistence.ts),
 [`CmsState`](../src/cms/model.ts),
@@ -428,6 +439,13 @@ create additional people/jobs/hires. Safe metadata hides names/emails, ratings,
 comments and reasons while complete hidden records decide differences in both
 absent/present directions. Saved private cards and draft-save histories remain
 in the underlying complete capture.
+
+The payroll control implementation adds one primary event collection and one
+metadata record. Complete anchored receipts affect hidden fingerprints without
+counting as new payrolls or duplicating their time inputs. Displayed metadata
+contains only IDs, dates, roles, periods and counts; monetary values, reasons,
+names and captured snapshots remain hidden in inspection. Absence/presence
+comparisons use the same optional collection union in both directions.
 
 Selective restore and Undo show current-to-target added, removed and changed
 entity counts for selected modules before confirmation. Identity determines

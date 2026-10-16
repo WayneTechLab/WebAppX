@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "intent": "fictional-fixture-source-inventory",
+  "groups": [
+    {
+      "id": "native-hr",
+      "kind": "native-workspace",
+      "label": "Native HR defaults",
+      "consumerScope": "Account-free native HR workspace",
+      "bindings": [
+        "hr-fixture",
+        "hr-state",
+        "hr-workflow",
+        "hr-operations",
+        "hr-service-desk",
+        "hr-recruiting",
+        "hr-performance",
+        "hr-surveys",
+        "workspace-defaults",
+        "workspace-provider",
+        "native-reset-controls",
+        "portal-labels",
+        "native-reset-state",
+        "native-reset-recovery"
+      ],
+      "reset": {
+        "action": "Reset HR demo",
+        "effect": "Recreates complete original HR defaults through createDemoWorkspaces().hr, including absence of optional employment/recruiting lifecycle extensions.",
+        "boundaries": [
+          "Only the selected native workspace is replaced and its browser save removal is attempted; other workspaces remain.",
+          "Accepted replacement clears that module's temporary forms and timers. Optional required recovery captures a module-only checkpoint first; unreadable preferences, stale confirmation or checkpoint failure refuse replacement.",
+          "Source fixtures, downloads, other history/preferences, Firebase and SDK session memory are not reset."
+        ],
+        "reviewControls": [
+          "Reset HR workspace?",
+          "Confirm Reset HR",
+          "Keep HR workspace"
+        ]
+      }
+    },
+    {
+      "id": "native-cms",
+      "kind": "native-workspace",
+      "label": "Native CMS defaults",
+      "consumerScope": "Account-free native CMS workspace",
+      "bindings": [
+        "cms-model",
+        "workspace-defaults",
+        "workspace-provider",
+        "native-reset-controls",
+        "portal-labels",
+        "native-reset-state",
+        "native-reset-recovery"
+      ],
+      "reset": {
+        "action": "Reset CMS demo",
+        "effect": "Recreates complete original CMS defaults through createDemoWorkspaces().cms; optional release bundles are absent.",
+        "boundaries": [
+          "Only the selected native workspace is replaced and its browser save removal is attempted; other workspaces remain.",
+          "Accepted replacement clears that module's temporary forms and timers. Optional required recovery captures a module-only checkpoint first; unreadable preferences, stale confirmation or checkpoint failure refuse replacement.",
+          "Source fixtures, downloads, other history/preferences, Firebase and SDK session memory are not reset."
+        ],
+        "reviewControls": [
+          "Reset CMS workspace?",
+          "Confirm Reset CMS",
+          "Keep CMS workspace"
+        ]
+      }
+    },
+    {
+      "id": "native-crm",
+      "kind": "native-workspace",
+      "label": "Native CRM defaults",
+      "consumerScope": "Account-free native CRM workspace",
+      "bindings": [
+        "crm-model",
+        "workspace-defaults",
+        "workspace-provider",
+        "native-reset-controls",
+        "portal-labels",
+        "native-reset-state",
+        "native-reset-recovery"
+      ],
+      "reset": {
+        "action": "Reset CRM demo",
+        "effect": "Recreates complete original CRM defaults through createDemoWorkspaces().crm, including original activity and counters.",
+        "boundaries": [
+          "Only the selected native workspace is replaced and its browser save removal is attempted; other workspaces remain.",
+          "Accepted replacement clears that module's temporary forms and timers. Optional required recovery captures a module-only checkpoint first; unreadable preferences, stale confirmation or checkpoint failure refuse replacement.",
+          "Source fixtures, downloads, other history/preferences, Firebase and SDK session memory are not reset."
+        ],
+        "reviewControls": [
+          "Reset CRM workspace?",
+          "Confirm Reset CRM",
+          "Keep CRM workspace"
+        ]
+      }
+    },
+    {
+      "id": "sdk-onboarding",
+      "kind": "sdk-session",
+      "label": "SDK employee and onboarding session",
+      "consumerScope": "Separate local SDK mock session",
+      "bindings": [
+        "sdk-employees",
+        "sdk-onboarding",
+        "sdk-session",
+        "sdk-reset-ui"
+      ],
+      "reset": {
+        "action": "Reset SDK samples",
+        "effect": "The local __reset action replaces only the issued SDK session with initialState(), including employee and onboarding samples. Refresh starts a new isolated session.",
+        "boundaries": [
+          "Native HR records and browser saves are separate.",
+          "No source fixture, provider record or Firebase state is changed."
+        ],
+        "reviewControls": []
+      }
+    },
+    {
+      "id": "sdk-payroll",
+      "kind": "sdk-session",
+      "label": "SDK payroll session",
+      "consumerScope": "Separate local SDK mock session",
+      "bindings": [
+        "sdk-payroll-fixture",
+        "sdk-payroll-handler",
+        "sdk-session",
+        "sdk-reset-ui"
+      ],
+      "reset": {
+        "action": "Reset SDK samples",
+        "effect": "The same local __reset action restores the issued SDK session's fictional payroll phase, captures and receipt through initialState().",
+        "boundaries": [
+          "No native payroll, provider submission or funds movement occurs.",
+          "Reset does not rewrite either SDK fixture file."
+        ],
+        "reviewControls": []
+      }
+    },
+    {
+      "id": "browser-baseline",
+      "kind": "reviewed-fixture",
+      "label": "Reviewed browser baseline",
+      "consumerScope": "Owned browser tests using the named reviewed seed",
+      "bindings": [
+        "browser-seed",
+        "browser-seed-digest",
+        "browser-seed-contract",
+        "browser-seed-generator"
+      ],
+      "reset": {
+        "action": "No user Reset rewrites this file",
+        "effect": "loadValidatedSeed checks the reviewed fixture/digest against current defaults. Native Reset recreates defaults without changing this reviewed test input.",
+        "boundaries": [
+          "node tests/browser/generate-seed.mjs --write is a separate deliberate maintainer action; inventory never imports or executes it.",
+          "This is a finite maintained source inventory, not every inline or dynamically generated test case."
+        ],
+        "reviewControls": []
+      }
+    },
+    {
+      "id": "role-examples",
+      "kind": "reviewed-fixture",
+      "label": "Reviewed HR role examples",
+      "consumerScope": "Documentation and test review input",
+      "bindings": [
+        "role-fixture",
+        "role-renderer"
+      ],
+      "reset": {
+        "action": "No app Reset",
+        "effect": "Reviewed role examples are source input rather than saved user workspaces. Rendering their guide does not reset native data.",
+        "boundaries": [
+          "No browser save or source fixture is rewritten by inventory."
+        ],
+        "reviewControls": []
+      }
+    },
+    {
+      "id": "sdk-reference",
+      "kind": "retained-reference",
+      "label": "Historical SDK sample references",
+      "consumerScope": "Retained reference files; not current SDK mock input",
+      "bindings": [
+        "sdk-reference-list",
+        "sdk-reference-notes"
+      ],
+      "reset": {
+        "action": "No user Reset",
+        "effect": "Retains historical sample reference files. Current SDK mock reads integrations/gusto/sdk-employees.fixture.json instead.",
+        "boundaries": [
+          "Native and SDK resets do not rewrite these retained references."
+        ],
+        "reviewControls": []
+      }
+    }
+  ]
+}

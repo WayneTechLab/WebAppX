@@ -1,0 +1,434 @@
+{
+  "schemaVersion": 1,
+  "kind": "reviewed-starter-parity",
+  "review": {
+    "sourceBase": "49a9efe345c815c2bead1cbbeb83204d31e64290",
+    "reviewedOn": "2026-10-15"
+  },
+  "starterDirectory": ".SYSTEMX/Template/starter",
+  "publicRoots": [
+    ".github",
+    "public",
+    "scripts",
+    "src"
+  ],
+  "rootOnlyScope": [
+    {
+      "paths": [
+        "src/hr",
+        "src/cms",
+        "src/crm",
+        "src/portals"
+      ],
+      "reason": "Native fictional workspaces, lifecycle extensions and recovery orchestration belong only to the full root app and are outside this finite starter comparison."
+    },
+    {
+      "paths": [
+        "integrations/gusto",
+        "src/hr/gusto"
+      ],
+      "reason": "Selected SDK/local adapter sessions are root-only; the starter does not receive provider or payroll capabilities through parity checks."
+    },
+    {
+      "paths": [
+        ".SYSTEMX/LAN",
+        ".SYSTEMX/KIT",
+        ".SYSTEMX/Unified-Setup-Process"
+      ],
+      "reason": "Host LAN builder, production/brand kits and unified setup assets remain separately validated root features, never starter-file ignore rules."
+    },
+    {
+      "paths": [
+        "scripts",
+        "tests",
+        "docs",
+        "wiki"
+      ],
+      "reason": "Host setup, CI, evidence and release tooling extends the full repository beyond the two explicitly paired starter scripts and starter README."
+    }
+  ],
+  "rootOnlyDependencies": {
+    "dependencies": [
+      "@gusto/embedded-react-sdk",
+      "@tanstack/react-query"
+    ],
+    "devDependencies": [
+      "@playwright/test"
+    ]
+  },
+  "files": [
+    {
+      "group": "configuration",
+      "starter": ".env.example",
+      "root": ".env.example",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root additionally documents disabled SDK and supervised local-session options; the starter retains only its standalone client examples.",
+      "rootSha256": "454b63bd55b740e6dc93b4001814464045296b7ef3cabe9b8637c5ca336fccb6",
+      "starterSha256": "8cbbf64b35c346664b7f8cb171d4248d7415115de246ec5b6e25a57950512ae0"
+    },
+    {
+      "group": "configuration",
+      "starter": ".firebaserc",
+      "root": ".firebaserc",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "configuration",
+      "starter": ".github/workflows/ci.yml",
+      "root": ".github/workflows/ci.yml",
+      "relation": "starter-only",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "The starter includes a standalone scaffold CI workflow; root release gates are maintained through its explicit local CI runner.",
+      "rootSha256": null,
+      "starterSha256": "647bc4365b5687a9261af19bf9601f778cbaafbd0f0173f3850c8eaa9d773311"
+    },
+    {
+      "group": "configuration",
+      "starter": ".gitignore",
+      "root": ".gitignore",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root protects host LAN, emulator, research and private runtime surfaces; the starter has only standalone scaffold ignore rules.",
+      "rootSha256": "0605468b8ded5bb56bad0819d935f6d2cf707f270b796e14b17e7a92a648efc2",
+      "starterSha256": "92604752b8175e5efd113f7199779867c21c3b16ad26929f124d4b4d3be1d242"
+    },
+    {
+      "group": "configuration",
+      "starter": ".node-version",
+      "root": ".node-version",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "configuration",
+      "starter": ".nvmrc",
+      "root": ".nvmrc",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "configuration",
+      "starter": "README.md",
+      "root": "README.md",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root documents the complete template, native portals and host operations; the starter has a separate standalone scaffold introduction.",
+      "rootSha256": "f488de848fb3a9b6a76e082f15ba98179a9659b7f10c3738c5b77d727b2e7448",
+      "starterSha256": "baf20c16fecb6fd11e47a5d60a2d5f70b208f21db55e06ae8d9415e721ca5c21"
+    },
+    {
+      "group": "configuration",
+      "starter": "eslint.config.js",
+      "root": "eslint.config.js",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root lint configuration covers host app and integration conventions; the starter keeps its standalone application lint scope.",
+      "rootSha256": "bb50ad1b31b16f5b4019277499609c12481a88a3824303305509a53f40833899",
+      "starterSha256": "2265db53db68657756b24907bd2798c4446fba35bfe15cec8b03dc82da3678d6"
+    },
+    {
+      "group": "configuration",
+      "starter": "firebase.json",
+      "root": "firebase.json",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "configuration",
+      "starter": "firestore.indexes.json",
+      "root": "firestore.indexes.json",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "configuration",
+      "starter": "firestore.rules",
+      "root": "firestore.rules",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "configuration",
+      "starter": "index.html",
+      "root": "index.html",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root application title and description identify the full template; the starter keeps independently reviewed scaffold metadata.",
+      "rootSha256": "15c4b21da48c9f9b040e901867dcb6c075c783dbf6e9313b175e3e1e4bcbd862",
+      "starterSha256": "2d675d2b14f064775b433688c3ce8e9589f09a7cf40a92aa916e1680ac1459e9"
+    },
+    {
+      "group": "dependency",
+      "starter": "package-lock.json",
+      "root": "package-lock.json",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Separate reviewed lockfiles retain their own complete dependency trees; shared root metadata is checked without regenerating either lock.",
+      "rootSha256": "b8246a11033ec7597f62854ceb75136978380e123801d0fc42c92aa73feb8df6",
+      "starterSha256": "8e1e93ecb50adb4e5d5ed53208b062cdec74748b42a70efaadf9de31366f671a"
+    },
+    {
+      "group": "dependency",
+      "starter": "package.json",
+      "root": "package.json",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root adds native SDK/query/browser dependencies and host setup, test, CI and release scripts; shared package identity/runtime/dependencies remain checked.",
+      "rootSha256": "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d",
+      "starterSha256": "27365c66834e43309edac534a2b6795b7c806530aac12aad840c28ca97acc57e"
+    },
+    {
+      "group": "asset",
+      "starter": "public/favicon.svg",
+      "root": "public/favicon.svg",
+      "relation": "equal",
+      "hashMode": "sha256"
+    },
+    {
+      "group": "asset",
+      "starter": "public/robots.txt",
+      "root": "public/robots.txt",
+      "relation": "equal",
+      "hashMode": "sha256"
+    },
+    {
+      "group": "configuration",
+      "starter": "scripts/security/run_security_checks.sh",
+      "root": "scripts/security/run_security_checks.sh",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root security entry point uses maintained host SYSTEMX checks; the starter retains a standalone scaffold security entry point.",
+      "rootSha256": "ed1a04a68d12e86670f26e8f345283d95667ee709c643abe63c4f6d2c3acc275",
+      "starterSha256": "b81e1c3abd870f12d38faf136432a01f01597ca4e7473024ffddc6e98a32ad20"
+    },
+    {
+      "group": "configuration",
+      "starter": "scripts/setup/seed-test-users.mjs",
+      "root": "scripts/setup/seed-test-users.mjs",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "app",
+      "starter": "src/auth/accountLevels.ts",
+      "root": "src/auth/accountLevels.ts",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "app",
+      "starter": "src/auth/useAccountLevel.ts",
+      "root": "src/auth/useAccountLevel.ts",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "app",
+      "starter": "src/components/layout/Footer.tsx",
+      "root": "src/components/layout/Footer.tsx",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root footer links the expanded native portal/documentation surfaces; the starter retains its smaller standalone navigation.",
+      "rootSha256": "08ae07d1d39657afb6e0eccf288048e0f3e87d3e8e9722844bc2601b68935d60",
+      "starterSha256": "1f8644e358b2b2eabb7c036eb8c278b2ef4a77fb391f364f5459d586b1b9f9b0"
+    },
+    {
+      "group": "app",
+      "starter": "src/components/layout/Layout.tsx",
+      "root": "src/components/layout/Layout.tsx",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root layout integrates unsaved-work, preview privacy and shared portal notices; the starter layout remains a standalone scaffold.",
+      "rootSha256": "41937e488db1f41614d39d68fef41b80683ac57925bee092b4aadbb139b909a6",
+      "starterSha256": "a91eb9cc5ec500d92fc1d3da3e7ab1ef35209ce7c85a18b4556ebf2099bba0c3"
+    },
+    {
+      "group": "app",
+      "starter": "src/components/layout/Navbar.tsx",
+      "root": "src/components/layout/Navbar.tsx",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root navigation includes the native portals and host product surfaces; the starter keeps only base scaffold destinations.",
+      "rootSha256": "d197b3e8b34142612a4d30408e8f49d24cea265297ef6b1aa08af2743536e41b",
+      "starterSha256": "3971145de31c1601c2fc0915844021a007cd6086e01a2ec9b07002029ef41ea8"
+    },
+    {
+      "group": "app",
+      "starter": "src/components/navigation/AppLink.tsx",
+      "root": "src/components/navigation/AppLink.tsx",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root links coordinate native unsaved-work transitions; the starter link performs its standalone navigation contract.",
+      "rootSha256": "21490f19bf6c7d432399297686f514eea9fc53159e55bd49c947c4bc64453e74",
+      "starterSha256": "df79acb7c77b70bba0de3f181e1611b8a1ec8781e873c323f4781abba006c1b7"
+    },
+    {
+      "group": "app",
+      "starter": "src/components/shell/SiteControls.tsx",
+      "root": "src/components/shell/SiteControls.tsx",
+      "relation": "starter-only",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Starter keeps its original all-in-one shell controls; root uses separately reviewed split shell components instead of this file.",
+      "rootSha256": null,
+      "starterSha256": "dbfd3f7ef12eacc10596984647f47aaaa72b7e80254dd887c5478ffa0556b3b8"
+    },
+    {
+      "group": "app",
+      "starter": "src/config/firebase.ts",
+      "root": "src/config/firebase.ts",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root Firebase setup separates disabled native mock and supervised-session behavior; the starter has standalone client configuration.",
+      "rootSha256": "c6bf24801d1bcf482013346d39c09b0fa51bc31b32142c8bb672cf0b7cf3d070",
+      "starterSha256": "81a61869e0f5de4132ff040b7b072b8b766439b6a01d74a94c618d77ffbd54eb"
+    },
+    {
+      "group": "app",
+      "starter": "src/config/siteControls.ts",
+      "root": "src/config/siteControls.ts",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root and starter retain separately reviewed shell-control defaults for their distinct product surfaces.",
+      "rootSha256": "553d5824fe66d5b4229bef04afc183782ce504710850af39edc65c0b9b2bdb34",
+      "starterSha256": "c12773541f38c9be66301c7f77a0c078e5a760c7056d053b2bb57d7068dd5f69"
+    },
+    {
+      "group": "app",
+      "starter": "src/hooks/useAccessibilityPreferences.ts",
+      "root": "src/hooks/useAccessibilityPreferences.ts",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root supports its expanded accessibility and motion controls; the starter keeps its separately reviewed standalone preference implementation.",
+      "rootSha256": "a7c4f2aedca7f6209dfd76c77aabd8bca989130c4132b993a3baee2fe4fbf4c3",
+      "starterSha256": "ba058f5ea2dcd67c002b481bf60945e67fe8ec90f029b9460b1afcd8d7cd42b2"
+    },
+    {
+      "group": "app",
+      "starter": "src/index.css",
+      "root": "src/index.css",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root styling includes native workspace/accessibility surfaces; the starter stylesheet remains the smaller standalone scaffold.",
+      "rootSha256": "2b0aab90708e30a50254b60fbf27c55108ff91e660d1f01c1e2727ee72600457",
+      "starterSha256": "8977350cb6cef892bfeb9d921f9c036eb283fc1c3132572f2a375dd3d9c7a865"
+    },
+    {
+      "group": "app",
+      "starter": "src/lib/navigation.ts",
+      "root": "src/lib/navigation.ts",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root navigation coordinates portal transitions and motion preferences; the starter preserves the simpler standalone route event contract.",
+      "rootSha256": "d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24",
+      "starterSha256": "cbd97f26c2a045e6cabaea12df9919964448a260de35b6791a3a6407343fb92b"
+    },
+    {
+      "group": "app",
+      "starter": "src/main.tsx",
+      "root": "src/main.tsx",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "app",
+      "starter": "src/pages/AboutPage.tsx",
+      "root": "src/pages/AboutPage.tsx",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "app",
+      "starter": "src/pages/ContactPage.tsx",
+      "root": "src/pages/ContactPage.tsx",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "app",
+      "starter": "src/pages/DocsPage.tsx",
+      "root": "src/pages/DocsPage.tsx",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "app",
+      "starter": "src/pages/HomePage.tsx",
+      "root": "src/pages/HomePage.tsx",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root home introduces the full WebAppX template and portal entry points; starter home describes its standalone scaffold.",
+      "rootSha256": "f41310f9b37cb9ccef4af1d09ffa3f78ee1c429a6a1cc051b23c792890d7c5ee",
+      "starterSha256": "949e2a8d23073387cc65512e42687a65ba50a467069418373676f14671e67f3d"
+    },
+    {
+      "group": "app",
+      "starter": "src/pages/LoginPage.tsx",
+      "root": "src/pages/LoginPage.tsx",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root sign-in UI exposes local-stack readiness and account-free boundaries; starter sign-in remains standalone Firebase scaffolding.",
+      "rootSha256": "f78d5d54a2ef508587476ca6d89e6e6d0c44c46d230f735b5d38132e468a91f8",
+      "starterSha256": "f34077b8abaf7ff7ae8e48190721090af91f17d9edfb1824526e1741a8a0e9f2"
+    },
+    {
+      "group": "app",
+      "starter": "src/pages/NotFoundPage.tsx",
+      "root": "src/pages/NotFoundPage.tsx",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "app",
+      "starter": "src/pages/ServicesPage.tsx",
+      "root": "src/pages/ServicesPage.tsx",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "app",
+      "starter": "src/router.tsx",
+      "root": "src/router.tsx",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root routes mount native HR/CMS/CRM and retained workspace providers; starter router includes only its finite scaffold routes.",
+      "rootSha256": "ec93762a8acbb9bbfdf43ceab5858a55243491b8ca5e7404419d71df4ab359c7",
+      "starterSha256": "93007f3aa051fe08b9e63dfa5c1fbb2b6e6a175501e324532115fc552362b180"
+    },
+    {
+      "group": "app",
+      "starter": "src/vite-env.d.ts",
+      "root": "src/vite-env.d.ts",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root declares reviewed native SDK and supervised-session environment options; starter declarations cover its standalone client configuration.",
+      "rootSha256": "b60e6d4700a0e4a3cac56401c14ac211920fc3098b19cd08cf5e44fb1fdbc653",
+      "starterSha256": "cc9f39506b263f3743b4d256dacfbc41735a9de59c764c5b0c674f7aec78426b"
+    },
+    {
+      "group": "configuration",
+      "starter": "storage.rules",
+      "root": "storage.rules",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "configuration",
+      "starter": "tsconfig.json",
+      "root": "tsconfig.json",
+      "relation": "equal",
+      "hashMode": "utf8-lf-sha256"
+    },
+    {
+      "group": "configuration",
+      "starter": "vite.config.ts",
+      "root": "vite.config.ts",
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "Root Vite adds explicit local integration and mock API wiring; starter Vite remains a standalone application configuration.",
+      "rootSha256": "ba6e9b93ca2ffa5594a51e20c6b408934cee0c7887c1ae2cc021f7524bb8b330",
+      "starterSha256": "a0222387726fb212a8e54a4206c8f9c2671372ef65b61493795ffc1096517c5d"
+    }
+  ]
+}

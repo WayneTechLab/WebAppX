@@ -67,6 +67,73 @@ For this reusable base, outer stock tooling/guidance may be reconciled only
 after matching the old retained release. That maintenance step does not add
 blanket replacement of downstream files to the importer.
 
+## Review setup metadata and starter parity
+
+Use the [setup-contract guide](../wiki/Developer-Setup-Contracts.md) and
+[command reference](COMMANDS.md#developer-setup-contracts) after editing scripts,
+documented examples, fictional defaults or the standalone starter. The real
+package manifest supplies executable text; maintained metadata supplies reviewed
+purpose, context and comparison decisions. Check mode never adopts drift.
+
+```bash
+npm run scripts:check
+npm run docs:commands:check
+npm run fixtures:check
+npm run source:shell:check
+npm run setup:contracts:test
+npm run template:check -- --json
+```
+
+Review each relevant metadata change deliberately:
+
+1. **Script purposes:** classify every exact current npm alias once in
+   [package-script-purposes.json](../scripts/package-script-purposes.json), under
+   setup, app, portal, SYSTEMX, wiki or release. A new script is unclassified
+   until reviewed; an obsolete classification fails rather than disappearing.
+2. **Document contexts:** correct an actual invalid command. For a genuine
+   starter/Functions, placeholder or historical example, inspect the exact
+   occurrence before editing [doc-command-contexts.json](../scripts/doc-command-contexts.json).
+   Its path/line/column/script, normalized command and whole-document hashes,
+   context, reason and source basis bind that one occurrence. Preserve original
+   historical receipt wording. A changed document invalidates its bindings;
+   rebind only after reviewing the affected source/example. No automatic writer
+   or whole-file exception is supplied.
+3. **Fictional sources:** review [fixture-inventory.json](../scripts/fixture-inventory.json)
+   together with actual builders, reset controls and consumer sources. Native
+   HR/CMS/CRM Reset, SDK session Reset and source fixture maintenance have
+   different effects. Do not run Reset or regenerate data to satisfy inventory.
+4. **Child-process exceptions:** inspect the call and wrapper before changing
+   the exact AST fingerprint/count/reason in
+   [child-process-baseline.json](../scripts/child-process-baseline.json). New,
+   modified, copied and removed occurrences must not inherit a broad waiver.
+   Read [argument-array examples and static limits](COMMAND-SAFETY.md#argument-arrays).
+
+The [starter parity mapping](../scripts/starter-parity.json) covers **43 public
+starter files** exactly once: **22 app**, **2 dependency**, **2 asset** and
+**17 configuration**. The report separates matched pairs, reviewed intentional
+variants, starter-only files and drift, with paths and reasons in each group.
+Its root-only feature descriptions explain the smaller scaffold; they cannot
+hide an unlisted starter addition. Native portals, SDK integration and host LAN
+tooling are not implicitly copied into the starter.
+
+For a real intentional variant, compare both sides and the reason, then review
+each recorded root/starter fingerprint and its hash mode. Reviewed text uses LF
+equivalence; assets use exact bytes. An equal pair should stay equal. Missing
+files, case-fold collisions, symlinks, unlisted files and stale fingerprints
+remain failures. Shared package/runtime/lock metadata also stays checked;
+do not regenerate lockfiles or overwrite the starter to silence a difference.
+There is no automatic fingerprint refresher. This report supplements the
+existing blank-record, release/bootstrap, research and version checks.
+`template:check -- --against` keeps its clean committed mirror-tree contract;
+`template:sync` is a separately reviewed mutation.
+
+For setup failure recovery use [Getting Started](GETTING-STARTED.md),
+[dependency installation](DEPENDENCY-INSTALLATION.md) and the [runbook](RUNBOOK.md).
+For a new app, deliberately replace the five identities in the
+[adoption checklist](examples/private-template-adoption.md) while keeping public
+reusable seeds blank and managed snapshots immutable. Focused source/path tests
+do not accept an adopted project's private records or a production target.
+
 ## Review and validate the source
 
 The [operational health vocabulary](MONITORING.md),

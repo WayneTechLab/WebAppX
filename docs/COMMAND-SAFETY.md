@@ -38,6 +38,73 @@ arguments can also change an invocation's effects. “No Git mutation” refers 
 branches, commits, index or remote publication; some commands still read Git
 metadata. Temporary writes remain writes even when cleanup succeeds.
 
+## Argument arrays
+
+Separate an executable from its argument array. Keep paths with spaces or
+Unicode in one argument; do not build quoting rules into a shell string.
+For example, maintained JavaScript and Python code can use:
+
+```javascript
+import { execFile } from 'node:child_process'
+execFile('git', ['status', '--porcelain'], { shell: false, timeout: 10000 })
+```
+
+```python
+import subprocess
+import sys
+subprocess.run([sys.executable, '-I', '-B', 'owned-tool.py', '--check'],
+               shell=False, check=True, timeout=20)
+```
+
+Argument arrays avoid shell interpolation; separately validate executable,
+target, options and authority for the operation. `exec`/`execSync`, `shell:true`,
+Python `shell=True` and explicit interpreter code options still need review.
+A shell executable with a `-c` payload remains an interpreter string channel
+even when its outer invocation uses an array.
+
+`npm run source:shell:check` parses maintained `scripts/` JS/TS with the installed
+TypeScript AST and Python with stdlib `ast`. It does not import or execute scanned
+modules. Its fixed Python parser child uses an argument array, isolated mode and
+time/output bounds. Diagnostics print locations, fixed rules and this guidance
+link rather than command payloads or source bodies. Unresolved recognized child
+construction is review-required. The current reviewed inventory is **45 scripts**
+with **six exact baseline occurrences** in
+[child-process-baseline.json](../scripts/child-process-baseline.json).
+
+Each exception binds a relative path, call kind, normalized AST fingerprint,
+occurrence count and reason to the reviewed source basis. A duplicated call
+exceeds its count; a changed or removed call causes drift. Review the actual
+call, wrappers, executable/argv/options and ownership behavior before changing
+that record. The checker has no baseline-writing mode or file-wide waiver.
+This static review is bounded; it does not parse existing `.sh` launchers,
+managed snapshots or vendor/runtime files, prove arbitrary dynamic data flow,
+or establish complete security or execution safety.
+
+## Setup source checks and temporary-copy effects
+
+The [seven setup aliases](COMMANDS.md#developer-setup-contracts) preserve these
+distinct effects:
+
+| Commands | Reviewed effects and limits |
+| --- | --- |
+| `scripts:list`, `scripts:check` | Read public manifest/classifications; report executable text without running it. Six-purpose classification is descriptive and grants no authority. |
+| `docs:commands:check` | Read maintained Markdown and three reviewed manifests; parse npm names without interpreting the shell or running examples. Exact context/historical records are bounded occurrences, never file exclusions. |
+| `fixtures:list`, `fixtures:check` | Read finite fictional source/descriptor bindings and print source/reset descriptions; no model import, fixture generation, storage read, reset, service or network operation. |
+| `source:shell:check` | Read maintained source/baseline, run only the fixed bounded AST parser helper, and report unmatched construction; installed dependencies are required, not downloaded. |
+| `setup:contracts:test` | Execute focused tests with owned temporary fixtures and execution traps that must remain inert; creates/cleans those local test files. |
+
+The Python [space/Unicode smoke](../tests/systemx/test_setup_paths.py), included
+in `systemx:integration:test`, creates two owned public copies and one fictional
+project configuration in each. It runs the real doctor, discovery, inventory,
+documentation and manager status/offline-doctor commands, including installed
+npm script dispatch. It bounds processes/output, compares all copied files and
+directories after each command, and preserves fictional ignored-state sentinels.
+The configured command trap must not execute. It cleans only its own copies and
+children, installs no dependencies/services, and reads no real ignored secrets.
+These are local path-handling observations, not Windows, provider, emulator or
+installation acceptance. See the [setup guide](../wiki/Developer-Setup-Contracts.md)
+for the focused evidence and remaining publication gates.
+
 ## Evaluator and rehearsal effects
 
 `hr:roles:check` and `gusto:capabilities:check` read reviewed public inputs and

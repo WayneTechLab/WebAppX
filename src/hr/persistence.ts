@@ -9,6 +9,8 @@ import { createPerformanceState, type PerformanceState } from './performance'
 import { createSurveysState, type SurveysState } from './surveys'
 import { assertRecruitingBaselineInstance, assertValidRecruitingLifecycle } from './recruiting-lifecycle-validation'
 import { canonicalRecruitingJson } from './recruiting-lifecycle-value'
+import { assertValidPayrollControl } from './payroll-control'
+import { canonicalPayrollJson } from './payroll-control-value'
 
 /** One JSON snapshot keeps a hire and its linked HR requirements atomic. */
 export type HrDemoState = {
@@ -60,10 +62,19 @@ export function isHrDemoState(value: unknown, base: HrFixture): value is HrDemoS
 function validateHrDemoState(value: unknown, base: HrFixture): boolean {
   // A present extension opts the whole saved envelope into plain JSON before
   // structural validation can read any user-defined nested property.
+  let hasPayrollControl = false
   if (object(value)) {
+    const workflow = Object.getOwnPropertyDescriptor(value, 'workflow')
+    if (workflow && !('value' in workflow)) return false
+    if (workflow && 'value' in workflow && object(workflow.value)) {
+      const control = Object.getOwnPropertyDescriptor(workflow.value, 'payrollControl')
+      if (control && !('value' in control) || !control && 'payrollControl' in workflow.value) return false
+      hasPayrollControl = control !== undefined
+    }
     const descriptor = Object.getOwnPropertyDescriptor(value, 'recruiting')
     if (descriptor && !('value' in descriptor)) return false
-    if (descriptor && 'value' in descriptor && object(descriptor.value) && Object.hasOwn(descriptor.value, 'lifecycle')) canonicalRecruitingJson({ schemaVersion: 1, module: 'hr', data: value })
+    if (hasPayrollControl) canonicalPayrollJson({ schemaVersion: 1, module: 'hr', data: value })
+    else if (descriptor && 'value' in descriptor && object(descriptor.value) && Object.hasOwn(descriptor.value, 'lifecycle')) canonicalRecruitingJson({ schemaVersion: 1, module: 'hr', data: value })
   }
   if (!fields(value, {
     workflow: object, operations: object, serviceDesk: object, recruiting: object, performance: object, surveys: object,
@@ -174,7 +185,9 @@ function validateHrDemoState(value: unknown, base: HrFixture): boolean {
     }) && optional(survey.receipt, text) && (survey.responses as ObjectValue[]).every(response => (survey.audienceIds as unknown[]).includes(response.employeeId)) && unique(survey.responses as ObjectValue[], 'employeeId')),
   })) return false
   if (hasRecruitingLifecycle) assertValidRecruitingLifecycle(value as HrDemoState, base)
-  return validateLifecycle(value, employees, hasRecruitingLifecycle)
+  if (!validateLifecycle(value, employees, hasRecruitingLifecycle)) return false
+  if (hasPayrollControl) assertValidPayrollControl(value as HrDemoState, base)
+  return true
 }
 
 

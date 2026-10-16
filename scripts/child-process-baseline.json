@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "fingerprintFormat": "typescript-structure-v1+python-ast-v1",
+  "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
+  "exceptions": [
+    {
+      "path": "scripts/browser-preview-process.mjs",
+      "kind": "javascript:fork",
+      "fingerprint": "11042b01d316cf0c7fe31330912ebf011e40e5e4dc233684ccfef9197f5c34c5",
+      "count": 1,
+      "reason": "Reviewed owned fork uses the fixed module-relative preview worker and a literal argv array; this parser does not infer URL-to-path values."
+    },
+    {
+      "path": "scripts/dev-mock.mjs",
+      "kind": "javascript:fork",
+      "fingerprint": "f9fc7d9f40fc98cb61e08a90aff02e32c6f25696d9ad59a7b04a3b920619c27a",
+      "count": 1,
+      "reason": "Reviewed injected fork defaults to Node fork and receives mockWorkerArguments output; inspect that bounded helper when this exact call changes."
+    },
+    {
+      "path": "scripts/developer-prerequisites.mjs",
+      "kind": "javascript:spawnSync",
+      "fingerprint": "641d997f07d6e716f9c27baa238d9097e8add41de9e3f989303444b54dd4af4b",
+      "count": 1,
+      "reason": "Reviewed version-probe wrapper accepts only the finite doctor tool probes with bounded shell-false options; injected runner is a focused-test boundary."
+    },
+    {
+      "path": "scripts/documentation-freshness.mjs",
+      "kind": "javascript:spawnSync",
+      "fingerprint": "dfa28cd26a4cd15b2fbc395bc1a5aa1948bb719b23114ff49e62ea3d26b4124e",
+      "count": 1,
+      "reason": "Reviewed impact observer forwards only the impact engine argument arrays and isolated bounded options; no shell construction is introduced here."
+    },
+    {
+      "path": "scripts/rehearse-hr-disabled.mjs",
+      "kind": "javascript:execFile",
+      "fingerprint": "477e223190dc277211981e120398000f507c56a6e72233140faa6d2ec45309f3",
+      "count": 1,
+      "reason": "Reviewed promisified execFile ownership wrapper receives fixed rehearsal commands, argv arrays and cancellation/limits; inspect every changed call."
+    },
+    {
+      "path": "scripts/systemx-import-rehearsal.py",
+      "kind": "python:subprocess.Popen",
+      "fingerprint": "8400fa4a77787dd580ed3985560bf2f048823588909466bb6c9f025021eb9abb",
+      "count": 1,
+      "reason": "Reviewed isolated Python code worker uses owned process groups and fixed in-source code templates; explicit interpreter channel requires this exact count."
+    }
+  ]
+}

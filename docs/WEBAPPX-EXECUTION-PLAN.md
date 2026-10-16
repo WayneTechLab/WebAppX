@@ -14,6 +14,14 @@ Current verified progress: **122 done / 878 remaining**.
 Remaining priorities: **58 P1 · 664 P2 · 156 P3**.
 Remaining acceptance gates: **711 local · 40 provider · 127 operator**.
 
+## Assigned implementation plans
+
+The current payroll/setup wave is defined by the [payroll control contract](PAYROLL-CONTROL-CONTRACT.md)
+and [developer setup implementation plan](SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md).
+It covers WX-0159, WX-0160, WX-0011–0014, WX-0016, WX-0019, WX-0020 and WX-0022–0024.
+An implementation assignment or focused test result does not check off these items.
+Their canonical statuses and completion receipts remain the authority below.
+
 ## Execution and acceptance
 
 1. Select dependency-ready work, starting with P1 foundations. Read the exact

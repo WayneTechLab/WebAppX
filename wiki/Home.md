@@ -6,6 +6,17 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
+## Assigned payroll and developer setup work
+
+The next implementation wave covers sample payroll closure and separate
+correction runs, plus ten developer setup criteria. Read
+[Payroll Closures and Corrections](HR-Payroll-Controls.md) and
+[Developer Setup Contracts](Developer-Setup-Contracts.md) for the controls and
+verification boundaries. The [full execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/WEBAPPX-EXECUTION-PLAN.md)
+keeps the complete 1,000-item goal and dependency sequencing visible.
+The canonical checklist retains each original acceptance criterion; these
+implementation guides do not establish completion.
+
 ## Current recruiting lifecycle checkpoint — locally accepted
 
 Agent 0 accepted **eleven original local criteria: WX-0201–WX-0210 and

@@ -4,11 +4,11 @@ These are concrete synthetic examples from the reviewed fixture. Use the
 [canonical cross-portal capability matrix](PORTAL-CAPABILITIES.md) for the complete vocabulary, role scopes and provider boundary.
 A role example is an actor, resource, action and current state; opening a route does not establish permission for its domain transitions.
 
-Review basis: ` 7a582ed4a5396d54aa94e3ca780667d1b07f179e ` and proposal ` WX-0908 `.
+Review basis: ` 49a9efe345c815c2bead1cbbeb83204d31e64290 ` and proposal ` WX-0908 `.
 Original criterion: A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.
 
-The revision above names the supplied published baseline. The fingerprints below bind the explicitly reviewed recruiting working tree.
-Agent 0 froze 123 application source files by exact bytes; the source-manifest SHA-256 is `5a48242850a2f840d61478ebc55c427e05cb6135c24b61ed2f50af232df39569`.
+The revision above names the supplied published baseline. The fingerprints below bind the explicitly reviewed payroll-control working tree.
+Agent 0 froze 130 application source files by exact bytes in the [runtime source manifest](evidence/payroll-control-runtime-2026-10-15.json); its SHA-256 is `6adc613e9cb4681668200c742b08716259833a678ba03cc95c9ea7fdb5af8666`.
 This source-only review establishes no new commit, browser observation, provider operation or production acceptance.
 
 The [reviewed fixture](../tests/fixtures/hr-capability-examples.json) supplies each action, prerequisite and literal expected result.
@@ -356,15 +356,15 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | --- | --- |
 | [docs/PORTAL-CAPABILITIES.md](../docs/PORTAL-CAPABILITIES.md) | ` 145d912322bd3d4e9ffce7a8ca45131c1fd557f8801ef9d36ed348934368f6cd ` |
 | [src/hr/model.ts](../src/hr/model.ts) | ` 32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e ` |
-| [src/hr/mock-workflows.ts](../src/hr/mock-workflows.ts) | ` 4197404a605b370245d4a7542aba9a31ed620c852f1643e330cb42288c638136 ` |
+| [src/hr/mock-workflows.ts](../src/hr/mock-workflows.ts) | ` ab87d8c22e622785196d083ed40036ad5c1853dcd4fbfc96fa551410f78546db ` |
 | [src/hr/performance.ts](../src/hr/performance.ts) | ` e4dd5404f9c826a162981904fbc0417588b64252998fa4ac1ca7c0477c8c716f ` |
 | [src/hr/surveys.ts](../src/hr/surveys.ts) | ` 5bc231e4a19c62c3a2b7520e93026f885d1f0f636e89306ccfa76d0a7f0a2b85 ` |
-| [src/hr/persistence.ts](../src/hr/persistence.ts) | ` 052a06301f32565b5c89e8bdde9f2d075752ff08cd172293408116cb8e3a2d1f ` |
+| [src/hr/persistence.ts](../src/hr/persistence.ts) | ` 1c313c6ebd78b7eccec8cb6373e1b2e510f12a744883b6f8054fe0c112e6a8e0 ` |
 | [src/portals/backup.ts](../src/portals/backup.ts) | ` b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a ` |
 | [src/portals/combined-backup.ts](../src/portals/combined-backup.ts) | ` 186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726 ` |
 | [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | ` 850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809 ` |
 | [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51 ` |
-| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` d37bc8bc39d8bd1af1a6b075f7193dda802dd8d7b184d0af90a87bac566749c3 ` |
+| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` f09c81627ae7767a4b2e8aa9587dcf00cb55ae9da9870e4c01438ae28b3db13a ` |
 | [.SYSTEMX/GUSTO/mock/fixtures/demo-company.json](../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json) | ` 14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3 ` |
 | [src/portals/unsaved-work-core.ts](../src/portals/unsaved-work-core.ts) | ` f5f7db3ae4ff9c70edb4c3dfd7052075c0b5f3fe3e7c36333ebf311ff0623e14 ` |
 | [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | ` 5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316 ` |
@@ -388,7 +388,7 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/portals/restore-points.ts](../src/portals/restore-points.ts) | ` d80d770440de2db847fd5cd933a960fbe2cc88adb4f80d9bd9ae13e97ce89e1b ` |
 | [src/portals/RestorePointHistory.tsx](../src/portals/RestorePointHistory.tsx) | ` 883a619f1e6f78db5ffee7302b48b36b6f88823ddfe706699a0395ee6505183d ` |
 | [src/portals/restore-workspaces.ts](../src/portals/restore-workspaces.ts) | ` 1e84b45222b119e9d02e75efa1ba251584353ef0ff2142db5350f009e2797cce ` |
-| [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | ` 6af90c859a293c5cc6f1d80b702333af1aa39ce8dfc662139fefbf9f759b4a11 ` |
+| [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | ` 0163551a49238c81a9a16aa5de80eeedd723ce257885f4fae6d585958b7a2e46 ` |
 | [src/portals/WorkspaceInspection.tsx](../src/portals/WorkspaceInspection.tsx) | ` 2e5b584d1f61cb1331879b0f251c8355b6f9f74b638fcb40f82e0da1439db069 ` |
 | [src/crm/CrmDemo.tsx](../src/crm/CrmDemo.tsx) | ` 5d2703a94ce2bcb75c1d72d68ae8d64c14df77e2d48b57ac95c7699c8b85501c ` |
 | [src/hr/lifecycle-types.ts](../src/hr/lifecycle-types.ts) | ` 3d4330aa6bea5a438ba55c6e3d7ee8dab4332d538793adad81e0fe6bb955de27 ` |
@@ -429,3 +429,11 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/components/layout/Layout.tsx](../src/components/layout/Layout.tsx) | ` 41937e488db1f41614d39d68fef41b80683ac57925bee092b4aadbb139b909a6 ` |
 | [src/pages/TemplatePortalsPage.tsx](../src/pages/TemplatePortalsPage.tsx) | ` 0d76bcf1c6a32001c7efb66f3c8e95290427363ee7907c0c2575d38b9e7402da ` |
 | [src/portals/RetainedPortalSurface.tsx](../src/portals/RetainedPortalSurface.tsx) | ` 31bf40cda4f2bddc6bfb1eb68113ebf59374ea291284161df0473c85009bb82a ` |
+| [src/hr/payroll-control-types.ts](../src/hr/payroll-control-types.ts) | ` 8f6867ae6723d5929e0d85ab4cbedda8d7b89dd247fc662782a1e1acada3c68d ` |
+| [src/hr/payroll-control-value.ts](../src/hr/payroll-control-value.ts) | ` a470bbee2013a153f9d2f208fada3b6bb4e3519341555d286a6c1cd9872b014a ` |
+| [src/hr/payroll-control.ts](../src/hr/payroll-control.ts) | ` d754c27c69a5050cad26a952666b38fb08efd86409fa8feed8ef7750b0b25059 ` |
+| [src/hr/payroll-control-controller.ts](../src/hr/payroll-control-controller.ts) | ` 5dd06613faf50dc6e525f4aeb8f65c8378582ed9f48aa6388527a3457e7a1970 ` |
+| [src/hr/payroll-control-host.ts](../src/hr/payroll-control-host.ts) | ` 13771680bcb323fc58a9ffa20fd3b159d79cd305316bbce1108fd5bf387e97e6 ` |
+| [src/hr/components/HrPayrollControl.tsx](../src/hr/components/HrPayrollControl.tsx) | ` cc089b5d3a77db56d9697da8c3c33d97696dc0a65cb6663669bb7a5303238a4d ` |
+| [src/hr/components/HrPayrollControlHost.tsx](../src/hr/components/HrPayrollControlHost.tsx) | ` 57e81d72dc665fa24fcb9893c19c755f1634e61e5320f9fa559a9591ce0dde3b ` |
+| [src/hr/components/HrInsights.tsx](../src/hr/components/HrInsights.tsx) | ` 923fd14fbee0f903b547f0e5a036166dad705aa5363e6b951e05e87c84c5b876 ` |

@@ -96,6 +96,26 @@ function publicationMetadata(value: unknown): StructuredRecordMetadata {
 /** Only allowlisted structured metadata leaves the comparison index. Complete
  * hidden payload fingerprints still determine the existing change categories. */
 function annotateRecord(module: DemoModule, key: string, value: unknown): RecordAnnotation | undefined {
+  if (module === 'hr' && key.startsWith('workflow.payrollControl.')) {
+    const entry = object(value)
+    if (key === 'workflow.payrollControl.events') {
+      const actor = object(entry.actor)
+      const metadata: StructuredRecordMetadata = {
+        sequence: revision(entry.sequence), eventKind: stateChoice(entry.kind, ['period-closed', 'receipt-adjusted']), recordedOn: tokenDate(entry.recordedOn),
+        actorRole: stateChoice(actor.role, ['employer-owner', 'payroll-admin']), actorEmployeeId: optionalId(actor, 'employeeId'),
+      }
+      if (entry.kind === 'period-closed') {
+        const period = object(entry.period), receipts = array(entry.receiptIds).map(token)
+        if (!receipts.length || receipts.length > 100 || new Set(receipts).size !== receipts.length) return failure('invalid payroll closure receipt metadata')
+        Object.assign(metadata, { periodStart: tokenDate(period.start), periodEnd: tokenDate(period.end), receiptCount: receipts.length })
+      } else {
+        Object.assign(metadata, { adjustmentReceipt: token(entry.adjustmentReceipt), originalReceipt: token(entry.originalReceipt), employeeId: token(entry.employeeId), previousAdjustmentId: nullableId(entry.previousAdjustmentId) })
+      }
+      return { metadata }
+    }
+    if (key === 'workflow.payrollControl.metadata') return { metadata: { schemaVersion: revision(entry.schemaVersion), sequence: revision(entry.sequence), anchorCount: array(entry.anchors).length } }
+    return undefined
+  }
   if (module === 'hr' && key.startsWith('recruiting.lifecycle.')) {
     const entry = object(value)
     if (key === 'recruiting.lifecycle.people') return { metadata: { provenanceKind: stateChoice(object(entry.provenance).kind, ['legacy', 'created']) } }
@@ -362,6 +382,23 @@ function inventory(states: Partial<DemoWorkspaces>, modules: DemoModule[]): Map<
       const payroll = object(workflow.payroll); const history = records(workflow.payrollHistory)
       add('workflow.payroll', 'Current payroll snapshot', 'primary', 'One current snapshot, including idle state', [{ parts: ['current'], value: normalizePayroll(payroll) }])
       primary('workflow.payrollHistory', 'Submitted payroll receipts', history, normalizePayroll, 'receipt')
+      if (Object.hasOwn(workflow, 'payrollControl')) {
+        const control = object(workflow.payrollControl), required = ['schemaVersion', 'sequence', 'anchors', 'events']
+        if (control.schemaVersion !== 1 || required.some(key => !Object.hasOwn(control, key)) || Object.keys(control).some(key => !required.includes(key))) return failure('unsupported payroll control snapshot')
+        const anchors = records(control.anchors), events = records(control.events)
+        if (!anchors.length || anchors.length > 100 || !events.length || events.length > 250 || control.sequence !== events.length + 1
+          || events.filter(event => event.kind === 'period-closed').length > 50 || events.filter(event => event.kind === 'receipt-adjusted').length > 200) return failure('invalid payroll control collection bounds')
+        const receiptIds = anchors.map(anchor => {
+          if (Object.keys(anchor).length !== 2 || !Object.hasOwn(anchor, 'receipt') || !Object.hasOwn(anchor, 'snapshot')) return failure('unsupported payroll anchor snapshot')
+          object(anchor.snapshot)
+          return token(anchor.receipt)
+        })
+        if (new Set(receiptIds).size !== receiptIds.length) return failure('duplicate payroll anchor identity')
+        primary('workflow.payrollControl.events', 'Payroll closure and correction events', events)
+        // Anchors are complete contained provenance, not additional payrolls,
+        // inputs or totals. Their hidden content still affects this metadata row.
+        add('workflow.payrollControl.metadata', 'Payroll control saved metadata', 'metadata', 'One present extension; captured receipt anchors are not additional primary records', [{ parts: ['extension'], value: { schemaVersion: control.schemaVersion, sequence: control.sequence, anchors } }])
+      }
       for (const [key, label, parents] of [
         ['workflow.payroll', 'Current payroll', [{ parts: ['current'], value: payroll }]],
         ['workflow.payrollHistory', 'Payroll history', history.map(entry => ({ parts: [id(entry, 'receipt')], value: entry }))],
@@ -521,7 +558,7 @@ export function compareWorkspaces(current: Partial<DemoWorkspaces>, target: Part
     const previousCollections = before.get(module)!; const nextCollections = after.get(module)!
     const previousByKey = new Map(previousCollections.map(collection => [collection.key, collection]))
     const nextByKey = new Map(nextCollections.map(collection => [collection.key, collection]))
-    const extension = (key: string) => key.startsWith('workflow.lifecycle.') || key.startsWith('recruiting.lifecycle.') || key === 'preview.selectedManager' || key.startsWith('releaseBundles') || key.startsWith('activity.ownershipChange')
+    const extension = (key: string) => key.startsWith('workflow.lifecycle.') || key.startsWith('workflow.payrollControl.') || key.startsWith('recruiting.lifecycle.') || key === 'preview.selectedManager' || key.startsWith('releaseBundles') || key.startsWith('activity.ownershipChange')
     const keys = [...new Set([...previousByKey.keys(), ...nextByKey.keys()])]
     // Legacy rows retain their established order; optional extension rows have
     // the same order in both comparison directions, even if a field is absent.

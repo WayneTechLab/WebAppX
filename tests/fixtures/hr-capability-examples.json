@@ -4,7 +4,7 @@
   "review": {
     "proposalId": "WX-0908",
     "criterion": "A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.",
-    "sourceRevision": "7a582ed4a5396d54aa94e3ca780667d1b07f179e",
+    "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
     "canonicalDocument": "docs/PORTAL-CAPABILITIES.md",
     "reviewedSources": [
       {
@@ -17,7 +17,7 @@
       },
       {
         "path": "src/hr/mock-workflows.ts",
-        "sha256": "4197404a605b370245d4a7542aba9a31ed620c852f1643e330cb42288c638136"
+        "sha256": "ab87d8c22e622785196d083ed40036ad5c1853dcd4fbfc96fa551410f78546db"
       },
       {
         "path": "src/hr/performance.ts",
@@ -29,7 +29,7 @@
       },
       {
         "path": "src/hr/persistence.ts",
-        "sha256": "052a06301f32565b5c89e8bdde9f2d075752ff08cd172293408116cb8e3a2d1f"
+        "sha256": "1c313c6ebd78b7eccec8cb6373e1b2e510f12a744883b6f8054fe0c112e6a8e0"
       },
       {
         "path": "src/portals/backup.ts",
@@ -49,7 +49,7 @@
       },
       {
         "path": "src/hr/components/HrWorkspace.tsx",
-        "sha256": "d37bc8bc39d8bd1af1a6b075f7193dda802dd8d7b184d0af90a87bac566749c3"
+        "sha256": "f09c81627ae7767a4b2e8aa9587dcf00cb55ae9da9870e4c01438ae28b3db13a"
       },
       {
         "path": ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json",
@@ -145,7 +145,7 @@
       },
       {
         "path": "src/portals/workspace-inspection.ts",
-        "sha256": "6af90c859a293c5cc6f1d80b702333af1aa39ce8dfc662139fefbf9f759b4a11"
+        "sha256": "0163551a49238c81a9a16aa5de80eeedd723ce257885f4fae6d585958b7a2e46"
       },
       {
         "path": "src/portals/WorkspaceInspection.tsx",
@@ -306,6 +306,38 @@
       {
         "path": "src/portals/RetainedPortalSurface.tsx",
         "sha256": "31bf40cda4f2bddc6bfb1eb68113ebf59374ea291284161df0473c85009bb82a"
+      },
+      {
+        "path": "src/hr/payroll-control-types.ts",
+        "sha256": "8f6867ae6723d5929e0d85ab4cbedda8d7b89dd247fc662782a1e1acada3c68d"
+      },
+      {
+        "path": "src/hr/payroll-control-value.ts",
+        "sha256": "a470bbee2013a153f9d2f208fada3b6bb4e3519341555d286a6c1cd9872b014a"
+      },
+      {
+        "path": "src/hr/payroll-control.ts",
+        "sha256": "d754c27c69a5050cad26a952666b38fb08efd86409fa8feed8ef7750b0b25059"
+      },
+      {
+        "path": "src/hr/payroll-control-controller.ts",
+        "sha256": "5dd06613faf50dc6e525f4aeb8f65c8378582ed9f48aa6388527a3457e7a1970"
+      },
+      {
+        "path": "src/hr/payroll-control-host.ts",
+        "sha256": "13771680bcb323fc58a9ffa20fd3b159d79cd305316bbce1108fd5bf387e97e6"
+      },
+      {
+        "path": "src/hr/components/HrPayrollControl.tsx",
+        "sha256": "cc089b5d3a77db56d9697da8c3c33d97696dc0a65cb6663669bb7a5303238a4d"
+      },
+      {
+        "path": "src/hr/components/HrPayrollControlHost.tsx",
+        "sha256": "57e81d72dc665fa24fcb9893c19c755f1634e61e5320f9fa559a9591ce0dde3b"
+      },
+      {
+        "path": "src/hr/components/HrInsights.tsx",
+        "sha256": "923fd14fbee0f903b547f0e5a036166dad705aa5363e6b951e05e87c84c5b876"
       }
     ],
     "hashMode": "utf8-lf-sha256"
@@ -383,7 +415,7 @@
         "role": "manager",
         "employeeId": "employee-001"
       },
-      "context": "The actor is employee-001; approval or reasoned return requires submitted unpaid direct-report time and excludes the manager’s own entries. Own unpaid draft time can be corrected or explicitly deleted before resubmission.",
+      "context": "The actor is employee-001; approval or reasoned return requires submitted unpaid direct-report time and excludes the manager\u2019s own entries. Own unpaid draft time can be corrected or explicitly deleted before resubmission.",
       "projection": {
         "employeeIds": [
           "employee-001",
@@ -493,7 +525,7 @@
         "role": "employer-owner"
       },
       "domain": "performance",
-      "actionDescription": "Attempt to save another person’s self-review.",
+      "actionDescription": "Attempt to save another person\u2019s self-review.",
       "resource": "review-seed-employee-002",
       "statePrerequisites": [
         "The review exists in draft; its subject is employee-002."
@@ -566,7 +598,7 @@
         "role": "hr-admin"
       },
       "domain": "workflow",
-      "actionDescription": "Approve a known employee’s submitted time entry.",
+      "actionDescription": "Approve a known employee\u2019s submitted time entry.",
       "resource": "time-001",
       "statePrerequisites": [
         "Entry belongs to employee-002 and is submitted."
@@ -593,7 +625,7 @@
         "role": "hr-admin"
       },
       "domain": "performance",
-      "actionDescription": "Attempt to write the assigned manager’s review.",
+      "actionDescription": "Attempt to write the assigned manager\u2019s review.",
       "resource": "review-seed-employee-002",
       "statePrerequisites": [
         "Review records employee-001 as the assigned manager."
@@ -636,7 +668,7 @@
           "status"
         ],
         "value": "approved",
-        "description": "The direct report’s submitted entry becomes approved."
+        "description": "The direct report\u2019s submitted entry becomes approved."
       }
     },
     {
@@ -646,7 +678,7 @@
         "employeeId": "employee-001"
       },
       "domain": "workflow",
-      "actionDescription": "Attempt to approve a direct report’s draft entry.",
+      "actionDescription": "Attempt to approve a direct report\u2019s draft entry.",
       "resource": "time-002",
       "statePrerequisites": [
         "Actor employee-001 manages employee-003.",
@@ -670,7 +702,7 @@
         "employeeId": "employee-003"
       },
       "domain": "workflow",
-      "actionDescription": "Attempt to approve submitted time outside the actor’s reporting line.",
+      "actionDescription": "Attempt to approve submitted time outside the actor\u2019s reporting line.",
       "resource": "time-001",
       "statePrerequisites": [
         "Actor employee-003 is a known employee using the manager preview.",
@@ -684,7 +716,7 @@
       "expected": {
         "outcome": "deny",
         "error": "Approval requires a submitted entry within this role and team scope; self-approval is unavailable.",
-        "description": "The manager role alone cannot approve another manager’s report."
+        "description": "The manager role alone cannot approve another manager\u2019s report."
       }
     },
     {
@@ -694,7 +726,7 @@
         "employeeId": "employee-001"
       },
       "domain": "workflow",
-      "actionDescription": "Attempt to approve the manager’s own submitted time.",
+      "actionDescription": "Attempt to approve the manager\u2019s own submitted time.",
       "resource": "MOCK-TIME-0001",
       "statePrerequisites": [
         "Actor employee-001 creates and submits their own draft in the setup steps.",
@@ -857,7 +889,7 @@
         "employeeId": "employee-002"
       },
       "domain": "workflow",
-      "actionDescription": "Attempt to edit another employee’s profile using its known ID.",
+      "actionDescription": "Attempt to edit another employee\u2019s profile using its known ID.",
       "resource": "employee-003",
       "statePrerequisites": [
         "Actor remains employee-002; the target is employee-003."
@@ -1006,7 +1038,7 @@
       "expected": {
         "outcome": "deny",
         "error": "Approval requires a submitted entry within this role and team scope; self-approval is unavailable.",
-        "description": "The auditor’s readable metadata does not permit domain mutation."
+        "description": "The auditor\u2019s readable metadata does not permit domain mutation."
       }
     }
   ],

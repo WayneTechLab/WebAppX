@@ -46,6 +46,10 @@ const requiredSources = [
   'src/hr/components/HrRecruitingOwnScorecards.tsx', 'src/portals/ScopedPortalChrome.tsx',
   'src/components/layout/Layout.tsx', 'src/pages/TemplatePortalsPage.tsx',
   'src/portals/RetainedPortalSurface.tsx',
+  'src/hr/payroll-control-types.ts', 'src/hr/payroll-control-value.ts',
+  'src/hr/payroll-control.ts', 'src/hr/payroll-control-controller.ts',
+  'src/hr/payroll-control-host.ts', 'src/hr/components/HrPayrollControl.tsx',
+  'src/hr/components/HrPayrollControlHost.tsx', 'src/hr/components/HrInsights.tsx',
 ]
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value)
 function fields(value, expected, label) {
@@ -88,7 +92,7 @@ export function validateHrRoleExamples(fixture) {
   fields(review, ['proposalId', 'criterion', 'sourceRevision', 'canonicalDocument', 'hashMode', 'reviewedSources'], 'Review basis')
   if (review.proposalId !== 'WX-0908' || review.canonicalDocument !== 'docs/PORTAL-CAPABILITIES.md' || review.hashMode !== 'utf8-lf-sha256' || typeof review.sourceRevision !== 'string' || !/^[0-9a-f]{40}$/.test(review.sourceRevision)) throw new Error('Use the reviewed WX-0908 source and canonical capability document')
   text(review.criterion, 'Acceptance criterion')
-  list(review.reviewedSources, 'Reviewed sources', { maximum: 75 })
+  list(review.reviewedSources, 'Reviewed sources', { maximum: 83 })
   const sources = new Set()
   for (const source of review.reviewedSources) {
     fields(source, ['path', 'sha256'], 'Reviewed source')
@@ -146,7 +150,7 @@ export function validateHrRoleExamples(fixture) {
   return fixture
 }
 
-const escaped = value => String(value).replace(/([\\`*_\[\]<>#|])/g, '\\$1')
+const escaped = value => String(value).replace(/([\\`*_[\]<>#|])/g, '\\$1')
 const code = value => {
   const text = typeof value === 'string' ? value : JSON.stringify(value)
   const fence = '`'.repeat(Math.max(0, ...[...text.matchAll(/`+/g)].map(match => match[0].length)) + 1)
@@ -162,8 +166,8 @@ export function renderHrRoleExamples(input) {
     'A role example is an actor, resource, action and current state; opening a route does not establish permission for its domain transitions.', '',
     `Review basis: ${code(fixture.review.sourceRevision)} and proposal ${code(fixture.review.proposalId)}.`,
     `Original criterion: ${escaped(fixture.review.criterion)}`, '',
-    'The revision above names the supplied published baseline. The fingerprints below bind the explicitly reviewed recruiting working tree.',
-    'Agent 0 froze 123 application source files by exact bytes; the source-manifest SHA-256 is `5a48242850a2f840d61478ebc55c427e05cb6135c24b61ed2f50af232df39569`.',
+    'The revision above names the supplied published baseline. The fingerprints below bind the explicitly reviewed payroll-control working tree.',
+    'Agent 0 froze 130 application source files by exact bytes in the [runtime source manifest](evidence/payroll-control-runtime-2026-10-15.json); its SHA-256 is `6adc613e9cb4681668200c742b08716259833a678ba03cc95c9ea7fdb5af8666`.',
     'This source-only review establishes no new commit, browser observation, provider operation or production acceptance.', '',
     'The [reviewed fixture](../tests/fixtures/hr-capability-examples.json) supplies each action, prerequisite and literal expected result.',
     'The independent [domain tests](../tests/hr/role-examples.test.mjs) exercise the actual HR transitions, ownership checks, projections and complete backup codecs.',

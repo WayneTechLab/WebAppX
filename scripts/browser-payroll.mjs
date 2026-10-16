@@ -1,10 +1,10 @@
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { runBrowserSuite } from './browser-smoke.mjs'
-import { runPayrollLifecycle } from '../tests/browser/payroll-lifecycle.mjs'
+import { runPayrollSuite } from '../tests/browser/payroll-control.mjs'
 
 export async function main(args = process.argv.slice(2)) {
-  return runBrowserSuite({ args, suite: 'payroll', runChecks: runPayrollLifecycle })
+  return runBrowserSuite({ args, suite: 'payroll', runChecks: runPayrollSuite })
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -1,6 +1,8 @@
 import type { HrEmploymentInstance, HrLifecycleState } from './lifecycle-types'
 import type { RecruitingState } from './recruiting'
+import type { MockPayrollControlV1 } from './payroll-control-types'
 import { recruitingEmploymentBaseline } from './recruiting-employment-baseline'
+import { payrollControlClosedDateReason, payrollControlClosedPeriodReason } from './payroll-control'
 import { canApproveTimeEntry, canEditEmployeeProfile, validateTimeEntry, type HrActor, type HrFixture, type HrRecord } from './model'
 
 export type MockOnboarding = { profileReviewed: boolean; jobReviewed: boolean; tasks: Record<string, boolean>; stage: 'draft' | 'reviewed' | 'complete'; receipt?: string }
@@ -19,7 +21,7 @@ export type MockPayroll = {
   employeeTotals: MockPayrollEmployeeTotal[];
   hours: number; grossCents: number; illustrativeWithholdingCents: number; benefitDeductionCents: number; netCents: number; receipt?: string;
 }
-export type MockHrState = { onboarding: Record<string, MockOnboarding>; profileEmails: Record<string, string>; employeeStatuses: Record<string, string>; timeEntries: MockTimeEntry[]; benefitElections: MockBenefitElection[]; payroll: MockPayroll; payrollHistory: MockPayroll[]; sequence: number; sampleRates?: Record<string, MockSampleRate[]>; lifecycle?: HrLifecycleState }
+export type MockHrState = { onboarding: Record<string, MockOnboarding>; profileEmails: Record<string, string>; employeeStatuses: Record<string, string>; timeEntries: MockTimeEntry[]; benefitElections: MockBenefitElection[]; payroll: MockPayroll; payrollHistory: MockPayroll[]; sequence: number; sampleRates?: Record<string, MockSampleRate[]>; lifecycle?: HrLifecycleState; payrollControl?: MockPayrollControlV1 }
 export type MockHrEvent =
   | { type: 'review-profile' | 'review-job' | 'review-onboarding' | 'complete-onboarding'; employeeId: string; instanceId?: string }
   | { type: 'change-profile'; employeeId: string; workEmail: string }
@@ -79,6 +81,8 @@ export function payrollEligibility(state: MockHrState, fixture: HrFixture, perio
 }
 
 function payrollSnapshot(state: MockHrState, fixture: HrFixture, period: MockSamplePeriod) {
+  const closed = payrollControlClosedPeriodReason(state, period)
+  if (closed) throw new Error(closed)
   const eligibility = payrollEligibility(state, fixture, period)
   const missing = eligibility.filter(entry => entry.baseEligible && entry.rateCents === undefined)
   if (missing.length) throw new Error(`Configure an explicit fictional hourly rate for every eligible employee/work date: ${[...new Set(missing.map(entry => entry.employeeId))].join(', ')}.`)
@@ -93,6 +97,10 @@ function payrollSnapshot(state: MockHrState, fixture: HrFixture, period: MockSam
 
 export function payrollFreshness(state: MockHrState, fixture: HrFixture): { stale: boolean; reason: string } {
   if (state.payroll.stage === 'idle' || state.payroll.stage === 'submitted') return { stale: false, reason: '' }
+  if (validMockPeriod(state.payroll.period)) {
+    const closed = payrollControlClosedPeriodReason(state, state.payroll.period)
+    if (closed) return { stale: true, reason: closed }
+  }
   if (!validMockPeriod(state.payroll.period) || state.payroll.inputs.some(input => !input.date || !input.rateEffectiveFrom)) {
     return { stale: true, reason: 'Legacy preparation needs a chosen period and explicit fictional rates. Reprepare sample payroll.' }
   }
@@ -176,6 +184,11 @@ function requirePayrollRole(actor: HrActor) {
   if (!['employer-owner', 'payroll-admin'].includes(actor.role)) throw new Error('Only the employer owner or payroll admin may simulate a payroll run.')
 }
 
+function requireOpenTimeDate(state: MockHrState, date: string) {
+  const closed = payrollControlClosedDateReason(state, date)
+  if (closed) throw new Error(closed)
+}
+
 export function transitionMockHr(state: MockHrState, actor: HrActor, event: MockHrEvent, fixture: HrFixture, recruiting?: RecruitingState): MockHrState {
   const next = structuredClone(state)
   const receipt = (kind: string) => `MOCK-${kind}-${String(next.sequence++).padStart(4, '0')}`
@@ -236,6 +249,7 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     const employeeId = requireOwnEmployee(actor, fixture)
     const validation = validateTimeEntry(event.date, event.hours)
     if (!validation.valid) throw new Error(validation.error)
+    requireOpenTimeDate(next, event.date)
     const existingHours = next.timeEntries.filter(entry => entry.employeeId === employeeId && entry.date === event.date).reduce((sum, entry) => sum + entry.hours, 0)
     if (existingHours + event.hours > 24) throw new Error('Combined draft, submitted and approved sample entries cannot exceed 24 hours for one employee/day.')
     next.timeEntries.push({ id: receipt('TIME'), employeeId, date: event.date, hours: event.hours, source: event.source, status: 'draft' })
@@ -249,6 +263,7 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     for (const entry of entries) {
       const validation = validateTimeEntry(entry!.date, entry!.hours)
       if (!validation.valid) throw new Error(validation.error)
+      requireOpenTimeDate(next, entry!.date)
       if (next.timeEntries.filter(value => value.employeeId === employeeId && value.date === entry!.date).reduce((sum, value) => sum + value.hours, 0) > 24) throw new Error('Combined employee/day hours cannot exceed 24.')
     }
     entries.forEach(entry => { entry!.status = 'submitted' })
@@ -259,6 +274,7 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     if (!entry || entry.payrollReceipt || !canApproveTimeEntry(actor, entry, fixture.employees)) throw new Error('Approval requires a submitted entry within this role and team scope; self-approval is unavailable.')
     const validation = validateTimeEntry(entry.date, entry.hours)
     if (!validation.valid) throw new Error(validation.error)
+    requireOpenTimeDate(next, entry.date)
     if (next.timeEntries.filter(value => value.employeeId === entry.employeeId && value.date === entry.date).reduce((sum, value) => sum + value.hours, 0) > 24) throw new Error('Combined employee/day hours cannot exceed 24.')
     entry.status = 'approved'
     return next
@@ -266,6 +282,7 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
   if (event.type === 'return-time') {
     const entry = next.timeEntries.find(value => value.id === event.entryId)
     if (!entry || entry.payrollReceipt || actor.role !== 'manager' || !canApproveTimeEntry(actor, entry, fixture.employees)) throw new Error('Only a different scoped manager can return submitted unpaid time.')
+    requireOpenTimeDate(next, entry.date)
     if (typeof event.reason !== 'string' || !event.reason.trim() || event.reason.trim().length > 500 || /[\r\n]/.test(event.reason) || event.reason.includes('\0')) throw new Error('Enter a return reason of 1–500 characters.')
     entry.status = 'draft'; entry.returnReason = event.reason.trim(); entry.returnedBy = actor.employeeId!
     return next
@@ -274,12 +291,14 @@ export function transitionMockHr(state: MockHrState, actor: HrActor, event: Mock
     const employeeId = requireOwnEmployee(actor, fixture)
     const entry = next.timeEntries.find(value => value.id === event.entryId)
     if (!entry || entry.employeeId !== employeeId || entry.status !== 'draft' || entry.payrollReceipt) throw new Error('Only your own unpaid draft time may be edited or deleted.')
+    requireOpenTimeDate(next, entry.date)
     if (event.type === 'delete-time') {
       if (event.confirmed !== true) throw new Error('Confirm deletion of this draft time entry.')
       next.timeEntries = next.timeEntries.filter(value => value.id !== entry.id)
     } else {
       const validation = validateTimeEntry(event.date, event.hours)
       if (!validation.valid) throw new Error(validation.error)
+      requireOpenTimeDate(next, event.date)
       const otherHours = next.timeEntries.filter(value => value.id !== entry.id && value.employeeId === employeeId && value.date === event.date).reduce((sum, value) => sum + value.hours, 0)
       if (otherHours + event.hours > 24) throw new Error('Combined draft, submitted and approved sample entries cannot exceed 24 hours for one employee/day.')
       entry.date = event.date; entry.hours = event.hours

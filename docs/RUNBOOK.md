@@ -19,6 +19,38 @@ Use `npm run environment:check` for the reviewed public-example proposal and
 the [QA coverage map](QA-COVERAGE-MAP.md) to choose relevant authored browser
 and unit scenarios. Keep reports/downloads/traces in local artifact storage.
 
+## Recover an interrupted dependency install
+
+1. Retain the failed npm output and identify the affected package. Stop before
+   retrying if the selected Node/npm, package manifest, lockfile or registry
+   failure is unresolved. Follow the [four setup branches](GETTING-STARTED.md#choose-the-setup-failure-branch)
+   and [package-specific install procedure](DEPENDENCY-INSTALLATION.md#recover-an-interrupted-install).
+2. Preserve that package's `package.json`, committed `package-lock.json` and
+   reviewed `.npmrc` settings. A lock mismatch is reviewed dependency work;
+   `npm install` is not an automatic recovery fallback.
+3. Rebuild only the chosen package's generated dependency tree by retrying its
+   `npm ci` after correcting the concrete cause. npm replaces its own
+   `node_modules/`; no manual recursive cleanup is needed. Root, standalone
+   starter/adopted app and optional Functions have separate locks and runtimes.
+4. Require a terminal successful retry, then the relevant development/package
+   checks. A partial directory or old cached install is not a success receipt.
+   This procedure itself records no new installation or runtime observation.
+
+**Rebuildable dependency paths:** root `node_modules/`, the adopted/starter
+app's own `node_modules/`, or `integrations/gusto/functions/node_modules/`, only
+for the package selected above. Generated `dist/`, `dist-ssr/` and
+`*.tsbuildinfo` can be rebuilt separately; removing them is not an install repair.
+Preserve npm's cache unless a diagnosed cache fault requires separate review.
+
+**Preserve local and private data:** `.env*`, approved ignored secrets,
+`.emulator-data`, `.auth`, `.firebase`, `.firebaserc.local`, local downloads and
+portable backups, `.SYSTEMX/LAN/Temp`, `.SYSTEMX/LAN/Backup`,
+`.SYSTEMX/LAN/Files`, `.SYSTEMX/local`, `.SYSTEMX/logs`, `.SYSTEMX/state`,
+`.SYSTEMX/.systemx/history`, `.SYSTEMX/.systemx/operations`, selected installation
+metadata/release snapshots and adopted GLOBAL/PLAN/WORK/MEMORY/AGENTS records.
+Git ignore does not make a path disposable. Dependency recovery does not clear
+browser profiles, emulator data, services or private project records.
+
 ## Evaluate portals and review readiness
 
 Use the [printable worksheet](PORTAL-EVALUATOR-WORKSHEET.md) with the paced

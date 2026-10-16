@@ -1,10 +1,12 @@
 import importlib.util
+import copy
 import hashlib
 import json
 from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -31,6 +33,13 @@ class TemplateRelease(unittest.TestCase):
                     '__pycache__', 'Temp', 'Backup', 'history', 'operations'))
             else:
                 shutil.copy2(source, root / name)
+        mapping = json.loads((ROOT / 'scripts/starter-parity.json').read_text())
+        public = ['scripts/starter-parity.json'] + [
+            item['root'] for item in mapping['files'] if item['relation'] != 'starter-only']
+        for name in public:
+            destination = root / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / name, destination)
 
     def test_reusable_release_is_valid(self):
         self.assertEqual(validation.validate(ROOT), [])
@@ -143,6 +152,278 @@ class TemplateRelease(unittest.TestCase):
             bootstrap.write_bytes(bootstrap.read_bytes() + b'\n# Unreviewed launcher replacement\n')
             self.assertTrue(any('bootstrap' in error.lower() and 'SYSTEMX.sh' in error
                                 for error in validation.validate(root)))
+
+
+class StarterParity(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.root = Path(self.temporary.name)
+        self.mapping = json.loads((ROOT / 'scripts/starter-parity.json').read_text())
+        for row in self.mapping['files']:
+            names = [validation.STARTER_DIRECTORY + '/' + row['starter']]
+            if row['relation'] != 'starter-only':
+                names.append(row['root'])
+            for name in names:
+                destination = self.root / name
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / name, destination)
+            # This owned synthetic fixture declares its own public baseline.
+            # The production map is untouched: test_reusable_release_is_valid
+            # independently refuses any unreviewed real-root fingerprint drift.
+            if row['relation'] == 'intentional':
+                data = (self.root / row['root']).read_bytes()
+                if row['hashMode'] == 'utf8-lf-sha256':
+                    data = data.replace(b'\r\n', b'\n')
+                row['rootSha256'] = hashlib.sha256(data).hexdigest()
+        path = self.root / 'scripts/starter-parity.json'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(self.mapping))
+
+    def tearDown(self):
+        self.temporary.cleanup()
+
+    def report(self, mapping=None):
+        return validation.starter_parity(self.root, mapping)
+
+    def row(self, report, group, name):
+        section = next(item for item in report['groups'] if item['id'] == group)
+        return next(item for item in section['entries'] if item['starter'] == name)
+
+    def test_literal_complete_groups_and_reviewed_difference_kinds(self):
+        with patch.object(validation.subprocess, 'check_output', side_effect=AssertionError('A starter report must execute no command')):
+            report = self.report()
+        self.assertTrue(report['ok'], report['errors'])
+        self.assertEqual([item['id'] for item in report['groups']],
+                         ['app', 'dependency', 'asset', 'configuration'])
+        self.assertEqual({item['id']: len(item['entries']) for item in report['groups']},
+                         {'app': 22, 'dependency': 2, 'asset': 2, 'configuration': 17})
+        self.assertEqual(report['counts'], {'mapped': 43, 'inventoried': 43,
+                         'matched': 19, 'intentional': 22, 'starterOnly': 2, 'differences': 0})
+        self.assertEqual(self.row(report, 'app', 'src/main.tsx')['status'], 'matched')
+        self.assertEqual(self.row(report, 'dependency', 'package.json')['status'], 'intentional')
+        self.assertEqual(self.row(report, 'configuration', '.github/workflows/ci.yml')['status'], 'starter-only')
+        self.assertEqual(self.row(report, 'app', 'src/components/shell/SiteControls.tsx')['status'], 'starter-only')
+
+    def test_four_independent_literal_group_changes_are_located(self):
+        for group, name in [('app', 'src/main.tsx'), ('dependency', 'package.json'),
+                            ('asset', 'public/favicon.svg'), ('configuration', '.firebaserc')]:
+            with self.subTest(group=group):
+                path = self.root / name
+                before = path.read_bytes()
+                if group == 'dependency':
+                    value = json.loads(before)
+                    value['dependencies']['react'] = '0.0.0-fictional'
+                    path.write_text(json.dumps(value))
+                else:
+                    path.write_bytes(before + b'\nIndependent fictional drift.\n')
+                report = self.report()
+                self.assertFalse(report['ok'])
+                self.assertEqual(self.row(report, group, name)['status'], 'changed')
+                changed = [(section['id'], row['starter']) for section in report['groups']
+                           for row in section['entries'] if row['change'] is not None]
+                self.assertEqual(changed, [(group, name)])
+                if group == 'dependency':
+                    errors = next(x for x in report['groups'] if x['id'] == group)['diagnostics']
+                    self.assertTrue(any('Shared dependencies differ' in error for error in errors))
+                path.write_bytes(before)
+
+    def test_variants_and_starter_only_bytes_need_explicit_review(self):
+        for group, name in [('configuration', 'README.md'),
+                            ('app', 'src/components/shell/SiteControls.tsx')]:
+            with self.subTest(path=name):
+                path = self.root / validation.STARTER_DIRECTORY / name
+                original = path.read_bytes()
+                path.write_bytes(original + b'\nUnreviewed starter extension.\n')
+                report = self.report()
+                self.assertEqual(self.row(report, group, name)['status'], 'changed')
+                self.assertFalse(report['ok'])
+                path.write_bytes(original)
+        path = self.root / 'README.md'
+        path.write_bytes(path.read_bytes() + b'\nUnreviewed root guide.\n')
+        self.assertEqual(self.row(self.report(), 'configuration', 'README.md')['status'], 'changed')
+
+    def test_missing_sides_and_new_root_for_starter_only_are_explicit(self):
+        source = self.root / 'src/main.tsx'
+        source.unlink()
+        row = self.row(self.report(), 'app', 'src/main.tsx')
+        self.assertEqual((row['status'], row['missingSides']), ('missing-root', ['root']))
+        (self.root / validation.STARTER_DIRECTORY / 'src/main.tsx').unlink()
+        row = self.row(self.report(), 'app', 'src/main.tsx')
+        self.assertEqual((row['status'], row['missingSides']), ('missing-starter', ['starter', 'root']))
+        added = self.root / 'src/components/shell/SiteControls.tsx'
+        added.parent.mkdir(parents=True, exist_ok=True)
+        added.write_text('Fictional unexpected root counterpart')
+        self.assertEqual(self.row(self.report(), 'app', 'src/components/shell/SiteControls.tsx')['status'], 'unexpected-root')
+
+    def test_unlisted_public_file_is_not_read_or_hidden_by_root_scope(self):
+        relative = validation.STARTER_DIRECTORY + '/src/pages/Unlisted.tsx'
+        path = self.root / relative
+        path.write_text('throw new Error("This source must never execute or be read.")')
+        original = validation._public_bytes
+        reads = []
+        def reading(root, name, *args):
+            reads.append(name)
+            return original(root, name, *args)
+        with patch.object(validation, '_public_bytes', side_effect=reading):
+            report = self.report()
+        self.assertFalse(report['ok'])
+        self.assertNotIn(relative, reads)
+        self.assertEqual(self.row(report, 'app', 'src/pages/Unlisted.tsx')['status'], 'unlisted-starter')
+        self.assertEqual(report['counts']['inventoried'], 44)
+
+    def test_duplicate_case_collision_traversal_and_wrong_group_maps_refuse(self):
+        for kind in ['duplicate', 'case', 'prefix', 'traversal', 'group', 'asset-policy', 'pair-alias']:
+            with self.subTest(kind=kind):
+                mapping = copy.deepcopy(self.mapping)
+                first = mapping['files'][0]
+                if kind == 'duplicate':
+                    mapping['files'][1] = copy.deepcopy(first)
+                elif kind == 'case':
+                    entry = next(x for x in mapping['files'] if x['starter'] == 'src/pages/ContactPage.tsx')
+                    entry.update(starter='src/Pages/ContactPage.tsx', root='src/Pages/ContactPage.tsx')
+                elif kind == 'prefix':
+                    entry = next(x for x in mapping['files'] if x['starter'] == 'src/pages/ContactPage.tsx')
+                    entry.update(starter='src/pages/AboutPage.tsx/child.ts', root='src/pages/AboutPage.tsx/child.ts')
+                elif kind == 'traversal':
+                    first.update(starter='../outside.json', root='../outside.json')
+                elif kind == 'group':
+                    first['group'] = 'asset'
+                elif kind == 'asset-policy':
+                    next(x for x in mapping['files'] if x['starter'] == 'public/favicon.svg')['hashMode'] = 'utf8-lf-sha256'
+                else:
+                    first['root'] = 'package.json'
+                report = self.report(mapping)
+                self.assertFalse(report['ok'])
+                self.assertFalse(report['inventoryComplete'])
+                self.assertTrue(report['errors'])
+                if kind == 'case':
+                    self.assertTrue(any('Case collision' in error for error in report['errors']))
+
+    def test_text_crlf_is_portable_while_assets_remain_byte_exact(self):
+        path = self.root / 'src/main.tsx'
+        path.write_bytes(path.read_bytes().replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'))
+        report = self.report()
+        self.assertTrue(report['ok'], report['errors'])
+        self.assertEqual(self.row(report, 'app', 'src/main.tsx')['pairedContent'], 'lf-equivalent')
+        asset = self.root / 'public/robots.txt'
+        asset.write_bytes(asset.read_bytes().replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'))
+        report = self.report()
+        self.assertFalse(report['ok'])
+        self.assertEqual(self.row(report, 'asset', 'public/robots.txt')['status'], 'changed')
+
+    def test_dependency_lock_metadata_and_runtime_invariants_are_independent(self):
+        for name, mutate, expected in [
+                ('package-lock.json', lambda value: value['packages'][''].update(name='unreviewed'), 'lock root metadata'),
+                ('package.json', lambda value: value['dependencies'].update({'unreviewed-package': '1.0.0'}), 'unreviewed root-only dependency')]:
+            with self.subTest(path=name):
+                path = self.root / name; before = path.read_bytes(); value = json.loads(before)
+                mutate(value); path.write_text(json.dumps(value))
+                report = self.report()
+                errors = next(x for x in report['groups'] if x['id'] == 'dependency')['diagnostics']
+                self.assertTrue(any(expected in error for error in errors), errors)
+                path.write_bytes(before)
+        (self.root / '.nvmrc').write_text('22.0.0\n')
+        errors = next(x for x in self.report()['groups'] if x['id'] == 'dependency')['diagnostics']
+        self.assertIn('Root/starter runtime pins must select one exact stable version.', errors)
+        for prefix in ('', validation.STARTER_DIRECTORY + '/'):
+            for name in ('.nvmrc', '.node-version'):
+                (self.root / (prefix + name)).write_text('22.0.0\n')
+        errors = next(x for x in self.report()['groups'] if x['id'] == 'dependency')['diagnostics']
+        self.assertIn('Root/starter runtime pin is older than the declared Node minimum.', errors)
+
+    def test_closed_private_runtime_exclusions_do_not_read_payload(self):
+        starter = self.root / validation.STARTER_DIRECTORY
+        (starter / '.env.local').write_text('FICTIONAL_ONLY_DO_NOT_READ=example')
+        (starter / 'node_modules').mkdir()
+        (starter / 'node_modules/payload').write_text('Fictional dependency payload')
+        report = self.report()
+        self.assertTrue(report['ok'], report['errors'])
+        self.assertEqual(report['counts']['inventoried'], 43)
+        self.assertEqual(report['excludedRuntimeScope'], ['node_modules', 'private-environment'])
+        (starter / '.environment-public.json').write_text('{}')
+        self.assertFalse(self.report()['ok'], 'A new public name must not be hidden by an env prefix')
+
+    def test_root_and_starter_links_are_refused_without_external_reads(self):
+        with tempfile.TemporaryDirectory() as outside:
+            external = Path(outside) / 'payload'
+            external.write_text('FICTIONAL_PRIVATE_MARKER_NEVER_REPORT')
+            original_read = Path.read_bytes
+            original_open = validation.os.open
+            for location in [self.root / 'src/main.tsx', self.root / validation.STARTER_DIRECTORY / 'src/main.tsx']:
+                with self.subTest(location=location.name):
+                    saved = location.read_bytes(); location.unlink()
+                    try: location.symlink_to(external)
+                    except OSError as error: self.skipTest('Platform does not permit owned symlink fixture: ' + type(error).__name__)
+                    def reading(path):
+                        self.assertNotEqual(path.resolve(), external, 'External payload must not be opened')
+                        return original_read(path)
+                    def opening(path, flags, *args, **kwargs):
+                        self.assertNotEqual(Path(path).resolve(), external, 'External descriptor must not be opened')
+                        return original_open(path, flags, *args, **kwargs)
+                    with patch.object(Path, 'read_bytes', reading), patch.object(validation.os, 'open', side_effect=opening):
+                        report = self.report()
+                    self.assertFalse(report['ok'])
+                    self.assertNotIn('FICTIONAL_PRIVATE_MARKER', json.dumps(report))
+                    location.unlink(); location.write_bytes(saved)
+
+    def test_limits_and_unknown_directory_fail_with_incomplete_inventory(self):
+        starter = self.root / validation.STARTER_DIRECTORY
+        (starter / 'unknown-public-tree').mkdir()
+        report = self.report()
+        self.assertFalse(report['ok']); self.assertFalse(report['inventoryComplete'])
+        (starter / 'unknown-public-tree').rmdir()
+        for number in range(90):
+            (starter / 'src' / ('extra-%03d.ts' % number)).write_text('')
+        report = self.report()
+        self.assertFalse(report['ok']); self.assertFalse(report['inventoryComplete'])
+        self.assertTrue(any('limit exceeded' in error for error in report['errors']))
+
+    def test_actual_nonexact_case_and_nonregular_counterpart_are_refused(self):
+        pages = self.root / validation.STARTER_DIRECTORY / 'src/pages'
+        renamed = pages.with_name('PAGES')
+        pages.rename(renamed)
+        report = self.report()
+        self.assertFalse(report['ok'])
+        self.assertEqual(self.row(report, 'app', 'src/pages/AboutPage.tsx')['status'], 'invalid-public-path')
+        renamed.rename(pages)
+        path = self.root / 'src/main.tsx'
+        path.unlink(); path.mkdir()
+        self.assertEqual(self.row(self.report(), 'app', 'src/main.tsx')['status'], 'invalid-root-type')
+
+    def test_unsafe_required_integrity_input_never_becomes_available(self):
+        with tempfile.TemporaryDirectory() as outside:
+            payload = Path(outside) / 'package.json'
+            payload.write_text('{"fictional-private": "NEVER_READ"}')
+            path = self.root / 'package.json'; path.unlink()
+            try: path.symlink_to(payload)
+            except OSError as error: self.skipTest('Platform does not permit owned link fixture: ' + type(error).__name__)
+            with patch.object(validation, '_validate_integrity', side_effect=AssertionError('Legacy reads must not cross this unsafe boundary')):
+                report = validation.template_report(self.root)
+            self.assertFalse(report['ok'])
+            self.assertFalse(report['integrityChecksAvailable'])
+            self.assertIn('Template integrity checks unavailable', report['integrityErrors'][0])
+            self.assertNotIn('NEVER_READ', json.dumps(report))
+
+    def test_read_only_report_and_cli_include_old_integrity_errors(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            TemplateRelease().copy_template(root)
+            (root / 'src/main.tsx').write_text('Fictional changed app entry')
+            (root / '.SYSTEMX/WORK/TASKS.json').write_text(json.dumps({'tasks': [{'id': 'TASK-001'}]}))
+            selected = [path for path in root.rglob('*') if path.is_file()]
+            before = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                      for path in selected}
+            result = subprocess.run([sys.executable, '-B', str(ROOT / 'scripts/validate-template.py'),
+                                     '--root', str(root), '--json'], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1, result.stderr)
+            report = json.loads(result.stdout)
+            self.assertTrue(report['integrityChecksAvailable'])
+            self.assertTrue(any('Reusable seed differs: WORK/TASKS.json' in error for error in report['integrityErrors']))
+            self.assertTrue(any('src/main.tsx' in error for error in report['starterParity']['errors']))
+            self.assertEqual(validation.validate(root), report['errors'])
+            after = {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                     for path in root.rglob('*') if path.is_file()}
+            self.assertEqual(after, before)
 
 
 class MarkdownScanScope(unittest.TestCase):

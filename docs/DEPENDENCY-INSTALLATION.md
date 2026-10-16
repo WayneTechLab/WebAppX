@@ -100,6 +100,38 @@ emulator suite has its own prerequisites and acceptance boundary in
 [Gusto Firebase setup](GUSTO-FIREBASE.md). Follow
 [Gusto setup](GUSTO-SETUP.md) before explicitly enabling provider development.
 
+## Recover an interrupted install
+
+Preserve the complete npm failure and select the package that failed. Compare
+its committed manifest/lock and runtime before retrying:
+
+| Selected package | Runtime/lock boundary | Locked retry from the template root |
+| --- | --- | --- |
+| Root webapp | Node 24.22.0, npm 11.11.0; root `package-lock.json` | `npm ci` |
+| Reusable starter | Its own Node 24.22.0/npm 11.11.0 declarations and `.SYSTEMX/Template/starter/package-lock.json` | `npm --prefix .SYSTEMX/Template/starter ci`; use `npm ci` inside a separately adopted checkout instead |
+| Optional Functions | Separately selected Node 22; its own lock and no published exact patch/npm pin | `npm --prefix integrations/gusto/functions ci` |
+
+Correct the concrete cause first: a wrong runtime needs deliberate runtime
+selection; unavailable registry/network access needs recovery of that access.
+Retain the same reviewed dependency-shaping `.npmrc` settings. For a package/lock
+mismatch, stop and review the intended dependency change; do not fall back to
+`npm install`, regenerate locks or change versions as a repair shortcut.
+
+`npm ci` replaces only the selected package's generated `node_modules/` and may
+contact registries, update cache and run dependency lifecycle scripts. The
+explicit matching-npm invocation documented above has its own download/cache
+effects. Neither is a read-only diagnosis. No manual recursive deletion or
+forced cache cleanup is required by this procedure. Retain manifests, locks,
+environment files, emulator state, downloads/backups and private project records;
+the [runbook preservation list](RUNBOOK.md#recover-an-interrupted-dependency-install)
+names those boundaries explicitly.
+
+After a terminal successful retry, run the relevant checks in the selected
+runtime. For the root app, `npm run development:check` checks declarations and
+lock metadata; `npm run doctor` reports installed prerequisite versions. Neither
+substitutes for application tests or the optional adapter's own checks. This
+source procedure claims no fresh install, service startup or provider access.
+
 ## Troubleshooting and evidence
 
 - **Lock mismatch:** review the package and its corresponding lock together;

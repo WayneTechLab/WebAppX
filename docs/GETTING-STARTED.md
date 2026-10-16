@@ -49,6 +49,79 @@ Agent Y `run --apply` remains unavailable pending verified descendant-process
 termination. Read the wiki platform pages for launcher and runtime limits;
 macOS checks do not establish Windows runtime acceptance.
 
+## Choose the setup failure branch
+
+Keep the failing command's output and identify its package and owning terminal
+before retrying. The checks below diagnose different boundaries; none installs
+tools, reserves a port or repairs local state automatically.
+
+| Symptom | Read or check | Safe next step | Success observation or stop condition |
+| --- | --- | --- | --- |
+| Dependency installation fails or was interrupted | Identify the root, starter/adopted app or optional Functions package; retain its `package.json`, matching lockfile and npm error. Compare `node --version` and `npm --version` with [dependency installation](DEPENDENCY-INSTALLATION.md#recover-an-interrupted-install). | Correct the reported runtime, registry or network cause, then retry that package's locked `npm ci`. A package/lock mismatch requires a reviewed dependency change; do not substitute `npm install`. | Require a terminal successful install and that package's relevant checks. Preserve environment, emulator and adopted project records throughout. |
+| Wrong Node/npm or runtime warning | Read `.nvmrc`, `.node-version` and `packageManager`; run `node --version`, `npm --version`, then dependency-free `node scripts/developer-prerequisites.mjs` (or `npm run doctor`). | Select the already installed version manager's app runtime: Node **24.22.0**, npm **11.11.0**. Optional Functions uses its own **Node 22** major. After installation, `npm run development:check` checks root/starter declarations and locks. | Version readiness and matching declarations are separate from an actual app/test run. Missing tools require deliberate installation through the prerequisite guide. |
+| Chosen development port is occupied | [Inspect the listener](#inspect-an-occupied-port) and compare PID, command, parent/owning terminal and available CWD metadata. Retain unrelated processes and their browser saves. | Choose a different explicit unused port, for example `npm run dev:mock -- --port 5185`, or `npm run dev:systemx -- --host 127.0.0.1 --port 5185`. An explicit origin refuses conflicts; omit origin overrides only when automatic selection is intended. | Use the exact printed origin. If ownership is unclear, stop before signaling any process. A restart preview does not reserve a port. |
+| Integrated emulator startup fails | Read the owning terminal output and `npm run systemx:session:status`; distinguish Vite, LAN, Auth, Firestore and Storage observations. Check already installed `firebase --version` and `java -version`. | Correct the failed prerequisite, stop the owned session with **Ctrl+C in its terminal**, then launch deliberately. The [session controls](#preview-a-restart) describe verified macOS stop and Windows combined-stop refusal. | Require fresh observations for the failed component. Storage readiness is TCP-only; stored status, source checks and app readiness do not certify emulator workflows, provider access or deployment. Do not retry in a loop or delete state. |
+
+Read [interrupted-install recovery](RUNBOOK.md#recover-an-interrupted-dependency-install)
+before rebuilding dependencies. Native HR/CMS/CRM mocks need no Firebase or Gusto
+account and can be evaluated separately from emulators with `npm run dev:mock`.
+
+### Inspect an occupied port
+
+For an example selected port of `5185`, macOS can show its listener with:
+
+```bash
+lsof -nP -iTCP:5185 -sTCP:LISTEN
+```
+
+Use the observed PID in the following examples; `12345` is a placeholder:
+
+```bash
+ps -p 12345 -o pid=,ppid=,command=
+lsof -a -p 12345 -d cwd
+```
+
+On Windows PowerShell, inspect the listener and then its observed PID:
+
+```powershell
+Get-NetTCPConnection -LocalPort 5185 -State Listen | Select-Object LocalAddress,LocalPort,OwningProcess
+Get-CimInstance Win32_Process -Filter "ProcessId = 12345" | Select-Object ProcessId,ParentProcessId,ExecutablePath,CommandLine
+```
+
+Windows process metadata does not reliably expose another process's current
+working directory. Compare command/parent details with the owning terminal;
+unavailable metadata is not proof of ownership. Never kill by port or process
+name. Stop an owned session in its terminal, then recheck the listener before
+reusing that port. Browser saves remain specific to scheme, host, port and
+profile; moving from `localhost` to `127.0.0.1`, or changing ports, selects a
+different save origin.
+
+### Locate fictional defaults without resetting them
+
+```bash
+node scripts/fixture-inventory.mjs
+node scripts/fixture-inventory.mjs --check --json
+```
+
+This read-only command lists eight maintained source/reset groups: native HR,
+CMS and CRM, separate SDK onboarding/payroll sessions, the reviewed browser
+baseline, reviewed role examples and historical SDK references. It reads only
+its finite public source allowlist and checks builder/control anchors. It never
+imports models, generates fixtures, resets a workspace or prints fixture bodies.
+Arbitrary inline test cases are outside this inventory. Source-file reset and
+saved-workspace reset are different operations; read each row's boundary before
+using the actual UI control.
+
+The [reviewed descriptors](../scripts/fixture-inventory.json) and
+[inventory implementation](../scripts/fixture-inventory.mjs) identify the finite
+read scope. Runtime diagnosis follows the actual
+[prerequisite reader](../scripts/developer-prerequisites.mjs),
+[native launcher](../scripts/dev-mock.mjs) and
+[integrated session supervisor](../.SYSTEMX/LAN/session-supervisor.mjs).
+Automatic integrated-origin selection also requires that reviewed
+`SYSTEMX_DEV_HOST`, `SYSTEMX_APP_PORT` and `SYSTEMX_FIXED_ORIGIN` overrides are
+unset; omitting flags alone does not override those settings.
+
 ## Developer check and browser smoke
 
 Run the dependency-free prerequisite report before installing packages:

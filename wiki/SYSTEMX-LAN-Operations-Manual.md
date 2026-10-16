@@ -448,11 +448,11 @@ instead. The browser should never become a generic command execution endpoint.
 Useful repository commands include:
 
 ~~~bash
-npm run wtl:menu
-npm run wtl:setup -- --check
+npm run systemx
+npm run development:check
 npm run system:audit
 npm run sync:system:check
-npm run diagnostics
+npm run doctor
 npm test
 npm run docs:links
 ~~~

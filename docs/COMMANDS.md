@@ -4,6 +4,63 @@ Run from the repository root. Use `npm ci` for the committed lockfile.
 Read [dependency installation](DEPENDENCY-INSTALLATION.md) for runtime selection
 and root/starter versus optional Functions installation scopes.
 
+## Developer setup contracts
+
+These seven aliases are defined in the real [package manifest](../package.json).
+The [setup-contract guide](../wiki/Developer-Setup-Contracts.md) explains their
+scope, reviewed metadata and focused verification. Start with
+[Getting Started](GETTING-STARTED.md), use the [runbook](RUNBOOK.md) for an
+interrupted setup and follow the [adoption checklist](examples/private-template-adoption.md)
+when choosing a new app's identities and deployment target.
+
+| Command | Behavior |
+| --- | --- |
+| `npm run scripts:list` | Read the real manifest and list commands under exactly six purposes: setup, app, portal, SYSTEMX, wiki and release; executes none of the listed commands |
+| `npm run scripts:check` | Strict discovery validation; missing, stale or duplicate purpose classifications fail |
+| `npm run docs:commands:check` | Validate npm script names in maintained README/docs/wiki/starter examples using finite root, starter and Functions package contexts; never execute examples |
+| `npm run fixtures:list` | Describe eight reviewed fictional source/default groups, their builders, restoring actions and reset boundaries; no fixture bodies or reset execution |
+| `npm run fixtures:check` | Validate the finite source/reset inventory and its 30 public source bindings |
+| `npm run source:shell:check` | Parse maintained JS/TS and Python child-process call sites; new, changed or extra unresolved/shell occurrences require exact review |
+| `npm run setup:contracts:test` | Run the focused Node discovery, documentation parser, inventory and child-process regression tests; tests create owned temporary fixtures |
+
+For structured reports without npm headers:
+
+```bash
+npm run --silent scripts:list -- --json
+npm run --silent docs:commands:check -- --json
+npm run --silent fixtures:list -- --json
+npm run --silent source:shell:check -- --json
+npm run template:check -- --json
+```
+
+`scripts:list` is a report; use `scripts:check` for its failing validation gate.
+Listing a command does not authorize its execution. Discovery, documentation
+and inventory CLIs are dependency-free source reads. The child-process check
+requires installed TypeScript and Python, parses source as data and runs only
+its fixed bounded Python AST helper. It is a static review aid, with no claim of
+complete execution or security coverage. See [argument-array guidance](COMMAND-SAFETY.md#argument-arrays).
+
+The existing `template:check` also reports all **43** starter public files in
+app/dependency/asset/configuration groups while retaining its blank-seed,
+immutable-release, research and version checks. `--against` retains its separate
+clean committed mirror-tree comparison. Review intentional differences through
+[template maintenance](TEMPLATE-MAINTENANCE.md#review-setup-metadata-and-starter-parity);
+none of these checks writes new fingerprints or accepts drift automatically.
+
+The owned space/Unicode setup tests are included in `systemx:integration:test`.
+To run just those four cases:
+
+```bash
+python3 -B -m unittest discover -s tests/systemx -p test_setup_paths.py -v
+```
+
+They execute seven real setup commands in each of two temporary copies, use
+argument arrays and preserve every copied byte/directory after the intentional
+fictional configuration write. They start no app, emulator or provider service
+and install nothing. The observed macOS run does not establish Windows runtime
+acceptance. Focused success does not replace `ci:all`, Hosting preflight,
+host-drift or template-copy gates, or change backlog acceptance.
+
 ## Evaluator guides and adoption rehearsals
 
 | Command | Behavior |

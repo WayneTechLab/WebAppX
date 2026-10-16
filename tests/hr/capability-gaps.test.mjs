@@ -172,8 +172,17 @@ test('required source bindings and explicit text/vendor hash modes cannot be omi
   assert.throws(() => sourceDigest(Buffer.from([255]), 'utf8-lf-sha256'), /encoded data was not valid/)
 })
 
-test('all 77 reviewed source members are required at the exact finite source bound', async () => {
-  assert.equal(data.sourceBindings.length, 77)
+test('all 84 reviewed source members are required at the exact finite source bound', async () => {
+  assert.equal(data.sourceBindings.length, 84)
+  assert.deepEqual(data.sourceBindings.slice(-7).map(source => source.path), [
+    'src/hr/payroll-control-types.ts',
+    'src/hr/payroll-control-value.ts',
+    'src/hr/payroll-control.ts',
+    'src/hr/payroll-control-controller.ts',
+    'src/hr/payroll-control-host.ts',
+    'src/hr/components/HrPayrollControl.tsx',
+    'src/hr/components/HrPayrollControlHost.tsx',
+  ])
   const replacement = { path: 'src/hr/catalog.ts', hashMode: 'utf8-lf-sha256', sha256: sourceDigest(await readFile(join(ROOT, 'src/hr/catalog.ts')), 'utf8-lf-sha256') }
   assert.equal(data.sourceBindings.some(binding => binding.path === replacement.path), false)
   for (const [index, source] of data.sourceBindings.entries()) {
@@ -184,7 +193,7 @@ test('all 77 reviewed source members are required at the exact finite source bou
   }
   const tooMany = clone()
   tooMany.sourceBindings.push(replacement)
-  assert.equal(tooMany.sourceBindings.length, 78)
+  assert.equal(tooMany.sourceBindings.length, 85)
   await assert.rejects(validateGapData(tooMany), /Missing bounded reviewed source bindings/)
 })
 
