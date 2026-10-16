@@ -1,0 +1,299 @@
+{
+  "schemaVersion": 1,
+  "status": "paused-unaccepted-savepoint",
+  "baseRevision": "db6f078ed5b705b8787ab5f704f6f701d9d5923d",
+  "savepointBranch": "codex/savepoint-foundation-2026-10-15",
+  "savepointCommit": "2638fd7f5eaf5805e4bce0e3515f57b20db1c997",
+  "bundleName": "webappx-foundation-unfinished-2026-10-15.bundle",
+  "bundleSha256": "fcddd2306ab6d9bc5fe27c5bb68e502343e728dd19259bf1d48be8bb5e99befe",
+  "bundleBytes": 90305,
+  "changedFiles": [
+    {
+      "path": "docs/ADOPTION-IDENTITY-REHEARSAL.md",
+      "sha256": "4ee7ab80cf0199e38b2aff47122f35d66f761299e578fe69d7da5fa1de9fbfbc",
+      "bytes": 8670
+    },
+    {
+      "path": "docs/PORTAL-DESIGN-TOKENS.md",
+      "sha256": "f3923dae09bba60eda1de2f7d0c425be02cfea3264a03002617e9ddae616eebb",
+      "bytes": 9867
+    },
+    {
+      "path": "docs/WEBAPPX-EXECUTION-PLAN.md",
+      "sha256": "c35a1632c0b5d34d8a975e5a3fc0c3ac4341c4fdc7553e2cff1aa1ef597ec87e",
+      "bytes": 18131
+    },
+    {
+      "path": "package.json",
+      "sha256": "b19160d5d1ba0e80434a7e0c5ec624d1465bb3b5809058f3fa1093851f8b9ab7",
+      "bytes": 13783
+    },
+    {
+      "path": "scripts/adoption-dry-run.py",
+      "sha256": "5c8829aaac24699d98d9e0eb468df97ab8213c497501488e77fd6e7b1a16483a",
+      "bytes": 23326
+    },
+    {
+      "path": "scripts/backlog-execution.mjs",
+      "sha256": "0c7e15d1263a8fd840050069b2b202f005e538677e731a10020dd558267d4f09",
+      "bytes": 20229
+    },
+    {
+      "path": "scripts/browser-foundation.mjs",
+      "sha256": "0981b712e2c7ec095c880ab14bb583a1150745bde3a50fa3730f99e23d8109b1",
+      "bytes": 1239
+    },
+    {
+      "path": "scripts/browser-preview-process.mjs",
+      "sha256": "a9638b426d5dfa83e35955c6d52761147f1777d8fa0be44cbd60c686b4592121",
+      "bytes": 4422
+    },
+    {
+      "path": "scripts/browser-preview-worker.mjs",
+      "sha256": "d1a2d53cecff684352b94eea3bb587478e0f61d468f39ca8e3938768b7fc8d52",
+      "bytes": 2656
+    },
+    {
+      "path": "scripts/child-process-baseline.json",
+      "sha256": "f2e023d614b87caba33dab21ec74cce1e59944f7e52fd9c90c17e8bd5e226a42",
+      "bytes": 2406
+    },
+    {
+      "path": "scripts/dev-mock.mjs",
+      "sha256": "0af9e55f52206507d68aa57d5508d2c75c923860cb7e058075d6faa291686a30",
+      "bytes": 9498
+    },
+    {
+      "path": "scripts/package-script-purposes.json",
+      "sha256": "c3b1e3823184ef887dbba04c77b9120b7094c96ee1770a62ed16414041533e4f",
+      "bytes": 24552
+    },
+    {
+      "path": "src/cms/CmsDemo.tsx",
+      "sha256": "fdbb13c0325f90a76cb49b11009fa30955c80b04870fdb25fac44476fbbf17e2",
+      "bytes": 43484
+    },
+    {
+      "path": "src/components/layout/Layout.tsx",
+      "sha256": "79fce2aa3d9e53eead6ea3b7026a853e3cc9ecd31172ee70dc0adc31d99cb422",
+      "bytes": 3145
+    },
+    {
+      "path": "src/components/navigation/AppLink.tsx",
+      "sha256": "a8bd199938ecd4f29fcbe80174fa5d629c91dac3d20d5a37cd2cfdd25494d3a2",
+      "bytes": 1033
+    },
+    {
+      "path": "src/crm/CrmDemo.tsx",
+      "sha256": "760cba846954766b0d7f980c507ea47ee76a1cdfaa0fba915efdae220a5e0d21",
+      "bytes": 43261
+    },
+    {
+      "path": "src/hr/components/HrWorkspace.tsx",
+      "sha256": "fefca0ec535d5096a68795f921498877248d8e0c72010b250ddbd34dafc2ed35",
+      "bytes": 76434
+    },
+    {
+      "path": "src/index.css",
+      "sha256": "4c226b651f10a8187827f174e7af308338028f59bd2a7c4a368f4724b76155c5",
+      "bytes": 3215
+    },
+    {
+      "path": "src/lib/navigation-focus-dom.ts",
+      "sha256": "366afc0cdf672aeebd6b30e87fecde7d9d44c135f88949b2f5f4cb5f6f229e53",
+      "bytes": 8552
+    },
+    {
+      "path": "src/lib/navigation-focus.ts",
+      "sha256": "4f9480604dfe55aeee6c829a6f1fd0cac459819dd903482744146c45fd46024c",
+      "bytes": 2917
+    },
+    {
+      "path": "src/lib/navigation-types.ts",
+      "sha256": "44bdbe9cae0c2c312cc9fcc3ab17bdc6131d3b5b3cee64193cd58701a1e17694",
+      "bytes": 512
+    },
+    {
+      "path": "src/lib/navigation.ts",
+      "sha256": "484de4b24bb55a2c310f1e2654477922ce9be5bf232d8aa604a5beb4d15a8da4",
+      "bytes": 15251
+    },
+    {
+      "path": "src/lib/useCommittedNavigationFocus.ts",
+      "sha256": "adb2cc30a71ee4f034b3c12e26b03ccb73c00c6276453182ed7bb40c884249dd",
+      "bytes": 376
+    },
+    {
+      "path": "src/pages/DocsPage.tsx",
+      "sha256": "cfdf920c387c59535d5eef541aec1f6d31d7ac1e2e9c0c255d0cf0133e589dee",
+      "bytes": 4737
+    },
+    {
+      "path": "src/pages/TemplatePortalsPage.tsx",
+      "sha256": "b752c0c1a0005b0fb8ed7d2ff10b90fc817335a4e70270abc66906847876a4e2",
+      "bytes": 7348
+    },
+    {
+      "path": "src/portals/CombinedWorkspaceBackup.tsx",
+      "sha256": "33aa5df00df9374666d4401eacc130f66ba0a9ea4abcd994b21a276bb297a55e",
+      "bytes": 10366
+    },
+    {
+      "path": "src/portals/DemoStorageNotice.tsx",
+      "sha256": "9db4879beb9b569c00f48e0d641eeaeece1f7b908008754ae59d47144c847fb8",
+      "bytes": 653
+    },
+    {
+      "path": "src/portals/DemoWorkspaceBackup.tsx",
+      "sha256": "637945c53e417984eb56a8589bff16523ce9c13dec9d0feda25b12d1dca8b02e",
+      "bytes": 8873
+    },
+    {
+      "path": "src/portals/DemoWorkspaceReset.tsx",
+      "sha256": "26524f2302ea4abe3ae132687613f556a43c19ecbd25133654cb907489c5d6d8",
+      "bytes": 3386
+    },
+    {
+      "path": "src/portals/MockStoragePreview.tsx",
+      "sha256": "9edbf126d77da0c8c72fe8171fa37befa102a43b83e6e52b1e6620011a64e6cc",
+      "bytes": 1784
+    },
+    {
+      "path": "src/portals/PortalChrome.tsx",
+      "sha256": "b18c404ba490a441aabf13abdd578817ed127b2e9045dba81ae14f86674b8e8a",
+      "bytes": 3487
+    },
+    {
+      "path": "src/portals/PortalDesignTokens.tsx",
+      "sha256": "72765d25a5d5cf837c26182e300f1be83a0303ae472dc13ec6526699971706eb",
+      "bytes": 5394
+    },
+    {
+      "path": "src/portals/PortalWorkspaceProvider.tsx",
+      "sha256": "c9d6f8edfa7fb39034b50d6c6cafbdfcbef193a9ca975716702554a731a15408",
+      "bytes": 8176
+    },
+    {
+      "path": "src/portals/RecoveryCheckpointPreview.tsx",
+      "sha256": "d72197540693245a14bc215bef24f0cd0e00fafe73349ab51d9e4c4957ba0a3e",
+      "bytes": 1938
+    },
+    {
+      "path": "src/portals/RestoreBudgetPreview.tsx",
+      "sha256": "d0ec984c320791028e00c9497e4ada420e5b07e005029d24978077bb5a22086e",
+      "bytes": 4963
+    },
+    {
+      "path": "src/portals/RestorePointControls.tsx",
+      "sha256": "cb456eb19bfb3d95f432614b90b16a8f14b7189c4a3c5a21e0fe5b3a9d552755",
+      "bytes": 5351
+    },
+    {
+      "path": "src/portals/RestorePointHistory.tsx",
+      "sha256": "a664941a1d65fb248e98764c9e26b1d3f53296ee844950fad9e927afca473eca",
+      "bytes": 13863
+    },
+    {
+      "path": "src/portals/WalkthroughNotice.tsx",
+      "sha256": "2deb0c45655775ada8b510a878aa82ba82213b3795e28062e294862138b6018d",
+      "bytes": 620
+    },
+    {
+      "path": "src/portals/owned-mock-storage.ts",
+      "sha256": "1b8316ea5e52833722a1dec8c5a83ad0ea3886fa203ff23caed650f20378be0f",
+      "bytes": 2977
+    },
+    {
+      "path": "src/portals/portal-runtime-context.tsx",
+      "sha256": "e6fb22b0e5446598e25f5dd8b96f8ac2eff8a95e9d6717444c2d0b4acc3aa3bf",
+      "bytes": 717
+    },
+    {
+      "path": "src/portals/portal-runtime.ts",
+      "sha256": "e8b206e158ffc35feb77f975953eaa179f1ee566cc5fddb17844f3466d5cb147",
+      "bytes": 1536
+    },
+    {
+      "path": "src/portals/save-summary.ts",
+      "sha256": "99fc76d4f26df3b09b99282575b830585a9b69ced23d02735ec88c5b53a38f8c",
+      "bytes": 864
+    },
+    {
+      "path": "src/portals/storage-presentation.ts",
+      "sha256": "81ac083221d84305d08991195f5dfd88413e867fe3b4469761f73bcb4921b119",
+      "bytes": 12525
+    },
+    {
+      "path": "src/portals/useDemoPersistence.ts",
+      "sha256": "bb2a2a6d5a61e323477013d41690e72e2f1d13ff61bc41e6ea4d77cfd49050e8",
+      "bytes": 3996
+    },
+    {
+      "path": "src/router.tsx",
+      "sha256": "c7d7458003ed602b8796577e8e8749885153e0c71eab3a844373c91f0d7949b4",
+      "bytes": 4194
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "sha256": "b32442b700a09136e9a37663fc72fc493fe4fbcffd7260b4c5090fe81b4ef4eb",
+      "bytes": 951
+    },
+    {
+      "path": "tests/browser/foundation-navigation-harness.test.mjs",
+      "sha256": "bcb3e76a63b48bf392daa25c7f554f498c2710ab95910fbb9646f14b00ce2aec",
+      "bytes": 5832
+    },
+    {
+      "path": "tests/browser/foundation-navigation.mjs",
+      "sha256": "872d3049473d0e5010fbfb93b6aad1f2a1e8275532a853e8164005fb19ede21a",
+      "bytes": 41459
+    },
+    {
+      "path": "tests/browser/navigation-focus-dom.test.mjs",
+      "sha256": "0d369066c0a5718c704d0d20360b5d3efd0cbda4f599c7ec619ccfcf9603503e",
+      "bytes": 10142
+    },
+    {
+      "path": "tests/browser/preview-process.test.mjs",
+      "sha256": "26c664b4953c7a719cb5ded54b53226494fca278e3d190087915fd3b71a8f3d3",
+      "bytes": 9477
+    },
+    {
+      "path": "tests/portals/navigation-focus.test.mjs",
+      "sha256": "0aa2816420b095ab852cf7dcf2819d809e3f70421e9c2ee825014ce1f1d9bd6c",
+      "bytes": 10752
+    },
+    {
+      "path": "tests/portals/storage-presentation-ui.test.mjs",
+      "sha256": "7de691e0a7349978a8058b892104cd595b7000e7970b1661ab4882440a71eb87",
+      "bytes": 22926
+    },
+    {
+      "path": "tests/portals/storage-presentation.test.mjs",
+      "sha256": "abaa71740e4a3e39609fe2435ed269712fc5278d6c08cb9ed590f9c5e03dcaa2",
+      "bytes": 20818
+    },
+    {
+      "path": "tests/portals/walkthrough-storage.test.mjs",
+      "sha256": "d8b487784de28817f9dc27b89d65c667019773a6c17a5b42aae5b927ae0e5f40",
+      "bytes": 17893
+    },
+    {
+      "path": "tests/setup/dev-mock.test.mjs",
+      "sha256": "0e8943387a5efecbe78f5ed337463f6b973973640b95555b11e60d1775139664",
+      "bytes": 18784
+    },
+    {
+      "path": "tests/systemx/test_adoption_dry_run.py",
+      "sha256": "c30c05ffa74cd806bcaa3fcf197791d45ac6a1b5f1369d25869ef650b2ece46c",
+      "bytes": 20182
+    }
+  ],
+  "done": 179,
+  "remaining": 821,
+  "foundationAccepted": 0,
+  "catalogUnchanged": true,
+  "systemxUnchanged": true,
+  "verified": false,
+  "qualification": "Unfinished source preserved at the owner full stop. Integrated browser journeys, finite source bindings, aggregate CI and Hosting preflight remain pending for this source. The accepted main implementation remains the separately verified CRM revision."
+}

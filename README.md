@@ -66,6 +66,17 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
+## Full stop and resume savepoint — 2026-10-15
+
+Work is **paused at the owner's request**. The accepted catalog is **179 done /
+821 remaining**, a **+45** verified delta from the published 134-item baseline.
+Seven unfinished foundation items remain unchecked. Their 56-file source snapshot
+is preserved as an unapplied, verified Git bundle in the
+[full-stop savepoint](docs/checkpoints/FULL-STOP-2026-10-15.md), with exact hashes,
+focused results, known integration gaps and resume instructions. Main's app source
+retains the tested CRM predecessor; this checkpoint adds no feature acceptance,
+provider activation or production deployment. Resume requires a new owner request.
+
 ## CRM merges and complete checklist reconciliation — locally accepted
 
 Open `/crm/demo` → **Duplicates & merges** for scoped duplicate reports,

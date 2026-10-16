@@ -79,3 +79,5 @@
 
 [WayneTechLab.com](https://WayneTechLab.com)
 [Repository](https://github.com/WayneTechLab/WebAppX)
+
+- [Full-stop savepoint](Full-Stop-Savepoint.md)

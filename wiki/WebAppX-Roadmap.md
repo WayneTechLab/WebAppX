@@ -1,5 +1,16 @@
 # WebAppX roadmap — 1,000 improvement items
 
+## Full stop and resume — 2026-10-15
+
+Work is **paused at the owner's request** at **179 done / 821 remaining**,
+with a **+45** verified delta. Seven foundation candidates remain unchecked.
+Their 56-file unfinished source is preserved in an unapplied Git bundle on main;
+read [the complete savepoint and resume guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/checkpoints/FULL-STOP-2026-10-15.md)
+for its exact commit, fingerprint, focused evidence and unfinished gates.
+Main's application source retains the tested CRM predecessor. No automatic
+continuation or deployment was started. [Savepoint overview](Full-Stop-Savepoint.md).
+
+
 The public template has a structured catalog of **exactly 1,000 items** with
 `todo` or `done` status, covering 20 areas with 50 items each. Existing HR, CMS, CRM,
 persistence, backups and restore/Undo remain the implemented baseline. The owner

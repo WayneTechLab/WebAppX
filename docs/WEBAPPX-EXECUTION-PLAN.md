@@ -1,8 +1,9 @@
 # WebAppX execution plan — complete the 1,000-item backlog
 
 The owner authorized completion of the full catalog on **2026-10-15**.
-The active goal is to implement every remaining item and verify its original
-acceptance criteria. This plan covers all 1,000 stable IDs; the canonical
+Work is paused at the owner’s full-stop request on **2026-10-15**.
+The original objective remains completion of every remaining original
+acceptance criterion. This plan covers all 1,000 stable IDs; the canonical
 [catalog](backlog/webappx-1000-todo.json) owns status and evidence. The
 [checklist](backlog/WEBAPPX-1000-TODO.md) and CSV remain generated views.
 
@@ -70,11 +71,25 @@ An unchecked candidate has no completion metadata and is not included in the del
 - [x] **WX-0850** — Create a release readiness decision worksheet ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
 - [x] **WX-0953** — Add an optional OAuth state-binding design ([accepted receipt](CRM-ADOPTION-QA-2026-10-15.md))
 
-The next prepared foundation slice covers WX-0015, WX-0017, WX-0018,
-WX-0021, WX-0061, WX-0701 and WX-0715. WX-0715 waits for WX-0061 and
-WX-0701. Work starts from the tested and published predecessor; source or
-plan preparation alone does not establish completion. WX-0656 retains its
-separate manual screen-reader evidence requirement.
+## Paused foundation savepoint
+
+The [full-stop checkpoint](checkpoints/FULL-STOP-2026-10-15.md) preserves
+the 56-file unfinished source snapshot as an unapplied Git bundle at
+`2638fd7f5eaf5805e4bce0e3515f57b20db1c997`. No new item is accepted by
+that savepoint. Main retains the tested CRM application source.
+
+- [ ] **WX-0015** — Add a concise first-run success page — paused; saved implementation is unaccepted.
+- [ ] **WX-0017** — Offer a nonpersistent walkthrough mode — paused; saved implementation is unaccepted.
+- [ ] **WX-0018** — Add a developer reset preview — paused; saved implementation is unaccepted.
+- [ ] **WX-0021** — Provide a local-only adoption dry run — paused; saved implementation is unaccepted.
+- [ ] **WX-0061** — Add focus restoration after portal navigation — paused; saved implementation is unaccepted.
+- [ ] **WX-0701** — Create shared portal visual tokens — paused; saved implementation is unaccepted.
+- [ ] **WX-0715** — Add focus fallback for removed route targets — paused; saved implementation is unaccepted.
+
+WX-0715 still depends on WX-0061 and WX-0701. Integrated browser journeys,
+finite source bindings, full CI and Hosting preflight remain pending for
+the saved work. WX-0656 retains separate manual screen-reader evidence.
+Resume only after an explicit owner request; no automatic continuation runs.
 
 ## Assigned implementation plans
 

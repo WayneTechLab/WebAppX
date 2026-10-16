@@ -1,0 +1,10 @@
+{
+  "status": "recovered-exactly",
+  "savepointCommit": "2638fd7f5eaf5805e4bce0e3515f57b20db1c997",
+  "baseRevision": "db6f078ed5b705b8787ab5f704f6f701d9d5923d",
+  "changedFilesVerified": 56,
+  "bundleSha256": "fcddd2306ab6d9bc5fe27c5bb68e502343e728dd19259bf1d48be8bb5e99befe",
+  "savepointObjectAbsentBeforeFetch": true,
+  "ownedTemporaryCloneRemoved": true,
+  "applicationTestsRun": false
+}
