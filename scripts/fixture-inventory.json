@@ -74,6 +74,8 @@
       "consumerScope": "Account-free native CRM workspace",
       "bindings": [
         "crm-model",
+        "crm-kernel",
+        "crm-types",
         "workspace-defaults",
         "workspace-provider",
         "native-reset-controls",

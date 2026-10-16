@@ -19,7 +19,7 @@ when choosing a new app's identities and deployment target.
 | `npm run scripts:check` | Strict discovery validation; missing, stale or duplicate purpose classifications fail |
 | `npm run docs:commands:check` | Validate npm script names in maintained README/docs/wiki/starter examples using finite root, starter and Functions package contexts; never execute examples |
 | `npm run fixtures:list` | Describe eight reviewed fictional source/default groups, their builders, restoring actions and reset boundaries; no fixture bodies or reset execution |
-| `npm run fixtures:check` | Validate the finite source/reset inventory and its 30 public source bindings |
+| `npm run fixtures:check` | Validate the finite source/reset inventory and its 32 public source bindings |
 | `npm run source:shell:check` | Parse maintained JS/TS and Python child-process call sites; new, changed or extra unresolved/shell occurrences require exact review |
 | `npm run setup:contracts:test` | Run the focused Node discovery, documentation parser, inventory and child-process regression tests; tests create owned temporary fixtures |
 

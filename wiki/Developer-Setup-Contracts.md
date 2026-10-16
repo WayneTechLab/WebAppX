@@ -81,7 +81,7 @@ when a check reports drift.
 ## Fictional sources and restoring actions
 
 The finite [inventory descriptors](../scripts/fixture-inventory.json) identify
-**eight groups and 30 public source files**. Output contains source paths,
+**eight groups and 32 public source files**. Output contains source paths,
 builders/control names, consumers and boundaries, without fixture bodies or raw
 browser saves. The command reads source as text; it never imports a model,
 generates a fixture, calls a service or executes Reset.

@@ -39,7 +39,7 @@ test('exact eight maintained groups separate native, SDK, reviewed fixture and r
     ['Reset CMS workspace?', 'Confirm Reset CMS', 'Keep CMS workspace'],
     ['Reset CRM workspace?', 'Confirm Reset CRM', 'Keep CRM workspace'],
   ])
-  assert.deepEqual(report.counts, { groups: 8, sourceFiles: 30 })
+  assert.deepEqual(report.counts, { groups: 8, sourceFiles: 32 })
   assert.equal(report.schemaVersion, 1)
   assert.equal(report.intent, 'fictional-fixture-source-inventory')
   assert.match(report.groups[0].reset.effect, /absence of optional employment\/recruiting lifecycle/)
@@ -62,6 +62,11 @@ test('complete HR composition and actual shared reset/control links are reported
   const text = formatFixtureInventory(buildFixtureInventory(descriptors, sourceTexts))
   assert.match(text, /src\/cms\/model.ts -> createCmsState, cmsCollections, cmsActors/)
   assert.match(text, /src\/crm\/model.ts -> createCrmState, crmActors/)
+  assert.deepEqual(buildFixtureInventory(descriptors, sourceTexts).groups[2].sources.slice(0, 3).map(source => [source.binding, source.path, source.symbols]), [
+    ['crm-model', 'src/crm/model.ts', ['createCrmState', 'crmActors']],
+    ['crm-kernel', 'src/crm/kernel.ts', ['createCrmState']],
+    ['crm-types', 'src/crm/types.ts', ['crmActors']],
+  ])
 })
 
 test('descriptor order cannot change stable group or source ordering; pure inputs and source bodies are preserved', () => {
@@ -93,6 +98,12 @@ test('each required builder, reset label and session/seed source link disappeara
   for (const [path, before, after] of [
     ['src/hr/persistence.ts', 'surveys: createSurveysState(fixture)', 'surveys: undefined'],
     ['src/hr/mock-workflows.ts', 'export function createMockHrState(', 'export function removedBuilder('],
+    ['src/crm/model.ts', "export * from './types'", "export * from './other-types'"],
+    ['src/crm/model.ts', "export { createCrmState, canWriteCrm, canManageCrmOwnership } from './kernel'", "export { createCrmState } from './other-kernel'"],
+    ['src/crm/kernel.ts', 'export function createCrmState(', 'export function removedCrmBuilder('],
+    ['src/crm/types.ts', 'export const crmActors:', 'export const removedCrmActors:'],
+    ['src/portals/useDemoPersistence.ts', 'currentReplacementEpoch.current += 1', 'currentReplacementEpoch.current += 0'],
+    ['src/portals/useDemoPersistence.ts', 'setReplacementEpoch(currentReplacementEpoch.current)', 'setReplacementEpoch(0)'],
     ['src/portals/DemoWorkspaceReset.tsx', 'Confirm Reset {portalById[module].label}', 'Confirm replacement'],
     ['src/portals/registry.ts', "id: 'cms', label: 'CMS'", "id: 'cms', label: 'Other'"],
     ['src/portals/PortalWorkspaceProvider.tsx', "replacement('crm', current, seed, 'reset', confirmation)", 'undefined'],
@@ -100,7 +111,7 @@ test('each required builder, reset label and session/seed source link disappeara
     ['integrations/gusto/mock-api.mjs', 'session.state = initialState()', 'session.state = null'],
     ['tests/browser/seed-contract.mjs', 'assert.deepEqual(seed.workspaces, createDemoWorkspaces()', 'assert.deepEqual(seed.workspaces, undefined'],
   ]) {
-    const sources = sourceClone(); assert.ok(sources.get(path).includes(before)); sources.set(path, sources.get(path).replace(before, after))
+    const sources = sourceClone(); assert.ok(sources.get(path).includes(before)); sources.set(path, sources.get(path).replaceAll(before, after))
     assert.throws(() => buildFixtureInventory(descriptors, sources), /source binding drift/)
   }
 })
