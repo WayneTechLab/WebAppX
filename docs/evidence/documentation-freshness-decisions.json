@@ -196,6 +196,84 @@
       "scopeSha256": "f5d4138d5b6215c413715355302b4039a1397a20c04c69b24e80642683f70549",
       "decision": "retain",
       "rationale": "Retain original dated receipt bytes and observation qualifications. Current source-only guide review at 7337709 and the recruiting receipt separately bind fresh 63-stage CI, 198 browser groups and Hosting preflight to that committed application source. The earlier standalone recruiting observation retains freeze 3; the fresh CI uses exact freeze 4. This review decision performs no tests and grants no provider, operator, production or manual screen-reader acceptance."
+    },
+    {
+      "id": "DFR-8660b5fd0bc93d09",
+      "guideId": "backlog-rebaseline",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "490043553fd567a0d96add8f5d3f0c4a630a6154",
+      "reportDigest": "28937797e5cd7fe1db822796b77c7a6dfa750a85752c17d1cc55f2104264ccf2",
+      "mappingSha256": "173bd627e839829435655b170b7ff8c57057496ef79f138c86bcc7e1d10b4977",
+      "inputsSha256": "3da3856a55b668a731e33bd383a1811515dbab0c0c6d795baf593dbfc194be43",
+      "scopeSha256": "7dfa671d1e7df33b900be72acc474931007e4ee22a780c9e100fc126ebd4d3e6",
+      "decision": "retain",
+      "rationale": "Retain original observation qualifications and immutable dated receipt bytes. Source and guide review covers the exact committed payroll runtime plus the separately reviewed final documentation/context/README metadata. The new payroll/setup receipt independently records fresh 68-stage CI, 211 browser/rehearsal checks and Hosting preflight at 42818dd; no execution is relabeled to the later metadata commit. This retain decision runs no tests and grants no provider, production, Windows or manual screen-reader acceptance."
+    },
+    {
+      "id": "DFR-9eb8ffee316bf53c",
+      "guideId": "portal-state-contract",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "490043553fd567a0d96add8f5d3f0c4a630a6154",
+      "reportDigest": "28937797e5cd7fe1db822796b77c7a6dfa750a85752c17d1cc55f2104264ccf2",
+      "mappingSha256": "173bd627e839829435655b170b7ff8c57057496ef79f138c86bcc7e1d10b4977",
+      "inputsSha256": "3da3856a55b668a731e33bd383a1811515dbab0c0c6d795baf593dbfc194be43",
+      "scopeSha256": "fc92768cd2a665f44a644a0f27f459244fe682cec39239693b6c220fca12d146",
+      "decision": "retain",
+      "rationale": "Retain original observation qualifications and immutable dated receipt bytes. Source and guide review covers the exact committed payroll runtime plus the separately reviewed final documentation/context/README metadata. The new payroll/setup receipt independently records fresh 68-stage CI, 211 browser/rehearsal checks and Hosting preflight at 42818dd; no execution is relabeled to the later metadata commit. This retain decision runs no tests and grants no provider, production, Windows or manual screen-reader acceptance."
+    },
+    {
+      "id": "DFR-1449c7cd33847ad3",
+      "guideId": "portal-lifecycle",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "490043553fd567a0d96add8f5d3f0c4a630a6154",
+      "reportDigest": "28937797e5cd7fe1db822796b77c7a6dfa750a85752c17d1cc55f2104264ccf2",
+      "mappingSha256": "173bd627e839829435655b170b7ff8c57057496ef79f138c86bcc7e1d10b4977",
+      "inputsSha256": "3da3856a55b668a731e33bd383a1811515dbab0c0c6d795baf593dbfc194be43",
+      "scopeSha256": "af1700bfba32fb61a6bac88a9ff0ceb611ea77672a655cb495c69368fa240e64",
+      "decision": "retain",
+      "rationale": "Retain original observation qualifications and immutable dated receipt bytes. Source and guide review covers the exact committed payroll runtime plus the separately reviewed final documentation/context/README metadata. The new payroll/setup receipt independently records fresh 68-stage CI, 211 browser/rehearsal checks and Hosting preflight at 42818dd; no execution is relabeled to the later metadata commit. This retain decision runs no tests and grants no provider, production, Windows or manual screen-reader acceptance."
+    },
+    {
+      "id": "DFR-40ca597cce9ad159",
+      "guideId": "hr-recruiting-lifecycle",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "490043553fd567a0d96add8f5d3f0c4a630a6154",
+      "reportDigest": "28937797e5cd7fe1db822796b77c7a6dfa750a85752c17d1cc55f2104264ccf2",
+      "mappingSha256": "173bd627e839829435655b170b7ff8c57057496ef79f138c86bcc7e1d10b4977",
+      "inputsSha256": "3da3856a55b668a731e33bd383a1811515dbab0c0c6d795baf593dbfc194be43",
+      "scopeSha256": "a28e6ffe7783d990d98254fde8df191c6fe66356976fedb49afc4b7bedbf8550",
+      "decision": "retain",
+      "rationale": "Retain original observation qualifications and immutable dated receipt bytes. Source and guide review covers the exact committed payroll runtime plus the separately reviewed final documentation/context/README metadata. The new payroll/setup receipt independently records fresh 68-stage CI, 211 browser/rehearsal checks and Hosting preflight at 42818dd; no execution is relabeled to the later metadata commit. This retain decision runs no tests and grants no provider, production, Windows or manual screen-reader acceptance."
+    },
+    {
+      "id": "DFR-4e6a45b9e57991e0",
+      "guideId": "native-payroll-controls",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "490043553fd567a0d96add8f5d3f0c4a630a6154",
+      "reportDigest": "28937797e5cd7fe1db822796b77c7a6dfa750a85752c17d1cc55f2104264ccf2",
+      "mappingSha256": "173bd627e839829435655b170b7ff8c57057496ef79f138c86bcc7e1d10b4977",
+      "inputsSha256": "3da3856a55b668a731e33bd383a1811515dbab0c0c6d795baf593dbfc194be43",
+      "scopeSha256": "61eeacc697cbbc6c75e16c2785915a08334a4e6da19854d094f9f2e1ccd3f514",
+      "decision": "retain",
+      "rationale": "Retain original observation qualifications and immutable dated receipt bytes. Source and guide review covers the exact committed payroll runtime plus the separately reviewed final documentation/context/README metadata. The new payroll/setup receipt independently records fresh 68-stage CI, 211 browser/rehearsal checks and Hosting preflight at 42818dd; no execution is relabeled to the later metadata commit. This retain decision runs no tests and grants no provider, production, Windows or manual screen-reader acceptance."
+    },
+    {
+      "id": "DFR-5c19b412976857e1",
+      "guideId": "developer-setup-contracts",
+      "reviewedBy": "agent.0",
+      "reviewedOn": "2026-10-15",
+      "targetRevision": "490043553fd567a0d96add8f5d3f0c4a630a6154",
+      "reportDigest": "28937797e5cd7fe1db822796b77c7a6dfa750a85752c17d1cc55f2104264ccf2",
+      "mappingSha256": "173bd627e839829435655b170b7ff8c57057496ef79f138c86bcc7e1d10b4977",
+      "inputsSha256": "3da3856a55b668a731e33bd383a1811515dbab0c0c6d795baf593dbfc194be43",
+      "scopeSha256": "e978e40fbd8bddfad4b91bc62ee41ede8131ac07ba52f851ff7d4a9136ed159d",
+      "decision": "retain",
+      "rationale": "Retain original observation qualifications and immutable dated receipt bytes. Source and guide review covers the exact committed payroll runtime plus the separately reviewed final documentation/context/README metadata. The new payroll/setup receipt independently records fresh 68-stage CI, 211 browser/rehearsal checks and Hosting preflight at 42818dd; no execution is relabeled to the later metadata commit. This retain decision runs no tests and grants no provider, production, Windows or manual screen-reader acceptance."
     }
   ]
 }

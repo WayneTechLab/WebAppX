@@ -13,10 +13,10 @@
         "path": "docs/BACKLOG-REBASELINE.md",
         "sha256": "f12695172d8644c414f1deec691fad99b3d29c0cd35682ecde83e3e49112f369"
       },
-      "examinedRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only re-review confirms this guide and all three mapped implementation/test files are byte-identical between aae465a and 7337709; all original catalog definitions and WX-0852 remain unchanged. The existing contract remains current. Narrowing the explicitly examined source follows that review without changing the finite comparison limit. The historical receipt retains its original f849 starting source base, date and bytes; no new test or browser execution is inferred."
+        "scope": "Source-only re-review confirms the rebaseline guide and all three mapped implementation/test files remain byte-identical from 7337709 to 42818dd; all 1000 original definitions and WX-0852 remain unchanged. The original f849 receipt retains its dates, source base and bytes. No new execution is inferred."
       },
       "proposalIds": [
         "WX-0852"
@@ -42,12 +42,12 @@
       "id": "portal-state-contract",
       "guide": {
         "path": "docs/PORTAL-STATE-CONTRACT.md",
-        "sha256": "e7bc60f89976d706add07e1597ba074fc529e1e762394342c7a120b07951a707"
+        "sha256": "ef86581a9c0b4b9e2efe9101dc9201e03ce4591eaee27039de949a90732e2255"
       },
-      "examinedRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review of current optional authoritative recruiting, strict JSON actors, own-interviewer mode and Keep/Discard, detached retained CMS/CRM children, complete private-history exports and first-instance onboarding provenance at this committed source. Original dated receipt objects and observation revisions remain unchanged; fresh recruiting CI/browser/preflight evidence is separately mapped on its own guide. This mapping review performs no tests or provider, production or manual screen-reader acceptance."
+        "scope": "Source-only review at committed 42818dd and the exact 130-file payroll freeze 3 confirms optional immutable payroll anchors, cumulative correction events, company-window locks, scoped projections and complete recovery coexist with this contract. Current guide headers qualify the earlier 122/878 recruiting checkpoint. Original dated receipt objects, observation revisions and bytes remain unchanged; fresh 68-stage CI and 211 browser/rehearsal checks belong to the separate payroll/setup receipt. No provider, production, Windows or manual screen-reader acceptance is inferred."
       },
       "proposalIds": [
         "WX-0060",
@@ -119,12 +119,12 @@
       "id": "portal-lifecycle",
       "guide": {
         "path": "docs/PORTAL-LIFECYCLE.md",
-        "sha256": "e2e405caf67c2b447db91c60859095bf9e3494c3e3dbe6a2001c75e5d3f81345"
+        "sha256": "7ed8409db3db2949441ff63f90ad86b0194d689aef7ab395b2d04d3327aa0e5c"
       },
-      "examinedRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only review of current optional authoritative recruiting, strict JSON actors, own-interviewer mode and Keep/Discard, detached retained CMS/CRM children, complete private-history exports and first-instance onboarding provenance at this committed source. Original dated receipt objects and observation revisions remain unchanged; fresh recruiting CI/browser/preflight evidence is separately mapped on its own guide. This mapping review performs no tests or provider, production or manual screen-reader acceptance."
+        "scope": "Source-only review at committed 42818dd and the exact 130-file payroll freeze 3 confirms optional immutable payroll anchors, cumulative correction events, company-window locks, scoped projections and complete recovery coexist with this contract. Current guide headers qualify the earlier 122/878 recruiting checkpoint. Original dated receipt objects, observation revisions and bytes remain unchanged; fresh 68-stage CI and 211 browser/rehearsal checks belong to the separate payroll/setup receipt. No provider, production, Windows or manual screen-reader acceptance is inferred."
       },
       "proposalIds": [
         "WX-0101",
@@ -174,12 +174,12 @@
       "id": "hr-recruiting-lifecycle",
       "guide": {
         "path": "docs/HR-RECRUITING-LIFECYCLE.md",
-        "sha256": "a809c4896bac5e7d3d0d37764ebedcb7d344e65306871f9a38764b96a112a9c9"
+        "sha256": "a9c46db2141f131246395a659f7674ec74a69d057b38a673a7f4004ff23d7108"
       },
-      "examinedRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
+      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
       "sourceReview": {
         "reviewedOn": "2026-10-15",
-        "scope": "Source-only guide review at committed recruiting source 7337709 and exact freeze-4 public manifest of 123 runtime files. Eleven original local criteria have separate Agent 0 acceptance in the linked QA receipt, which records fresh completed CI, browser reports and preflight. The earlier standalone observation remains freeze 3; current CI uses freeze 4. This mapping review executes no product tests or provider actions."
+        "scope": "Source-only review at committed 42818dd and the exact 130-file payroll freeze 3 confirms optional immutable payroll anchors, cumulative correction events, company-window locks, scoped projections and complete recovery coexist with this contract. Current guide headers qualify the earlier 122/878 recruiting checkpoint. Original dated receipt objects, observation revisions and bytes remain unchanged; fresh 68-stage CI and 211 browser/rehearsal checks belong to the separate payroll/setup receipt. No provider, production, Windows or manual screen-reader acceptance is inferred."
       },
       "proposalIds": [
         "WX-0201",
@@ -217,6 +217,94 @@
           "observationRevision": "7337709b79b995c3f1e76254aa51fd86bbd1f215",
           "revisionBasis": "examined-source",
           "scope": "Completed 63-stage CI and separately completed Hosting preflight on exact committed source 7337709. Independent audit sums 184 groups across fourteen common browser suites, HR-disabled 8 and LAN 6 to 198; recruiting binds 123 runtime, 12 harness and 152 artifact files with 42 status meanings. Original standalone freeze-3 observation remains qualified. Agent 0 accepts only WX-0201 through WX-0210 plus separate WX-0951; no provider, production, native Windows or manual screen-reader acceptance."
+        }
+      ]
+    },
+    {
+      "id": "native-payroll-controls",
+      "guide": {
+        "path": "docs/HR-PAYROLL-CONTROLS.md",
+        "sha256": "cfd559c3d5332f241974609cb3d1d57dcb017c3261ab1b7dafaaa5375da009f9"
+      },
+      "examinedRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Reviewed native model, UI, private latest-state controller, strict optional persistence, complete export/recovery and bounded inspection at committed 42818dd. Original closure/correction criteria were accepted from the dedicated local receipt after all required gates; source review itself performs no tests or provider operation."
+      },
+      "proposalIds": [
+        "WX-0159",
+        "WX-0160"
+      ],
+      "sourceScopes": [
+        "src/hr",
+        "src/portals",
+        "tests/hr",
+        "tests/portals",
+        "tests/browser",
+        "scripts/browser-payroll.mjs",
+        "scripts/browser-smoke.mjs",
+        "scripts/browser-preview-process.mjs",
+        "scripts/browser-preview-worker.mjs",
+        ".SYSTEMX/GUSTO/mock"
+      ],
+      "receipts": [
+        {
+          "path": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+          "sha256": "201f11a17e25253a95b696ed3c3c4d9f59946859c0d2e5f5a8ef69d550d3d392",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+          "revisionBasis": "examined-source",
+          "scope": "Local acceptance of twelve original criteria at committed 42818dd: complete 68-stage CI, 211 actual browser/rehearsal checks and separate Hosting preflight. Standalone OlwijH and fresh CI GORDlT each record 21 payroll groups and 35 statuses against matching freeze-3 bytes. Earlier failed/visually unaccepted diagnostics retain their scope. Metadata follow-up and publication are separate; no provider, production, Windows or manual screen-reader acceptance."
+        }
+      ]
+    },
+    {
+      "id": "developer-setup-contracts",
+      "guide": {
+        "path": "docs/COMMANDS.md",
+        "sha256": "b47eeec0082d1fc407b247ed3db2018c6189c60174157b6ca77ccb70d08d1226"
+      },
+      "examinedRevision": "490043553fd567a0d96add8f5d3f0c4a630a6154",
+      "sourceReview": {
+        "reviewedOn": "2026-10-15",
+        "scope": "Reviewed final script-purpose discovery, bounded documentation contexts, fictional source/reset inventory, grouped starter parity, AST review and macOS spaces/Unicode smoke contracts. The examined metadata commit includes the separately reviewed README fingerprint and ten unchanged command-context occurrence rebindings after CI at 42818dd. Original 68-stage execution remains at 42818dd; targeted metadata checks do not relabel that run. Seeds and immutable releases remain unchanged."
+      },
+      "proposalIds": [
+        "WX-0011",
+        "WX-0012",
+        "WX-0013",
+        "WX-0014",
+        "WX-0016",
+        "WX-0019",
+        "WX-0020",
+        "WX-0022",
+        "WX-0023",
+        "WX-0024"
+      ],
+      "sourceScopes": [
+        "package.json",
+        "scripts",
+        "tests/setup",
+        "tests/systemx",
+        "docs/GETTING-STARTED.md",
+        "docs/RUNBOOK.md",
+        "docs/DEPENDENCY-INSTALLATION.md",
+        "docs/examples/private-template-adoption.md",
+        "docs/TEMPLATE-MAINTENANCE.md",
+        "src",
+        "integrations/gusto",
+        ".SYSTEMX"
+      ],
+      "receipts": [
+        {
+          "path": "docs/PAYROLL-SETUP-QA-2026-10-15.md",
+          "sha256": "201f11a17e25253a95b696ed3c3c4d9f59946859c0d2e5f5a8ef69d550d3d392",
+          "category": "local",
+          "observedOn": "2026-10-15",
+          "observationRevision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+          "revisionBasis": "examined-source",
+          "scope": "Local acceptance of twelve original criteria at committed 42818dd: complete 68-stage CI, 211 actual browser/rehearsal checks and separate Hosting preflight. Standalone OlwijH and fresh CI GORDlT each record 21 payroll groups and 35 statuses against matching freeze-3 bytes. Earlier failed/visually unaccepted diagnostics retain their scope. Metadata follow-up and publication are separate; no provider, production, Windows or manual screen-reader acceptance."
         }
       ]
     }
