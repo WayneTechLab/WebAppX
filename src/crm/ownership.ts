@@ -1,4 +1,6 @@
-import { canManageCrmOwnership, crmActors, transitionCrm, type CrmActor, type CrmOwnershipAffected, type CrmState } from './model'
+import { canManageCrmOwnership } from './kernel'
+import { crmActors, type CrmActor, type CrmOwnershipAffected, type CrmState } from './types'
+import { applyCrmCommand } from './merge-history'
 import { isCrmState } from './persistence'
 
 export type CrmOwnershipSelection =
@@ -13,7 +15,6 @@ export type CrmOwnershipPreview = Refusal | {
 export type CrmOwnershipResult = Refusal | { ok: true; state: CrmState; receipt: string }
 export const CRM_OWNERSHIP_PREVIEW_LIMIT = 200
 const refusal = (message: string): Refusal => ({ ok: false, status: 'refused', message })
-const ownerName = (id: string) => crmActors.find(actor => actor.id === id)?.label.split(' · ')[0] ?? 'Unavailable fictional assignee'
 const emptyAffected = (): CrmOwnershipAffected => ({ companies: [], contacts: [], leads: [], opportunities: [], tasks: [] })
 
 function selectionValue(value: unknown): CrmOwnershipSelection | null {
@@ -75,21 +76,12 @@ export function applyCrmOwnership(current: unknown, actor: CrmActor, selection: 
   if (typeof confirmation !== 'string' || confirmation !== preview.confirmation) return refusal('The workspace, identity or selection changed. Review a fresh ownership preview; no records changed.')
   const accepted = current as CrmState
   let next: CrmState
-  if (preview.selection.kind === 'lead-assignment') {
-    next = transitionCrm(accepted, actor, { type: 'assign-lead', leadId: preview.selection.leadId, newOwnerId: preview.toOwnerId, expectedOwnerId: preview.fromOwnerId })
-  } else {
-    next = structuredClone(accepted)
-    for (const kind of ['companies', 'contacts', 'leads', 'opportunities', 'tasks'] as const) {
-      const ids = new Set(preview.affected[kind])
-      for (const record of next[kind]) if (ids.has(record.id)) record.ownerId = preview.toOwnerId
-    }
-    const company = next.companies.find(record => record.id === (preview.selection as { companyId: string }).companyId)!
-    const receipt = `MOCK-CRM-${String(next.sequence).padStart(4, '0')}`
-    next.activity.unshift({ receipt, ownerId: preview.toOwnerId, action: 'transfer-account',
-      description: `Transferred sample account ${company.name} from ${ownerName(preview.fromOwnerId)} to ${ownerName(preview.toOwnerId)}; ${preview.rows.length} linked records moved together.`,
-      ownershipChange: { actorId: actor.id, fromOwnerId: preview.fromOwnerId, toOwnerId: preview.toOwnerId, recordId: company.id, affected: structuredClone(preview.affected) } })
-    next.sequence += 1
-  }
+  try {
+    const command = preview.selection.kind === 'lead-assignment'
+      ? { type: 'assign-lead' as const, leadId: preview.selection.leadId, newOwnerId: preview.toOwnerId, expectedOwnerId: preview.fromOwnerId }
+      : { type: 'transfer-account' as const, companyId: preview.selection.companyId, newOwnerId: preview.toOwnerId, expectedOwnerId: preview.fromOwnerId }
+    next = applyCrmCommand(accepted, actor, command).state
+  } catch { return refusal('The entire ownership result failed graph validation. No records or receipts were accepted.') }
   if (!isCrmState(next)) return refusal('The entire ownership result failed graph validation. No records or receipts were accepted.')
   return { ok: true, state: next, receipt: next.activity[0].receipt }
 }

@@ -64,6 +64,12 @@ const nullableId = (value: unknown) => value === null ? null : token(value)
 const nullableDate = (value: unknown) => value === null ? null : tokenDate(value)
 const hrRoles = ['employer-owner', 'payroll-admin', 'hr-admin', 'manager', 'employee', 'contractor', 'auditor']
 const ownershipGroups = ['companies', 'contacts', 'leads', 'opportunities', 'tasks'] as const
+const crmRecordKinds = ['company', 'contact', 'lead', 'opportunity', 'task'] as const
+const crmCommandKinds = ['create-company', 'create-contact', 'create-lead', 'qualify-lead', 'assign-lead', 'convert-lead', 'create-opportunity', 'advance-opportunity', 'create-task', 'complete-task', 'transfer-account', 'merge-contact', 'merge-company']
+const crmKindFor = (group: string) => crmRecordKinds[ownershipGroups.indexOf(group as typeof ownershipGroups[number])]
+function exactFields(value: JsonRecord, fields: readonly string[]) {
+  if (Object.keys(value).length !== fields.length || fields.some(field => !Object.hasOwn(value, field))) return failure('invalid CRM merge capture shape')
+}
 function actorMetadata(value: unknown): StructuredRecordMetadata {
   const actor = object(value)
   return { actorRole: stateChoice(actor.role, hrRoles), actorEmployeeId: optionalId(actor, 'employeeId'), actorContractorId: optionalId(actor, 'contractorId') }
@@ -248,6 +254,45 @@ function annotateRecord(module: DemoModule, key: string, value: unknown): Record
   }
   if (module === 'cms' && key === 'releaseBundles.members.previousPublication') return { metadata: publicationMetadata(value) }
   if (module === 'cms' && key === 'releaseBundles.activatedPublications') return { metadata: { entryId: token(object(value).entryId), ...publicationMetadata(object(value).publication) } }
+  if (module === 'crm' && (key.startsWith('activity.mergeChange') || key.startsWith('mergeHistory.'))) {
+    const entry = object(value)
+    if (key === 'activity.mergeChange') {
+      const changes = object(entry.changes), context = object(entry.context)
+      return { metadata: {
+        schemaVersion: revision(entry.schemaVersion), recordKind: stateChoice(entry.kind, ['contact', 'company']), actorId: token(entry.actorId),
+        sourceId: token(entry.sourceId), retainedId: token(entry.retainedId), ownerId: token(entry.commonOwnerId), fieldPolicy: stateChoice(entry.fieldPolicy, ['retain-target-v1']),
+        changedContacts: array(changes.contacts).length, changedLeads: array(changes.leads).length, changedOpportunities: array(changes.opportunities).length,
+        contextCompanies: array(context.companies).length, contextContacts: array(context.contacts).length, contextLeads: array(context.leads).length,
+        contextOpportunities: array(context.opportunities).length, contextTasks: array(context.tasks).length,
+      } }
+    }
+    if (key === 'activity.mergeChange.captures' || key === 'activity.mergeChange.context') {
+      const record = object(entry.record)
+      return { metadata: { receiptId: token(entry.receipt), recordKind: stateChoice(entry.kind, crmRecordKinds), recordId: id(record), ownerId: token(record.ownerId),
+        ...(key === 'activity.mergeChange.captures' ? { captureSide: stateChoice(entry.side, ['source', 'retained']) } : {}),
+      } }
+    }
+    if (key === 'activity.mergeChange.changes') {
+      const before = object(entry.before), after = object(entry.after)
+      if (id(before) !== id(after)) return failure('changed CRM merge record identity differs')
+      return { metadata: { receiptId: token(entry.receipt), recordKind: stateChoice(entry.kind, ['contact', 'lead', 'opportunity']), recordId: id(before), ownerId: token(before.ownerId) } }
+    }
+    if (key === 'mergeHistory.presence') return { metadata: { schemaVersion: revision(entry.schemaVersion), boundaryKind: stateChoice(object(entry.baseline).kind, ['legacy-at-first-merge']), stepCount: array(entry.steps).length } }
+    if (key === 'mergeHistory.baseline') return { metadata: {
+      boundaryKind: stateChoice(entry.kind, ['legacy-at-first-merge']), sequence: savedCounter(entry.sequence),
+      companyCount: array(entry.companies).length, contactCount: array(entry.contacts).length, leadCount: array(entry.leads).length,
+      opportunityCount: array(entry.opportunities).length, taskCount: array(entry.tasks).length, activityCount: array(entry.activity).length,
+    } }
+    if (key === 'mergeHistory.steps') {
+      const actor = object(entry.actor), command = object(entry.command)
+      const commandKind = Object.hasOwn(command, 'kind') ? `merge-${stateChoice(command.kind, ['contact', 'company'])}` : stateChoice(command.type, crmCommandKinds)
+      const metadata: StructuredRecordMetadata = { receiptId: token(entry.receipt), actorId: token(actor.id), actorRole: stateChoice(actor.role, ['owner', 'sales-manager', 'sales-rep', 'auditor']), commandKind }
+      for (const field of ['companyId', 'contactId', 'leadId', 'opportunityId', 'taskId', 'sourceId', 'retainedId', 'newOwnerId', 'expectedOwnerId']) if (Object.hasOwn(command, field)) metadata[field] = token(command[field])
+      if (Object.hasOwn(command, 'kind')) metadata.fieldPolicy = stateChoice(command.fieldPolicy, ['retain-target-v1'])
+      return { metadata }
+    }
+    return undefined
+  }
   if (module === 'crm' && (key === 'activity.ownershipChange' || key === 'activity' && Object.hasOwn(object(value), 'ownershipChange'))) {
     const change = object(key === 'activity' ? object(value).ownershipChange : value); const affected = object(change.affected)
     return { metadata: {
@@ -340,7 +385,8 @@ function inventory(states: Partial<DemoWorkspaces>, modules: DemoModule[]): Map<
       const entries = new Map<string, IndexedEntry>()
       for (const row of rows) {
         const parts = row.parts.map(token); const identity = encode(parts)
-        if (!parts.length || parts.length > 3) return failure('invalid composite identifier')
+        const maximumParts = module === 'crm' && key === 'activity.mergeChange.captures' ? 4 : 3
+        if (!parts.length || parts.length > maximumParts) return failure('invalid composite identifier')
         if (entries.has(identity)) return failure(`duplicate identity in ${key}`)
         const annotation = annotateRecord(module, key, row.value)
         entries.set(identity, { identifier: parts.join(' / '), fingerprint: fingerprint(row.value), ...(annotation ? { annotation } : {}) })
@@ -525,6 +571,50 @@ function inventory(states: Partial<DemoWorkspaces>, modules: DemoModule[]): Map<
         add('activity.ownershipChange', 'Recorded ownership change metadata', 'nested', 'One present ownership snapshot per activity receipt; excluded from primary totals', ownership.map(activity => ({ parts: [id(activity, 'receipt')], value: normalizeOwnership(object(activity.ownershipChange)) })))
         for (const group of ownershipGroups) add(`activity.ownershipChange.affected.${group}`, `Ownership affected ${group} references`, 'nested', 'Activity receipt + affected record ID; ID references, not additional workspace records', ownership.flatMap(activity => array(object(object(activity.ownershipChange).affected)[group]).map(reference => ({ parts: [id(activity, 'receipt'), token(reference)], value: reference }))))
       }
+      const merges = activities.filter(activity => Object.hasOwn(activity, 'mergeChange'))
+      if (merges.length) {
+        if (merges.length > 100 || !Object.hasOwn(state, 'mergeHistory')) return failure('invalid CRM merge history presence')
+        for (const activity of merges) {
+          const change = object(activity.mergeChange)
+          exactFields(change, ['schemaVersion', 'kind', 'actorId', 'sourceId', 'retainedId', 'commonOwnerId', 'fieldPolicy', 'source', 'retained', 'changes', 'context'])
+          if (change.schemaVersion !== 1) return failure('unsupported CRM merge capture schema')
+          exactFields(object(change.changes), ['contacts', 'leads', 'opportunities'])
+          exactFields(object(change.context), ownershipGroups)
+        }
+        add('activity.mergeChange', 'Immutable merge receipt captures', 'nested', 'One complete merge snapshot per activity receipt; excluded from primary totals', merges.map(activity => ({ parts: [id(activity, 'receipt')], value: activity.mergeChange })))
+        add('activity.mergeChange.captures', 'Retired and retained merge captures', 'nested', 'Activity receipt + source/retained side + record kind + ID', merges.flatMap(activity => {
+          const change = object(activity.mergeChange), receipt = id(activity, 'receipt'), kind = stateChoice(change.kind, ['contact', 'company'])
+          return ['source', 'retained'].map(side => ({ parts: [receipt, side, kind, id(change[side])], value: { receipt, side, kind, record: change[side] } }))
+        }))
+        add('activity.mergeChange.changes', 'Captured merge changed pairs', 'nested', 'Activity receipt + record kind + unchanged record ID; private before/after fields remain hidden', merges.flatMap(activity => {
+          const change = object(activity.mergeChange), receipt = id(activity, 'receipt')
+          return ['contacts', 'leads', 'opportunities'].flatMap(group => records(object(change.changes)[group]).map(pair => {
+            exactFields(pair, ['before', 'after'])
+            return { parts: [receipt, crmKindFor(group), id(pair.before)], value: { receipt, kind: crmKindFor(group), before: pair.before, after: pair.after } }
+          }))
+        }))
+        add('activity.mergeChange.context', 'Unchanged merge context captures', 'nested', 'Activity receipt + record kind + ID; contained context, not additional active records', merges.flatMap(activity => {
+          const change = object(activity.mergeChange), receipt = id(activity, 'receipt')
+          return ownershipGroups.flatMap(group => records(object(change.context)[group]).map(record => ({ parts: [receipt, crmKindFor(group), id(record)], value: { receipt, kind: crmKindFor(group), record } })))
+        }))
+      }
+      if (Object.hasOwn(state, 'mergeHistory')) {
+        const history = object(state.mergeHistory), baseline = object(history.baseline), steps = records(history.steps)
+        exactFields(history, ['schemaVersion', 'baseline', 'steps'])
+        exactFields(baseline, ['kind', ...ownershipGroups, 'activity', 'sequence'])
+        if (history.schemaVersion !== 1 || baseline.kind !== 'legacy-at-first-merge' || !steps.length || steps.length > 1000 || !merges.length) return failure('invalid CRM merge history metadata')
+        for (const group of [...ownershipGroups, 'activity']) {
+          const field = group === 'activity' ? 'receipt' : 'id', identities = records(baseline[group]).map(record => id(record, field))
+          if (new Set(identities).size !== identities.length) return failure('duplicate CRM baseline identity')
+        }
+        for (const step of steps) { exactFields(step, ['receipt', 'actor', 'command']); exactFields(object(step.actor), ['id', 'role']) }
+        // The full private arm deliberately preserves journal and baseline array
+        // order. Display rows use stable identities, while order-only changes
+        // and every hidden field still affect this contained fingerprint.
+        add('mergeHistory.presence', 'Merge history presence and complete chronology', 'metadata', 'One present optional history arm; complete private chronology remains hidden', [{ parts: ['history'], value: history }])
+        add('mergeHistory.baseline', 'First-merge legacy baseline boundary', 'metadata', 'One complete captured baseline; its tables and old activity are excluded from primary totals', [{ parts: ['baseline'], value: baseline }])
+        add('mergeHistory.steps', 'Ordered merge-history journal receipts', 'metadata', 'One private command per journal receipt; command content remains hidden', steps.map(step => ({ parts: [id(step, 'receipt')], value: step })))
+      }
     }
     result.set(module, collections)
   }
@@ -558,7 +648,7 @@ export function compareWorkspaces(current: Partial<DemoWorkspaces>, target: Part
     const previousCollections = before.get(module)!; const nextCollections = after.get(module)!
     const previousByKey = new Map(previousCollections.map(collection => [collection.key, collection]))
     const nextByKey = new Map(nextCollections.map(collection => [collection.key, collection]))
-    const extension = (key: string) => key.startsWith('workflow.lifecycle.') || key.startsWith('workflow.payrollControl.') || key.startsWith('recruiting.lifecycle.') || key === 'preview.selectedManager' || key.startsWith('releaseBundles') || key.startsWith('activity.ownershipChange')
+    const extension = (key: string) => key.startsWith('workflow.lifecycle.') || key.startsWith('workflow.payrollControl.') || key.startsWith('recruiting.lifecycle.') || key === 'preview.selectedManager' || key.startsWith('releaseBundles') || key.startsWith('activity.ownershipChange') || key.startsWith('activity.mergeChange') || key.startsWith('mergeHistory.')
     const keys = [...new Set([...previousByKey.keys(), ...nextByKey.keys()])]
     // Legacy rows retain their established order; optional extension rows have
     // the same order in both comparison directions, even if a field is absent.

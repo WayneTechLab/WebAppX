@@ -4,7 +4,7 @@
   "review": {
     "proposalId": "WX-0908",
     "criterion": "A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.",
-    "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
+    "sourceRevision": "317f47806b7f86dce00f15ee5ced7c0e0bae6116",
     "canonicalDocument": "docs/PORTAL-CAPABILITIES.md",
     "reviewedSources": [
       {
@@ -113,7 +113,7 @@
       },
       {
         "path": "src/portals/useDemoPersistence.ts",
-        "sha256": "7ea3895df10dc73752ee5fb622f3fed08957f0a4d031485d09b1a2747fda05ed"
+        "sha256": "e138711b841a0b63abe34d2d4ca0b485a90d1280f06f9b36655a64e9453c649b"
       },
       {
         "path": "src/portals/recovery-preferences.ts",
@@ -145,15 +145,15 @@
       },
       {
         "path": "src/portals/workspace-inspection.ts",
-        "sha256": "0163551a49238c81a9a16aa5de80eeedd723ce257885f4fae6d585958b7a2e46"
+        "sha256": "727428394a48cc9d03d232da15d7b9f72535746ffa88f0bf6f7229294ca1616e"
       },
       {
         "path": "src/portals/WorkspaceInspection.tsx",
-        "sha256": "2e5b584d1f61cb1331879b0f251c8355b6f9f74b638fcb40f82e0da1439db069"
+        "sha256": "6a6e47b6ca0ded2c518866944f21d9b72630b85bf0bac7261313e3ed095e0dbc"
       },
       {
         "path": "src/crm/CrmDemo.tsx",
-        "sha256": "5d2703a94ce2bcb75c1d72d68ae8d64c14df77e2d48b57ac95c7699c8b85501c"
+        "sha256": "2b0931d03c9c21683cc33c3272f4b86e895bf3c6f9994b771521d556422dee1d"
       },
       {
         "path": "src/hr/lifecycle-types.ts",
@@ -181,7 +181,7 @@
       },
       {
         "path": "src/crm/ownership.ts",
-        "sha256": "513a052d85d9f3107869b71ed4fd8c71b35da484111fd44f7a123da045ed6ab0"
+        "sha256": "a44534d58da5be15f447fb37808fbcf1bfef8ec74504485b795949f5ff981706"
       },
       {
         "path": "src/hr/linked-operations.ts",
@@ -201,11 +201,11 @@
       },
       {
         "path": "src/crm/model.ts",
-        "sha256": "fbef9b656e5e286d3a6a22a93487a905e7909482b64972a33c5c90d86e91bed8"
+        "sha256": "a26e9d9d5302eaa1e3770980ec535b590a5e99f8340dbf304d9812ff66211b56"
       },
       {
         "path": "src/crm/persistence.ts",
-        "sha256": "1b4e2dcc0e4c44c5ac65b2256e49e5159f4580cc4d381dcb352717078b4c2170"
+        "sha256": "58a589d4304d8c4df304bca62d56a71a30715596f34bd917cba59d031ee46ca3"
       },
       {
         "path": "src/hr/recruiting-lifecycle-types.ts",
@@ -338,6 +338,66 @@
       {
         "path": "src/hr/components/HrInsights.tsx",
         "sha256": "923fd14fbee0f903b547f0e5a036166dad705aa5363e6b951e05e87c84c5b876"
+      },
+      {
+        "path": "src/crm/types.ts",
+        "sha256": "45548840eb64ccb52f20e018a38d5d458696dd18e5f6d16788f6fc4625511e0b"
+      },
+      {
+        "path": "src/crm/kernel.ts",
+        "sha256": "6572c0e1911faf2c23d6f9dc6f0e780062f1b68f6a89ae5d8eeed36f0803f001"
+      },
+      {
+        "path": "src/crm/legacy-validation.ts",
+        "sha256": "e5053318849c3b7c4f8568f15a85c6b8ea408a36543242fc23a7cfdcc3736afd"
+      },
+      {
+        "path": "src/crm/merge-types.ts",
+        "sha256": "0bdfa340508cab3c30515ea7df2443773d918157e3f2a2f2505a27bfd19e0766"
+      },
+      {
+        "path": "src/crm/merge-value.ts",
+        "sha256": "84cc60ba4cb0b28e3c3f80d9422e214ea801ec01839af83507bb6be76af494fd"
+      },
+      {
+        "path": "src/crm/merge.ts",
+        "sha256": "0a5929352893536af23458b0150b96278b3bf204c71de03fd2a4fd13a3818971"
+      },
+      {
+        "path": "src/crm/merge-history.ts",
+        "sha256": "c96a806fbc3a1cfbf328f23202220b7a40fd892d82896f9dfb9b6d768ce8a41e"
+      },
+      {
+        "path": "src/crm/merge-public-types.ts",
+        "sha256": "5b426a2cdb5b57e5ca00f77825a6d8e05ed8ddd49c7f7d61aa608079251fb350"
+      },
+      {
+        "path": "src/crm/merge-report.ts",
+        "sha256": "861a8f59eee4ac8a13a04229ee3880dc38f804bb92636969c5381ccda9ad7738"
+      },
+      {
+        "path": "src/crm/merge-projection.ts",
+        "sha256": "44ce54fe7eb4ccd8cada15822fcc377477745ec67e53f7f3c61c937eaa705401"
+      },
+      {
+        "path": "src/crm/merge-controller.ts",
+        "sha256": "cbb4c930850ef50c9ad75940d7ce4d17ba9f546406674db5ec94a2561c655fd7"
+      },
+      {
+        "path": "src/crm/merge-host.ts",
+        "sha256": "85c1148a3813a4d12ec80fcadd194e7f13175f3814664a93eded1ed81934c3a2"
+      },
+      {
+        "path": "src/crm/draft-tabs.ts",
+        "sha256": "80522aa0c263a658ab5054d22db29d81ba4261c260dcb1b495b5649cf666021d"
+      },
+      {
+        "path": "src/crm/CrmMergeHost.tsx",
+        "sha256": "a4ff5b6acb79786d339d5cc6ab2ba17127232f5cdee24a2dfdfe126736364a00"
+      },
+      {
+        "path": "src/crm/CrmMerges.tsx",
+        "sha256": "be7bb9232fb9bee64e1f5d7d526781f28d76e0dedb0ef5cec44a080e0ef61270"
       }
     ],
     "hashMode": "utf8-lf-sha256"

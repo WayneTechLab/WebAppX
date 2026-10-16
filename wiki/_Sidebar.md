@@ -8,6 +8,8 @@
 - [WebAppX Roadmap — 1,000 TODOs](WebAppX-Roadmap.md)
 - [Quick Start](Quick-Start.md)
 - [Developer Setup Contracts](Developer-Setup-Contracts.md)
+- [CRM Duplicates and Merges](CRM-Duplicates-and-Merges.md)
+- [Adoption Contracts](Adoption-Contracts.md)
 - [Template Portals — HR, CMS and CRM](Template-Portals.md)
 - [Portal Lifecycle — locally verified HR, CMS and CRM workflows](Portal-Lifecycle.md)
 - [Portal Safety and Recovery](Portal-Safety-and-Recovery.md)

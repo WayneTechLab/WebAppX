@@ -1,11 +1,8 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import ts from 'typescript'
+import { loadMockModel } from '../browser/model-loader.mjs'
 
-const source = readFileSync(new URL('../../src/crm/model.ts', import.meta.url), 'utf8')
-const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-const crm = await import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`)
+const crm = await loadMockModel(new URL('../../src/crm/model.ts', import.meta.url))
 const owner = crm.crmActors.find(actor => actor.role === 'owner')
 const riley = crm.crmActors.find(actor => actor.id === 'sales-riley')
 const sam = crm.crmActors.find(actor => actor.id === 'sales-sam')

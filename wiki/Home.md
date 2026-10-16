@@ -6,7 +6,20 @@ universal upstream. Start with [Standalone SYSTEMX Integration](SYSTEMX-Standalo
 [Quick Start](Quick-Start.md), [Agent Y setup for a new app](Agent-Y-New-App-Setup.md),
 and [Update Log](Update-Log.md).
 
-## Current payroll and developer setup checkpoint — locally accepted
+## CRM merge and adoption contract candidate — verification in progress
+
+The assigned batch covers **WX-0369–WX-0373** and seventeen adoption artifact
+criteria. The [CRM walkthrough](CRM-Duplicates-and-Merges.md) explains scoped
+duplicate reports, deliberate contact/company preview and apply, complete local
+history, retained drafts and workspace recovery. The [adoption guides](Adoption-Contracts.md)
+provide fourteen reviewed design/runbook artifacts with operator selections unconfigured.
+
+This candidate starts from published source
+`317f47806b7f86dce00f15ee5ced7c0e0bae6116`. Final browser, CI, Hosting preflight
+and Agent 0 acceptance are pending. The canonical checklist remains **134 done /
+866 remaining** and the complete 1,000-item goal remains active.
+
+## Historical payroll and developer setup checkpoint — locally accepted
 
 Agent 0 accepted **twelve original criteria**: **WX-0159/WX-0160** and
 **WX-0011–WX-0014, WX-0016, WX-0019, WX-0020, WX-0022–WX-0024**.
@@ -31,7 +44,7 @@ checks/check groups**: **197 common, 8 HR-disabled and 6 LAN**. The fresh payrol
 suite passed **21 groups and all 35 status meanings**. Hosting preflight exited
 **0** on that source; app **3.4.0** retains **deploy count 0**, with deployment skipped.
 
-The canonical catalog records **134 done / 866 remaining**: **56 P1, 654 P2
+At that payroll/setup checkpoint, the catalog recorded **134 done / 866 remaining**: **56 P1, 654 P2
 and 156 P3**, with **699 local, 127 operator and 40 provider** gates remaining.
 The full 1,000-item goal remains active. Source/wiki publication requires its
 separate direct remote parity check. These local results establish no provider,

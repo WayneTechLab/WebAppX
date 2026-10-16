@@ -15,6 +15,17 @@ const fixture = JSON.parse(readFileSync(new URL('../fixtures/hr-capability-examp
 const company = JSON.parse(readFileSync(new URL('../../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json', import.meta.url), 'utf8'))
 const script = resolve(root, 'scripts/hr-role-examples.mjs')
 const clone = value => structuredClone(value)
+// Independently reviewed transitive additions from the four existing CRM
+// bindings. Includes type-only declarations: saved graphs and public DTOs are
+// part of this source contract even when TypeScript erases their imports.
+const crmImportClosure = [
+  'src/crm/types.ts', 'src/crm/kernel.ts', 'src/crm/legacy-validation.ts',
+  'src/crm/merge-types.ts', 'src/crm/merge-value.ts', 'src/crm/merge.ts',
+  'src/crm/merge-history.ts', 'src/crm/merge-public-types.ts',
+  'src/crm/merge-report.ts', 'src/crm/merge-projection.ts',
+  'src/crm/merge-controller.ts', 'src/crm/merge-host.ts',
+  'src/crm/draft-tabs.ts', 'src/crm/CrmMergeHost.tsx', 'src/crm/CrmMerges.tsx',
+]
 
 // Compile the actual application modules in memory. Neither the generator nor
 // its rendered document supplies expected domain behavior to these models.
@@ -183,8 +194,8 @@ test('malformed or permission-incomplete fixture data is refused before renderin
 })
 
 test('reviewed authority and transaction sources are required within a separate finite source bound', () => {
-  assert.equal(fixture.review.reviewedSources.length, 83)
-  assert.deepEqual(fixture.review.reviewedSources.slice(-8).map(source => source.path), [
+  assert.equal(fixture.review.reviewedSources.length, 98)
+  assert.deepEqual(fixture.review.reviewedSources.slice(75, 83).map(source => source.path), [
     'src/hr/payroll-control-types.ts',
     'src/hr/payroll-control-value.ts',
     'src/hr/payroll-control.ts',
@@ -194,21 +205,47 @@ test('reviewed authority and transaction sources are required within a separate 
     'src/hr/components/HrPayrollControlHost.tsx',
     'src/hr/components/HrInsights.tsx',
   ])
+  assert.deepEqual(fixture.review.reviewedSources.slice(83).map(source => source.path), crmImportClosure)
   for (const source of fixture.review.reviewedSources) {
     const missing = clone(fixture)
     missing.review.reviewedSources = missing.review.reviewedSources.filter(item => item.path !== source.path)
     assert.throws(() => validateHrRoleExamples(missing), /required.*source boundary/, source.path)
   }
   const atLimit = clone(fixture)
-  assert.equal(atLimit.review.reviewedSources.length, 83)
+  assert.equal(atLimit.review.reviewedSources.length, 98)
   assert.equal(validateHrRoleExamples(atLimit), atLimit)
   const tooMany = clone(atLimit)
   tooMany.review.reviewedSources.push({ path: 'src/reviewed-over-limit.ts', sha256: 'b'.repeat(64) })
-  assert.equal(tooMany.review.reviewedSources.length, 84)
+  assert.equal(tooMany.review.reviewedSources.length, 99)
   assert.throws(() => validateHrRoleExamples(tooMany), /Reviewed sources: use a bounded list/)
   const ordinaryList = clone(fixture)
   ordinaryList.roles[0].projection.employeeIds = Array.from({ length: 41 }, (_, index) => `employee-${index}`)
   assert.throws(() => validateHrRoleExamples(ordinaryList), /Employee projection: use a bounded list/)
+})
+
+test('all fifteen added CRM bindings are the exact local import and type closure of the original four boundaries', () => {
+  const original = ['src/crm/CrmDemo.tsx', 'src/crm/ownership.ts', 'src/crm/model.ts', 'src/crm/persistence.ts']
+  const pending = [...original], visited = new Set()
+  while (pending.length) {
+    const path = pending.pop()
+    if (visited.has(path)) continue
+    visited.add(path)
+    const source = ts.createSourceFile(path, readFileSync(resolve(root, path), 'utf8'), ts.ScriptTarget.Latest, true, path.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS)
+    assert.equal(source.parseDiagnostics.length, 0, path)
+    for (const statement of source.statements) {
+      if (!(ts.isImportDeclaration(statement) || ts.isExportDeclaration(statement)) || !statement.moduleSpecifier || !ts.isStringLiteral(statement.moduleSpecifier)) continue
+      const specifier = statement.moduleSpecifier.text
+      if (!specifier.startsWith('.')) continue
+      const base = posix.normalize(posix.join(posix.dirname(path), specifier))
+      if (!base.startsWith('src/crm/')) continue
+      const dependency = ['.ts', '.tsx'].map(extension => base + extension).find(candidate => {
+        try { readFileSync(resolve(root, candidate)); return true } catch (error) { if (error.code === 'ENOENT') return false; throw error }
+      })
+      assert.ok(dependency, `${path}: ${specifier}`)
+      pending.push(dependency)
+    }
+  }
+  assert.deepEqual([...visited].filter(path => !original.includes(path)).sort(), [...crmImportClosure].sort())
 })
 
 test('source drift refuses check and render without replacing a reviewed output', async t => {

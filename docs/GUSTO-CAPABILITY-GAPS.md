@@ -6,9 +6,10 @@ This matrix addresses WX-0909 and maps every capability in the
 behavior, selected SDK coverage, specific adopter-owned work and evidence scope.
 
 Source review: **2026-10-15**. Integration baseline supplied by Agent 0:
-**`49a9efe345c815c2bead1cbbeb83204d31e64290`**. This revision names the supplied published baseline.
-The explicit fingerprints below bind the reviewed payroll-control working tree.
-Agent 0 froze 130 application source files by exact bytes in the [runtime source manifest](evidence/payroll-control-runtime-2026-10-15.json); its SHA-256 is `6adc613e9cb4681668200c742b08716259833a678ba03cc95c9ea7fdb5af8666`.
+**`317f47806b7f86dce00f15ee5ced7c0e0bae6116`**. This revision names the supplied published baseline.
+The explicit fingerprints below bind the reviewed shared persistence/inspection changes in the CRM merge working tree.
+Agent 0 froze 145 application source files by exact bytes in the [runtime source manifest](evidence/crm-merge-runtime-2026-10-15.json); its SHA-256 is `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`.
+Only three shared source fingerprints were rebound here. The finite 84-member HR/current-SDK roster, capability definitions, selected exports and provider boundaries are unchanged; CRM-specific closure is reviewed separately in the [role examples](HR-ROLE-EXAMPLES.md).
 This source-only review establishes no new commit, browser observation, provider operation or production acceptance.
 
 The pinned SDK is **@gusto/embedded-react-sdk 0.56.6**, API alias
@@ -124,7 +125,7 @@ the checker never refreshes fingerprints or accepts capability work.
 | [src/hr/components/HrPerformance.tsx](../src/hr/components/HrPerformance.tsx) | utf8-lf-sha256 | `7c27e5b9a36dc02f69725c101e21568661b9820b613bca0fe44e781f81090357` |
 | [src/hr/components/HrSurveys.tsx](../src/hr/components/HrSurveys.tsx) | utf8-lf-sha256 | `ba28cb8d4bdc1d5a3e313be89f4272bbd340dedbb3d1d9008609a48b71a794ef` |
 | [src/portals/PortalWorkspaceProvider.tsx](../src/portals/PortalWorkspaceProvider.tsx) | utf8-lf-sha256 | `186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa` |
-| [src/portals/useDemoPersistence.ts](../src/portals/useDemoPersistence.ts) | utf8-lf-sha256 | `7ea3895df10dc73752ee5fb622f3fed08957f0a4d031485d09b1a2747fda05ed` |
+| [src/portals/useDemoPersistence.ts](../src/portals/useDemoPersistence.ts) | utf8-lf-sha256 | `e138711b841a0b63abe34d2d4ca0b485a90d1280f06f9b36655a64e9453c649b` |
 | [src/portals/recovery-preferences.ts](../src/portals/recovery-preferences.ts) | utf8-lf-sha256 | `0104715273131dfc397c991b3fe201d525e32903b21b265ddc17bd5fe3391859` |
 | [src/portals/replacement-recovery.ts](../src/portals/replacement-recovery.ts) | utf8-lf-sha256 | `4d80db30057b7ddd1974400e0a8555b33158ec7b8ce55633726b2f8de839dc2c` |
 | [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | utf8-lf-sha256 | `850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809` |
@@ -136,8 +137,8 @@ the checker never refreshes fingerprints or accepts capability work.
 | [src/hr/components/HrEmploymentLifecycle.tsx](../src/hr/components/HrEmploymentLifecycle.tsx) | utf8-lf-sha256 | `bc9c99cba0b2dc9ffd7f8d8c399bc9be4d5c5ca946366d46264139e23f0db699` |
 | [src/hr/persistence.ts](../src/hr/persistence.ts) | utf8-lf-sha256 | `1c313c6ebd78b7eccec8cb6373e1b2e510f12a744883b6f8054fe0c112e6a8e0` |
 | [src/hr/linked-operations.ts](../src/hr/linked-operations.ts) | utf8-lf-sha256 | `2e66e04000c9fd1dec82d8afcd4079a9daaaa238c0fbf0f9574290d70b7cf4ab` |
-| [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | utf8-lf-sha256 | `0163551a49238c81a9a16aa5de80eeedd723ce257885f4fae6d585958b7a2e46` |
-| [src/portals/WorkspaceInspection.tsx](../src/portals/WorkspaceInspection.tsx) | utf8-lf-sha256 | `2e5b584d1f61cb1331879b0f251c8355b6f9f74b638fcb40f82e0da1439db069` |
+| [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | utf8-lf-sha256 | `727428394a48cc9d03d232da15d7b9f72535746ffa88f0bf6f7229294ca1616e` |
+| [src/portals/WorkspaceInspection.tsx](../src/portals/WorkspaceInspection.tsx) | utf8-lf-sha256 | `6a6e47b6ca0ded2c518866944f21d9b72630b85bf0bac7261313e3ed095e0dbc` |
 | [src/hr/recruiting-lifecycle-types.ts](../src/hr/recruiting-lifecycle-types.ts) | utf8-lf-sha256 | `2ad4f9bf47610036ed5d2808690cb88d186062f1493b03d1c9b973bcee9463db` |
 | [src/hr/recruiting-lifecycle-value.ts](../src/hr/recruiting-lifecycle-value.ts) | utf8-lf-sha256 | `2a62ef990f090269b92e2bcf1f153dc67a758cd08e1f15995fc0ef8f110cc434` |
 | [src/hr/recruiting-lifecycle-replay.ts](../src/hr/recruiting-lifecycle-replay.ts) | utf8-lf-sha256 | `42d903bf54c358ca667b53a547ec99151caff2db7ef9fe5e618a7cdbcaaa5329` |

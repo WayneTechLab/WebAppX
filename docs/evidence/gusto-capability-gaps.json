@@ -3,7 +3,7 @@
   "kind": "webappx-gusto-capability-gaps",
   "reviewedOn": "2026-10-15",
   "reviewBase": {
-    "revision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
+    "revision": "317f47806b7f86dce00f15ee5ced7c0e0bae6116",
     "provenance": "integration-baseline-supplied-by-agent-0"
   },
   "evidenceScope": "source-review",
@@ -206,7 +206,7 @@
     {
       "path": "src/portals/useDemoPersistence.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "7ea3895df10dc73752ee5fb622f3fed08957f0a4d031485d09b1a2747fda05ed"
+      "sha256": "e138711b841a0b63abe34d2d4ca0b485a90d1280f06f9b36655a64e9453c649b"
     },
     {
       "path": "src/portals/recovery-preferences.ts",
@@ -266,12 +266,12 @@
     {
       "path": "src/portals/workspace-inspection.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "0163551a49238c81a9a16aa5de80eeedd723ce257885f4fae6d585958b7a2e46"
+      "sha256": "727428394a48cc9d03d232da15d7b9f72535746ffa88f0bf6f7229294ca1616e"
     },
     {
       "path": "src/portals/WorkspaceInspection.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "2e5b584d1f61cb1331879b0f251c8355b6f9f74b638fcb40f82e0da1439db069"
+      "sha256": "6a6e47b6ca0ded2c518866944f21d9b72630b85bf0bac7261313e3ed095e0dbc"
     },
     {
       "path": "src/hr/recruiting-lifecycle-types.ts",

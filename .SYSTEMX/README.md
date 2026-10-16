@@ -11,7 +11,28 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
-## Current payroll and developer setup checkpoint — locally accepted
+## CRM merge and adoption contract candidate — verification in progress
+
+The next assigned batch covers five original CRM criteria, **WX-0369–WX-0373**,
+and seventeen original adoption artifact criteria. Open `/crm/demo` and choose
+**Duplicates & merges** for scoped duplicate reports and deliberate contact or
+company previews. Apply keeps the complete retained record, redirects the
+reviewed linked records and creates a fictional merge receipt. Complete saves
+and recovery retain the first-merge legacy capture and subsequent command history.
+
+Read the [CRM walkthrough](../docs/CRM-DUPLICATES-AND-MERGES.md),
+[implementation contract](../docs/CRM-MERGE-CONTRACT.md) and
+[adoption contract index](../docs/ADOPTION-CONTRACTS.md).
+The fourteen adoption guides cover identity, recovery, security, telemetry,
+Windows verification and delivery decisions. They are reviewable designs and
+runbooks; operator selections remain unconfigured.
+
+This candidate starts from published source
+`317f47806b7f86dce00f15ee5ced7c0e0bae6116`. Its final composed browser run,
+full CI, Hosting preflight and Agent 0 acceptance are pending. The canonical
+checklist remains **134 done / 866 remaining**. The 1,000-item goal remains active.
+
+## Historical payroll and developer setup checkpoint — locally accepted
 
 Agent 0 accepted **twelve original criteria**: **WX-0159/WX-0160** and
 **WX-0011–WX-0014, WX-0016, WX-0019, WX-0020, WX-0022–WX-0024**.
@@ -36,7 +57,7 @@ checks/check groups**: **197 common, 8 HR-disabled and 6 LAN**. The fresh payrol
 suite passed **21 groups and all 35 status meanings**. Hosting preflight exited
 **0** on that source; app **3.4.0** retains **deploy count 0**, with deployment skipped.
 
-The canonical catalog records **134 done / 866 remaining**: **56 P1, 654 P2
+At that payroll/setup checkpoint, the catalog recorded **134 done / 866 remaining**: **56 P1, 654 P2
 and 156 P3**, with **699 local, 127 operator and 40 provider** gates remaining.
 The full 1,000-item goal remains active. Source/wiki publication requires its
 separate direct remote parity check. These local results establish no provider,

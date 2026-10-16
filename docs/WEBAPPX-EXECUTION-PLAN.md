@@ -14,13 +14,83 @@ Current verified progress: **134 done / 866 remaining**.
 Remaining priorities: **56 P1 · 654 P2 · 156 P3**.
 Remaining acceptance gates: **699 local · 40 provider · 127 operator**.
 
+## Completion delta and accepted work
+
+Published baseline `317f47806b7f86dce00f15ee5ced7c0e0bae6116` records
+**134 done / 866 remaining**. The prior recruiting checkpoint had 122 done;
+the accepted payroll/setup delta added twelve original criteria.
+Delta from the 134-item published baseline: **+0 verified completions**, with **866 remaining**.
+
+Every checked batch below is computed from canonical completion records.
+The linked checklist contains the individual checked IDs and original criteria.
+An unchecked candidate has no completion metadata and is not included in the delta.
+
+| Accepted batch | Checked IDs | Source examined | Evidence |
+| --- | ---: | --- | --- |
+| [x] DEVELOPER-BROWSER-QA-2026-10-14 | 3 | `4731702ec7bfdcaec60ac4d42e23b03f330f5d74` | [Receipt](DEVELOPER-BROWSER-QA-2026-10-14.md) |
+| [x] EXECUTION-FOUNDATION-QA-2026-10-15 | 13 | `0469e11bcb17ec67b118099a73958e039c759979` | [Receipt](EXECUTION-FOUNDATION-QA-2026-10-15.md) |
+| [x] SESSION-CONTRACTS-QA-2026-10-15 | 9 | `4ca558015a66c4f7b9f50eb085f98ab62c1c8335` | [Receipt](SESSION-CONTRACTS-QA-2026-10-15.md) |
+| [x] PAYROLL-SETUP-QA-2026-10-15 | 12 | `42818dd7baf3d335f27c401c37d048bd842617fa` | [Receipt](PAYROLL-SETUP-QA-2026-10-15.md) |
+| [x] EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15 | 4 | `0469e11bcb17ec67b118099a73958e039c759979` | [Receipt](EXISTING-FOUNDATION-ACCEPTANCE-2026-10-15.md) |
+| [x] PORTAL-REGISTRY-BUDGET-QA-2026-10-14 | 2 | `a9e78672d707e198dc10193972b17a76958abeb5` | [Receipt](PORTAL-REGISTRY-BUDGET-QA-2026-10-14.md) |
+| [x] PORTAL-MATURITY-QA-2026-10-15 | 16 | `950f9ba0c4e48faaa65056f504f105201838e3ec` | [Receipt](PORTAL-MATURITY-QA-2026-10-15.md) |
+| [x] PORTAL-SAFETY-QA-2026-10-15 | 14 | `532cc4ad63d18a4fe911b0a9b18e258b85ef3416` | [Receipt](PORTAL-SAFETY-QA-2026-10-15.md) |
+| [x] PORTAL-LIFECYCLE-QA-2026-10-15 | 18 | `f5ed3ded151d2dee94c9abc0588f4f3a1d31e8ec` | [Receipt](PORTAL-LIFECYCLE-QA-2026-10-15.md) |
+| [x] HR-RECRUITING-LIFECYCLE-QA-2026-10-15 | 11 | `7337709b79b995c3f1e76254aa51fd86bbd1f215` | [Receipt](HR-RECRUITING-LIFECYCLE-QA-2026-10-15.md) |
+| [x] EVALUATOR-ADOPTION-QA-2026-10-15 | 13 | `aae465ae033f3191a69ed7d40056b0c6e2159e17` | [Receipt](EVALUATOR-ADOPTION-QA-2026-10-15.md) |
+| [x] OPERATIONAL-FOUNDATIONS-QA-2026-10-15 | 9 | `f197affabfe125321c439d8a50854abe684c2355` | [Receipt](OPERATIONAL-FOUNDATIONS-QA-2026-10-15.md) |
+| [x] KEYBOARD-PORTALS-QA-2026-10-15 | 2 | `cae18da251b0a9c4418a4fbebf2bd514ccd2dcdd` | [Receipt](KEYBOARD-PORTALS-QA-2026-10-15.md) |
+| [x] PORTAL-CONFIRMATION-QA-2026-10-15 | 2 | `7a582ed4a5396d54aa94e3ca780667d1b07f179e` | [Receipt](PORTAL-CONFIRMATION-QA-2026-10-15.md) |
+| [x] SYSTEMX-ADOPTION-QA-2026-10-15 | 6 | `f8494b750447af7d4e39695f4a6fceeff29f48bb` | [Receipt](SYSTEMX-ADOPTION-QA-2026-10-15.md) |
+
+## CRM and adoption candidate checklist
+
+- [ ] **WX-0369** — Add a CRM duplicate candidate report — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0370** — Preview same-owner contact merges — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0371** — Apply contact merges atomically — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0372** — Preview company merge consequences — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0373** — Apply company merges with receipts — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0511** — Specify trusted membership provisioning boundaries — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0517** — Design optional owner recovery procedures — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0527** — Define optional custom-token issuer contract — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0534** — Define optional portal-specific permission bundles — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0612** — Define optional content security policy adoption — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0617** — Define optional webhook retention controls — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0627** — Design optional download authorization contracts — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0628** — Prepare a private preview publication checklist — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0635** — Prepare optional incident evidence capture guidance — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0637** — Design optional session step-up requirements — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0760** — Design optional application error telemetry adapter — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0802** — Create an optional GitHub Actions adoption workflow design — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0814** — Prepare optional deployment identity separation — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0820** — Prepare Windows x64 and ARM64 CI acceptance matrix — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0830** — Add Firebase rules dry-run evidence checklist — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0850** — Create a release readiness decision worksheet — final verification and Agent 0 acceptance pending.
+- [ ] **WX-0953** — Add an optional OAuth state-binding design — final verification and Agent 0 acceptance pending.
+
+The next prepared foundation slice covers WX-0015, WX-0017, WX-0018,
+WX-0021, WX-0061, WX-0701 and WX-0715. WX-0715 waits for WX-0061 and
+WX-0701. Work starts from the tested and published predecessor; source or
+plan preparation alone does not establish completion. WX-0656 retains its
+separate manual screen-reader evidence requirement.
+
 ## Assigned implementation plans
 
-The current payroll/setup wave is defined by the [payroll control contract](PAYROLL-CONTROL-CONTRACT.md)
-and [developer setup implementation plan](SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md).
-It covers WX-0159, WX-0160, WX-0011–0014, WX-0016, WX-0019, WX-0020 and WX-0022–0024.
-An implementation assignment or focused test result does not check off these items.
-Their canonical statuses and completion receipts remain the authority below.
+The [CRM merge contract](CRM-MERGE-CONTRACT.md) assigns duplicate reporting,
+same-owner contact/company preview, atomic graph updates and complete recovery
+for WX-0369–0373. The original prerequisite previews precede their apply criteria.
+
+The [adoption contract index](ADOPTION-CONTRACTS.md) covers seventeen original
+artifact criteria WX-0511, WX-0517, WX-0527, WX-0534, WX-0612, WX-0617,
+WX-0627, WX-0628, WX-0635, WX-0637, WX-0760, WX-0802, WX-0814, WX-0820,
+WX-0830, WX-0850 and WX-0953. A reviewed design
+does not establish adopted enforcement, operator execution or provider acceptance.
+
+The earlier payroll/setup wave has its own [payroll control contract](PAYROLL-CONTROL-CONTRACT.md),
+[setup implementation plan](SETUP-CONTRACTS-IMPLEMENTATION-PLAN.md) and
+[completed local QA receipt](PAYROLL-SETUP-QA-2026-10-15.md).
+An assignment or focused result does not check off an item. Canonical statuses
+and completion receipts remain the authority below.
 
 ## Execution and acceptance
 

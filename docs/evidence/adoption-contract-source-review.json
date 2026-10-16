@@ -1,0 +1,2087 @@
+{
+  "schemaVersion": 1,
+  "kind": "adoption-contract-source-artifact-review",
+  "curatedOn": "2026-10-15",
+  "artifactSetStatus": "artifact-designs-reviewed-runtime-unadopted",
+  "runtimeAdoption": "unadopted",
+  "catalogAcceptance": "not-recorded-by-this-artifact; pending-Agent-0-receipts-and-gates",
+  "historicalSourceBasis": {
+    "revision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+    "provenance": "supplied-by-Agent-0-at-original-draft-preparation",
+    "catalogSha256": "e6a38ce600cfdeb95cf0bb397ab587409ee725eeef2b345d4ff1a64589294bc0",
+    "scope": "Historical source fingerprints and drafting metadata are preserved. They are not current runtime, CI, provider or external setup evidence."
+  },
+  "artifacts": [
+    {
+      "path": "docs/IDENTITY-ADOPTION-CONTRACTS.md",
+      "criteria": [
+        "WX-0511",
+        "WX-0527",
+        "WX-0534",
+        "WX-0637"
+      ],
+      "group": "identity",
+      "draftSha256": "453dbb322aef5cf88380d91aa68f388d32ee1595dd8180086cd56b3cf1954b09",
+      "publicSha256": "4649061dc6a7a28e26c93ed4282a2b0dd0c118af69b0dfc67958b286f6533d71",
+      "draftBytes": 34384,
+      "publicBytes": 34964,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-source-artifact-review",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/CSP-REPORT-ONLY-ADOPTION-PROPOSAL.md",
+      "criteria": [
+        "WX-0612"
+      ],
+      "group": "security",
+      "draftSha256": "03a2b4d4168c8db3bae945a9abe90d2971ae53b71d12080774e1434768edb5fd",
+      "publicSha256": "1270bc35042b93f45c46053aef635e814c81d723482d37b8d72e9671c0529483",
+      "draftBytes": 13687,
+      "publicBytes": 14149,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-source-artifact-review",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/WEBHOOK-RETENTION-ADOPTION-PROPOSAL.md",
+      "criteria": [
+        "WX-0617"
+      ],
+      "group": "security",
+      "draftSha256": "407dd96dee6dbd313dd4e095d89c26e11c1192404e87353c45bc788544e9a695",
+      "publicSha256": "00bc93f99e8bb9f7cbdb42ac0c06e9f27642ce52c4694ba09aee3b50dcec8e93",
+      "draftBytes": 11147,
+      "publicBytes": 11559,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-source-artifact-review",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/OWNER-RECOVERY-RUNBOOK.md",
+      "criteria": [
+        "WX-0517"
+      ],
+      "group": "operations",
+      "draftSha256": "7ea3360130d2e7294741db5383fc98d2d89f2dd8db79ed08fef9106ee636904e",
+      "publicSha256": "f4566733faa9181d42c9619b5d4a050b1608a0dd0e01c37b78ce4a85c263b07b",
+      "draftBytes": 11313,
+      "publicBytes": 11751,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-source-artifact-review",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/INCIDENT-EVIDENCE-CAPTURE.md",
+      "criteria": [
+        "WX-0635"
+      ],
+      "group": "operations",
+      "draftSha256": "66ba263e67cf9dc4a4f473c6e1084b7877604ba4285d70b757e7f32aa135a3ba",
+      "publicSha256": "81ad04c6984c4960d97446f57a00842832045adbca4f8bb9b52d721c15aa2eb6",
+      "draftBytes": 10969,
+      "publicBytes": 11442,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-source-artifact-review",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/DOWNLOAD-AUTHORIZATION-ADOPTION-CONTRACT.md",
+      "criteria": [
+        "WX-0627"
+      ],
+      "group": "security",
+      "draftVersion": 2,
+      "draftSha256": "732f142bd041d65680d0925e9ee117378341c69ce316ebb681c19b5c3b2ac13f",
+      "publicSha256": "a8b3cd5a774225696348904e189a907c9ced7e9d61f25d080f9a8b529609f4cd",
+      "draftBytes": 15691,
+      "publicBytes": 16058,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-v2-recheck",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/OAUTH-STATE-BINDING-ADOPTION-TEST-CONTRACT.md",
+      "criteria": [
+        "WX-0953"
+      ],
+      "group": "security",
+      "draftVersion": 2,
+      "draftSha256": "c94ecad146f2853ba603b3309d08b7a3f86fd565a912504f0e075ac11bd8f851",
+      "publicSha256": "795e9cf2a1e50c5aa63f2f809b802cda5f4602c0561c3bf1195edace159b29ae",
+      "draftBytes": 21979,
+      "publicBytes": 22224,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-v2-recheck",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/ERROR-TELEMETRY-ADAPTER-CONTRACT.md",
+      "criteria": [
+        "WX-0760"
+      ],
+      "group": "operations",
+      "draftVersion": 2,
+      "draftSha256": "769408949ac58e85366c13948bb20b3bfb40de88a6d1cd3c53b59d5433442d9d",
+      "publicSha256": "67eec8f0593bbd634ca257f98a7126c2123d8f834545328ac9921614e005cf85",
+      "draftBytes": 22824,
+      "publicBytes": 23233,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-v2-recheck",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/WINDOWS-X64-ARM64-RUNNER-MATRIX.md",
+      "criteria": [
+        "WX-0820"
+      ],
+      "group": "operations",
+      "draftVersion": 2,
+      "draftSha256": "477158c9fc9e8a172c280836eba45983e8fc00b4db25c48e8783e3ad1dae430c",
+      "publicSha256": "40ed731fb214d95bd453c38e6fc803b346b4d68df53ea9f37521e3c8b21745c2",
+      "draftBytes": 24726,
+      "publicBytes": 25206,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-v2-recheck",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/PRIVATE-PREVIEW-PUBLICATION-CHECKLIST.md",
+      "criteria": [
+        "WX-0628"
+      ],
+      "group": "delivery",
+      "draftVersion": 1,
+      "draftSha256": "8a46b5b4b4ea51bdc6b93fb91fc662a3f64eb4db12672c72020764624af60e44",
+      "publicSha256": "6ac34c9fa20e972a79ea58258683cd40e81f5d9c08d5aa29364f4073e595f8ae",
+      "draftBytes": 10070,
+      "publicBytes": 10657,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-source-artifact-review",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/GITHUB-ACTIONS-ADOPTION-DESIGN.md",
+      "criteria": [
+        "WX-0802"
+      ],
+      "group": "delivery",
+      "draftVersion": 2,
+      "draftSha256": "330b33d6f12ba3d9d0c3fd5655d03500700e1f7c255481d28e783586420e1351",
+      "publicSha256": "59bed8d5fa78d336f98079d3045d950603eb5d7d49fcef033c23db4709476199",
+      "draftBytes": 16814,
+      "publicBytes": 17398,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-v2-recheck",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/DEPLOYMENT-IDENTITY-SEPARATION.md",
+      "criteria": [
+        "WX-0814"
+      ],
+      "group": "delivery",
+      "draftVersion": 1,
+      "draftSha256": "7954a63a5539b78383dc3ba199e31b761295b7b873fdbebbff2c520a689f58ff",
+      "publicSha256": "28c56d6ca87fe05a1a486d18559625972a0db6c0dba56dd2a9883efb4be8b34a",
+      "draftBytes": 10863,
+      "publicBytes": 11442,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-source-artifact-review",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/FIREBASE-RULES-DRY-RUN-CHECKLIST.md",
+      "criteria": [
+        "WX-0830"
+      ],
+      "group": "delivery",
+      "draftVersion": 1,
+      "draftSha256": "42cd93aca13625f86e9bc28d0ee874e070128094369dd68376f65241930ef8be",
+      "publicSha256": "46157a7a9c566ee3936b745a21e0ff7c5e8f999ff71feda1647bb38bef92246b",
+      "draftBytes": 12047,
+      "publicBytes": 12633,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-source-artifact-review",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    },
+    {
+      "path": "docs/RELEASE-READINESS-DECISION-WORKSHEET.md",
+      "criteria": [
+        "WX-0850"
+      ],
+      "group": "delivery",
+      "draftVersion": 1,
+      "draftSha256": "4ff13ef3155d5a2863e1c8384a45696d63f0367a7b828a7faa1bc004e4d9dd06",
+      "publicSha256": "69bd3359c5ff59b885cccff9d1883c108a9a7980f43fd1174067fb659b06a0e7",
+      "draftBytes": 14636,
+      "publicBytes": 15253,
+      "artifactDesignReview": "Agent-0-reviewed-after-independent-source-artifact-review",
+      "runtimeAdoption": "unadopted",
+      "originalDraftPreserved": true
+    }
+  ],
+  "pendingArtifacts": [],
+  "identityPaperMatrix": {
+    "path": "docs/evidence/identity-adoption-matrix.json",
+    "sha256": "0fc05bb008b5b6980fdb333f6cb3f772389d60958a2b9850ec82db4020218980",
+    "bytes": 68716,
+    "literalCases": 79,
+    "maximumCases": 80,
+    "runtimeEvaluatorExecuted": false,
+    "metadataQualification": "Exact original draft bytes, including its historical TODO/draft metadata; current artifact design review is recorded here separately."
+  },
+  "historicalSourceInventories": {
+    "identity": {
+      "observedOn": "2026-10-15",
+      "revision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+      "revisionProvenance": "supplied-by-Agent-0; no Git verification performed in this draft task",
+      "hashMode": "exact-file-bytes-sha256",
+      "catalogSha256": "e6a38ce600cfdeb95cf0bb397ab587409ee725eeef2b345d4ff1a64589294bc0",
+      "files": [
+        {
+          "path": "src/auth/firebaseAuth.ts",
+          "sha256": "b8672f40e1bab47fd77f7f60407d864af96df4d3efd12b548d3a157749dcf867"
+        },
+        {
+          "path": "src/auth/authProviders.ts",
+          "sha256": "a4b4a79fe9f4bdd0164d6b99386da37dc40fddd3ecd43f111250e11ea142dabc"
+        },
+        {
+          "path": "src/auth/accountLevels.ts",
+          "sha256": "38784a0cca7570cc5c2ef456e44d19e0c053311579002a2ee7d6d50dc831f270"
+        },
+        {
+          "path": ".SYSTEMX/LAN/Builder/contracts/auth-provider-registry.json",
+          "sha256": "5e26bd49c426431816a8695c8847a4f9c84d388572c5825c400d47955dc58a9e"
+        },
+        {
+          "path": "integrations/gusto/functions/src/security.mjs",
+          "sha256": "48c86c7be0c53c47b0c520a6b2d2162e1d1f151423b9d7f04413dc3159b518f5"
+        },
+        {
+          "path": "integrations/gusto/functions/src/index.mjs",
+          "sha256": "fa240bf40cf6acb9e305c07275dd190ace393fd33b2edbbb263a024f86f92fed"
+        },
+        {
+          "path": "integrations/gusto/functions/src/backend.mjs",
+          "sha256": "652af6bdc7ddba6820a3d47f6eda9514e4555b0c8d1a124c5f733232c5386efa"
+        },
+        {
+          "path": "integrations/gusto/firestore.rules",
+          "sha256": "946fa2a7bba43f33925c367bf52f0139c558f4192bbe6a8e82de7bc8cc2f4352"
+        },
+        {
+          "path": "docs/TENANT-MEMBERSHIP-PROPOSAL.md",
+          "sha256": "0a71c4c3a738059dbf367c3521f1b67ebb941a4206c101761405a8568a79e267"
+        },
+        {
+          "path": "docs/PORTAL-CAPABILITIES.md",
+          "sha256": "145d912322bd3d4e9ffce7a8ca45131c1fd557f8801ef9d36ed348934368f6cd"
+        },
+        {
+          "path": "src/cms/model.ts",
+          "sha256": "2bd7580d3fd0e42a27810fe65ccf04aae0e3a2a69ac01df05a7acc9c7cf28bbf"
+        },
+        {
+          "path": "src/cms/release-bundles.ts",
+          "sha256": "ed159266af4cf6346cc49506d8e55d80e5c090e48c67c0001e718bad96c9ab24"
+        },
+        {
+          "path": "src/crm/model.ts",
+          "sha256": "fbef9b656e5e286d3a6a22a93487a905e7909482b64972a33c5c90d86e91bed8"
+        },
+        {
+          "path": "src/crm/ownership.ts",
+          "sha256": "513a052d85d9f3107869b71ed4fd8c71b35da484111fd44f7a123da045ed6ab0"
+        },
+        {
+          "path": "src/hr/model.ts",
+          "sha256": "32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e"
+        },
+        {
+          "path": "src/portals/backup.ts",
+          "sha256": "b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a"
+        },
+        {
+          "path": "src/portals/combined-backup.ts",
+          "sha256": "186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726"
+        },
+        {
+          "path": "firestore.rules",
+          "sha256": "da607c38e2acb644763722887c6286e1c33ba3c98edf845d36c23a8e2825d482"
+        },
+        {
+          "path": "storage.rules",
+          "sha256": "858a8d5ad0af31ad5c9b42650ca58f6a2601b22e20464b63d636ad3f32503f83"
+        }
+      ]
+    },
+    "security": {
+      "schemaVersion": 1,
+      "sourceBasisSuppliedByAgent0": "42818dd",
+      "intent": "read-only-source-review-for-four-disabled-proposals",
+      "files": [
+        {
+          "path": "docs/backlog/webappx-1000-todo.json",
+          "sha256": "e6a38ce600cfdeb95cf0bb397ab587409ee725eeef2b345d4ff1a64589294bc0"
+        },
+        {
+          "path": "firebase.json",
+          "sha256": "f5cbf9d99d5cc271b000d493982ae9f1481aa1ed4c92d4f35dc4ecbe8b9c48eb"
+        },
+        {
+          "path": "storage.rules",
+          "sha256": "858a8d5ad0af31ad5c9b42650ca58f6a2601b22e20464b63d636ad3f32503f83"
+        },
+        {
+          "path": "firestore.rules",
+          "sha256": "da607c38e2acb644763722887c6286e1c33ba3c98edf845d36c23a8e2825d482"
+        },
+        {
+          "path": "index.html",
+          "sha256": "15c4b21da48c9f9b040e901867dcb6c075c783dbf6e9313b175e3e1e4bcbd862"
+        },
+        {
+          "path": "src/config/firebase.ts",
+          "sha256": "c6bf24801d1bcf482013346d39c09b0fa51bc31b32142c8bb672cf0b7cf3d070"
+        },
+        {
+          "path": "src/auth/firebaseAuth.ts",
+          "sha256": "b8672f40e1bab47fd77f7f60407d864af96df4d3efd12b548d3a157749dcf867"
+        },
+        {
+          "path": "src/index.css",
+          "sha256": "2b0aab90708e30a50254b60fbf27c55108ff91e660d1f01c1e2727ee72600457"
+        },
+        {
+          "path": "src/hr/gusto/GustoSdkPreview.tsx",
+          "sha256": "2997c3af94e9d89225ee670c439241de5b65adf68c75cc5cf198c16f495978cd"
+        },
+        {
+          "path": "integrations/gusto/functions/src/index.mjs",
+          "sha256": "fa240bf40cf6acb9e305c07275dd190ace393fd33b2edbbb263a024f86f92fed"
+        },
+        {
+          "path": "integrations/gusto/functions/src/backend.mjs",
+          "sha256": "652af6bdc7ddba6820a3d47f6eda9514e4555b0c8d1a124c5f733232c5386efa"
+        },
+        {
+          "path": "integrations/gusto/functions/src/security.mjs",
+          "sha256": "48c86c7be0c53c47b0c520a6b2d2162e1d1f151423b9d7f04413dc3159b518f5"
+        },
+        {
+          "path": "integrations/gusto/functions/src/webhooks.mjs",
+          "sha256": "ff634f7f94855a8ef9576d27edaf6fac50b3d3dda81694f8d5c5f94cc12c7af6"
+        },
+        {
+          "path": "integrations/gusto/mock-api.mjs",
+          "sha256": "7083b242287796179d1548a5d1fba2958cdd1fdda6f0638154d6ee345738a01e"
+        },
+        {
+          "path": "docs/GUSTO-SETUP.md",
+          "sha256": "570f8fb056273cea5b8be9310aa17c58b62f1dcbe286be5f99226670e7bacd8d"
+        },
+        {
+          "path": "vite.config.ts",
+          "sha256": "ba6e9b93ca2ffa5594a51e20c6b408934cee0c7887c1ae2cc021f7524bb8b330"
+        },
+        {
+          "path": "package.json",
+          "sha256": "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d"
+        },
+        {
+          "path": "src/main.tsx",
+          "sha256": "dc4eb2bd042517362047b8537f62971b1e7e212ef9848d4240661989e11c5fd7"
+        },
+        {
+          "path": "src/portals/persistence.ts",
+          "sha256": "81d5b2047b62212795256023b630908c29cad770c320373f53a14c14863bad6a"
+        },
+        {
+          "path": "src/portals/DemoWorkspaceBackup.tsx",
+          "sha256": "850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809"
+        },
+        {
+          "path": "src/portals/CombinedWorkspaceBackup.tsx",
+          "sha256": "cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51"
+        },
+        {
+          "path": "src/systemx/localStatus.ts",
+          "sha256": "2b95ad93fbbc23193e6030834117993148a3f3bf97fc0b66037d0757fb34f26d"
+        },
+        {
+          "path": "src/components/layout/Navbar.tsx",
+          "sha256": "d197b3e8b34142612a4d30408e8f49d24cea265297ef6b1aa08af2743536e41b"
+        },
+        {
+          "path": "src/components/shell/PageSnapMenu.tsx",
+          "sha256": "9e120801da0671fd8ea6e2db0b5a05670b5a359dc29f6921377d0a44404c7782"
+        },
+        {
+          "path": "src/hr/provider-adapter.ts",
+          "sha256": "3422961870779a81018e25161604645220f2041b7bb71a5b3864d2e6bd4c579f"
+        },
+        {
+          "path": "src/pages/HrPage.tsx",
+          "sha256": "daf6bf5bbc0325c253ea6d9802e76ee867b60a3ff608312c67911a18453b4292"
+        },
+        {
+          "path": "src/pages/SocialPage.tsx",
+          "sha256": "266a3c14e22169422891693526a5c8d41cc5990c52ca8a3a84db6da280eac0d7"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/contexts/ThemeProvider/ThemeProvider.js",
+          "sha256": "83b4e75fd847915ae0360a93b38ddf5bbfbd62bb8f00baf44a70ce9630071124"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/contexts/ThemeProvider/theme.js",
+          "sha256": "48928750b3db1646d2f4f1df9c94ad47cf613dbe150a118df751ebe0de76215d"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/components/Common/UI/ProgressBar/ProgressBar.js",
+          "sha256": "b72ee5ad44ee67914879e8f847f12c7ddfa926a0af1a915954200a9a50798d89"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/helpers/openPdfInNewTab.js",
+          "sha256": "5d50ce9e6fa9d3c037455f34d53bfe7eb5a269158ae70b1afa1c766aec873626"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/style.css",
+          "sha256": "e3de593897b7065732d367400139b4739bab7674236567e7584001a060d06d4e"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-api/esm/lib/config.js",
+          "sha256": "44693682c3a995a4ea9060c3f6cb11e9870cb79efef136d8943eb547a2eac8f1"
+        },
+        {
+          "path": "node_modules/@firebase/auth/dist/esm/index-4NFEPWkC.js",
+          "sha256": "b3b14296a0a3977747010ce82d14edb51fc25bd055e0dc042f889c3cadc2c742"
+        }
+      ],
+      "initialSeventeenPublicSourcesUnchanged": true,
+      "limitations": [
+        "Source review only; current installed vendor files are bounded package-source observations.",
+        "No browser/build/provider test or deployed-header observation.",
+        "No source/catalog/configuration/Git changes; all four artifacts are unselected disabled proposals."
+      ]
+    },
+    "clearOperations": {
+      "OWNER-RECOVERY-RUNBOOK.md": [
+        {
+          "path": "docs/RUNBOOK.md",
+          "sha256": "50a2d961865600d63c98a17a317c898e662893e004a523419e9746232c5a4b7e"
+        },
+        {
+          "path": "docs/TENANT-MEMBERSHIP-PROPOSAL.md",
+          "sha256": "0a71c4c3a738059dbf367c3521f1b67ebb941a4206c101761405a8568a79e267"
+        },
+        {
+          "path": "integrations/gusto/functions/src/security.mjs",
+          "sha256": "48c86c7be0c53c47b0c520a6b2d2162e1d1f151423b9d7f04413dc3159b518f5"
+        },
+        {
+          "path": "src/auth/firebaseAuth.ts",
+          "sha256": "b8672f40e1bab47fd77f7f60407d864af96df4d3efd12b548d3a157749dcf867"
+        },
+        {
+          "path": ".SYSTEMX/deploy/mfa-policy.md",
+          "sha256": "b85bcb49a380284b58c585b2b9a35142bc228a56d5a20daadba21d1621beeb09"
+        }
+      ],
+      "INCIDENT-EVIDENCE-CAPTURE.md": [
+        {
+          "path": "docs/RUNBOOK.md",
+          "sha256": "50a2d961865600d63c98a17a317c898e662893e004a523419e9746232c5a4b7e"
+        },
+        {
+          "path": "docs/MONITORING.md",
+          "sha256": "6b654892a4cd29deceaf89ce58204162e6a99e3b8a1c8f28dc470b949c18f4dd"
+        },
+        {
+          "path": "docs/SECRETS.md",
+          "sha256": "a3060d87cb9bb85f27d0d55155816ceb582742a47f4a16149104740acd73fc23"
+        },
+        {
+          "path": "docs/OPERATIONS-READINESS.md",
+          "sha256": "49c48b9c74e5b608b5c98d17111cdd7b9b6e56ead4b998e884d9cd1dc8978bd9"
+        }
+      ]
+    },
+    "securityV2": {
+      "sourceBasisSuppliedByAgent0": "42818dd",
+      "observationQualification": "The original42818dd basis is supplied provenance. V2 explicitly observed later catalog metadata; its catalog hash is not relabeled as original428 bytes. All other observed source fingerprints remain the original values. This is historical artifact review, not a current CRM source re-review.",
+      "manifestSha256": "d2ed6981e70349ff48537fbf02d442bb2cedd64136ad68e6d7dc1829ccefac8d",
+      "originalV1ManifestSha256": "ca27e88ed6a752da4dbc1619d7f3b5da91e1c0d60c7604e4a3df54be5ef9f96b",
+      "files": [
+        {
+          "path": "docs/backlog/webappx-1000-todo.json",
+          "sha256": "9e9579581183eb89d86a8003fade1b4a1b4c63b387cdee06048d8ff82c9a9dd2"
+        },
+        {
+          "path": "firebase.json",
+          "sha256": "f5cbf9d99d5cc271b000d493982ae9f1481aa1ed4c92d4f35dc4ecbe8b9c48eb"
+        },
+        {
+          "path": "storage.rules",
+          "sha256": "858a8d5ad0af31ad5c9b42650ca58f6a2601b22e20464b63d636ad3f32503f83"
+        },
+        {
+          "path": "firestore.rules",
+          "sha256": "da607c38e2acb644763722887c6286e1c33ba3c98edf845d36c23a8e2825d482"
+        },
+        {
+          "path": "index.html",
+          "sha256": "15c4b21da48c9f9b040e901867dcb6c075c783dbf6e9313b175e3e1e4bcbd862"
+        },
+        {
+          "path": "src/config/firebase.ts",
+          "sha256": "c6bf24801d1bcf482013346d39c09b0fa51bc31b32142c8bb672cf0b7cf3d070"
+        },
+        {
+          "path": "src/auth/firebaseAuth.ts",
+          "sha256": "b8672f40e1bab47fd77f7f60407d864af96df4d3efd12b548d3a157749dcf867"
+        },
+        {
+          "path": "src/index.css",
+          "sha256": "2b0aab90708e30a50254b60fbf27c55108ff91e660d1f01c1e2727ee72600457"
+        },
+        {
+          "path": "src/hr/gusto/GustoSdkPreview.tsx",
+          "sha256": "2997c3af94e9d89225ee670c439241de5b65adf68c75cc5cf198c16f495978cd"
+        },
+        {
+          "path": "integrations/gusto/functions/src/index.mjs",
+          "sha256": "fa240bf40cf6acb9e305c07275dd190ace393fd33b2edbbb263a024f86f92fed"
+        },
+        {
+          "path": "integrations/gusto/functions/src/backend.mjs",
+          "sha256": "652af6bdc7ddba6820a3d47f6eda9514e4555b0c8d1a124c5f733232c5386efa"
+        },
+        {
+          "path": "integrations/gusto/functions/src/security.mjs",
+          "sha256": "48c86c7be0c53c47b0c520a6b2d2162e1d1f151423b9d7f04413dc3159b518f5"
+        },
+        {
+          "path": "integrations/gusto/functions/src/webhooks.mjs",
+          "sha256": "ff634f7f94855a8ef9576d27edaf6fac50b3d3dda81694f8d5c5f94cc12c7af6"
+        },
+        {
+          "path": "integrations/gusto/mock-api.mjs",
+          "sha256": "7083b242287796179d1548a5d1fba2958cdd1fdda6f0638154d6ee345738a01e"
+        },
+        {
+          "path": "docs/GUSTO-SETUP.md",
+          "sha256": "570f8fb056273cea5b8be9310aa17c58b62f1dcbe286be5f99226670e7bacd8d"
+        },
+        {
+          "path": "vite.config.ts",
+          "sha256": "ba6e9b93ca2ffa5594a51e20c6b408934cee0c7887c1ae2cc021f7524bb8b330"
+        },
+        {
+          "path": "package.json",
+          "sha256": "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d"
+        },
+        {
+          "path": "src/main.tsx",
+          "sha256": "dc4eb2bd042517362047b8537f62971b1e7e212ef9848d4240661989e11c5fd7"
+        },
+        {
+          "path": "src/portals/persistence.ts",
+          "sha256": "81d5b2047b62212795256023b630908c29cad770c320373f53a14c14863bad6a"
+        },
+        {
+          "path": "src/portals/DemoWorkspaceBackup.tsx",
+          "sha256": "850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809"
+        },
+        {
+          "path": "src/portals/CombinedWorkspaceBackup.tsx",
+          "sha256": "cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51"
+        },
+        {
+          "path": "src/systemx/localStatus.ts",
+          "sha256": "2b95ad93fbbc23193e6030834117993148a3f3bf97fc0b66037d0757fb34f26d"
+        },
+        {
+          "path": "src/components/layout/Navbar.tsx",
+          "sha256": "d197b3e8b34142612a4d30408e8f49d24cea265297ef6b1aa08af2743536e41b"
+        },
+        {
+          "path": "src/components/shell/PageSnapMenu.tsx",
+          "sha256": "9e120801da0671fd8ea6e2db0b5a05670b5a359dc29f6921377d0a44404c7782"
+        },
+        {
+          "path": "src/hr/provider-adapter.ts",
+          "sha256": "3422961870779a81018e25161604645220f2041b7bb71a5b3864d2e6bd4c579f"
+        },
+        {
+          "path": "src/pages/HrPage.tsx",
+          "sha256": "daf6bf5bbc0325c253ea6d9802e76ee867b60a3ff608312c67911a18453b4292"
+        },
+        {
+          "path": "src/pages/SocialPage.tsx",
+          "sha256": "266a3c14e22169422891693526a5c8d41cc5990c52ca8a3a84db6da280eac0d7"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/contexts/ThemeProvider/ThemeProvider.js",
+          "sha256": "83b4e75fd847915ae0360a93b38ddf5bbfbd62bb8f00baf44a70ce9630071124"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/contexts/ThemeProvider/theme.js",
+          "sha256": "48928750b3db1646d2f4f1df9c94ad47cf613dbe150a118df751ebe0de76215d"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/components/Common/UI/ProgressBar/ProgressBar.js",
+          "sha256": "b72ee5ad44ee67914879e8f847f12c7ddfa926a0af1a915954200a9a50798d89"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/helpers/openPdfInNewTab.js",
+          "sha256": "5d50ce9e6fa9d3c037455f34d53bfe7eb5a269158ae70b1afa1c766aec873626"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/style.css",
+          "sha256": "e3de593897b7065732d367400139b4739bab7674236567e7584001a060d06d4e"
+        },
+        {
+          "path": "node_modules/@gusto/embedded-api/esm/lib/config.js",
+          "sha256": "44693682c3a995a4ea9060c3f6cb11e9870cb79efef136d8943eb547a2eac8f1"
+        },
+        {
+          "path": "node_modules/@firebase/auth/dist/esm/index-4NFEPWkC.js",
+          "sha256": "b3b14296a0a3977747010ce82d14edb51fc25bd055e0dc042f889c3cadc2c742"
+        }
+      ],
+      "observedDriftFromV1Source": [
+        {
+          "path": "docs/backlog/webappx-1000-todo.json",
+          "baselineSha256": "e6a38ce600cfdeb95cf0bb397ab587409ee725eeef2b345d4ff1a64589294bc0",
+          "observedSha256": "9e9579581183eb89d86a8003fade1b4a1b4c63b387cdee06048d8ff82c9a9dd2"
+        }
+      ],
+      "selectedCriterionReview": {
+        "criteriaExactInPreservedV1AndV2": true,
+        "allFourStatusTodo": true,
+        "originalPriorityGatesDependenciesPreserved": true,
+        "selectedRows": [
+          {
+            "id": "WX-0612",
+            "area": "security",
+            "priority": "P1",
+            "phase": "production-readiness",
+            "status": "todo",
+            "title": "Define optional content security policy adoption",
+            "acceptance": "For optional operator-approved adoption: Produce a report-only policy proposal listing required Firebase, SDK, image and font origins; activation remains an operator-reviewed hosting change.",
+            "source": "firebase.json",
+            "gate": "operator",
+            "dependsOn": []
+          },
+          {
+            "id": "WX-0617",
+            "area": "security",
+            "priority": "P1",
+            "phase": "production-readiness",
+            "status": "todo",
+            "title": "Define optional webhook retention controls",
+            "acceptance": "For optional operator-approved adoption: An adoption design bounds stored webhook payload duration, redacts unnecessary provider fields and requires operator selection before collection.",
+            "source": "integrations/gusto/functions/src/webhooks.mjs",
+            "gate": "operator",
+            "dependsOn": []
+          },
+          {
+            "id": "WX-0627",
+            "area": "security",
+            "priority": "P1",
+            "phase": "production-readiness",
+            "status": "todo",
+            "title": "Design optional download authorization contracts",
+            "acceptance": "For optional operator-approved adoption: A future attachment design binds each download to tenant, resource and expiry rather than trusting a displayed URL or demo role.",
+            "source": "storage.rules",
+            "gate": "operator",
+            "dependsOn": []
+          },
+          {
+            "id": "WX-0953",
+            "area": "integrations",
+            "priority": "P1",
+            "phase": "extensions",
+            "status": "todo",
+            "title": "Add an optional OAuth state-binding design",
+            "acceptance": "An adoption test contract binds state, organization, initiating user, expiry and one-use callback without exposing a client secret.",
+            "source": "docs/GUSTO-SETUP.md",
+            "gate": "provider",
+            "dependsOn": []
+          }
+        ]
+      },
+      "preservedOriginalArtifacts": [
+        {
+          "name": "CSP-REPORT-ONLY-ADOPTION-PROPOSAL.md",
+          "id": "WX-0612",
+          "sha256": "03a2b4d4168c8db3bae945a9abe90d2971ae53b71d12080774e1434768edb5fd"
+        },
+        {
+          "name": "WEBHOOK-RETENTION-ADOPTION-PROPOSAL.md",
+          "id": "WX-0617",
+          "sha256": "407dd96dee6dbd313dd4e095d89c26e11c1192404e87353c45bc788544e9a695"
+        },
+        {
+          "name": "DOWNLOAD-AUTHORIZATION-ADOPTION-CONTRACT.md",
+          "id": "WX-0627",
+          "sha256": "d7fcca59a7d678cc1298010cdc5fc0b71b8ca09287e121957626921d094a7159"
+        },
+        {
+          "name": "OAUTH-STATE-BINDING-ADOPTION-TEST-CONTRACT.md",
+          "id": "WX-0953",
+          "sha256": "d3bbf0fd2a0913fa0b1abc3081dd8beb5a20fcbefdee618594a75ba7611cedb8"
+        }
+      ],
+      "limitations": [
+        "Source/document review only; no runtime/protocol tests executed.",
+        "Catalog-only drift is declared; no changed source was silently relabeled as original42818dd.",
+        "All adoption bindings remain unselected/default disabled.",
+        "No primary/tracked/Git/provider/cloud/browser change or canonical acceptance."
+      ]
+    },
+    "operationsV2": {
+      "sourceBasis": "42818dd7baf3d335f27c401c37d048bd842617fa",
+      "observationQualification": "Supplied historical drafting context; explicit v2 host coverage observations remain source-only, with both native Windows architecture cells unavailable. No current CRM re-review or execution is inferred.",
+      "filesByArtifact": {
+        "ERROR-TELEMETRY-ADAPTER-CONTRACT.md": [
+          {
+            "path": "docs/MONITORING.md",
+            "sha256": "6b654892a4cd29deceaf89ce58204162e6a99e3b8a1c8f28dc470b949c18f4dd"
+          },
+          {
+            "path": "docs/SECRETS.md",
+            "sha256": "a3060d87cb9bb85f27d0d55155816ceb582742a47f4a16149104740acd73fc23"
+          },
+          {
+            "path": "docs/OPERATIONS-READINESS.md",
+            "sha256": "49c48b9c74e5b608b5c98d17111cdd7b9b6e56ead4b998e884d9cd1dc8978bd9"
+          },
+          {
+            "path": "src/portals/persistence.ts",
+            "sha256": "81d5b2047b62212795256023b630908c29cad770c320373f53a14c14863bad6a"
+          },
+          {
+            "path": "src/portals/replacement-recovery.ts",
+            "sha256": "4d80db30057b7ddd1974400e0a8555b33158ec7b8ce55633726b2f8de839dc2c"
+          }
+        ],
+        "WINDOWS-X64-ARM64-RUNNER-MATRIX.md": [
+          {
+            "path": "package.json",
+            "sha256": "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d"
+          },
+          {
+            "path": "scripts/check-template.sh",
+            "sha256": "059480f0a672973732e21d53b44176692ce94054213a7062df07c3136c8e8e9c"
+          },
+          {
+            "path": "scripts/ci-plan.mjs",
+            "sha256": "c1e0933c2e07f782d023335f8a1786e0d9a0516aeea5876696c95a23b5b84051"
+          },
+          {
+            "path": "docs/DEPENDENCY-INSTALLATION.md",
+            "sha256": "5e24cb3c07e429aadf7653b70eac52d6dd3879e2e52549496dcee9bd5bec392f"
+          },
+          {
+            "path": "docs/TEMPLATE-MAINTENANCE.md",
+            "sha256": "d11316e53524deb4cdaac69a08be09b3c73872e5556dcea891c248eda93fb85d"
+          },
+          {
+            "path": "scripts/developer-prerequisites.mjs",
+            "sha256": "2bee0b8992e36b1747a03367913cd48f3e77fb3f00efc71486a585946380fe92"
+          },
+          {
+            "path": "tests/systemx/test_setup_paths.py",
+            "sha256": "26b4825209cfb612d78f2129382fb337f29959d45814f4ed2588d656bad14c08"
+          },
+          {
+            "path": ".SYSTEMX/INSTALLATION.json",
+            "sha256": "5c63df95b6928d3a3eea81aede804acc7c1b9a897fbf7fd4d18f3a2ed13fa3bb"
+          },
+          {
+            "path": "scripts/test-systemx-tools.py",
+            "sha256": "ea2f3b14b96e154706263deafbb6755b5dd83bd9d5cd9e8bd4d654c051b59eb0"
+          },
+          {
+            "path": ".SYSTEMX/.systemx/releases/1.9.0-alpha.6/tests/test_systemx.py",
+            "sha256": "38094e13d58f3e7c481e088fdf79be6b3002b78e971db606147531b2dd836eee"
+          },
+          {
+            "path": ".SYSTEMX/.systemx/releases/1.9.0-alpha.6/tests/test_manager.py",
+            "sha256": "aaa63ae074afe00e88c5dcb33e7cdab52efc579fac1d224712a7b6c9e63c319c"
+          },
+          {
+            "path": "tests/systemx/test_import_rehearsal.py",
+            "sha256": "61446715f1167ad24ab43031322bae414830334a2b12dab272abfb7356f1b306"
+          },
+          {
+            "path": ".SYSTEMX/LAN/tests/session-restart-preview.test.mjs",
+            "sha256": "7c232978cc3d5e777977d02c2c45f0b7eca1f5257d82786b93d11a42e6a3f4bd"
+          }
+        ]
+      }
+    },
+    "delivery": {
+      "revision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+      "revisionProvenance": "supplied-by-Agent-0-at-original-draft-preparation; no Git resolution performed by curation",
+      "hashMode": "exact-file-bytes-sha256",
+      "sourceRows": 32,
+      "uniquePaths": 19,
+      "scope": "Preserved historical primary-source observations; not current CRM integration approval, CI execution or deployment evidence.",
+      "artifacts": [
+        {
+          "artifact": "docs/PRIVATE-PREVIEW-PUBLICATION-CHECKLIST.md",
+          "files": [
+            {
+              "path": ".SYSTEMX/deploy/canary-plan.md",
+              "sha256": "fca6a890f4a066f1f5347568a565aa5a86d6390d45b056f15217b1e2d8db47f8"
+            },
+            {
+              "path": "index.html",
+              "sha256": "15c4b21da48c9f9b040e901867dcb6c075c783dbf6e9313b175e3e1e4bcbd862"
+            },
+            {
+              "path": "public/robots.txt",
+              "sha256": "16ceb5ee3e0dc13aa9adf31a3ebbe45a1d965b8c2b9f72eaf84e5911e140ed95"
+            },
+            {
+              "path": ".firebaserc",
+              "sha256": "7bcf963e0b6bc46870d5719968cfcf78503947004aac8a731e729abc859dd705"
+            },
+            {
+              "path": "firebase.json",
+              "sha256": "f5cbf9d99d5cc271b000d493982ae9f1481aa1ed4c92d4f35dc4ecbe8b9c48eb"
+            },
+            {
+              "path": "docs/SECRETS.md",
+              "sha256": "a3060d87cb9bb85f27d0d55155816ceb582742a47f4a16149104740acd73fc23"
+            },
+            {
+              "path": ".SYSTEMX/docs/SECRETS.md",
+              "sha256": "6d334af5502d65ca74d343d80ef25638b4ceb5c7429a3d3e06878577397973b9"
+            }
+          ]
+        },
+        {
+          "artifact": "docs/GITHUB-ACTIONS-ADOPTION-DESIGN.md",
+          "files": [
+            {
+              "path": "scripts/check-template.sh",
+              "sha256": "059480f0a672973732e21d53b44176692ce94054213a7062df07c3136c8e8e9c"
+            },
+            {
+              "path": "package.json",
+              "sha256": "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d"
+            },
+            {
+              "path": "scripts/ci-plan.mjs",
+              "sha256": "c1e0933c2e07f782d023335f8a1786e0d9a0516aeea5876696c95a23b5b84051"
+            },
+            {
+              "path": ".nvmrc",
+              "sha256": "a1c56e968c358e10872d64220b3ae759ffe7feaffc4da95fae425dbcca43fe44"
+            },
+            {
+              "path": ".node-version",
+              "sha256": "a1c56e968c358e10872d64220b3ae759ffe7feaffc4da95fae425dbcca43fe44"
+            },
+            {
+              "path": "docs/DEPENDENCY-INSTALLATION.md",
+              "sha256": "5e24cb3c07e429aadf7653b70eac52d6dd3879e2e52549496dcee9bd5bec392f"
+            },
+            {
+              "path": "docs/TEMPLATE-MAINTENANCE.md",
+              "sha256": "d11316e53524deb4cdaac69a08be09b3c73872e5556dcea891c248eda93fb85d"
+            }
+          ]
+        },
+        {
+          "artifact": "docs/DEPLOYMENT-IDENTITY-SEPARATION.md",
+          "files": [
+            {
+              "path": "docs/SECRETS.md",
+              "sha256": "a3060d87cb9bb85f27d0d55155816ceb582742a47f4a16149104740acd73fc23"
+            },
+            {
+              "path": ".SYSTEMX/docs/SECRETS.md",
+              "sha256": "6d334af5502d65ca74d343d80ef25638b4ceb5c7429a3d3e06878577397973b9"
+            },
+            {
+              "path": ".firebaserc",
+              "sha256": "7bcf963e0b6bc46870d5719968cfcf78503947004aac8a731e729abc859dd705"
+            },
+            {
+              "path": "firebase.json",
+              "sha256": "f5cbf9d99d5cc271b000d493982ae9f1481aa1ed4c92d4f35dc4ecbe8b9c48eb"
+            },
+            {
+              "path": ".SYSTEMX/scripts/deploy.sh",
+              "sha256": "c07dd6ff0d631a663a3737fd719e566cf96a686a95230d5d8a00082d929dbfe2"
+            }
+          ]
+        },
+        {
+          "artifact": "docs/FIREBASE-RULES-DRY-RUN-CHECKLIST.md",
+          "files": [
+            {
+              "path": "firestore.rules",
+              "sha256": "da607c38e2acb644763722887c6286e1c33ba3c98edf845d36c23a8e2825d482"
+            },
+            {
+              "path": "firebase.json",
+              "sha256": "f5cbf9d99d5cc271b000d493982ae9f1481aa1ed4c92d4f35dc4ecbe8b9c48eb"
+            },
+            {
+              "path": ".firebaserc",
+              "sha256": "7bcf963e0b6bc46870d5719968cfcf78503947004aac8a731e729abc859dd705"
+            },
+            {
+              "path": "tests/security/firestore-rules.test.mjs",
+              "sha256": "58d43f49a74175c0ce3c2203fbc630fb2b19cf6fd28a6c6fbc9de21b5ebf3bd5"
+            },
+            {
+              "path": "package.json",
+              "sha256": "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d"
+            },
+            {
+              "path": "scripts/check-template.sh",
+              "sha256": "059480f0a672973732e21d53b44176692ce94054213a7062df07c3136c8e8e9c"
+            },
+            {
+              "path": "docs/GUSTO-FIREBASE.md",
+              "sha256": "802c817e29204088e1a0852e98f8ce0dc126edc36c003b6a6afd4a0672466d75"
+            }
+          ]
+        },
+        {
+          "artifact": "docs/RELEASE-READINESS-DECISION-WORKSHEET.md",
+          "files": [
+            {
+              "path": "docs/TEMPLATE-MAINTENANCE.md",
+              "sha256": "d11316e53524deb4cdaac69a08be09b3c73872e5556dcea891c248eda93fb85d"
+            },
+            {
+              "path": "docs/REPOSITORY-IDENTITY.md",
+              "sha256": "f985dc69d5671a4f854f040b7ce818f644c5df994c38996a773283d948ad1a10"
+            },
+            {
+              "path": "scripts/check-template.sh",
+              "sha256": "059480f0a672973732e21d53b44176692ce94054213a7062df07c3136c8e8e9c"
+            },
+            {
+              "path": "scripts/ci-plan.mjs",
+              "sha256": "c1e0933c2e07f782d023335f8a1786e0d9a0516aeea5876696c95a23b5b84051"
+            },
+            {
+              "path": "package.json",
+              "sha256": "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d"
+            },
+            {
+              "path": ".SYSTEMX/scripts/deploy.sh",
+              "sha256": "c07dd6ff0d631a663a3737fd719e566cf96a686a95230d5d8a00082d929dbfe2"
+            }
+          ]
+        }
+      ],
+      "originalDrafts": [
+        {
+          "artifact": "PRIVATE-PREVIEW-PUBLICATION-CHECKLIST.md",
+          "sha256": "8a46b5b4b4ea51bdc6b93fb91fc662a3f64eb4db12672c72020764624af60e44"
+        },
+        {
+          "artifact": "DEPLOYMENT-IDENTITY-SEPARATION.md",
+          "sha256": "7954a63a5539b78383dc3ba199e31b761295b7b873fdbebbff2c520a689f58ff"
+        },
+        {
+          "artifact": "FIREBASE-RULES-DRY-RUN-CHECKLIST.md",
+          "sha256": "42cd93aca13625f86e9bc28d0ee874e070128094369dd68376f65241930ef8be"
+        },
+        {
+          "artifact": "RELEASE-READINESS-DECISION-WORKSHEET.md",
+          "sha256": "4ff13ef3155d5a2863e1c8384a45696d63f0367a7b828a7faa1bc004e4d9dd06"
+        },
+        {
+          "artifact": "GITHUB-ACTIONS-ADOPTION-DESIGN.md",
+          "sha256": "23b97526696bd03f78f8e9cf89b243ffd777f6c25453093992913ad3d8fb23b7"
+        }
+      ],
+      "selectedActionsV2Sha256": "330b33d6f12ba3d9d0c3fd5655d03500700e1f7c255481d28e783586420e1351"
+    }
+  },
+  "independentReviewRecords": [
+    {
+      "artifactGroup": "identity",
+      "reviewReport": "webappx-p1-identity-independent-review.md",
+      "sha256": "320dd14a3a5148e451d2ce570bb635eedd2602f3e48b877802ff802e1837e015",
+      "result": "clear-for-design-review"
+    },
+    {
+      "artifactGroup": "security",
+      "reviewReport": "webappx-p1-security-independent-review.md",
+      "sha256": "034013ac0aacda089bf765321cb8a99f9c0902c1a347f6b0f01ea753292bd01c",
+      "result": "CSP-and-retention-clear; download-and-OAuth-v2-recheck-pending"
+    },
+    {
+      "artifactGroup": "operations",
+      "reviewReport": "webappx-p1-operations-independent-review.md",
+      "sha256": "b5eb0e015f29692f73c53fe054bf9f7d4b95c02323d8d2ed2d8d5bc79b596a48",
+      "result": "owner-recovery-and-incident-clear; telemetry-and-Windows-v2-recheck-pending"
+    },
+    {
+      "artifactGroup": "security-v2",
+      "reviewReport": "webappx-p1-security-v2-independent-review.md",
+      "sha256": "16b7855e96d9bfbd0e1549dd643f2fea17bd747ccd2bd541a42dd00884117f79",
+      "result": "download-and-OAuth-clear-after-all-three-findings-resolved",
+      "paperCases": 43,
+      "jsonFixtureBlocks": 6,
+      "runtimeProtocolTestsExecuted": false
+    },
+    {
+      "artifactGroup": "operations-v2",
+      "reviewReport": "webappx-p1-operations-independent-review.md",
+      "sha256": "b1d1af51a9930dd550aee5be05c0b9e26938942bcde0130ac6539b059e3b2b13",
+      "originalReviewPrefixSha256": "b5eb0e015f29692f73c53fe054bf9f7d4b95c02323d8d2ed2d8d5bc79b596a48",
+      "originalReviewBytePrefixPreserved": true,
+      "result": "telemetry-terminal-lifecycle-and-native-pwsh-unavailable-coverage-amendments-clear",
+      "runtimeTestsExecuted": false
+    },
+    {
+      "artifactGroup": "delivery",
+      "reviewReport": "webappx-p1-delivery-independent-review.md",
+      "sha256": "d8939e9cdc481a9e0ed17773e95fff7d5763a9739e99c1a6bcd8f0264b77c5d9",
+      "result": "preview-identity-separation-rules-readiness-clear; Actions-edited-event-correction-pending-in-this-historical-report",
+      "runtimeTestsExecuted": false
+    },
+    {
+      "artifactGroup": "delivery-Actions-v2",
+      "reviewReport": "webappx-p1-delivery-v2-independent-review.md",
+      "sha256": "6bb050133d65735d6f0b9fd71e13bc30335ca3a5091270db5e946708b9aa8861",
+      "result": "Actions-edited-event-and-fresh-base-head-merge-binding-clear-after-finding-resolved",
+      "literalAddedCases": 4,
+      "runtimeTestsExecuted": false
+    }
+  ],
+  "currentSourceReReview": {
+    "status": "pending-final-CRM-source-freeze",
+    "revision": null,
+    "freshRuntimeProof": false
+  },
+  "notPerformed": [
+    "provider setup",
+    "identity recovery",
+    "membership provisioning",
+    "token issuance",
+    "policy activation",
+    "telemetry collection",
+    "incident collection",
+    "native Windows execution",
+    "browser or CI execution",
+    "catalog acceptance",
+    "private preview exposure",
+    "GitHub Actions workflow installation",
+    "deployment identity provisioning",
+    "emulator rules execution",
+    "rules deployment",
+    "source publication",
+    "Hosting deployment"
+  ],
+  "publicationStatus": "pending-full-gates-and-final-source-consistency",
+  "index": {
+    "path": "docs/ADOPTION-CONTRACTS.md",
+    "sha256": "536c23e3aa279edff5ef80acb8752365a8ddc9271f0b8ff68ef44efb8353ffa5"
+  },
+  "artifactCount": 14,
+  "criterionCount": 17,
+  "integrationPackageObservation": {
+    "observedOn": "2026-10-15",
+    "scope": "Read-only curation observation, not source approval or execution evidence. Final CRM source re-review remains pending.",
+    "historicalPrimaryPackageSha256": "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d",
+    "integrationPackageSha256": "7c68769c7d70195f28047e4a3ccd72f14853c524f00ec2afb62cc6f72d9a5d71",
+    "sameScriptNamesAndOrder": true,
+    "scriptNames": 134,
+    "nonScriptFieldsUnchanged": true,
+    "changedAliases": {
+      "portals:test": {
+        "historicalCommand": "node --test tests/portals/cms.test.mjs tests/portals/crm.test.mjs tests/portals/storage.test.mjs tests/portals/persistence.test.mjs tests/portals/backup.test.mjs tests/portals/import-state.test.mjs tests/portals/combined-backup.test.mjs tests/portals/restore-workspaces.test.mjs tests/portals/restore-points.test.mjs tests/portals/registry.test.mjs tests/portals/restore-budget.test.mjs tests/portals/cms-releases.test.mjs tests/portals/cms-release-callbacks.test.mjs tests/portals/crm-ownership.test.mjs tests/portals/lifecycle-inspection.test.mjs tests/portals/recruiting-inspection.test.mjs tests/portals/retained-surface.test.mjs tests/portals/payroll-control-inspection.test.mjs",
+        "integrationCommand": "node --test tests/portals/cms.test.mjs tests/portals/crm.test.mjs tests/portals/storage.test.mjs tests/portals/persistence.test.mjs tests/portals/backup.test.mjs tests/portals/import-state.test.mjs tests/portals/combined-backup.test.mjs tests/portals/restore-workspaces.test.mjs tests/portals/restore-points.test.mjs tests/portals/registry.test.mjs tests/portals/restore-budget.test.mjs tests/portals/cms-releases.test.mjs tests/portals/cms-release-callbacks.test.mjs tests/portals/crm-ownership.test.mjs tests/portals/lifecycle-inspection.test.mjs tests/portals/recruiting-inspection.test.mjs tests/portals/retained-surface.test.mjs tests/portals/payroll-control-inspection.test.mjs tests/crm/merge-core.test.mjs tests/crm/merge-history.test.mjs tests/crm/merge-report.test.mjs tests/crm/merge-projection.test.mjs tests/crm/merge-controller.test.mjs tests/crm/merge-host.test.mjs tests/portals/crm-merge-inspection.test.mjs",
+        "appendedPaths": [
+          "tests/crm/merge-core.test.mjs",
+          "tests/crm/merge-history.test.mjs",
+          "tests/crm/merge-report.test.mjs",
+          "tests/crm/merge-projection.test.mjs",
+          "tests/crm/merge-controller.test.mjs",
+          "tests/crm/merge-host.test.mjs",
+          "tests/portals/crm-merge-inspection.test.mjs"
+        ]
+      },
+      "browser:smoke:test": {
+        "historicalCommand": "node --test tests/browser/seed-pack.test.mjs tests/browser/preview-process.test.mjs tests/browser/recruiting-harness.test.mjs tests/browser/payroll-control-harness.test.mjs",
+        "integrationCommand": "node --test tests/browser/seed-pack.test.mjs tests/browser/preview-process.test.mjs tests/browser/recruiting-harness.test.mjs tests/browser/payroll-control-harness.test.mjs tests/browser/crm-merge-harness.test.mjs",
+        "appendedPaths": [
+          "tests/browser/crm-merge-harness.test.mjs"
+        ]
+      }
+    },
+    "ciRunnerSha256": "059480f0a672973732e21d53b44176692ce94054213a7062df07c3136c8e8e9c",
+    "sameStageNamesAndOrder": true,
+    "ciStages": 68,
+    "runtimeOrCIExecutionObserved": false,
+    "changedTestContentsApprovedByThisObservation": false
+  },
+  "finalWorkingTreeSourceReview": {
+    "schemaVersion": 1,
+    "kind": "final-adoption-contract-working-tree-source-consistency-review",
+    "reviewedOn": "2026-10-15",
+    "status": "clear-at-source-and-artifact-scope",
+    "guideCount": 14,
+    "criterionCount": 17,
+    "criteria": [
+      "WX-0511",
+      "WX-0527",
+      "WX-0534",
+      "WX-0637",
+      "WX-0612",
+      "WX-0617",
+      "WX-0517",
+      "WX-0635",
+      "WX-0627",
+      "WX-0953",
+      "WX-0760",
+      "WX-0820",
+      "WX-0628",
+      "WX-0802",
+      "WX-0814",
+      "WX-0830",
+      "WX-0850"
+    ],
+    "implementationBasis": {
+      "kind": "frozen-working-tree-byte-observation",
+      "revision": null,
+      "newCommitClaim": false,
+      "runtimeManifest": {
+        "path": "docs/evidence/crm-merge-runtime-2026-10-15.json",
+        "sha256": "f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e",
+        "sourceFiles": 145,
+        "freeze": 3,
+        "hashMode": "exact-file-bytes-sha256",
+        "membershipAndFingerprintsIndependentlyVerified": true
+      },
+      "preservedFreeze2": {
+        "path": "docs/evidence/crm-merge-runtime-freeze-2-2026-10-15.json",
+        "sha256": "872a55c7fbf25bde442fbd7fa5f171f16a2bdf59c739d96785dd10a81f711999"
+      },
+      "onlyFreeze2To3Delta": {
+        "path": "src/crm/model.ts",
+        "sha256": "a26e9d9d5302eaa1e3770980ec535b590a5e99f8340dbf304d9812ff66211b56",
+        "edit": "One trailing LF removed; appending that LF reconstructs the exact freeze2 fingerprint. No executable token or policy changed."
+      }
+    },
+    "historicalQualification": {
+      "historicalSuppliedBasisRetained": {
+        "revision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+        "provenance": "supplied-by-Agent-0-at-original-draft-preparation",
+        "catalogSha256": "e6a38ce600cfdeb95cf0bb397ab587409ee725eeef2b345d4ff1a64589294bc0",
+        "scope": "Historical source fingerprints and drafting metadata are preserved. They are not current runtime, CI, provider or external setup evidence."
+      },
+      "priorPendingCheckpointRetained": {
+        "status": "pending-final-CRM-source-freeze",
+        "revision": null,
+        "freshRuntimeProof": false
+      },
+      "meaning": "Earlier pending source-review wording in the unchanged guides/index and currentSourceReReview describes the original curation checkpoint. This appended observation resolves that pending item for source/artifact consistency only. It does not relabel historical source tables, cases, receipts, execution or acceptance."
+    },
+    "reviewedArtifactFiles": [
+      {
+        "path": "docs/IDENTITY-ADOPTION-CONTRACTS.md",
+        "sha256": "4649061dc6a7a28e26c93ed4282a2b0dd0c118af69b0dfc67958b286f6533d71"
+      },
+      {
+        "path": "docs/CSP-REPORT-ONLY-ADOPTION-PROPOSAL.md",
+        "sha256": "1270bc35042b93f45c46053aef635e814c81d723482d37b8d72e9671c0529483"
+      },
+      {
+        "path": "docs/WEBHOOK-RETENTION-ADOPTION-PROPOSAL.md",
+        "sha256": "00bc93f99e8bb9f7cbdb42ac0c06e9f27642ce52c4694ba09aee3b50dcec8e93"
+      },
+      {
+        "path": "docs/OWNER-RECOVERY-RUNBOOK.md",
+        "sha256": "f4566733faa9181d42c9619b5d4a050b1608a0dd0e01c37b78ce4a85c263b07b"
+      },
+      {
+        "path": "docs/INCIDENT-EVIDENCE-CAPTURE.md",
+        "sha256": "81ad04c6984c4960d97446f57a00842832045adbca4f8bb9b52d721c15aa2eb6"
+      },
+      {
+        "path": "docs/DOWNLOAD-AUTHORIZATION-ADOPTION-CONTRACT.md",
+        "sha256": "a8b3cd5a774225696348904e189a907c9ced7e9d61f25d080f9a8b529609f4cd"
+      },
+      {
+        "path": "docs/OAUTH-STATE-BINDING-ADOPTION-TEST-CONTRACT.md",
+        "sha256": "795e9cf2a1e50c5aa63f2f809b802cda5f4602c0561c3bf1195edace159b29ae"
+      },
+      {
+        "path": "docs/ERROR-TELEMETRY-ADAPTER-CONTRACT.md",
+        "sha256": "67eec8f0593bbd634ca257f98a7126c2123d8f834545328ac9921614e005cf85"
+      },
+      {
+        "path": "docs/WINDOWS-X64-ARM64-RUNNER-MATRIX.md",
+        "sha256": "40ed731fb214d95bd453c38e6fc803b346b4d68df53ea9f37521e3c8b21745c2"
+      },
+      {
+        "path": "docs/PRIVATE-PREVIEW-PUBLICATION-CHECKLIST.md",
+        "sha256": "6ac34c9fa20e972a79ea58258683cd40e81f5d9c08d5aa29364f4073e595f8ae"
+      },
+      {
+        "path": "docs/GITHUB-ACTIONS-ADOPTION-DESIGN.md",
+        "sha256": "59bed8d5fa78d336f98079d3045d950603eb5d7d49fcef033c23db4709476199"
+      },
+      {
+        "path": "docs/DEPLOYMENT-IDENTITY-SEPARATION.md",
+        "sha256": "28c56d6ca87fe05a1a486d18559625972a0db6c0dba56dd2a9883efb4be8b34a"
+      },
+      {
+        "path": "docs/FIREBASE-RULES-DRY-RUN-CHECKLIST.md",
+        "sha256": "46157a7a9c566ee3936b745a21e0ff7c5e8f999ff71feda1647bb38bef92246b"
+      },
+      {
+        "path": "docs/RELEASE-READINESS-DECISION-WORKSHEET.md",
+        "sha256": "69bd3359c5ff59b885cccff9d1883c108a9a7980f43fd1174067fb659b06a0e7"
+      },
+      {
+        "path": "docs/ADOPTION-CONTRACTS.md",
+        "sha256": "536c23e3aa279edff5ef80acb8752365a8ddc9271f0b8ff68ef44efb8353ffa5"
+      },
+      {
+        "path": "docs/evidence/identity-adoption-matrix.json",
+        "sha256": "0fc05bb008b5b6980fdb333f6cb3f772389d60958a2b9850ec82db4020218980"
+      }
+    ],
+    "historicalSourceComparison": {
+      "originalRows": 146,
+      "uniquePaths": 75,
+      "changedOrEarlierHistoricalPaths": [
+        "docs/backlog/webappx-1000-todo.json",
+        "package.json",
+        "scripts/ci-plan.mjs",
+        "src/crm/model.ts",
+        "src/crm/ownership.ts"
+      ],
+      "files": [
+        {
+          "path": ".SYSTEMX/.systemx/releases/1.9.0-alpha.6/tests/test_manager.py",
+          "historicalSha256": [
+            "aaa63ae074afe00e88c5dcb33e7cdab52efc579fac1d224712a7b6c9e63c319c"
+          ],
+          "reviewedSha256": "aaa63ae074afe00e88c5dcb33e7cdab52efc579fac1d224712a7b6c9e63c319c",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".SYSTEMX/.systemx/releases/1.9.0-alpha.6/tests/test_systemx.py",
+          "historicalSha256": [
+            "38094e13d58f3e7c481e088fdf79be6b3002b78e971db606147531b2dd836eee"
+          ],
+          "reviewedSha256": "38094e13d58f3e7c481e088fdf79be6b3002b78e971db606147531b2dd836eee",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".SYSTEMX/INSTALLATION.json",
+          "historicalSha256": [
+            "5c63df95b6928d3a3eea81aede804acc7c1b9a897fbf7fd4d18f3a2ed13fa3bb"
+          ],
+          "reviewedSha256": "5c63df95b6928d3a3eea81aede804acc7c1b9a897fbf7fd4d18f3a2ed13fa3bb",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".SYSTEMX/LAN/Builder/contracts/auth-provider-registry.json",
+          "historicalSha256": [
+            "5e26bd49c426431816a8695c8847a4f9c84d388572c5825c400d47955dc58a9e"
+          ],
+          "reviewedSha256": "5e26bd49c426431816a8695c8847a4f9c84d388572c5825c400d47955dc58a9e",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".SYSTEMX/LAN/tests/session-restart-preview.test.mjs",
+          "historicalSha256": [
+            "7c232978cc3d5e777977d02c2c45f0b7eca1f5257d82786b93d11a42e6a3f4bd"
+          ],
+          "reviewedSha256": "7c232978cc3d5e777977d02c2c45f0b7eca1f5257d82786b93d11a42e6a3f4bd",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".SYSTEMX/deploy/canary-plan.md",
+          "historicalSha256": [
+            "fca6a890f4a066f1f5347568a565aa5a86d6390d45b056f15217b1e2d8db47f8"
+          ],
+          "reviewedSha256": "fca6a890f4a066f1f5347568a565aa5a86d6390d45b056f15217b1e2d8db47f8",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".SYSTEMX/deploy/mfa-policy.md",
+          "historicalSha256": [
+            "b85bcb49a380284b58c585b2b9a35142bc228a56d5a20daadba21d1621beeb09"
+          ],
+          "reviewedSha256": "b85bcb49a380284b58c585b2b9a35142bc228a56d5a20daadba21d1621beeb09",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".SYSTEMX/docs/SECRETS.md",
+          "historicalSha256": [
+            "6d334af5502d65ca74d343d80ef25638b4ceb5c7429a3d3e06878577397973b9"
+          ],
+          "reviewedSha256": "6d334af5502d65ca74d343d80ef25638b4ceb5c7429a3d3e06878577397973b9",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".SYSTEMX/scripts/deploy.sh",
+          "historicalSha256": [
+            "c07dd6ff0d631a663a3737fd719e566cf96a686a95230d5d8a00082d929dbfe2"
+          ],
+          "reviewedSha256": "c07dd6ff0d631a663a3737fd719e566cf96a686a95230d5d8a00082d929dbfe2",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".firebaserc",
+          "historicalSha256": [
+            "7bcf963e0b6bc46870d5719968cfcf78503947004aac8a731e729abc859dd705"
+          ],
+          "reviewedSha256": "7bcf963e0b6bc46870d5719968cfcf78503947004aac8a731e729abc859dd705",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".node-version",
+          "historicalSha256": [
+            "a1c56e968c358e10872d64220b3ae759ffe7feaffc4da95fae425dbcca43fe44"
+          ],
+          "reviewedSha256": "a1c56e968c358e10872d64220b3ae759ffe7feaffc4da95fae425dbcca43fe44",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": ".nvmrc",
+          "historicalSha256": [
+            "a1c56e968c358e10872d64220b3ae759ffe7feaffc4da95fae425dbcca43fe44"
+          ],
+          "reviewedSha256": "a1c56e968c358e10872d64220b3ae759ffe7feaffc4da95fae425dbcca43fe44",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/DEPENDENCY-INSTALLATION.md",
+          "historicalSha256": [
+            "5e24cb3c07e429aadf7653b70eac52d6dd3879e2e52549496dcee9bd5bec392f"
+          ],
+          "reviewedSha256": "5e24cb3c07e429aadf7653b70eac52d6dd3879e2e52549496dcee9bd5bec392f",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/GUSTO-FIREBASE.md",
+          "historicalSha256": [
+            "802c817e29204088e1a0852e98f8ce0dc126edc36c003b6a6afd4a0672466d75"
+          ],
+          "reviewedSha256": "802c817e29204088e1a0852e98f8ce0dc126edc36c003b6a6afd4a0672466d75",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/GUSTO-SETUP.md",
+          "historicalSha256": [
+            "570f8fb056273cea5b8be9310aa17c58b62f1dcbe286be5f99226670e7bacd8d"
+          ],
+          "reviewedSha256": "570f8fb056273cea5b8be9310aa17c58b62f1dcbe286be5f99226670e7bacd8d",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/MONITORING.md",
+          "historicalSha256": [
+            "6b654892a4cd29deceaf89ce58204162e6a99e3b8a1c8f28dc470b949c18f4dd"
+          ],
+          "reviewedSha256": "6b654892a4cd29deceaf89ce58204162e6a99e3b8a1c8f28dc470b949c18f4dd",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/OPERATIONS-READINESS.md",
+          "historicalSha256": [
+            "49c48b9c74e5b608b5c98d17111cdd7b9b6e56ead4b998e884d9cd1dc8978bd9"
+          ],
+          "reviewedSha256": "49c48b9c74e5b608b5c98d17111cdd7b9b6e56ead4b998e884d9cd1dc8978bd9",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/PORTAL-CAPABILITIES.md",
+          "historicalSha256": [
+            "145d912322bd3d4e9ffce7a8ca45131c1fd557f8801ef9d36ed348934368f6cd"
+          ],
+          "reviewedSha256": "145d912322bd3d4e9ffce7a8ca45131c1fd557f8801ef9d36ed348934368f6cd",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/REPOSITORY-IDENTITY.md",
+          "historicalSha256": [
+            "f985dc69d5671a4f854f040b7ce818f644c5df994c38996a773283d948ad1a10"
+          ],
+          "reviewedSha256": "f985dc69d5671a4f854f040b7ce818f644c5df994c38996a773283d948ad1a10",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/RUNBOOK.md",
+          "historicalSha256": [
+            "50a2d961865600d63c98a17a317c898e662893e004a523419e9746232c5a4b7e"
+          ],
+          "reviewedSha256": "50a2d961865600d63c98a17a317c898e662893e004a523419e9746232c5a4b7e",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/SECRETS.md",
+          "historicalSha256": [
+            "a3060d87cb9bb85f27d0d55155816ceb582742a47f4a16149104740acd73fc23"
+          ],
+          "reviewedSha256": "a3060d87cb9bb85f27d0d55155816ceb582742a47f4a16149104740acd73fc23",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/TEMPLATE-MAINTENANCE.md",
+          "historicalSha256": [
+            "d11316e53524deb4cdaac69a08be09b3c73872e5556dcea891c248eda93fb85d"
+          ],
+          "reviewedSha256": "d11316e53524deb4cdaac69a08be09b3c73872e5556dcea891c248eda93fb85d",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/TENANT-MEMBERSHIP-PROPOSAL.md",
+          "historicalSha256": [
+            "0a71c4c3a738059dbf367c3521f1b67ebb941a4206c101761405a8568a79e267"
+          ],
+          "reviewedSha256": "0a71c4c3a738059dbf367c3521f1b67ebb941a4206c101761405a8568a79e267",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "docs/backlog/webappx-1000-todo.json",
+          "historicalSha256": [
+            "9e9579581183eb89d86a8003fade1b4a1b4c63b387cdee06048d8ff82c9a9dd2",
+            "e6a38ce600cfdeb95cf0bb397ab587409ee725eeef2b345d4ff1a64589294bc0"
+          ],
+          "reviewedSha256": "9e9579581183eb89d86a8003fade1b4a1b4c63b387cdee06048d8ff82c9a9dd2",
+          "allHistoricalFingerprintsMatch": false
+        },
+        {
+          "path": "firebase.json",
+          "historicalSha256": [
+            "f5cbf9d99d5cc271b000d493982ae9f1481aa1ed4c92d4f35dc4ecbe8b9c48eb"
+          ],
+          "reviewedSha256": "f5cbf9d99d5cc271b000d493982ae9f1481aa1ed4c92d4f35dc4ecbe8b9c48eb",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "firestore.rules",
+          "historicalSha256": [
+            "da607c38e2acb644763722887c6286e1c33ba3c98edf845d36c23a8e2825d482"
+          ],
+          "reviewedSha256": "da607c38e2acb644763722887c6286e1c33ba3c98edf845d36c23a8e2825d482",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "index.html",
+          "historicalSha256": [
+            "15c4b21da48c9f9b040e901867dcb6c075c783dbf6e9313b175e3e1e4bcbd862"
+          ],
+          "reviewedSha256": "15c4b21da48c9f9b040e901867dcb6c075c783dbf6e9313b175e3e1e4bcbd862",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "integrations/gusto/firestore.rules",
+          "historicalSha256": [
+            "946fa2a7bba43f33925c367bf52f0139c558f4192bbe6a8e82de7bc8cc2f4352"
+          ],
+          "reviewedSha256": "946fa2a7bba43f33925c367bf52f0139c558f4192bbe6a8e82de7bc8cc2f4352",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "integrations/gusto/functions/src/backend.mjs",
+          "historicalSha256": [
+            "652af6bdc7ddba6820a3d47f6eda9514e4555b0c8d1a124c5f733232c5386efa"
+          ],
+          "reviewedSha256": "652af6bdc7ddba6820a3d47f6eda9514e4555b0c8d1a124c5f733232c5386efa",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "integrations/gusto/functions/src/index.mjs",
+          "historicalSha256": [
+            "fa240bf40cf6acb9e305c07275dd190ace393fd33b2edbbb263a024f86f92fed"
+          ],
+          "reviewedSha256": "fa240bf40cf6acb9e305c07275dd190ace393fd33b2edbbb263a024f86f92fed",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "integrations/gusto/functions/src/security.mjs",
+          "historicalSha256": [
+            "48c86c7be0c53c47b0c520a6b2d2162e1d1f151423b9d7f04413dc3159b518f5"
+          ],
+          "reviewedSha256": "48c86c7be0c53c47b0c520a6b2d2162e1d1f151423b9d7f04413dc3159b518f5",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "integrations/gusto/functions/src/webhooks.mjs",
+          "historicalSha256": [
+            "ff634f7f94855a8ef9576d27edaf6fac50b3d3dda81694f8d5c5f94cc12c7af6"
+          ],
+          "reviewedSha256": "ff634f7f94855a8ef9576d27edaf6fac50b3d3dda81694f8d5c5f94cc12c7af6",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "integrations/gusto/mock-api.mjs",
+          "historicalSha256": [
+            "7083b242287796179d1548a5d1fba2958cdd1fdda6f0638154d6ee345738a01e"
+          ],
+          "reviewedSha256": "7083b242287796179d1548a5d1fba2958cdd1fdda6f0638154d6ee345738a01e",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "node_modules/@firebase/auth/dist/esm/index-4NFEPWkC.js",
+          "historicalSha256": [
+            "b3b14296a0a3977747010ce82d14edb51fc25bd055e0dc042f889c3cadc2c742"
+          ],
+          "reviewedSha256": "b3b14296a0a3977747010ce82d14edb51fc25bd055e0dc042f889c3cadc2c742",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "node_modules/@gusto/embedded-api/esm/lib/config.js",
+          "historicalSha256": [
+            "44693682c3a995a4ea9060c3f6cb11e9870cb79efef136d8943eb547a2eac8f1"
+          ],
+          "reviewedSha256": "44693682c3a995a4ea9060c3f6cb11e9870cb79efef136d8943eb547a2eac8f1",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/components/Common/UI/ProgressBar/ProgressBar.js",
+          "historicalSha256": [
+            "b72ee5ad44ee67914879e8f847f12c7ddfa926a0af1a915954200a9a50798d89"
+          ],
+          "reviewedSha256": "b72ee5ad44ee67914879e8f847f12c7ddfa926a0af1a915954200a9a50798d89",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/contexts/ThemeProvider/ThemeProvider.js",
+          "historicalSha256": [
+            "83b4e75fd847915ae0360a93b38ddf5bbfbd62bb8f00baf44a70ce9630071124"
+          ],
+          "reviewedSha256": "83b4e75fd847915ae0360a93b38ddf5bbfbd62bb8f00baf44a70ce9630071124",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/contexts/ThemeProvider/theme.js",
+          "historicalSha256": [
+            "48928750b3db1646d2f4f1df9c94ad47cf613dbe150a118df751ebe0de76215d"
+          ],
+          "reviewedSha256": "48928750b3db1646d2f4f1df9c94ad47cf613dbe150a118df751ebe0de76215d",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/helpers/openPdfInNewTab.js",
+          "historicalSha256": [
+            "5d50ce9e6fa9d3c037455f34d53bfe7eb5a269158ae70b1afa1c766aec873626"
+          ],
+          "reviewedSha256": "5d50ce9e6fa9d3c037455f34d53bfe7eb5a269158ae70b1afa1c766aec873626",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "node_modules/@gusto/embedded-react-sdk/dist/style.css",
+          "historicalSha256": [
+            "e3de593897b7065732d367400139b4739bab7674236567e7584001a060d06d4e"
+          ],
+          "reviewedSha256": "e3de593897b7065732d367400139b4739bab7674236567e7584001a060d06d4e",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "package.json",
+          "historicalSha256": [
+            "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d"
+          ],
+          "reviewedSha256": "7c68769c7d70195f28047e4a3ccd72f14853c524f00ec2afb62cc6f72d9a5d71",
+          "allHistoricalFingerprintsMatch": false
+        },
+        {
+          "path": "public/robots.txt",
+          "historicalSha256": [
+            "16ceb5ee3e0dc13aa9adf31a3ebbe45a1d965b8c2b9f72eaf84e5911e140ed95"
+          ],
+          "reviewedSha256": "16ceb5ee3e0dc13aa9adf31a3ebbe45a1d965b8c2b9f72eaf84e5911e140ed95",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "scripts/check-template.sh",
+          "historicalSha256": [
+            "059480f0a672973732e21d53b44176692ce94054213a7062df07c3136c8e8e9c"
+          ],
+          "reviewedSha256": "059480f0a672973732e21d53b44176692ce94054213a7062df07c3136c8e8e9c",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "scripts/ci-plan.mjs",
+          "historicalSha256": [
+            "c1e0933c2e07f782d023335f8a1786e0d9a0516aeea5876696c95a23b5b84051"
+          ],
+          "reviewedSha256": "3d7e950848a6b0d93dfad0f190568a8eaccb8b24f1c1b5b20f8ee2adfe89d50d",
+          "allHistoricalFingerprintsMatch": false
+        },
+        {
+          "path": "scripts/developer-prerequisites.mjs",
+          "historicalSha256": [
+            "2bee0b8992e36b1747a03367913cd48f3e77fb3f00efc71486a585946380fe92"
+          ],
+          "reviewedSha256": "2bee0b8992e36b1747a03367913cd48f3e77fb3f00efc71486a585946380fe92",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "scripts/test-systemx-tools.py",
+          "historicalSha256": [
+            "ea2f3b14b96e154706263deafbb6755b5dd83bd9d5cd9e8bd4d654c051b59eb0"
+          ],
+          "reviewedSha256": "ea2f3b14b96e154706263deafbb6755b5dd83bd9d5cd9e8bd4d654c051b59eb0",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/auth/accountLevels.ts",
+          "historicalSha256": [
+            "38784a0cca7570cc5c2ef456e44d19e0c053311579002a2ee7d6d50dc831f270"
+          ],
+          "reviewedSha256": "38784a0cca7570cc5c2ef456e44d19e0c053311579002a2ee7d6d50dc831f270",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/auth/authProviders.ts",
+          "historicalSha256": [
+            "a4b4a79fe9f4bdd0164d6b99386da37dc40fddd3ecd43f111250e11ea142dabc"
+          ],
+          "reviewedSha256": "a4b4a79fe9f4bdd0164d6b99386da37dc40fddd3ecd43f111250e11ea142dabc",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/auth/firebaseAuth.ts",
+          "historicalSha256": [
+            "b8672f40e1bab47fd77f7f60407d864af96df4d3efd12b548d3a157749dcf867"
+          ],
+          "reviewedSha256": "b8672f40e1bab47fd77f7f60407d864af96df4d3efd12b548d3a157749dcf867",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/cms/model.ts",
+          "historicalSha256": [
+            "2bd7580d3fd0e42a27810fe65ccf04aae0e3a2a69ac01df05a7acc9c7cf28bbf"
+          ],
+          "reviewedSha256": "2bd7580d3fd0e42a27810fe65ccf04aae0e3a2a69ac01df05a7acc9c7cf28bbf",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/cms/release-bundles.ts",
+          "historicalSha256": [
+            "ed159266af4cf6346cc49506d8e55d80e5c090e48c67c0001e718bad96c9ab24"
+          ],
+          "reviewedSha256": "ed159266af4cf6346cc49506d8e55d80e5c090e48c67c0001e718bad96c9ab24",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/components/layout/Navbar.tsx",
+          "historicalSha256": [
+            "d197b3e8b34142612a4d30408e8f49d24cea265297ef6b1aa08af2743536e41b"
+          ],
+          "reviewedSha256": "d197b3e8b34142612a4d30408e8f49d24cea265297ef6b1aa08af2743536e41b",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/components/shell/PageSnapMenu.tsx",
+          "historicalSha256": [
+            "9e120801da0671fd8ea6e2db0b5a05670b5a359dc29f6921377d0a44404c7782"
+          ],
+          "reviewedSha256": "9e120801da0671fd8ea6e2db0b5a05670b5a359dc29f6921377d0a44404c7782",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/config/firebase.ts",
+          "historicalSha256": [
+            "c6bf24801d1bcf482013346d39c09b0fa51bc31b32142c8bb672cf0b7cf3d070"
+          ],
+          "reviewedSha256": "c6bf24801d1bcf482013346d39c09b0fa51bc31b32142c8bb672cf0b7cf3d070",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/crm/model.ts",
+          "historicalSha256": [
+            "fbef9b656e5e286d3a6a22a93487a905e7909482b64972a33c5c90d86e91bed8"
+          ],
+          "reviewedSha256": "a26e9d9d5302eaa1e3770980ec535b590a5e99f8340dbf304d9812ff66211b56",
+          "allHistoricalFingerprintsMatch": false
+        },
+        {
+          "path": "src/crm/ownership.ts",
+          "historicalSha256": [
+            "513a052d85d9f3107869b71ed4fd8c71b35da484111fd44f7a123da045ed6ab0"
+          ],
+          "reviewedSha256": "a44534d58da5be15f447fb37808fbcf1bfef8ec74504485b795949f5ff981706",
+          "allHistoricalFingerprintsMatch": false
+        },
+        {
+          "path": "src/hr/gusto/GustoSdkPreview.tsx",
+          "historicalSha256": [
+            "2997c3af94e9d89225ee670c439241de5b65adf68c75cc5cf198c16f495978cd"
+          ],
+          "reviewedSha256": "2997c3af94e9d89225ee670c439241de5b65adf68c75cc5cf198c16f495978cd",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/hr/model.ts",
+          "historicalSha256": [
+            "32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e"
+          ],
+          "reviewedSha256": "32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/hr/provider-adapter.ts",
+          "historicalSha256": [
+            "3422961870779a81018e25161604645220f2041b7bb71a5b3864d2e6bd4c579f"
+          ],
+          "reviewedSha256": "3422961870779a81018e25161604645220f2041b7bb71a5b3864d2e6bd4c579f",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/index.css",
+          "historicalSha256": [
+            "2b0aab90708e30a50254b60fbf27c55108ff91e660d1f01c1e2727ee72600457"
+          ],
+          "reviewedSha256": "2b0aab90708e30a50254b60fbf27c55108ff91e660d1f01c1e2727ee72600457",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/main.tsx",
+          "historicalSha256": [
+            "dc4eb2bd042517362047b8537f62971b1e7e212ef9848d4240661989e11c5fd7"
+          ],
+          "reviewedSha256": "dc4eb2bd042517362047b8537f62971b1e7e212ef9848d4240661989e11c5fd7",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/pages/HrPage.tsx",
+          "historicalSha256": [
+            "daf6bf5bbc0325c253ea6d9802e76ee867b60a3ff608312c67911a18453b4292"
+          ],
+          "reviewedSha256": "daf6bf5bbc0325c253ea6d9802e76ee867b60a3ff608312c67911a18453b4292",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/pages/SocialPage.tsx",
+          "historicalSha256": [
+            "266a3c14e22169422891693526a5c8d41cc5990c52ca8a3a84db6da280eac0d7"
+          ],
+          "reviewedSha256": "266a3c14e22169422891693526a5c8d41cc5990c52ca8a3a84db6da280eac0d7",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/portals/CombinedWorkspaceBackup.tsx",
+          "historicalSha256": [
+            "cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51"
+          ],
+          "reviewedSha256": "cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/portals/DemoWorkspaceBackup.tsx",
+          "historicalSha256": [
+            "850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809"
+          ],
+          "reviewedSha256": "850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/portals/backup.ts",
+          "historicalSha256": [
+            "b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a"
+          ],
+          "reviewedSha256": "b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/portals/combined-backup.ts",
+          "historicalSha256": [
+            "186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726"
+          ],
+          "reviewedSha256": "186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/portals/persistence.ts",
+          "historicalSha256": [
+            "81d5b2047b62212795256023b630908c29cad770c320373f53a14c14863bad6a"
+          ],
+          "reviewedSha256": "81d5b2047b62212795256023b630908c29cad770c320373f53a14c14863bad6a",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/portals/replacement-recovery.ts",
+          "historicalSha256": [
+            "4d80db30057b7ddd1974400e0a8555b33158ec7b8ce55633726b2f8de839dc2c"
+          ],
+          "reviewedSha256": "4d80db30057b7ddd1974400e0a8555b33158ec7b8ce55633726b2f8de839dc2c",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "src/systemx/localStatus.ts",
+          "historicalSha256": [
+            "2b95ad93fbbc23193e6030834117993148a3f3bf97fc0b66037d0757fb34f26d"
+          ],
+          "reviewedSha256": "2b95ad93fbbc23193e6030834117993148a3f3bf97fc0b66037d0757fb34f26d",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "storage.rules",
+          "historicalSha256": [
+            "858a8d5ad0af31ad5c9b42650ca58f6a2601b22e20464b63d636ad3f32503f83"
+          ],
+          "reviewedSha256": "858a8d5ad0af31ad5c9b42650ca58f6a2601b22e20464b63d636ad3f32503f83",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "tests/security/firestore-rules.test.mjs",
+          "historicalSha256": [
+            "58d43f49a74175c0ce3c2203fbc630fb2b19cf6fd28a6c6fbc9de21b5ebf3bd5"
+          ],
+          "reviewedSha256": "58d43f49a74175c0ce3c2203fbc630fb2b19cf6fd28a6c6fbc9de21b5ebf3bd5",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "tests/systemx/test_import_rehearsal.py",
+          "historicalSha256": [
+            "61446715f1167ad24ab43031322bae414830334a2b12dab272abfb7356f1b306"
+          ],
+          "reviewedSha256": "61446715f1167ad24ab43031322bae414830334a2b12dab272abfb7356f1b306",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "tests/systemx/test_setup_paths.py",
+          "historicalSha256": [
+            "26b4825209cfb612d78f2129382fb337f29959d45814f4ed2588d656bad14c08"
+          ],
+          "reviewedSha256": "26b4825209cfb612d78f2129382fb337f29959d45814f4ed2588d656bad14c08",
+          "allHistoricalFingerprintsMatch": true
+        },
+        {
+          "path": "vite.config.ts",
+          "historicalSha256": [
+            "ba6e9b93ca2ffa5594a51e20c6b408934cee0c7887c1ae2cc021f7524bb8b330"
+          ],
+          "reviewedSha256": "ba6e9b93ca2ffa5594a51e20c6b408934cee0c7887c1ae2cc021f7524bb8b330",
+          "allHistoricalFingerprintsMatch": true
+        }
+      ]
+    },
+    "additionalReviewedRuntimeSources": [
+      {
+        "path": "src/crm/CrmDemo.tsx",
+        "sha256": "2b0931d03c9c21683cc33c3272f4b86e895bf3c6f9994b771521d556422dee1d"
+      },
+      {
+        "path": "src/crm/CrmMergeHost.tsx",
+        "sha256": "a4ff5b6acb79786d339d5cc6ab2ba17127232f5cdee24a2dfdfe126736364a00"
+      },
+      {
+        "path": "src/crm/CrmMerges.tsx",
+        "sha256": "be7bb9232fb9bee64e1f5d7d526781f28d76e0dedb0ef5cec44a080e0ef61270"
+      },
+      {
+        "path": "src/crm/draft-tabs.ts",
+        "sha256": "80522aa0c263a658ab5054d22db29d81ba4261c260dcb1b495b5649cf666021d"
+      },
+      {
+        "path": "src/crm/kernel.ts",
+        "sha256": "6572c0e1911faf2c23d6f9dc6f0e780062f1b68f6a89ae5d8eeed36f0803f001"
+      },
+      {
+        "path": "src/crm/legacy-validation.ts",
+        "sha256": "e5053318849c3b7c4f8568f15a85c6b8ea408a36543242fc23a7cfdcc3736afd"
+      },
+      {
+        "path": "src/crm/merge-controller.ts",
+        "sha256": "cbb4c930850ef50c9ad75940d7ce4d17ba9f546406674db5ec94a2561c655fd7"
+      },
+      {
+        "path": "src/crm/merge-history.ts",
+        "sha256": "c96a806fbc3a1cfbf328f23202220b7a40fd892d82896f9dfb9b6d768ce8a41e"
+      },
+      {
+        "path": "src/crm/merge-host.ts",
+        "sha256": "85c1148a3813a4d12ec80fcadd194e7f13175f3814664a93eded1ed81934c3a2"
+      },
+      {
+        "path": "src/crm/merge-projection.ts",
+        "sha256": "44ce54fe7eb4ccd8cada15822fcc377477745ec67e53f7f3c61c937eaa705401"
+      },
+      {
+        "path": "src/crm/merge-public-types.ts",
+        "sha256": "5b426a2cdb5b57e5ca00f77825a6d8e05ed8ddd49c7f7d61aa608079251fb350"
+      },
+      {
+        "path": "src/crm/merge-report.ts",
+        "sha256": "861a8f59eee4ac8a13a04229ee3880dc38f804bb92636969c5381ccda9ad7738"
+      },
+      {
+        "path": "src/crm/merge-types.ts",
+        "sha256": "0bdfa340508cab3c30515ea7df2443773d918157e3f2a2f2505a27bfd19e0766"
+      },
+      {
+        "path": "src/crm/merge-value.ts",
+        "sha256": "84cc60ba4cb0b28e3c3f80d9422e214ea801ec01839af83507bb6be76af494fd"
+      },
+      {
+        "path": "src/crm/merge.ts",
+        "sha256": "0a5929352893536af23458b0150b96278b3bf204c71de03fd2a4fd13a3818971"
+      },
+      {
+        "path": "src/crm/persistence.ts",
+        "sha256": "58a589d4304d8c4df304bca62d56a71a30715596f34bd917cba59d031ee46ca3"
+      },
+      {
+        "path": "src/crm/types.ts",
+        "sha256": "45548840eb64ccb52f20e018a38d5d458696dd18e5f6d16788f6fc4625511e0b"
+      },
+      {
+        "path": "src/pages/TemplatePortalsPage.tsx",
+        "sha256": "0d76bcf1c6a32001c7efb66f3c8e95290427363ee7907c0c2575d38b9e7402da"
+      },
+      {
+        "path": "src/portals/PortalWorkspaceProvider.tsx",
+        "sha256": "186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa"
+      },
+      {
+        "path": "src/portals/RetainedPortalSurface.tsx",
+        "sha256": "31bf40cda4f2bddc6bfb1eb68113ebf59374ea291284161df0473c85009bb82a"
+      },
+      {
+        "path": "src/portals/WorkspaceInspection.tsx",
+        "sha256": "6a6e47b6ca0ded2c518866944f21d9b72630b85bf0bac7261313e3ed095e0dbc"
+      },
+      {
+        "path": "src/portals/registry.ts",
+        "sha256": "0cea49e0738277a810f7831ed269de3a7df4f1d40fdf581d24737849b3626071"
+      },
+      {
+        "path": "src/portals/restore-points.ts",
+        "sha256": "d80d770440de2db847fd5cd933a960fbe2cc88adb4f80d9bd9ae13e97ce89e1b"
+      },
+      {
+        "path": "src/portals/restore-workspaces.ts",
+        "sha256": "1e84b45222b119e9d02e75efa1ba251584353ef0ff2142db5350f009e2797cce"
+      },
+      {
+        "path": "src/portals/useDemoPersistence.ts",
+        "sha256": "e138711b841a0b63abe34d2d4ca0b485a90d1280f06f9b36655a64e9453c649b"
+      },
+      {
+        "path": "src/portals/workspace-inspection.ts",
+        "sha256": "727428394a48cc9d03d232da15d7b9f72535746ffa88f0bf6f7229294ca1616e"
+      },
+      {
+        "path": "src/portals/workspaces.ts",
+        "sha256": "5fe31c7b7c6c5dfe2d791a78281e042b621cffb1f3dcf583329aca7005ee47de"
+      }
+    ],
+    "totalDistinctDirectSourceFingerprints": 102,
+    "packageAndGateSourceObservation": {
+      "packageSha256": "7c68769c7d70195f28047e4a3ccd72f14853c524f00ec2afb62cc6f72d9a5d71",
+      "historicalPrimaryPackageSha256": "9dfe138a4cc64035e703cd7219d67a9bd95a346fc7c0e5cd4f21295bef61475d",
+      "scriptNames": 134,
+      "exactAppendsRetainedIn": "integrationPackageObservation.changedAliases",
+      "configuredStageCount": 68,
+      "ciRunnerSha256": "059480f0a672973732e21d53b44176692ce94054213a7062df07c3136c8e8e9c",
+      "plannerSha256": "3d7e950848a6b0d93dfad0f190568a8eaccb8b24f1c1b5b20f8ee2adfe89d50d",
+      "bothCurrentAggregateRegistrationsExactOnce": true,
+      "qualification": "Both134 script names and68-stage order remain source observations. The planner changes its two corresponding aggregate signatures/descriptions; changed stage contents are not execution evidence."
+    },
+    "coordinatedSourceBindingReview": {
+      "receiptName": "webappx-crm-source-binding-freeze-3-proof.json",
+      "sha256": "9af17647bf07bec526c2f82b736f4510890628dbb6132a6296456053554a403a",
+      "roleSources": 98,
+      "gapSources": 84,
+      "declared182BindingFingerprintsIndependentlyRehashed": true,
+      "qualification": "Binding proof and current source hashes reviewed; no focused-test rerun by this adoption review."
+    },
+    "sourceFindings": [
+      {
+        "criteria": [
+          "WX-0511",
+          "WX-0527",
+          "WX-0534",
+          "WX-0637"
+        ],
+        "result": "Source-consistent. Auth consumers and packaging levels remain separate from trusted membership. CRM canonical kernel/history/projection preserve fictional owner/manager assignment and graph transfer. Native merges create no membership, issuer, step-up or broader proposed bundle authority."
+      },
+      {
+        "criteria": [
+          "WX-0612"
+        ],
+        "result": "Source-consistent. Hosting CSP stays enforced/broad; proposed report-only policy remains inert. CRM adds no remote origin. Selected SDK retains same-origin local mock; native fonts/assets and Blob anchor exports retain documented boundaries."
+      },
+      {
+        "criteria": [
+          "WX-0617",
+          "WX-0627",
+          "WX-0953"
+        ],
+        "result": "Source-consistent. Webhook envelope/HMAC mock and four-day admission, disabled provider proxy, server membership and root Storage policy remain unchanged. CRM adds no retention worker, attachment stream, OAuth callback or client-secret flow; v2 protocol cases remain future contracts."
+      },
+      {
+        "criteria": [
+          "WX-0517",
+          "WX-0635",
+          "WX-0760"
+        ],
+        "result": "Source-consistent. No owner-recovery service, incident collector or telemetry adapter is introduced. CRM opaque handles are local preview capabilities. Complete backup/restore validation uses strict CRM replay; capture/baseline/chronology inspection supplies no production authority."
+      },
+      {
+        "criteria": [
+          "WX-0820"
+        ],
+        "result": "Source-consistent.68 configured stages and existing native-pwsh/Windows-skip/POSIX-PID boundaries remain explicit. CRM test appends provide no native Windows execution."
+      },
+      {
+        "criteria": [
+          "WX-0628",
+          "WX-0802",
+          "WX-0814",
+          "WX-0830",
+          "WX-0850"
+        ],
+        "result": "Source-consistent. Indexing/robots, placeholder target, secrets/rules/deploy boundaries remain unchanged. No preview access control, workflow or deployment identity is installed.134 script names/68 stage order and separate emulator/project/preflight/approval decisions remain coherent. Both updated aggregate planner signatures occur once. Actionsv2 edited/base-retarget policy and all literal cases stay unchanged."
+      }
+    ],
+    "catalogObservation": {
+      "sha256": "9e9579581183eb89d86a8003fade1b4a1b4c63b387cdee06048d8ff82c9a9dd2",
+      "all17OriginalAcceptanceStringsPresent": true,
+      "all17TodoAtObservation": true,
+      "catalogWritten": false
+    },
+    "unresolvedLimits": [
+      "Source/artifact consistency only; no new commit, clean worktree, full CI, browser, emulator, provider, deployed, operator or native Windows acceptance is established.",
+      "Real principals, resources, issuers, approvers, audiences, runner entitlement, telemetry destination and deployment grants remain unselected or unobserved.",
+      "Membership administration, portal grants, recent-authentication enforcement, attachment authorization stream, OAuth broker, telemetry transport and retention/deletion worker remain future adoption contracts.",
+      "Native CRM merge actions do not enlarge crm-assignment-v1, which grants only lead assignment. Any adopted merge capability, authentication requirement and classification needs separate explicit review.",
+      "Complete native exports include historical CRM captures, first-merge baseline and ordered steps beyond a representative current projection. Visible role scope, historical IDs and paid tier do not grant adopted export authority.",
+      "Windows columns remain unavailable; source checks cannot fill native pwsh, skipped teardown/LAN or PID-absence coverage.",
+      "Original external-documentation observations and source line references retain historical scope; external documentation was not revalidated here.",
+      "Related binding author reports59 focused tests at freeze2 and source/render checks at freeze3. This review ran no tests/gates and does not relabel earlier browser/test evidence.",
+      "Publication, complete mandatory CI, Hosting preflight, canonical completion and actual adoption remain separate root/operator work."
+    ],
+    "operationsPerformed": [
+      "read source/artifact bytes",
+      "parse JSON and source ledgers",
+      "compute fingerprints",
+      "append this source-only observation"
+    ],
+    "notPerformed": [
+      "tests/gates/browser/emulator execution",
+      "Git/source publication",
+      "provider/cloud requests",
+      "native Windows execution",
+      "runtime activation",
+      "catalog acceptance"
+    ]
+  }
+}

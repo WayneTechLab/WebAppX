@@ -1,0 +1,2016 @@
+{
+  "schemaVersion": 1,
+  "kind": "proposed-identity-adoption-paper-matrix",
+  "reviewDate": "2026-10-15",
+  "status": "draft-for-operator-artifact-review",
+  "runtimeEnforcement": "disabled-unadopted",
+  "semantics": "Literal fictional preconditions and independently written expected outcomes. Allow means the proposed paper contract admits that example after all omitted ordinary conditions are assumed valid; no implementation was executed and no token, membership or authority was created. Explicitly changed denial conditions are decisive. Synthetic verification results are test stipulations, never browser assertions accepted by a real verifier.",
+  "limits": {
+    "maximumCases": 80,
+    "actualCases": 79,
+    "maximumAdditionalClaims": 0,
+    "maximumCustomTokenLifetimeSeconds": 3600,
+    "maximumRecentAuthAgeSeconds": 300,
+    "maximumChallengeAgeSeconds": 120,
+    "maximumBundlesPerGrant": 8,
+    "maximumResourceIdsPerAssignment": 100,
+    "maximumReasonCharacters": 500,
+    "maximumSecondFactorAgeSeconds": 300
+  },
+  "realOperatorSelection": {
+    "firebaseProjectId": null,
+    "membershipAdministrationServicePrincipal": null,
+    "tenantAssignmentApproverRegistry": null,
+    "bootstrapApprovers": null,
+    "customTokenSignerServiceAccount": null,
+    "stepUpVerifier": null,
+    "approvedPolicyRevision": null
+  },
+  "criteria": [
+    {
+      "id": "WX-0511",
+      "title": "Specify trusted membership provisioning boundaries",
+      "acceptance": "For optional operator-approved adoption: A design records which backend creates memberships, who can approve assignments and how client-controlled role fields are ignored.",
+      "source": "integrations/gusto/functions/src/security.mjs",
+      "gate": "operator",
+      "dependsOn": [],
+      "status": "todo"
+    },
+    {
+      "id": "WX-0527",
+      "title": "Define optional custom-token issuer contract",
+      "acceptance": "For optional operator-approved adoption: The contract requires trusted issuer identity, audience, lifetime and scope while keeping token generation outside browser code.",
+      "source": "src/auth/firebaseAuth.ts",
+      "gate": "operator",
+      "dependsOn": [],
+      "status": "todo"
+    },
+    {
+      "id": "WX-0534",
+      "title": "Define optional portal-specific permission bundles",
+      "acceptance": "For optional operator-approved adoption: A reviewed design groups CMS publication, CRM assignment and HR administration capabilities without deriving them solely from paid account level.",
+      "source": "src/auth/accountLevels.ts",
+      "gate": "operator",
+      "dependsOn": [
+        "WX-0501",
+        "WX-0503"
+      ],
+      "status": "todo"
+    },
+    {
+      "id": "WX-0637",
+      "title": "Design optional session step-up requirements",
+      "acceptance": "For optional operator-approved adoption: An adoption matrix identifies which sensitive export or owner action should require recent authentication and leaves enforcement disabled until reviewed.",
+      "source": "src/auth/firebaseAuth.ts",
+      "gate": "operator",
+      "dependsOn": [],
+      "status": "todo"
+    }
+  ],
+  "sourceReview": {
+    "observedOn": "2026-10-15",
+    "revision": "42818dd7baf3d335f27c401c37d048bd842617fa",
+    "revisionProvenance": "supplied-by-Agent-0; no Git verification performed in this draft task",
+    "hashMode": "exact-file-bytes-sha256",
+    "catalogSha256": "e6a38ce600cfdeb95cf0bb397ab587409ee725eeef2b345d4ff1a64589294bc0",
+    "files": [
+      {
+        "path": "src/auth/firebaseAuth.ts",
+        "sha256": "b8672f40e1bab47fd77f7f60407d864af96df4d3efd12b548d3a157749dcf867"
+      },
+      {
+        "path": "src/auth/authProviders.ts",
+        "sha256": "a4b4a79fe9f4bdd0164d6b99386da37dc40fddd3ecd43f111250e11ea142dabc"
+      },
+      {
+        "path": "src/auth/accountLevels.ts",
+        "sha256": "38784a0cca7570cc5c2ef456e44d19e0c053311579002a2ee7d6d50dc831f270"
+      },
+      {
+        "path": ".SYSTEMX/LAN/Builder/contracts/auth-provider-registry.json",
+        "sha256": "5e26bd49c426431816a8695c8847a4f9c84d388572c5825c400d47955dc58a9e"
+      },
+      {
+        "path": "integrations/gusto/functions/src/security.mjs",
+        "sha256": "48c86c7be0c53c47b0c520a6b2d2162e1d1f151423b9d7f04413dc3159b518f5"
+      },
+      {
+        "path": "integrations/gusto/functions/src/index.mjs",
+        "sha256": "fa240bf40cf6acb9e305c07275dd190ace393fd33b2edbbb263a024f86f92fed"
+      },
+      {
+        "path": "integrations/gusto/functions/src/backend.mjs",
+        "sha256": "652af6bdc7ddba6820a3d47f6eda9514e4555b0c8d1a124c5f733232c5386efa"
+      },
+      {
+        "path": "integrations/gusto/firestore.rules",
+        "sha256": "946fa2a7bba43f33925c367bf52f0139c558f4192bbe6a8e82de7bc8cc2f4352"
+      },
+      {
+        "path": "docs/TENANT-MEMBERSHIP-PROPOSAL.md",
+        "sha256": "0a71c4c3a738059dbf367c3521f1b67ebb941a4206c101761405a8568a79e267"
+      },
+      {
+        "path": "docs/PORTAL-CAPABILITIES.md",
+        "sha256": "145d912322bd3d4e9ffce7a8ca45131c1fd557f8801ef9d36ed348934368f6cd"
+      },
+      {
+        "path": "src/cms/model.ts",
+        "sha256": "2bd7580d3fd0e42a27810fe65ccf04aae0e3a2a69ac01df05a7acc9c7cf28bbf"
+      },
+      {
+        "path": "src/cms/release-bundles.ts",
+        "sha256": "ed159266af4cf6346cc49506d8e55d80e5c090e48c67c0001e718bad96c9ab24"
+      },
+      {
+        "path": "src/crm/model.ts",
+        "sha256": "fbef9b656e5e286d3a6a22a93487a905e7909482b64972a33c5c90d86e91bed8"
+      },
+      {
+        "path": "src/crm/ownership.ts",
+        "sha256": "513a052d85d9f3107869b71ed4fd8c71b35da484111fd44f7a123da045ed6ab0"
+      },
+      {
+        "path": "src/hr/model.ts",
+        "sha256": "32c3a83203c4a07a5cee5bb0d244a252f32992da71eef2b2cf61f3170e9e1f4e"
+      },
+      {
+        "path": "src/portals/backup.ts",
+        "sha256": "b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a"
+      },
+      {
+        "path": "src/portals/combined-backup.ts",
+        "sha256": "186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726"
+      },
+      {
+        "path": "firestore.rules",
+        "sha256": "da607c38e2acb644763722887c6286e1c33ba3c98edf845d36c23a8e2825d482"
+      },
+      {
+        "path": "storage.rules",
+        "sha256": "858a8d5ad0af31ad5c9b42650ca58f6a2601b22e20464b63d636ad3f32503f83"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "MEM-01",
+      "criterion": "WX-0511",
+      "action": "bootstrap.create-inactive",
+      "inputs": {
+        "deploymentSelection": "unselected",
+        "bootstrapApprovalIds": []
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "adoption-not-selected",
+        "effect": "no membership or approval created",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-02",
+      "criterion": "WX-0511",
+      "action": "bootstrap.create-inactive",
+      "inputs": {
+        "deploymentSelection": "synthetic-profile-A",
+        "orgId": "org-cedar",
+        "subjectUid": "uid-first-owner",
+        "bootstrapApprovers": [
+          "uid-bootstrap-A",
+          "uid-bootstrap-B"
+        ],
+        "approvalScope": "exact-org-and-subject",
+        "existingTenant": false,
+        "requesterUid": "uid-bootstrap-requester"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "independent-bootstrap-intake-approved",
+        "effect": "modeled inactive membership revision 1; no active owner yet",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-03",
+      "criterion": "WX-0511",
+      "action": "bootstrap.activate-owner",
+      "inputs": {
+        "deploymentSelection": "synthetic-profile-A",
+        "orgId": "org-cedar",
+        "subjectUid": "uid-first-owner",
+        "intakeRevision": 1,
+        "approvalId": null,
+        "clientFirstSignedIn": true
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "bootstrap-approval-missing",
+        "effect": "inactive intake remains revision 1",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-04",
+      "criterion": "WX-0511",
+      "action": "bootstrap.activate-owner",
+      "inputs": {
+        "deploymentSelection": "synthetic-profile-A",
+        "orgId": "org-cedar",
+        "subjectUid": "uid-first-owner",
+        "intakeRevision": 1,
+        "bootstrapApprovers": [
+          "uid-bootstrap-A",
+          "uid-bootstrap-B"
+        ],
+        "approvalScope": "exact-first-owner-activation",
+        "requesterUid": "uid-bootstrap-requester"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "independent-bootstrap-activation-approved",
+        "effect": "modeled active owner revision 2 and protected audit",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-05",
+      "criterion": "WX-0511",
+      "action": "membership.activate",
+      "inputs": {
+        "orgId": "org-cedar",
+        "subjectUid": "uid-member",
+        "requesterUid": "uid-requester",
+        "approverUid": "uid-approver",
+        "approverRegistryOrg": "org-cedar",
+        "approvedRoles": [
+          "employee"
+        ],
+        "expectedRevision": 1,
+        "storedRevision": 1,
+        "approvalBindsExactIntent": true
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "independent-tenant-approval-current",
+        "effect": "modeled active employee membership revision 2",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-06",
+      "criterion": "WX-0511",
+      "action": "membership.replace-roles",
+      "inputs": {
+        "orgId": "org-cedar",
+        "subjectUid": "uid-requester",
+        "requesterUid": "uid-requester",
+        "approverUid": "uid-requester",
+        "requestedRoles": [
+          "employer-owner"
+        ]
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "self-approval",
+        "effect": "no role or revision change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-07",
+      "criterion": "WX-0511",
+      "action": "membership.activate",
+      "inputs": {
+        "orgId": "org-cedar",
+        "subjectUid": "uid-member",
+        "approverRegistryOrg": "org-maple",
+        "approvedRoles": [
+          "employee"
+        ]
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "approval-tenant-mismatch",
+        "effect": "no membership change in either tenant",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-08",
+      "criterion": "WX-0511",
+      "action": "membership.replace-roles",
+      "inputs": {
+        "orgId": "org-cedar",
+        "subjectUid": "uid-paid",
+        "clientLevel": 5,
+        "clientAdmin": true,
+        "clientRoles": [
+          "employer-owner"
+        ],
+        "approverRegistryEntry": null
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "assignment-authority-missing",
+        "effect": "client tier and role fields grant nothing",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-09",
+      "criterion": "WX-0511",
+      "action": "membership.replace-mappings",
+      "inputs": {
+        "orgId": "org-cedar",
+        "subjectUid": "uid-member",
+        "approvedPersonOrg": "org-maple",
+        "personId": "person-maple"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "mapping-tenant-mismatch",
+        "effect": "no person or provider mapping change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-10",
+      "criterion": "WX-0511",
+      "action": "membership.replace-roles",
+      "inputs": {
+        "orgId": "org-cedar",
+        "subjectUid": "uid-member",
+        "approvalBindsExactIntent": true,
+        "expectedRevision": 3,
+        "storedRevision": 4
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "membership-revision-stale",
+        "effect": "existing revision 4 retained; reload and obtain deliberate approval",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-11",
+      "criterion": "WX-0511",
+      "action": "membership.replace-roles",
+      "inputs": {
+        "orgId": "org-cedar",
+        "subjectUid": "uid-member",
+        "approvalId": null,
+        "clientApproved": true,
+        "requestedRoles": [
+          "hr-admin"
+        ]
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "approval-record-missing",
+        "effect": "client approval boolean is ignored for authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "MEM-12",
+      "criterion": "WX-0511",
+      "action": "membership.set-inactive",
+      "inputs": {
+        "orgId": "org-cedar",
+        "subjectUid": "uid-last-owner",
+        "activeOwnerCount": 1,
+        "atomicApprovedReplacementOwner": null
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "last-owner-removal",
+        "effect": "existing active owner retained; use an approved atomic replacement or separately accepted recovery procedure; initial-tenant bootstrap is not an existing-tenant recovery path",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-01",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "issuerSelection": "unselected"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "issuer-not-selected",
+        "effect": "no issuance operation available",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-02",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "signerProfile": "synthetic-signer-A",
+        "selectedSignerProfile": "synthetic-signer-A",
+        "algorithm": "RS256",
+        "uid": "uid-member",
+        "audienceKind": "firebase-custom-token-exchange",
+        "iat": 1000,
+        "exp": 4600,
+        "serverNow": 1000,
+        "additionalClaims": {},
+        "serverCredentialProof": "synthetic-valid",
+        "subjectMapping": "synthetic-valid"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "selected-issuer-bounded-sign-in-only",
+        "effect": "paper issuance validation passes; no token generated",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-03",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "signerProfile": "synthetic-signer-B",
+        "selectedSignerProfile": "synthetic-signer-A"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "issuer-mismatch",
+        "effect": "no token generated",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-04",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "audienceKind": "firebase-project-id",
+        "requiredAudienceKind": "firebase-custom-token-exchange"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "custom-token-audience-mismatch",
+        "effect": "project ID is not the custom-token exchange audience",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-05",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "descriptorShape": "missing-uid-and-exp",
+        "serverCredentialProof": "synthetic-valid"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "malformed-issuer-request",
+        "effect": "no token generated or repaired",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-06",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "iat": 1000,
+        "exp": 4600,
+        "serverNow": 4600
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "token-expired",
+        "effect": "no expired token delivered",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-07",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "iat": 1000,
+        "exp": 4601,
+        "serverNow": 1000
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "custom-token-lifetime-exceeds-3600",
+        "effect": "no overlong token generated",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-08",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "executionBoundary": "browser",
+        "clientRequestedSigner": "synthetic-signer-A"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "browser-minting-forbidden",
+        "effect": "no signing operation or private key enters browser",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-09",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "additionalClaims": {
+          "roles": [
+            "employer-owner"
+          ],
+          "level": 5,
+          "app_scope": [
+            "membership.assign"
+          ]
+        }
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "claims-outside-empty-allowlist",
+        "effect": "no tenant or provider authority is minted",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-10",
+      "criterion": "WX-0527",
+      "action": "custom-token.issue",
+      "inputs": {
+        "algorithm": "none",
+        "signatureEvidence": "absent"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "signature-profile-invalid",
+        "effect": "no unsigned token accepted",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-11",
+      "criterion": "WX-0527",
+      "action": "api.authenticate",
+      "inputs": {
+        "bearerKind": "firebase-custom-token",
+        "audienceKind": "firebase-custom-token-exchange"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "wrong-token-kind",
+        "effect": "application API requires its selected Firebase ID-token verifier",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-12",
+      "criterion": "WX-0527",
+      "action": "api.authenticate",
+      "inputs": {
+        "bearerKind": "firebase-id-token",
+        "signatureResult": "synthetic-valid",
+        "projectAudience": "fictional-project-B",
+        "selectedProject": "fictional-project-A"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "id-token-project-audience-mismatch",
+        "effect": "no authenticated API actor",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-13",
+      "criterion": "WX-0527",
+      "action": "api.authenticate",
+      "inputs": {
+        "bearerKind": "firebase-id-token",
+        "signatureResult": "synthetic-valid",
+        "issuerProject": "fictional-project-A",
+        "projectAudience": "fictional-project-A",
+        "selectedProject": "fictional-project-A",
+        "iat": 1000,
+        "exp": 4600,
+        "authTime": 1000,
+        "serverNow": 2000,
+        "revocationResult": "synthetic-valid"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "id-token-identity-only",
+        "effect": "modeled UID authenticated; tenant action still needs current membership and grants",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "TOK-14",
+      "criterion": "WX-0527",
+      "action": "api.authenticate",
+      "inputs": {
+        "bearerKind": "external-oidc-id-token",
+        "issuerProfile": "synthetic-external-issuer",
+        "selectedFirebaseProject": "fictional-project-A"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "external-token-needs-separate-reviewed-exchange",
+        "effect": "no automatic Firebase identity or portal authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-01",
+      "criterion": "WX-0534",
+      "action": "cms.entry.publish",
+      "inputs": {
+        "uid": "uid-publisher",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "bundle": "cms-publication-v1",
+        "bundleVersion": 1,
+        "collection": "pages",
+        "grantedCollections": [
+          "pages"
+        ],
+        "currentRevision": 4,
+        "approvedRevision": 4,
+        "authorUid": "uid-author",
+        "reviewerUid": "uid-reviewer",
+        "recentAuth": "synthetic-valid",
+        "activePortalGrant": true
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "exact-separate-approval-and-scoped-grant",
+        "effect": "modeled publication of revision 4 only",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-02",
+      "criterion": "WX-0534",
+      "action": "cms.entry.publish",
+      "inputs": {
+        "bundle": "cms-publication-v1",
+        "currentRevision": 5,
+        "approvedRevision": 4
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "cms-approval-stale",
+        "effect": "no publication",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-03",
+      "criterion": "WX-0534",
+      "action": "cms.entry.publish",
+      "inputs": {
+        "bundle": "cms-publication-v1",
+        "currentRevision": 4,
+        "approvedRevision": 4,
+        "authorUid": "uid-same",
+        "reviewerUid": "uid-same"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "cms-author-reviewer-not-distinct",
+        "effect": "bundle union cannot bypass separate review",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-04",
+      "criterion": "WX-0534",
+      "action": "crm.lead.assign",
+      "inputs": {
+        "uid": "uid-assignment",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "bundle": "crm-assignment-v1",
+        "expectedOwnerUid": "uid-rep-A",
+        "currentOwnerUid": "uid-rep-A",
+        "targetAssigneeOrg": "org-cedar",
+        "targetAssigneeActive": true,
+        "leadState": "qualified",
+        "recentAuth": "synthetic-valid",
+        "activePortalGrant": true
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "current-owner-and-eligible-tenant-assignee",
+        "effect": "modeled reassignment of one unconverted lead",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-05",
+      "criterion": "WX-0534",
+      "action": "crm.lead.assign",
+      "inputs": {
+        "bundle": "cms-publication-v1",
+        "clientLevel": 5,
+        "activePortalGrant": true
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "crm-capability-not-granted",
+        "effect": "CMS authority and paid level grant no CRM assignment",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-06",
+      "criterion": "WX-0534",
+      "action": "crm.lead.assign",
+      "inputs": {
+        "bundle": "crm-assignment-v1",
+        "orgId": "org-cedar",
+        "targetAssigneeOrg": "org-maple"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "crm-assignee-tenant-mismatch",
+        "effect": "no lead or related graph changes",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-07",
+      "criterion": "WX-0534",
+      "action": "crm.account.transfer",
+      "inputs": {
+        "bundle": "crm-assignment-v1",
+        "leadState": "converted"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "account-transfer-not-in-bundle",
+        "effect": "separate account-transfer contract and capability required",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-08",
+      "criterion": "WX-0534",
+      "action": "hr.profile-email.update",
+      "inputs": {
+        "uid": "uid-hr",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "hrRole": "hr-admin",
+        "bundle": "hr-person-admin-v1",
+        "personId": "person-cedar",
+        "grantedPersonIds": [
+          "person-cedar"
+        ],
+        "activePortalGrant": true,
+        "activeHrMembership": true
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "explicit-hr-person-scope",
+        "effect": "modeled permitted profile email update only",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-09",
+      "criterion": "WX-0534",
+      "action": "hr.payroll.execute-provider",
+      "inputs": {
+        "bundle": "hr-person-admin-v1",
+        "hrRole": "employer-owner",
+        "clientLevel": 5
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "provider-operation-not-in-bundle",
+        "effect": "no provider execution or connection authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-10",
+      "criterion": "WX-0534",
+      "action": "hr.profile-email.update",
+      "inputs": {
+        "uid": "uid-paid",
+        "orgId": "org-cedar",
+        "clientLevel": 3,
+        "bundle": null,
+        "activePortalGrant": false,
+        "activeHrMembership": false
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "active-membership-missing",
+        "effect": "paid entitlement supplies no HR authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-11",
+      "criterion": "WX-0534",
+      "action": "cms.entry.publish",
+      "inputs": {
+        "orgId": "org-cedar",
+        "resourceOrg": "org-maple",
+        "bundle": "cms-publication-v1"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "resource-tenant-mismatch",
+        "effect": "no cross-tenant publication",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-12",
+      "criterion": "WX-0534",
+      "action": "hr.compensation.read",
+      "inputs": {
+        "bundle": "hr-person-admin-v1",
+        "assignedBundleVersion": 1,
+        "currentCatalogVersion": 2,
+        "version2AddsCapabilities": [
+          "hr.compensation.read"
+        ],
+        "acceptedBundleVersions": [
+          1,
+          2
+        ]
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "capability-absent-from-assigned-version",
+        "effect": "version-1 grant gains no version-2-only compensation capability",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-13",
+      "criterion": "WX-0534",
+      "action": "cms.entry.publish",
+      "inputs": {
+        "uid": "uid-cms-only",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "activePortalGrant": true,
+        "hrMembership": null,
+        "bundle": "cms-publication-v1",
+        "bundleVersion": 1,
+        "collection": "pages",
+        "grantedCollections": [
+          "pages"
+        ],
+        "currentRevision": 4,
+        "approvedRevision": 4,
+        "authorUid": "uid-author",
+        "reviewerUid": "uid-reviewer"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "cms-only-scoped-portal-grant",
+        "effect": "modeled publication of revision 4; no HR membership required or conferred",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "BND-14",
+      "criterion": "WX-0534",
+      "action": "hr.profile-email.update",
+      "inputs": {
+        "uid": "uid-hr",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "activePortalGrant": true,
+        "activeHrMembership": true,
+        "hrRole": "hr-admin",
+        "assignedBundleVersion": 1,
+        "currentCatalogVersion": 2,
+        "acceptedBundleVersions": [
+          1,
+          2
+        ],
+        "bundle": "hr-person-admin-v1",
+        "personId": "person-cedar",
+        "grantedPersonIds": [
+          "person-cedar"
+        ]
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "unchanged-capability-in-accepted-version-1",
+        "effect": "modeled scoped profile update; no version-2 expansion inherited",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-01-A",
+      "criterion": "WX-0637",
+      "action": "cms.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "cms-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembership": null
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "recent-auth-and-action-evidence-current",
+        "effect": "paper action may proceed only after all other resource/domain checks; no real action",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-01-B",
+      "criterion": "WX-0637",
+      "action": "cms.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "cms-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1699,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembership": null
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "recent-auth-too-old",
+        "effect": "reauthenticate; retain intent without exporting bytes or changing authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-01-C",
+      "criterion": "WX-0637",
+      "action": "cms.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "cms-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": null,
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "clientMfa": true,
+        "clientRequiresMfaFlag": true,
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembership": null
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "verified-second-factor-evidence-missing",
+        "effect": "browser booleans do not satisfy step-up; no export or owner change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-01-D",
+      "criterion": "WX-0637",
+      "action": "cms.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-maple",
+        "capability": "cms-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembership": null
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "step-up-tenant-mismatch",
+        "effect": "recent authentication does not authorize another tenant",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-02-A",
+      "criterion": "WX-0637",
+      "action": "crm.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "crm-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembership": null
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "recent-auth-and-action-evidence-current",
+        "effect": "paper action may proceed only after all other resource/domain checks; no real action",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-02-B",
+      "criterion": "WX-0637",
+      "action": "crm.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "crm-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1699,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembership": null
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "recent-auth-too-old",
+        "effect": "reauthenticate; retain intent without exporting bytes or changing authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-02-C",
+      "criterion": "WX-0637",
+      "action": "crm.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "crm-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": null,
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "clientMfa": true,
+        "clientRequiresMfaFlag": true,
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembership": null
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "verified-second-factor-evidence-missing",
+        "effect": "browser booleans do not satisfy step-up; no export or owner change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-02-D",
+      "criterion": "WX-0637",
+      "action": "crm.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-maple",
+        "capability": "crm-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembership": null
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "step-up-tenant-mismatch",
+        "effect": "recent authentication does not authorize another tenant",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-03-A",
+      "criterion": "WX-0637",
+      "action": "hr.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "hr-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembershipStatus": "active"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "recent-auth-and-action-evidence-current",
+        "effect": "paper action may proceed only after all other resource/domain checks; no real action",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-03-B",
+      "criterion": "WX-0637",
+      "action": "hr.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "hr-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1699,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembershipStatus": "active"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "recent-auth-too-old",
+        "effect": "reauthenticate; retain intent without exporting bytes or changing authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-03-C",
+      "criterion": "WX-0637",
+      "action": "hr.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "hr-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": null,
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "clientMfa": true,
+        "clientRequiresMfaFlag": true,
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembershipStatus": "active"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "verified-second-factor-evidence-missing",
+        "effect": "browser booleans do not satisfy step-up; no export or owner change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-03-D",
+      "criterion": "WX-0637",
+      "action": "hr.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-maple",
+        "capability": "hr-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembershipStatus": "active"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "step-up-tenant-mismatch",
+        "effect": "recent authentication does not authorize another tenant",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-04-A",
+      "criterion": "WX-0637",
+      "action": "workspace.export.combined",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "combined-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "selectedModules": [
+          "cms",
+          "crm",
+          "hr"
+        ],
+        "moduleAdmission": {
+          "cms": "active-scoped-portal-grant",
+          "crm": "active-scoped-portal-grant",
+          "hr": "active-scoped-portal-grant-and-HR-membership"
+        }
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "recent-auth-and-action-evidence-current",
+        "effect": "paper action may proceed only after all other resource/domain checks; no real action",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-04-B",
+      "criterion": "WX-0637",
+      "action": "workspace.export.combined",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "combined-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1699,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "selectedModules": [
+          "cms",
+          "crm",
+          "hr"
+        ],
+        "moduleAdmission": {
+          "cms": "active-scoped-portal-grant",
+          "crm": "active-scoped-portal-grant",
+          "hr": "active-scoped-portal-grant-and-HR-membership"
+        }
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "recent-auth-too-old",
+        "effect": "reauthenticate; retain intent without exporting bytes or changing authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-04-C",
+      "criterion": "WX-0637",
+      "action": "workspace.export.combined",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "combined-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": null,
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "clientMfa": true,
+        "clientRequiresMfaFlag": true,
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "selectedModules": [
+          "cms",
+          "crm",
+          "hr"
+        ],
+        "moduleAdmission": {
+          "cms": "active-scoped-portal-grant",
+          "crm": "active-scoped-portal-grant",
+          "hr": "active-scoped-portal-grant-and-HR-membership"
+        }
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "verified-second-factor-evidence-missing",
+        "effect": "browser booleans do not satisfy step-up; no export or owner change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-04-D",
+      "criterion": "WX-0637",
+      "action": "workspace.export.combined",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-maple",
+        "capability": "combined-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "selectedModules": [
+          "cms",
+          "crm",
+          "hr"
+        ],
+        "moduleAdmission": {
+          "cms": "active-scoped-portal-grant",
+          "crm": "active-scoped-portal-grant",
+          "hr": "active-scoped-portal-grant-and-HR-membership"
+        }
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "step-up-tenant-mismatch",
+        "effect": "recent authentication does not authorize another tenant",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-05-A",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.assign",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "tenant-owner-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "recent-auth-and-action-evidence-current",
+        "effect": "paper action may proceed only after all other resource/domain checks; no real action",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-05-B",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.assign",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "tenant-owner-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1699,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "recent-auth-too-old",
+        "effect": "reauthenticate; retain intent without exporting bytes or changing authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-05-C",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.assign",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "tenant-owner-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": null,
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "clientMfa": true,
+        "clientRequiresMfaFlag": true,
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "verified-second-factor-evidence-missing",
+        "effect": "browser booleans do not satisfy step-up; no export or owner change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-05-D",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.assign",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-maple",
+        "capability": "tenant-owner-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "step-up-tenant-mismatch",
+        "effect": "recent authentication does not authorize another tenant",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-06-A",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.revoke",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "tenant-owner-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "recent-auth-and-action-evidence-current",
+        "effect": "paper action may proceed only after all other resource/domain checks; no real action",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-06-B",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.revoke",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "tenant-owner-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1699,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "recent-auth-too-old",
+        "effect": "reauthenticate; retain intent without exporting bytes or changing authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-06-C",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.revoke",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "tenant-owner-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": null,
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "clientMfa": true,
+        "clientRequiresMfaFlag": true,
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "verified-second-factor-evidence-missing",
+        "effect": "browser booleans do not satisfy step-up; no export or owner change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-06-D",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.revoke",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-maple",
+        "capability": "tenant-owner-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "step-up-tenant-mismatch",
+        "effect": "recent authentication does not authorize another tenant",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-07-A",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.recover",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "tenant-owner-recovery-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "recent-auth-and-action-evidence-current",
+        "effect": "paper action may proceed only after all other resource/domain checks; no real action",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-07-B",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.recover",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "tenant-owner-recovery-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1699,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "recent-auth-too-old",
+        "effect": "reauthenticate; retain intent without exporting bytes or changing authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-07-C",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.recover",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "tenant-owner-recovery-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": null,
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "clientMfa": true,
+        "clientRequiresMfaFlag": true,
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "verified-second-factor-evidence-missing",
+        "effect": "browser booleans do not satisfy step-up; no export or owner change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-07-D",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.recover",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-maple",
+        "capability": "tenant-owner-recovery-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "step-up-tenant-mismatch",
+        "effect": "recent authentication does not authorize another tenant",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-08-A",
+      "criterion": "WX-0637",
+      "action": "identity.issuer-policy.replace",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "issuer-policy-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "allow",
+        "reason": "recent-auth-and-action-evidence-current",
+        "effect": "paper action may proceed only after all other resource/domain checks; no real action",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-08-B",
+      "criterion": "WX-0637",
+      "action": "identity.issuer-policy.replace",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "issuer-policy-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1699,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "recent-auth-too-old",
+        "effect": "reauthenticate; retain intent without exporting bytes or changing authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-08-C",
+      "criterion": "WX-0637",
+      "action": "identity.issuer-policy.replace",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "issuer-policy-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": null,
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "clientMfa": true,
+        "clientRequiresMfaFlag": true,
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "verified-second-factor-evidence-missing",
+        "effect": "browser booleans do not satisfy step-up; no export or owner change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-08-D",
+      "criterion": "WX-0637",
+      "action": "identity.issuer-policy.replace",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-maple",
+        "capability": "issuer-policy-administration-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1880,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "secondFactorEventTime": 1880,
+        "authorityRevisionCurrent": true,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "step-up-tenant-mismatch",
+        "effect": "recent authentication does not authorize another tenant",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-X1",
+      "criterion": "WX-0637",
+      "action": "hr.export.full",
+      "inputs": {
+        "enforcement": "disabled-unadopted",
+        "clientLevel": 5,
+        "portalGrantStatus": "active",
+        "hrMembershipStatus": "active"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "adoption-not-enabled",
+        "effect": "no adopted export endpoint is supplied by this draft; existing native demo export behavior is unchanged",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-X2",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.assign",
+      "inputs": {
+        "idTokenIat": 1999,
+        "authTime": 1000,
+        "serverNow": 2000,
+        "secondFactorEvidence": "synthetic-valid",
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "recent-auth-too-old",
+        "effect": "refreshing an ID token is not fresh authentication",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-X3",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.assign",
+      "inputs": {
+        "authTime": 2001,
+        "serverNow": 2000,
+        "secondFactorEvidence": "synthetic-valid",
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "authentication-time-in-future",
+        "effect": "no clock-based repair or authority change",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-X4",
+      "criterion": "WX-0637",
+      "action": "hr.export.full",
+      "inputs": {
+        "authTime": 1990,
+        "serverNow": 2000,
+        "actionChallenge": "synthetic-already-used",
+        "portalGrantStatus": "active",
+        "hrMembershipStatus": "active"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "step-up-challenge-replayed",
+        "effect": "no second export from a consumed challenge",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-X5",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.revoke",
+      "inputs": {
+        "authTime": 1990,
+        "serverNow": 2000,
+        "authorityRevisionCurrent": false,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "authority-changed-after-step-up",
+        "effect": "reload authority and deliberately request a fresh action",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-X6",
+      "criterion": "WX-0637",
+      "action": "tenant.owner.recover",
+      "inputs": {
+        "authTime": 1990,
+        "serverNow": 2000,
+        "secondFactorEvidence": "synthetic-valid",
+        "independentRecoveryApproval": null,
+        "controlPlaneAuthorityStatus": "synthetic-active-for-exact-action"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "independent-recovery-approval-missing",
+        "effect": "this matrix supplies no owner recovery authority",
+        "realExecution": "not-performed"
+      }
+    },
+    {
+      "id": "STP-X7",
+      "criterion": "WX-0637",
+      "action": "hr.export.full",
+      "inputs": {
+        "profile": "synthetic-reviewed-profile-A",
+        "enforcement": "hypothetically-enabled-for-paper-case",
+        "uid": "uid-operator",
+        "orgId": "org-cedar",
+        "resourceOrg": "org-cedar",
+        "capability": "hr-full-export-v1",
+        "idTokenVerified": "synthetic-valid",
+        "serverNow": 2000,
+        "authTime": 1990,
+        "secondFactorEvidence": "synthetic-verified-same-uid-session",
+        "secondFactorEventTime": 1699,
+        "independentApproval": "synthetic-exact-action-approved",
+        "actionChallenge": "synthetic-unused-bound-challenge",
+        "challengeIssuedAt": 1990,
+        "challengeExpiresAt": 2110,
+        "authorityRevisionCurrent": true,
+        "portalGrantStatus": "active",
+        "hrMembershipStatus": "active"
+      },
+      "expected": {
+        "decision": "deny",
+        "reason": "second-factor-event-too-old",
+        "effect": "recent primary authentication and a current unused challenge cannot refresh old factor evidence; no export bytes",
+        "realExecution": "not-performed"
+      }
+    }
+  ]
+}

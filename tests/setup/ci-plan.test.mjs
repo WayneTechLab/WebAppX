@@ -111,7 +111,7 @@ test('required lifecycle suites run once without replacing existing recovery or 
   const report = buildCiPlan({ shellSource, packageJson })
   const required = {
     'setup:contracts:test': ['tests/setup/package-script-discovery.test.mjs', 'tests/setup/doc-commands.test.mjs', 'tests/setup/fixture-inventory.test.mjs', 'tests/setup/child-processes.test.mjs'],
-    'browser:smoke:test': ['tests/browser/seed-pack.test.mjs', 'tests/browser/preview-process.test.mjs', 'tests/browser/recruiting-harness.test.mjs', 'tests/browser/payroll-control-harness.test.mjs'],
+    'browser:smoke:test': ['tests/browser/seed-pack.test.mjs', 'tests/browser/preview-process.test.mjs', 'tests/browser/recruiting-harness.test.mjs', 'tests/browser/payroll-control-harness.test.mjs', 'tests/browser/crm-merge-harness.test.mjs'],
     'hr:test': [
       'tests/hr/lifecycle.test.mjs', 'tests/hr/employment-lifecycle-ui.test.mjs', 'tests/hr/directory-corrections-ui.test.mjs',
       'tests/hr/recruiting-core.test.mjs',
@@ -129,7 +129,7 @@ test('required lifecycle suites run once without replacing existing recovery or 
       'tests/hr/recruiting-integration.test.mjs',
       'tests/hr/payroll-control.test.mjs', 'tests/hr/payroll-control-ui.test.mjs', 'tests/hr/payroll-control-integration.test.mjs', 'tests/hr/payroll-control-host.test.mjs',
     ],
-    'portals:test': ['tests/portals/cms-releases.test.mjs', 'tests/portals/cms-release-callbacks.test.mjs', 'tests/portals/crm-ownership.test.mjs', 'tests/portals/lifecycle-inspection.test.mjs', 'tests/portals/recruiting-inspection.test.mjs', 'tests/portals/retained-surface.test.mjs', 'tests/portals/payroll-control-inspection.test.mjs'],
+    'portals:test': ['tests/portals/cms-releases.test.mjs', 'tests/portals/cms-release-callbacks.test.mjs', 'tests/portals/crm-ownership.test.mjs', 'tests/portals/lifecycle-inspection.test.mjs', 'tests/portals/recruiting-inspection.test.mjs', 'tests/portals/retained-surface.test.mjs', 'tests/portals/payroll-control-inspection.test.mjs', 'tests/crm/merge-core.test.mjs', 'tests/crm/merge-history.test.mjs', 'tests/crm/merge-report.test.mjs', 'tests/crm/merge-projection.test.mjs', 'tests/crm/merge-controller.test.mjs', 'tests/crm/merge-host.test.mjs', 'tests/portals/crm-merge-inspection.test.mjs'],
     'maturity:test': ['tests/portals/workspace-inspection.test.mjs'],
     'safety:test': ['tests/portals/domain-differences.test.mjs'],
   }

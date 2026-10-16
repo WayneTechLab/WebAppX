@@ -84,11 +84,19 @@ const metadataLabels: Record<string, string> = {
   schemaVersion: 'Extension schema version', adoptionEventId: 'Recruiting adoption event ID', legacySequence: 'Captured legacy sequence',
   legacyJobCount: 'Captured legacy job count', legacyCandidateCount: 'Captured legacy candidate count',
   legacyHireCount: 'Captured legacy hire count', legacyHireLinkCount: 'Captured legacy hire link count',
+  recordKind: 'CRM record kind', retainedId: 'Retained record ID', fieldPolicy: 'Merge field policy',
+  changedContacts: 'Changed contact count', changedLeads: 'Changed lead count', changedOpportunities: 'Changed opportunity count',
+  contextCompanies: 'Unchanged company context count', contextContacts: 'Unchanged contact context count', contextLeads: 'Unchanged lead context count',
+  contextOpportunities: 'Unchanged opportunity context count', contextTasks: 'Unchanged task context count',
+  receiptId: 'Receipt ID', captureSide: 'Captured source or retained side', boundaryKind: 'Legacy capture boundary', stepCount: 'Ordered journal step count',
+  companyCount: 'Captured company count', contactCount: 'Captured contact count', leadCount: 'Captured lead count',
+  opportunityCount: 'Captured opportunity count', activityCount: 'Captured legacy activity count', commandKind: 'Recorded command kind',
+  taskId: 'Task ID', newOwnerId: 'Requested owner ID', expectedOwnerId: 'Expected current owner ID',
 }
 function RecordMetadata({ metadata, side, identifier }: { metadata: StructuredRecordMetadata | null; side: string; identifier: string }) {
   return <div className="min-w-0 rounded-md bg-neutral-50 p-3">
     <p className="text-xs font-semibold text-neutral-900">{side}</p>
-    {metadata === null ? <p className="mt-2 text-xs text-neutral-500">Record absent</p> : <dl aria-label={`${side} ${identifier} metadata`} className="mt-2 space-y-2 text-xs leading-5">{Object.entries(metadata).map(([key, value]) => <div key={key}><dt className="text-neutral-500">{metadataLabels[key]}</dt><dd className="break-all font-medium text-neutral-800">{value === null ? 'None' : value}</dd></div>)}</dl>}
+    {metadata === null ? <p className="mt-2 text-xs text-neutral-500">Record absent</p> : <dl aria-label={`${side} ${identifier} metadata`} className="mt-2 space-y-2 text-xs leading-5">{Object.entries(metadata).map(([key, value]) => <div key={key}><dt className="text-neutral-500">{key === 'sourceId' && metadata.fieldPolicy === 'retain-target-v1' ? 'Retired source record ID' : metadataLabels[key]}</dt><dd className="break-all font-medium text-neutral-800">{value === null ? 'None' : value}</dd></div>)}</dl>}
   </div>
 }
 function RecordDifferences({ records, omitted, kind }: { records: WorkspaceRecordDifference[]; omitted: number; kind: string }) {

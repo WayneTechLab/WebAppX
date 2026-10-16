@@ -12,7 +12,12 @@ type ReplacementHandlers<T> = {
 export function useDemoPersistence<T>(module: DemoModule, create: () => T, validate: (value: unknown) => value is T, replacement?: ReplacementHandlers<T>) {
   const [snapshot, setSnapshot] = useState(() => loadDemoState(module, create, validate))
   const [replacementEpoch, setReplacementEpoch] = useState(0)
+  const currentReplacementEpoch = useRef(0)
+  const getReplacementEpoch = useCallback(() => currentReplacementEpoch.current, [])
   const current = useRef(snapshot.state)
+  // Trusted domain hosts read the same current value as the synchronous updater,
+  // including accepted replacements before React has committed its next render.
+  const readCurrentState = useCallback(() => current.current, [])
   const setState = useCallback<Dispatch<SetStateAction<T>>>((next) => {
     const value = typeof next === 'function' ? (next as (previous: T) => T)(current.current) : next
     // Persist in the event turn so an immediate refresh cannot race an effect.
@@ -29,7 +34,8 @@ export function useDemoPersistence<T>(module: DemoModule, create: () => T, valid
     if (result.ok) {
       current.current = result.state
       setSnapshot({ state: result.state, status: result.status })
-      setReplacementEpoch(previous => previous + 1)
+      currentReplacementEpoch.current += 1
+      setReplacementEpoch(currentReplacementEpoch.current)
     } else setSnapshot({ state: current.current, status: result.status })
     return { ok: result.ok, status: result.status }
   }, [module, create, replacement])
@@ -38,7 +44,8 @@ export function useDemoPersistence<T>(module: DemoModule, create: () => T, valid
     if (result.ok) {
       current.current = result.state
       setSnapshot({ state: result.state, status: result.status })
-      setReplacementEpoch(previous => previous + 1)
+      currentReplacementEpoch.current += 1
+      setReplacementEpoch(currentReplacementEpoch.current)
     } else {
       setSnapshot({ state: current.current, status: result.status })
     }
@@ -49,7 +56,8 @@ export function useDemoPersistence<T>(module: DemoModule, create: () => T, valid
   const acceptStoredState = useCallback((value: T, status: DemoStorageStatus) => {
     current.current = value
     setSnapshot({ state: value, status })
-    setReplacementEpoch(previous => previous + 1)
+    currentReplacementEpoch.current += 1
+    setReplacementEpoch(currentReplacementEpoch.current)
   }, [])
-  return { state: snapshot.state, setState, reset, importState, acceptStoredState, status: snapshot.status, replacementEpoch, recovery: undefined as WorkspaceRecoveryControls | undefined }
+  return { state: snapshot.state, setState, reset, importState, acceptStoredState, status: snapshot.status, replacementEpoch, getReplacementEpoch, readCurrentState, recovery: undefined as WorkspaceRecoveryControls | undefined }
 }
