@@ -38,6 +38,11 @@ The original 200-source package and all package checksums remain preserved.
 The original application backlog remains 179 done / 821 remaining; the saved
 unfinished foundation bundle remains unapplied.
 
+Final local acceptance on `dcca2b7300464a4df9a41460959ab907b9c58968` passed 16 Navigator groups,
+all 68 CI stages and separate Hosting preflight. Compatible root/starter/backend
+dependency audit repairs passed with zero reported vulnerabilities. App 3.4.0
+retains deployment count 0. Later kernel waves remain planned.
+
 ## Wave 0 findings resolved
 
 1. Wiki secret-handling wording was replaced with a never-paste policy.

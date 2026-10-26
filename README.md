@@ -83,6 +83,12 @@ component and MCP capabilities. Proposed advantages still require comparative
 acceptance evidence. Read the [Navigator guide](.SYSTEMX/LAN/README.md) and
 [dated QA receipt](docs/LAN-NAVIGATOR-QA-2026-10-25.md) for tested scope, limits and repeatable checks.
 
+Local acceptance on `dcca2b7300464a4df9a41460959ab907b9c58968` passed **16 Navigator browser
+groups**, **19 npm tests**, all **68 CI stages**, and separate Hosting preflight.
+The repaired root, starter and Gusto backend audits reported zero vulnerabilities.
+The [dated QA receipt](docs/LAN-NAVIGATOR-QA-2026-10-25.md) separates the final results from retained failed
+attempts and records the source, dependency, platform and deployment boundaries.
+
 The original catalog remains **179 done / 821 remaining**. This LAN iteration
 leaves the seven saved foundation candidates unchecked and their bundle unapplied.
 App **3.4.0**, pinned SYSTEMX **1.9.0-alpha.6** and deployment count **0** remain

@@ -1,14 +1,15 @@
 # LAN Navigator QA receipt — 2026-10-25
 
-**Status:** bounded read-only Navigator slice passed focused model checks and
-the final 16-group rendered browser run. Agent 0 confirmed independent review
-and approved this capability. Aggregate CI and publication gates remain a
-separate result; this receipt does not assert their completion.
+**Status:** locally accepted bounded Navigator slice. Final dependency candidate
+`dcca2b7300464a4df9a41460959ab907b9c58968` passed **16 Navigator browser groups**, **19 npm tests**,
+all **68 CI stages with terminal exit 0**, and separate **Hosting preflight exit 0**.
+Agent 0 confirmed independent review. App 3.4.0 retains deployment count 0;
+production deployment was skipped. Source/wiki publication is a separate receipt.
 
 **Source baseline:** WebAppX `e73aa4fddba5dbc4f6b853750af9fb482266bba4`, with a
 local Navigator increment. The baseline commit does not contain the increment.
-The file fingerprints below identify the fourth frozen implementation under
-review; they are independent of any later commit or publication claim.
+The file fingerprints below identify the accepted fourth frozen runtime,
+reproduced unchanged in the final dependency candidate. Publication is separate.
 
 ## Scope and behavior
 
@@ -86,7 +87,7 @@ links and controls even when an inspector remains open.
 | Third rendered browser attempt | Failed after 12 completed checks when a genuine About-page link click was blocked in Interact mode with Settings open. The blocking `pointer-events: none` CSS rule was removed for the fourth freeze. | Actual UX defect; layout and other focus rules were preserved. The final rendered retest below passed. |
 | Final rendered browser run | Passed all 16 groups against the fourth frozen runtime fingerprints. The result records 734 GET requests, zero page errors or refused requests, all 685 protected source/model files unchanged, and matching before/after runtime hashes. | Actual Home/About journeys and isolated DOM fixtures, with no source/provider write. The final artifact is `webappx-navigator-browser-FRaeCR`. |
 | Independent integration review | Agent 0 confirmed approval of the bounded read-only capability after the final result. The leaf-indicator finding was repaired and tested. | Supports `lan.live-dom-navigator` only; planned kernel/authoring features remain planned. |
-| Aggregate CI, host drift, template/research checks, Hosting preflight | Not established by this receipt. | Agent 0 records actual commands/results separately. |
+| Final aggregate CI and Hosting preflight | All 68 ordered CI stages passed with outer terminal exit 0 on the final dependency candidate; separate Hosting preflight exited 0. | Includes template, managed integrity/host drift, research checksums, both required dependency audits, production build and LAN isolation. Deployment skipped. |
 
 The browser test source is
 [navigator-browser.mjs](../.SYSTEMX/LAN/tests/navigator-browser.mjs); the focused
@@ -96,7 +97,7 @@ Browser screenshots, result JSON, source-fingerprint comparisons, and exact
 retained evidence locations come from the actual browser run. No result or
 artifact has been inferred from source presence or a worker's intention.
 
-The final passing report ran from `2026-10-26T05:56:05.345Z` through
+The first complete fourth-freeze report ran from `2026-10-26T05:56:05.345Z` through
 `2026-10-26T05:56:14.868Z` (2026-10-25 in America/Los_Angeles). Its retained
 artifact is `webappx-navigator-browser-FRaeCR`, containing:
 
@@ -166,7 +167,8 @@ The template's Node 24.22.0 pins and native Windows acceptance boundaries remain
   main browser suites (218 check entries) and the separate eight-check HR-disabled
   rehearsal. It stopped at gate 63 on a newly reported backend dependency audit
   finding. Its 226 combined browser/rehearsal checks do not establish full CI.
-  Gates 64–68 did not run. The dependency-corrected full rerun is pending.
+  Gates 64–68 did not run in that failed attempt. The dependency-corrected full
+  rerun below passed all 68 stages with terminal exit 0.
 - Documentation freshness source review at the implementation commit retained
   five affected guides with explicit rationales and preserved the 33-record
   decision prefix, for 38 total decisions. Original guide/receipt dates and
@@ -188,14 +190,60 @@ The maintainer sources identify the fixed
 [Zod collection validation fix](https://github.com/colinhacks/zod/pull/6652) and
 [body-parser fix](https://github.com/expressjs/body-parser/security/advisories/GHSA-27r3-jxmh-p828).
 All three lock audits reported **zero vulnerabilities** after the changes.
-Installed root dependencies, the complete CI pipeline and Hosting preflight must
-also pass before publication. Registry audit results remain observations of the
+Installed root dependencies, the complete 68-stage CI pipeline and separate
+Hosting preflight then passed. The required root and backend CI audits both
+reported zero vulnerabilities. Registry audit results remain observations of the
 retrieval date; they are not a claim of exhaustive security or deployed fixes.
 
 The running local session uses an explicit fixed Vite origin so a restart
 preserves the browser's mock-storage origin. Other projects' listeners are not
 owned or stopped by this session. The separate local emulators establish no
 provider account, production identity, payroll, deployment or Windows acceptance.
+
+## Final dependency-candidate acceptance
+
+The final complete CI command was `npm run ci:all` on committed source
+`dcca2b7300464a4df9a41460959ab907b9c58968`. It completed all 68 maintained stages in order and
+returned terminal exit 0. Its log is retained as
+`webappx-lan-ci-all-2026-10-25-final-dependencies.log`; no earlier failed run
+is converted into a pass. Only append-only documentation review metadata was
+pending in the working tree; functional source and all lockfiles matched the
+committed candidate throughout. Later README/wiki/receipt updates are metadata.
+
+Independent report review counted **218 check entries across 15 main browser
+gates**, all passed, plus the separate **eight-check HR-disabled adoption
+rehearsal**. The combined 226 reported entries are not unique assertion counts.
+The SDK suite observed all 44 expected status meanings with no missing or
+unknown meanings. The 16 live Navigator groups below remain separate.
+
+A fresh live Navigator run on that same commit and installed Vite 8.1.6/Zod
+4.6.6 passed all 16 groups. Artifact `webappx-navigator-browser-1a7wgA`
+records 734 browser GET requests plus four explicit GET probes, no browser
+errors or refused/write requests, only same-origin Vite HMR, and all 685
+protected fingerprints preserved. Its before/after aggregate is
+`339451dd61ab4edb20a01f63c814de9ead3eb717592208dd9e3bbaf4394f62d2`.
+The four Navigator runtime hashes match the fourth-freeze table above.
+
+A separate fixture-free screenshot capture on the final dependency basis
+shows the real Home heading selected from the `h1` query, with Navigator,
+canvas, breadcrumbs, Settings and source mapping visible. Its screenshot is
+`06-final-dependencies-home-selected-h1.png`, with `screenshot-only.json`
+and `screenshot-trace.zip`. It passed with 162 browser GET requests, no errors
+or refused requests, and preserved runtime/model bytes. It is not a second
+count of the 16-group suite.
+
+Separate Hosting preflight on this candidate returned exit 0 and skipped
+version, changelog, commit, push and deployment. Its final build passed LAN
+production isolation; the existing large-chunk advisory remains nonfatal.
+Neither source publication nor these local checks establish production,
+provider, native Windows or backend Node 22 runtime acceptance.
+
+The final source-review report identifies six affected documentation guides
+at this dependency candidate. Six explicit retain decisions preserve the prior
+38-record prefix, for 44 total decisions. Original guide/receipt bytes, dates
+and observation revisions remain intact. Review metadata does not repeat tests
+or accept unrelated catalog work. The original checklist remains 179 done /
+821 remaining, and the saved foundation bundle remains unapplied.
 
 ## Research and acceptance boundary
 
