@@ -1,0 +1,2386 @@
+{
+  "schemaVersion": 1,
+  "families": [
+    {
+      "id": "F041",
+      "name": "Component definitions and instance identity",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F005",
+        "F009",
+        "F014"
+      ],
+      "scope": "Author versioned local component definitions and distinct instances in the canonical document while preserving explicit source ownership.",
+      "refusal": "Refuse definition cycles, ambiguous source ownership, dangling instance references and structural writes that lack the required command capability.",
+      "recovery": "Restore component definitions and instances together from a revision-bound local snapshot without regenerating unrelated source.",
+      "feedback": "Show definition versus instance scope, affected instance counts and unsupported source mappings before applying a change.",
+      "evidence": "Use two differently configured instances, nested definitions and an unsupported source-owned component to verify exact scoped effects.",
+      "capabilities": [
+        {
+          "key": "create-component-definitions",
+          "title": "Create component definitions",
+          "outcome": "An author can name a reusable local definition from an eligible canonical subtree, with its root identity and ownership recorded independently from instances."
+        },
+        {
+          "key": "instantiate-registered-components",
+          "title": "Instantiate registered components",
+          "outcome": "An author can insert a selected definition into a page and receive a distinct instance identity that resolves to the chosen definition version."
+        },
+        {
+          "key": "inspect-definition-membership",
+          "title": "Inspect definition membership",
+          "outcome": "Selecting a nested node shows which definition owns it and whether the node belongs to shared structure or instance-specific content."
+        },
+        {
+          "key": "locate-component-instances",
+          "title": "Locate component instances",
+          "outcome": "A definition inspector lists every local instance with page and node identifiers, allowing navigation without aggregating private descendant text."
+        },
+        {
+          "key": "rename-component-definitions",
+          "title": "Rename component definitions",
+          "outcome": "Renaming a definition updates library labels and references while preserving stable definition and instance identifiers across the local document."
+        },
+        {
+          "key": "duplicate-component-definitions",
+          "title": "Duplicate component definitions",
+          "outcome": "Duplicating a definition creates independent identities for its owned nodes while retaining external asset and collection references explicitly."
+        },
+        {
+          "key": "detach-component-instances",
+          "title": "Detach component instances",
+          "outcome": "An explicit detach preview converts one instance into independent local nodes and reports which shared properties and future updates will stop applying."
+        },
+        {
+          "key": "preview-shared-definition-edits",
+          "title": "Preview shared definition edits",
+          "outcome": "Before a definition edit, the builder lists affected instances and shows representative before-and-after previews without modifying any page."
+        },
+        {
+          "key": "apply-shared-definition-revisions",
+          "title": "Apply shared definition revisions",
+          "outcome": "A confirmed definition command advances its revision and updates only instances that follow that definition, preserving independent instance values."
+        },
+        {
+          "key": "inspect-component-dependency-graphs",
+          "title": "Inspect component dependency graphs",
+          "outcome": "The library shows direct and transitive component dependencies with cycle indicators and bounded navigation to the owning local definitions."
+        },
+        {
+          "key": "refuse-recursive-component-insertion",
+          "title": "Refuse recursive component insertion",
+          "outcome": "Inserting a component into its own dependency ancestry produces a specific cycle explanation and leaves both definitions and instances unchanged."
+        },
+        {
+          "key": "separate-source-owned-definitions",
+          "title": "Separate source-owned definitions",
+          "outcome": "Imported React components display their source ownership and supported edit operations, keeping unsupported structure changes unavailable in the visual editor."
+        },
+        {
+          "key": "define-component-root-semantics",
+          "title": "Define component root semantics",
+          "outcome": "An author chooses an allowed semantic root for a document-owned component and previews resulting landmarks and layout constraints before confirmation."
+        },
+        {
+          "key": "group-component-internal-nodes",
+          "title": "Group component internal nodes",
+          "outcome": "An author can assign named internal groups that aid selection without introducing extra rendered elements or changing instance semantics."
+        },
+        {
+          "key": "track-unused-component-definitions",
+          "title": "Track unused component definitions",
+          "outcome": "The library identifies definitions with no live instances, distinguishing truly unused definitions from dependencies of other reusable components."
+        },
+        {
+          "key": "archive-unused-definitions",
+          "title": "Archive unused definitions",
+          "outcome": "A confirmed archive command removes an unused definition from insertion choices while retaining its version history and recoverable metadata."
+        },
+        {
+          "key": "restore-archived-definitions",
+          "title": "Restore archived definitions",
+          "outcome": "An author can restore an archived definition under its original identity when no conflicting active definition exists in the local registry."
+        },
+        {
+          "key": "inspect-definition-source-coverage",
+          "title": "Inspect definition source coverage",
+          "outcome": "The inspector reports which definition nodes have verified source mappings, generated ownership or unresolved mappings before any source-oriented operation."
+        },
+        {
+          "key": "preview-component-instance-isolation",
+          "title": "Preview component instance isolation",
+          "outcome": "A comparison view renders two instances with different local values and identifies shared structure without implying that instance content is globally synchronized."
+        },
+        {
+          "key": "export-component-identity-manifests",
+          "title": "Export component identity manifests",
+          "outcome": "An author can export a local manifest of definition and instance identities, dependency versions and ownership without bundling credentials or runtime state."
+        }
+      ]
+    },
+    {
+      "id": "F042",
+      "name": "Typed component properties",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F041"
+      ],
+      "scope": "Define typed component inputs, defaults and instance values with explicit serialization and editor control contracts.",
+      "refusal": "Refuse incompatible values, missing required inputs, unsafe URL schemes and migrations that silently discard saved instance values.",
+      "recovery": "Retain previous property schemas and instance values so a rejected or undone schema change restores the exact prior configuration.",
+      "feedback": "Expose property type, inherited default, instance override and validation location using readable names rather than color alone.",
+      "evidence": "Exercise text, numeric, boolean, URL, media and structured inputs across multiple instances and round-trip their serialized values.",
+      "capabilities": [
+        {
+          "key": "declare-text-properties",
+          "title": "Declare text properties",
+          "outcome": "A component author can expose a named text input with a documented default and character constraints, editable independently on each instance."
+        },
+        {
+          "key": "declare-numeric-properties",
+          "title": "Declare numeric properties",
+          "outcome": "A component author can expose numeric inputs with units, ranges and step values, and instance editors reject values outside that contract."
+        },
+        {
+          "key": "declare-boolean-properties",
+          "title": "Declare boolean properties",
+          "outcome": "An author can expose a switch whose true and false behaviors are visible in preview without converting absent values into implicit overrides."
+        },
+        {
+          "key": "declare-enumerated-properties",
+          "title": "Declare enumerated properties",
+          "outcome": "A component author defines a finite option set with stable option keys, preventing renamed labels from breaking stored instance selections."
+        },
+        {
+          "key": "declare-link-properties",
+          "title": "Declare link properties",
+          "outcome": "An author exposes link targets with allowed schemes and optional link text, and previews the resulting destination before accepting an instance value."
+        },
+        {
+          "key": "declare-image-properties",
+          "title": "Declare image properties",
+          "outcome": "A component author exposes an asset reference together with its alternative-text contract so replacing an image preserves explicit accessibility choices."
+        },
+        {
+          "key": "declare-rich-text-properties",
+          "title": "Declare rich-text properties",
+          "outcome": "An author exposes a constrained rich-text input whose allowed marks and embedded objects remain consistent between the editor and rendered component."
+        },
+        {
+          "key": "declare-structured-object-properties",
+          "title": "Declare structured object properties",
+          "outcome": "An author defines a bounded typed object input whose nested field errors point to exact property paths without accepting unknown fields silently."
+        },
+        {
+          "key": "declare-list-properties",
+          "title": "Declare list properties",
+          "outcome": "A component author exposes a typed list with minimum and maximum item counts, stable item identities and predictable local reordering behavior."
+        },
+        {
+          "key": "mark-required-properties",
+          "title": "Mark required properties",
+          "outcome": "An author marks inputs required and receives an instance-level validation summary that identifies missing values before a local release can include them."
+        },
+        {
+          "key": "inspect-property-default-provenance",
+          "title": "Inspect property default provenance",
+          "outcome": "An instance inspector distinguishes a definition default from an explicit local override, including empty text, zero and false as intentional values."
+        },
+        {
+          "key": "reset-individual-property-overrides",
+          "title": "Reset individual property overrides",
+          "outcome": "An author can reset one instance property to its current definition default without altering other overrides or unrelated component instances."
+        },
+        {
+          "key": "rename-property-display-labels",
+          "title": "Rename property display labels",
+          "outcome": "Changing a property's editor label preserves its stable storage key and all instance values while updating the visible authoring controls."
+        },
+        {
+          "key": "preview-property-key-migrations",
+          "title": "Preview property key migrations",
+          "outcome": "Before changing a property's storage key, a migration preview lists affected instance values and explicit mapping choices without applying data changes."
+        },
+        {
+          "key": "hide-advanced-property-controls",
+          "title": "Hide advanced property controls",
+          "outcome": "Definition authors can group advanced inputs behind a disclosed section while retaining searchable labels and complete validation visibility for populated overrides."
+        },
+        {
+          "key": "order-property-editor-controls",
+          "title": "Order property editor controls",
+          "outcome": "An author can reorder property controls in the instance editor without changing the component's rendered structure or serialized input identities."
+        },
+        {
+          "key": "add-property-descriptions",
+          "title": "Add property descriptions",
+          "outcome": "Definition authors can attach plain-language help and valid examples to an input, with descriptions associated with the corresponding editor control."
+        },
+        {
+          "key": "inspect-property-consumer-nodes",
+          "title": "Inspect property consumer nodes",
+          "outcome": "Selecting a property shows the internal nodes or behaviors that consume it, making shared input effects understandable before changing an instance."
+        },
+        {
+          "key": "validate-nested-component-inputs",
+          "title": "Validate nested component inputs",
+          "outcome": "A parent component can map approved property values into a nested component, with incompatible types rejected at the exact mapping boundary."
+        },
+        {
+          "key": "export-property-schema-documentation",
+          "title": "Export property schema documentation",
+          "outcome": "A local export describes property types, defaults, required constraints and stable keys, excluding instance secrets and unsupported executable validation code."
+        }
+      ]
+    },
+    {
+      "id": "F043",
+      "name": "Component slots and composition",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F041",
+        "F042"
+      ],
+      "scope": "Compose component instances through declared slots whose allowed content, cardinality and fallback behavior are explicit.",
+      "refusal": "Refuse composition cycles, prohibited node types, over-capacity slots and moves across source ownership or slot boundaries without support.",
+      "recovery": "Keep moved content identities and prior slot assignments in the command snapshot so failed composition or Undo restores the exact arrangement.",
+      "feedback": "Identify slot boundaries, accepted content, occupied counts and fallback rendering in both canvas and hierarchy views.",
+      "evidence": "Test empty, single, repeated and nested slots with incompatible content and verify source, document and selection identities remain consistent.",
+      "capabilities": [
+        {
+          "key": "declare-named-component-slots",
+          "title": "Declare named component slots",
+          "outcome": "A definition author creates a stable named insertion point that appears in the hierarchy and accepts only explicitly supported content categories."
+        },
+        {
+          "key": "restrict-slot-component-types",
+          "title": "Restrict slot component types",
+          "outcome": "An author can limit a slot to selected component definitions and receives a clear refusal before inserting an incompatible component instance."
+        },
+        {
+          "key": "set-slot-cardinality-limits",
+          "title": "Set slot cardinality limits",
+          "outcome": "An author defines minimum and maximum slot occupancy, and the builder reports missing or excess children without silently removing content."
+        },
+        {
+          "key": "define-slot-fallback-content",
+          "title": "Define slot fallback content",
+          "outcome": "A component can provide default slot content that renders only when no explicit instance content is assigned to that slot."
+        },
+        {
+          "key": "inspect-slot-ownership-boundaries",
+          "title": "Inspect slot ownership boundaries",
+          "outcome": "Selecting projected content shows whether its nodes belong to the containing page, component definition or nested instance before editing actions appear."
+        },
+        {
+          "key": "navigate-nested-slot-paths",
+          "title": "Navigate nested slot paths",
+          "outcome": "The hierarchy shows the full component-and-slot path to deeply projected content, allowing selection without flattening nested ownership relationships."
+        },
+        {
+          "key": "insert-content-into-empty-slots",
+          "title": "Insert content into empty slots",
+          "outcome": "An author chooses an eligible node or component for an empty slot and previews insertion position and resulting fallback replacement."
+        },
+        {
+          "key": "move-content-between-slots",
+          "title": "Move content between slots",
+          "outcome": "A guarded move retains node identity while validating the destination slot contract, and refuses the operation without changing either slot on failure."
+        },
+        {
+          "key": "reorder-repeated-slot-children",
+          "title": "Reorder repeated slot children",
+          "outcome": "An author reorders children within a repeated slot using keyboard or pointer controls, preserving their identities and associated local input values."
+        },
+        {
+          "key": "clear-slot-assignments-explicitly",
+          "title": "Clear slot assignments explicitly",
+          "outcome": "A confirmation preview lists the projected content affected by clearing a slot and distinguishes removal from restoring definition fallback content."
+        },
+        {
+          "key": "restore-slot-fallback-rendering",
+          "title": "Restore slot fallback rendering",
+          "outcome": "An author can remove an explicit slot override so the current fallback becomes visible, with the resulting content scope explained before acceptance."
+        },
+        {
+          "key": "expose-slots-as-insertion-targets",
+          "title": "Expose slots as insertion targets",
+          "outcome": "Eligible empty slots appear as named targets in the insertion chooser, with restrictions displayed before the author commits to a destination."
+        },
+        {
+          "key": "preview-slot-content-constraints",
+          "title": "Preview slot content constraints",
+          "outcome": "A preview mode shows slot boundaries and allowed child categories without adding permanent wrapper elements to the generated component structure."
+        },
+        {
+          "key": "preserve-slot-assignments-on-updates",
+          "title": "Preserve slot assignments on updates",
+          "outcome": "A definition update retains instance slot content by stable slot identity and reports unmapped assignments before a migration can be accepted."
+        },
+        {
+          "key": "rename-slot-display-labels",
+          "title": "Rename slot display labels",
+          "outcome": "Changing a slot's visible name updates authoring labels while preserving its storage key, projected content references and instance composition history."
+        },
+        {
+          "key": "migrate-removed-slot-assignments",
+          "title": "Migrate removed slot assignments",
+          "outcome": "Removing a populated slot requires an explicit destination or detach decision for every assignment, with no silent content loss during migration."
+        },
+        {
+          "key": "detect-slot-composition-cycles",
+          "title": "Detect slot composition cycles",
+          "outcome": "The builder identifies recursive component projection paths and explains the precise definition and slot references responsible before insertion is rejected."
+        },
+        {
+          "key": "inspect-slot-accessibility-semantics",
+          "title": "Inspect slot accessibility semantics",
+          "outcome": "A slot inspector reports the semantic container and landmark constraints that projected content must respect, including invalid nested interactive content."
+        },
+        {
+          "key": "preview-slot-empty-states",
+          "title": "Preview slot empty states",
+          "outcome": "Authors can render declared empty-slot states across component variants and viewports without changing saved instance assignments or fallback definitions."
+        },
+        {
+          "key": "export-slot-contracts",
+          "title": "Export slot contracts",
+          "outcome": "A local component contract export lists slot identities, allowed children, cardinality and fallback references so an importer can validate composition compatibility."
+        }
+      ]
+    },
+    {
+      "id": "F044",
+      "name": "Component variants and conditional structure",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F033",
+        "F041",
+        "F042"
+      ],
+      "scope": "Model named component variants and finite conditional branches without hiding ownership or silently changing instance values.",
+      "refusal": "Refuse conflicting variant keys, invalid condition references and conditional branches that depend on undeclared or executable expressions.",
+      "recovery": "Restore prior variant selections and branch configuration from versioned commands while keeping deliberately retained inactive content intact.",
+      "feedback": "Show active variants, inherited choices and inactive branch reasons through explicit labels in canvas and inspector views.",
+      "evidence": "Use combinations of variant axes and conditional branches to verify deterministic rendering, preserved values and bounded preview coverage.",
+      "capabilities": [
+        {
+          "key": "define-named-component-variants",
+          "title": "Define named component variants",
+          "outcome": "A definition author creates named variants with stable identities and explicit structural or stylistic differences from the component's base definition."
+        },
+        {
+          "key": "choose-instance-variants",
+          "title": "Choose instance variants",
+          "outcome": "An instance editor lets the author select an available variant and previews its effects while preserving unrelated property and slot values."
+        },
+        {
+          "key": "define-multiple-variant-axes",
+          "title": "Define multiple variant axes",
+          "outcome": "A component can declare independent axes such as size and emphasis, with valid combinations represented as structured selections instead of concatenated names."
+        },
+        {
+          "key": "inspect-inherited-variant-choices",
+          "title": "Inspect inherited variant choices",
+          "outcome": "The inspector distinguishes a definition's default variant from an explicit instance selection, including which default will apply after an override reset."
+        },
+        {
+          "key": "preview-variant-comparison-grids",
+          "title": "Preview variant comparison grids",
+          "outcome": "Authors can render selected variants side by side with shared fixture inputs, making differences visible without creating permanent page instances."
+        },
+        {
+          "key": "validate-disallowed-variant-combinations",
+          "title": "Validate disallowed variant combinations",
+          "outcome": "A definition can declare incompatible axis combinations, and instance editing explains the conflict before accepting any invalid selection."
+        },
+        {
+          "key": "reset-instance-variant-overrides",
+          "title": "Reset instance variant overrides",
+          "outcome": "An author can restore one instance's variant choices to current defaults without clearing its content properties or projected slot children."
+        },
+        {
+          "key": "define-property-driven-branch-rules",
+          "title": "Define property-driven branch rules",
+          "outcome": "A component author maps declared boolean or enum inputs to finite branch choices, with the rule represented as data rather than arbitrary code."
+        },
+        {
+          "key": "inspect-inactive-branch-reasons",
+          "title": "Inspect inactive branch reasons",
+          "outcome": "Selecting a conditionally absent region shows the property and variant conditions suppressing it, without claiming the inactive region is currently rendered."
+        },
+        {
+          "key": "retain-inactive-branch-content",
+          "title": "Retain inactive branch content",
+          "outcome": "Switching conditional branches preserves their configured local content so revisiting a branch does not recreate nodes or erase deliberate edits."
+        },
+        {
+          "key": "preview-conditional-empty-content",
+          "title": "Preview conditional empty content",
+          "outcome": "Authors can preview a branch with missing optional values and verify whether declared fallback, omission or error behavior will occur."
+        },
+        {
+          "key": "define-variant-specific-property-defaults",
+          "title": "Define variant-specific property defaults",
+          "outcome": "A definition can supply explicit defaults for a variant, and the inspector identifies whether a value comes from base or selected variant configuration."
+        },
+        {
+          "key": "compare-variant-source-ownership",
+          "title": "Compare variant source ownership",
+          "outcome": "The inspector separates document-owned variant structure from externally authored source variants, keeping unsupported edits read-only and visibly labeled."
+        },
+        {
+          "key": "rename-variant-display-names",
+          "title": "Rename variant display names",
+          "outcome": "Renaming a variant changes visible editor labels while retaining its stable selection key and all existing instance references in local documents."
+        },
+        {
+          "key": "preview-variant-removal-migrations",
+          "title": "Preview variant removal migrations",
+          "outcome": "Removing a used variant requires a replacement or explicit instance override plan, with affected pages listed before the migration is accepted."
+        },
+        {
+          "key": "constrain-slot-availability-by-variant",
+          "title": "Constrain slot availability by variant",
+          "outcome": "A definition can vary declared slot availability while preserving inactive assignments and validating any content that becomes visible in the selected variant."
+        },
+        {
+          "key": "inspect-responsive-variant-selection",
+          "title": "Inspect responsive variant selection",
+          "outcome": "Authors can view how explicit viewport-specific variant choices resolve, with the active override and inherited fallback identified for each preview width."
+        },
+        {
+          "key": "record-variant-preview-fixtures",
+          "title": "Record variant preview fixtures",
+          "outcome": "A component stores named synthetic input sets for variant previews so future definition changes can be compared against the same declared scenarios."
+        },
+        {
+          "key": "detect-untested-variant-combinations",
+          "title": "Detect untested variant combinations",
+          "outcome": "The builder identifies declared variant combinations missing from the component's local preview fixture matrix without claiming they passed visual verification."
+        },
+        {
+          "key": "export-variant-selection-contracts",
+          "title": "Export variant selection contracts",
+          "outcome": "A local export describes variant axes, defaults, valid combinations and finite conditions so compatible consumers can reproduce selection semantics."
+        }
+      ]
+    },
+    {
+      "id": "F045",
+      "name": "Component library versions and migrations",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F010",
+        "F044"
+      ],
+      "scope": "Manage local component library releases, explicit dependency versions and reviewed migrations without implying remote package publication.",
+      "refusal": "Refuse dependency cycles, incompatible imports, missing artifacts and version updates that bypass a complete instance migration preview.",
+      "recovery": "Retain the installed local library version and migration snapshot until a replacement is validated, with exact rollback scope documented.",
+      "feedback": "Show installed, available and proposed versions separately, including migration effects, unsupported features and source ownership conflicts.",
+      "evidence": "Use two versioned fixture libraries with breaking property and slot changes to verify pinning, migration, conflict refusal and rollback.",
+      "capabilities": [
+        {
+          "key": "create-local-component-libraries",
+          "title": "Create local component libraries",
+          "outcome": "An author groups selected definitions into a named local library with stable library identity and explicit ownership of included component records."
+        },
+        {
+          "key": "create-immutable-library-releases",
+          "title": "Create immutable library releases",
+          "outcome": "A release command captures component definitions, contracts and dependency versions in an immutable local artifact tied to its source revision."
+        },
+        {
+          "key": "pin-page-library-versions",
+          "title": "Pin page library versions",
+          "outcome": "A page can depend on a specific local library release, preventing an unrelated newer release from silently changing its component instances."
+        },
+        {
+          "key": "inspect-library-dependency-versions",
+          "title": "Inspect library dependency versions",
+          "outcome": "The library inspector lists exact component and nested library versions used by a release, distinguishing compatible ranges from resolved local artifacts."
+        },
+        {
+          "key": "compare-library-releases",
+          "title": "Compare library releases",
+          "outcome": "Authors can compare two releases by component identities, property contracts, slots, variants and dependencies before selecting a proposed upgrade."
+        },
+        {
+          "key": "preview-library-upgrade-effects",
+          "title": "Preview library upgrade effects",
+          "outcome": "An upgrade preview identifies affected pages and instances, required migrations and unsupported changes without modifying any installed local library version."
+        },
+        {
+          "key": "map-renamed-component-properties",
+          "title": "Map renamed component properties",
+          "outcome": "A migration editor maps old property keys to new keys with type checks and explicit handling for values that cannot be converted."
+        },
+        {
+          "key": "map-renamed-component-slots",
+          "title": "Map renamed component slots",
+          "outcome": "A library migration maps stable old slot assignments into declared new slots, identifying overflow and incompatible projected content before any commit."
+        },
+        {
+          "key": "resolve-removed-component-definitions",
+          "title": "Resolve removed component definitions",
+          "outcome": "An upgrade containing removed definitions requires explicit replacement or detach choices for affected instances rather than silently dropping them from pages."
+        },
+        {
+          "key": "apply-reviewed-library-migrations",
+          "title": "Apply reviewed library migrations",
+          "outcome": "A confirmed migration atomically updates selected library dependencies and affected instances only after validating the exact reviewed source and target revisions."
+        },
+        {
+          "key": "rollback-local-library-upgrades",
+          "title": "Rollback local library upgrades",
+          "outcome": "An author can restore the prior library artifact and its associated instance values within the recorded rollback scope without reverting unrelated page changes."
+        },
+        {
+          "key": "import-compatible-library-manifests",
+          "title": "Import compatible library manifests",
+          "outcome": "A local library import validates version, schema, ownership and referenced artifacts before exposing eligible definitions in the component insertion chooser."
+        },
+        {
+          "key": "detect-library-identity-collisions",
+          "title": "Detect library identity collisions",
+          "outcome": "An import with conflicting library or component identities reports the collision and requires an explicit namespace mapping or refusal before data changes."
+        },
+        {
+          "key": "namespace-imported-component-libraries",
+          "title": "Namespace imported component libraries",
+          "outcome": "Authors can assign a stable local namespace to an imported library while preserving its original identities and provenance in the import record."
+        },
+        {
+          "key": "inspect-library-portability-gaps",
+          "title": "Inspect library portability gaps",
+          "outcome": "A release inspector reports source-only components, unsupported slots, external assets and runtime requirements that a chosen local export target cannot reproduce."
+        },
+        {
+          "key": "search-library-contract-metadata",
+          "title": "Search library contract metadata",
+          "outcome": "The component library search filters names, tags, properties, slots and declared capabilities without indexing instance text or arbitrary source bodies."
+        },
+        {
+          "key": "track-deprecated-library-definitions",
+          "title": "Track deprecated library definitions",
+          "outcome": "A library author marks definitions deprecated with replacement guidance, while existing instances remain usable and new insertion warnings identify the recommended successor."
+        },
+        {
+          "key": "preview-library-licensing-metadata",
+          "title": "Preview library licensing metadata",
+          "outcome": "A local library record can show its declared license and provenance references, with missing declarations visible without asserting legal approval or ownership."
+        },
+        {
+          "key": "export-reviewed-library-bundles",
+          "title": "Export reviewed library bundles",
+          "outcome": "An author exports a selected immutable library release with contracts and local artifacts, accompanied by a manifest that identifies excluded provider-bound dependencies."
+        },
+        {
+          "key": "validate-reproducible-library-artifacts",
+          "title": "Validate reproducible library artifacts",
+          "outcome": "Rebuilding a local release from identical declared inputs produces the same normalized manifest and artifact digests, with nondeterministic differences reported explicitly."
+        }
+      ]
+    },
+    {
+      "id": "F046",
+      "name": "Asset library metadata and reference management",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F004",
+        "F009"
+      ],
+      "scope": "Catalog local assets with content identities, provenance and usage references while keeping runtime paths and credentials outside reusable records.",
+      "refusal": "Refuse traversal, secret-bearing metadata, unsupported file types and destructive replacement of assets with unresolved usage or ownership.",
+      "recovery": "Retain prior asset records and reference mappings so replacement or archive commands can be undone without losing referenced local artifacts.",
+      "feedback": "Expose asset identity, type, usage, source ownership and missing-file states with explicit labels and navigable references.",
+      "evidence": "Use duplicate bytes, renamed files, missing artifacts and shared references to verify stable identity, scoped replacement and recovery.",
+      "capabilities": [
+        {
+          "key": "register-local-assets",
+          "title": "Register local assets",
+          "outcome": "An author can register an eligible repository asset with a stable content identity, bounded metadata and an explicit source ownership classification."
+        },
+        {
+          "key": "inspect-asset-usage-references",
+          "title": "Inspect asset usage references",
+          "outcome": "An asset inspector lists pages, component definitions and CMS fields referencing the selected asset, using stable object identifiers and bounded labels."
+        },
+        {
+          "key": "search-asset-metadata",
+          "title": "Search asset metadata",
+          "outcome": "The asset library supports searching filenames, declared titles, tags and media types without opening arbitrary file contents or reading private runtime directories."
+        },
+        {
+          "key": "tag-local-assets",
+          "title": "Tag local assets",
+          "outcome": "Authors can assign reusable metadata tags to selected assets and filter the library by those tags without moving the underlying source files."
+        },
+        {
+          "key": "detect-duplicate-asset-bytes",
+          "title": "Detect duplicate asset bytes",
+          "outcome": "The library identifies assets with identical content digests and explains their separate references before any explicit deduplication mapping is proposed."
+        },
+        {
+          "key": "rename-asset-display-titles",
+          "title": "Rename asset display titles",
+          "outcome": "Changing an asset's library title updates authoring labels while preserving its stable identity, source path and every existing usage reference."
+        },
+        {
+          "key": "inspect-asset-provenance",
+          "title": "Inspect asset provenance",
+          "outcome": "The inspector displays declared creator, source and license references separately from verified file identity, making missing provenance explicit rather than inferred."
+        },
+        {
+          "key": "preview-asset-replacement-scope",
+          "title": "Preview asset replacement scope",
+          "outcome": "Before replacing an asset, a review lists all affected references and compatibility constraints while leaving their current artifact mappings unchanged."
+        },
+        {
+          "key": "replace-compatible-local-assets",
+          "title": "Replace compatible local assets",
+          "outcome": "A confirmed replacement updates only the reviewed references to a compatible new asset revision and retains the previous artifact for recovery."
+        },
+        {
+          "key": "archive-unreferenced-assets",
+          "title": "Archive unreferenced assets",
+          "outcome": "An author can archive an asset with no active references, removing it from default insertion choices while retaining recoverable metadata and history."
+        },
+        {
+          "key": "restore-archived-assets",
+          "title": "Restore archived assets",
+          "outcome": "An archived local asset can return under its original identity when its artifact is available and no conflicting active registry record exists."
+        },
+        {
+          "key": "detect-missing-asset-artifacts",
+          "title": "Detect missing asset artifacts",
+          "outcome": "The library marks registered assets whose declared files are missing and lists affected consumers without silently substituting another file with a matching name."
+        },
+        {
+          "key": "repair-moved-asset-references",
+          "title": "Repair moved asset references",
+          "outcome": "An author can review a proposed mapping from missing files to moved local assets using content identity, with ambiguous matches requiring explicit resolution."
+        },
+        {
+          "key": "inspect-asset-metadata-privacy",
+          "title": "Inspect asset metadata privacy",
+          "outcome": "The asset editor shows which metadata fields are exported and warns when proposed public descriptions contain prohibited secret-shaped values before saving."
+        },
+        {
+          "key": "group-assets-into-collections",
+          "title": "Group assets into collections",
+          "outcome": "Authors can create named logical asset collections for reusable projects or components without duplicating files or creating nested source directories automatically."
+        },
+        {
+          "key": "export-asset-reference-manifests",
+          "title": "Export asset reference manifests",
+          "outcome": "A local export lists asset identities, relative artifact paths, media types and declared provenance, excluding machine-specific paths and runtime credentials."
+        },
+        {
+          "key": "import-asset-manifest-previews",
+          "title": "Import asset manifest previews",
+          "outcome": "A manifest import previews new assets, existing content matches and identity conflicts before any registry or source artifact changes are authorized."
+        },
+        {
+          "key": "inspect-asset-storage-budgets",
+          "title": "Inspect asset storage budgets",
+          "outcome": "The library reports selected assets' known byte sizes and aggregate export impact, identifying unavailable measurements instead of estimating them as verified facts."
+        },
+        {
+          "key": "filter-assets-by-source-ownership",
+          "title": "Filter assets by source ownership",
+          "outcome": "Authors can filter generated, source-owned and imported-reference assets so available replacement operations follow the selected ownership and adapter capabilities."
+        },
+        {
+          "key": "verify-asset-references-before-release",
+          "title": "Verify asset references before release",
+          "outcome": "A local release check reports missing or incompatible asset references by consuming object and blocks only the declared required assets within that release scope."
+        }
+      ]
+    },
+    {
+      "id": "F047",
+      "name": "Image renditions and responsive media",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F026",
+        "F046"
+      ],
+      "scope": "Author local image presentation, deterministic rendition recipes and responsive selection contracts without silently modifying source originals.",
+      "refusal": "Refuse unsupported decoding, invalid crop bounds, unsafe SVG behavior and destructive processing that lacks a retained original artifact.",
+      "recovery": "Keep image originals and prior recipes addressable so failed rendition generation or Undo restores the previous selected artifact and settings.",
+      "feedback": "Show original versus generated artifacts, crop coordinates, intrinsic dimensions and the active responsive selection in preview.",
+      "evidence": "Use portrait, landscape, transparent, oversized and corrupt synthetic images to verify crop geometry, responsive selection and deterministic artifacts.",
+      "capabilities": [
+        {
+          "key": "inspect-intrinsic-image-dimensions",
+          "title": "Inspect intrinsic image dimensions",
+          "outcome": "An author can inspect verified intrinsic dimensions and orientation for a supported local image, with unavailable or failed decoding shown explicitly."
+        },
+        {
+          "key": "define-non-destructive-image-crops",
+          "title": "Define non-destructive image crops",
+          "outcome": "An author selects crop coordinates as a local recipe and previews the result while preserving the original image artifact unchanged."
+        },
+        {
+          "key": "set-image-focal-points",
+          "title": "Set image focal points",
+          "outcome": "A focal point stored separately from crop bounds guides responsive image framing, with the resolved visible region shown at selected viewport widths."
+        },
+        {
+          "key": "generate-declared-image-renditions",
+          "title": "Generate declared image renditions",
+          "outcome": "A local processing command creates only the explicitly requested sizes and formats, recording source digest and recipe inputs for every generated rendition."
+        },
+        {
+          "key": "choose-responsive-image-sources",
+          "title": "Choose responsive image sources",
+          "outcome": "An author defines responsive source candidates and size hints, and preview identifies which candidate a browser actually selects at the current device width."
+        },
+        {
+          "key": "preserve-image-transparency",
+          "title": "Preserve image transparency",
+          "outcome": "A rendition recipe declares whether transparency must be preserved, and incompatible output formats require an explicit background treatment before generation."
+        },
+        {
+          "key": "configure-image-fit-behavior",
+          "title": "Configure image fit behavior",
+          "outcome": "Authors choose supported contain or cover behavior and preview clipping against a real container without altering intrinsic source dimensions or crop recipes."
+        },
+        {
+          "key": "set-image-loading-priority",
+          "title": "Set image loading priority",
+          "outcome": "An author declares loading and decoding hints for an image instance, with the preview inspector showing the resulting attributes and any conflicting choices."
+        },
+        {
+          "key": "declare-decorative-image-intent",
+          "title": "Declare decorative image intent",
+          "outcome": "An image instance can be marked decorative explicitly, and its rendered alternative text behavior follows that choice without changing other uses of the asset."
+        },
+        {
+          "key": "author-contextual-image-alternatives",
+          "title": "Author contextual image alternatives",
+          "outcome": "Different uses of one image can carry distinct alternative text values, and the inspector separates those contextual values from asset-level metadata."
+        },
+        {
+          "key": "inspect-image-export-cost",
+          "title": "Inspect image export cost",
+          "outcome": "A comparison shows measured byte sizes and dimensions for generated candidates so authors can choose a rendition without relying on unsupported quality scores."
+        },
+        {
+          "key": "preview-image-aspect-ratio-constraints",
+          "title": "Preview image aspect-ratio constraints",
+          "outcome": "An image instance can declare an aspect ratio that reserves layout space, with preview showing how fit and crop settings interact within that box."
+        },
+        {
+          "key": "validate-image-processing-limits",
+          "title": "Validate image processing limits",
+          "outcome": "The local generator rejects images or recipes beyond declared pixel, file-size and output-count limits before producing partial replacement artifacts."
+        },
+        {
+          "key": "inspect-image-orientation-normalization",
+          "title": "Inspect image orientation normalization",
+          "outcome": "The image inspector shows detected orientation and any planned normalization, allowing the author to compare the rendered result with the preserved original."
+        },
+        {
+          "key": "generate-deterministic-image-placeholders",
+          "title": "Generate deterministic image placeholders",
+          "outcome": "Authors can create bounded local placeholder artifacts from declared images and recipes, with provenance retained and no external image service required."
+        },
+        {
+          "key": "preview-missing-image-fallbacks",
+          "title": "Preview missing image fallbacks",
+          "outcome": "A controlled preview can render a declared fallback for a missing image reference while keeping the missing primary asset visible in diagnostics."
+        },
+        {
+          "key": "inspect-image-color-profile-handling",
+          "title": "Inspect image color-profile handling",
+          "outcome": "The processing recipe records how supported color profiles are retained or normalized, and unsupported profile behavior is disclosed before accepting generated output."
+        },
+        {
+          "key": "compare-image-rendition-revisions",
+          "title": "Compare image rendition revisions",
+          "outcome": "Authors can compare prior and proposed image recipes and artifacts side by side, with source, crop and dimension changes identified separately."
+        },
+        {
+          "key": "remove-unused-image-renditions",
+          "title": "Remove unused image renditions",
+          "outcome": "A reviewed cleanup command removes only generated renditions with no active references and preserves the original image plus any retained rollback artifacts."
+        },
+        {
+          "key": "export-image-recipe-manifests",
+          "title": "Export image recipe manifests",
+          "outcome": "A local image export includes source content identities, crop and rendition recipes, responsive candidates and required artifacts without embedding machine-specific processing paths."
+        }
+      ]
+    },
+    {
+      "id": "F048",
+      "name": "Video audio and timed media",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F033",
+        "F046"
+      ],
+      "scope": "Compose supported local video and audio assets with explicit playback, caption and fallback contracts in the preview.",
+      "refusal": "Refuse unapproved remote embeds, unsupported media operations, unsafe autoplay combinations and caption references that cannot be resolved.",
+      "recovery": "Preserve source media, timing metadata and prior track mappings so failed edits or local Undo do not discard accessible playback configurations.",
+      "feedback": "Expose playback state, unavailable formats, caption selection and missing transcript or poster information without inferring media accessibility compliance.",
+      "evidence": "Use short synthetic media with multiple tracks, invalid timestamps and unavailable assets to verify controls, fallback behavior and bounded metadata.",
+      "capabilities": [
+        {
+          "key": "register-timed-media-assets",
+          "title": "Register timed media assets",
+          "outcome": "An author can register a supported local audio or video artifact with verified media type and explicitly available duration and dimension metadata."
+        },
+        {
+          "key": "choose-video-poster-images",
+          "title": "Choose video poster images",
+          "outcome": "A video instance can reference a local poster asset, with the inspector separating poster accessibility metadata from the video's caption and transcript configuration."
+        },
+        {
+          "key": "configure-explicit-playback-controls",
+          "title": "Configure explicit playback controls",
+          "outcome": "Authors can choose supported playback controls and preview their visible state, while unavailable controls are reported rather than represented as functional buttons."
+        },
+        {
+          "key": "declare-muted-autoplay-intent",
+          "title": "Declare muted autoplay intent",
+          "outcome": "A media instance can request muted autoplay, and preview reports the actual browser playback outcome without treating requested autoplay as successful playback."
+        },
+        {
+          "key": "attach-caption-tracks",
+          "title": "Attach caption tracks",
+          "outcome": "An author associates supported local caption files with a media instance using stable track identities, language tags and explicit default-track selection."
+        },
+        {
+          "key": "validate-caption-timestamp-order",
+          "title": "Validate caption timestamp order",
+          "outcome": "The caption editor reports malformed or overlapping timing sequences at exact cue locations before accepting a proposed local track revision."
+        },
+        {
+          "key": "edit-caption-cue-text",
+          "title": "Edit caption cue text",
+          "outcome": "Authors can change cue text through a bounded editor that preserves cue identities and timing, with preview synchronized to the selected media position."
+        },
+        {
+          "key": "attach-media-transcripts",
+          "title": "Attach media transcripts",
+          "outcome": "A media record can reference a local transcript with explicit language and publication scope, independent from timed caption tracks and poster metadata."
+        },
+        {
+          "key": "define-chapter-markers",
+          "title": "Define chapter markers",
+          "outcome": "An author can create ordered named media chapters within verified duration bounds, and preview navigation seeks to the corresponding supported playback position."
+        },
+        {
+          "key": "select-default-media-tracks",
+          "title": "Select default media tracks",
+          "outcome": "An author chooses a valid default caption or audio track from declared candidates, and conflicting defaults are rejected before the instance configuration changes."
+        },
+        {
+          "key": "preview-media-loading-failures",
+          "title": "Preview media loading failures",
+          "outcome": "Controlled preview scenarios show unavailable local media and captions using declared fallback messages without making actual source artifacts missing or changing saved references."
+        },
+        {
+          "key": "inspect-playback-compatibility",
+          "title": "Inspect playback compatibility",
+          "outcome": "The inspector lists known local media formats and actual preview load results separately, avoiding unsupported claims about every target device or browser."
+        },
+        {
+          "key": "declare-playback-loop-ranges",
+          "title": "Declare playback loop ranges",
+          "outcome": "A supported local preview can loop an explicit valid time range, with range controls disabled when duration or seeking capability cannot be verified."
+        },
+        {
+          "key": "configure-media-preload-intent",
+          "title": "Configure media preload intent",
+          "outcome": "An author selects supported preload hints and sees the rendered configuration, distinguishing those hints from observed network loading or browser caching behavior."
+        },
+        {
+          "key": "restrict-remote-media-embeds",
+          "title": "Restrict remote media embeds",
+          "outcome": "A component can declare an approved embed adapter and allowed source pattern, with arbitrary URLs remaining unembedded and clearly unavailable in local preview."
+        },
+        {
+          "key": "preview-reduced-motion-media-behavior",
+          "title": "Preview reduced-motion media behavior",
+          "outcome": "A media component can define reduced-motion presentation choices, and preview shows the selected alternative without assuming that captions or transcripts are optional."
+        },
+        {
+          "key": "inspect-media-reference-usage",
+          "title": "Inspect media reference usage",
+          "outcome": "The media library lists consuming pages, components and CMS entries before replacement, including dependent poster, caption, chapter and transcript records."
+        },
+        {
+          "key": "replace-compatible-media-revisions",
+          "title": "Replace compatible media revisions",
+          "outcome": "A confirmed replacement validates dependent timing and track references, and requires explicit resolution for metadata that falls outside the new media duration."
+        },
+        {
+          "key": "compare-media-configuration-revisions",
+          "title": "Compare media configuration revisions",
+          "outcome": "Authors can compare playback settings and timed metadata between local revisions without re-encoding media or changing the selected page's instance values."
+        },
+        {
+          "key": "export-media-delivery-manifests",
+          "title": "Export media delivery manifests",
+          "outcome": "A local export lists media artifacts, posters, tracks, transcripts and playback requirements, identifying unavailable or provider-bound assets before packaging."
+        }
+      ]
+    },
+    {
+      "id": "F049",
+      "name": "Documents icons and downloadable assets",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F046"
+      ],
+      "scope": "Manage downloadable documents, vector symbols and file presentation using safe local references and explicit export metadata.",
+      "refusal": "Refuse executable downloads, unsafe inline vector constructs, path traversal and transformations that claim accessibility or document fidelity without evidence.",
+      "recovery": "Retain original files and prior presentation records so replacement, archive or conversion failures can be restored without changing unrelated downloads.",
+      "feedback": "Show file type, measured size, declared language, download destination and unsupported preview or conversion features in the inspector.",
+      "evidence": "Use synthetic PDFs, text documents, SVG symbols and missing files to verify safe previews, preserved originals and correct link metadata.",
+      "capabilities": [
+        {
+          "key": "register-downloadable-documents",
+          "title": "Register downloadable documents",
+          "outcome": "An author can register an eligible local document with content identity, media type and a declared download label without uploading it to a provider."
+        },
+        {
+          "key": "configure-download-link-labels",
+          "title": "Configure download link labels",
+          "outcome": "Each document link can carry contextual visible text and accessible naming, with preview showing the exact destination and resulting link behavior."
+        },
+        {
+          "key": "inspect-document-file-metadata",
+          "title": "Inspect document file metadata",
+          "outcome": "The asset inspector shows verified file size and supported metadata fields, distinguishing declared title or language from information extracted from the file."
+        },
+        {
+          "key": "preview-supported-document-pages",
+          "title": "Preview supported document pages",
+          "outcome": "The builder can display a bounded preview of supported local document pages while preserving the original file and reporting unsupported rendering features explicitly."
+        },
+        {
+          "key": "declare-document-language-metadata",
+          "title": "Declare document language metadata",
+          "outcome": "An author can store a declared document language and use it in download presentation without rewriting embedded document metadata or asserting language verification."
+        },
+        {
+          "key": "replace-downloadable-document-revisions",
+          "title": "Replace downloadable document revisions",
+          "outcome": "A replacement preview lists affected links and compatibility warnings before switching their references to a new retained document revision."
+        },
+        {
+          "key": "detect-broken-download-references",
+          "title": "Detect broken download references",
+          "outcome": "A release inspection identifies download links whose referenced artifact is missing, with page and component identifiers that lead to the affected link instances."
+        },
+        {
+          "key": "configure-download-filename-intent",
+          "title": "Configure download filename intent",
+          "outcome": "An author can propose a safe download filename for a document link, and unsupported browser or cross-origin behavior is disclosed in the preview contract."
+        },
+        {
+          "key": "register-reusable-vector-symbols",
+          "title": "Register reusable vector symbols",
+          "outcome": "An eligible local vector symbol can be registered with a stable identity and bounded view-box metadata for reuse through an approved rendering adapter."
+        },
+        {
+          "key": "inspect-vector-safety-findings",
+          "title": "Inspect vector safety findings",
+          "outcome": "The vector inspector reports unsupported scripts, external references or active constructs before inline rendering is allowed, keeping the original artifact unchanged."
+        },
+        {
+          "key": "choose-icon-accessibility-intent",
+          "title": "Choose icon accessibility intent",
+          "outcome": "An icon instance can declare decorative or informative intent, with the corresponding rendered labels visible independently from the symbol's library title."
+        },
+        {
+          "key": "set-vector-sizing-contracts",
+          "title": "Set vector sizing contracts",
+          "outcome": "A reusable icon can declare supported sizing and aspect-ratio behavior, and preview shows how the symbol resolves within the selected component container."
+        },
+        {
+          "key": "preview-vector-theme-tokens",
+          "title": "Preview vector theme tokens",
+          "outcome": "An approved vector adapter can expose declared theme-token bindings, with unsupported hard-coded colors identified rather than silently rewritten in arbitrary source."
+        },
+        {
+          "key": "inspect-icon-instance-references",
+          "title": "Inspect icon instance references",
+          "outcome": "The library lists every consuming local icon instance before symbol replacement, preserving contextual labels and ownership boundaries during navigation."
+        },
+        {
+          "key": "package-downloadable-asset-groups",
+          "title": "Package downloadable asset groups",
+          "outcome": "An author can prepare a local download group containing explicitly selected eligible artifacts, with a deterministic manifest and no runtime or secret directories included."
+        },
+        {
+          "key": "verify-download-artifact-integrity",
+          "title": "Verify download artifact integrity",
+          "outcome": "A local release check compares referenced downloadable files with their recorded content digests and reports changed artifacts before packaging continues."
+        },
+        {
+          "key": "declare-document-preview-fallbacks",
+          "title": "Declare document preview fallbacks",
+          "outcome": "Authors can define a readable fallback link and file summary for documents whose local preview format is unavailable or cannot be rendered safely."
+        },
+        {
+          "key": "inspect-document-accessibility-declarations",
+          "title": "Inspect document accessibility declarations",
+          "outcome": "The document inspector shows declared accessibility status and evidence references separately from file rendering, without converting a successful preview into compliance approval."
+        },
+        {
+          "key": "archive-unused-download-assets",
+          "title": "Archive unused download assets",
+          "outcome": "A reviewed archive operation hides unreferenced downloadable assets from default insertion choices while preserving their identities, history and recoverable original files."
+        },
+        {
+          "key": "export-download-asset-manifests",
+          "title": "Export download asset manifests",
+          "outcome": "A local export lists relative artifact references, safe filenames, media types and contextual presentation requirements, excluding credentials and absolute host filesystem paths."
+        }
+      ]
+    },
+    {
+      "id": "F050",
+      "name": "CMS collection schemas and field definitions",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F005",
+        "F009"
+      ],
+      "scope": "Define versioned local collection schemas and typed fields before binding synthetic records or adopting a provider adapter.",
+      "refusal": "Refuse duplicate field keys, incompatible values, destructive schema changes without migration and unsupported executable field logic.",
+      "recovery": "Keep schema versions and corresponding record snapshots together so failed migrations or Undo restore a coherent collection state.",
+      "feedback": "Show field types, constraints, defaults, references and affected record counts with actionable validation paths.",
+      "evidence": "Use synthetic collections containing valid, missing, legacy and incompatible values to verify schema evolution without silent data loss.",
+      "capabilities": [
+        {
+          "key": "create-local-collection-schemas",
+          "title": "Create local collection schemas",
+          "outcome": "An author creates a named local collection schema with a stable identity, explicit version and declared fields before any records are bound to preview."
+        },
+        {
+          "key": "define-plain-text-cms-fields",
+          "title": "Define plain-text CMS fields",
+          "outcome": "A schema author defines text fields with explicit required and length constraints, and record editors identify values that violate the declared contract."
+        },
+        {
+          "key": "define-rich-text-cms-fields",
+          "title": "Define rich-text CMS fields",
+          "outcome": "A collection schema can allow a constrained rich-text structure with supported marks and embeds, rejecting unsupported document shapes at exact field paths."
+        },
+        {
+          "key": "define-numeric-cms-fields",
+          "title": "Define numeric CMS fields",
+          "outcome": "An author declares numeric fields with range, precision and unit metadata, preserving zero as a valid value rather than treating it as missing content."
+        },
+        {
+          "key": "define-boolean-cms-fields",
+          "title": "Define boolean CMS fields",
+          "outcome": "A collection can store explicit true and false values with a documented absence rule, and editors preserve the distinction between false and unset."
+        },
+        {
+          "key": "define-date-and-time-fields",
+          "title": "Define date and time fields",
+          "outcome": "A schema declares date-only or timestamp semantics explicitly, and editors display timezone interpretation without silently converting one field kind into the other."
+        },
+        {
+          "key": "define-enumerated-cms-fields",
+          "title": "Define enumerated CMS fields",
+          "outcome": "An author creates finite options with stable stored keys and editable display labels, so renaming a label does not invalidate existing records."
+        },
+        {
+          "key": "define-cms-media-reference-fields",
+          "title": "Define CMS media-reference fields",
+          "outcome": "A schema can require references to eligible local asset kinds, and record editors reject references whose target type does not satisfy the field contract."
+        },
+        {
+          "key": "define-structured-cms-object-fields",
+          "title": "Define structured CMS object fields",
+          "outcome": "A schema author declares bounded nested objects with typed child fields, and validation returns exact paths for missing or incompatible nested values."
+        },
+        {
+          "key": "define-ordered-cms-list-fields",
+          "title": "Define ordered CMS list fields",
+          "outcome": "A collection can store typed ordered lists with stable item identities and declared length bounds, supporting reordering without replacing unrelated list values."
+        },
+        {
+          "key": "declare-cms-field-defaults",
+          "title": "Declare CMS field defaults",
+          "outcome": "An author defines explicit defaults for new records, with existing records retaining their saved values until a reviewed migration deliberately applies defaults."
+        },
+        {
+          "key": "declare-cms-field-uniqueness",
+          "title": "Declare CMS field uniqueness",
+          "outcome": "A local schema can require unique normalized values within its collection scope, and conflicting records are identified before a save is accepted."
+        },
+        {
+          "key": "inspect-schema-field-usage",
+          "title": "Inspect schema field usage",
+          "outcome": "Selecting a field lists its local template, binding, validation and query consumers, making removal or type changes understandable before migration planning."
+        },
+        {
+          "key": "rename-cms-field-labels",
+          "title": "Rename CMS field labels",
+          "outcome": "Changing a field's editor label preserves its stable storage key and all saved records, while updating the labels used by compatible editor controls."
+        },
+        {
+          "key": "preview-cms-field-key-migrations",
+          "title": "Preview CMS field key migrations",
+          "outcome": "An author can review key mappings and affected records before a field identifier changes, with ambiguous or unmapped values requiring explicit resolution."
+        },
+        {
+          "key": "preview-cms-field-type-migrations",
+          "title": "Preview CMS field type migrations",
+          "outcome": "A proposed type change shows convertible values, failures and retained originals, refusing acceptance until every affected record has a declared migration outcome."
+        },
+        {
+          "key": "archive-unused-cms-fields",
+          "title": "Archive unused CMS fields",
+          "outcome": "A field with no active consumers can be archived from default editing views while its historical schema versions and stored values remain recoverable."
+        },
+        {
+          "key": "version-collection-schemas",
+          "title": "Version collection schemas",
+          "outcome": "A confirmed schema change advances a local version and records its compatibility and migration requirements, without implying that any provider schema was published."
+        },
+        {
+          "key": "export-collection-schema-contracts",
+          "title": "Export collection schema contracts",
+          "outcome": "A local export describes field identities, types, constraints and migration references in a portable schema manifest without including provider credentials or private records."
+        },
+        {
+          "key": "compare-collection-schema-revisions",
+          "title": "Compare collection schema revisions",
+          "outcome": "An author can compare two schema versions by added, removed, renamed and constrained fields, with affected local consumers shown independently from raw JSON formatting."
+        }
+      ]
+    },
+    {
+      "id": "F051",
+      "name": "CMS references relations and integrity",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F050"
+      ],
+      "scope": "Model typed local record relationships, inverse lookup and deletion consequences while preserving referential integrity.",
+      "refusal": "Refuse dangling or cross-scope references, forbidden cycles and deletes whose declared reference consequences remain unresolved.",
+      "recovery": "Capture affected records and relation edges in one local command snapshot so rejection or Undo restores a coherent graph.",
+      "feedback": "Expose relationship direction, allowed targets, broken references and affected consumers before editing or deletion.",
+      "evidence": "Use synthetic one-to-one, one-to-many, ordered and cyclic graphs to verify exact relation validation, deletion previews and graph recovery.",
+      "capabilities": [
+        {
+          "key": "define-single-record-references",
+          "title": "Define single-record references",
+          "outcome": "A schema author declares a reference to one eligible record in a named local collection, with missing and incompatible targets rejected explicitly."
+        },
+        {
+          "key": "define-multi-record-references",
+          "title": "Define multi-record references",
+          "outcome": "A collection can store a bounded ordered set of record references whose target types and duplicate policy are enforced during local editing."
+        },
+        {
+          "key": "inspect-incoming-record-references",
+          "title": "Inspect incoming record references",
+          "outcome": "A record inspector lists local records, templates and bindings that reference it, allowing navigation without exposing unrelated private field content."
+        },
+        {
+          "key": "preview-referenced-record-summaries",
+          "title": "Preview referenced record summaries",
+          "outcome": "A reference editor displays a schema-approved summary of each eligible target, with missing summaries distinguished from missing or inaccessible target records."
+        },
+        {
+          "key": "filter-reference-picker-candidates",
+          "title": "Filter reference picker candidates",
+          "outcome": "Authors can restrict a reference picker using declared local query conditions, while the underlying schema continues to validate the final selected target."
+        },
+        {
+          "key": "define-relationship-cardinality",
+          "title": "Define relationship cardinality",
+          "outcome": "A relation contract can require one-to-one or bounded one-to-many ownership, and conflicting relationships are identified before any local graph change is accepted."
+        },
+        {
+          "key": "inspect-inverse-relationship-views",
+          "title": "Inspect inverse relationship views",
+          "outcome": "A local derived view shows records pointing to the current record without creating duplicate stored inverse edges or treating the view as independent source data."
+        },
+        {
+          "key": "preview-referenced-record-deletion",
+          "title": "Preview referenced record deletion",
+          "outcome": "Before deleting a referenced record, the builder lists affected edges and permitted retain, reject, detach or replacement choices within the declared schema policy."
+        },
+        {
+          "key": "replace-reference-targets-atomically",
+          "title": "Replace reference targets atomically",
+          "outcome": "An author can confirm a target replacement across a reviewed set of local edges, and validation rejects the whole change when any resulting relation is invalid."
+        },
+        {
+          "key": "reorder-referenced-record-lists",
+          "title": "Reorder referenced record lists",
+          "outcome": "An author can reorder an ordered multi-reference field while preserving record identities, other field values and relationship membership outside the selected list."
+        },
+        {
+          "key": "validate-required-relationship-targets",
+          "title": "Validate required relationship targets",
+          "outcome": "A local validation report identifies records whose required reference target is absent or unavailable, with precise collection and field identifiers for repair."
+        },
+        {
+          "key": "detect-forbidden-relationship-cycles",
+          "title": "Detect forbidden relationship cycles",
+          "outcome": "A schema can prohibit cycles for selected relationship types, and edits explain the concrete record path responsible for a rejected cycle."
+        },
+        {
+          "key": "bound-recursive-relation-traversal",
+          "title": "Bound recursive relation traversal",
+          "outcome": "A relation explorer discloses depth and node limits when traversing large graphs, preserving incomplete-result warnings instead of presenting truncated discovery as complete."
+        },
+        {
+          "key": "inspect-relationship-scope-boundaries",
+          "title": "Inspect relationship scope boundaries",
+          "outcome": "The relation editor explains whether a target belongs to the current fixture workspace or an external reference, keeping unsupported cross-workspace writes unavailable."
+        },
+        {
+          "key": "preview-schema-relation-migrations",
+          "title": "Preview schema relation migrations",
+          "outcome": "A migration preview shows how changed target collections or cardinality constraints affect existing relation edges before any records are transformed."
+        },
+        {
+          "key": "repair-imported-unresolved-references",
+          "title": "Repair imported unresolved references",
+          "outcome": "An import workflow lets an author map unresolved external identifiers to eligible local records, refusing ambiguous matches until every required relation is resolved."
+        },
+        {
+          "key": "distinguish-missing-and-denied-references",
+          "title": "Distinguish missing and denied references",
+          "outcome": "A binding preview can represent a missing target separately from an intentionally unavailable target, without revealing protected metadata through diagnostic labels."
+        },
+        {
+          "key": "export-relationship-graph-manifests",
+          "title": "Export relationship graph manifests",
+          "outcome": "A local export includes stable record and relation identities with declared target schemas, preserving edge order and reference scope for compatible importers."
+        },
+        {
+          "key": "validate-relation-graph-snapshots",
+          "title": "Validate relation graph snapshots",
+          "outcome": "A snapshot check verifies every required local edge resolves against its captured collection versions before the snapshot can become a restore candidate."
+        },
+        {
+          "key": "restore-relation-graphs-coherently",
+          "title": "Restore relation graphs coherently",
+          "outcome": "A local restore command validates selected collections and relation edges together, rejecting partial restoration that would produce dangling required references."
+        }
+      ]
+    },
+    {
+      "id": "F052",
+      "name": "CMS query and canvas bindings",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F041",
+        "F050",
+        "F051"
+      ],
+      "scope": "Bind canonical nodes and approved component properties to typed synthetic collection queries with explicit missing-data and ownership behavior.",
+      "refusal": "Refuse incompatible type bindings, unsupported source-owned targets, arbitrary executable expressions and unbounded or unauthorized data traversal.",
+      "recovery": "Preserve prior binding definitions and fixture selections so a rejected edit or Undo restores the same query and rendered data scope.",
+      "feedback": "Show binding source, query arguments, resolved type, empty state and ownership without exposing hidden field values in general diagnostics.",
+      "evidence": "Use deterministic fixtures with empty, malformed, related and inaccessible records to verify exact binding results and bounded rendering.",
+      "capabilities": [
+        {
+          "key": "bind-text-nodes-to-cms-fields",
+          "title": "Bind text nodes to CMS fields",
+          "outcome": "An author connects an eligible text node to a compatible collection field and previews the selected record value without copying it into source literals."
+        },
+        {
+          "key": "bind-image-instances-to-cms-assets",
+          "title": "Bind image instances to CMS assets",
+          "outcome": "A supported image target can resolve its asset and contextual alternative text from declared CMS fields, with incompatible asset types reported before binding acceptance."
+        },
+        {
+          "key": "bind-links-to-cms-destinations",
+          "title": "Bind links to CMS destinations",
+          "outcome": "An author maps a compatible CMS URL or local route reference into a link target, preserving allowed-scheme checks and declared fallback behavior."
+        },
+        {
+          "key": "bind-component-properties-to-fields",
+          "title": "Bind component properties to fields",
+          "outcome": "An eligible component input can consume a compatible CMS field, with the inspector identifying schema type, instance scope and any explicit conversion."
+        },
+        {
+          "key": "bind-repeated-component-collections",
+          "title": "Bind repeated component collections",
+          "outcome": "An author binds a repeated component region to a bounded local collection query while keeping each rendered record's instance identity stable."
+        },
+        {
+          "key": "configure-collection-query-filters",
+          "title": "Configure collection query filters",
+          "outcome": "A binding editor supports declared typed predicates for a local collection and previews matching record counts before applying the query to a canvas region."
+        },
+        {
+          "key": "configure-collection-query-sorting",
+          "title": "Configure collection query sorting",
+          "outcome": "An author chooses stable sort keys and tie-breakers, and preview shows the resulting order without mutating the stored source collection sequence."
+        },
+        {
+          "key": "configure-collection-query-limits",
+          "title": "Configure collection query limits",
+          "outcome": "A binding declares an explicit maximum result count, and the preview discloses omitted matches rather than silently presenting a partial collection as complete."
+        },
+        {
+          "key": "bind-nested-relationship-fields",
+          "title": "Bind nested relationship fields",
+          "outcome": "A compatible target can traverse a declared bounded reference path, with missing relation steps identified precisely instead of throwing an unhandled rendering error."
+        },
+        {
+          "key": "declare-binding-empty-states",
+          "title": "Declare binding empty states",
+          "outcome": "An author configures a distinct empty-result presentation for a repeated region, and preview can show it without deleting records or changing the saved query."
+        },
+        {
+          "key": "declare-binding-missing-value-fallbacks",
+          "title": "Declare binding missing-value fallbacks",
+          "outcome": "A binding can define explicit fallback values for absent optional data, preserving the distinction between an empty value, zero, false and a missing field."
+        },
+        {
+          "key": "preview-binding-validation-failures",
+          "title": "Preview binding validation failures",
+          "outcome": "An author can inspect incompatible fixture values through a labeled preview state that identifies the field path and preserves the last valid binding configuration."
+        },
+        {
+          "key": "inspect-active-record-context",
+          "title": "Inspect active record context",
+          "outcome": "Selecting a bound node shows the local collection, record identifier and query context that produced it, without turning preview data into editable source text."
+        },
+        {
+          "key": "switch-synthetic-binding-fixtures",
+          "title": "Switch synthetic binding fixtures",
+          "outcome": "An author can choose a named synthetic dataset for a binding preview and return to the previous dataset without altering authored binding definitions."
+        },
+        {
+          "key": "inspect-binding-consumer-locations",
+          "title": "Inspect binding consumer locations",
+          "outcome": "Selecting a schema field lists its bound nodes and component inputs, with navigation to each local page and a clear indication of unsupported source targets."
+        },
+        {
+          "key": "detach-bindings-with-explicit-outcomes",
+          "title": "Detach bindings with explicit outcomes",
+          "outcome": "An author can review whether detaching a binding restores a prior literal, applies a declared fallback or leaves an empty value before confirming the change."
+        },
+        {
+          "key": "validate-bindings-after-schema-changes",
+          "title": "Validate bindings after schema changes",
+          "outcome": "A schema migration reports bindings whose field paths or types no longer resolve, blocking only affected required release targets until those bindings are repaired."
+        },
+        {
+          "key": "preview-locale-aware-field-resolution",
+          "title": "Preview locale-aware field resolution",
+          "outcome": "A bound node can resolve a field through the selected locale and explicit fallback chain, with the originating locale displayed in the inspector."
+        },
+        {
+          "key": "export-binding-definition-manifests",
+          "title": "Export binding definition manifests",
+          "outcome": "A local export describes query predicates, field paths, target identities and fallback rules without including runtime tokens or unrelated private record values."
+        },
+        {
+          "key": "restore-binding-configuration-snapshots",
+          "title": "Restore binding configuration snapshots",
+          "outcome": "Restoring a local binding snapshot validates target nodes and captured schema versions together, refusing stale references instead of reassigning them by visible label."
+        }
+      ]
+    },
+    {
+      "id": "F053",
+      "name": "CMS editorial workflow and review",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F009",
+        "F050"
+      ],
+      "scope": "Manage explicit local draft, review and approval states for synthetic content without representing them as provider publication.",
+      "refusal": "Refuse invalid state transitions, approvals against stale revisions and release inclusion that violates the declared local review policy.",
+      "recovery": "Retain prior content revisions and review records so withdrawal or Undo restores the exact reviewed local state and pending decisions.",
+      "feedback": "Show current content state, reviewed revision, remaining reviewers and transition consequences through readable, keyboard-accessible controls.",
+      "evidence": "Use synthetic authors and reviewer roles to verify revision-bound decisions, stale approval refusal and exact transition histories without identity-provider claims.",
+      "capabilities": [
+        {
+          "key": "create-local-content-drafts",
+          "title": "Create local content drafts",
+          "outcome": "An author can create a synthetic content draft that remains separate from any locally approved release version and has an explicit initial revision."
+        },
+        {
+          "key": "submit-content-for-review",
+          "title": "Submit content for review",
+          "outcome": "A draft can be submitted with a bounded review note and exact content revision, making the reviewed snapshot distinct from later edits."
+        },
+        {
+          "key": "assign-synthetic-content-reviewers",
+          "title": "Assign synthetic content reviewers",
+          "outcome": "A local workflow can declare fictional reviewer roles and required decision counts without provisioning real accounts or implying authenticated identity authority."
+        },
+        {
+          "key": "inspect-review-ready-validation",
+          "title": "Inspect review-ready validation",
+          "outcome": "Before submission, the editor reports required field, reference and content-policy failures that prevent the selected revision from entering the declared review state."
+        },
+        {
+          "key": "approve-exact-content-revisions",
+          "title": "Approve exact content revisions",
+          "outcome": "A synthetic reviewer can approve the explicitly displayed local revision, and later content changes invalidate that approval according to the declared workflow policy."
+        },
+        {
+          "key": "request-revision-changes",
+          "title": "Request revision changes",
+          "outcome": "A review decision can return a bounded change request tied to the reviewed revision, preserving prior approvals and decisions in their historical context."
+        },
+        {
+          "key": "withdraw-pending-review-submissions",
+          "title": "Withdraw pending review submissions",
+          "outcome": "An author can withdraw a pending submission explicitly, with the review snapshot retained and the draft state restored without deleting earlier review evidence."
+        },
+        {
+          "key": "compare-submitted-and-current-content",
+          "title": "Compare submitted and current content",
+          "outcome": "The review screen shows a semantic difference between the submitted revision and current draft, identifying stale decisions before another transition is allowed."
+        },
+        {
+          "key": "resolve-review-decision-conflicts",
+          "title": "Resolve review decision conflicts",
+          "outcome": "When required reviewers disagree, the workflow presents the conflicting decisions and the declared resolution route rather than silently accepting the latest click."
+        },
+        {
+          "key": "add-field-specific-review-comments",
+          "title": "Add field-specific review comments",
+          "outcome": "A reviewer can attach a bounded comment to a stable field identity and revision, keeping it distinct from general record discussion or source-code comments."
+        },
+        {
+          "key": "inspect-content-transition-history",
+          "title": "Inspect content transition history",
+          "outcome": "A record displays its ordered local state transitions with revision and synthetic actor references, without claiming that a real provider action occurred."
+        },
+        {
+          "key": "configure-local-review-requirements",
+          "title": "Configure local review requirements",
+          "outcome": "A workspace author can define allowed local transitions and required review roles, with policy changes previewing their effect on currently pending submissions."
+        },
+        {
+          "key": "validate-review-policy-changes",
+          "title": "Validate review policy changes",
+          "outcome": "Changing review requirements identifies submissions that need renewed decisions and preserves existing historical approvals without retroactively rewriting their original policy context."
+        },
+        {
+          "key": "prevent-stale-approval-reuse",
+          "title": "Prevent stale approval reuse",
+          "outcome": "A local release cannot consume an approval for a different content revision, and the UI identifies the exact revision mismatch before release preparation proceeds."
+        },
+        {
+          "key": "preview-release-eligibility",
+          "title": "Preview release eligibility",
+          "outcome": "An author can inspect which selected records satisfy the local review policy and which remain excluded, with reasons shown before assembling a release candidate."
+        },
+        {
+          "key": "record-local-editorial-handoffs",
+          "title": "Record local editorial handoffs",
+          "outcome": "A content author can assign the next fictional workflow responsibility with a note, preserving revision context without sending messages or changing real membership access."
+        },
+        {
+          "key": "filter-editorial-work-queues",
+          "title": "Filter editorial work queues",
+          "outcome": "Authors can filter local content by review state, declared reviewer role, collection and stale-decision status without accessing external task or identity services."
+        },
+        {
+          "key": "bulk-submit-eligible-drafts",
+          "title": "Bulk submit eligible drafts",
+          "outcome": "A reviewed bulk action previews eligible drafts and per-record exclusions, then submits only the exact selected revisions without partially accepting invalid records silently."
+        },
+        {
+          "key": "bulk-withdraw-pending-submissions",
+          "title": "Bulk withdraw pending submissions",
+          "outcome": "A confirmation lists the exact pending local submissions to withdraw and preserves their review records, leaving unrelated drafts and approved release snapshots unchanged."
+        },
+        {
+          "key": "export-editorial-decision-manifests",
+          "title": "Export editorial decision manifests",
+          "outcome": "A local export includes content revision references, declared workflow policy and synthetic review decisions with clear mock provenance and no identity-provider tokens."
+        }
+      ]
+    },
+    {
+      "id": "F054",
+      "name": "Content revisions snapshots and local releases",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F010",
+        "F053"
+      ],
+      "scope": "Capture immutable local content versions and release sets with explicit dependency scope and restore consequences.",
+      "refusal": "Refuse stale revisions, missing release dependencies, mutable historical captures and restores that cannot preserve required graph integrity.",
+      "recovery": "Retain complete captured records and manifests so restore, release withdrawal and failed promotion can return to a coherent previous local state.",
+      "feedback": "Show draft versus captured versions, included collections, excluded records and exact release or restore effects before confirmation.",
+      "evidence": "Use divergent drafts and immutable fixture releases to verify historical fidelity, dependency validation, semantic differences and atomic local restoration.",
+      "capabilities": [
+        {
+          "key": "capture-immutable-content-revisions",
+          "title": "Capture immutable content revisions",
+          "outcome": "A content save can produce an immutable local revision with stable record identity and normalized content digest, while the editable draft continues independently."
+        },
+        {
+          "key": "compare-semantic-content-revisions",
+          "title": "Compare semantic content revisions",
+          "outcome": "An author compares two captured revisions by typed field and relation changes rather than raw JSON formatting or transient editor state."
+        },
+        {
+          "key": "name-content-revision-checkpoints",
+          "title": "Name content revision checkpoints",
+          "outcome": "An author can attach a bounded label to a captured local revision without changing its content digest, original capture time or record identity."
+        },
+        {
+          "key": "inspect-captured-relation-versions",
+          "title": "Inspect captured relation versions",
+          "outcome": "A revision inspector shows which referenced record versions were captured with the content, separating historical references from current live draft relationships."
+        },
+        {
+          "key": "prepare-local-content-releases",
+          "title": "Prepare local content releases",
+          "outcome": "An author selects reviewed content revisions into a named local release candidate that remains separate from provider or production publication."
+        },
+        {
+          "key": "validate-local-release-dependency-closure",
+          "title": "Validate local release dependency closure",
+          "outcome": "A release check identifies required related records and assets missing from the selected revision set before an immutable release artifact can be prepared."
+        },
+        {
+          "key": "preview-release-record-differences",
+          "title": "Preview release record differences",
+          "outcome": "A local comparison shows added, changed and removed records between two release candidates, including relation and media references without displaying unrelated hidden fields."
+        },
+        {
+          "key": "freeze-local-content-release-manifests",
+          "title": "Freeze local content release manifests",
+          "outcome": "A confirmed local release freeze records exact schema, record, asset and review references with digests, preventing subsequent draft changes from mutating the frozen artifact."
+        },
+        {
+          "key": "inspect-release-portability-limits",
+          "title": "Inspect release portability limits",
+          "outcome": "A release inspector lists unsupported field kinds, provider references and unavailable artifacts for a chosen export target before packaging is offered."
+        },
+        {
+          "key": "restore-individual-content-revisions",
+          "title": "Restore individual content revisions",
+          "outcome": "An author can preview and restore a captured record revision while validating its schema and required relationships against the intended current local workspace."
+        },
+        {
+          "key": "preview-multi-collection-content-restores",
+          "title": "Preview multi-collection content restores",
+          "outcome": "A restore preview lists changed records and relation consequences across selected collections, preserving the exact captured source versions and current unselected scope."
+        },
+        {
+          "key": "apply-atomic-content-release-restores",
+          "title": "Apply atomic content release restores",
+          "outcome": "A confirmed restore accepts a complete validated release scope as one local command, rejecting the operation without partial record replacement when dependencies fail."
+        },
+        {
+          "key": "undo-content-release-restores",
+          "title": "Undo content release restores",
+          "outcome": "An author can undo the most recent eligible content restore using its captured pre-change state, with current revision conflicts preventing unsafe reversal."
+        },
+        {
+          "key": "inspect-release-exclusion-reasons",
+          "title": "Inspect release exclusion reasons",
+          "outcome": "The release builder identifies why each selected draft, invalid record or unsupported artifact was excluded, without converting excluded content into silently accepted output."
+        },
+        {
+          "key": "withdraw-local-release-candidates",
+          "title": "Withdraw local release candidates",
+          "outcome": "An author can withdraw a prepared local candidate from active preview choices while retaining its immutable artifact and historical references for later inspection."
+        },
+        {
+          "key": "fork-drafts-from-captured-revisions",
+          "title": "Fork drafts from captured revisions",
+          "outcome": "An author can create an editable draft from a selected historical revision without modifying that revision or assigning the draft the same revision identity."
+        },
+        {
+          "key": "inspect-content-release-lineage",
+          "title": "Inspect content release lineage",
+          "outcome": "The release view shows predecessor candidates, source captures and restore ancestry using explicit identifiers rather than inferring history from labels or timestamps alone."
+        },
+        {
+          "key": "export-local-release-bundles",
+          "title": "Export local release bundles",
+          "outcome": "A local export contains exactly the reviewed release's schema and artifact closure, with a manifest describing omitted runtime state and provider-bound resources."
+        },
+        {
+          "key": "validate-imported-release-snapshots",
+          "title": "Validate imported release snapshots",
+          "outcome": "A local import validates release digests, schema compatibility and required relation closure before offering the snapshot as a preview or restore candidate."
+        },
+        {
+          "key": "compare-release-restoration-outcomes",
+          "title": "Compare release restoration outcomes",
+          "outcome": "After a local restore, the builder compares accepted record and relation digests with the reviewed candidate and reports any mismatch instead of declaring success optimistically."
+        }
+      ]
+    },
+    {
+      "id": "F055",
+      "name": "Content localization and fallback rules",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F050",
+        "F054"
+      ],
+      "scope": "Author explicit local locales, translation records and fallback chains without automatic translation services or provider locale creation.",
+      "refusal": "Refuse invalid language tags, fallback cycles, ambiguous localized identities and locale changes that silently overwrite other language values.",
+      "recovery": "Retain source and localized revisions with prior fallback rules so failed migrations or Undo restore the original language-specific content.",
+      "feedback": "Show selected locale, source locale, missing translations and resolved fallback provenance in content editors and canvas bindings.",
+      "evidence": "Use synthetic multilingual, right-to-left and missing-translation fixtures to verify identity, fallback, formatting and review boundaries.",
+      "capabilities": [
+        {
+          "key": "declare-local-content-locales",
+          "title": "Declare local content locales",
+          "outcome": "An author creates a local locale record with a valid language tag, display name and direction, without creating any locale in an external provider."
+        },
+        {
+          "key": "choose-source-content-locales",
+          "title": "Choose source content locales",
+          "outcome": "A collection can declare its source locale explicitly, and newly created localized records retain a stable relationship to the original content identity."
+        },
+        {
+          "key": "configure-locale-fallback-chains",
+          "title": "Configure locale fallback chains",
+          "outcome": "An author defines an ordered fallback chain whose resolution is visible per field, with cycles and nonexistent locale references rejected before acceptance."
+        },
+        {
+          "key": "inspect-missing-translation-coverage",
+          "title": "Inspect missing translation coverage",
+          "outcome": "A collection view identifies untranslated required fields and records by locale, distinguishing intentionally inherited values from missing translation work."
+        },
+        {
+          "key": "edit-localized-field-values",
+          "title": "Edit localized field values",
+          "outcome": "An author can edit a locale-specific value without overwriting source-language or sibling-locale values, preserving explicit empty values when the schema allows them."
+        },
+        {
+          "key": "choose-field-localization-behavior",
+          "title": "Choose field localization behavior",
+          "outcome": "A schema can declare fields shared, localized or explicitly inherited, with migration previews showing how existing locale values will be preserved."
+        },
+        {
+          "key": "preview-locale-specific-content",
+          "title": "Preview locale-specific content",
+          "outcome": "The canvas can render a chosen locale fixture while the inspector identifies each bound value's locale and fallback origin without altering saved content."
+        },
+        {
+          "key": "inspect-right-to-left-content-direction",
+          "title": "Inspect right-to-left content direction",
+          "outcome": "A locale preview applies declared text direction and reveals unsupported component assumptions without rewriting source structure or claiming complete bidirectional-language acceptance."
+        },
+        {
+          "key": "manage-localized-slugs",
+          "title": "Manage localized slugs",
+          "outcome": "An author can define locale-specific route slugs with uniqueness validation within the declared route scope and explicit links to the same underlying content identity."
+        },
+        {
+          "key": "preview-locale-route-mappings",
+          "title": "Preview locale route mappings",
+          "outcome": "A local route preview lists source and localized paths plus fallback behavior, identifying collisions before any route artifact is generated."
+        },
+        {
+          "key": "compare-source-translation-changes",
+          "title": "Compare source translation changes",
+          "outcome": "A translation editor shows source-field changes since the locale's last reviewed revision, preventing outdated translations from appearing freshly verified automatically."
+        },
+        {
+          "key": "submit-localized-revisions-for-review",
+          "title": "Submit localized revisions for review",
+          "outcome": "A locale-specific review submission binds the exact translated revision and source revision context, keeping its approval independent from other locales."
+        },
+        {
+          "key": "preserve-translated-rich-text-structure",
+          "title": "Preserve translated rich-text structure",
+          "outcome": "A localized rich-text editor retains declared document structure and embedded reference identities while allowing only supported language-specific content changes."
+        },
+        {
+          "key": "resolve-localized-media-choices",
+          "title": "Resolve localized media choices",
+          "outcome": "A local content record can select locale-specific media references with explicit fallback rules, while shared asset metadata and contextual alternatives remain distinguishable."
+        },
+        {
+          "key": "inspect-locale-specific-formatting",
+          "title": "Inspect locale-specific formatting",
+          "outcome": "A preview can show declared number and date formatting for a locale while preserving the underlying typed data and explicit timezone semantics."
+        },
+        {
+          "key": "bulk-inspect-translation-states",
+          "title": "Bulk inspect translation states",
+          "outcome": "Authors can filter records by locale and declared translation state, with bounded summaries that avoid exposing hidden content across unrelated collections."
+        },
+        {
+          "key": "preview-locale-removal-effects",
+          "title": "Preview locale removal effects",
+          "outcome": "Before removing a locale from active editing, the builder lists affected records, routes and fallback chains and requires explicit preservation or remapping choices."
+        },
+        {
+          "key": "archive-locale-editing-scopes",
+          "title": "Archive locale editing scopes",
+          "outcome": "An author can archive a locale from active authoring while retaining its captured translations and historical release references for inspection and recovery."
+        },
+        {
+          "key": "export-localization-manifests",
+          "title": "Export localization manifests",
+          "outcome": "A local export includes locale identities, source relationships, field rules and fallback chains, with provider locale mappings labeled as external references only."
+        },
+        {
+          "key": "validate-localization-snapshot-restores",
+          "title": "Validate localization snapshot restores",
+          "outcome": "A restore check verifies locale records, translation identities and fallback dependencies together so restoring one language cannot silently orphan another language's content."
+        }
+      ]
+    },
+    {
+      "id": "F056",
+      "name": "Local content search and indexing",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F050",
+        "F051"
+      ],
+      "scope": "Build explicit bounded search indexes from approved synthetic content fields with deterministic query and result contracts.",
+      "refusal": "Refuse secret or excluded fields, unbounded indexing, unsafe query expressions and results outside the declared local collection and locale scope.",
+      "recovery": "Keep index input revisions and prior index manifests so failed rebuilds retain the last verified index without pretending it reflects newer content.",
+      "feedback": "Show indexed fields, input freshness, result scope, ranking explanations and truncation notices using accessible result controls.",
+      "evidence": "Use controlled text and reference fixtures to verify exact inclusion, exclusion, ranking, locale behavior and stale-index reporting.",
+      "capabilities": [
+        {
+          "key": "declare-searchable-content-fields",
+          "title": "Declare searchable content fields",
+          "outcome": "A collection author selects fields eligible for local indexing, with excluded or private fields remaining outside search even when they exist in a record."
+        },
+        {
+          "key": "build-deterministic-local-search-indexes",
+          "title": "Build deterministic local search indexes",
+          "outcome": "A local index command records its schema and content input revisions and produces reproducible normalized index artifacts from the same approved synthetic dataset."
+        },
+        {
+          "key": "inspect-search-index-freshness",
+          "title": "Inspect search index freshness",
+          "outcome": "The search inspector compares indexed input revisions with current local content and labels stale indexes without claiming that a successful prior build is current."
+        },
+        {
+          "key": "query-local-indexed-content",
+          "title": "Query local indexed content",
+          "outcome": "A search preview accepts bounded text queries against a selected index and returns stable record references without contacting provider or external search services."
+        },
+        {
+          "key": "filter-search-results-by-collection",
+          "title": "Filter search results by collection",
+          "outcome": "Authors can scope a query to declared collections, with result counts and omitted-scope indicators that do not leak excluded collection content."
+        },
+        {
+          "key": "filter-search-results-by-locale",
+          "title": "Filter search results by locale",
+          "outcome": "A query can target a declared locale and explicit fallback policy, with every result identifying whether its matched content came from a fallback language."
+        },
+        {
+          "key": "configure-search-result-sorting",
+          "title": "Configure search result sorting",
+          "outcome": "An author chooses supported ranking or deterministic sort rules with stable tie-breakers, and preview shows why each result occupies its reported position."
+        },
+        {
+          "key": "inspect-matched-field-explanations",
+          "title": "Inspect matched field explanations",
+          "outcome": "A result inspector identifies the approved fields and terms responsible for a match using bounded excerpts, without revealing excluded or hidden field values."
+        },
+        {
+          "key": "configure-exact-match-search-behavior",
+          "title": "Configure exact-match search behavior",
+          "outcome": "A search contract can declare exact phrase or token matching rules, and synthetic query examples show the difference without changing the indexed source records."
+        },
+        {
+          "key": "configure-prefix-search-behavior",
+          "title": "Configure prefix search behavior",
+          "outcome": "An author can enable bounded prefix matching for eligible fields, with minimum-query constraints and explicit result limits preventing uncontrolled scans."
+        },
+        {
+          "key": "configure-content-search-facets",
+          "title": "Configure content search facets",
+          "outcome": "A local index can expose declared enum or taxonomy fields as facets, preserving schema-defined labels and counts within the active query scope."
+        },
+        {
+          "key": "preview-empty-search-results",
+          "title": "Preview empty search results",
+          "outcome": "Authors can render a declared no-results state for a synthetic query while keeping it distinct from unavailable, stale or failed index states."
+        },
+        {
+          "key": "preview-unavailable-search-indexes",
+          "title": "Preview unavailable search indexes",
+          "outcome": "A controlled preview displays an actionable unavailable-index state without substituting unindexed full-record scanning or claiming a missing index returned no matches."
+        },
+        {
+          "key": "bound-search-result-pagination",
+          "title": "Bound search result pagination",
+          "outcome": "A local query returns stable bounded pages with explicit continuation and total-count qualification, avoiding duplicate or skipped results across a fixed index revision."
+        },
+        {
+          "key": "inspect-search-query-budgets",
+          "title": "Inspect search query budgets",
+          "outcome": "The search inspector reports query length, token and result limits, and refuses oversized requests before evaluating them against local content indexes."
+        },
+        {
+          "key": "rebuild-selected-content-indexes",
+          "title": "Rebuild selected content indexes",
+          "outcome": "An author can rebuild a chosen index scope without replacing unrelated indexes, and failure preserves the previously verified artifact and its original freshness label."
+        },
+        {
+          "key": "validate-search-result-link-targets",
+          "title": "Validate search result link targets",
+          "outcome": "A result binding checks declared local route references and reports broken destinations before a search preview or local release includes unusable result links."
+        },
+        {
+          "key": "export-local-search-artifacts",
+          "title": "Export local search artifacts",
+          "outcome": "A local export packages a selected verified index with input revision and field-inclusion manifests, excluding private drafts and runtime credentials by declared policy."
+        },
+        {
+          "key": "import-compatible-search-indexes",
+          "title": "Import compatible search indexes",
+          "outcome": "An imported index is validated against its schema, locale and content identity contracts before it can be selected for local preview queries."
+        },
+        {
+          "key": "compare-search-index-revisions",
+          "title": "Compare search index revisions",
+          "outcome": "Authors can inspect changes in indexed fields, input revisions and controlled query results between two local index artifacts without treating those examples as exhaustive relevance evaluation."
+        }
+      ]
+    },
+    {
+      "id": "F057",
+      "name": "Reusable page and collection templates",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F043",
+        "F052"
+      ],
+      "scope": "Create versioned document-owned page templates and instantiate them with explicit ownership, route and migration contracts.",
+      "refusal": "Refuse incompatible template imports, route collisions, unsupported source round trips and upgrades that silently overwrite instance-owned content.",
+      "recovery": "Retain template definitions and instance override mappings so rejected upgrades or Undo restore the exact prior page configuration.",
+      "feedback": "Show template versus page ownership, version pins, route placeholders, instance overrides and proposed shared-update effects before confirmation.",
+      "evidence": "Use multiple pages from one template with distinct content and route values to verify isolation, guarded upgrades and coherent recovery.",
+      "capabilities": [
+        {
+          "key": "create-reusable-page-templates",
+          "title": "Create reusable page templates",
+          "outcome": "An author captures an eligible document-owned page structure as a named versioned template, with explicit ownership and reusable input contracts recorded separately from page instances."
+        },
+        {
+          "key": "instantiate-pages-from-templates",
+          "title": "Instantiate pages from templates",
+          "outcome": "A template can create a new local page with distinct node identities, declared inputs and an explicitly reviewed route, preserving the original template definition."
+        },
+        {
+          "key": "declare-template-route-parameters",
+          "title": "Declare template route parameters",
+          "outcome": "An author defines typed route placeholders for a page template, and instance creation validates required parameters and resulting local route uniqueness before acceptance."
+        },
+        {
+          "key": "inspect-template-instance-ownership",
+          "title": "Inspect template instance ownership",
+          "outcome": "Selecting a templated page shows which regions follow the template and which are instance-owned overrides, with unsupported source mappings remaining visibly read-only."
+        },
+        {
+          "key": "choose-template-version-pins",
+          "title": "Choose template version pins",
+          "outcome": "A page instance can pin a specific template version so a newer definition does not silently alter its structure or declared content inputs."
+        },
+        {
+          "key": "preview-shared-template-updates",
+          "title": "Preview shared template updates",
+          "outcome": "A proposed template change lists affected page instances and displays shared versus overridden differences without modifying the instance pages during preview."
+        },
+        {
+          "key": "preserve-template-content-overrides",
+          "title": "Preserve template content overrides",
+          "outcome": "A compatible template upgrade retains declared instance content and slot overrides by stable identities, requiring explicit mapping for any removed or changed target."
+        },
+        {
+          "key": "detach-pages-from-templates",
+          "title": "Detach pages from templates",
+          "outcome": "An author can review and detach one page into independent document ownership while preserving its rendered content and identifying which future template updates will stop applying."
+        },
+        {
+          "key": "create-collection-detail-templates",
+          "title": "Create collection detail templates",
+          "outcome": "A document-owned template can declare a typed single-record context for generating local collection detail previews without publishing provider routes or content."
+        },
+        {
+          "key": "create-collection-listing-templates",
+          "title": "Create collection listing templates",
+          "outcome": "An author can define a reusable listing page template with explicit query inputs and empty-state contracts, preserving page-specific filters as declared instance values."
+        },
+        {
+          "key": "inspect-template-dependency-closure",
+          "title": "Inspect template dependency closure",
+          "outcome": "A template inspector lists required component releases, assets and collection schemas, identifying unavailable dependencies before local page instantiation can proceed."
+        },
+        {
+          "key": "preview-template-route-collisions",
+          "title": "Preview template route collisions",
+          "outcome": "Creating or upgrading template instances shows resulting local paths and existing conflicts, requiring an explicit route change before any page records are accepted."
+        },
+        {
+          "key": "compare-template-revisions",
+          "title": "Compare template revisions",
+          "outcome": "Authors can compare two template versions by node identities, inputs, routes and dependency changes, with formatting-only source differences distinguished from semantic template changes."
+        },
+        {
+          "key": "migrate-template-input-keys",
+          "title": "Migrate template input keys",
+          "outcome": "A template upgrade can map renamed input keys into existing page instances, rejecting ambiguous or incompatible values without overwriting their prior configurations."
+        },
+        {
+          "key": "archive-unused-page-templates",
+          "title": "Archive unused page templates",
+          "outcome": "An author can archive a template with no active dependent pages from default creation choices while retaining its captured versions and recoverable metadata."
+        },
+        {
+          "key": "restore-archived-page-templates",
+          "title": "Restore archived page templates",
+          "outcome": "An archived local template can return under its original identity when its referenced artifacts and dependency contracts still validate against the local registry."
+        },
+        {
+          "key": "import-page-template-previews",
+          "title": "Import page template previews",
+          "outcome": "A local import previews template identities, dependencies, ownership conflicts and unsupported features before any definitions are added to the active creation library."
+        },
+        {
+          "key": "namespace-imported-page-templates",
+          "title": "Namespace imported page templates",
+          "outcome": "An author can assign a stable namespace to imported templates while retaining original provenance and avoiding identity collisions with existing local template definitions."
+        },
+        {
+          "key": "export-portable-template-bundles",
+          "title": "Export portable template bundles",
+          "outcome": "A local export packages selected template definitions with required component and asset manifests, identifying provider-bound references that the chosen target cannot reproduce."
+        },
+        {
+          "key": "validate-template-restoration-snapshots",
+          "title": "Validate template restoration snapshots",
+          "outcome": "A template snapshot restore validates definitions, pinned versions and instance mappings together, refusing a partial restore that would leave pages attached to missing templates."
+        }
+      ]
+    },
+    {
+      "id": "F058",
+      "name": "Content import export and migration mapping",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F012",
+        "F050",
+        "F051"
+      ],
+      "scope": "Preview and validate local content transfer formats with explicit identity, schema, relation and destructive-change mappings.",
+      "refusal": "Refuse oversized or malformed input, path traversal, secret-shaped fields, unresolved required mappings and imports that silently overwrite existing content.",
+      "recovery": "Capture the pre-import graph and accepted mapping so failures roll back atomically and an eligible Undo restores the exact prior local workspace.",
+      "feedback": "Provide row and field error locations, target identity previews, conflict counts and explicit create/update/delete effects before confirmation.",
+      "evidence": "Use synthetic CSV and JSON files with duplicates, schema drift, malformed rows and related records to verify deterministic previews and lossless refusal.",
+      "capabilities": [
+        {
+          "key": "preview-csv-collection-imports",
+          "title": "Preview CSV collection imports",
+          "outcome": "An author can inspect a bounded local CSV file, declared encoding and column samples before selecting a target collection or authorizing any record changes."
+        },
+        {
+          "key": "map-csv-columns-to-fields",
+          "title": "Map CSV columns to fields",
+          "outcome": "An import editor maps columns into compatible schema fields, identifying required fields and unsupported conversions before generating a proposed local record set."
+        },
+        {
+          "key": "preview-json-collection-imports",
+          "title": "Preview JSON collection imports",
+          "outcome": "A local JSON import validates a declared supported envelope and shows collection, record and schema identities without executing embedded content or applying changes automatically."
+        },
+        {
+          "key": "map-external-record-identities",
+          "title": "Map external record identities",
+          "outcome": "An author can map explicit imported identifiers to local record identities, with duplicate or ambiguous matches requiring a reviewed resolution before import acceptance."
+        },
+        {
+          "key": "choose-import-create-update-policies",
+          "title": "Choose import create update policies",
+          "outcome": "An import preview separates proposed creations and updates according to declared identity rules, without inferring deletion of unmentioned records from absence in the input file."
+        },
+        {
+          "key": "detect-duplicate-import-rows",
+          "title": "Detect duplicate import rows",
+          "outcome": "The importer reports conflicting rows that resolve to the same local identity or unique key, preserving all row locations until an explicit policy resolves them."
+        },
+        {
+          "key": "validate-import-field-conversions",
+          "title": "Validate import field conversions",
+          "outcome": "Each proposed conversion reports input location, target type and acceptance result, refusing silent truncation or lossy coercion of values outside the declared schema."
+        },
+        {
+          "key": "resolve-imported-relation-targets",
+          "title": "Resolve imported relation targets",
+          "outcome": "An import preview maps relationship identifiers against the proposed and existing local graph, requiring every required target to resolve before any records are committed."
+        },
+        {
+          "key": "preview-imported-media-mappings",
+          "title": "Preview imported media mappings",
+          "outcome": "An author can map imported media references to eligible local assets, with remote or missing references retained as unresolved requirements rather than downloaded automatically."
+        },
+        {
+          "key": "inspect-import-scope-effects",
+          "title": "Inspect import scope effects",
+          "outcome": "A confirmation view lists exact collections, records, fields and relation edges affected by the reviewed import, with unrelated workspace scope explicitly preserved."
+        },
+        {
+          "key": "apply-atomic-local-content-imports",
+          "title": "Apply atomic local content imports",
+          "outcome": "A confirmed import validates the same input digest and mapping revision, then accepts the reviewed graph atomically or leaves the existing local workspace unchanged."
+        },
+        {
+          "key": "undo-accepted-content-imports",
+          "title": "Undo accepted content imports",
+          "outcome": "An eligible import can be undone using its captured pre-import graph, with stale target revisions refusing reversal instead of overwriting subsequent local edits."
+        },
+        {
+          "key": "export-selected-collection-records",
+          "title": "Export selected collection records",
+          "outcome": "An author can export explicitly selected local records in a supported JSON envelope, with schema versions and required reference scope disclosed before creating the file."
+        },
+        {
+          "key": "export-collection-csv-projections",
+          "title": "Export collection CSV projections",
+          "outcome": "A CSV export uses an explicit supported field projection and declares how nested values, references and empty values are represented without promising a lossless arbitrary graph round trip."
+        },
+        {
+          "key": "export-complete-content-transfer-bundles",
+          "title": "Export complete content transfer bundles",
+          "outcome": "A local transfer bundle captures declared schemas, record identities, relationships and required assets with digests, excluding runtime credentials and unrelated workspace data."
+        },
+        {
+          "key": "compare-migration-mapping-revisions",
+          "title": "Compare migration mapping revisions",
+          "outcome": "Authors can compare two import mapping configurations by target fields, conversion rules and identity policies before reusing a previously prepared migration recipe."
+        },
+        {
+          "key": "save-reusable-import-mappings",
+          "title": "Save reusable import mappings",
+          "outcome": "An author can save a local mapping recipe keyed to supported source and target schemas, with later schema drift requiring renewed validation before the recipe is applied."
+        },
+        {
+          "key": "preview-schema-upgrade-imports",
+          "title": "Preview schema upgrade imports",
+          "outcome": "An import targeting a newer collection schema shows required migrations and incompatible records before accepting data into the active local collection version."
+        },
+        {
+          "key": "inspect-partial-export-limitations",
+          "title": "Inspect partial export limitations",
+          "outcome": "Before export, the builder identifies omitted referenced records or unsupported fields and requires a declared boundary rather than presenting an incomplete bundle as fully portable."
+        },
+        {
+          "key": "verify-transferred-content-digests",
+          "title": "Verify transferred content digests",
+          "outcome": "After importing a compatible local transfer bundle, the builder compares accepted normalized record and relation digests with the reviewed manifest and reports any mismatch explicitly."
+        }
+      ]
+    },
+    {
+      "id": "F059",
+      "name": "Content validation and publication readiness",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F054",
+        "F055"
+      ],
+      "scope": "Inspect cross-field content quality and declared local release requirements without claiming automatic editorial, accessibility or legal approval.",
+      "refusal": "Refuse release eligibility when required declared checks fail, and never treat missing measurements or reviewer decisions as passing evidence.",
+      "recovery": "Preserve prior valid content and check results with their examined revisions so corrections or reruns do not rewrite historical findings.",
+      "feedback": "Present actionable field and node locations, requirement severity and evidence scope with text descriptions and keyboard navigation.",
+      "evidence": "Use synthetic content with broken links, missing alternatives, schema conflicts and stale reviews to verify exact findings and unchanged excluded scope.",
+      "capabilities": [
+        {
+          "key": "validate-required-content-fields",
+          "title": "Validate required content fields",
+          "outcome": "A local content check reports required fields that are absent or invalid at exact record paths, preserving intentional empty values when the schema explicitly permits them."
+        },
+        {
+          "key": "validate-local-content-link-references",
+          "title": "Validate local content link references",
+          "outcome": "A check resolves declared local content routes and asset references, identifying broken targets without sending requests to arbitrary external destinations or changing saved link values."
+        },
+        {
+          "key": "inspect-content-heading-structure",
+          "title": "Inspect content heading structure",
+          "outcome": "A preview audit reports declared heading-level and landmark problems within the selected content scope, linking findings to canonical node identities for review."
+        },
+        {
+          "key": "inspect-contextual-image-alternatives",
+          "title": "Inspect contextual image alternatives",
+          "outcome": "A content report identifies informative image uses missing required contextual alternatives and distinguishes deliberately decorative instances from untranslated or absent descriptions."
+        },
+        {
+          "key": "validate-rich-text-allowed-structures",
+          "title": "Validate rich-text allowed structures",
+          "outcome": "A check identifies unsupported blocks, marks or embeds in rich-text fields using the active schema contract, without silently removing content during validation."
+        },
+        {
+          "key": "inspect-duplicate-content-slugs",
+          "title": "Inspect duplicate content slugs",
+          "outcome": "A local report lists records whose normalized slugs collide within the declared collection, route and locale scope, with stable identifiers for explicit repair."
+        },
+        {
+          "key": "validate-content-date-relationships",
+          "title": "Validate content date relationships",
+          "outcome": "A schema can declare supported cross-field date ordering rules, and records violating those relationships receive precise field-level findings before release eligibility is accepted."
+        },
+        {
+          "key": "validate-numeric-content-relationships",
+          "title": "Validate numeric content relationships",
+          "outcome": "A collection can declare bounded numeric comparisons across supported fields, with invalid or missing operands shown separately from a rule that evaluated false."
+        },
+        {
+          "key": "inspect-content-length-budgets",
+          "title": "Inspect content length budgets",
+          "outcome": "A local check measures declared plain-text and rich-text limits using documented counting rules, identifying overflow locations without trimming saved values automatically."
+        },
+        {
+          "key": "inspect-content-language-declarations",
+          "title": "Inspect content language declarations",
+          "outcome": "A report identifies content missing required language declarations or translations, keeping author declarations distinct from any unverified automated language inference."
+        },
+        {
+          "key": "inspect-broken-relation-summaries",
+          "title": "Inspect broken relation summaries",
+          "outcome": "A readiness check identifies references whose required target or approved summary field is unavailable, without exposing hidden values from inaccessible target records."
+        },
+        {
+          "key": "validate-required-editorial-approval",
+          "title": "Validate required editorial approval",
+          "outcome": "A release eligibility check verifies approval against the exact selected content revision and active local review policy, refusing stale or incomplete decisions."
+        },
+        {
+          "key": "inspect-media-transcript-requirements",
+          "title": "Inspect media transcript requirements",
+          "outcome": "A content report identifies declared media uses missing required captions or transcript references, while avoiding a claim that file presence proves their human-reviewed quality."
+        },
+        {
+          "key": "validate-declared-citation-references",
+          "title": "Validate declared citation references",
+          "outcome": "A local check verifies required citation records and source-reference fields are present and structurally valid, without asserting that referenced claims are scientifically or legally correct."
+        },
+        {
+          "key": "inspect-content-ownership-declarations",
+          "title": "Inspect content ownership declarations",
+          "outcome": "A readiness report identifies records or assets missing required provenance or ownership declarations and distinguishes unresolved declarations from verified content permissions."
+        },
+        {
+          "key": "preview-content-error-severity",
+          "title": "Preview content error severity",
+          "outcome": "An author can configure supported advisory and blocking severities for declared local checks, with release consequences shown before the policy revision is accepted."
+        },
+        {
+          "key": "navigate-content-validation-findings",
+          "title": "Navigate content validation findings",
+          "outcome": "Authors can move through a bounded findings list by keyboard and open the exact record, field or node associated with each reported local failure."
+        },
+        {
+          "key": "compare-content-readiness-runs",
+          "title": "Compare content readiness runs",
+          "outcome": "A comparison shows newly introduced, resolved and unchanged findings between examined content revisions, preserving the original timestamps and scope of prior check runs."
+        },
+        {
+          "key": "export-content-readiness-reports",
+          "title": "Export content readiness reports",
+          "outcome": "An author can export a bounded local report containing examined revisions, rule identities and findings, excluding unrelated private field values and runtime credentials."
+        },
+        {
+          "key": "verify-release-readiness-scope",
+          "title": "Verify release readiness scope",
+          "outcome": "Before a local release is frozen, the builder confirms required checks examined its exact schema and content revisions, identifying any unexamined or stale input scope explicitly."
+        }
+      ]
+    },
+    {
+      "id": "F060",
+      "name": "Synthetic content fixtures and deterministic previews",
+      "area": "content",
+      "phase": "components-cms",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F050",
+        "F052"
+      ],
+      "scope": "Create reproducible fictional content datasets and named preview scenarios without importing real personal records or altering provider state.",
+      "refusal": "Refuse secret-bearing fixture input, uncontrolled graph size, incoherent required references and any operation that treats synthetic actors as authenticated identities.",
+      "recovery": "Keep fixture recipes, seeds and named dataset snapshots so a failed generation or reset can restore the exact selected synthetic preview context.",
+      "feedback": "Label synthetic datasets, seeds, coverage gaps and reset effects prominently, with explicit separation from emulator, provider and production data.",
+      "evidence": "Use fixed seeds and declared schemas to reproduce valid and intentionally invalid fixture scenarios, verifying exact graph identities and bounded generation.",
+      "capabilities": [
+        {
+          "key": "define-seeded-content-fixture-recipes",
+          "title": "Define seeded content fixture recipes",
+          "outcome": "An author can create a local fixture recipe with a declared deterministic seed and schema version, producing repeatable fictional content without provider access."
+        },
+        {
+          "key": "generate-schema-valid-fictional-records",
+          "title": "Generate schema-valid fictional records",
+          "outcome": "A fixture generator creates bounded synthetic records satisfying the selected schema's required types and constraints, with generated identities and provenance labeled explicitly."
+        },
+        {
+          "key": "generate-coherent-relation-fixtures",
+          "title": "Generate coherent relation fixtures",
+          "outcome": "A fixture recipe can produce related collections whose required edges resolve within the generated dataset, preserving deterministic identities across identical generation inputs."
+        },
+        {
+          "key": "create-empty-content-scenarios",
+          "title": "Create empty content scenarios",
+          "outcome": "Authors can select a named empty-collection fixture to preview declared empty states without deleting saved content from the active local authoring workspace."
+        },
+        {
+          "key": "create-missing-field-preview-scenarios",
+          "title": "Create missing-field preview scenarios",
+          "outcome": "A controlled fixture can omit specific declared fields for previewing error or fallback behavior, with its intentional invalidity shown independently from normal authored records."
+        },
+        {
+          "key": "create-broken-reference-preview-scenarios",
+          "title": "Create broken-reference preview scenarios",
+          "outcome": "A synthetic scenario can contain explicitly declared unresolved references for testing local diagnostics, without modifying coherent datasets or pretending the scenario is release-ready."
+        },
+        {
+          "key": "create-multilingual-content-fixtures",
+          "title": "Create multilingual content fixtures",
+          "outcome": "A recipe can generate declared locale records and intentional translation gaps, preserving consistent source identities and explicit fallback expectations for repeatable preview comparisons."
+        },
+        {
+          "key": "create-long-content-preview-scenarios",
+          "title": "Create long-content preview scenarios",
+          "outcome": "Authors can generate bounded long labels and rich-text examples that exercise wrapping and overflow behavior without inserting real user content or exceeding fixture resource budgets."
+        },
+        {
+          "key": "create-unicode-content-fixtures",
+          "title": "Create Unicode content fixtures",
+          "outcome": "A synthetic dataset can include declared script, emoji and combining-character examples so content rendering and limits can be inspected with reproducible inputs."
+        },
+        {
+          "key": "create-media-failure-fixture-scenarios",
+          "title": "Create media-failure fixture scenarios",
+          "outcome": "A preview fixture can reference intentionally unavailable synthetic media targets, labeling those failures without removing actual assets or changing the selected component's authored references."
+        },
+        {
+          "key": "select-named-content-preview-datasets",
+          "title": "Select named content preview datasets",
+          "outcome": "An author can switch a preview between named synthetic datasets while preserving authored schemas, component definitions and query bindings outside the selected preview context."
+        },
+        {
+          "key": "inspect-fixture-generation-provenance",
+          "title": "Inspect fixture generation provenance",
+          "outcome": "The fixture inspector shows recipe identity, seed, schema revisions and generation bounds so a result can be reproduced without relying on a transient process identifier."
+        },
+        {
+          "key": "preview-fixture-reset-effects",
+          "title": "Preview fixture reset effects",
+          "outcome": "Before resetting a selected synthetic dataset, the builder lists affected collections, records and preview selections while identifying unrelated authored content that remains outside reset scope."
+        },
+        {
+          "key": "reset-selected-fixture-datasets",
+          "title": "Reset selected fixture datasets",
+          "outcome": "A confirmed reset regenerates only the reviewed dataset from its retained recipe and seed, with coherent relationships restored and unrelated local datasets preserved."
+        },
+        {
+          "key": "fork-fixture-datasets-for-experiments",
+          "title": "Fork fixture datasets for experiments",
+          "outcome": "An author can create an independent synthetic dataset from a captured fixture snapshot, preserving origin provenance while assigning distinct workspace identities for subsequent experimentation."
+        },
+        {
+          "key": "compare-fixture-dataset-revisions",
+          "title": "Compare fixture dataset revisions",
+          "outcome": "A comparison reports record, relationship and locale changes between two captured synthetic datasets without treating regenerated timestamps or presentation labels as stable identity."
+        },
+        {
+          "key": "bind-deterministic-preview-clocks",
+          "title": "Bind deterministic preview clocks",
+          "outcome": "A content preview can use an explicitly selected fictional clock for date-dependent scenarios, with actual system time and provider schedules left unchanged."
+        },
+        {
+          "key": "inspect-fixture-coverage-matrices",
+          "title": "Inspect fixture coverage matrices",
+          "outcome": "A local report lists which declared component, locale, empty-state and validation scenarios have fixture datasets, distinguishing missing coverage from completed runtime verification."
+        },
+        {
+          "key": "export-synthetic-fixture-packs",
+          "title": "Export synthetic fixture packs",
+          "outcome": "An author can export named fictional datasets together with recipes, seeds and schema contracts, with clear synthetic provenance and no credentials or host-specific runtime paths."
+        },
+        {
+          "key": "validate-imported-fixture-packs",
+          "title": "Validate imported fixture packs",
+          "outcome": "A local fixture import checks schema compatibility, bounded graph shape, synthetic provenance and required references before exposing the dataset as an eligible preview choice."
+        }
+      ]
+    }
+  ]
+}

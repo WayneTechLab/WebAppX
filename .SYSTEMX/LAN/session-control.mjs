@@ -9,6 +9,28 @@ const lanRoot = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(lanRoot, '..', '..')
 const action = process.argv[2] ?? 'status'
 
+async function writeAndExit(stream, text, exitCode) {
+  // Pipe writes can be asynchronous, including when write() signals pressure.
+  // Its callback runs after the complete chunk has been handled; exiting before
+  // then can truncate even a successful JSON response.
+  await new Promise((resolveWrite, rejectWrite) => {
+    const onError = (error) => rejectWrite(error)
+    stream.once('error', onError)
+    stream.write(text, (error) => {
+      if (error) rejectWrite(error)
+      else {
+        stream.removeListener('error', onError)
+        resolveWrite()
+      }
+    })
+  })
+  process.exit(exitCode)
+}
+
+async function writeJsonAndExit(value, exitCode, stream = process.stdout) {
+  await writeAndExit(stream, `${JSON.stringify(value, null, 2)}\n`, exitCode)
+}
+
 function processCommand(pid) {
   if (!Number.isSafeInteger(pid) || pid <= 0) return ''
   try {
@@ -50,17 +72,14 @@ if (action === 'restart' || action === 'restart-preview') {
   const argumentsAfterAction = process.argv.slice(3)
   if ((action === 'restart' && (argumentsAfterAction.length !== 1 || argumentsAfterAction[0] !== '--preview')) ||
       (action === 'restart-preview' && argumentsAfterAction.length)) {
-    console.error('Usage: node .SYSTEMX/LAN/session-control.mjs restart --preview')
-    process.exit(2)
+    await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs restart --preview\n', 2)
   }
   const preview = createSessionRestartPreview({ repoRoot, session })
-  console.log(JSON.stringify(preview, null, 2))
-  process.exit(preview.canRestart ? 0 : 1)
+  await writeJsonAndExit(preview, preview.canRestart ? 0 : 1)
 }
 
 if (!session) {
-  console.log(JSON.stringify({ status: 'offline', reason: 'no-owned-session-record' }, null, 2))
-  process.exit(0)
+  await writeJsonAndExit({ status: 'offline', reason: 'no-owned-session-record' }, 0)
 }
 
 if (action === 'status') {
@@ -71,13 +90,11 @@ if (action === 'status') {
       belongsToRepo: belongsToRepository(pid, name, session),
     }]),
   )
-  console.log(JSON.stringify({ ...session, status: 'recorded', processes }, null, 2))
-  process.exit(0)
+  await writeJsonAndExit({ ...session, status: 'recorded', processes }, 0)
 }
 
 if (action !== 'stop') {
-  console.error('Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop|restart --preview|restart-preview]')
-  process.exit(2)
+  await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop|restart --preview|restart-preview]\n', 2)
 }
 
 const stop = executeSessionStopPlan({
@@ -92,8 +109,7 @@ const stop = executeSessionStopPlan({
   },
 })
 if (!stop.canStop) {
-  console.error(JSON.stringify({ ...stop, status: 'refused' }, null, 2))
-  process.exit(1)
+  await writeJsonAndExit({ ...stop, status: 'refused' }, 1, process.stderr)
 }
 if (stop.cleanup) console.log('[SYSTEMX] Local exited session record cleared; unrelated projects were not touched.')
 else {

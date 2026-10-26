@@ -18,6 +18,7 @@ import { dirname, extname, join, posix, relative, resolve, sep } from 'node:path
 import { fileURLToPath } from 'node:url'
 import net from 'node:net'
 import { inspectCurrentRepository, inspectExternalProject } from './Builder/importer/current-repo.mjs'
+import { hashSourceRevision, checkSourceRevision } from './Builder/source-revision.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
 import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
@@ -608,9 +609,11 @@ function readRequestBody(request) {
 function sourceRead(value) {
   const sourcePath = editableSourcePath(value)
   if (!sourcePath) return { error: 'Source path is outside the editable allowlist' }
+  const bytes = readFileSync(sourcePath.target)
   return {
     path: sourcePath.normalized,
-    content: readFileSync(sourcePath.target, 'utf8'),
+    content: bytes.toString('utf8'),
+    revision: hashSourceRevision(bytes),
     writable: true,
     policy: 'backup-diff-confirm',
   }
@@ -1177,9 +1180,16 @@ const server = createServer(async (request, response) => {
         if (containsSecretMarker(body.content)) throw new Error('Secret-shaped content is rejected by SYSTEMX')
         const sourcePath = editableSourcePath(body.path)
         if (!sourcePath) throw new Error('Source path is outside the editable allowlist')
-        const previous = readFileSync(sourcePath.target, 'utf8')
+        const previousBytes = readFileSync(sourcePath.target)
+        const precondition = checkSourceRevision(body.baseRevision, previousBytes)
+        if (precondition.statusCode !== 200) {
+          const { statusCode, ...failure } = precondition
+          sendJson(response, statusCode, failure)
+          return
+        }
+        const previous = previousBytes.toString('utf8')
         if (previous === body.content) {
-          sendJson(response, 200, { status: 'unchanged', path: sourcePath.normalized })
+          sendJson(response, 200, { status: 'unchanged', path: sourcePath.normalized, revision: precondition.revision })
           return
         }
         const backup = backupSource(sourcePath)
@@ -1195,6 +1205,7 @@ const server = createServer(async (request, response) => {
         sendJson(response, 200, {
           status: 'saved',
           path: sourcePath.normalized,
+          revision: hashSourceRevision(body.content),
           backup,
           previewUrl: `http://${host}:${appPort}/`,
           qualityNext: ['npm run typecheck', 'npm run lint', 'npm run build'],

@@ -115,7 +115,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root documents the complete template, native portals and host operations; the starter has a separate standalone scaffold introduction.",
-      "rootSha256": "2e5cbec98d9eaee213d2bcba1720802ab3dfe114636c6e5bfc2e39ab65817e23",
+      "rootSha256": "375ed6b036a4a006242c7baaabed323a2e2a6e50f6b87c10d3069ded9aaa0458",
       "starterSha256": "baf20c16fecb6fd11e47a5d60a2d5f70b208f21db55e06ae8d9415e721ca5c21"
     },
     {
@@ -176,7 +176,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root adds native SDK/query/browser dependencies and host setup, test, CI and release scripts; shared package identity/runtime/dependencies remain checked.",
-      "rootSha256": "fe6a98e00b2c539a95e9bb445d9979b029ab73ff0c402c2605b531570960202f",
+      "rootSha256": "53186e28b16f78130e0fb07f5cd5f04971509686b513eb8a01170ece43f86b56",
       "starterSha256": "27365c66834e43309edac534a2b6795b7c806530aac12aad840c28ca97acc57e"
     },
     {

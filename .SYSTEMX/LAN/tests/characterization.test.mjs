@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawn } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { request as httpRequest } from 'node:http'
 import { readFile } from 'node:fs/promises'
 import { test, before, after } from 'node:test'
@@ -217,6 +218,16 @@ test('source writes fail closed for paths outside the allowlist', async () => {
 
   assert.equal(response.status, 400)
   assert.match(body.error, /allowlist/i)
+})
+
+test('allowlisted source reads return a revision of exact on-disk bytes', async () => {
+  const source = await getJson('/api/builder/source?path=src%2Frouter.tsx')
+  const bytes = await readFile(resolve(repoRoot, 'src/router.tsx'))
+  assert.equal(source.response.status, 200)
+  assert.equal(source.body.content, bytes.toString('utf8'))
+  assert.equal(source.body.revision, createHash('sha256').update(bytes).digest('hex'))
+  assert.equal(source.body.writable, true)
+  assert.equal(source.body.policy, 'backup-diff-confirm')
 })
 
 test('source writes require confirmation and reject secret-shaped content', async () => {

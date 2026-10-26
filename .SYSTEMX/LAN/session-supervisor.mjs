@@ -29,7 +29,12 @@ export function parseSessionOptions(args = [], environment = {}) {
     } else if (argument === '--port') {
       options.ports.app = parsePort(args[++index], '--port')
       options.fixedOrigin = true
-    } else throw new Error(`Unknown session option: ${argument}. Use --host <127.0.0.1|localhost>, --port <1024-65535>, --fixed-origin or --help.`)
+    } else if (argument === '--emulator-import') {
+      const directory = args[++index]
+      if (typeof directory !== 'string' || !directory.trim() || directory.startsWith('--') || directory.includes('\0')) throw new Error('--emulator-import requires one existing Firebase export directory argument.')
+      if (options.emulatorImport !== undefined) throw new Error('--emulator-import may be supplied only once.')
+      options.emulatorImport = directory
+    } else throw new Error(`Unknown session option: ${argument}. Use --host <127.0.0.1|localhost>, --port <1024-65535>, --fixed-origin, --emulator-import <exportdir> or --help.`)
   }
   // These names match the LAN origin allowlist and Firebase client contract.
   // Accepting a wildcard or another address would expose local write controls.

@@ -1,0 +1,2440 @@
+{
+  "schemaVersion": 1,
+  "families": [
+    {
+      "id": "F001",
+      "name": "Source revisions and edit conflicts",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [],
+      "scope": "Allowlisted source reads, controlled editor drafts and confirmed local source saves.",
+      "refusal": "For the selected source operation, reject unsupported targets or stale revision preconditions before changing source or creating backups.",
+      "recovery": "Preserve pre-operation source bytes and affected drafts on refusal; require an explicit action before replacing a retained draft.",
+      "feedback": "Expose current source revision in read or conflict responses and loaded revision in the controlled editor when applicable.",
+      "evidence": "Exercise matching and stale revisions, comparing declared responses, source bytes, retained drafts and backup effects for the selected operation.",
+      "capabilities": [
+        {
+          "key": "source-revision",
+          "title": "Read source content revisions",
+          "outcome": "Every successful allowlisted source read returns a SHA-256 revision computed from exact on-disk source bytes without normalization or source modification."
+        },
+        {
+          "key": "editor-base-revision",
+          "title": "Retain editor base revisions",
+          "outcome": "Loading a controlled source editor binds its draft to the returned revision, and typing changes the draft without changing that baseline.",
+          "dependsOnCapabilities": [
+            "source-revision"
+          ]
+        },
+        {
+          "key": "stale-write-refusal",
+          "title": "Refuse stale confirmed source writes",
+          "outcome": "A confirmed save with a stale baseRevision returns a conflict before creating backups, promoting content or changing the current source file.",
+          "dependsOnCapabilities": [
+            "source-revision"
+          ]
+        },
+        {
+          "key": "conflict-draft-preservation",
+          "title": "Preserve drafts after source conflicts",
+          "outcome": "A rejected stale save leaves the complete unsaved editor draft intact and displays an explicit source conflict requiring an operator decision.",
+          "dependsOnCapabilities": [
+            "editor-base-revision",
+            "stale-write-refusal"
+          ]
+        },
+        {
+          "key": "explicit-source-reload",
+          "title": "Reload current source explicitly",
+          "outcome": "After a conflict, an explicit reload fetches the latest file and revision, replacing the draft only through that disclosed operator action.",
+          "dependsOnCapabilities": [
+            "conflict-draft-preservation"
+          ]
+        },
+        {
+          "key": "compare-draft-and-current-source",
+          "title": "Compare draft and current source",
+          "outcome": "A conflict comparison shows the retained draft beside current source with their respective revisions, identifying changed lines without automatically choosing either version.",
+          "dependsOnCapabilities": [
+            "conflict-draft-preservation",
+            "explicit-source-reload"
+          ]
+        },
+        {
+          "key": "detect-externally-removed-source",
+          "title": "Detect externally removed source",
+          "outcome": "When an opened file is removed externally, the editor reports its unavailable state and retains the draft without recreating the file.",
+          "dependsOnCapabilities": [
+            "editor-base-revision"
+          ]
+        },
+        {
+          "key": "detect-source-identity-replacement",
+          "title": "Detect source identity replacement",
+          "outcome": "Replacing an opened file at the same path invalidates its previous baseline whenever content differs, preventing an unnoticed overwrite of the replacement.",
+          "dependsOnCapabilities": [
+            "stale-write-refusal"
+          ]
+        },
+        {
+          "key": "confirm-intentional-conflict-replacement",
+          "title": "Confirm intentional conflict replacement",
+          "outcome": "An operator can preview an intentional overwrite against the latest revision, then separately confirm only that current replacement while preserving backup evidence.",
+          "dependsOnCapabilities": [
+            "stale-write-refusal",
+            "compare-draft-and-current-source"
+          ]
+        },
+        {
+          "key": "track-source-revision-after-text-saves",
+          "title": "Track source revision after text saves",
+          "outcome": "A successful guarded leaf-text save refreshes the mapped file revision and prevents another open editor from silently saving its older source baseline.",
+          "dependsOnCapabilities": [
+            "stale-write-refusal"
+          ]
+        },
+        {
+          "key": "refresh-revisions-after-guarded-font-changes",
+          "title": "Refresh revisions after guarded font changes",
+          "outcome": "Saving a confirmed project font change exposes the new stylesheet revision so open stylesheet drafts can detect the resulting external source change.",
+          "dependsOnCapabilities": [
+            "stale-write-refusal"
+          ]
+        },
+        {
+          "key": "bind-previews-to-source-baselines",
+          "title": "Bind previews to source baselines",
+          "outcome": "A source draft preview records its baseline revision and reports when the real source advances, without promoting preview content into the repository.",
+          "dependsOnCapabilities": [
+            "editor-base-revision",
+            "stale-write-refusal"
+          ]
+        },
+        {
+          "key": "report-no-op-source-saves",
+          "title": "Report no-op source saves",
+          "outcome": "Saving content identical to current source returns a clear no-change result and preserves the current revision without creating redundant backups.",
+          "dependsOnCapabilities": [
+            "source-revision",
+            "stale-write-refusal"
+          ]
+        },
+        {
+          "key": "distinguish-revision-and-transport-failures",
+          "title": "Distinguish revision and transport failures",
+          "outcome": "The editor presents revision conflicts separately from unavailable network or server responses, preserving drafts and exposing a suitable next action for each.",
+          "dependsOnCapabilities": [
+            "conflict-draft-preservation"
+          ]
+        },
+        {
+          "key": "expire-revision-baselines-on-target-switches",
+          "title": "Expire revision baselines on target switches",
+          "outcome": "Switching files binds the new draft to its own revision and cannot reuse a previous file revision to authorize the newly selected target.",
+          "dependsOnCapabilities": [
+            "editor-base-revision"
+          ]
+        },
+        {
+          "key": "recover-revision-bound-local-drafts",
+          "title": "Recover revision-bound local drafts",
+          "outcome": "An opted-in local draft recovery record retains its source path and baseline revision, and reopening compares that baseline before offering restoration.",
+          "dependsOnCapabilities": [
+            "editor-base-revision",
+            "explicit-source-reload"
+          ]
+        },
+        {
+          "key": "export-a-conflict-comparison",
+          "title": "Export a conflict comparison",
+          "outcome": "An operator can download a bounded comparison containing path, revisions and explicit draft content after seeing the export scope and confirming inclusion.",
+          "dependsOnCapabilities": [
+            "compare-draft-and-current-source"
+          ]
+        },
+        {
+          "key": "inspect-source-revision-history",
+          "title": "Inspect source revision history",
+          "outcome": "A local history view lists revisions associated with confirmed source operations and distinguishes observed external changes from builder-authored saves.",
+          "dependsOnCapabilities": [
+            "stale-write-refusal",
+            "track-source-revision-after-text-saves"
+          ]
+        },
+        {
+          "key": "reject-malformed-source-revisions",
+          "title": "Reject malformed source revisions",
+          "outcome": "Save requests containing malformed or wrong-length revision values receive a structured validation error before reading unrelated paths or creating any backup.",
+          "dependsOnCapabilities": [
+            "source-revision"
+          ]
+        },
+        {
+          "key": "explain-revision-scope-to-operators",
+          "title": "Explain revision scope to operators",
+          "outcome": "Source help explains that content hashes detect changed bytes for one allowed file and do not establish Git cleanliness, provider publication or exclusive ownership.",
+          "dependsOnCapabilities": [
+            "source-revision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F002",
+      "name": "Source access and path policy",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F001"
+      ],
+      "scope": "Repository-relative source selection, read eligibility and guarded write-path decisions.",
+      "refusal": "Refuse linked paths, traversal, unsupported extensions and private/runtime targets with contained errors.",
+      "recovery": "Keep the previous valid selection when a requested path is refused or disappears.",
+      "feedback": "Explain read eligibility and supported write kinds without exposing private directory inventories.",
+      "evidence": "Use temporary repositories with symlinks, path aliases, case differences and allowlist boundaries.",
+      "capabilities": [
+        {
+          "key": "browse-eligible-source-files",
+          "title": "Browse eligible source files",
+          "outcome": "A source browser lists only regular repository files allowed by the current policy, with bounded results and explicit omissions for oversized inventories."
+        },
+        {
+          "key": "filter-source-by-allowed-extension",
+          "title": "Filter source by allowed extension",
+          "outcome": "Operators can filter the eligible source list by supported extension without making excluded file types readable or changing the underlying access policy."
+        },
+        {
+          "key": "explain-source-path-refusals",
+          "title": "Explain source path refusals",
+          "outcome": "A refused path produces a stable reason category describing the policy boundary while avoiding disclosure of neighboring private filenames or file content."
+        },
+        {
+          "key": "resolve-repository-relative-source-paths",
+          "title": "Resolve repository-relative source paths",
+          "outcome": "The source picker accepts canonical repository-relative paths and visibly rejects absolute paths, traversal segments or ambiguous encodings before issuing a file operation."
+        },
+        {
+          "key": "detect-linked-source-ancestors",
+          "title": "Detect linked source ancestors",
+          "outcome": "Source inspection refuses files reached through linked parent directories even when the final filename appears allowlisted and remains inside the displayed path."
+        },
+        {
+          "key": "identify-supported-source-write-kinds",
+          "title": "Identify supported source write kinds",
+          "outcome": "Each eligible file reports whether literal text, font imports or other reviewed write kinds are supported, with unsupported structural edits clearly unavailable."
+        },
+        {
+          "key": "display-source-size-before-opening",
+          "title": "Display source size before opening",
+          "outcome": "The picker displays bounded file-size metadata and refuses an oversized read with its applicable limit instead of partially presenting content as complete."
+        },
+        {
+          "key": "separate-generated-and-authored-files",
+          "title": "Separate generated and authored files",
+          "outcome": "Eligible generated files carry a generated-origin label and remain read-only unless a reviewed ownership rule explicitly designates the corresponding writable artifact."
+        },
+        {
+          "key": "protect-runtime-and-backup-paths",
+          "title": "Protect runtime and backup paths",
+          "outcome": "Runtime state, temporary ingest, operation logs and source backups remain absent from normal source browsing and cannot be reached by manipulating picker queries."
+        },
+        {
+          "key": "handle-source-case-differences",
+          "title": "Handle source case differences",
+          "outcome": "Source lookup preserves exact tracked path casing and reports ambiguous case aliases without selecting a different file on case-insensitive platforms."
+        },
+        {
+          "key": "retain-safe-selections-across-refresh",
+          "title": "Retain safe selections across refresh",
+          "outcome": "Refreshing the eligible inventory preserves a still-valid selected file and clears an invalid selection without activating another row at the previous position."
+        },
+        {
+          "key": "search-source-metadata",
+          "title": "Search source metadata",
+          "outcome": "Operators can search eligible filenames and declared source tags without indexing file bodies, environment contents, secrets or temporary execution records."
+        },
+        {
+          "key": "inspect-source-rule-provenance",
+          "title": "Inspect source rule provenance",
+          "outcome": "A source policy view names the active allowlist rule for an eligible file and distinguishes that rule from a future proposed access expansion."
+        },
+        {
+          "key": "preview-a-path-policy-proposal",
+          "title": "Preview a path policy proposal",
+          "outcome": "An operator can inspect the exact paths affected by a proposed allowlist change in a temporary review without applying that change or opening files."
+        },
+        {
+          "key": "compare-source-access-policies",
+          "title": "Compare source access policies",
+          "outcome": "A read-only comparison shows added and removed path rules between two reviewed policy revisions, including which existing selections would lose eligibility."
+        },
+        {
+          "key": "handle-unavailable-source-encodings",
+          "title": "Handle unavailable source encodings",
+          "outcome": "Source reads report unsupported encodings explicitly and preserve existing drafts, rather than replacing invalid bytes or presenting a lossy decoding as authoritative content."
+        },
+        {
+          "key": "bound-source-directory-traversal",
+          "title": "Bound source directory traversal",
+          "outcome": "Eligible-file enumeration has declared depth and file-count budgets, reports truncation and avoids following recursive links or expanding excluded directory trees."
+        },
+        {
+          "key": "show-source-access-by-workspace",
+          "title": "Show source access by workspace",
+          "outcome": "The source picker displays its selected repository boundary and never combines eligible inventories from different workspaces into a single writable selection."
+        },
+        {
+          "key": "remember-nonsecret-source-navigation",
+          "title": "Remember nonsecret source navigation",
+          "outcome": "Optional picker preferences retain only eligible path and filter metadata; reopening revalidates those paths before reading content or enabling any operation."
+        },
+        {
+          "key": "export-an-eligible-source-inventory",
+          "title": "Export an eligible source inventory",
+          "outcome": "An explicit inventory export contains only public eligible path metadata and policy decisions, excluding file bodies, private paths, runtime values and credentials."
+        }
+      ]
+    },
+    {
+      "id": "F003",
+      "name": "Durable document and node identity",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F002"
+      ],
+      "scope": "Stable identities for imported pages, nodes and references across reviewed reimports.",
+      "refusal": "Reject duplicate identities, invalid references and ambiguous identity matches without choosing a target silently.",
+      "recovery": "Preserve the prior accepted identity map when reconciliation fails and expose unresolved candidates.",
+      "feedback": "Distinguish durable source identity from transient DOM references and display reconciliation decisions.",
+      "evidence": "Reimport reordered and replaced fixtures and verify stable references, ambiguity refusal and no source mutation.",
+      "capabilities": [
+        {
+          "key": "assign-stable-document-identities",
+          "title": "Assign stable document identities",
+          "outcome": "Importing the same declared document twice produces the same durable identity while separate declared source documents receive distinct identities within the selected workspace."
+        },
+        {
+          "key": "assign-stable-page-identities",
+          "title": "Assign stable page identities",
+          "outcome": "Pages retain durable identifiers across label changes and inventory order changes when their reviewed source identity remains unchanged in the same workspace."
+        },
+        {
+          "key": "assign-stable-node-identities",
+          "title": "Assign stable node identities",
+          "outcome": "Imported nodes receive durable identifiers tied to reviewed source anchors, and a repeated import preserves those identifiers without depending on live DOM object references."
+        },
+        {
+          "key": "reject-duplicate-node-identifiers",
+          "title": "Reject duplicate node identifiers",
+          "outcome": "Import validation reports every duplicate node identifier within its bounded document scope and leaves the previously accepted graph and source files unchanged."
+        },
+        {
+          "key": "preserve-identity-across-sibling-reorder",
+          "title": "Preserve identity across sibling reorder",
+          "outcome": "Reordering compatible source siblings preserves their durable identifiers and updates order references without confusing two elements that share the same visible label."
+        },
+        {
+          "key": "reconcile-renamed-source-files",
+          "title": "Reconcile renamed source files",
+          "outcome": "A proposed source-file rename displays identity match evidence and ambiguity before an operator accepts transferring existing document references to the new source path."
+        },
+        {
+          "key": "distinguish-replacement-from-modification",
+          "title": "Distinguish replacement from modification",
+          "outcome": "Reimport distinguishes a replaced source object from a modification when its identity evidence changes, preventing old comments or commands from silently targeting the replacement."
+        },
+        {
+          "key": "resolve-explicit-authored-identifiers",
+          "title": "Resolve explicit authored identifiers",
+          "outcome": "A supported authored identity annotation becomes an import anchor only after validation of uniqueness, permitted syntax and its relationship to the selected source document."
+        },
+        {
+          "key": "bound-fallback-identity-matching",
+          "title": "Bound fallback identity matching",
+          "outcome": "Imports report when stable annotations are absent and use a documented bounded matching rule, leaving ambiguous matches unresolved instead of assigning arbitrary previous identities."
+        },
+        {
+          "key": "inspect-identity-provenance",
+          "title": "Inspect identity provenance",
+          "outcome": "Selecting a durable object reveals which source anchor or document allocation established its identity and whether the current live preview has a matching representation."
+        },
+        {
+          "key": "maintain-identity-aliases-during-migration",
+          "title": "Maintain identity aliases during migration",
+          "outcome": "A reviewed migration can record a retired identifier alias with its replacement and provenance, while rejecting loops or aliases that resolve outside the selected document."
+        },
+        {
+          "key": "reject-cross-document-identity-confusion",
+          "title": "Reject cross-document identity confusion",
+          "outcome": "A command addressed to one document cannot resolve a matching node identifier in another document, even when both source trees contain identical labels or routes."
+        },
+        {
+          "key": "invalidate-identities-after-workspace-switches",
+          "title": "Invalidate identities after workspace switches",
+          "outcome": "Switching workspaces discards transient lookup caches and revalidates durable references against the new workspace identity rather than reusing previous source path matches."
+        },
+        {
+          "key": "locate-objects-by-durable-reference",
+          "title": "Locate objects by durable reference",
+          "outcome": "A bounded lookup resolves a qualified durable document and node reference to its current read model or returns an explicit missing or ambiguous result."
+        },
+        {
+          "key": "report-orphaned-durable-references",
+          "title": "Report orphaned durable references",
+          "outcome": "Reimport lists references whose target no longer exists and preserves their original provenance, without attaching those records to a nearby node automatically."
+        },
+        {
+          "key": "compare-identity-maps-before-import",
+          "title": "Compare identity maps before import",
+          "outcome": "A reconciliation preview lists preserved, added, retired and ambiguous identifiers before accepting an import, with stable counts and downloadable bounded metadata."
+        },
+        {
+          "key": "version-identity-mapping-rules",
+          "title": "Version identity mapping rules",
+          "outcome": "Identity mappings declare the reconciliation rule version that produced them so a later importer can propose an explicit migration rather than silently reinterpret anchors."
+        },
+        {
+          "key": "preserve-identities-in-document-export",
+          "title": "Preserve identities in document export",
+          "outcome": "Exporting and reopening a compatible document retains durable identifiers and qualified references while clearing transient DOM handles and session-specific runtime metadata."
+        },
+        {
+          "key": "test-identity-collision-isolation",
+          "title": "Test identity collision isolation",
+          "outcome": "Two temporary repositories with matching relative source paths receive workspace-qualified identities that cannot authorize commands against each other's imported objects or source files."
+        },
+        {
+          "key": "explain-identity-confidence",
+          "title": "Explain identity confidence",
+          "outcome": "The object inspector distinguishes explicit authored identity, reviewed migration and heuristic matching confidence so an operator understands why an object is writable or unresolved."
+        }
+      ]
+    },
+    {
+      "id": "F004",
+      "name": "Source ownership and mapping",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F002",
+        "F003"
+      ],
+      "scope": "Object ownership modes, supported source spans and write responsibility.",
+      "refusal": "Refuse edits with ambiguous spans, mixed ownership or unsupported adapters before proposing source changes.",
+      "recovery": "Preserve source authority and previously accepted mappings when a new mapping cannot be validated.",
+      "feedback": "Label source-owned, document-owned, hybrid-controlled and unmapped objects with supported operations.",
+      "evidence": "Compare mapping fixtures against exact source spans and verify unrelated content remains unchanged.",
+      "capabilities": [
+        {
+          "key": "label-source-owned-objects",
+          "title": "Label source-owned objects",
+          "outcome": "Imported objects identify their source-owned mode and explain that authored repository content remains authoritative, with only declared supported semantic operations available for editing."
+        },
+        {
+          "key": "label-document-owned-artifacts",
+          "title": "Label document-owned artifacts",
+          "outcome": "Generated artifacts identify their owning document and output boundary so an operator can distinguish supported regeneration from direct edits to unrelated authored files."
+        },
+        {
+          "key": "label-hybrid-ownership-boundaries",
+          "title": "Label hybrid ownership boundaries",
+          "outcome": "A hybrid-controlled object declares which fields belong to source and which belong to its document, and unsupported overlapping edits remain unavailable until reviewed."
+        },
+        {
+          "key": "expose-unmapped-preview-elements",
+          "title": "Expose unmapped preview elements",
+          "outcome": "Selecting an unmapped preview element shows its runtime location and unavailable source-write state instead of inventing a source path from its visible text."
+        },
+        {
+          "key": "inspect-exact-source-spans",
+          "title": "Inspect exact source spans",
+          "outcome": "A mapped object can reveal the bounded source span and its content revision that support its current editable fields, without opening unrelated files."
+        },
+        {
+          "key": "show-adapter-write-capabilities",
+          "title": "Show adapter write capabilities",
+          "outcome": "The ownership inspector lists the installed adapter's supported literal, style, structure or generated operations and marks all other operation kinds as unsupported for the selection."
+        },
+        {
+          "key": "refuse-ambiguous-literal-mappings",
+          "title": "Refuse ambiguous literal mappings",
+          "outcome": "A literal-text edit with multiple compatible source occurrences displays the ambiguity and retains the draft rather than choosing the first matching occurrence in the file."
+        },
+        {
+          "key": "detect-mapping-revision-drift",
+          "title": "Detect mapping revision drift",
+          "outcome": "A source mapping becomes stale when its bound file revision changes, and the inspector requires reconciliation before enabling another mapped source write for that object."
+        },
+        {
+          "key": "map-shared-shell-elements",
+          "title": "Map shared shell elements",
+          "outcome": "Supported header, footer and navigation selections resolve to their declared shared source owner, making the broader impact visible before a guarded shared-file change."
+        },
+        {
+          "key": "map-route-specific-content",
+          "title": "Map route-specific content",
+          "outcome": "Supported page selections resolve through the current route and reviewed page inventory, keeping identical text on different pages associated with its own source owner."
+        },
+        {
+          "key": "inspect-generated-output-provenance",
+          "title": "Inspect generated output provenance",
+          "outcome": "Selecting an eligible generated artifact shows the source document, generator version and output revision that produced it, without treating that provenance as permission to regenerate."
+        },
+        {
+          "key": "preview-ownership-changes",
+          "title": "Preview ownership changes",
+          "outcome": "An ownership migration proposal lists objects, fields and source paths whose authority would change and requires separate acceptance before altering any active mapping."
+        },
+        {
+          "key": "detect-conflicting-owner-claims",
+          "title": "Detect conflicting owner claims",
+          "outcome": "Two adapters claiming write authority over the same source span produce an explicit conflict that disables writes while leaving both claims visible for review."
+        },
+        {
+          "key": "separate-instance-and-definition-ownership",
+          "title": "Separate instance and definition ownership",
+          "outcome": "A component instance inspector distinguishes instance-owned properties from definition-owned structure so editing an instance cannot silently modify every use of its shared definition."
+        },
+        {
+          "key": "track-read-only-source-regions",
+          "title": "Track read-only source regions",
+          "outcome": "Unsupported expressions and opaque source regions retain their exact source ownership metadata and remain inspectable without being converted into editable generated content during import."
+        },
+        {
+          "key": "respect-external-component-ownership",
+          "title": "Respect external component ownership",
+          "outcome": "An externally authored component retains its external source owner and supported property contract, while its internal structure stays read-only in the visual designer."
+        },
+        {
+          "key": "compare-mapping-coverage",
+          "title": "Compare mapping coverage",
+          "outcome": "A bounded report counts mapped, partially mapped, stale and unmapped objects in the selected document, exposing excluded scope instead of claiming complete source coverage."
+        },
+        {
+          "key": "explain-operation-impact-ownership",
+          "title": "Explain operation impact ownership",
+          "outcome": "Before a supported operation, the inspector identifies every declared source owner and shared artifact affected, with unavailable ownership evidence blocking the proposed write."
+        },
+        {
+          "key": "validate-source-maps-after-promotion",
+          "title": "Validate source maps after promotion",
+          "outcome": "After a confirmed source change, the adapter revalidates affected mappings against the promoted revision and reports unresolved spans without repairing unrelated source automatically."
+        },
+        {
+          "key": "export-ownership-diagnostics",
+          "title": "Export ownership diagnostics",
+          "outcome": "An explicit diagnostics export contains qualified object identifiers, ownership modes and bounded source metadata while excluding source bodies, credentials, private runtime paths and session tokens."
+        }
+      ]
+    },
+    {
+      "id": "F005",
+      "name": "Canonical document graph",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F003",
+        "F004"
+      ],
+      "scope": "Normalized document read models, graph invariants and bounded import structure.",
+      "refusal": "Reject cycles, broken references, unsupported schema versions and oversized graphs without partial acceptance.",
+      "recovery": "Retain the previous accepted document and return complete bounded diagnostics when an import fails.",
+      "feedback": "Display graph version, revision, object counts and unsupported imported regions distinctly.",
+      "evidence": "Validate literal graph fixtures including cycles, reparenting, schema migration and repeated import.",
+      "capabilities": [
+        {
+          "key": "import-a-normalized-document-read-model",
+          "title": "Import a normalized document read model",
+          "outcome": "A supported import produces a normalized document containing explicit page, node and reference collections while preserving source-owned objects and performing no source write."
+        },
+        {
+          "key": "validate-document-root-references",
+          "title": "Validate document root references",
+          "outcome": "Every imported page resolves to an existing root node in the same document, and a missing or cross-document root prevents accepting the new graph."
+        },
+        {
+          "key": "reject-cyclic-node-hierarchies",
+          "title": "Reject cyclic node hierarchies",
+          "outcome": "Graph validation detects a node ancestry cycle and reports its bounded reference path without hanging traversal or modifying the previously accepted document state."
+        },
+        {
+          "key": "validate-parent-child-reciprocity",
+          "title": "Validate parent child reciprocity",
+          "outcome": "Each parent-child relationship agrees in both directions, and mismatches are reported as import errors rather than silently repaired by assigning a different parent."
+        },
+        {
+          "key": "preserve-child-ordering",
+          "title": "Preserve child ordering",
+          "outcome": "The canonical graph stores explicit sibling order, and exporting then reopening a valid document reproduces the same order without depending on object-key enumeration."
+        },
+        {
+          "key": "represent-opaque-imported-nodes",
+          "title": "Represent opaque imported nodes",
+          "outcome": "Unsupported source regions appear as labeled opaque nodes with preserved source references, preventing the designer from claiming editable structure it cannot safely round-trip."
+        },
+        {
+          "key": "bound-document-import-size",
+          "title": "Bound document import size",
+          "outcome": "Imports enforce declared byte, node, reference and depth budgets and report the exceeded limit before accepting a partial or silently truncated canonical document."
+        },
+        {
+          "key": "validate-document-schema-versions",
+          "title": "Validate document schema versions",
+          "outcome": "A document declares its schema version, and unsupported future versions receive an actionable refusal without being downgraded or rewritten using the current schema."
+        },
+        {
+          "key": "compute-canonical-document-revisions",
+          "title": "Compute canonical document revisions",
+          "outcome": "Equivalent normalized documents produce the same canonical revision regardless of insignificant JSON key order, while meaningful field or sibling-order changes alter the revision."
+        },
+        {
+          "key": "inspect-graph-validation-findings",
+          "title": "Inspect graph validation findings",
+          "outcome": "Operators can filter bounded validation findings by severity, object and reference type, with stable identifiers linking each finding to the affected imported object."
+        },
+        {
+          "key": "separate-runtime-from-canonical-fields",
+          "title": "Separate runtime from canonical fields",
+          "outcome": "Live DOM handles, process identifiers, session tokens and temporary preview coordinates never become serialized canonical document fields or affect its durable content revision."
+        },
+        {
+          "key": "resolve-qualified-document-references",
+          "title": "Resolve qualified document references",
+          "outcome": "Graph lookups require a document-qualified reference and return exactly one compatible object, with missing or wrong-kind targets producing explicit typed errors."
+        },
+        {
+          "key": "retain-unsupported-schema-extensions",
+          "title": "Retain unsupported schema extensions",
+          "outcome": "A reviewed extension namespace can preserve unknown read-only metadata without turning those fields into executable commands or silently claiming the current editor understands them."
+        },
+        {
+          "key": "compare-canonical-graph-revisions",
+          "title": "Compare canonical graph revisions",
+          "outcome": "A read-only comparison reports added, removed, changed and reordered objects between two accepted graph revisions while preserving both original normalized documents unchanged."
+        },
+        {
+          "key": "migrate-documents-through-reviewed-steps",
+          "title": "Migrate documents through reviewed steps",
+          "outcome": "A schema migration preview lists its ordered transformations and unsupported fields, then applies only the explicitly accepted version transition in an isolated working copy."
+        },
+        {
+          "key": "validate-component-references",
+          "title": "Validate component references",
+          "outcome": "Every declared component reference resolves to a compatible definition version or remains an explicit unresolved dependency that blocks operations requiring that component's structure."
+        },
+        {
+          "key": "validate-collection-references",
+          "title": "Validate collection references",
+          "outcome": "Collection references declare an expected schema identity and version, and incompatible or missing schemas prevent accepting bindings that depend on their fields or relationships."
+        },
+        {
+          "key": "serialize-documents-deterministically",
+          "title": "Serialize documents deterministically",
+          "outcome": "Repeated serialization of an unchanged canonical graph produces identical bytes with documented ordering, without adding timestamps or host-specific paths to the reusable document representation."
+        },
+        {
+          "key": "inspect-document-graph-statistics",
+          "title": "Inspect document graph statistics",
+          "outcome": "A bounded graph summary reports page, node, component, collection and unresolved-reference counts using the accepted graph revision as the explicit calculation basis."
+        },
+        {
+          "key": "recover-the-previous-valid-graph",
+          "title": "Recover the previous valid graph",
+          "outcome": "A failed reimport leaves the previous accepted graph available for inspection and explains which new source revision could not be reconciled into a valid document."
+        }
+      ]
+    },
+    {
+      "id": "F006",
+      "name": "Versioned API contracts",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F005"
+      ],
+      "scope": "Typed LAN query and command envelopes with explicit capability versions.",
+      "refusal": "Reject unsupported versions, unknown fields and invalid payloads before domain code can mutate state.",
+      "recovery": "Return structured failures with request identity and preserve previous valid client state.",
+      "feedback": "Expose schema versions, supported operations and actionable field-level validation messages.",
+      "evidence": "Exercise contract fixtures, unsupported versions, malformed input and compatibility negotiation without provider access.",
+      "capabilities": [
+        {
+          "key": "advertise-the-lan-api-version",
+          "title": "Advertise the LAN API version",
+          "outcome": "A local discovery response declares the current API contract version and compatible client versions, without implying every planned command is implemented or currently authorized."
+        },
+        {
+          "key": "expose-query-contract-descriptors",
+          "title": "Expose query contract descriptors",
+          "outcome": "Each implemented query advertises its input schema, bounded result shape and read scope so clients can discover supported inspection operations without executing arbitrary server functions."
+        },
+        {
+          "key": "expose-command-contract-descriptors",
+          "title": "Expose command contract descriptors",
+          "outcome": "Each implemented command declares required capability, confirmation, revision preconditions and effect scope, while unimplemented command descriptors remain explicitly unavailable for execution."
+        },
+        {
+          "key": "validate-exact-command-envelopes",
+          "title": "Validate exact command envelopes",
+          "outcome": "A command request accepts only its declared envelope fields and reports unknown or incorrectly typed fields before resolving a target or changing local state."
+        },
+        {
+          "key": "validate-query-input-schemas",
+          "title": "Validate query input schemas",
+          "outcome": "Invalid query parameters receive bounded structured field errors instead of being coerced into different filters, paths, identifiers or result limits without operator visibility."
+        },
+        {
+          "key": "negotiate-compatible-client-contracts",
+          "title": "Negotiate compatible client contracts",
+          "outcome": "A client with a supported older contract can discover compatible operations and unavailable newer fields without silently invoking a different version of an existing command."
+        },
+        {
+          "key": "refuse-unsupported-api-versions",
+          "title": "Refuse unsupported API versions",
+          "outcome": "Requests for an unsupported API version return a stable incompatibility result that identifies supported versions and leaves the selected repository and current client state unchanged."
+        },
+        {
+          "key": "publish-typed-error-categories",
+          "title": "Publish typed error categories",
+          "outcome": "Contract responses distinguish validation, missing target, conflict, capability, confirmation and internal failures with stable machine-readable categories and bounded operator-facing explanations for each case."
+        },
+        {
+          "key": "validate-response-contracts",
+          "title": "Validate response contracts",
+          "outcome": "Development checks detect a server response that violates its declared result schema and report the endpoint and mismatch without substituting fabricated successful data in the client."
+        },
+        {
+          "key": "define-pagination-contracts",
+          "title": "Define pagination contracts",
+          "outcome": "Paginated queries declare cursor or offset behavior, maximum page size and total-count scope, with malformed pagination rejected rather than silently reinterpreted as another page."
+        },
+        {
+          "key": "version-capability-identifiers",
+          "title": "Version capability identifiers",
+          "outcome": "Capability descriptors use stable versioned identities, allowing a client to detect a changed operation contract without relying on a translated button label or route filename."
+        },
+        {
+          "key": "separate-read-and-mutation-contracts",
+          "title": "Separate read and mutation contracts",
+          "outcome": "Query envelopes cannot request mutations through hidden flags, and command envelopes always expose their effect and required authority before being accepted by domain handlers."
+        },
+        {
+          "key": "describe-contract-deprecations",
+          "title": "Describe contract deprecations",
+          "outcome": "Discovery metadata identifies deprecated contracts, supported replacement operations and the expected compatibility window while existing supported behavior remains documented until an explicit removal release."
+        },
+        {
+          "key": "inspect-contract-examples-locally",
+          "title": "Inspect contract examples locally",
+          "outcome": "Operators can view synthetic valid and invalid request examples for a selected contract without sending those examples or storing project-specific values in reusable contract files."
+        },
+        {
+          "key": "validate-union-payload-discriminators",
+          "title": "Validate union payload discriminators",
+          "outcome": "Requests containing a mismatched command kind and payload variant fail validation before their fields are passed to a handler for a different supported operation."
+        },
+        {
+          "key": "bound-validation-diagnostics",
+          "title": "Bound validation diagnostics",
+          "outcome": "Schema validation returns a declared maximum number of findings with an omitted-count indicator, preventing maliciously large payloads from producing unbounded error responses or logs."
+        },
+        {
+          "key": "define-nullable-and-absent-semantics",
+          "title": "Define nullable and absent semantics",
+          "outcome": "Contract documentation and validators distinguish an absent field from an explicit null value, and each accepted form produces the documented effect without accidental defaulting."
+        },
+        {
+          "key": "inspect-contract-compatibility-changes",
+          "title": "Inspect contract compatibility changes",
+          "outcome": "A local comparison lists breaking and additive schema changes between reviewed API versions so an operator can assess affected clients before selecting a new contract set."
+        },
+        {
+          "key": "export-public-contract-metadata",
+          "title": "Export public contract metadata",
+          "outcome": "An explicit contract export contains only reviewed public schemas and capability descriptors, excluding session authority, machine paths, provider configuration and private runtime values from the archive."
+        },
+        {
+          "key": "bind-tests-to-contract-versions",
+          "title": "Bind tests to contract versions",
+          "outcome": "A contract test receipt names the exact API schema revision and implemented operation set it exercised, keeping generated type availability separate from accepted runtime behavior."
+        }
+      ]
+    },
+    {
+      "id": "F007",
+      "name": "Transport and request lifecycle",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F006"
+      ],
+      "scope": "Loopback HTTP handling, request bounds, cancellation and correlated responses.",
+      "refusal": "Reject invalid hosts, origins, content types, methods and oversized bodies before dispatch.",
+      "recovery": "Cancel or time out only owned request work and retain client drafts after interrupted communication.",
+      "feedback": "Show request progress, cancellation, retry eligibility and sanitized correlation identifiers.",
+      "evidence": "Use temporary local servers for split bodies, disconnects, invalid headers, timeouts and duplicate submissions.",
+      "capabilities": [
+        {
+          "key": "assign-request-correlation-identifiers",
+          "title": "Assign request correlation identifiers",
+          "outcome": "Every accepted local request receives a bounded nonsecret correlation identifier that connects its response and sanitized diagnostics without disclosing session tokens or source content."
+        },
+        {
+          "key": "enforce-declared-http-methods",
+          "title": "Enforce declared HTTP methods",
+          "outcome": "Each endpoint accepts only its declared methods and returns an explicit method refusal for unsupported verbs without invoking a domain handler or changing any local state."
+        },
+        {
+          "key": "validate-json-content-types",
+          "title": "Validate JSON content types",
+          "outcome": "Mutation endpoints require their documented JSON content type and reject incompatible bodies before parsing them as commands or accepting content from unintended browser submission formats."
+        },
+        {
+          "key": "bound-request-body-bytes",
+          "title": "Bound request body bytes",
+          "outcome": "The local transport counts incoming body bytes against a declared limit and terminates oversized input with a structured refusal before domain validation or backup creation."
+        },
+        {
+          "key": "handle-incomplete-request-bodies",
+          "title": "Handle incomplete request bodies",
+          "outcome": "A client disconnecting midway through a body produces a canceled request outcome and cannot leave partial domain state, temporary source output or a successful operation receipt."
+        },
+        {
+          "key": "enforce-request-parse-deadlines",
+          "title": "Enforce request parse deadlines",
+          "outcome": "A request exceeding its documented body-read deadline is canceled and reported without blocking subsequent local inspection requests or treating incomplete payload bytes as a valid command."
+        },
+        {
+          "key": "reject-invalid-host-headers",
+          "title": "Reject invalid host headers",
+          "outcome": "Requests with host values outside the active loopback authority receive a refusal before serving dashboard content, contract data, source files or mutation endpoints for another authority."
+        },
+        {
+          "key": "reject-mismatched-browser-origins",
+          "title": "Reject mismatched browser origins",
+          "outcome": "Origin-bearing requests outside the active LAN and selected Vite origins fail closed while preserving the current local session and its existing authorized request behavior."
+        },
+        {
+          "key": "distinguish-transport-and-domain-errors",
+          "title": "Distinguish transport and domain errors",
+          "outcome": "Clients receive separate transport-failure and domain-refusal states so they can retain drafts and avoid presenting an unavailable server as a rejected source revision or invalid document."
+        },
+        {
+          "key": "cancel-obsolete-read-requests",
+          "title": "Cancel obsolete read requests",
+          "outcome": "Switching a selected file or document cancels the client's obsolete read request and prevents its later response from replacing the new selection's state or revision baseline."
+        },
+        {
+          "key": "ignore-stale-response-generations",
+          "title": "Ignore stale response generations",
+          "outcome": "Responses carry enough request context for the client to discard an older generation after a newer accepted read, preserving the latest selected target and unsaved draft."
+        },
+        {
+          "key": "advertise-safe-retry-semantics",
+          "title": "Advertise safe retry semantics",
+          "outcome": "An operation descriptor indicates whether retry is read-only, idempotent or requires a fresh proposal, preventing the client from automatically repeating an uncertain non-idempotent mutation request."
+        },
+        {
+          "key": "detect-duplicate-command-submissions",
+          "title": "Detect duplicate command submissions",
+          "outcome": "A supported idempotency key maps repeated compatible submissions to the same command result, while reusing that key for different content yields an explicit conflict without another effect."
+        },
+        {
+          "key": "bound-response-payloads",
+          "title": "Bound response payloads",
+          "outcome": "Large inspection results use declared pagination or explicit truncation metadata, and the server never silently returns a partial result labeled as a complete source or document export."
+        },
+        {
+          "key": "normalize-transport-error-output",
+          "title": "Normalize transport error output",
+          "outcome": "Unexpected internal transport failures return a stable sanitized response without stack traces, absolute host paths, session tokens, credentials or fragments of a refused request body."
+        },
+        {
+          "key": "handle-unavailable-lan-connections",
+          "title": "Handle unavailable LAN connections",
+          "outcome": "Losing the LAN connection leaves visible drafts and current inspection context intact, and reconnecting requires a fresh status read before mutation controls become available again."
+        },
+        {
+          "key": "separate-dashboard-and-api-caching",
+          "title": "Separate dashboard and API caching",
+          "outcome": "Responses declare appropriate caching behavior so session-bearing dashboard HTML and revision-sensitive API results cannot be reused as authority after a session or source target changes."
+        },
+        {
+          "key": "validate-endpoint-query-duplication",
+          "title": "Validate endpoint query duplication",
+          "outcome": "Repeated singleton query parameters are rejected or handled by an explicitly documented rule, preventing disagreement between the transport, validator and domain handler about the selected target."
+        },
+        {
+          "key": "report-rate-and-concurrency-limits",
+          "title": "Report rate and concurrency limits",
+          "outcome": "Local request throttling reports its active scope and retry guidance while preserving in-flight confirmed commands and keeping basic health inspection available within documented resource limits."
+        },
+        {
+          "key": "inspect-transport-diagnostics-locally",
+          "title": "Inspect transport diagnostics locally",
+          "outcome": "A bounded transport diagnostics view lists method, route category, duration and outcome for recent local requests without exposing bodies, authorization values or private source paths."
+        }
+      ]
+    },
+    {
+      "id": "F008",
+      "name": "Command proposals and atomic planning",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F005",
+        "F006",
+        "F007"
+      ],
+      "scope": "Revision-bound command proposals, effects, preconditions and commit decisions.",
+      "refusal": "Refuse stale targets, invalid capabilities, overlapping writes and missing explicit confirmations before effects.",
+      "recovery": "Discard canceled proposals without state changes and retain a reviewable explanation of failed preconditions.",
+      "feedback": "Show semantic effects, affected owners and the exact revision checked by each proposal.",
+      "evidence": "Compare complete temporary document and source states before proposal, cancellation, refusal and confirmed execution.",
+      "capabilities": [
+        {
+          "key": "create-revision-bound-command-proposals",
+          "title": "Create revision-bound command proposals",
+          "outcome": "A supported edit first produces a proposal containing its command identity, target revision and declared effects, with no domain or source mutation during proposal creation."
+        },
+        {
+          "key": "inspect-semantic-command-effects",
+          "title": "Inspect semantic command effects",
+          "outcome": "A proposal lists meaningful added, removed, changed or reordered objects and affected source owners so an operator can review impact before authorizing any implementation-specific file change."
+        },
+        {
+          "key": "validate-command-target-kinds",
+          "title": "Validate command target kinds",
+          "outcome": "A command expecting a page, node or component refuses a target of another kind before evaluating its effects or modifying any existing document object or source mapping."
+        },
+        {
+          "key": "check-command-capability-prerequisites",
+          "title": "Check command capability prerequisites",
+          "outcome": "Proposal creation explains missing capabilities and ownership support for the selected operation, and unavailable prerequisites cannot be bypassed by submitting the command directly through another client."
+        },
+        {
+          "key": "bind-confirmations-to-proposals",
+          "title": "Bind confirmations to proposals",
+          "outcome": "A required confirmation identifies one proposal and revision so confirmation text entered for an older or different operation cannot authorize a newly generated effect set or target."
+        },
+        {
+          "key": "cancel-a-command-proposal",
+          "title": "Cancel a command proposal",
+          "outcome": "An operator can cancel an uncommitted proposal and retain the original document and source bytes, with the interface returning to its prior selection and draft context."
+        },
+        {
+          "key": "expire-stale-command-proposals",
+          "title": "Expire stale command proposals",
+          "outcome": "A proposal becomes unavailable when its bound document or source revision changes, and execution requires a newly reviewed proposal instead of silently rebasing onto current content."
+        },
+        {
+          "key": "detect-overlapping-write-sets",
+          "title": "Detect overlapping write sets",
+          "outcome": "A multi-effect proposal identifies overlapping or conflicting source and document writes and refuses atomic execution rather than allowing handler order to decide which result wins."
+        },
+        {
+          "key": "validate-complete-command-preconditions",
+          "title": "Validate complete command preconditions",
+          "outcome": "Every declared precondition is checked before effects begin, and a failure names the relevant target and condition without partially applying earlier valid effects from the same proposal."
+        },
+        {
+          "key": "preview-multi-object-command-scope",
+          "title": "Preview multi-object command scope",
+          "outcome": "A batch proposal enumerates its bounded target set and unaffected scope, preventing a selection change or later query result from expanding the effects after operator review."
+        },
+        {
+          "key": "compute-proposal-fingerprints",
+          "title": "Compute proposal fingerprints",
+          "outcome": "Equivalent normalized proposals produce a stable content fingerprint that changes whenever target, revision, precondition or effect content changes, independent of presentation labels and timestamps."
+        },
+        {
+          "key": "refuse-unknown-command-implementations",
+          "title": "Refuse unknown command implementations",
+          "outcome": "A valid-looking command envelope with an unimplemented operation kind receives an unavailable result and cannot fall through to a generic source or arbitrary shell execution handler."
+        },
+        {
+          "key": "plan-source-and-document-promotion",
+          "title": "Plan source and document promotion",
+          "outcome": "A supported hybrid command prepares both normalized document and source outputs and validates their consistency before a confirmed promotion can make either accepted state visible."
+        },
+        {
+          "key": "show-command-validation-findings",
+          "title": "Show command validation findings",
+          "outcome": "Proposal review groups blocking and advisory findings with target references, and execution remains unavailable while any required precondition or schema validation finding is unresolved."
+        },
+        {
+          "key": "separate-planning-from-execution-authority",
+          "title": "Separate planning from execution authority",
+          "outcome": "A client allowed to inspect or propose an operation cannot execute it without the command's independent required authority, confirmation and current revision checks at the commit boundary."
+        },
+        {
+          "key": "bound-command-batch-resources",
+          "title": "Bound command batch resources",
+          "outcome": "A proposal exceeding declared target, effect, source-byte or execution budgets is refused with exact exceeded limits before creating backups or applying a partial subset of its intended effects."
+        },
+        {
+          "key": "review-dependency-affecting-commands",
+          "title": "Review dependency-affecting commands",
+          "outcome": "A proposal that changes references identifies dependent objects and required migrations, and unresolved dependencies block the operation instead of silently deleting or retargeting those references."
+        },
+        {
+          "key": "preserve-proposal-review-drafts",
+          "title": "Preserve proposal review drafts",
+          "outcome": "Editing a proposal's user-facing notes or closing its review panel preserves the underlying accepted state and cannot itself confirm, commit or change the proposal's effect fingerprint."
+        },
+        {
+          "key": "inspect-command-implementation-versions",
+          "title": "Inspect command implementation versions",
+          "outcome": "Each proposal records the handler and contract versions used to compute its effects so replay or later review can distinguish a compatible implementation from a changed semantic operation."
+        },
+        {
+          "key": "export-command-review-metadata",
+          "title": "Export command review metadata",
+          "outcome": "An explicit review export contains a bounded semantic effect summary, target revisions and capability requirements, with source bodies included only through a separately disclosed operator choice."
+        }
+      ]
+    },
+    {
+      "id": "F009",
+      "name": "Command journal and undo history",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F008"
+      ],
+      "scope": "Accepted local command records, inverse effects, undo/redo and deterministic replay.",
+      "refusal": "Refuse incompatible, stale or corrupted history instead of replaying against a different accepted state.",
+      "recovery": "Apply undo or redo atomically and preserve original journal records when a replay cannot be validated.",
+      "feedback": "Distinguish pending, committed, undone, redone and refused operations with revision-linked evidence.",
+      "evidence": "Replay literal command sequences and compare complete document/source hashes across undo, redo and failures.",
+      "capabilities": [
+        {
+          "key": "append-accepted-command-records",
+          "title": "Append accepted command records",
+          "outcome": "A successful supported command appends one immutable journal record identifying its input revision, resulting revision and bounded declared effects only after the atomic commit is complete."
+        },
+        {
+          "key": "inspect-journal-entries-by-target",
+          "title": "Inspect journal entries by target",
+          "outcome": "Operators can filter accepted command metadata by qualified target and command kind without exposing unrelated source bodies or changing the order and content of the underlying journal."
+        },
+        {
+          "key": "capture-inverse-command-effects",
+          "title": "Capture inverse command effects",
+          "outcome": "Supported reversible commands record an inverse effect description against the committed result, allowing review of what undo would restore without relying on current UI selection or labels."
+        },
+        {
+          "key": "preview-one-step-undo",
+          "title": "Preview one-step undo",
+          "outcome": "An undo proposal shows the exact command and affected scope to reverse, checks the current accepted revision and performs no change until the operator confirms that proposal."
+        },
+        {
+          "key": "apply-one-step-undo-atomically",
+          "title": "Apply one-step undo atomically",
+          "outcome": "Confirming a valid undo restores all declared document and source effects together, while any failed inverse precondition leaves the complete current state and journal unchanged."
+        },
+        {
+          "key": "preview-one-step-redo",
+          "title": "Preview one-step redo",
+          "outcome": "A redo proposal describes the original command effects and verifies that the current state matches the expected undone revision before offering a separately confirmed replay operation."
+        },
+        {
+          "key": "apply-one-step-redo-atomically",
+          "title": "Apply one-step redo atomically",
+          "outcome": "Confirming a valid redo reapplies the exact supported effect set and records its relationship to the original command without duplicating unrelated objects or rewriting earlier immutable journal entries."
+        },
+        {
+          "key": "reject-stale-history-actions",
+          "title": "Reject stale history actions",
+          "outcome": "Undo or redo against a state changed outside the compatible journal sequence returns a conflict and preserves current data, original history and any retained operator review draft."
+        },
+        {
+          "key": "group-related-journal-operations",
+          "title": "Group related journal operations",
+          "outcome": "A reviewed command group exposes its bounded members and combined inverse scope so an operator can undo one intentional action without treating unrelated intervening commands as group members."
+        },
+        {
+          "key": "inspect-history-branches",
+          "title": "Inspect history branches",
+          "outcome": "After undo followed by a new command, the journal shows the diverging history explicitly and does not present the displaced redo chain as automatically applicable to the new accepted state."
+        },
+        {
+          "key": "replay-journal-sequences-in-isolation",
+          "title": "Replay journal sequences in isolation",
+          "outcome": "A selected compatible command sequence can be replayed in a temporary document copy, producing a result revision and findings without mutating the active workspace or real source files."
+        },
+        {
+          "key": "verify-journal-revision-chains",
+          "title": "Verify journal revision chains",
+          "outcome": "Journal validation checks that each committed entry's input and result revisions form a coherent chain and refuses corrupted, missing or reordered links before exposing history actions."
+        },
+        {
+          "key": "detect-unsupported-inverse-operations",
+          "title": "Detect unsupported inverse operations",
+          "outcome": "A command without a reviewed inverse is clearly labeled non-reversible, and the UI cannot fabricate an undo action by restoring only part of the command's declared effects."
+        },
+        {
+          "key": "retain-immutable-operation-receipts",
+          "title": "Retain immutable operation receipts",
+          "outcome": "History views preserve original command receipts and their timestamps while showing later undo, redo or failure records as separate related events rather than editing the accepted past."
+        },
+        {
+          "key": "bound-journal-replay-resources",
+          "title": "Bound journal replay resources",
+          "outcome": "Replay enforces explicit entry, source-byte and time budgets and reports an incomplete attempt without accepting a partial replay as the current document or a verified complete history."
+        },
+        {
+          "key": "export-a-scoped-journal-segment",
+          "title": "Export a scoped journal segment",
+          "outcome": "An explicit export includes a selected bounded journal segment and its required baseline identity, while warning when excluded dependencies make that segment insufficient for independent complete replay."
+        },
+        {
+          "key": "import-journal-data-without-execution",
+          "title": "Import journal data without execution",
+          "outcome": "Opening an exported journal validates and displays its metadata in an isolated review without automatically replaying commands, changing source files or granting their recorded authority to the current session."
+        },
+        {
+          "key": "compare-replay-with-accepted-state",
+          "title": "Compare replay with accepted state",
+          "outcome": "A replay verification compares its resulting canonical document and declared source outputs with the accepted result, reporting each mismatch without silently repairing either comparison input or active state."
+        },
+        {
+          "key": "explain-undo-storage-boundaries",
+          "title": "Explain undo storage boundaries",
+          "outcome": "History help identifies whether an operation can restore document state, source files or only metadata and makes clear which runtime, external or provider effects are outside its supported inverse scope."
+        },
+        {
+          "key": "recover-after-journal-append-failure",
+          "title": "Recover after journal append failure",
+          "outcome": "If durable journal promotion fails, the operation returns an explicit incomplete or rolled-back result according to its contract and cannot advertise an unrecorded successful command as fully accepted history."
+        }
+      ]
+    },
+    {
+      "id": "F010",
+      "name": "Document snapshots and recovery",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F009"
+      ],
+      "scope": "Local snapshots of accepted documents, reviewed source scope and restoration proposals.",
+      "refusal": "Refuse invalid, oversized, incompatible or stale snapshot restores before changing current accepted state.",
+      "recovery": "Keep a verified pre-restore checkpoint and restore only the explicitly confirmed eligible scope.",
+      "feedback": "Display snapshot provenance, exclusions, revision differences and restoration availability honestly.",
+      "evidence": "Restore isolated fixtures with failed promotion, changed targets, missing content and exact unaffected-scope comparisons.",
+      "capabilities": [
+        {
+          "key": "create-accepted-document-snapshots",
+          "title": "Create accepted document snapshots",
+          "outcome": "An operator can capture a snapshot of the current accepted canonical document with its revision, schema and declared source scope, excluding transient DOM handles and session credentials."
+        },
+        {
+          "key": "inspect-snapshot-provenance",
+          "title": "Inspect snapshot provenance",
+          "outcome": "A snapshot view reports its source revision, capture time, schema version and supported restoration scope without treating a recorded build or provider receipt as current live verification."
+        },
+        {
+          "key": "name-local-snapshots",
+          "title": "Name local snapshots",
+          "outcome": "Operators can label an existing snapshot without changing its immutable captured document, source digests, identity or creation provenance, and invalid labels leave the original snapshot metadata intact."
+        },
+        {
+          "key": "compare-snapshot-and-current-document",
+          "title": "Compare snapshot and current document",
+          "outcome": "A restore preview reports added, removed, changed and reordered objects between the selected snapshot and current accepted document while retaining both complete original comparison inputs unchanged."
+        },
+        {
+          "key": "select-snapshot-restore-scope",
+          "title": "Select snapshot restore scope",
+          "outcome": "A restore proposal identifies the eligible pages or resources selected for restoration and explicitly preserves unselected state, dependencies and histories according to its documented scope rules."
+        },
+        {
+          "key": "check-restore-dependency-closure",
+          "title": "Check restore dependency closure",
+          "outcome": "A scoped restore identifies required referenced objects and refuses unresolved or conflicting dependencies rather than partially restoring a graph with broken relationships or silently expanding the selected scope."
+        },
+        {
+          "key": "create-pre-restore-checkpoints",
+          "title": "Create pre-restore checkpoints",
+          "outcome": "Before a confirmed restore changes eligible state, the system captures the exact current supported scope as a recoverable checkpoint or refuses when that required checkpoint cannot be stored."
+        },
+        {
+          "key": "confirm-snapshot-restoration",
+          "title": "Confirm snapshot restoration",
+          "outcome": "A restore confirmation binds one snapshot, selected scope and current revision so later source or selection changes invalidate the reviewed proposal before any restoration can occur."
+        },
+        {
+          "key": "restore-supported-snapshots-atomically",
+          "title": "Restore supported snapshots atomically",
+          "outcome": "A compatible confirmed restore promotes the complete declared document and source scope together, preserving unaffected state and leaving an explicit receipt identifying the resulting accepted revision and checkpoint."
+        },
+        {
+          "key": "undo-a-snapshot-restore",
+          "title": "Undo a snapshot restore",
+          "outcome": "A supported restore can be reversed through its bound pre-restore checkpoint after checking the latest revision, with a preview explaining exactly which restored resources would change again."
+        },
+        {
+          "key": "validate-snapshot-content-hashes",
+          "title": "Validate snapshot content hashes",
+          "outcome": "Snapshot validation verifies declared document and source content digests before restoration, and mismatched or missing bytes prevent accepting the artifact as a usable recovery point."
+        },
+        {
+          "key": "refuse-incompatible-snapshot-schemas",
+          "title": "Refuse incompatible snapshot schemas",
+          "outcome": "A snapshot using an unsupported document or source adapter version remains inspectable as metadata but cannot be restored until a reviewed compatible migration or adapter is selected explicitly."
+        },
+        {
+          "key": "export-portable-snapshot-bundles",
+          "title": "Export portable snapshot bundles",
+          "outcome": "An explicit snapshot export contains its declared portable document, source artifacts and manifest, excluding credentials and machine-specific runtime state while listing capabilities that cannot travel with the bundle."
+        },
+        {
+          "key": "import-snapshots-for-review",
+          "title": "Import snapshots for review",
+          "outcome": "Imported snapshot bundles are validated in a temporary contained location and shown as untrusted recovery proposals without automatically applying their content or executing scripts contained in the archive."
+        },
+        {
+          "key": "bound-snapshot-retention",
+          "title": "Bound snapshot retention",
+          "outcome": "Operators can inspect local snapshot storage totals and a proposed retention action before removing recoverable points, with pinned or referenced checkpoints protected according to the explicit local retention policy."
+        },
+        {
+          "key": "pin-recovery-checkpoints",
+          "title": "Pin recovery checkpoints",
+          "outcome": "A pinned checkpoint remains protected from automatic local retention cleanup and visibly identifies the command or restore review that depends on its captured recovery scope and content revision."
+        },
+        {
+          "key": "handle-missing-snapshot-artifacts",
+          "title": "Handle missing snapshot artifacts",
+          "outcome": "If a referenced snapshot artifact is unavailable, the UI reports the missing scope and retains current accepted state, rather than restoring only the remaining files as a complete recovery."
+        },
+        {
+          "key": "simulate-snapshot-promotion-failures",
+          "title": "Simulate snapshot promotion failures",
+          "outcome": "A temporary recovery rehearsal can inject a failed promotion and demonstrate the documented rollback boundary without replacing the real workspace, source files or operator recovery checkpoints."
+        },
+        {
+          "key": "inspect-recovery-readiness-by-target",
+          "title": "Inspect recovery readiness by target",
+          "outcome": "Recovery status distinguishes a verified document restore, supported source restore and unverified provider recovery, using exact artifact and target evidence rather than a single global ready indicator."
+        },
+        {
+          "key": "record-restore-rehearsal-evidence",
+          "title": "Record restore rehearsal evidence",
+          "outcome": "A completed rehearsal receipt names the snapshot, isolated source basis, selected scope and compared hashes, keeping that local test separate from a real restore or production recovery claim."
+        }
+      ]
+    },
+    {
+      "id": "F011",
+      "name": "Current repository inventory",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F002"
+      ],
+      "scope": "Bounded inventory of tracked routes, source metadata, dependencies and template extensions.",
+      "refusal": "Refuse private, linked and unsupported inventories while retaining exact source provenance and exclusions.",
+      "recovery": "Keep the last accepted inventory available when a rescan fails or detects unresolved changes.",
+      "feedback": "Report observed repository identity, inventory revision and incomplete or inferred findings explicitly.",
+      "evidence": "Compare inventories from temporary repositories with renamed files, partial routes, dirty work and unsupported stacks.",
+      "capabilities": [
+        {
+          "key": "inventory-tracked-entry-points",
+          "title": "Inventory tracked entry points",
+          "outcome": "A repository inventory identifies declared application entry points with exact source paths and evidence, distinguishing explicit configuration from inferred conventions without executing the inspected application."
+        },
+        {
+          "key": "inventory-route-declarations",
+          "title": "Inventory route declarations",
+          "outcome": "Supported route discovery records route patterns and their declared source modules, while dynamic or ambiguous route generation remains a labeled unresolved finding rather than an invented route list."
+        },
+        {
+          "key": "inventory-shared-shell-sources",
+          "title": "Inventory shared shell sources",
+          "outcome": "The current-repository inventory identifies declared shared header, footer and navigation sources so later edit proposals can explain which pages may share those authored modules."
+        },
+        {
+          "key": "inventory-source-component-exports",
+          "title": "Inventory source component exports",
+          "outcome": "Supported static export discovery lists component candidates and their source revision without importing or executing repository modules merely to decide whether they are reusable components."
+        },
+        {
+          "key": "inspect-dependency-declarations",
+          "title": "Inspect dependency declarations",
+          "outcome": "An inventory reports declared direct dependency names and ranges from reviewed manifests without installing packages, reading registry credentials or claiming those declarations match current physical runtime versions."
+        },
+        {
+          "key": "inspect-runtime-pin-declarations",
+          "title": "Inspect runtime pin declarations",
+          "outcome": "The inventory reports project runtime pins and engine declarations independently, identifying inconsistent declarations without changing the installed runtime or rewriting the project's intended platform baseline."
+        },
+        {
+          "key": "inspect-build-target-declarations",
+          "title": "Inspect build target declarations",
+          "outcome": "Supported build configuration discovery identifies declared output directories and public asset roots while marking computed or unsupported configuration as unresolved instead of executing it during inventory."
+        },
+        {
+          "key": "inspect-firebase-configuration-boundaries",
+          "title": "Inspect Firebase configuration boundaries",
+          "outcome": "Inventory metadata distinguishes checked-in emulator or provider configuration declarations from an actual running emulator, authenticated provider account or deployed resource state for the selected repository."
+        },
+        {
+          "key": "inspect-development-bridge-declarations",
+          "title": "Inspect development bridge declarations",
+          "outcome": "The inventory identifies declared local builder bridge routes and their development-only guards, with unsupported proxy configurations reported rather than assumed to provide equivalent isolation behavior."
+        },
+        {
+          "key": "report-inventory-source-revisions",
+          "title": "Report inventory source revisions",
+          "outcome": "Every accepted inventory records the exact inspected source revisions and relevant file digests, allowing a later comparison to distinguish changed repository inputs from presentation-only list ordering."
+        },
+        {
+          "key": "compare-repository-inventory-scans",
+          "title": "Compare repository inventory scans",
+          "outcome": "A rescan comparison lists added, removed and changed eligible resources with their original identities, preserving the previous inventory until the new result passes its validation rules."
+        },
+        {
+          "key": "handle-dirty-repository-inventory",
+          "title": "Handle dirty repository inventory",
+          "outcome": "Inventory reports staged, unstaged and untracked source state separately from commit identity, and never treats equal branch pointers as proof that the inspected working files are clean."
+        },
+        {
+          "key": "expose-unsupported-stack-findings",
+          "title": "Expose unsupported stack findings",
+          "outcome": "An unsupported framework or configuration produces a bounded capabilities report naming available read-only inventory and missing adapters without modifying the repository to force a recognized stack shape."
+        },
+        {
+          "key": "bound-inventory-filesystem-work",
+          "title": "Bound inventory filesystem work",
+          "outcome": "Scans enforce declared directory, file, byte and elapsed-work budgets and report exclusions, preventing vendor trees, runtime state or recursive links from expanding a normal repository inventory unexpectedly."
+        },
+        {
+          "key": "inspect-workspace-resource-ownership",
+          "title": "Inspect workspace resource ownership",
+          "outcome": "Each inventoried resource identifies its repository, host extension or managed release ownership boundary so downstream imports and visual edits cannot accidentally modify an immutable upstream snapshot."
+        },
+        {
+          "key": "inventory-public-asset-metadata",
+          "title": "Inventory public asset metadata",
+          "outcome": "Eligible public assets receive bounded path, media type and size metadata without recursively opening arbitrary file bodies or claiming that source presence proves successful browser rendering."
+        },
+        {
+          "key": "inspect-source-metadata-conflicts",
+          "title": "Inspect source metadata conflicts",
+          "outcome": "Conflicting route, component or page declarations produce explicit findings with source references, and the inventory does not resolve the conflict by silently choosing whichever file was encountered first."
+        },
+        {
+          "key": "export-repository-inventory-metadata",
+          "title": "Export repository inventory metadata",
+          "outcome": "An explicit inventory export contains only its declared eligible resource metadata, source revisions and exclusions, leaving private files, source bodies, credentials and runtime records outside the portable result."
+        },
+        {
+          "key": "revalidate-inventory-before-proposals",
+          "title": "Revalidate inventory before proposals",
+          "outcome": "A proposal depending on inventory facts checks the relevant source revisions again, and changed declarations require a rescan or reconciliation instead of authorizing effects from stale repository metadata."
+        },
+        {
+          "key": "retain-inventory-interpretation-provenance",
+          "title": "Retain inventory interpretation provenance",
+          "outcome": "Inventory findings identify the adapter and rule version that interpreted each supported declaration, keeping an inferred framework convention distinct from a literal source fact during later review."
+        }
+      ]
+    },
+    {
+      "id": "F012",
+      "name": "External project inspection and adoption",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F004",
+        "F008",
+        "F011"
+      ],
+      "scope": "Explicitly selected external project inventories and reviewed adapter adoption proposals.",
+      "refusal": "Inventory is read-only by default; refuse automatic bridge installation, secret reads or source rewriting.",
+      "recovery": "Cancel adoption without effects and preserve original project records through failed proposed migrations.",
+      "feedback": "Show selected project boundary, unsupported source and every proposed file effect before acceptance.",
+      "evidence": "Inspect temporary external projects with private files, unsupported frameworks and interrupted adoption rehearsals.",
+      "capabilities": [
+        {
+          "key": "choose-an-external-inspection-root",
+          "title": "Choose an external inspection root",
+          "outcome": "An operator explicitly selects one local project root for inventory, and the inspector confirms that boundary before reading eligible public project metadata within the chosen directory."
+        },
+        {
+          "key": "preview-external-scan-eligibility",
+          "title": "Preview external scan eligibility",
+          "outcome": "A scan preview lists eligible resource categories, excluded private paths and active budgets without installing a bridge, running project scripts or opening arbitrary source bodies in advance."
+        },
+        {
+          "key": "detect-external-repository-identity",
+          "title": "Detect external repository identity",
+          "outcome": "Inspection reports the selected project's observed repository identity and working state while avoiding assumptions that its origin, branch or owner authorizes writes from the current LAN session."
+        },
+        {
+          "key": "inspect-unsupported-external-projects",
+          "title": "Inspect unsupported external projects",
+          "outcome": "An external project with no supported adapter still receives a bounded read-only findings report, with unavailable operations clearly distinguished from absent files or a failed runtime launch."
+        },
+        {
+          "key": "map-external-resources-for-review",
+          "title": "Map external resources for review",
+          "outcome": "A proposed mapping shows which external pages, components and assets could be represented by supported adapters without copying source into the active template or changing the external project."
+        },
+        {
+          "key": "explain-external-secret-exclusions",
+          "title": "Explain external secret exclusions",
+          "outcome": "The inspection report identifies excluded secret and runtime categories without listing their contents, and requested path manipulation cannot expand inventory into those excluded locations or linked ancestors."
+        },
+        {
+          "key": "review-adapter-adoption-requirements",
+          "title": "Review adapter adoption requirements",
+          "outcome": "Before enabling an adapter, the operator sees its required source annotations, generated files, runtime bridge and unsupported round-trip cases for the explicitly selected external project boundary."
+        },
+        {
+          "key": "preview-bridge-installation-effects",
+          "title": "Preview bridge installation effects",
+          "outcome": "A bridge proposal lists exact eligible configuration and source changes with revisions, backups and rollback scope, performing no installation until the operator reviews and confirms that proposal."
+        },
+        {
+          "key": "keep-external-scans-separate",
+          "title": "Keep external scans separate",
+          "outcome": "Results from multiple external project inspections remain separately qualified by project identity and source revision, preventing matching relative paths from becoming shared writable targets across projects."
+        },
+        {
+          "key": "import-external-metadata-into-isolation",
+          "title": "Import external metadata into isolation",
+          "outcome": "A reviewed import creates a contained staging representation of eligible external metadata and source references, while the original project and active accepted document remain unchanged until explicit adoption."
+        },
+        {
+          "key": "compare-external-adoption-alternatives",
+          "title": "Compare external adoption alternatives",
+          "outcome": "An operator can compare inventory-only, source-owned adapter and document-owned generation proposals, with each alternative declaring supported operations, files affected and ownership consequences before selection."
+        },
+        {
+          "key": "refuse-incompatible-adoption-targets",
+          "title": "Refuse incompatible adoption targets",
+          "outcome": "Adoption refuses unsupported runtime versions, conflicting ownership or unrecognized configuration preconditions instead of replacing project files with a familiar template merely to satisfy the adapter's assumptions."
+        },
+        {
+          "key": "preserve-downstream-project-records",
+          "title": "Preserve downstream project records",
+          "outcome": "A supported adoption proposal identifies existing project context, tasks and memory as preserved downstream records, and a verified import cannot replace them with template history or blank upstream seeds."
+        },
+        {
+          "key": "rehearse-external-adoption-locally",
+          "title": "Rehearse external adoption locally",
+          "outcome": "A proposed adoption can run against an owned temporary copy and produce effect and rollback evidence without treating that rehearsal as permission to change the real external project."
+        },
+        {
+          "key": "bind-adoption-to-inspected-revisions",
+          "title": "Bind adoption to inspected revisions",
+          "outcome": "Executing a confirmed adoption rechecks the selected project's inspected revisions and refuses drift before promoting bridge or adapter changes into that project's current source files."
+        },
+        {
+          "key": "cancel-external-adoption-proposals",
+          "title": "Cancel external adoption proposals",
+          "outcome": "Canceling a staged adoption removes only its owned temporary proposal artifacts and leaves the external repository, current template, existing project records and active local sessions unchanged."
+        },
+        {
+          "key": "detect-preexisting-external-bridges",
+          "title": "Detect preexisting external bridges",
+          "outcome": "Inspection identifies a compatible or customized existing bridge and proposes a reviewed reconciliation path instead of blindly installing a second control layer or overwriting its configuration."
+        },
+        {
+          "key": "export-external-inspection-findings",
+          "title": "Export external inspection findings",
+          "outcome": "An explicit findings export contains qualified public inventory metadata, unsupported cases and proposed requirements, excluding external source bodies and private project records unless separately disclosed and selected."
+        },
+        {
+          "key": "review-external-project-detachment",
+          "title": "Review external project detachment",
+          "outcome": "A detachment proposal explains which reviewed integration artifacts could be removed and which authored changes or project records must remain, without automatically resetting the project to an earlier snapshot."
+        },
+        {
+          "key": "record-external-adoption-evidence",
+          "title": "Record external adoption evidence",
+          "outcome": "An accepted local adoption receipt identifies inspected and resulting revisions, exact effect scope and rollback artifacts while keeping runtime launch, provider access and production acceptance as separate observations."
+        }
+      ]
+    },
+    {
+      "id": "F013",
+      "name": "Advanced Navigator discovery",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F003",
+        "F005"
+      ],
+      "scope": "Extended runtime hierarchy discovery, filtering and stable expansion beyond the accepted basic Navigator.",
+      "refusal": "Respect same-origin boundaries and explicit scan budgets; do not claim discovery of unmounted or inaccessible content.",
+      "recovery": "Preserve valid expansion context and explain unavailable targets after renderer or document replacement.",
+      "feedback": "Expose hierarchy scope, omitted content, grouping rules and filter effects without harvesting private subtree text.",
+      "evidence": "Exercise shadow roots, nested frames, virtualized lists, repeated labels and large dynamic DOM fixtures.",
+      "capabilities": [
+        {
+          "key": "inspect-supported-open-shadow-roots",
+          "title": "Inspect supported open shadow roots",
+          "outcome": "The Navigator can include explicitly supported open shadow roots as labeled boundaries, preserving host context while refusing to imply access to closed or otherwise inaccessible shadow content."
+        },
+        {
+          "key": "inspect-same-origin-nested-frames",
+          "title": "Inspect same-origin nested frames",
+          "outcome": "An operator can enter an eligible same-origin nested preview frame with its own qualified hierarchy scope, and returning restores the parent context without reusing stale child-frame handles."
+        },
+        {
+          "key": "label-inaccessible-frame-boundaries",
+          "title": "Label inaccessible frame boundaries",
+          "outcome": "Cross-origin or unavailable nested frames appear as explicit non-expandable boundaries, with their excluded inspection scope disclosed instead of triggering hidden cross-origin access attempts or fabricating child elements."
+        },
+        {
+          "key": "filter-hierarchy-by-semantic-element-kind",
+          "title": "Filter hierarchy by semantic element kind",
+          "outcome": "Operators can restrict visible hierarchy results to selected semantic element kinds while preserving ancestor context and accurately reporting how many inspected elements matched the active kind filter."
+        },
+        {
+          "key": "filter-hierarchy-by-visibility-state",
+          "title": "Filter hierarchy by visibility state",
+          "outcome": "A visibility filter distinguishes rendered, hidden, inert and unavailable-box nodes using disclosed criteria, without changing element attributes, app focus or visibility merely to include them in results."
+        },
+        {
+          "key": "filter-hierarchy-by-source-mapping-state",
+          "title": "Filter hierarchy by source mapping state",
+          "outcome": "Operators can find mapped, unmapped, stale and read-only nodes in the inspected range, with results linked to ownership metadata rather than inferred from visible content or class names."
+        },
+        {
+          "key": "preserve-expansion-by-durable-identity",
+          "title": "Preserve expansion by durable identity",
+          "outcome": "When supported durable node mappings survive a preview rerender, the Navigator restores compatible expansion choices by identity while leaving ambiguous or replaced nodes collapsed and explicitly unresolved."
+        },
+        {
+          "key": "group-declared-component-instances",
+          "title": "Group declared component instances",
+          "outcome": "Supported component instances can appear under labeled definition groups without altering their actual DOM order, preserving qualified instance identity when an operator selects or reveals one grouped item."
+        },
+        {
+          "key": "inspect-virtualized-hierarchy-coverage",
+          "title": "Inspect virtualized hierarchy coverage",
+          "outcome": "The Navigator identifies currently mounted inspectable items in a virtualized list and distinguishes them from total logical items, without describing an incomplete DOM scan as complete source coverage."
+        },
+        {
+          "key": "compare-runtime-hierarchy-snapshots",
+          "title": "Compare runtime hierarchy snapshots",
+          "outcome": "A read-only comparison highlights added, removed and reparented inspected nodes between two bounded snapshots, keeping transient DOM changes separate from accepted source or canonical document edits."
+        },
+        {
+          "key": "search-hierarchy-with-scoped-predicates",
+          "title": "Search hierarchy with scoped predicates",
+          "outcome": "A reviewed search syntax supports bounded combinations of tag, identifier, class and authored metadata predicates, with malformed or unsupported expressions refused rather than executed as arbitrary selectors."
+        },
+        {
+          "key": "show-duplicate-hierarchy-labels",
+          "title": "Show duplicate hierarchy labels",
+          "outcome": "Matching nodes with identical labels display bounded ancestor or source context that lets an operator distinguish targets without exposing aggregated child text or renaming the underlying application elements."
+        },
+        {
+          "key": "bookmark-qualified-hierarchy-targets",
+          "title": "Bookmark qualified hierarchy targets",
+          "outcome": "Operators can save a nonsecret bookmark for a durable supported target and resolve it explicitly, with missing or ambiguous matches reported instead of selecting another row at its former position."
+        },
+        {
+          "key": "reveal-ancestor-chains-progressively",
+          "title": "Reveal ancestor chains progressively",
+          "outcome": "For a deeply nested supported target, Reveal exposes the relevant ancestor chain in bounded steps and reports depth or row limits without implying that omitted ancestors were inspected completely."
+        },
+        {
+          "key": "filter-hierarchy-to-a-selected-subtree",
+          "title": "Filter hierarchy to a selected subtree",
+          "outcome": "An operator can focus inspection on a selected current subtree, with a visible scope marker and explicit return action that restores the broader inspected hierarchy without changing the application DOM."
+        },
+        {
+          "key": "inspect-hierarchy-mutation-activity",
+          "title": "Inspect hierarchy mutation activity",
+          "outcome": "A bounded activity view summarizes structural mutation categories and affected qualified nodes without recording private text, input values or every unbounded event from a rapidly updating preview."
+        },
+        {
+          "key": "pause-hierarchy-observation-explicitly",
+          "title": "Pause hierarchy observation explicitly",
+          "outcome": "Operators can pause live hierarchy refresh, see that the snapshot is frozen, and resume with a newly validated current-document scan rather than selecting stale paused targets as current elements."
+        },
+        {
+          "key": "explain-hierarchy-truncation-locations",
+          "title": "Explain hierarchy truncation locations",
+          "outcome": "When a scan reaches a node or depth budget, the Navigator marks the omitted branch boundary and distinguishes unknown descendants from inspected branches that genuinely contain no matching elements."
+        },
+        {
+          "key": "synchronize-hierarchy-hover-by-identity",
+          "title": "Synchronize hierarchy hover by identity",
+          "outcome": "Hovering a supported hierarchy row highlights only its qualified current preview element, and clearing or replacing that element removes the highlight without applying source styles or changing selection."
+        },
+        {
+          "key": "navigate-hierarchy-inspection-history",
+          "title": "Navigate hierarchy inspection history",
+          "outcome": "Operators can return through recent qualified Navigator scopes and selections, with each history target revalidated against the current preview document before focus or reveal is attempted."
+        }
+      ]
+    },
+    {
+      "id": "F014",
+      "name": "Selection and cross-surface context",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F004",
+        "F013"
+      ],
+      "scope": "Qualified selection sets, hit-testing rules and synchronization between canvas, tree and source surfaces.",
+      "refusal": "Refuse stale, foreign-document and incompatible multi-selection targets before editing or focus transfer.",
+      "recovery": "Retain valid selection members and disclose removed targets after rerender or reconciliation.",
+      "feedback": "Show selected scope, count, ownership and unavailable operations consistently across panels.",
+      "evidence": "Use nested and overlapping fixtures, keyboard flows, rerenders and cross-surface source comparisons.",
+      "capabilities": [
+        {
+          "key": "select-multiple-compatible-objects",
+          "title": "Select multiple compatible objects",
+          "outcome": "Operators can create a bounded multi-selection of supported objects, with stable qualified identities and an explicit selection count that does not imply every member supports the same edit operations."
+        },
+        {
+          "key": "toggle-selection-membership-by-keyboard",
+          "title": "Toggle selection membership by keyboard",
+          "outcome": "Keyboard modifiers can add or remove one eligible focused object from a selection set while preserving focus, existing members and the documented distinction between navigation and editing actions."
+        },
+        {
+          "key": "select-a-contiguous-hierarchy-range",
+          "title": "Select a contiguous hierarchy range",
+          "outcome": "A range selection includes the eligible visible hierarchy rows between an explicit anchor and endpoint, reporting excluded incompatible boundaries without silently selecting collapsed or uninspected descendants."
+        },
+        {
+          "key": "preview-box-selection-scope",
+          "title": "Preview box selection scope",
+          "outcome": "A canvas selection rectangle previews eligible current elements and exclusions before accepting a bounded selection set, without changing layout, source content or underlying application interaction behavior."
+        },
+        {
+          "key": "choose-overlapping-canvas-targets",
+          "title": "Choose overlapping canvas targets",
+          "outcome": "An operator can inspect a bounded list of eligible elements under a canvas point and explicitly choose one, with ancestor and ownership context distinguishing overlapping targets with similar labels."
+        },
+        {
+          "key": "respect-declared-selection-locks",
+          "title": "Respect declared selection locks",
+          "outcome": "A locked object remains inspectable through an explicit alternate action but is excluded from normal hit selection, with visible lock state that never implies source permissions."
+        },
+        {
+          "key": "select-through-transparent-overlays-explicitly",
+          "title": "Select through transparent overlays explicitly",
+          "outcome": "A deliberate selection action can cycle through eligible overlay layers in the current preview, showing each candidate and preserving the application's own event behavior while Interact mode is active."
+        },
+        {
+          "key": "inspect-multi-selection-capability-intersections",
+          "title": "Inspect multi-selection capability intersections",
+          "outcome": "The inspector shows only operations supported by every selected object or explicitly identifies per-member exclusions, preventing one unsupported owner or target kind from being silently omitted during a batch edit."
+        },
+        {
+          "key": "preserve-selection-through-compatible-rerenders",
+          "title": "Preserve selection through compatible rerenders",
+          "outcome": "A supported durable selection can reconcile across a compatible preview rerender, while replaced, unmapped or ambiguous members are reported and never redirected solely by their previous row index."
+        },
+        {
+          "key": "show-removed-selection-members",
+          "title": "Show removed selection members",
+          "outcome": "If selected objects disappear, the interface identifies which qualified members became unavailable and retains unaffected valid members instead of clearing or retargeting the entire selection without explanation."
+        },
+        {
+          "key": "synchronize-canvas-and-source-selection",
+          "title": "Synchronize canvas and source selection",
+          "outcome": "Choosing a supported source object selects its qualified preview representation when available and shows an unmapped result when no current rendered counterpart can be resolved safely."
+        },
+        {
+          "key": "inspect-selection-ownership-summaries",
+          "title": "Inspect selection ownership summaries",
+          "outcome": "A selection summary groups source-owned, document-owned, hybrid and unmapped members so the operator can understand shared write effects before opening a supported batch operation or source preview."
+        },
+        {
+          "key": "save-named-selection-sets",
+          "title": "Save named selection sets",
+          "outcome": "Operators can save a nonsecret named set of durable supported references and reopen it through explicit resolution, with missing or ambiguous members disclosed rather than replaced by similar current objects."
+        },
+        {
+          "key": "compare-two-qualified-selections",
+          "title": "Compare two qualified selections",
+          "outcome": "A read-only comparison shows differences in supported metadata and ownership between two explicit qualified selections without copying values or applying one object's properties to another automatically."
+        },
+        {
+          "key": "control-selection-scroll-behavior",
+          "title": "Control selection scroll behavior",
+          "outcome": "Operators can choose whether a supported selection follows with a canvas scroll, and the UI clearly distinguishes selected off-screen targets from targets that cannot be rendered or revealed."
+        },
+        {
+          "key": "return-focus-to-selection-origin",
+          "title": "Return focus to selection origin",
+          "outcome": "Closing an inspector or canceled selection action restores focus to its valid originating control, with a documented visible fallback when that control was removed by navigation or rerender."
+        },
+        {
+          "key": "isolate-selection-across-preview-devices",
+          "title": "Isolate selection across preview devices",
+          "outcome": "Switching a preview device preserves a durable compatible selected identity while keeping device-specific DOM handles and coordinates separate, with unavailable representations clearly reported for the new viewport."
+        },
+        {
+          "key": "inspect-selection-ancestry-boundaries",
+          "title": "Inspect selection ancestry boundaries",
+          "outcome": "The selection inspector displays relevant component, frame and source-owner boundaries along the qualified ancestor path, without implying that crossing a boundary enables editing unsupported internal structure."
+        },
+        {
+          "key": "clear-transient-selection-decorations",
+          "title": "Clear transient selection decorations",
+          "outcome": "Leaving Inspect mode or replacing the preview removes owned hover and selection decorations from obsolete elements without altering application-owned attributes, styles or persisted source metadata."
+        },
+        {
+          "key": "explain-selection-availability-changes",
+          "title": "Explain selection availability changes",
+          "outcome": "When a previously offered selection operation becomes unavailable after source, ownership or runtime changes, the UI names the changed prerequisite and preserves any safe draft for explicit reconciliation."
+        }
+      ]
+    },
+    {
+      "id": "F015",
+      "name": "Session identity and process ownership",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F001"
+      ],
+      "scope": "Owned session generations, start and stop proposals, collision handling and recovery after process loss.",
+      "refusal": "Never stop unknown or unrelated listeners; refuse stale process identities and unsupported termination guarantees.",
+      "recovery": "Recover only owned records and offer a fresh start plan when the previous supervisor no longer owns its processes.",
+      "feedback": "Display session identity, process ownership confidence and exact active origin separately from readiness.",
+      "evidence": "Exercise injected process tables, reused PIDs, port races, orphan records and supported-platform stop plans.",
+      "capabilities": [
+        {
+          "key": "preview-a-new-session-generation",
+          "title": "Preview a new session generation",
+          "outcome": "A start preview identifies the proposed session generation, fixed or selected origin and component ports, without launching processes or reserving a listener before the operator proceeds."
+        },
+        {
+          "key": "detect-concurrent-session-record-claims",
+          "title": "Detect concurrent session record claims",
+          "outcome": "Two launchers competing for the same workspace session record cannot both claim ownership, and the losing launcher reports the existing valid owner without stopping its processes."
+        },
+        {
+          "key": "validate-process-identity-before-signals",
+          "title": "Validate process identity before signals",
+          "outcome": "A stop or restart plan rechecks the recorded process identity, start observation and workspace ownership immediately before signaling, refusing a reused PID or mismatched current command."
+        },
+        {
+          "key": "explain-unsupported-termination-guarantees",
+          "title": "Explain unsupported termination guarantees",
+          "outcome": "A platform lacking verified descendant termination displays its supported manual stop procedure and preserves ownership records rather than advertising a complete automatic stop that cannot be established."
+        },
+        {
+          "key": "inspect-multiple-owned-workspace-sessions",
+          "title": "Inspect multiple owned workspace sessions",
+          "outcome": "A local session table qualifies each observed session by workspace identity and origin, allowing inspection without treating another project's listener as a reusable component of the current workspace."
+        },
+        {
+          "key": "plan-occupied-fixed-origin-recovery",
+          "title": "Plan occupied fixed-origin recovery",
+          "outcome": "If a fixed app origin is occupied, the launcher explains its ownership finding and explicit recovery choices without falling back to a different port or terminating an unrelated listener automatically."
+        },
+        {
+          "key": "recover-exited-supervisor-records",
+          "title": "Recover exited supervisor records",
+          "outcome": "A stale record whose owner has exited can be inspected and cleaned only after validating its remaining owned processes and runtime artifacts, with unrelated records and files preserved."
+        },
+        {
+          "key": "report-orphaned-owned-descendants",
+          "title": "Report orphaned owned descendants",
+          "outcome": "If the supervisor exits unexpectedly, diagnostics identify descendants whose recorded identities still match the workspace and distinguish them from unknown listeners before proposing any supported cleanup action."
+        },
+        {
+          "key": "preserve-browser-origin-during-restart",
+          "title": "Preserve browser origin during restart",
+          "outcome": "A restart proposal retains the selected scheme, host and port when available and explains that choosing another origin changes the browser storage scope rather than moving saved workspaces automatically."
+        },
+        {
+          "key": "preview-component-shutdown-order",
+          "title": "Preview component shutdown order",
+          "outcome": "A stop plan lists the owned components and supported graceful termination order, making clear which readiness facts may become unavailable before cleanup and record removal can complete."
+        },
+        {
+          "key": "record-session-lifecycle-outcomes",
+          "title": "Record session lifecycle outcomes",
+          "outcome": "A bounded local lifecycle receipt distinguishes requested, started, ready, stopping, exited and failed phases without storing session tokens, provider credentials or complete process environment values."
+        },
+        {
+          "key": "recheck-listener-ownership-after-shutdown",
+          "title": "Recheck listener ownership after shutdown",
+          "outcome": "A completed stop verifies whether each recorded owned listener disappeared and reports remaining or changed listeners without escalating to broader process-name termination or claiming unverified cleanup success."
+        },
+        {
+          "key": "handle-session-startup-rollback",
+          "title": "Handle session startup rollback",
+          "outcome": "If one component fails during startup, the supervisor stops only components it successfully started and preserves a sanitized failure receipt without disturbing preexisting local services or project files."
+        },
+        {
+          "key": "detect-runtime-record-drift",
+          "title": "Detect runtime record drift",
+          "outcome": "Unexpected changes to an active ownership record invalidate destructive cleanup plans and require a fresh observation, preventing a stale stop command from acting on another session generation."
+        },
+        {
+          "key": "inspect-explicit-host-binding-policy",
+          "title": "Inspect explicit host binding policy",
+          "outcome": "Session details show the actual loopback bind addresses and refuse an unsupported public-interface override unless a separately reviewed networking policy and operator action explicitly authorize that exposure."
+        },
+        {
+          "key": "separate-startup-and-readiness-timeouts",
+          "title": "Separate startup and readiness timeouts",
+          "outcome": "Operators can inspect component launch and readiness deadlines separately, with an expired readiness probe reported as unverified service state rather than proof that the owned process has exited."
+        },
+        {
+          "key": "retain-nonsecret-session-preferences",
+          "title": "Retain nonsecret session preferences",
+          "outcome": "Optional local preferences remember explicit port and layout choices but cannot retain process authority, session tokens or credentials for a later session merely because its workspace path matches."
+        },
+        {
+          "key": "export-sanitized-session-diagnostics",
+          "title": "Export sanitized session diagnostics",
+          "outcome": "An explicit diagnostics export includes bounded process ownership observations, ports and readiness outcomes while excluding tokens, command secrets, environment values and private application data from the package."
+        },
+        {
+          "key": "reconcile-externally-stopped-components",
+          "title": "Reconcile externally stopped components",
+          "outcome": "If an owned child is stopped externally, session status updates that component independently and offers reviewed recovery, without reporting the whole stack ready from earlier observations."
+        },
+        {
+          "key": "inspect-session-evidence-freshness",
+          "title": "Inspect session evidence freshness",
+          "outcome": "Every ownership and readiness observation displays its observation time and current session generation so an operator can distinguish a fresh verified fact from a retained record or earlier startup log."
+        }
+      ]
+    },
+    {
+      "id": "F016",
+      "name": "Local runtime readiness and diagnostics",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F015"
+      ],
+      "scope": "Independent reachability and workflow evidence for Vite, LAN and selected emulator components.",
+      "refusal": "Do not infer service acceptance from a port or reuse another project merely because its preferred endpoint responds.",
+      "recovery": "Preserve component-specific failures and permit a fresh explicit probe without rewriting prior evidence.",
+      "feedback": "Distinguish process alive, listener reachable, HTTP ready and named workflow verified states.",
+      "evidence": "Probe owned temporary services with misleading roots, failed routes, delayed readiness and configuration mismatches.",
+      "capabilities": [
+        {
+          "key": "inspect-component-readiness-levels",
+          "title": "Inspect component readiness levels",
+          "outcome": "Runtime status distinguishes process existence, owned listener reachability, successful health response and verified named workflow, preventing a listening port from being presented as complete application or emulator acceptance."
+        },
+        {
+          "key": "probe-the-active-vite-origin",
+          "title": "Probe the active Vite origin",
+          "outcome": "A readiness probe checks the session's actual selected app origin and a declared application endpoint, reporting redirects or mismatches without substituting the preferred default address as the observed target."
+        },
+        {
+          "key": "probe-lan-health-independently",
+          "title": "Probe LAN health independently",
+          "outcome": "LAN readiness uses its declared health route and verifies the local-only service identity, keeping that result separate from public application, Firebase emulator and provider runtime observations."
+        },
+        {
+          "key": "probe-emulator-components-independently",
+          "title": "Probe emulator components independently",
+          "outcome": "Auth, Firestore, Storage and any selected Functions emulator each report their own endpoint and probe result, so one reachable component cannot make unavailable neighboring services appear ready."
+        },
+        {
+          "key": "explain-protected-emulator-responses",
+          "title": "Explain protected emulator responses",
+          "outcome": "A protected emulator endpoint returning an expected authorization refusal is labeled as reachable with an unverified workflow, rather than being treated as either complete data acceptance or a dead listener."
+        },
+        {
+          "key": "verify-a-named-local-function-route",
+          "title": "Verify a named local function route",
+          "outcome": "An explicit Functions readiness check names the emulator route and expected registration response, distinguishing route availability from authenticated business-operation success or deployed provider acceptance for that function."
+        },
+        {
+          "key": "detect-mismatched-runtime-project-identities",
+          "title": "Detect mismatched runtime project identities",
+          "outcome": "A probe that observes an unexpected emulator or app project identity reports the mismatch and refuses to reuse that service as evidence for the selected workspace or session target."
+        },
+        {
+          "key": "report-root-endpoint-limitations",
+          "title": "Report root endpoint limitations",
+          "outcome": "Diagnostics explain when a service root is unsupported or intentionally restricted and identify the reviewed readiness route instead of repeatedly probing the root and misclassifying the component's state."
+        },
+        {
+          "key": "refresh-runtime-facts-explicitly",
+          "title": "Refresh runtime facts explicitly",
+          "outcome": "An operator can request a new bounded set of component probes, with results retaining their individual observation times and replacing only compatible current-session readiness facts after successful validation."
+        },
+        {
+          "key": "retain-failed-probe-evidence",
+          "title": "Retain failed probe evidence",
+          "outcome": "A failed readiness check records its sanitized category and target scope while preserving earlier observations as historical, preventing the interface from silently showing an old successful result as current readiness."
+        },
+        {
+          "key": "inspect-dependency-readiness-blockers",
+          "title": "Inspect dependency readiness blockers",
+          "outcome": "The runtime view explains which required component prevents a selected local workflow from becoming testable, without claiming that optional provider configuration or every emulator is mandatory for account-free mocks."
+        },
+        {
+          "key": "detect-stale-readiness-observations",
+          "title": "Detect stale readiness observations",
+          "outcome": "Readiness results expire according to a declared observation policy and visibly become stale after session generation, endpoint or relevant configuration changes, rather than remaining green indefinitely from startup."
+        },
+        {
+          "key": "bound-readiness-request-budgets",
+          "title": "Bound readiness request budgets",
+          "outcome": "Probe concurrency, duration and response-byte limits prevent a stalled or oversized local service response from blocking the entire dashboard or causing unbounded diagnostic output in the session report."
+        },
+        {
+          "key": "inspect-active-dependency-versions",
+          "title": "Inspect active dependency versions",
+          "outcome": "A local runtime report distinguishes installed package versions from manifest ranges and lockfile resolutions, exposing mismatches without installing dependencies or claiming the running process has adopted a newer on-disk version."
+        },
+        {
+          "key": "explain-sdk-mock-readiness-scope",
+          "title": "Explain SDK mock readiness scope",
+          "outcome": "Runtime status identifies the isolated local SDK session separately from native portal persistence and provider availability, so a synthetic SDK success cannot enable real payroll, benefits or employee provider actions."
+        },
+        {
+          "key": "detect-development-bridge-availability",
+          "title": "Detect development bridge availability",
+          "outcome": "The runtime view verifies that the same-origin development bridge can reach the intended local control service, while direct-port cross-origin inspection remains explicitly unavailable rather than bypassed through unsafe access flags."
+        },
+        {
+          "key": "inspect-local-browser-prerequisites",
+          "title": "Inspect local browser prerequisites",
+          "outcome": "A read-only prerequisite report identifies the configured browser runtime and missing installation requirements without automatically downloading software or treating browser presence as proof that application journeys have passed."
+        },
+        {
+          "key": "summarize-owned-log-readiness-evidence",
+          "title": "Summarize owned log readiness evidence",
+          "outcome": "A bounded diagnostics view links sanitized component log observations to a session and readiness phase, retaining warnings and failures without interpreting a generic success banner as named-route or workflow proof."
+        },
+        {
+          "key": "compare-runtime-observations",
+          "title": "Compare runtime observations",
+          "outcome": "Operators can compare two explicit readiness snapshots to identify changed ports, process identities, package versions and probe outcomes, while source changes and provider deployment remain separately qualified evidence categories."
+        },
+        {
+          "key": "export-a-runtime-verification-receipt",
+          "title": "Export a runtime verification receipt",
+          "outcome": "An explicit runtime receipt records selected endpoints, probe contracts, observation times and result categories, with private configuration and credentials excluded and unexecuted business workflows clearly marked unverified."
+        }
+      ]
+    },
+    {
+      "id": "F017",
+      "name": "Workspace shell and panel control",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F014"
+      ],
+      "scope": "Persistent nonsecret layout preferences, panel focus and predictable editor workspace transitions.",
+      "refusal": "Refuse malformed layout state and isolate workspace preferences from authority, source content and provider settings.",
+      "recovery": "Recover a usable canvas-first layout while retaining safe preferences and unsaved editing context.",
+      "feedback": "Show active tool, focus origin, pinned panel state and available canvas budget clearly.",
+      "evidence": "Use keyboard and narrow-viewport fixtures with panel switches, preference corruption and removed focus targets.",
+      "capabilities": [
+        {
+          "key": "manage-named-workspace-layouts",
+          "title": "Manage named workspace layouts",
+          "outcome": "Operators can save named nonsecret arrangements of compatible panels and canvas preferences, then explicitly apply one without changing source files, provider settings or the current accepted document state."
+        },
+        {
+          "key": "preview-layout-changes",
+          "title": "Preview layout changes",
+          "outcome": "Applying a saved layout first explains which panels and canvas settings will change when it could conceal an unsaved editor, preserving the current arrangement if the operator cancels the transition."
+        },
+        {
+          "key": "restore-a-usable-default-layout",
+          "title": "Restore a usable default layout",
+          "outcome": "A clear reset action restores the documented canvas-first shell arrangement without deleting mock application data, source drafts, command history or unrelated browser preferences in the same origin."
+        },
+        {
+          "key": "validate-stored-layout-preferences",
+          "title": "Validate stored layout preferences",
+          "outcome": "Malformed or unsupported preference records produce a usable fallback and actionable notice while leaving unrelated browser storage untouched and never interpreting stored values as executable markup or authority."
+        },
+        {
+          "key": "preserve-panel-focus-origins",
+          "title": "Preserve panel focus origins",
+          "outcome": "Opening and closing a panel records its valid opener and returns keyboard focus there, with a visible documented fallback when navigation or rerender removes the original control."
+        },
+        {
+          "key": "expose-current-panel-shortcuts",
+          "title": "Expose current panel shortcuts",
+          "outcome": "A keyboard-accessible shortcut reference lists the active platform modifier combinations and current panel actions without enabling shortcuts inside typing, code-editing or product interaction contexts where they would conflict."
+        },
+        {
+          "key": "resize-panels-through-typed-dimensions",
+          "title": "Resize panels through typed dimensions",
+          "outcome": "An operator can enter supported panel dimensions through labeled controls, with invalid or canvas-starving sizes refused or explicitly reconciled according to the documented minimum preview budget."
+        },
+        {
+          "key": "inspect-panel-pin-consequences",
+          "title": "Inspect panel pin consequences",
+          "outcome": "Before pinning both heavy panels on a narrow canvas, the shell explains the resulting space constraint and offers supported layout choices without silently overriding the operator's chosen persistent pin state."
+        },
+        {
+          "key": "navigate-workspace-tools-by-keyboard",
+          "title": "Navigate workspace tools by keyboard",
+          "outcome": "Rail and panel navigation expose predictable keyboard order and visible active states, preserving internal tool focus when an operator switches away and returns without closing its draft."
+        },
+        {
+          "key": "group-tools-by-declared-workspace",
+          "title": "Group tools by declared workspace",
+          "outcome": "Operators can filter tools to declared design, data or operations groups, with unavailable tools distinguished from implemented actions and session status and recovery controls remaining accessible."
+        },
+        {
+          "key": "search-workspace-commands-by-capability",
+          "title": "Search workspace commands by capability",
+          "outcome": "Command search finds implemented local tools using declared capability metadata and displays unavailable or planned matches without allowing a search result to bypass the selected operation's normal guards."
+        },
+        {
+          "key": "show-contextual-workspace-help",
+          "title": "Show contextual workspace help",
+          "outcome": "Contextual help identifies the current panel, selected target scope and supported next actions, linking relevant local guidance without assuming a different provider or production state."
+        },
+        {
+          "key": "preserve-editing-context-on-panel-switches",
+          "title": "Preserve editing context on panel switches",
+          "outcome": "Changing panels retains the source target, revision-bound draft and safe cursor context until an explicit replacement or cancellation action, preventing navigation from silently discarding pending local edits."
+        },
+        {
+          "key": "control-preview-and-inspector-focus-modes",
+          "title": "Control preview and inspector focus modes",
+          "outcome": "At narrow viewport widths, an explicit focus mode shows either canvas or inspector with an accessible return action, preserving selection and avoiding overlapping controls that make the other surface unreachable."
+        },
+        {
+          "key": "restore-compatible-workspace-preferences",
+          "title": "Restore compatible workspace preferences",
+          "outcome": "Reopening the same workspace restores supported nonsecret layout choices after validation, while a different workspace receives its own preferences rather than inheriting source selection or permission assumptions from another project."
+        },
+        {
+          "key": "explain-temporarily-hidden-panels",
+          "title": "Explain temporarily hidden panels",
+          "outcome": "When responsive space protection closes an unpinned panel, the shell reports which panel moved and provides a clear reopen action without implying that its draft or selected context was deleted."
+        },
+        {
+          "key": "expose-viewport-and-device-context",
+          "title": "Expose viewport and device context",
+          "outcome": "The application bar shows actual preview width, selected device preset and fit behavior consistently, including when panel resizing changes available canvas space without changing the requested simulated device width."
+        },
+        {
+          "key": "inspect-workspace-state-without-saving-it",
+          "title": "Inspect workspace state without saving it",
+          "outcome": "A diagnostics view reports current layout and panel state separately from persisted preferences, helping an operator identify whether a visible arrangement will survive refresh without forcing a storage write."
+        },
+        {
+          "key": "export-nonsecret-layout-presets",
+          "title": "Export nonsecret layout presets",
+          "outcome": "An explicit layout export contains only supported presentation preferences and version metadata, excluding source paths, drafts, session records, provider configuration and any values that could authorize an operation."
+        },
+        {
+          "key": "import-layout-presets-safely",
+          "title": "Import layout presets safely",
+          "outcome": "An imported layout preset is validated and previewed before application, with unsupported settings reported and no automatic source, mock-data or provider state changes caused by opening the preset file."
+        }
+      ]
+    },
+    {
+      "id": "F018",
+      "name": "Page and route management",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F005",
+        "F008",
+        "F009"
+      ],
+      "scope": "Declared page inventory, route metadata and source-owned route relationship proposals.",
+      "refusal": "Refuse ambiguous, duplicate, unsupported or out-of-scope route changes before editing source or page models.",
+      "recovery": "Preserve current route and draft context when proposals fail and expose a reviewed rollback for supported changes.",
+      "feedback": "Separate declared routes, observed preview locations and unmapped or dynamic patterns in the UI.",
+      "evidence": "Exercise static and dynamic route fixtures, collisions, navigation, disabled pages and source revision conflicts.",
+      "capabilities": [
+        {
+          "key": "inspect-declared-page-route-patterns",
+          "title": "Inspect declared page route patterns",
+          "outcome": "The Pages panel distinguishes exact, parameterized, wildcard and unresolved route declarations, showing the source evidence for each supported mapping without claiming that every possible runtime URL was enumerated."
+        },
+        {
+          "key": "find-route-conflicts-before-editing",
+          "title": "Find route conflicts before editing",
+          "outcome": "A route proposal reports duplicate or overlapping supported route patterns and their source owners, with blocking conflicts preventing a confirmed change from silently shadowing another existing page."
+        },
+        {
+          "key": "preview-page-route-renames",
+          "title": "Preview page route renames",
+          "outcome": "A route rename proposal lists affected mappings and known internal references before editing supported source, while dynamic or unresolved consumers remain explicit review findings rather than automatic replacements."
+        },
+        {
+          "key": "track-page-source-ownership",
+          "title": "Track page source ownership",
+          "outcome": "Each page entry exposes its declared source owner and supported edit kinds, distinguishing local page-model metadata from authored router configuration and generated document-owned route artifacts before a mutation is offered."
+        },
+        {
+          "key": "create-pages-through-supported-adapters",
+          "title": "Create pages through supported adapters",
+          "outcome": "A supported page-creation proposal defines its source path, route, template and ownership boundary, and confirmation produces only the reviewed eligible artifacts with their required backup and revision evidence."
+        },
+        {
+          "key": "duplicate-a-supported-page",
+          "title": "Duplicate a supported page",
+          "outcome": "A duplicate-page proposal creates new qualified page identities and a nonconflicting route while preserving source ownership rules and preventing references from accidentally pointing at the original page's private local state."
+        },
+        {
+          "key": "archive-a-local-document-page",
+          "title": "Archive a local document page",
+          "outcome": "Archiving a supported document-owned page explicitly removes it from the active page list while retaining its recoverable document data and explaining any source route or dependency effects before acceptance."
+        },
+        {
+          "key": "inspect-unmapped-page-candidates",
+          "title": "Inspect unmapped page candidates",
+          "outcome": "Page-like source modules without supported route mappings appear as unmapped candidates, with location visible and navigation or writes unavailable until an operator selects a reviewed mapping."
+        },
+        {
+          "key": "preview-nested-route-relationships",
+          "title": "Preview nested route relationships",
+          "outcome": "A nested-route view shows supported parent layouts and child route relationships, identifying inherited shells without treating DOM nesting or a filename convention alone as authoritative router configuration."
+        },
+        {
+          "key": "inspect-route-parameter-contracts",
+          "title": "Inspect route parameter contracts",
+          "outcome": "Supported dynamic routes display declared parameter names, constraints and synthetic preview examples, with invalid examples rejected before navigation and no suggestion that examples cover every valid runtime path."
+        },
+        {
+          "key": "navigate-to-explicit-preview-routes",
+          "title": "Navigate to explicit preview routes",
+          "outcome": "An operator can enter a reviewed local preview path within the active app origin, with unsupported protocols, foreign origins and source-unmapped locations clearly separated from declared page editing targets."
+        },
+        {
+          "key": "preserve-context-during-route-navigation",
+          "title": "Preserve context during route navigation",
+          "outcome": "Changing preview routes retains safe page-independent drafts and clears stale DOM selection, while any proposed page or source replacement follows the documented unsaved-work decision before navigation is completed."
+        },
+        {
+          "key": "detect-page-inventory-drift",
+          "title": "Detect page inventory drift",
+          "outcome": "External changes to relevant route or page revisions mark inventory stale and require supported refresh or reconciliation before writes can use those mappings again."
+        },
+        {
+          "key": "inspect-not-found-route-behavior",
+          "title": "Inspect not-found route behavior",
+          "outcome": "A local route diagnostic identifies the declared fallback route and a synthetic missing path, separating a successful fallback rendering from proof that all intended application routes resolve correctly."
+        },
+        {
+          "key": "review-redirect-declarations",
+          "title": "Review redirect declarations",
+          "outcome": "Supported redirect metadata shows source pattern, target and conditions, with loops, foreign targets or unsupported dynamic logic reported for review before a proposed route edit can be accepted."
+        },
+        {
+          "key": "compare-route-inventories",
+          "title": "Compare route inventories",
+          "outcome": "A bounded comparison lists declared routes added, removed, renamed or reparented between inventories, retaining revisions and unresolved patterns without automatically interpreting every changed source path as a new page."
+        },
+        {
+          "key": "inspect-page-metadata-provenance",
+          "title": "Inspect page metadata provenance",
+          "outcome": "Page titles, labels and route hints identify their authored, local-model or generated provenance, preventing a displayed label change from implying a corresponding router source edit."
+        },
+        {
+          "key": "preview-route-removal-impacts",
+          "title": "Preview route removal impacts",
+          "outcome": "Removing a supported route first identifies referenced page identities, links and dependent layouts, with unresolved required references blocking the proposed change instead of producing partially broken navigation."
+        },
+        {
+          "key": "export-a-route-inspection-report",
+          "title": "Export a route inspection report",
+          "outcome": "An explicit route report contains qualified page identities, supported patterns, source ownership and bounded findings without including provider secrets, local mock records or application source bodies by default."
+        },
+        {
+          "key": "record-route-operation-evidence",
+          "title": "Record route operation evidence",
+          "outcome": "An accepted route operation receipt names its prior and resulting source revisions, reviewed dependency findings and affected page identities, keeping source changes separate from browser journey and deployment acceptance."
+        }
+      ]
+    },
+    {
+      "id": "F019",
+      "name": "Working state and navigation history",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F009",
+        "F010",
+        "F014"
+      ],
+      "scope": "Local editor drafts, accepted state, navigation context and explicit replacement decisions.",
+      "refusal": "Do not equate unsaved drafts with accepted source or silently discard dirty state during navigation or refresh.",
+      "recovery": "Retain supported local drafts and recover them through explicit comparison against current source revisions.",
+      "feedback": "Distinguish saved, dirty, previewed, conflicted, replaced and recovered states using visible text and accessible status.",
+      "evidence": "Compare complete local drafts and accepted state through cancellation, reload, route changes and storage failures.",
+      "capabilities": [
+        {
+          "key": "inspect-dirty-editor-scopes",
+          "title": "Inspect dirty editor scopes",
+          "outcome": "A working-state summary names which supported source or document editors contain unsaved changes and distinguishes those drafts from accepted source, preview-only changes and persisted local recovery copies."
+        },
+        {
+          "key": "preview-navigation-effects-on-drafts",
+          "title": "Preview navigation effects on drafts",
+          "outcome": "Before navigation replaces a dirty editor, the UI identifies the affected draft and keep, discard or save choices, without treating the navigation click as implicit discard authorization."
+        },
+        {
+          "key": "cancel-draft-replacing-navigation",
+          "title": "Cancel draft-replacing navigation",
+          "outcome": "Canceling a replacement or navigation decision retains the complete draft, base revision, selected target and valid focus origin, with no source save or route change performed as a side effect."
+        },
+        {
+          "key": "keep-draft-while-changing-inspection",
+          "title": "Keep draft while changing inspection",
+          "outcome": "Operators can inspect another eligible object while retaining an unrelated source draft, with the interface distinguishing the editor target from the object selected only for inspection."
+        },
+        {
+          "key": "recover-drafts-after-local-refresh",
+          "title": "Recover drafts after local refresh",
+          "outcome": "When optional recovery is enabled, a refreshed workspace offers eligible saved drafts with their original source revision and scope, requiring explicit comparison before replacing a newly loaded current-source editor."
+        },
+        {
+          "key": "separate-previewed-and-saved-content",
+          "title": "Separate previewed and saved content",
+          "outcome": "The interface shows whether visible content comes from accepted source or an unsaved local preview, preventing a successful preview rendering from being presented as a committed source or document change."
+        },
+        {
+          "key": "detect-recovered-draft-conflicts",
+          "title": "Detect recovered draft conflicts",
+          "outcome": "A recovered draft whose base revision differs from current source is presented as conflicted and cannot be saved without a fresh reviewed source baseline and the operation's existing confirmation requirements."
+        },
+        {
+          "key": "discard-a-selected-draft-explicitly",
+          "title": "Discard a selected draft explicitly",
+          "outcome": "A discard decision affects only the named supported draft after showing its scope, preserving unrelated drafts, accepted source, browser mock workspaces and existing recovery checkpoints in the same origin."
+        },
+        {
+          "key": "inspect-local-draft-storage-effects",
+          "title": "Inspect local draft storage effects",
+          "outcome": "Operators can see whether a draft is only in memory, optionally recoverable in local storage or exported, with failed storage writes leaving the in-memory draft and source unchanged."
+        },
+        {
+          "key": "bound-draft-recovery-storage",
+          "title": "Bound draft recovery storage",
+          "outcome": "Draft persistence enforces declared count and byte budgets, reports quota or size refusals clearly and never silently prunes unrelated recoverable drafts or complete mock workspace records to make room."
+        },
+        {
+          "key": "export-an-explicit-draft-bundle",
+          "title": "Export an explicit draft bundle",
+          "outcome": "A draft export identifies its path, baseline revision and included content after disclosing possible private text, while excluding session authority and provider credentials from the bundle."
+        },
+        {
+          "key": "import-drafts-for-isolated-review",
+          "title": "Import drafts for isolated review",
+          "outcome": "Opening a compatible draft bundle validates its shape and displays a comparison proposal without automatically loading its content into the active editor or promoting any source changes."
+        },
+        {
+          "key": "track-accepted-state-transitions",
+          "title": "Track accepted state transitions",
+          "outcome": "Local history records accepted revisions separately from navigation and preview activity, allowing an operator to identify durable document or source changes rather than only editor-context transitions."
+        },
+        {
+          "key": "restore-recent-inspection-context",
+          "title": "Restore recent inspection context",
+          "outcome": "Returning to recent inspection revalidates its qualified target and preserves safe current drafts, with missing or replaced targets reported rather than substituting another object at its former position."
+        },
+        {
+          "key": "explain-abandoned-draft-history",
+          "title": "Explain abandoned draft history",
+          "outcome": "A draft removed by an explicit supported discard can retain a bounded metadata receipt identifying the decision and affected scope without persisting discarded private content when recovery was not enabled."
+        },
+        {
+          "key": "handle-browser-history-with-dirty-editors",
+          "title": "Handle browser history with dirty editors",
+          "outcome": "Back and Forward actions that replace dirty supported editors use the internal-navigation decision flow, preserving the intended destination when an operator cancels or resumes that navigation."
+        },
+        {
+          "key": "distinguish-source-save-from-draft-persistence",
+          "title": "Distinguish source save from draft persistence",
+          "outcome": "Saving a recovery draft reports only local draft retention and never changes its accepted source revision or displays the same success wording used for a confirmed repository source promotion."
+        },
+        {
+          "key": "restore-editor-cursor-context",
+          "title": "Restore editor cursor context",
+          "outcome": "Reopening a compatible source draft restores bounded cursor and scroll context after validating its target and content basis, with a visible fallback for obsolete saved positions."
+        },
+        {
+          "key": "inspect-unsaved-work-across-panels",
+          "title": "Inspect unsaved work across panels",
+          "outcome": "The shell offers one bounded list of supported dirty panels with their target scopes, allowing an operator to review each without automatically committing, discarding or merging drafts across different documents."
+        },
+        {
+          "key": "record-working-state-recovery-evidence",
+          "title": "Record working-state recovery evidence",
+          "outcome": "A recovery test receipt identifies the source revision, draft content comparison and accepted-state preservation checks, keeping browser refresh success separate from cloud synchronization or cross-browser portability claims."
+        }
+      ]
+    },
+    {
+      "id": "F020",
+      "name": "Project tooling and platform settings",
+      "area": "foundation",
+      "phase": "foundation",
+      "priority": "P1",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F001",
+        "F015"
+      ],
+      "scope": "Read-only tooling discovery, declared platform support and reviewed project-local preferences.",
+      "refusal": "Do not install tools, alter global settings or infer native platform acceptance from static declarations.",
+      "recovery": "Preserve existing project configuration and offer explicit reversible proposals for supported local setting changes.",
+      "feedback": "Show declared, installed, running and tested versions independently with actionable unsupported-state explanations.",
+      "evidence": "Use macOS and Windows argument fixtures, literal paths, capability absence and temporary configuration proposals.",
+      "capabilities": [
+        {
+          "key": "inspect-declared-toolchain-requirements",
+          "title": "Inspect declared toolchain requirements",
+          "outcome": "A project tooling view lists declared Node, package manager, Java, Python and Git requirements from reviewed sources without installing binaries or claiming those declarations match the current running processes."
+        },
+        {
+          "key": "compare-installed-and-declared-runtimes",
+          "title": "Compare installed and declared runtimes",
+          "outcome": "A read-only report distinguishes detected executable versions from project pins and engine ranges, naming mismatches without changing shell configuration, global package state or unrelated project runtime selections."
+        },
+        {
+          "key": "inspect-platform-capability-support",
+          "title": "Inspect platform capability support",
+          "outcome": "A platform matrix labels implemented, statically checked, locally executed and unverified operations separately for macOS Apple Silicon, Windows x64 and Windows ARM64 rather than showing one global supported badge."
+        },
+        {
+          "key": "preview-project-local-tool-settings",
+          "title": "Preview project-local tool settings",
+          "outcome": "A supported settings proposal shows exact project-local files, revisions and effects before changing tooling configuration, with global shell profiles and unrelated repositories explicitly outside the automatic write scope."
+        },
+        {
+          "key": "preserve-literal-process-arguments",
+          "title": "Preserve literal process arguments",
+          "outcome": "Child-process construction keeps workspace paths, branch names and operator values as literal arguments, with tests covering spaces and shell metacharacters without evaluating those values as command text."
+        },
+        {
+          "key": "inspect-package-script-effects",
+          "title": "Inspect package script effects",
+          "outcome": "A tooling browser lists actual package scripts and reviewed effects, distinguishing inspection, temporary tests, build output and provider publication without executing scripts simply to inspect their descriptions."
+        },
+        {
+          "key": "validate-documentation-command-examples",
+          "title": "Validate documentation command examples",
+          "outcome": "A maintenance check parses supported command examples as data and reports missing scripts or invalid context bindings without executing pasted command bodies, environment expansion or shell substitutions from documentation files."
+        },
+        {
+          "key": "inspect-lock-and-manifest-compatibility",
+          "title": "Inspect lock and manifest compatibility",
+          "outcome": "A read-only compatibility report compares reviewed manifests and lockfile root declarations, distinguishing intentional root-versus-starter differences from unexplained drift without regenerating either dependency tree automatically."
+        },
+        {
+          "key": "preview-dependency-maintenance-scope",
+          "title": "Preview dependency maintenance scope",
+          "outcome": "A dependency proposal identifies the exact package records, compatible range changes and platform bindings affected, keeping audit observations separate from permission to install, deploy or activate provider integrations."
+        },
+        {
+          "key": "report-missing-optional-tooling",
+          "title": "Report missing optional tooling",
+          "outcome": "Missing optional CLIs produce an unavailable capability with a documented setup path while account-free local inspection remains usable, preventing every absent provider tool from becoming a mandatory template prerequisite."
+        },
+        {
+          "key": "inspect-environment-variable-categories",
+          "title": "Inspect environment variable categories",
+          "outcome": "A configuration view lists reviewed variable names and public-versus-secret categories without reading secret values, and it distinguishes declared examples from effective runtime or deployed provider configuration."
+        },
+        {
+          "key": "detect-case-insensitive-path-collisions",
+          "title": "Detect case-insensitive path collisions",
+          "outcome": "A repository check reports file and directory identities that would collide under supported case-insensitive filesystems, with no automatic rename, merge or deletion of either existing path or its content."
+        },
+        {
+          "key": "preview-portable-project-path-use",
+          "title": "Preview portable project path use",
+          "outcome": "Tooling diagnostics identify project scripts that depend on machine-specific absolute paths and present a reviewed portable alternative without rewriting source, runtime records or user preferences during inspection."
+        },
+        {
+          "key": "inspect-selected-operating-release-integrity",
+          "title": "Inspect selected operating release integrity",
+          "outcome": "A tooling view identifies the pinned SYSTEMX release and integrity result separately from outer project extensions, refusing to treat a modified immutable snapshot as a valid selected upstream release."
+        },
+        {
+          "key": "review-host-integration-drift",
+          "title": "Review host integration drift",
+          "outcome": "A bounded drift report distinguishes upstream defaults, preserved host paths and downstream project records, making conflict and ownership scope visible before an operator proposes any controlled import or synchronization action."
+        },
+        {
+          "key": "validate-reusable-seed-cleanliness",
+          "title": "Validate reusable seed cleanliness",
+          "outcome": "A template check verifies that reusable context, plan, task and memory seeds remain blank, while project execution records and evidence stay in their designated host documentation or temporary rehearsal copies."
+        },
+        {
+          "key": "inspect-starter-parity-findings",
+          "title": "Inspect starter parity findings",
+          "outcome": "The maintenance view explains equal, intentionally different, starter-only and unexplained files against reviewed hash bindings, keeping source parity observations separate from runtime tests or provider acceptance."
+        },
+        {
+          "key": "explain-local-emulator-requirements",
+          "title": "Explain local emulator requirements",
+          "outcome": "Tooling help lists emulators needed for the selected workflow, distinguishing their Java and service prerequisites from account-free native portal and isolated SDK mock requirements."
+        },
+        {
+          "key": "export-a-sanitized-prerequisite-report",
+          "title": "Export a sanitized prerequisite report",
+          "outcome": "An explicit tooling report includes declared and observed versions, missing capabilities and observation scope while excluding credentials, private environment values, unrestricted command output and host-specific source file inventories."
+        },
+        {
+          "key": "record-native-platform-acceptance-separately",
+          "title": "Record native platform acceptance separately",
+          "outcome": "Platform evidence names the actual architecture, operating system, runtime and executed workflow, without converting mocked process tests or compatible lockfile bindings into native Windows or cloud runtime acceptance."
+        }
+      ]
+    }
+  ]
+}

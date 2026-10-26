@@ -113,8 +113,8 @@
     },
     {
       "name": "backlog:test",
-      "purpose": "SYSTEMX",
-      "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+      "purpose": "Tests the original WebAppX catalog and the separate LAN capability/requirement catalog, dependency graph and evidence bindings.",
+      "description": "Tests the original WebAppX catalog and the separate LAN capability/requirement catalog, dependency graph and evidence bindings."
     },
     {
       "name": "browser:codegen",

@@ -11,6 +11,36 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+## LAN 10,000-item delivery program — 2026-10-26
+
+The LAN expansion now has **100 authored families, 2,000 proposed functional
+capabilities and 10,000 delivery requirements**. Each capability has behavior,
+boundary, recovery, feedback and evidence requirements. The counts distinguish
+capabilities from acceptance work; they do not claim 10,000 shipped features.
+
+Read the [execution plan](../docs/LAN-10000-EXECUTION-PLAN.md) and
+[family checklist index](../docs/backlog/LAN-10000-TODO.md). The separate LAN IDs do not alter the
+original WebAppX 1,000-item catalog or its saved unfinished foundation bundle.
+The dependency graph gates design, components, CMS, applications and delivery on
+source ownership, document, command, schema, review and build prerequisites.
+Local/provider/operator readiness does not grant execution permission.
+
+The first implementation batch adds exact source-byte revisions, stale-save
+refusal, independent raw/leaf editor baselines, explicit reload recovery and
+clear transport/conflict feedback. It preserves unsaved drafts and uniform CRLF
+source formatting. Local acceptance is recorded in the
+[dated source-editing receipt](../docs/LAN-SOURCE-REVISION-QA-2026-10-26.md); generated completion counts come from
+its explicitly bound requirement records.
+
+Inspect the program without running any tasks:
+
+```bash
+node scripts/lan-backlog.mjs --summary --json
+node scripts/lan-backlog.mjs --ready --limit 20 --json
+node scripts/lan-backlog.mjs --item LAN-00001 --json
+node scripts/lan-backlog.mjs --check
+```
+
 ## LAN Navigator and Webflow research — 2026-10-25
 
 The owner resumed a bounded LAN builder iteration on 2026-10-25. Open the

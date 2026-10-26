@@ -1,0 +1,2397 @@
+{
+  "schemaVersion": 1,
+  "families": [
+    {
+      "id": "F081",
+      "name": "Anchored review conversations",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F003",
+        "F014"
+      ],
+      "scope": "Revision-bound comments and review threads on local document objects, source ranges and preview snapshots.",
+      "refusal": "Refuse unknown anchors, unauthorized local identities and unsupported attachment types; never infer permission from a comment.",
+      "recovery": "Preserve original anchor revisions and thread history when objects move, disappear or are restored.",
+      "feedback": "Expose thread scope, revision, unresolved state and inaccessible anchors with text and keyboard-reachable controls.",
+      "evidence": "Owned multi-context fixtures verify anchor movement, private-field handling, stale replies and complete conversation export.",
+      "capabilities": [
+        {
+          "key": "anchor-a-comment-to-a-stable-node",
+          "title": "Anchor a comment to a stable node",
+          "outcome": "An operator attaches a review comment to a stable document node and sees the same anchor after reordering that node."
+        },
+        {
+          "key": "anchor-a-comment-to-source-lines",
+          "title": "Anchor a comment to source lines",
+          "outcome": "A reviewer attaches a thread to a declared source range with its content revision, and the panel identifies later source drift."
+        },
+        {
+          "key": "anchor-a-comment-to-a-viewport",
+          "title": "Anchor a comment to a viewport",
+          "outcome": "A canvas annotation records the selected viewport and state so another local session can reproduce the reviewed visual context."
+        },
+        {
+          "key": "reply-within-a-review-thread",
+          "title": "Reply within a review thread",
+          "outcome": "A local reviewer adds an ordered reply without rewriting earlier messages, and the thread identifies its current document revision."
+        },
+        {
+          "key": "resolve-a-review-conversation",
+          "title": "Resolve a review conversation",
+          "outcome": "A reviewer resolves one selected conversation with a reason, while unrelated conversations and their unresolved counts remain unchanged."
+        },
+        {
+          "key": "reopen-a-resolved-conversation",
+          "title": "Reopen a resolved conversation",
+          "outcome": "An operator reopens a resolved thread and retains its prior resolution reason, actor reference and chronological conversation history."
+        },
+        {
+          "key": "edit-a-draft-review-message",
+          "title": "Edit a draft review message",
+          "outcome": "A reviewer changes an unsent draft without modifying published replies, and cancellation returns to the exact prior saved thread."
+        },
+        {
+          "key": "attach-an-owned-evidence-artifact",
+          "title": "Attach an owned evidence artifact",
+          "outcome": "An operator links an allowlisted local evidence artifact by digest, and the thread displays its type without automatically executing it."
+        },
+        {
+          "key": "mention-a-registered-local-reviewer",
+          "title": "Mention a registered local reviewer",
+          "outcome": "A composer resolves a mention against explicitly selected local identities and distinguishes an unresolved name from a registered reviewer."
+        },
+        {
+          "key": "filter-conversations-by-assignment",
+          "title": "Filter conversations by assignment",
+          "outcome": "A reviewer filters threads by selected assignee and receives exact counts without exposing messages outside the selected review scope."
+        },
+        {
+          "key": "filter-unresolved-canvas-conversations",
+          "title": "Filter unresolved canvas conversations",
+          "outcome": "The panel lists unresolved threads for the current canvas document and preserves the selected thread when the list is refreshed."
+        },
+        {
+          "key": "navigate-between-annotation-anchors",
+          "title": "Navigate between annotation anchors",
+          "outcome": "Keyboard actions move between available comment anchors and announce unavailable targets without changing the inspected document or source."
+        },
+        {
+          "key": "detect-orphaned-review-anchors",
+          "title": "Detect orphaned review anchors",
+          "outcome": "A refresh identifies comments whose target no longer exists and retains their original coordinates and revision for deliberate reassignment."
+        },
+        {
+          "key": "reassign-an-orphaned-anchor",
+          "title": "Reassign an orphaned anchor",
+          "outcome": "An operator previews moving one orphaned thread to a current object and confirms the new anchor while preserving its original reference."
+        },
+        {
+          "key": "compare-a-thread-against-its-snapshot",
+          "title": "Compare a thread against its snapshot",
+          "outcome": "A reviewer opens the thread's captured snapshot alongside the current canvas and sees the exact changed anchor properties."
+        },
+        {
+          "key": "retain-a-review-draft-across-refresh",
+          "title": "Retain a review draft across refresh",
+          "outcome": "A locally opted-in draft is restored for the same review scope and origin without being submitted or assigned automatically."
+        },
+        {
+          "key": "export-selected-review-conversations",
+          "title": "Export selected review conversations",
+          "outcome": "An operator exports selected thread records with stable anchors and chronology, with attachment payloads included only through explicit selection."
+        },
+        {
+          "key": "import-review-conversations-into-a-rehearsal",
+          "title": "Import review conversations into a rehearsal",
+          "outcome": "A local import validates identities and anchor references, previews conflicts, and leaves existing conversations unchanged when validation fails."
+        },
+        {
+          "key": "apply-explicit-thread-visibility",
+          "title": "Apply explicit thread visibility",
+          "outcome": "The panel uses declared local visibility rules when listing and opening threads, including a clear inaccessible-thread state for mismatched reviewers."
+        },
+        {
+          "key": "record-conversation-moderation-decisions",
+          "title": "Record conversation moderation decisions",
+          "outcome": "A local moderator records a bounded moderation reason and preserves the original thread record, without silently deleting unrelated review evidence."
+        }
+      ]
+    },
+    {
+      "id": "F082",
+      "name": "Review requests and acceptance decisions",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "operator",
+      "dependsOnFamilies": [
+        "F009",
+        "F081"
+      ],
+      "scope": "Explicit review packages, revision-bound decisions and operator acceptance records for local changes.",
+      "refusal": "Refuse stale review packages and unassigned decisions; a favorable review never grants provider or deployment authority.",
+      "recovery": "Retain superseded decisions and pending reviewer drafts when a package is replaced or its source changes.",
+      "feedback": "Show required reviewers, reviewed source, unmet conditions and the precise effect of accepting a package.",
+      "evidence": "Fixtures distinguish proposal, review, operator acceptance and publication while checking exact decision provenance.",
+      "capabilities": [
+        {
+          "key": "create-a-bounded-review-package",
+          "title": "Create a bounded review package",
+          "outcome": "An operator selects a change set and creates a review package containing its source revision, declared scope and required evidence links."
+        },
+        {
+          "key": "select-required-review-roles",
+          "title": "Select required review roles",
+          "outcome": "A package owner assigns explicit review roles and sees which selected local identities can satisfy each role before requesting review."
+        },
+        {
+          "key": "request-review-without-publishing",
+          "title": "Request review without publishing",
+          "outcome": "A review request creates a local pending record and leaves source delivery, provider state and production publication unchanged."
+        },
+        {
+          "key": "preview-a-reviewer-s-assigned-scope",
+          "title": "Preview a reviewer's assigned scope",
+          "outcome": "A reviewer sees the package objects and evidence assigned to that role, including explicit omissions rather than an apparently complete repository view."
+        },
+        {
+          "key": "record-an-approval-for-exact-revisions",
+          "title": "Record an approval for exact revisions",
+          "outcome": "An assigned reviewer approves the package's exact revision and evidence digest, and a later source change invalidates that approval's applicability."
+        },
+        {
+          "key": "request-specific-revisions",
+          "title": "Request specific revisions",
+          "outcome": "A reviewer records actionable revision requests tied to particular package objects, and the owner can track each request independently."
+        },
+        {
+          "key": "withdraw-a-pending-review-request",
+          "title": "Withdraw a pending review request",
+          "outcome": "The owner withdraws a pending request while preserving its original package and any completed reviewer decisions for later inspection."
+        },
+        {
+          "key": "replace-a-review-package-deliberately",
+          "title": "Replace a review package deliberately",
+          "outcome": "An operator previews a replacement package and sees which earlier decisions become superseded before confirming the new review basis."
+        },
+        {
+          "key": "compare-review-package-versions",
+          "title": "Compare review package versions",
+          "outcome": "A reviewer compares two package versions and sees added, removed and changed objects with the evidence references responsible for each difference."
+        },
+        {
+          "key": "record-an-operator-acceptance-decision",
+          "title": "Record an operator acceptance decision",
+          "outcome": "The operator accepts a reviewed package with explicit scope and rationale, while the record continues to distinguish acceptance from external publication."
+        },
+        {
+          "key": "decline-a-proposed-acceptance",
+          "title": "Decline a proposed acceptance",
+          "outcome": "An operator declines a package without deleting the proposal, reviewer feedback or source artifacts that established the decision context."
+        },
+        {
+          "key": "expire-revision-bound-review-applicability",
+          "title": "Expire revision-bound review applicability",
+          "outcome": "The review view marks an approval inapplicable when its bound source revision changes, while preserving the original approval as historical evidence."
+        },
+        {
+          "key": "track-conditional-review-findings",
+          "title": "Track conditional review findings",
+          "outcome": "A reviewer records conditions with explicit resolution criteria, and the package cannot report those conditions satisfied from a status label alone."
+        },
+        {
+          "key": "assign-independent-verification-ownership",
+          "title": "Assign independent verification ownership",
+          "outcome": "The package records separate implementation and verification identities so the operator can inspect who produced and who examined each evidence artifact."
+        },
+        {
+          "key": "present-unresolved-acceptance-conditions",
+          "title": "Present unresolved acceptance conditions",
+          "outcome": "A package summary lists every unresolved required condition with its original wording and prevents a shortened display from hiding its count."
+        },
+        {
+          "key": "export-a-review-decision-packet",
+          "title": "Export a review decision packet",
+          "outcome": "An operator exports the exact package, decisions and evidence references with a manifest that explains excluded private attachment payloads."
+        },
+        {
+          "key": "reconcile-imported-review-decisions",
+          "title": "Reconcile imported review decisions",
+          "outcome": "An import matches decisions to exact package revisions and reports unknown reviewers or changed evidence without applying unsupported approval equivalence."
+        },
+        {
+          "key": "record-acceptance-scope-exclusions",
+          "title": "Record acceptance scope exclusions",
+          "outcome": "An operator lists excluded targets and behaviors in an acceptance record so a local result cannot be presented as provider or production acceptance."
+        },
+        {
+          "key": "acknowledge-a-superseded-release-review",
+          "title": "Acknowledge a superseded release review",
+          "outcome": "The interface retains a superseded release review beside its replacement and explains which earlier decisions still apply to unchanged scope."
+        },
+        {
+          "key": "produce-a-review-handoff-checklist",
+          "title": "Produce a review handoff checklist",
+          "outcome": "The operator generates a checklist of remaining decisions and original conditions for a named recipient without sending that checklist automatically."
+        }
+      ]
+    },
+    {
+      "id": "F083",
+      "name": "Local collaboration and presence rehearsal",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F007",
+        "F014"
+      ],
+      "scope": "Multiple explicitly owned local sessions coordinating selections, editing intent and review presence on one revision.",
+      "refusal": "Refuse invented identity claims, expired participation records and mutations lacking the underlying command authority.",
+      "recovery": "Expire lost sessions predictably and recover each participant draft without presenting stale presence as a live connection.",
+      "feedback": "Label simulated identity, connection state, document revision and simultaneous editing conflicts independently.",
+      "evidence": "Owned concurrent browser contexts verify presence expiry, reconnect, selection isolation and conflicting command refusal.",
+      "capabilities": [
+        {
+          "key": "register-a-local-participant-session",
+          "title": "Register a local participant session",
+          "outcome": "An operator creates an explicitly labeled local participant session whose display identity does not claim authenticated organizational membership."
+        },
+        {
+          "key": "show-document-scoped-presence",
+          "title": "Show document-scoped presence",
+          "outcome": "The canvas lists participants attached to the selected document and distinguishes their current revision from the revision being inspected."
+        },
+        {
+          "key": "publish-bounded-selection-presence",
+          "title": "Publish bounded selection presence",
+          "outcome": "A participant shares only selected stable object identifiers, and other sessions display those identifiers without receiving hidden document text."
+        },
+        {
+          "key": "distinguish-viewing-from-editing-intent",
+          "title": "Distinguish viewing from editing intent",
+          "outcome": "The presence panel shows whether a participant is viewing, proposing or actively editing a supported object without granting an edit lock implicitly."
+        },
+        {
+          "key": "expire-disconnected-participant-presence",
+          "title": "Expire disconnected participant presence",
+          "outcome": "Presence disappears from the live participant list after its declared expiry while a historical session record remains distinguishable from an active connection."
+        },
+        {
+          "key": "rejoin-a-local-collaboration-session",
+          "title": "Rejoin a local collaboration session",
+          "outcome": "A returning participant explicitly rejoins a matching session and receives current document state without automatically replaying unsaved commands."
+        },
+        {
+          "key": "follow-another-participant-s-selection",
+          "title": "Follow another participant's selection",
+          "outcome": "An operator opts into following a named participant's selection and can leave follow mode without changing either participant's document data."
+        },
+        {
+          "key": "protect-private-local-drafts",
+          "title": "Protect private local drafts",
+          "outcome": "Draft form values remain private to their owning session while other participants receive only an explicit pending-work indicator."
+        },
+        {
+          "key": "announce-conflicting-editing-intent",
+          "title": "Announce conflicting editing intent",
+          "outcome": "Two participants selecting the same writable object receive an editing-intent warning before either proposal is accepted into the command journal."
+        },
+        {
+          "key": "request-an-editing-handoff",
+          "title": "Request an editing handoff",
+          "outcome": "A participant requests control of a declared edit scope, and the current participant can acknowledge or decline without losing unsaved work."
+        },
+        {
+          "key": "record-a-completed-editing-handoff",
+          "title": "Record a completed editing handoff",
+          "outcome": "A confirmed handoff records the transferred scope and revision, while both sessions retain their own prior draft and command history."
+        },
+        {
+          "key": "display-stale-participant-revisions",
+          "title": "Display stale participant revisions",
+          "outcome": "The presence panel identifies participants whose selected document revision is behind the current revision and offers an explicit refresh action."
+        },
+        {
+          "key": "isolate-participants-across-workspaces",
+          "title": "Isolate participants across workspaces",
+          "outcome": "Participants in one selected workspace do not appear in another workspace's presence list, even when display names and document titles match."
+        },
+        {
+          "key": "bound-presence-update-traffic",
+          "title": "Bound presence update traffic",
+          "outcome": "The local collaboration service coalesces rapid selection changes and reports dropped intermediate presence updates without dropping document commands."
+        },
+        {
+          "key": "replay-collaboration-event-fixtures",
+          "title": "Replay collaboration event fixtures",
+          "outcome": "A deterministic fixture replays join, selection, disconnect and reconnect events while keeping command acceptance separate from transient presence events."
+        },
+        {
+          "key": "pause-presence-sharing-locally",
+          "title": "Pause presence sharing locally",
+          "outcome": "A participant pauses selection sharing and sees that state clearly, while ordinary local inspection and unsaved drafts continue to function."
+        },
+        {
+          "key": "inspect-the-presence-event-timeline",
+          "title": "Inspect the presence event timeline",
+          "outcome": "An operator reads a bounded event timeline with participant session identifiers and source revisions, excluding draft content and credential material."
+        },
+        {
+          "key": "detect-duplicate-participant-display-names",
+          "title": "Detect duplicate participant display names",
+          "outcome": "The participant list differentiates identical display names with stable session references so follow and handoff actions target the intended session."
+        },
+        {
+          "key": "export-a-collaboration-rehearsal-report",
+          "title": "Export a collaboration rehearsal report",
+          "outcome": "An operator exports event counts, revision conflicts and session expiry outcomes from a local rehearsal without labeling fictional participants as authenticated users."
+        },
+        {
+          "key": "restore-local-collaboration-preferences",
+          "title": "Restore local collaboration preferences",
+          "outcome": "A refreshed session restores nonsecret view preferences while requiring an explicit rejoin before publishing new participant presence or selection information."
+        }
+      ]
+    },
+    {
+      "id": "F084",
+      "name": "Branch and merge review workspaces",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F009",
+        "F010",
+        "F082"
+      ],
+      "scope": "Local document branches and explicit merge proposals after stable identities and command transactions exist.",
+      "refusal": "Refuse ambiguous ownership, missing ancestors and unresolved conflicts; branch creation does not authorize source or provider publication.",
+      "recovery": "Preserve branch heads, proposal drafts and conflict choices until an atomic merge or explicit cancellation completes.",
+      "feedback": "Expose common ancestors, affected objects, conflicting revisions and the difference between preview and committed merge.",
+      "evidence": "Deterministic branch fixtures prove three-way merge scope, conflict rejection and reversible local journal outcomes.",
+      "capabilities": [
+        {
+          "key": "create-a-document-branch-at-a-revision",
+          "title": "Create a document branch at a revision",
+          "outcome": "An operator creates a named local document branch from an exact accepted revision and receives a stable reference to that starting state."
+        },
+        {
+          "key": "list-local-branch-ancestry",
+          "title": "List local branch ancestry",
+          "outcome": "The branch panel displays each local head and its common ancestor with the current document without inferring that equal titles imply shared ancestry."
+        },
+        {
+          "key": "preview-a-branch-switch",
+          "title": "Preview a branch switch",
+          "outcome": "A branch switch preview lists pending local work and changed object counts before the operator chooses whether to continue."
+        },
+        {
+          "key": "switch-branches-with-retained-drafts",
+          "title": "Switch branches with retained drafts",
+          "outcome": "The operator switches to a selected branch after resolving the draft decision, preserving drafts according to the explicitly selected retention action."
+        },
+        {
+          "key": "compare-branch-object-changes",
+          "title": "Compare branch object changes",
+          "outcome": "A comparison lists objects added, removed and modified between two heads using stable identities and bounded semantic change summaries."
+        },
+        {
+          "key": "create-a-three-way-merge-proposal",
+          "title": "Create a three-way merge proposal",
+          "outcome": "A proposal records base, source and destination revisions and calculates merge consequences without changing the destination document or source files."
+        },
+        {
+          "key": "detect-competing-property-edits",
+          "title": "Detect competing property edits",
+          "outcome": "The merge view reports when both branches changed the same property differently and preserves both values for an explicit conflict decision."
+        },
+        {
+          "key": "merge-independent-object-changes",
+          "title": "Merge independent object changes",
+          "outcome": "An accepted merge combines independent edits into one atomic document revision and retains the source branch head for later comparison."
+        },
+        {
+          "key": "resolve-a-property-conflict-explicitly",
+          "title": "Resolve a property conflict explicitly",
+          "outcome": "An operator chooses a current, incoming or reviewed replacement value for one conflict, and the proposal records the exact selected resolution."
+        },
+        {
+          "key": "detect-delete-versus-edit-conflicts",
+          "title": "Detect delete versus edit conflicts",
+          "outcome": "A merge proposal identifies objects deleted on one side and edited on the other, preventing silent resurrection or silent loss of the edit."
+        },
+        {
+          "key": "resolve-ordered-child-conflicts",
+          "title": "Resolve ordered child conflicts",
+          "outcome": "The merge interface previews competing child order changes and applies only an explicitly reviewed order after validating parent and child references."
+        },
+        {
+          "key": "rebase-a-document-branch-proposal",
+          "title": "Rebase a document branch proposal",
+          "outcome": "An operator rebases a proposal onto a newer destination revision and receives new conflict results instead of retaining obsolete applicability claims."
+        },
+        {
+          "key": "invalidate-a-stale-merge-confirmation",
+          "title": "Invalidate a stale merge confirmation",
+          "outcome": "A changed destination head invalidates an earlier merge confirmation and leaves both branch histories intact for a fresh preview."
+        },
+        {
+          "key": "cancel-a-merge-preparation-session",
+          "title": "Cancel a merge preparation session",
+          "outcome": "Cancelling a merge removes only its transient preparation state and preserves both branch heads, proposal evidence and unrelated editing drafts."
+        },
+        {
+          "key": "undo-a-local-document-merge",
+          "title": "Undo a local document merge",
+          "outcome": "An operator previews reversing a committed merge and restores its declared destination state through the command journal without deleting the source branch."
+        },
+        {
+          "key": "inspect-merge-parent-references",
+          "title": "Inspect merge parent references",
+          "outcome": "The history view shows both parents of a committed merge and links each parent to the semantic comparison used during review."
+        },
+        {
+          "key": "name-a-branch-review-checkpoint",
+          "title": "Name a branch review checkpoint",
+          "outcome": "An operator labels an existing branch revision as a review checkpoint without moving the branch head or changing its document content."
+        },
+        {
+          "key": "archive-a-completed-document-branch",
+          "title": "Archive a completed document branch",
+          "outcome": "A local archive preview identifies retained checkpoints and descendants before marking a branch inactive without deleting its recoverable revisions."
+        },
+        {
+          "key": "restore-an-archived-document-branch",
+          "title": "Restore an archived document branch",
+          "outcome": "A restored branch retains its original revision identities and history while receiving a clearly reported active status in the local branch panel."
+        },
+        {
+          "key": "export-a-branch-merge-rehearsal",
+          "title": "Export a branch merge rehearsal",
+          "outcome": "A report captures branch revisions, conflict decisions and resulting document digests so the same synthetic merge can be reproduced independently."
+        }
+      ]
+    },
+    {
+      "id": "F085",
+      "name": "Bounded Designer command line client",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F006",
+        "F008",
+        "F009"
+      ],
+      "scope": "A local CLI using the same versioned query and command registry as the LAN interface.",
+      "refusal": "Refuse unknown commands, stale revisions, shell interpolation and targets outside the explicitly selected workspace.",
+      "recovery": "Preserve prepared proposals and command receipts after cancellation or interruption; retries must not duplicate accepted commands.",
+      "feedback": "Provide stable exit meanings, machine-readable output and precise target and revision summaries before writes.",
+      "evidence": "CLI fixtures use argument arrays and owned temporary repositories to verify parity with browser command semantics.",
+      "capabilities": [
+        {
+          "key": "discover-cli-capability-versions",
+          "title": "Discover CLI capability versions",
+          "outcome": "A local command lists supported query and mutation capability versions with their current implementation status and declared required authority."
+        },
+        {
+          "key": "select-a-cli-workspace-explicitly",
+          "title": "Select a CLI workspace explicitly",
+          "outcome": "The CLI requires an explicit workspace selector when multiple workspaces are available and echoes the resolved public identity before continuing."
+        },
+        {
+          "key": "read-a-canonical-document-through-cli",
+          "title": "Read a canonical document through CLI",
+          "outcome": "A read command returns the selected document's current revision and bounded structural metadata without starting providers or modifying local source files."
+        },
+        {
+          "key": "inspect-a-command-schema-from-cli",
+          "title": "Inspect a command schema from CLI",
+          "outcome": "An operator requests one versioned command schema and receives its required inputs, revision preconditions and possible refusal meanings."
+        },
+        {
+          "key": "prepare-a-cli-mutation-proposal",
+          "title": "Prepare a CLI mutation proposal",
+          "outcome": "The CLI validates a proposed mutation and writes a local proposal receipt containing its declared scope without executing the mutation."
+        },
+        {
+          "key": "preview-a-cli-semantic-difference",
+          "title": "Preview a CLI semantic difference",
+          "outcome": "A preview command shows the semantic and supported source consequences of a prepared proposal while preserving the workspace and command journal."
+        },
+        {
+          "key": "apply-a-revision-bound-cli-command",
+          "title": "Apply a revision-bound CLI command",
+          "outcome": "An explicit apply action submits a validated proposal against its exact base revision and returns a durable receipt for the accepted result."
+        },
+        {
+          "key": "reject-stale-cli-proposals",
+          "title": "Reject stale CLI proposals",
+          "outcome": "Applying a proposal against a changed base returns a specific stale-revision exit meaning and preserves the unapplied proposal for deliberate refresh."
+        },
+        {
+          "key": "resume-an-interrupted-cli-operation",
+          "title": "Resume an interrupted CLI operation",
+          "outcome": "A resume command reconciles an interrupted operation using its stable request identifier and reports accepted, refused or still-unresolved outcome without duplication."
+        },
+        {
+          "key": "read-cli-command-history-pages",
+          "title": "Read CLI command history pages",
+          "outcome": "An operator reads a bounded page of command receipts with a stable continuation cursor and exact counts of omitted history records."
+        },
+        {
+          "key": "request-cli-undo-preview",
+          "title": "Request CLI undo preview",
+          "outcome": "The CLI calculates a named command's undo consequences and lists conflicts without changing the document until a separate confirmed apply action."
+        },
+        {
+          "key": "request-cli-redo-preview",
+          "title": "Request CLI redo preview",
+          "outcome": "A redo preview identifies the original command and current revision requirements so replay does not silently overwrite later accepted changes."
+        },
+        {
+          "key": "export-cli-results-as-strict-json",
+          "title": "Export CLI results as strict JSON",
+          "outcome": "Machine-readable mode emits one schema-versioned JSON result with stable error fields and excludes progress chatter from the output stream."
+        },
+        {
+          "key": "bound-cli-result-pagination",
+          "title": "Bound CLI result pagination",
+          "outcome": "Large query results require bounded page sizes and expose a continuation token rather than silently truncating objects or exhausting terminal memory."
+        },
+        {
+          "key": "cancel-an-owned-cli-worker",
+          "title": "Cancel an owned CLI worker",
+          "outcome": "A cancellation targets only the recorded owned worker and reports whether its command reached acceptance before the cancellation request was observed."
+        },
+        {
+          "key": "compare-cli-and-browser-command-receipts",
+          "title": "Compare CLI and browser command receipts",
+          "outcome": "A parity report compares equivalent CLI and browser commands against the same synthetic revision and identifies differences in scope, refusals or resulting digests."
+        },
+        {
+          "key": "validate-literal-cli-argument-handling",
+          "title": "Validate literal CLI argument handling",
+          "outcome": "The CLI passes child-process arguments as arrays and preserves literal spaces and metacharacters without evaluating them as shell code."
+        },
+        {
+          "key": "read-cli-output-redaction-policy",
+          "title": "Read CLI output redaction policy",
+          "outcome": "An operator inspects which fields can appear in command results and sees explicit redaction markers for disallowed credential or private payload fields."
+        },
+        {
+          "key": "generate-command-specific-cli-help",
+          "title": "Generate command-specific CLI help",
+          "outcome": "Help for one supported command presents an executable local example and explains its effects, revision requirements and possible nonzero exit meanings."
+        },
+        {
+          "key": "check-cli-client-compatibility",
+          "title": "Check CLI client compatibility",
+          "outcome": "A handshake reports whether the installed client can use the selected server's command versions and refuses unsupported write protocols before creating a proposal."
+        }
+      ]
+    },
+    {
+      "id": "F086",
+      "name": "Capability-scoped MCP client surface",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F065",
+        "F085"
+      ],
+      "scope": "Local MCP queries and proposals backed by the versioned Designer registry rather than unrestricted file or shell tools.",
+      "refusal": "Refuse unsupported capability versions, unselected workspaces and mutations without their existing revision and confirmation requirements.",
+      "recovery": "Reconcile interrupted tool requests by request identity and preserve unapplied proposals for a new explicit review.",
+      "feedback": "Tool results distinguish query, proposal, acceptance and unavailable capabilities with bounded structured summaries.",
+      "evidence": "Owned MCP protocol fixtures verify capability parity, stale-request refusal and absence of implicit source or provider writes.",
+      "capabilities": [
+        {
+          "key": "publish-a-local-mcp-capability-inventory",
+          "title": "Publish a local MCP capability inventory",
+          "outcome": "The MCP server lists only implemented capabilities and their versions, distinguishing query tools from proposal, mutation and publication operations."
+        },
+        {
+          "key": "select-the-mcp-workspace-scope",
+          "title": "Select the MCP workspace scope",
+          "outcome": "A tool session binds to an explicitly selected workspace and rejects later requests that attempt to substitute another workspace identifier."
+        },
+        {
+          "key": "read-document-metadata-through-mcp",
+          "title": "Read document metadata through MCP",
+          "outcome": "A query returns bounded document identities, ownership modes and current revision without exporting private content or executing an editing command."
+        },
+        {
+          "key": "read-selected-object-metadata-through-mcp",
+          "title": "Read selected object metadata through MCP",
+          "outcome": "The client requests stable identifiers from an explicit selection context and receives an unavailable result when that selection is stale."
+        },
+        {
+          "key": "prepare-an-mcp-edit-proposal",
+          "title": "Prepare an MCP edit proposal",
+          "outcome": "A proposal tool validates structured command inputs and returns a revision-bound local proposal without applying the proposed document or source changes."
+        },
+        {
+          "key": "preview-an-mcp-command-difference",
+          "title": "Preview an MCP command difference",
+          "outcome": "The tool exposes a prepared proposal's semantic consequences and supported source diff with exact scope and explicit unsupported-operation details."
+        },
+        {
+          "key": "apply-an-authorized-mcp-proposal",
+          "title": "Apply an authorized MCP proposal",
+          "outcome": "An apply tool uses the existing command authority and exact proposal revision, returning an acceptance receipt rather than inferring success from tool dispatch."
+        },
+        {
+          "key": "reject-stale-mcp-selection-references",
+          "title": "Reject stale MCP selection references",
+          "outcome": "A request using an old selection revision is refused without choosing a replacement object by label, position or nearest available canvas element."
+        },
+        {
+          "key": "bound-mcp-query-result-pages",
+          "title": "Bound MCP query result pages",
+          "outcome": "A query enforces declared object and payload limits and includes complete omission counts with an explicit continuation method for larger results."
+        },
+        {
+          "key": "expose-command-refusal-meanings-through-mcp",
+          "title": "Expose command refusal meanings through MCP",
+          "outcome": "Tool errors preserve stable refusal codes, affected scope and repair guidance so clients can distinguish unavailable capability from invalid or stale input."
+        },
+        {
+          "key": "reconcile-an-interrupted-mcp-command",
+          "title": "Reconcile an interrupted MCP command",
+          "outcome": "A reconciliation query looks up an exact request identity and reports its accepted receipt or unresolved status without submitting a second mutation."
+        },
+        {
+          "key": "keep-mcp-source-ownership-visible",
+          "title": "Keep MCP source ownership visible",
+          "outcome": "Object queries include source, document or hybrid ownership so an agent cannot mistake a runtime DOM projection for a writable canonical object."
+        },
+        {
+          "key": "restrict-mcp-evidence-attachments",
+          "title": "Restrict MCP evidence attachments",
+          "outcome": "A tool accepts only explicitly selected local evidence references and verifies their digests without opening arbitrary files named in untrusted tool arguments."
+        },
+        {
+          "key": "request-an-mcp-undo-proposal",
+          "title": "Request an MCP undo proposal",
+          "outcome": "The client prepares an undo against a named command receipt and current revision while leaving its execution subject to the normal command confirmation."
+        },
+        {
+          "key": "explain-mcp-unavailable-capabilities",
+          "title": "Explain MCP unavailable capabilities",
+          "outcome": "The inventory reports why a planned capability is unavailable and identifies its prerequisite contract without advertising an inert panel as a working tool."
+        },
+        {
+          "key": "compare-mcp-and-native-ui-commands",
+          "title": "Compare MCP and native UI commands",
+          "outcome": "A local parity fixture submits equivalent proposals through MCP and the UI registry and compares revision checks, scope and resulting document digests."
+        },
+        {
+          "key": "audit-mcp-request-metadata-locally",
+          "title": "Audit MCP request metadata locally",
+          "outcome": "An operator reads sanitized tool request metadata and acceptance references while argument payloads outside the declared evidence policy remain excluded."
+        },
+        {
+          "key": "handle-mcp-protocol-version-negotiation",
+          "title": "Handle MCP protocol version negotiation",
+          "outcome": "The client and server negotiate compatible protocol and capability versions, refusing unsupported writes while retaining supported read-only inspection where explicitly compatible."
+        },
+        {
+          "key": "expire-local-mcp-session-authority",
+          "title": "Expire local MCP session authority",
+          "outcome": "An expired local tool session loses mutation authority and receives a clear refusal while its earlier receipts remain available through authorized inspection."
+        },
+        {
+          "key": "export-an-mcp-rehearsal-transcript",
+          "title": "Export an MCP rehearsal transcript",
+          "outcome": "A local export includes tool names, revisions, results and sanitized refusal metadata, clearly identifying synthetic fixtures and excluding credential-bearing request data."
+        }
+      ]
+    },
+    {
+      "id": "F087",
+      "name": "Extension manifests and bounded plugin hosting",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "operator",
+      "dependsOnFamilies": [
+        "F006",
+        "F065",
+        "F086"
+      ],
+      "scope": "Explicitly installed local extensions declaring versioned capabilities, UI contributions and isolated execution requirements.",
+      "refusal": "Refuse undeclared permissions, unsupported manifest versions and untrusted execution; installation never expands provider authority implicitly.",
+      "recovery": "Preserve extension settings and document state when an extension crashes, is disabled or is replaced.",
+      "feedback": "Show extension identity, requested capabilities, isolated runtime state and the effect of activation or removal.",
+      "evidence": "Temporary extension fixtures prove manifest validation, capability isolation, crash recovery and exact uninstall scope.",
+      "capabilities": [
+        {
+          "key": "inspect-an-extension-manifest-before-activation",
+          "title": "Inspect an extension manifest before activation",
+          "outcome": "An operator opens a versioned extension manifest and sees its declared capabilities, compatibility range and proposed UI contributions before any extension code runs."
+        },
+        {
+          "key": "validate-extension-capability-declarations",
+          "title": "Validate extension capability declarations",
+          "outcome": "The host rejects unknown or undeclared capability requests and reports the exact manifest field responsible without partially activating the extension."
+        },
+        {
+          "key": "preview-extension-activation-scope",
+          "title": "Preview extension activation scope",
+          "outcome": "An activation preview lists selected workspace access, command capabilities and local runtime requirements so the operator can approve the actual proposed scope."
+        },
+        {
+          "key": "activate-an-approved-local-extension",
+          "title": "Activate an approved local extension",
+          "outcome": "The host activates an explicitly approved extension within its declared isolation boundary and records the exact manifest version and capability selection."
+        },
+        {
+          "key": "register-an-extension-panel-contribution",
+          "title": "Register an extension panel contribution",
+          "outcome": "A validated extension contributes a named panel through a stable host contract without replacing the canvas, navigation rail or built-in inspector controls."
+        },
+        {
+          "key": "register-an-extension-query-contribution",
+          "title": "Register an extension query contribution",
+          "outcome": "The host exposes a versioned extension query only after validating its result schema, declared scope and bounded execution requirements."
+        },
+        {
+          "key": "register-an-extension-command-contribution",
+          "title": "Register an extension command contribution",
+          "outcome": "An extension command enters the shared proposal registry with explicit revision checks and cannot bypass the host's existing source-write confirmation requirements."
+        },
+        {
+          "key": "isolate-extension-workspace-state",
+          "title": "Isolate extension workspace state",
+          "outcome": "Settings and transient state belong to the selected extension and workspace, preventing a similarly named extension from reading another extension's stored values."
+        },
+        {
+          "key": "apply-extension-resource-budgets",
+          "title": "Apply extension resource budgets",
+          "outcome": "The host enforces declared time and payload limits and reports an extension budget violation without accepting an incomplete document command."
+        },
+        {
+          "key": "disable-a-failing-extension-safely",
+          "title": "Disable a failing extension safely",
+          "outcome": "An operator disables a failing extension while preserving document data, its last accepted command receipts and any unrelated active extensions."
+        },
+        {
+          "key": "inspect-an-extension-crash-report",
+          "title": "Inspect an extension crash report",
+          "outcome": "A local report identifies extension version, failed capability and sanitized failure meaning without collecting arbitrary document payloads or environment secrets."
+        },
+        {
+          "key": "restore-extension-settings-deliberately",
+          "title": "Restore extension settings deliberately",
+          "outcome": "A replacement extension previews compatible saved settings and requires explicit choices for removed or changed settings instead of silently discarding them."
+        },
+        {
+          "key": "preview-an-extension-version-upgrade",
+          "title": "Preview an extension version upgrade",
+          "outcome": "The upgrade view compares capability requests, result schemas and setting migrations before replacing the currently active extension version."
+        },
+        {
+          "key": "rollback-an-extension-version-locally",
+          "title": "Rollback an extension version locally",
+          "outcome": "An operator restores a retained compatible extension version and settings while document changes remain governed by their own command and recovery history."
+        },
+        {
+          "key": "remove-extension-ui-contributions",
+          "title": "Remove extension UI contributions",
+          "outcome": "Disabling or removing an extension removes only its registered UI contributions and returns keyboard focus to a stable built-in workspace control."
+        },
+        {
+          "key": "revoke-selected-extension-capabilities",
+          "title": "Revoke selected extension capabilities",
+          "outcome": "An operator removes selected capability grants and subsequent extension requests fail clearly while previously accepted command receipts remain inspectable."
+        },
+        {
+          "key": "inspect-extension-dependency-compatibility",
+          "title": "Inspect extension dependency compatibility",
+          "outcome": "The host shows required extension and kernel versions and refuses activation when a declared dependency is missing or incompatible."
+        },
+        {
+          "key": "rehearse-extension-migration-with-fixtures",
+          "title": "Rehearse extension migration with fixtures",
+          "outcome": "A temporary copy runs a declared extension setting migration and compares complete before and after records without altering the operator's active workspace."
+        },
+        {
+          "key": "export-an-extension-support-bundle",
+          "title": "Export an extension support bundle",
+          "outcome": "An operator exports selected manifest, compatibility and sanitized crash metadata with an explicit file inventory and no automatic third-party submission."
+        },
+        {
+          "key": "uninstall-an-extension-with-retained-evidence",
+          "title": "Uninstall an extension with retained evidence",
+          "outcome": "An uninstall preview identifies owned files and optional settings retention, and confirmation preserves unrelated extensions, documents and accepted operation evidence."
+        }
+      ]
+    },
+    {
+      "id": "F088",
+      "name": "Local workflow proposals and supervised execution",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F074",
+        "F085"
+      ],
+      "scope": "Explicitly invoked workflows composing registered local commands with bounded inputs, revisions and observable stopping conditions.",
+      "refusal": "Refuse arbitrary shell steps, undeclared external effects and expired source assumptions; schedules do not confer execution authority.",
+      "recovery": "Checkpoint accepted steps and reconcile interrupted steps without blindly repeating already accepted mutations.",
+      "feedback": "Show the next step, current source revision, pending effect and whether the workflow is planned, running, waiting or finished.",
+      "evidence": "Synthetic workflows exercise retries, cancellation, dependency waits and compensation without provider traffic or real business operations.",
+      "capabilities": [
+        {
+          "key": "define-a-local-workflow-from-registered-steps",
+          "title": "Define a local workflow from registered steps",
+          "outcome": "An operator composes a workflow using known command identifiers and explicit step inputs, with unsupported steps refused before the definition is saved."
+        },
+        {
+          "key": "validate-workflow-step-dependencies",
+          "title": "Validate workflow step dependencies",
+          "outcome": "The workflow validator identifies missing prerequisites and cycles and preserves the original invalid draft for correction without starting any step."
+        },
+        {
+          "key": "preview-workflow-effects-before-execution",
+          "title": "Preview workflow effects before execution",
+          "outcome": "A preview expands each step's declared scope and possible side effects, distinguishing local queries from accepted mutations and unavailable provider actions."
+        },
+        {
+          "key": "bind-a-workflow-to-a-source-revision",
+          "title": "Bind a workflow to a source revision",
+          "outcome": "A prepared run records its document and source revisions so a later change cannot silently reuse the earlier workflow confirmation."
+        },
+        {
+          "key": "start-an-explicitly-selected-workflow-run",
+          "title": "Start an explicitly selected workflow run",
+          "outcome": "An operator starts one prepared local workflow and receives a stable run identity, while other stored workflows remain planned and inactive."
+        },
+        {
+          "key": "pause-a-workflow-at-a-declared-checkpoint",
+          "title": "Pause a workflow at a declared checkpoint",
+          "outcome": "The runner pauses before the next effectful step and retains the accepted-step receipts needed to understand the run's current state."
+        },
+        {
+          "key": "resume-a-checkpointed-workflow-deliberately",
+          "title": "Resume a checkpointed workflow deliberately",
+          "outcome": "A resume action revalidates source and prerequisites and continues only unresolved steps rather than replaying earlier accepted mutations."
+        },
+        {
+          "key": "cancel-an-owned-workflow-run",
+          "title": "Cancel an owned workflow run",
+          "outcome": "Cancellation stops only the recorded owned runner and reports accepted effects separately from pending steps that never reached command acceptance."
+        },
+        {
+          "key": "reconcile-uncertain-workflow-step-outcomes",
+          "title": "Reconcile uncertain workflow step outcomes",
+          "outcome": "A reconciliation query uses the step's request identity to determine whether it was accepted before deciding if an explicit retry is possible."
+        },
+        {
+          "key": "retry-a-refused-workflow-step",
+          "title": "Retry a refused workflow step",
+          "outcome": "An operator retries a selected retryable step after addressing its recorded refusal, preserving the original attempt and avoiding duplicate accepted commands."
+        },
+        {
+          "key": "supply-runtime-workflow-inputs-explicitly",
+          "title": "Supply runtime workflow inputs explicitly",
+          "outcome": "A run prompts for declared missing inputs and records their selected public identities without guessing credentials, provider targets or business authority."
+        },
+        {
+          "key": "branch-on-a-validated-query-result",
+          "title": "Branch on a validated query result",
+          "outcome": "A workflow selects a declared next branch from a schema-checked query result and reports invalid or ambiguous branch conditions without executing either path."
+        },
+        {
+          "key": "run-bounded-independent-workflow-queries",
+          "title": "Run bounded independent workflow queries",
+          "outcome": "The runner executes independent read-only steps within a declared concurrency budget and preserves deterministic result associations for the following steps."
+        },
+        {
+          "key": "wait-for-a-local-dependency-condition",
+          "title": "Wait for a local dependency condition",
+          "outcome": "A workflow waits on an explicitly named local condition with a bounded timeout and distinguishes waiting from completion or permission to act."
+        },
+        {
+          "key": "preview-a-workflow-compensation-sequence",
+          "title": "Preview a workflow compensation sequence",
+          "outcome": "The operator sees which accepted steps have supported compensating commands and which effects require separate manual recovery before requesting compensation."
+        },
+        {
+          "key": "apply-a-reviewed-local-compensation-sequence",
+          "title": "Apply a reviewed local compensation sequence",
+          "outcome": "A confirmed compensation run uses normal command revisions and receipts, preserving the original workflow rather than rewriting it as never executed."
+        },
+        {
+          "key": "version-stored-workflow-definitions",
+          "title": "Version stored workflow definitions",
+          "outcome": "Editing a stored workflow creates a new definition version, while existing run histories retain the exact earlier definition they executed."
+        },
+        {
+          "key": "export-a-workflow-rehearsal-package",
+          "title": "Export a workflow rehearsal package",
+          "outcome": "An export includes the selected workflow definition, synthetic inputs, expected effects and run receipts so another local environment can reproduce the rehearsal."
+        },
+        {
+          "key": "import-a-workflow-definition-without-starting-it",
+          "title": "Import a workflow definition without starting it",
+          "outcome": "A validated import creates an inactive workflow definition and reports unresolved capabilities or dependencies without scheduling or running its steps."
+        },
+        {
+          "key": "explain-workflow-publication-boundaries",
+          "title": "Explain workflow publication boundaries",
+          "outcome": "The runner labels provider and production steps unavailable until their separately required adapters and operator authority are present, even after local workflow validation succeeds."
+        }
+      ]
+    },
+    {
+      "id": "F089",
+      "name": "Targeted test orchestration and fixture control",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F006",
+        "F016"
+      ],
+      "scope": "Owned local test runs selected from explicit source scopes, feature contracts and bounded resource requirements.",
+      "refusal": "Refuse unknown executable definitions, borrowed process termination and fixtures that address nonselected projects or live providers.",
+      "recovery": "Preserve failed-run artifacts and owned fixture checkpoints; a retry cannot overwrite an earlier failure receipt.",
+      "feedback": "Show selected tests, omitted coverage, runtime ownership, result state and the difference between skipped and passed checks.",
+      "evidence": "Controlled runners verify selection accuracy, fixture isolation, cancellation cleanup and honest aggregation of test outcomes.",
+      "capabilities": [
+        {
+          "key": "select-checks-from-declared-source-scopes",
+          "title": "Select checks from declared source scopes",
+          "outcome": "An operator previews tests mapped to the changed source paths and sees which relevant source areas lack an explicit test mapping."
+        },
+        {
+          "key": "select-checks-for-a-feature-contract",
+          "title": "Select checks for a feature contract",
+          "outcome": "A feature view lists its required checks and evidence expectations without treating a missing or planned check as an already satisfied requirement."
+        },
+        {
+          "key": "preview-a-test-runner-command",
+          "title": "Preview a test runner command",
+          "outcome": "The launcher displays the registered executable, literal arguments and owned fixture requirements before starting the selected test run."
+        },
+        {
+          "key": "create-an-isolated-fixture-workspace",
+          "title": "Create an isolated fixture workspace",
+          "outcome": "A test run creates an owned temporary workspace with blank reusable seeds and never modifies the operator's selected active project records."
+        },
+        {
+          "key": "allocate-collision-free-fixture-ports",
+          "title": "Allocate collision-free fixture ports",
+          "outcome": "The runner chooses free loopback fixture ports, records their owning processes and does not reuse another project's existing local listener."
+        },
+        {
+          "key": "apply-a-test-concurrency-budget",
+          "title": "Apply a test concurrency budget",
+          "outcome": "Independent test groups run within a selected worker and memory budget, while conflicting fixture resources remain serialized and visibly queued."
+        },
+        {
+          "key": "cancel-a-test-run-with-owned-cleanup",
+          "title": "Cancel a test run with owned cleanup",
+          "outcome": "Cancellation stops only recorded owned test children, preserves available diagnostics and reports whether each fixture resource was released."
+        },
+        {
+          "key": "retain-failed-test-artifacts-separately",
+          "title": "Retain failed test artifacts separately",
+          "outcome": "Every failed run receives a distinct retained artifact location and cannot be overwritten or relabeled when a later retry succeeds."
+        },
+        {
+          "key": "rerun-a-selected-failed-test-group",
+          "title": "Rerun a selected failed test group",
+          "outcome": "A retry launches the chosen failed group against the declared current source and preserves both the prior failure and new result revisions."
+        },
+        {
+          "key": "compare-repeated-test-outcomes",
+          "title": "Compare repeated test outcomes",
+          "outcome": "The report compares outcomes across explicit repeated runs and labels intermittent behavior without converting a majority of passes into complete acceptance."
+        },
+        {
+          "key": "inspect-fixture-seed-provenance",
+          "title": "Inspect fixture seed provenance",
+          "outcome": "A test report identifies the exact synthetic fixture edition and its digest so an observed result is not mistaken for production or user data."
+        },
+        {
+          "key": "inject-a-declared-local-storage-fault",
+          "title": "Inject a declared local storage fault",
+          "outcome": "An owned browser fixture applies a named storage failure and verifies the actual recovery controls while preserving unrelated browser workspace records."
+        },
+        {
+          "key": "inject-a-declared-local-api-fault",
+          "title": "Inject a declared local API fault",
+          "outcome": "The runner configures a specific synthetic API response failure and distinguishes expected fixture errors from unexpected browser or network errors."
+        },
+        {
+          "key": "verify-keyboard-only-test-journeys",
+          "title": "Verify keyboard-only test journeys",
+          "outcome": "A selected journey performs declared actions through keyboard input and reports actual focus transitions and inaccessible controls with retained evidence."
+        },
+        {
+          "key": "capture-rendered-state-witnesses",
+          "title": "Capture rendered state witnesses",
+          "outcome": "A browser check records the actual visible text and accessible state that establish the result, rather than relying on source strings or hidden DOM nodes."
+        },
+        {
+          "key": "enforce-provider-free-browser-requests",
+          "title": "Enforce provider-free browser requests",
+          "outcome": "A local browser suite refuses external providers and credential-bearing requests and records every attempted refusal separately from expected synthetic API traffic."
+        },
+        {
+          "key": "aggregate-named-test-groups-accurately",
+          "title": "Aggregate named test groups accurately",
+          "outcome": "The summary counts reported check groups from actual receipts, keeping nested reports, repeated runs and independent rehearsals from being silently double-counted."
+        },
+        {
+          "key": "report-skipped-and-unavailable-tests-explicitly",
+          "title": "Report skipped and unavailable tests explicitly",
+          "outcome": "A test summary lists every skipped or unavailable required check with its original reason and excludes those checks from passing totals."
+        },
+        {
+          "key": "bind-a-test-run-to-source-fingerprints",
+          "title": "Bind a test run to source fingerprints",
+          "outcome": "The runner captures declared source and lockfile digests before and after a run and reports drift instead of claiming an immutable observation basis."
+        },
+        {
+          "key": "export-a-test-reproduction-packet",
+          "title": "Export a test reproduction packet",
+          "outcome": "An operator exports selected fixture definitions, commands, runtime identities and sanitized reports so a recipient can repeat the failure without accessing unrelated local data."
+        }
+      ]
+    },
+    {
+      "id": "F090",
+      "name": "Evidence provenance and verification records",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F009",
+        "F089"
+      ],
+      "scope": "Addressable local evidence manifests linking exact source, environment, artifacts and review observations without inventing authority.",
+      "refusal": "Refuse altered artifacts, ambiguous source identity and evidence containing disallowed private payloads; a digest is not operator approval.",
+      "recovery": "Retain original receipts and qualifications when newer evidence supersedes only part of their examined scope.",
+      "feedback": "Expose observation time, tested revision, artifact integrity, omitted scope and the precise kind of acceptance represented.",
+      "evidence": "Manifest fixtures verify digest checks, historical preservation, bounded presentation and deliberate partial-scope supersession.",
+      "capabilities": [
+        {
+          "key": "create-a-source-bound-evidence-manifest",
+          "title": "Create a source-bound evidence manifest",
+          "outcome": "A result manifest records the exact examined revision and declared source fingerprints, distinguishing committed source from later working-tree metadata."
+        },
+        {
+          "key": "hash-a-selected-evidence-artifact",
+          "title": "Hash a selected evidence artifact",
+          "outcome": "An operator hashes an explicitly selected local artifact and receives its content digest and byte count without exposing the artifact's private contents."
+        },
+        {
+          "key": "verify-a-retained-artifact-digest",
+          "title": "Verify a retained artifact digest",
+          "outcome": "A verification action compares current artifact bytes with the declared manifest digest and reports mismatch without repairing or replacing the artifact silently."
+        },
+        {
+          "key": "record-an-observation-timestamp-explicitly",
+          "title": "Record an observation timestamp explicitly",
+          "outcome": "A receipt records observation and recording timestamps with timezone context so delayed documentation cannot be mistaken for a fresh execution."
+        },
+        {
+          "key": "separate-source-and-runtime-observations",
+          "title": "Separate source and runtime observations",
+          "outcome": "The evidence view labels source inspection, installed runtime, local behavior and provider observation independently instead of merging them into a single verified badge."
+        },
+        {
+          "key": "qualify-a-working-tree-test-basis",
+          "title": "Qualify a working-tree test basis",
+          "outcome": "A report identifies the source base plus exact changed-file digests when a test observed uncommitted source, without relabeling that result to a later commit."
+        },
+        {
+          "key": "record-retained-failed-attempts",
+          "title": "Record retained failed attempts",
+          "outcome": "An evidence index links earlier failures and their source bases beside a later pass while preserving their original failed status and diagnostics."
+        },
+        {
+          "key": "attach-independent-review-observations",
+          "title": "Attach independent review observations",
+          "outcome": "A reviewer records the evidence examined and the exact conclusion scope, without turning review presence into proof that unexamined behaviors were executed."
+        },
+        {
+          "key": "inspect-evidence-scope-omissions",
+          "title": "Inspect evidence scope omissions",
+          "outcome": "A manifest displays omitted files, targets and behaviors with exact counts so a shortened report cannot appear to cover an entire application."
+        },
+        {
+          "key": "version-an-evidence-schema-safely",
+          "title": "Version an evidence schema safely",
+          "outcome": "A reader validates the declared evidence schema version and reports unsupported fields or versions without silently interpreting them as a current trusted receipt."
+        },
+        {
+          "key": "build-an-artifact-provenance-graph",
+          "title": "Build an artifact provenance graph",
+          "outcome": "The evidence browser shows which source, build and fixture artifacts produced a selected observation and identifies missing or unverifiable graph links."
+        },
+        {
+          "key": "compare-evidence-manifests-by-digest",
+          "title": "Compare evidence manifests by digest",
+          "outcome": "A comparison highlights changed source, environment and artifact digests between two observations while leaving both original manifests immutable."
+        },
+        {
+          "key": "apply-partial-scope-supersession-deliberately",
+          "title": "Apply partial-scope supersession deliberately",
+          "outcome": "An operator marks which portions of an older receipt are superseded by a newer observation while preserving still-applicable scope and original qualifications."
+        },
+        {
+          "key": "redact-evidence-exports-by-declared-policy",
+          "title": "Redact evidence exports by declared policy",
+          "outcome": "An export preview lists disallowed fields and selected redactions, and the resulting manifest identifies redaction without presenting transformed bytes as the original artifact."
+        },
+        {
+          "key": "detect-missing-evidence-dependencies",
+          "title": "Detect missing evidence dependencies",
+          "outcome": "A verification report identifies absent source objects, fixtures or referenced receipts and refuses to label the incomplete provenance chain fully verified."
+        },
+        {
+          "key": "validate-evidence-path-containment",
+          "title": "Validate evidence path containment",
+          "outcome": "A local verifier opens only declared contained regular files and refuses symlinks or traversal that could substitute unrelated private evidence inputs."
+        },
+        {
+          "key": "bind-an-acceptance-decision-to-evidence",
+          "title": "Bind an acceptance decision to evidence",
+          "outcome": "An operator decision records exact reviewed evidence digests and scope so later artifact changes cannot silently inherit the earlier acceptance applicability."
+        },
+        {
+          "key": "export-an-evidence-inventory-without-payloads",
+          "title": "Export an evidence inventory without payloads",
+          "outcome": "An operator exports bounded artifact names, types, digests and provenance links while keeping the selected evidence payload files local unless separately included."
+        },
+        {
+          "key": "reconcile-imported-evidence-identities",
+          "title": "Reconcile imported evidence identities",
+          "outcome": "An import verifies schema and digest identity and distinguishes the same artifact from a similar filename or a recipient's independently generated replacement."
+        },
+        {
+          "key": "generate-a-resumable-evidence-handoff",
+          "title": "Generate a resumable evidence handoff",
+          "outcome": "A handoff identifies the current source, retained reports, unresolved checks and next action, without claiming that the recipient has executed those checks."
+        }
+      ]
+    },
+    {
+      "id": "F091",
+      "name": "Reproducible local build orchestration",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F020",
+        "F089",
+        "F090"
+      ],
+      "scope": "Explicit local build configurations and artifact manifests tied to source, dependency locks and selected runtime versions.",
+      "refusal": "Refuse ambiguous working directories, missing required inputs and undeclared secret exports; a successful build is not publication.",
+      "recovery": "Keep the previous accepted artifact intact until a complete replacement passes its declared validation and promotion step.",
+      "feedback": "Show build inputs, selected target, pending stages, produced artifacts and the difference between warning and blocking failure.",
+      "evidence": "Owned temporary builds compare manifests and byte digests while proving unrelated source, seeds and release snapshots remain exact.",
+      "capabilities": [
+        {
+          "key": "select-a-named-build-configuration",
+          "title": "Select a named build configuration",
+          "outcome": "An operator selects a declared local configuration and sees its source entry points, output directory and target assumptions before building."
+        },
+        {
+          "key": "preview-a-build-stage-sequence",
+          "title": "Preview a build stage sequence",
+          "outcome": "The build panel expands the actual registered stage order and identifies commands that write artifacts, query registries or require external services."
+        },
+        {
+          "key": "bind-builds-to-dependency-lockfiles",
+          "title": "Bind builds to dependency lockfiles",
+          "outcome": "A build manifest records the exact package and lockfile digests so a later dependency change cannot inherit an earlier build observation."
+        },
+        {
+          "key": "record-the-selected-runtime-toolchain",
+          "title": "Record the selected runtime toolchain",
+          "outcome": "The runner records actual runtime and compiler versions alongside declared supported ranges, preserving a mismatch as an explicit qualification."
+        },
+        {
+          "key": "build-in-an-owned-output-directory",
+          "title": "Build in an owned output directory",
+          "outcome": "A build writes only to its declared owned output directory and leaves active source, blank seeds and unrelated project artifacts unchanged."
+        },
+        {
+          "key": "normalize-declared-build-timestamps",
+          "title": "Normalize declared build timestamps",
+          "outcome": "A reproducible build mode applies declared timestamp inputs and records remaining nondeterministic metadata instead of claiming identical bytes without comparison."
+        },
+        {
+          "key": "inventory-generated-artifact-files",
+          "title": "Inventory generated artifact files",
+          "outcome": "The result lists generated regular files with relative paths, byte counts and digests, including explicit omissions when a configured inventory limit is reached."
+        },
+        {
+          "key": "compare-repeated-build-artifact-digests",
+          "title": "Compare repeated build artifact digests",
+          "outcome": "Two builds from declared equivalent inputs are compared by artifact digest, and differences identify the changed files without silently ignoring unstable output."
+        },
+        {
+          "key": "reject-leaked-lan-artifacts-from-builds",
+          "title": "Reject leaked LAN artifacts from builds",
+          "outcome": "The production artifact guard refuses local control-plane files and development markers before the output can be promoted as an accepted public artifact."
+        },
+        {
+          "key": "inspect-public-configuration-exposure",
+          "title": "Inspect public configuration exposure",
+          "outcome": "A build preview lists selected public client configuration keys and refuses disallowed secret-bearing values before materializing browser-facing output."
+        },
+        {
+          "key": "preserve-the-previous-accepted-build",
+          "title": "Preserve the previous accepted build",
+          "outcome": "A failed replacement build leaves the previous accepted artifact addressable and distinguishes its older source revision from the failed current attempt."
+        },
+        {
+          "key": "promote-a-complete-local-build-artifact",
+          "title": "Promote a complete local build artifact",
+          "outcome": "An explicit promotion action accepts a fully validated artifact manifest without implying that a provider deployment or production release occurred."
+        },
+        {
+          "key": "rebuild-an-earlier-accepted-source-revision",
+          "title": "Rebuild an earlier accepted source revision",
+          "outcome": "An operator rebuilds a selected retained revision using declared available inputs and receives a new observation rather than a forged copy of the original receipt."
+        },
+        {
+          "key": "detect-undeclared-generated-files",
+          "title": "Detect undeclared generated files",
+          "outcome": "The build comparison reports files created outside the declared artifact inventory and blocks promotion until their ownership and intended scope are resolved."
+        },
+        {
+          "key": "run-a-build-without-optional-providers",
+          "title": "Run a build without optional providers",
+          "outcome": "A local configuration excludes optional provider integrations and identifies unsupported provider-bound outputs without inventing credentials or activating remote services."
+        },
+        {
+          "key": "verify-source-immutability-during-builds",
+          "title": "Verify source immutability during builds",
+          "outcome": "The runner compares declared source fingerprints before and after building and refuses an immutable-source claim when build scripts changed tracked inputs."
+        },
+        {
+          "key": "export-a-build-reproduction-manifest",
+          "title": "Export a build reproduction manifest",
+          "outcome": "An operator exports the build configuration, toolchain identity, lockfile digests and artifact inventory needed for another environment to attempt reproduction."
+        },
+        {
+          "key": "inspect-dependency-audit-observations-separately",
+          "title": "Inspect dependency audit observations separately",
+          "outcome": "The build result links the actual audit observation and retrieval date while distinguishing registry findings from compiler success and runtime acceptance."
+        },
+        {
+          "key": "preview-artifact-replacement-storage-needs",
+          "title": "Preview artifact replacement storage needs",
+          "outcome": "Before promotion, the runner estimates required artifact and retained-backup bytes and reports insufficient local storage without deleting the previous accepted output."
+        },
+        {
+          "key": "cancel-an-owned-build-process-tree",
+          "title": "Cancel an owned build process tree",
+          "outcome": "Cancellation targets only the build's recorded owned process tree and retains partial diagnostics without promoting incomplete output or stopping other projects."
+        }
+      ]
+    },
+    {
+      "id": "F092",
+      "name": "Local Git change preparation",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F008",
+        "F090"
+      ],
+      "scope": "Local Git inspection and reversible change preparation in the explicitly selected repository, before remote delivery.",
+      "refusal": "Refuse repository identity drift, dirty-work collisions, protected snapshots and destructive cleanup without an exact reviewed scope.",
+      "recovery": "Preserve unstaged, staged and untracked work; retain recoverable patch artifacts before any supported change transformation.",
+      "feedback": "Show checkout root, branch, base revision, staged state and precise file consequences for each local Git action.",
+      "evidence": "Owned temporary repositories test literal argument handling, dirty preservation, collision refusal and exact staged diff outcomes.",
+      "capabilities": [
+        {
+          "key": "inspect-the-selected-git-checkout-identity",
+          "title": "Inspect the selected Git checkout identity",
+          "outcome": "The panel reports canonical checkout root, remote identity, branch and upstream so an operator can distinguish similar repositories before preparing changes."
+        },
+        {
+          "key": "compare-local-and-tracked-upstream-revisions",
+          "title": "Compare local and tracked upstream revisions",
+          "outcome": "A read-only view reports exact ahead and behind counts for locally available refs and labels direct remote freshness as a separate observation."
+        },
+        {
+          "key": "list-staged-and-unstaged-changes-separately",
+          "title": "List staged and unstaged changes separately",
+          "outcome": "The change panel lists staged, unstaged and untracked paths independently and never treats ref parity as evidence that the working tree is clean."
+        },
+        {
+          "key": "preview-a-path-scoped-staging-action",
+          "title": "Preview a path-scoped staging action",
+          "outcome": "An operator selects exact paths and sees the resulting staged diff before a confirmed action changes the index."
+        },
+        {
+          "key": "stage-selected-reviewed-source-paths",
+          "title": "Stage selected reviewed source paths",
+          "outcome": "A confirmed staging action adds only the selected contained paths and leaves unrelated staged, unstaged and untracked work unchanged."
+        },
+        {
+          "key": "unstage-selected-paths-without-reverting-files",
+          "title": "Unstage selected paths without reverting files",
+          "outcome": "An operator removes selected changes from the index while preserving their current working-tree bytes and unrelated index entries."
+        },
+        {
+          "key": "create-a-local-review-branch",
+          "title": "Create a local review branch",
+          "outcome": "An explicit branch action creates the chosen branch from a verified local revision, preserving current work and refusing an unexpected existing branch identity."
+        },
+        {
+          "key": "preview-a-local-branch-switch",
+          "title": "Preview a local branch switch",
+          "outcome": "A switch preview lists paths that could collide with the target branch and refuses to hide untracked-file overwrite risks."
+        },
+        {
+          "key": "export-a-bounded-working-tree-patch",
+          "title": "Export a bounded working-tree patch",
+          "outcome": "An operator exports the selected tracked-file changes as a patch with exact base revision and separate inventory of excluded untracked files."
+        },
+        {
+          "key": "capture-untracked-files-in-a-handoff-archive",
+          "title": "Capture untracked files in a handoff archive",
+          "outcome": "An explicit handoff export includes selected untracked regular files with provenance and excludes ignored runtime or secret-bearing files by default."
+        },
+        {
+          "key": "validate-a-commit-message-and-selected-scope",
+          "title": "Validate a commit message and selected scope",
+          "outcome": "The commit preview displays the exact staged paths and proposed message and identifies unexpected staged content before any local commit is created."
+        },
+        {
+          "key": "commit-the-reviewed-staged-change-set",
+          "title": "Commit the reviewed staged change set",
+          "outcome": "A confirmed commit records the exact reviewed index state and refuses if that state changed since preview, preserving all unstaged work."
+        },
+        {
+          "key": "inspect-local-commit-ancestry",
+          "title": "Inspect local commit ancestry",
+          "outcome": "The history view shows exact parent relationships and distinguishes a fast-forward path from a merge or unrelated local history."
+        },
+        {
+          "key": "preview-a-local-fast-forward-integration",
+          "title": "Preview a local fast-forward integration",
+          "outcome": "An operator previews advancing a selected local branch and receives explicit source, destination and dirty-work collision checks before integration."
+        },
+        {
+          "key": "integrate-a-verified-local-fast-forward",
+          "title": "Integrate a verified local fast-forward",
+          "outcome": "A confirmed integration advances only the selected branch when the verified ancestry and clean required scope still match the preview."
+        },
+        {
+          "key": "preserve-a-local-savepoint-bundle",
+          "title": "Preserve a local savepoint bundle",
+          "outcome": "A savepoint action creates a recoverable local bundle for selected committed work and verifies the expected commit and included object availability."
+        },
+        {
+          "key": "verify-a-saved-git-bundle-in-isolation",
+          "title": "Verify a saved Git bundle in isolation",
+          "outcome": "An owned temporary repository imports a selected bundle and compares commit identity and declared file digests without accepting untested application behavior."
+        },
+        {
+          "key": "detect-concurrent-index-changes",
+          "title": "Detect concurrent index changes",
+          "outcome": "A staging or commit action refuses when an external process changed the reviewed index and presents a fresh diff instead of overwriting that state."
+        },
+        {
+          "key": "inspect-git-hook-execution-boundaries",
+          "title": "Inspect Git hook execution boundaries",
+          "outcome": "The panel identifies which configured hooks may execute for a proposed local operation and keeps their existence separate from test or acceptance evidence."
+        },
+        {
+          "key": "generate-a-local-git-handoff-report",
+          "title": "Generate a local Git handoff report",
+          "outcome": "A report records current refs, dirty-state inventory, retained patches and exact resume commands without pushing branches or contacting review recipients."
+        }
+      ]
+    },
+    {
+      "id": "F093",
+      "name": "Owned local preview environments",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F016",
+        "F091"
+      ],
+      "scope": "Addressable local previews with explicit process ownership, runtime configuration and source/artifact identity.",
+      "refusal": "Refuse occupied fixed origins, unknown process ownership and borrowed service assumptions; preview availability does not establish provider equivalence.",
+      "recovery": "Keep preview identities and prior artifact references when an owned process fails, and preserve the chosen storage origin on deliberate restart.",
+      "feedback": "Show current endpoint, owning checkout, component readiness and whether content is live source or a retained build artifact.",
+      "evidence": "Loopback fixtures verify endpoint probes, source identity, collision handling, independent component failures and owned cleanup.",
+      "capabilities": [
+        {
+          "key": "launch-a-preview-from-selected-source",
+          "title": "Launch a preview from selected source",
+          "outcome": "An operator starts an owned loopback preview for a verified checkout and receives its exact host, port and current source identity."
+        },
+        {
+          "key": "launch-a-retained-artifact-preview",
+          "title": "Launch a retained artifact preview",
+          "outcome": "A selected build artifact starts in an owned local preview process and clearly displays its manifest identity instead of implying live source updates."
+        },
+        {
+          "key": "choose-a-fixed-preview-origin",
+          "title": "Choose a fixed preview origin",
+          "outcome": "The launcher accepts an explicit loopback origin and refuses an occupied fixed port without silently moving browser-retained mock data to another origin."
+        },
+        {
+          "key": "select-free-preview-ports-automatically",
+          "title": "Select free preview ports automatically",
+          "outcome": "Automatic mode selects free loopback ports and records the actual addresses rather than reporting requested defaults that another process already owns."
+        },
+        {
+          "key": "inspect-preview-process-ownership",
+          "title": "Inspect preview process ownership",
+          "outcome": "The status view verifies recorded process identity and working directory before offering stop or restart actions for a selected preview."
+        },
+        {
+          "key": "probe-preview-http-readiness",
+          "title": "Probe preview HTTP readiness",
+          "outcome": "A readiness check requests the declared application endpoint and distinguishes a usable HTTP response from a merely open listener or running process."
+        },
+        {
+          "key": "separate-preview-component-readiness",
+          "title": "Separate preview component readiness",
+          "outcome": "The panel reports app, LAN and each emulator readiness independently so one successful endpoint cannot hide a failed or untested component."
+        },
+        {
+          "key": "preview-an-owned-session-restart",
+          "title": "Preview an owned session restart",
+          "outcome": "A restart preview identifies affected processes, retained origin and ephemeral runtime effects before an operator deliberately restarts the selected local session."
+        },
+        {
+          "key": "stop-only-an-owned-preview-session",
+          "title": "Stop only an owned preview session",
+          "outcome": "A stop action targets the selected recorded session and refuses ambiguous ownership while preserving unrelated project listeners and processes."
+        },
+        {
+          "key": "recover-an-orphaned-preview-record",
+          "title": "Recover an orphaned preview record",
+          "outcome": "A status reconciliation distinguishes an exited owned process from a live reused PID and removes only a safely identified stale runtime record."
+        },
+        {
+          "key": "label-source-preview-revision-drift",
+          "title": "Label source preview revision drift",
+          "outcome": "The panel identifies when a live source preview differs from the revision captured by a selected review or evidence artifact."
+        },
+        {
+          "key": "pin-a-local-preview-to-a-checkpoint",
+          "title": "Pin a local preview to a checkpoint",
+          "outcome": "An operator selects a retained checkpoint for an isolated preview without switching or rewriting the active source checkout."
+        },
+        {
+          "key": "maintain-browser-storage-origin-continuity",
+          "title": "Maintain browser storage origin continuity",
+          "outcome": "A restart retains the explicitly chosen scheme, host and port and explains when changing any part creates a separate browser storage origin."
+        },
+        {
+          "key": "inspect-preview-provider-isolation-mode",
+          "title": "Inspect preview provider isolation mode",
+          "outcome": "The preview reports whether it uses native mocks, emulators or configured adapters and refuses to equate a local mode label with provider connectivity."
+        },
+        {
+          "key": "create-a-second-isolated-preview",
+          "title": "Create a second isolated preview",
+          "outcome": "A separate preview receives independent owned ports and runtime state, while the original preview and its browser origin remain available."
+        },
+        {
+          "key": "compare-two-selected-preview-contexts",
+          "title": "Compare two selected preview contexts",
+          "outcome": "The interface presents source or artifact identity for two local previews and synchronizes only explicitly chosen viewport and navigation settings."
+        },
+        {
+          "key": "capture-a-preview-environment-manifest",
+          "title": "Capture a preview environment manifest",
+          "outcome": "A manifest records selected source, public runtime configuration, owned endpoints and observation time while excluding credentials and private process arguments."
+        },
+        {
+          "key": "expire-abandoned-local-previews-deliberately",
+          "title": "Expire abandoned local previews deliberately",
+          "outcome": "An operator previews stopping selected idle owned previews and sees which session records and origins remain available for later restart."
+        },
+        {
+          "key": "open-the-matching-preview-inspector-bridge",
+          "title": "Open the matching preview inspector bridge",
+          "outcome": "The launcher opens the same-origin LAN bridge associated with the selected application preview so DOM inspection does not accidentally target another checkout."
+        },
+        {
+          "key": "export-a-local-preview-reproduction-packet",
+          "title": "Export a local preview reproduction packet",
+          "outcome": "A packet contains declared startup commands, toolchain requirements, public configuration names and source or artifact references without exporting runtime credentials or browser data."
+        }
+      ]
+    },
+    {
+      "id": "F094",
+      "name": "Authorized provider publication and release delivery",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "provider",
+      "dependsOnFamilies": [
+        "F059",
+        "F065",
+        "F082",
+        "F091",
+        "F093"
+      ],
+      "scope": "Selected provider adapters executing explicitly authorized publication from immutable reviewed artifacts and exact target identity.",
+      "refusal": "Refuse missing provider access, stale artifacts, mismatched targets and absent operator approval; local preflight never grants production authority.",
+      "recovery": "Reconcile uncertain provider outcomes using returned release identities and retain the previous accepted artifact and rollback scope.",
+      "feedback": "Display account, project, environment, artifact digest, pending external effect and separately observed live acceptance.",
+      "evidence": "Provider sandbox contracts and operator-approved target-specific drills verify exact requests, receipts and restoration boundaries.",
+      "capabilities": [
+        {
+          "key": "discover-selected-publication-adapter-capabilities",
+          "title": "Discover selected publication adapter capabilities",
+          "outcome": "The interface lists the selected adapter's supported targets and operations, distinguishing a configured adapter from verified account access or successful publication."
+        },
+        {
+          "key": "verify-provider-target-identity-before-publication",
+          "title": "Verify provider target identity before publication",
+          "outcome": "A preflight reads the selected account, project and environment identities and refuses publication when they differ from the reviewed target record."
+        },
+        {
+          "key": "prepare-a-provider-publication-plan",
+          "title": "Prepare a provider publication plan",
+          "outcome": "An operator prepares a plan from an immutable artifact manifest and sees the exact target, external effects and required authorization before dispatch."
+        },
+        {
+          "key": "record-production-publication-authorization-explicitly",
+          "title": "Record production publication authorization explicitly",
+          "outcome": "A production plan records the operator's exact approved target and artifact revision, and unrelated or later artifacts cannot reuse that approval."
+        },
+        {
+          "key": "run-target-specific-publication-preflight",
+          "title": "Run target-specific publication preflight",
+          "outcome": "The adapter validates required target configuration and artifact compatibility without publishing, and reports every unmet requirement with its original scope."
+        },
+        {
+          "key": "publish-an-approved-immutable-artifact",
+          "title": "Publish an approved immutable artifact",
+          "outcome": "The adapter submits only the operator-approved artifact and target, preserving the request identity and provider receipt needed to reconcile the result."
+        },
+        {
+          "key": "distinguish-publication-dispatch-from-acceptance",
+          "title": "Distinguish publication dispatch from acceptance",
+          "outcome": "The release view separates request dispatch, provider acceptance, completed rollout and observed live behavior rather than treating a command exit as full success."
+        },
+        {
+          "key": "reconcile-an-uncertain-publication-outcome",
+          "title": "Reconcile an uncertain publication outcome",
+          "outcome": "A reconciliation action queries the exact provider operation identity and reports the known outcome before any operator-approved retry can occur."
+        },
+        {
+          "key": "observe-the-published-release-endpoint",
+          "title": "Observe the published release endpoint",
+          "outcome": "A live check verifies the selected endpoint against the expected release identity and records observation time without extending acceptance to untested routes."
+        },
+        {
+          "key": "publish-an-authorized-preview-environment",
+          "title": "Publish an authorized preview environment",
+          "outcome": "An approved preview plan targets its named nonproduction environment and cannot be silently promoted to the production target through configuration fallback."
+        },
+        {
+          "key": "promote-an-existing-reviewed-artifact-deliberately",
+          "title": "Promote an existing reviewed artifact deliberately",
+          "outcome": "A promotion plan identifies the already reviewed artifact digest and the new target so the operator can authorize the distinct external publication effect."
+        },
+        {
+          "key": "preview-a-provider-rollback-scope",
+          "title": "Preview a provider rollback scope",
+          "outcome": "The adapter reports whether rollback restores artifacts, rebuilds source, changes configuration or leaves data untouched before an operator approves the rollback."
+        },
+        {
+          "key": "execute-an-authorized-provider-rollback",
+          "title": "Execute an authorized provider rollback",
+          "outcome": "A rollback submits the selected reviewed target and release identity, then records both provider receipt and separately observed endpoint behavior."
+        },
+        {
+          "key": "publish-an-authorized-source-branch-remotely",
+          "title": "Publish an authorized source branch remotely",
+          "outcome": "A reviewed Git delivery action verifies remote and branch identity before a normal push and refuses unexpected remote advancement instead of forcing history."
+        },
+        {
+          "key": "create-an-authorized-code-review-request",
+          "title": "Create an authorized code review request",
+          "outcome": "The adapter creates a review request for the selected published branch and base, records its returned identity and avoids inferring merge approval."
+        },
+        {
+          "key": "reconcile-remote-code-review-state",
+          "title": "Reconcile remote code review state",
+          "outcome": "A readback verifies the current head, base and review state of the selected request and distinguishes those facts from completed checks or owner acceptance."
+        },
+        {
+          "key": "merge-an-explicitly-authorized-review-request",
+          "title": "Merge an explicitly authorized review request",
+          "outcome": "A merge action verifies current head, required checks and operator authorization before asking the provider to merge the exact reviewed request."
+        },
+        {
+          "key": "publish-selected-documentation-pages",
+          "title": "Publish selected documentation pages",
+          "outcome": "An authorized documentation sync previews exact page changes, preserves provider-only pages and reads back the published content after the provider accepts the update."
+        },
+        {
+          "key": "inspect-provider-release-history-pages",
+          "title": "Inspect provider release history pages",
+          "outcome": "A bounded history view lists actual returned release identities and continuation data without inventing unavailable logs, rollback ability or complete historical coverage."
+        },
+        {
+          "key": "export-a-publication-reconciliation-handoff",
+          "title": "Export a publication reconciliation handoff",
+          "outcome": "A handoff records exact target and operation identities, known outcomes and unresolved live checks while excluding credentials and avoiding duplicate publication on resume."
+        }
+      ]
+    },
+    {
+      "id": "F095",
+      "name": "Local restoration and recovery rehearsals",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F010",
+        "F090",
+        "F091"
+      ],
+      "scope": "Reviewed restoration of declared local source, document, fixture and artifact scopes using retained snapshots.",
+      "refusal": "Refuse incompatible schemas, altered backups and unowned paths; never infer that a local restore reproduces provider or production state.",
+      "recovery": "Capture the current selected scope before replacement and reconcile partial local failures without silently pruning unrelated records.",
+      "feedback": "Show backup provenance, selected restore scope, complete differences, storage effects and available undo before confirmation.",
+      "evidence": "Owned failure-injection rehearsals compare complete records and source digests before restore, after restore and after supported undo.",
+      "capabilities": [
+        {
+          "key": "inspect-a-local-recovery-snapshot-manifest",
+          "title": "Inspect a local recovery snapshot manifest",
+          "outcome": "An operator opens a snapshot's schema, source basis, selected scope and content digests before any restore plan reads its payloads."
+        },
+        {
+          "key": "verify-snapshot-payload-integrity",
+          "title": "Verify snapshot payload integrity",
+          "outcome": "The restore preparation checks every selected payload against its manifest digest and refuses altered or missing content without repairing the backup silently."
+        },
+        {
+          "key": "preview-a-document-revision-restore",
+          "title": "Preview a document revision restore",
+          "outcome": "A plan compares the selected retained document revision with the current document and identifies affected objects before replacement is confirmed."
+        },
+        {
+          "key": "preview-a-source-file-restoration",
+          "title": "Preview a source file restoration",
+          "outcome": "The operator sees exact contained source paths and byte differences for selected backups, with immutable release snapshots and unrelated files excluded."
+        },
+        {
+          "key": "preview-fixture-workspace-restoration",
+          "title": "Preview fixture workspace restoration",
+          "outcome": "A restore plan compares complete selected fictional workspace records and preserves unselected workspace modules and their current revisions."
+        },
+        {
+          "key": "estimate-restore-and-checkpoint-storage",
+          "title": "Estimate restore and checkpoint storage",
+          "outcome": "The preview estimates replacement and automatic checkpoint bytes and refuses insufficient local capacity before changing the selected restore scope."
+        },
+        {
+          "key": "capture-a-pre-restore-checkpoint",
+          "title": "Capture a pre-restore checkpoint",
+          "outcome": "A confirmed restore first records the current selected scope and links that checkpoint to the pending restore request for later recovery inspection."
+        },
+        {
+          "key": "apply-a-validated-local-restore-atomically",
+          "title": "Apply a validated local restore atomically",
+          "outcome": "The restore applies only its reviewed selected scope and records a new result revision after every required payload passes validation."
+        },
+        {
+          "key": "reject-stale-restore-confirmations",
+          "title": "Reject stale restore confirmations",
+          "outcome": "A changed current revision invalidates the prepared restore confirmation and leaves the backup, current records and preexisting checkpoints unchanged."
+        },
+        {
+          "key": "recover-from-a-failed-local-restore-write",
+          "title": "Recover from a failed local restore write",
+          "outcome": "A simulated write failure triggers supported rollback of the selected scope and reports any unresolved recovery state without claiming complete restoration."
+        },
+        {
+          "key": "preview-undo-for-a-selective-restore",
+          "title": "Preview undo for a selective restore",
+          "outcome": "The undo preview compares the linked pre-restore checkpoint with current selected records and shows exact directional changes before confirmation."
+        },
+        {
+          "key": "apply-a-supported-restore-undo",
+          "title": "Apply a supported restore undo",
+          "outcome": "A confirmed undo restores only the declared linked scope, creates its own result receipt and preserves unrelated changes accepted after the original restore."
+        },
+        {
+          "key": "retain-restored-snapshot-provenance",
+          "title": "Retain restored snapshot provenance",
+          "outcome": "The history view links a restore result to its source backup and pre-restore checkpoint without replacing the original snapshot's observation or acceptance meaning."
+        },
+        {
+          "key": "restore-a-retained-local-artifact-selection",
+          "title": "Restore a retained local artifact selection",
+          "outcome": "An operator selects an earlier validated artifact for local serving, while source checkout state and provider deployment remain explicitly separate."
+        },
+        {
+          "key": "rehearse-recovery-in-a-temporary-copy",
+          "title": "Rehearse recovery in a temporary copy",
+          "outcome": "A recovery drill materializes selected snapshots in an owned temporary workspace and verifies claimed scope without touching the active operator workspace."
+        },
+        {
+          "key": "inspect-unsupported-recovery-scope",
+          "title": "Inspect unsupported recovery scope",
+          "outcome": "A restore preview lists provider data, secrets and external resources absent from the backup so a successful local restore cannot imply their recovery."
+        },
+        {
+          "key": "handle-snapshot-schema-migration-explicitly",
+          "title": "Handle snapshot schema migration explicitly",
+          "outcome": "An incompatible snapshot receives a migration preview with supported transformations and refusals before any converted snapshot can replace current data."
+        },
+        {
+          "key": "export-a-recovery-reproduction-packet",
+          "title": "Export a recovery reproduction packet",
+          "outcome": "A packet includes selected snapshot manifests, synthetic failure conditions and exact verification commands without exporting unrelated local files or runtime secrets."
+        },
+        {
+          "key": "label-incomplete-recovery-outcomes-honestly",
+          "title": "Label incomplete recovery outcomes honestly",
+          "outcome": "A result distinguishes restored, rolled back, partially reconciled and unresolved states, retaining the original failure information until an operator resolves it."
+        },
+        {
+          "key": "resume-an-interrupted-recovery-procedure",
+          "title": "Resume an interrupted recovery procedure",
+          "outcome": "A resume action reads the exact restore identity and retained checkpoints, determines accepted effects and avoids repeating an already completed replacement blindly."
+        }
+      ]
+    },
+    {
+      "id": "F096",
+      "name": "Portability and export contracts",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F045",
+        "F058",
+        "F091",
+        "F095"
+      ],
+      "scope": "Explicit local exports describing which document, component, asset, data and runtime behaviors survive each selected target.",
+      "refusal": "Refuse unsupported target promises, missing assets and undisclosed provider dependencies; exporting files does not prove a deployed equivalent.",
+      "recovery": "Keep source documents and prior export artifacts intact when a selected export fails or a target contract changes.",
+      "feedback": "Show supported, transformed, omitted and provider-bound behavior before producing a target-specific export artifact.",
+      "evidence": "Target fixture matrices verify declared behavior, artifact manifests, reference preservation and clear unsupported-operation reporting.",
+      "capabilities": [
+        {
+          "key": "inspect-a-target-portability-matrix",
+          "title": "Inspect a target portability matrix",
+          "outcome": "An operator compares declared export targets and sees supported, transformed, omitted and provider-bound behaviors without treating all exports as equivalent applications."
+        },
+        {
+          "key": "preview-a-static-site-export",
+          "title": "Preview a static site export",
+          "outcome": "A plan lists pages, assets and scripts included in a static export and identifies dynamic features that require unavailable hosted services."
+        },
+        {
+          "key": "export-a-component-library-contract",
+          "title": "Export a component library contract",
+          "outcome": "An export includes selected component definitions and declared props, slots and variants while preserving the external source ownership of authored code components."
+        },
+        {
+          "key": "inspect-exported-component-dependencies",
+          "title": "Inspect exported component dependencies",
+          "outcome": "The artifact lists required runtime providers, packages and version ranges so a consumer can identify missing dependencies before importing the library."
+        },
+        {
+          "key": "export-resolved-local-asset-references",
+          "title": "Export resolved local asset references",
+          "outcome": "A selected export materializes allowlisted assets and rewrites only supported references, reporting missing or external resources instead of silently dropping them."
+        },
+        {
+          "key": "preserve-accessibility-semantics-in-exports",
+          "title": "Preserve accessibility semantics in exports",
+          "outcome": "The target validator compares declared roles, names and relationships in exported fixtures and reports semantics that the selected target cannot preserve."
+        },
+        {
+          "key": "preview-cms-data-portability-scope",
+          "title": "Preview CMS data portability scope",
+          "outcome": "An export preview identifies selected schemas, records and references and separates portable local data from provider identifiers and unpublished remote state."
+        },
+        {
+          "key": "export-fictional-workspace-records-explicitly",
+          "title": "Export fictional workspace records explicitly",
+          "outcome": "An operator exports selected synthetic workspace records with their complete schema and provenance, while unselected workspace data remains excluded."
+        },
+        {
+          "key": "validate-imported-portability-manifests",
+          "title": "Validate imported portability manifests",
+          "outcome": "A consumer validates target, schema and artifact digests before opening an imported export and receives explicit incompatibility reasons without source mutation."
+        },
+        {
+          "key": "report-form-submission-portability-gaps",
+          "title": "Report form submission portability gaps",
+          "outcome": "The target report identifies forms whose validation or submission handling depends on an adapter absent from the export artifact."
+        },
+        {
+          "key": "report-interaction-portability-gaps",
+          "title": "Report interaction portability gaps",
+          "outcome": "An export comparison distinguishes preserved local interactions from effects requiring unsupported runtime APIs, external services or unavailable interaction engines."
+        },
+        {
+          "key": "preserve-supported-locale-relationships",
+          "title": "Preserve supported locale relationships",
+          "outcome": "A target export retains declared locale tags, fallback links and direction for supported locales and reports unsupported routing or domain mappings."
+        },
+        {
+          "key": "preview-responsive-export-differences",
+          "title": "Preview responsive export differences",
+          "outcome": "The export view compares declared responsive modes against target capabilities and identifies transformations or omissions before producing the artifact."
+        },
+        {
+          "key": "separate-generated-and-authored-export-files",
+          "title": "Separate generated and authored export files",
+          "outcome": "The manifest identifies generated files and externally authored source so subsequent exports cannot silently overwrite application code owned outside the exporter."
+        },
+        {
+          "key": "re-export-without-unrelated-file-changes",
+          "title": "Re-export without unrelated file changes",
+          "outcome": "An explicit re-export updates only declared generated paths and reports any destination collision with files outside the exporter-owned artifact scope."
+        },
+        {
+          "key": "verify-a-portable-artifact-locally",
+          "title": "Verify a portable artifact locally",
+          "outcome": "An owned local consumer fixture opens the selected export and tests declared behaviors, preserving target limitations as part of the result."
+        },
+        {
+          "key": "compare-export-contract-versions",
+          "title": "Compare export contract versions",
+          "outcome": "An operator compares two target contract versions and sees newly supported, changed or removed behavior without reinterpreting older export receipts."
+        },
+        {
+          "key": "inventory-export-environment-requirements",
+          "title": "Inventory export environment requirements",
+          "outcome": "The artifact lists public configuration names and required runtime bindings without embedding local machine paths, credential values or provider account secrets."
+        },
+        {
+          "key": "export-a-target-compatibility-report",
+          "title": "Export a target compatibility report",
+          "outcome": "A report includes selected behaviors, fixture results, known omissions and the exact artifact digest rather than presenting a successful archive creation as full compatibility."
+        },
+        {
+          "key": "rehearse-portable-artifact-restoration",
+          "title": "Rehearse portable artifact restoration",
+          "outcome": "A temporary consumer restores an exported artifact and verifies the manifest's declared scope while leaving the original source workspace unchanged."
+        }
+      ]
+    },
+    {
+      "id": "F097",
+      "name": "Cross-platform runtime compatibility",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F020",
+        "F091",
+        "F096"
+      ],
+      "scope": "Explicit compatibility diagnostics and owned runtime rehearsals for macOS Apple Silicon, Windows x64 and Windows ARM64.",
+      "refusal": "Refuse unsupported platform claims and ambiguous executable paths; mocked operating-system responses cannot establish native runtime acceptance.",
+      "recovery": "Preserve platform-specific diagnostic failures and owned process evidence so later retries do not overwrite unresolved compatibility findings.",
+      "feedback": "Display actual operating system, architecture, selected binary, tested scope and unexecuted platform requirements separately.",
+      "evidence": "Native runs and labeled injected fixtures verify path handling, platform bindings, process ownership and portable artifact behavior.",
+      "capabilities": [
+        {
+          "key": "inspect-actual-host-platform-identity",
+          "title": "Inspect actual host platform identity",
+          "outcome": "A prerequisite report shows the actual operating system and architecture alongside supported targets without treating declared compatibility as a completed native test."
+        },
+        {
+          "key": "verify-apple-silicon-runtime-selection",
+          "title": "Verify Apple Silicon runtime selection",
+          "outcome": "A macOS rehearsal identifies the selected Node and native package architecture and reports translated or mismatched binaries before running the supported workflow."
+        },
+        {
+          "key": "verify-windows-x64-runtime-selection",
+          "title": "Verify Windows x64 runtime selection",
+          "outcome": "A native Windows x64 rehearsal records executable identity and architecture, distinguishing successful runtime observation from static source or mocked process checks."
+        },
+        {
+          "key": "verify-windows-arm64-runtime-selection",
+          "title": "Verify Windows ARM64 runtime selection",
+          "outcome": "A native ARM64 rehearsal records supported package bindings and actual process architecture so emulation is not silently reported as native execution."
+        },
+        {
+          "key": "handle-workspace-paths-containing-spaces",
+          "title": "Handle workspace paths containing spaces",
+          "outcome": "Owned fixtures execute registered commands from paths containing spaces and compare literal argument boundaries and selected checkout identity across supported platforms."
+        },
+        {
+          "key": "handle-unicode-workspace-path-names",
+          "title": "Handle Unicode workspace path names",
+          "outcome": "A platform fixture uses a contained Unicode workspace path and verifies that source reads, diagnostics and artifact references identify the intended files consistently."
+        },
+        {
+          "key": "validate-export-namespace-collisions",
+          "title": "Validate exported namespace collisions",
+          "outcome": "A generated export or template archive validates its complete output namespace and refuses case-insensitive file or directory collisions before materialization."
+        },
+        {
+          "key": "validate-portable-line-ending-behavior",
+          "title": "Validate portable line-ending behavior",
+          "outcome": "A fixture compares declared text and byte-preserved artifact policies under supported line endings without rewriting immutable snapshots or binary checksums."
+        },
+        {
+          "key": "validate-windows-process-ownership-inspection",
+          "title": "Validate Windows process ownership inspection",
+          "outcome": "A native probe identifies owned child processes using supported Windows process metadata and refuses termination when descendant ownership cannot be established."
+        },
+        {
+          "key": "validate-macos-process-ownership-inspection",
+          "title": "Validate macOS process ownership inspection",
+          "outcome": "A native probe reconciles recorded PID, command and working directory before offering stop actions, preserving unrelated local listeners and processes."
+        },
+        {
+          "key": "validate-literal-powershell-argument-transport",
+          "title": "Validate literal PowerShell argument transport",
+          "outcome": "A Windows launcher fixture preserves spaces, quotes and metacharacters as literal command arguments rather than expanding them through unintended shell interpretation."
+        },
+        {
+          "key": "validate-literal-posix-argument-transport",
+          "title": "Validate literal POSIX argument transport",
+          "outcome": "A macOS launcher fixture preserves argument boundaries and selected environment values without treating user-supplied path or branch text as executable shell code."
+        },
+        {
+          "key": "inspect-platform-specific-package-bindings",
+          "title": "Inspect platform-specific package bindings",
+          "outcome": "A dependency report lists selected native bindings and expected platform compatibility, identifying unavailable packages before a build or preview launch fails."
+        },
+        {
+          "key": "preview-platform-compatible-startup-commands",
+          "title": "Preview platform-compatible startup commands",
+          "outcome": "The setup panel presents commands appropriate to the actual host and clearly labels commands that require an installed shell or unsupported runtime."
+        },
+        {
+          "key": "report-filesystem-capability-assumptions",
+          "title": "Report filesystem capability assumptions",
+          "outcome": "A diagnostic identifies required atomic rename, regular-file, symlink and file-lock behavior and distinguishes unavailable operations from application logic failures."
+        },
+        {
+          "key": "verify-fixed-origin-startup-across-platforms",
+          "title": "Verify fixed-origin startup across platforms",
+          "outcome": "Native rehearsals request the same declared loopback origin and verify actionable occupied-port refusal instead of silent fallback or unrelated listener reuse."
+        },
+        {
+          "key": "verify-owned-session-shutdown-per-platform",
+          "title": "Verify owned session shutdown per platform",
+          "outcome": "A runtime rehearsal proves the supported stop behavior on that operating system and preserves explicit guidance where descendant termination remains unsupported."
+        },
+        {
+          "key": "compare-platform-build-artifact-differences",
+          "title": "Compare platform build artifact differences",
+          "outcome": "A report compares declared equivalent builds across native target systems and identifies expected or unexplained artifact differences without assuming bitwise portability."
+        },
+        {
+          "key": "export-a-native-compatibility-receipt",
+          "title": "Export a native compatibility receipt",
+          "outcome": "A receipt records actual host, tools, source and executed workflows, with untested target platforms explicitly excluded from the accepted runtime scope."
+        },
+        {
+          "key": "separate-injected-platform-fixtures-from-native-proof",
+          "title": "Separate injected platform fixtures from native proof",
+          "outcome": "The compatibility dashboard labels mocked OS fixtures and real native executions separately so unit coverage cannot satisfy a native platform acceptance requirement."
+        }
+      ]
+    },
+    {
+      "id": "F098",
+      "name": "Performance measurement and budgets",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F037",
+        "F089",
+        "F091"
+      ],
+      "scope": "Explicit local performance measurements for declared editor tasks, workload sizes and source/runtime configurations.",
+      "refusal": "Refuse unsupported comparison claims, hidden workload truncation and measurements lacking environment identity or complete task outcomes.",
+      "recovery": "Retain baseline and failed-budget observations when tuning changes, and recover the prior configuration without losing recorded samples.",
+      "feedback": "Show workload scope, limits, sample distributions, budget outcomes and task failures together instead of only favorable averages.",
+      "evidence": "Deterministic synthetic workloads and repeated local tasks measure discovery, editing, import, rendering and recovery costs.",
+      "capabilities": [
+        {
+          "key": "define-an-editor-task-performance-baseline",
+          "title": "Define an editor task performance baseline",
+          "outcome": "An operator records a named editor task, source basis, workload and measurement environment before collecting samples for later comparisons."
+        },
+        {
+          "key": "measure-deep-navigator-target-discovery",
+          "title": "Measure deep Navigator target discovery",
+          "outcome": "A synthetic task measures successful discovery and selection of a known deeply nested target, including wrong-target and unavailable-scope outcomes."
+        },
+        {
+          "key": "measure-wide-navigator-search-behavior",
+          "title": "Measure wide Navigator search behavior",
+          "outcome": "A workload measures metadata search across a declared wide hierarchy and reports scan limits, response timing and incomplete results together."
+        },
+        {
+          "key": "measure-large-document-import-cost",
+          "title": "Measure large document import cost",
+          "outcome": "A controlled import records elapsed time, input size and resulting object count, with validation failures and unsupported source included in the outcome."
+        },
+        {
+          "key": "measure-semantic-command-acceptance-latency",
+          "title": "Measure semantic command acceptance latency",
+          "outcome": "A local fixture measures proposal validation and command acceptance separately so transport delay is not confused with document mutation cost."
+        },
+        {
+          "key": "measure-inspector-selection-response",
+          "title": "Measure inspector selection response",
+          "outcome": "A repeated task measures selecting supported objects and rendering their inspector state while verifying that the displayed target remains correct."
+        },
+        {
+          "key": "measure-canvas-viewport-switching-cost",
+          "title": "Measure canvas viewport switching cost",
+          "outcome": "A workload records responsive viewport changes and stable rendered completion, including layout failures instead of counting every dispatched resize as success."
+        },
+        {
+          "key": "measure-component-library-browsing-cost",
+          "title": "Measure component library browsing cost",
+          "outcome": "A declared component library fixture measures filtering and opening definitions while recording result counts, virtualization scope and unavailable previews."
+        },
+        {
+          "key": "measure-cms-binding-preview-cost",
+          "title": "Measure CMS binding preview cost",
+          "outcome": "A synthetic record workload measures schema-checked binding preview with declared reference depth and missing-data cases included in its report."
+        },
+        {
+          "key": "measure-command-journal-replay-cost",
+          "title": "Measure command journal replay cost",
+          "outcome": "A fixture replays a declared supported command sequence and records time, resource use and resulting digest correctness for the complete sequence."
+        },
+        {
+          "key": "measure-undo-and-restore-response",
+          "title": "Measure undo and restore response",
+          "outcome": "A recovery workload records the time and successful scope verification for undo or restore, preserving partial failures in the measured result set."
+        },
+        {
+          "key": "track-local-editor-memory-samples",
+          "title": "Track local editor memory samples",
+          "outcome": "An opted-in local measurement records bounded memory samples for a declared workload and environment without collecting application content or private document fields."
+        },
+        {
+          "key": "set-explicit-artifact-size-budgets",
+          "title": "Set explicit artifact size budgets",
+          "outcome": "A build configuration declares per-artifact and total size budgets, and the report distinguishes warnings from release-blocking thresholds selected by the operator."
+        },
+        {
+          "key": "set-explicit-editor-response-budgets",
+          "title": "Set explicit editor response budgets",
+          "outcome": "A task configuration declares response thresholds and required success rates so performance acceptance cannot be inferred from an unreviewed default number."
+        },
+        {
+          "key": "compare-equivalent-workload-samples",
+          "title": "Compare equivalent workload samples",
+          "outcome": "A comparison verifies matching task definitions and reports changed environments or workload scopes before presenting performance differences between two observations."
+        },
+        {
+          "key": "report-sample-distributions-and-outliers",
+          "title": "Report sample distributions and outliers",
+          "outcome": "The performance view presents sample counts, spread and retained outliers with task failures, avoiding a summary that hides slow or unsuccessful executions."
+        },
+        {
+          "key": "identify-bounded-traversal-saturation",
+          "title": "Identify bounded traversal saturation",
+          "outcome": "A workload reports when node, depth or result budgets caused incomplete work so faster capped measurements cannot be presented as equivalent complete processing."
+        },
+        {
+          "key": "profile-registered-local-command-phases",
+          "title": "Profile registered local command phases",
+          "outcome": "An opted-in trace separates validation, source reading, transformation and persistence phases for supported commands without recording disallowed input payloads."
+        },
+        {
+          "key": "export-a-reproducible-benchmark-packet",
+          "title": "Export a reproducible benchmark packet",
+          "outcome": "A packet includes workload definition, runtime identity, samples and correctness witnesses so another owned environment can repeat the measured task."
+        },
+        {
+          "key": "review-comparative-product-claims-explicitly",
+          "title": "Review comparative product claims explicitly",
+          "outcome": "A comparison requires matched tasks, declared environments and complete success evidence before an operator can attach a measured advantage claim to the result."
+        }
+      ]
+    },
+    {
+      "id": "F099",
+      "name": "Local operational observability",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F016",
+        "F090"
+      ],
+      "scope": "Opt-in local diagnostics for owned services, registered operations and bounded resource observations with sanitized metadata.",
+      "refusal": "Refuse credential or private-payload collection, unrelated process control and automatic third-party telemetry transmission.",
+      "recovery": "Preserve failure timelines and observation gaps while recovering an owned local service or rotating bounded diagnostic files.",
+      "feedback": "Expose component health, last observation time, known errors and missing evidence without converting an old green state into live readiness.",
+      "evidence": "Owned service and logging fixtures verify metadata redaction, bounded retention, failure attribution and exact runtime ownership.",
+      "capabilities": [
+        {
+          "key": "show-component-specific-local-health",
+          "title": "Show component-specific local health",
+          "outcome": "The dashboard reports app, LAN and each selected emulator health independently, including the time and endpoint of the most recent actual observation."
+        },
+        {
+          "key": "distinguish-listener-and-workflow-readiness",
+          "title": "Distinguish listener and workflow readiness",
+          "outcome": "A status card labels open-port reachability, HTTP readiness and executed workflow evidence separately instead of using a single service-ready badge."
+        },
+        {
+          "key": "inspect-owned-process-identity-metadata",
+          "title": "Inspect owned process identity metadata",
+          "outcome": "An operator reads the selected session's PID, command identity and working directory without exposing private process arguments or unrelated application data."
+        },
+        {
+          "key": "display-a-bounded-local-event-timeline",
+          "title": "Display a bounded local event timeline",
+          "outcome": "The timeline shows sanitized registered operation events with ordering and source references while clearly indicating omitted records beyond the configured display limit."
+        },
+        {
+          "key": "correlate-operation-requests-and-receipts",
+          "title": "Correlate operation requests and receipts",
+          "outcome": "A diagnostics view links an exact request identity to its accepted, refused or unresolved result without inferring completion from a log message alone."
+        },
+        {
+          "key": "label-stale-health-observations",
+          "title": "Label stale health observations",
+          "outcome": "A card marks a health observation stale after its configured interval and distinguishes stale evidence from a newly observed service failure."
+        },
+        {
+          "key": "capture-an-owned-service-failure-snapshot",
+          "title": "Capture an owned service failure snapshot",
+          "outcome": "A failure snapshot records selected process and endpoint metadata with sanitized diagnostics, preserving the current source and runtime identity for later inspection."
+        },
+        {
+          "key": "inspect-local-endpoint-probe-history",
+          "title": "Inspect local endpoint probe history",
+          "outcome": "The operator reads bounded endpoint observations with actual response status and timing, including failed probes rather than only the latest successful response."
+        },
+        {
+          "key": "configure-local-diagnostic-retention-bounds",
+          "title": "Configure local diagnostic retention bounds",
+          "outcome": "An operator selects explicit file and age limits and previews affected owned diagnostic artifacts before any supported retention cleanup occurs."
+        },
+        {
+          "key": "preview-diagnostic-redaction-results",
+          "title": "Preview diagnostic redaction results",
+          "outcome": "A diagnostic export preview identifies excluded credential-shaped fields and private payload categories before materializing a support report."
+        },
+        {
+          "key": "export-selected-local-support-diagnostics",
+          "title": "Export selected local support diagnostics",
+          "outcome": "An operator exports explicitly selected service, source and sanitized event metadata with an inventory, without sending the report to another person or service."
+        },
+        {
+          "key": "report-missing-operational-evidence-explicitly",
+          "title": "Report missing operational evidence explicitly",
+          "outcome": "The status view identifies unavailable probes, inaccessible process facts and unexecuted workflows so missing information cannot appear as a passing operational check."
+        },
+        {
+          "key": "track-owned-resource-allocation-history",
+          "title": "Track owned resource allocation history",
+          "outcome": "The panel records actual assigned ports and runtime identities for local sessions, preserving origin changes as explicit events rather than rewriting history."
+        },
+        {
+          "key": "compare-declared-and-observed-runtime-configuration",
+          "title": "Compare declared and observed runtime configuration",
+          "outcome": "A diagnostic compares selected public configuration with actual owned endpoint observations and reports mismatches without reading or displaying secret values."
+        },
+        {
+          "key": "inspect-sanitized-command-duration-trends",
+          "title": "Inspect sanitized command duration trends",
+          "outcome": "An opted-in local view groups registered operation durations by capability and revision while excluding command arguments outside the declared metadata policy."
+        },
+        {
+          "key": "identify-repeated-local-refusal-patterns",
+          "title": "Identify repeated local refusal patterns",
+          "outcome": "The diagnostics panel groups stable refusal meanings and affected scopes so an operator can investigate recurring invalid or stale operations without collecting private payloads."
+        },
+        {
+          "key": "suspend-optional-diagnostics-collection",
+          "title": "Suspend optional diagnostics collection",
+          "outcome": "An operator pauses optional local diagnostic sampling and sees that state clearly while required command receipts and safety checks retain their separate policy."
+        },
+        {
+          "key": "validate-diagnostic-schema-versions",
+          "title": "Validate diagnostic schema versions",
+          "outcome": "A reader rejects unsupported diagnostic records and preserves the original input for inspection instead of silently interpreting unknown fields as current health facts."
+        },
+        {
+          "key": "resume-local-service-investigation-from-a-handoff",
+          "title": "Resume local service investigation from a handoff",
+          "outcome": "A handoff opens the retained failure context and lists which volatile probes must be repeated before the operator acts on the earlier observation."
+        },
+        {
+          "key": "explain-provider-observability-boundaries",
+          "title": "Explain provider observability boundaries",
+          "outcome": "The dashboard distinguishes local diagnostics from provider logs or production telemetry and lists unavailable external observations without claiming access or activation."
+        }
+      ]
+    },
+    {
+      "id": "F100",
+      "name": "Operator learning and discoverable controls",
+      "area": "delivery",
+      "phase": "delivery",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F017",
+        "F090"
+      ],
+      "scope": "Task-oriented local help, guided rehearsals and discoverable controls grounded in currently implemented capabilities.",
+      "refusal": "Refuse documentation claims for unimplemented actions and never turn a tutorial, role label or completed lesson into operational authority.",
+      "recovery": "Retain chosen learning progress and drafts only through explicit local preferences, with safe resume and reset scope previews.",
+      "feedback": "Provide plain effect descriptions, keyboard instructions, current capability status and actionable failure guidance near the relevant control.",
+      "evidence": "Fixture-based task walkthroughs verify actual controls, focus, accessible names and the separation of learning completion from feature acceptance.",
+      "capabilities": [
+        {
+          "key": "discover-implemented-controls-by-task",
+          "title": "Discover implemented controls by task",
+          "outcome": "An operator searches a task-oriented help index and receives current implemented controls with planned or unavailable capabilities clearly distinguished."
+        },
+        {
+          "key": "open-context-help-for-the-selected-object",
+          "title": "Open context help for the selected object",
+          "outcome": "The inspector presents help appropriate to the selected object's ownership and supported operations without promising structural edits for an unsupported source object."
+        },
+        {
+          "key": "inspect-keyboard-shortcuts-by-workspace",
+          "title": "Inspect keyboard shortcuts by workspace",
+          "outcome": "A shortcut reference shows the current workspace mappings and modifier differences, excluding keys intentionally disabled while typing or interacting with the preview."
+        },
+        {
+          "key": "rehearse-navigator-discovery-with-synthetic-content",
+          "title": "Rehearse Navigator discovery with synthetic content",
+          "outcome": "A guided local exercise asks the operator to find and select known synthetic objects and verifies the actual resulting selection rather than a lesson button click."
+        },
+        {
+          "key": "rehearse-a-guarded-source-edit-safely",
+          "title": "Rehearse a guarded source edit safely",
+          "outcome": "A temporary-copy walkthrough demonstrates source revision checks, preview and explicit confirmation without changing the active application or reusable template seeds."
+        },
+        {
+          "key": "rehearse-stale-revision-refusal",
+          "title": "Rehearse stale revision refusal",
+          "outcome": "A controlled exercise changes a synthetic source revision and shows the actual refusal and recovery controls when an older proposal is applied."
+        },
+        {
+          "key": "rehearse-undo-with-a-declared-local-command",
+          "title": "Rehearse Undo with a declared local command",
+          "outcome": "A temporary exercise previews and applies a supported Undo, then verifies the original declared record scope instead of presenting an explanatory animation as proof."
+        },
+        {
+          "key": "rehearse-selective-restore-scope",
+          "title": "Rehearse selective restore scope",
+          "outcome": "An account-free exercise changes several synthetic workspace modules and verifies that a chosen selective restore preserves the unselected modules exactly."
+        },
+        {
+          "key": "explain-source-ownership-at-the-point-of-action",
+          "title": "Explain source ownership at the point of action",
+          "outcome": "A control explains whether the target is source-owned, document-owned or hybrid-controlled and identifies which writes are currently supported for that target."
+        },
+        {
+          "key": "explain-mock-and-provider-mode-differences",
+          "title": "Explain mock and provider mode differences",
+          "outcome": "A help card identifies which data and actions are fictional, emulated or provider-bound so a local exercise cannot be mistaken for real business processing."
+        },
+        {
+          "key": "explain-the-current-local-origin",
+          "title": "Explain the current local origin",
+          "outcome": "A session guide displays the exact current scheme, host and port and explains how browser-retained work relates to that origin."
+        },
+        {
+          "key": "guide-owned-process-status-inspection",
+          "title": "Guide owned process status inspection",
+          "outcome": "An operator walkthrough uses the actual session status controls and identifies ownership uncertainty before introducing any stop or restart action."
+        },
+        {
+          "key": "present-action-effects-before-confirmation",
+          "title": "Present action effects before confirmation",
+          "outcome": "A help surface explains the selected action's affected scope, retained data and possible refusals beside the actual confirmation controls."
+        },
+        {
+          "key": "return-focus-after-help-dialogs",
+          "title": "Return focus after help dialogs",
+          "outcome": "Closing contextual help restores focus to its actual opener or a declared fallback when that opener disappeared, without navigating the canvas accidentally."
+        },
+        {
+          "key": "offer-accessible-text-alternatives-for-tutorials",
+          "title": "Offer accessible text alternatives for tutorials",
+          "outcome": "Every guided visual step exposes its task, target and success meaning as text so the learning flow does not depend on screenshots or color alone."
+        },
+        {
+          "key": "restore-opted-in-local-learning-progress",
+          "title": "Restore opted-in local learning progress",
+          "outcome": "A returning operator restores explicitly retained lesson progress for the same local profile without submitting drafts or activating previously described operations."
+        },
+        {
+          "key": "preview-learning-data-reset-effects",
+          "title": "Preview learning data reset effects",
+          "outcome": "A reset preview lists only the selected local learning records and preferences, preserving application workspaces and unrelated browser storage unless separately selected."
+        },
+        {
+          "key": "inspect-a-lesson-s-current-capability-basis",
+          "title": "Inspect a lesson's current capability basis",
+          "outcome": "A lesson records which implemented capability versions it describes and marks itself outdated when those versions no longer match the available controls."
+        },
+        {
+          "key": "export-a-local-learning-handoff",
+          "title": "Export a local learning handoff",
+          "outcome": "An operator exports selected completed exercises, unresolved steps and source qualifications without including private drafts or presenting lesson completion as production acceptance."
+        },
+        {
+          "key": "report-unsupported-tutorial-steps-honestly",
+          "title": "Report unsupported tutorial steps honestly",
+          "outcome": "A guided workflow stops at an unavailable required capability and explains its prerequisite, preserving progress without marking the remaining exercise complete."
+        }
+      ]
+    }
+  ]
+}

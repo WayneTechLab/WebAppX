@@ -7,8 +7,10 @@
 
 **Current gate:** Wave 0 truth/safety/documentation/characterization is complete
 for this repository. The capability manifest, schema decisions, evidence packet,
-Markdown-link check, and required local gates pass. Wave 1 is planned and not
-started; the full Designer is not a current release claim.
+Markdown-link check, and required local gates pass. Wave 1 preparation now includes a modular source-revision precondition and
+controlled editor conflict recovery. Full transport/domain modularization, the
+typed kernel and structural round-trip work remain future milestones; the full
+Designer is not a current release claim.
 
 ## Global goal
 
@@ -109,3 +111,14 @@ Stop the active wave and repair the foundation when:
 - command model: `14-EDITOR-KERNEL-AND-COMMAND-MODEL.md`
 - schemas: `INJECT/.SYSTEMX/LAN/Builder/contracts/`
 - backlog/roadmap/risks: `planning/`
+
+## Expanded execution program — 2026-10-26
+
+The [10,000-requirement plan](../../docs/LAN-10000-EXECUTION-PLAN.md) expands
+100 authored families and 2,000 proposed capabilities into behavior, boundary,
+recovery, feedback and evidence requirements. It refines these waves with a
+validated prerequisite graph and separate local/operator/provider gates.
+Receipt-bound acceptance and the [dated source revision proof](../../docs/LAN-SOURCE-REVISION-QA-2026-10-26.md)
+control actual progress. It does not modify the immutable research packages,
+accept the entire program, activate a provider or replace the original host
+application backlog.

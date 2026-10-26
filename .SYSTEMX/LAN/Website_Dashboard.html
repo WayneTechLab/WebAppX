@@ -396,6 +396,7 @@
               </div>
               <label>Confirmation<input id="settings-text-confirmation" placeholder="SAVE TEXT CHANGE" autocomplete="off" disabled /></label>
               <button id="settings-text-save" class="button button-dark" type="button" disabled>Save text to source</button>
+              <div class="source-revision-row"><output id="settings-source-revision" aria-live="polite">No source revision loaded.</output><button id="settings-text-reload" class="button" type="button" disabled>Reload latest source</button></div>
               <output id="settings-text-output" class="command-output" aria-live="polite">Text editing is available only for safe leaf-text elements with one mapped source occurrence.</output>
             </div>
           </section>
@@ -465,12 +466,15 @@
             <div class="source-toolbar">
               <label>File<select id="source-file-select"></select></label>
               <button class="button" id="load-source" type="button">Load</button>
+              <button class="button" id="reload-source" type="button">Reload latest source</button>
               <span id="source-policy" class="badge warn">backup-diff-confirm</span>
             </div>
             <textarea id="source-editor" spellcheck="false" aria-label="Source editor" placeholder="Choose an allowlisted source file."></textarea>
+            <output id="source-revision" class="source-revision-row" aria-live="polite">No source revision loaded.</output>
+            <p id="source-revision-help" class="panel-help">A revision covers the bytes of one allowlisted source file. It does not establish Git cleanliness, provider publication, or an exclusive lock.</p>
             <div class="source-save-row">
               <label>Confirmation<input id="source-confirmation" placeholder="SAVE LOCAL CHANGE" autocomplete="off" /></label>
-              <button class="button button-dark" id="save-source" type="button">Save</button>
+              <button class="button button-dark" id="save-source" type="button" disabled>Save</button>
             </div>
             <output id="source-output" class="command-output" aria-live="polite">No source file loaded.</output>
           </section>

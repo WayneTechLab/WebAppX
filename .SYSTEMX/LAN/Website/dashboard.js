@@ -71,6 +71,13 @@ const state = {
   selectedNodeId: null,
   selectedCollectionId: null,
   sourcePath: null,
+  sourceRevision: null,
+  sourceLoadedContent: null,
+  sourceDisplayBaseline: null,
+  sourceConflictRevision: null,
+  sourceLoadGeneration: 0,
+  sourceLoading: false,
+  sourceSaving: false,
   components: [],
   previewSelectedElement: null,
   previewHoveredElement: null,
@@ -89,6 +96,10 @@ const state = {
   previewNavigatorTimer: null,
   previewNavigatorRoute: null,
   previewTextOriginals: new WeakMap(),
+  previewTextSource: null,
+  previewTextSourcePending: null,
+  previewTextSaving: null,
+  previewTextSourceGeneration: 0,
   previewInspectorRetry: null,
   fontCatalog: [],
   fontCatalogMeta: null,
@@ -454,7 +465,13 @@ async function request(path, options = {}) {
     cache: 'no-store',
   })
   const result = await response.json().catch(() => ({}))
-  if (!response.ok) throw new Error(result.error ?? `HTTP ${response.status}`)
+  if (!response.ok) {
+    const error = new Error(result.error ?? `HTTP ${response.status}`)
+    error.status = response.status
+    error.code = result.code
+    if (validSourceRevision(result.currentRevision)) error.currentRevision = result.currentRevision.toLowerCase()
+    throw error
+  }
   return result
 }
 
@@ -825,6 +842,9 @@ function clearPreviewSelection() {
   state.previewHoveredElement = null
   state.previewSelection = null
   state.previewSelectionAnchor = null
+  state.previewTextSource = null
+  state.previewTextSourcePending = null
+  state.previewTextSourceGeneration += 1
   state.previewLayerElements = []
   hidePreviewContextMenu()
   renderPreviewBreadcrumbs()
@@ -842,6 +862,8 @@ function clearPreviewSelection() {
   setControlDisabled('#settings-text-source', true)
   setControlDisabled('#settings-text-confirmation', true)
   setControlDisabled('#settings-text-save', true)
+  setControlDisabled('#settings-text-reload', true)
+  text('#settings-source-revision', 'No source revision loaded.')
   setControlDisabled('#style-edit-text', true)
   text('#settings-text-state', 'select leaf text')
   output('#preview-selection-location', 'Select an element · right-click for actions')
@@ -1092,7 +1114,11 @@ function renderSelectedElementEditors(element, location) {
   setControlDisabled('#settings-text-revert', !editable)
   setControlDisabled('#settings-text-source', !location.sourcePath)
   setControlDisabled('#settings-text-confirmation', !editable)
-  setControlDisabled('#settings-text-save', !editable)
+  const loadedSource = state.previewTextSource
+  const sourceReady = loadedSource?.element === element && loadedSource.path === location.sourcePath
+  setControlDisabled('#settings-text-save', !editable || !sourceReady || state.previewTextSourcePending === element || state.previewTextSaving === element)
+  setControlDisabled('#settings-text-reload', !editable)
+  renderSelectedTextRevision()
   text('#settings-text-state', editable ? `${location.textValue.length} characters` : 'not editable')
   output(
     '#settings-text-output',
@@ -1104,10 +1130,20 @@ function renderSelectedElementEditors(element, location) {
   expandPreviewAncestors(element)
   renderPreviewNavigator({ reveal: true })
   renderPreviewBreadcrumbs()
+  if (editable && !sourceReady && state.previewTextSourcePending !== element) {
+    void loadSelectedTextSource(element, location.sourcePath).catch((error) => {
+      if (state.previewSelectedElement === element) output('#settings-source-revision', error.message)
+    })
+  }
 }
 
 function selectPreviewElement(element, options = {}) {
   if (!isCurrentPreviewElement(element, previewDocument()?.body)) return
+  if (state.previewSelectedElement !== element) {
+    state.previewTextSource = null
+    state.previewTextSourcePending = null
+    state.previewTextSourceGeneration += 1
+  }
   state.previewSelectedElement?.removeAttribute('data-systemx-inspector-selected')
   element.setAttribute('data-systemx-inspector-selected', '')
   state.previewSelectedElement = element
@@ -1290,7 +1326,6 @@ function openPreviewSource() {
     select.append(option)
   }
   if (select) select.value = sourcePath
-  state.sourcePath = sourcePath
   activateRightPanel('source')
   void loadSource().catch((error) => output('#source-output', error.message))
   hidePreviewContextMenu()
@@ -1356,12 +1391,17 @@ async function saveSelectedText() {
     return
   }
   const { element, location, textInfo } = selectedTextContext()
+  if (state.previewTextSaving === element) return
   const nextText = validatedTextDraft()
   if (nextText === textInfo.originalText) {
     output('#settings-text-output', 'The text matches the source value; nothing needs to be saved.')
     return
   }
-  const source = await request(`/api/builder/source?path=${encodeURIComponent(location.sourcePath)}`)
+  const source = state.previewTextSource
+  if (source?.element !== element || source.path !== location.sourcePath || !validSourceRevision(source.revision)) {
+    output('#settings-text-output', 'Load the latest source revision before saving this text draft.')
+    return
+  }
   const occurrenceCount = source.content.split(textInfo.originalText).length - 1
   if (occurrenceCount !== 1) {
     output(
@@ -1373,18 +1413,41 @@ async function saveSelectedText() {
     return
   }
   const nextContent = source.content.replace(textInfo.originalText, escapeJsxText(nextText))
-  const result = await post('/api/builder/source', {
-    path: location.sourcePath,
-    content: nextContent,
-    confirmation: 'SAVE LOCAL CHANGE',
-  })
-  if (confirmation) confirmation.value = ''
+  let result
+  state.previewTextSaving = element
+  setControlDisabled('#settings-text-save', true)
+  try {
+    result = await post('/api/builder/source', {
+      path: location.sourcePath,
+      content: nextContent,
+      baseRevision: source.revision,
+      confirmation: 'SAVE LOCAL CHANGE',
+    })
+    if (!validSourceRevision(result.revision)) throw new Error('Saved source revision is unavailable. Reload latest source before another save.')
+  } catch (error) {
+    if (sourceRevisionConflict(error)) {
+      if (state.previewSelectedElement === element) {
+        if (state.previewTextSource === source) source.currentRevision = error.currentRevision
+        renderSelectedTextRevision()
+        output('#settings-text-output', 'Source changed since this text draft was loaded. The draft and selected source revision are kept. Choose Reload latest source before reviewing and saving again.')
+      }
+      return
+    }
+    if (state.previewSelectedElement === element) output('#settings-text-output', `${error.message} Save was not confirmed; the text draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
+    return
+  } finally {
+    if (state.previewTextSaving === element) state.previewTextSaving = null
+    if (state.previewSelectedElement === element) setControlDisabled('#settings-text-save', state.previewTextSourcePending === element)
+  }
+  if (state.previewTextSource === source) state.previewTextSource = { ...source, content: nextContent, revision: result.revision, currentRevision: null }
+  if (confirmation && state.previewSelectedElement === element) confirmation.value = ''
   state.previewTextOriginals.set(element, nextText)
   element.textContent = nextText
-  if (state.previewSelection) {
+  if (state.previewSelectedElement === element && state.previewSelection) {
     state.previewSelection.textValue = nextText
     state.previewSelection.originalText = nextText
     state.previewSelectionAnchor = makePreviewSelectionAnchor(state.previewSelection)
+    renderSelectedTextRevision()
   }
   output(
     '#settings-text-output',
@@ -1807,16 +1870,119 @@ async function refresh() {
   output('#command-output', 'Workspace refreshed. Local changes remain under SYSTEMX control.')
 }
 
-async function loadSource() {
+function validSourceRevision(revision) {
+  return typeof revision === 'string' && revision.length === 64 && /^[a-f0-9]{64}$/i.test(revision)
+}
+
+function sourceRevisionConflict(error) {
+  return error.status === 409 && error.code === 'SOURCE_REVISION_CONFLICT'
+}
+
+function renderSelectedTextRevision() {
+  const source = state.previewTextSource
+  const label = document.querySelector('#settings-source-revision')
+  if (!label) return
+  if (source?.element !== state.previewSelectedElement || !validSourceRevision(source.revision)) {
+    label.textContent = 'No source revision loaded.'
+    label.removeAttribute('data-revision')
+    label.removeAttribute('data-current-revision')
+    return
+  }
+  label.dataset.revision = source.revision
+  const dirty = document.querySelector('#settings-text-editor')?.value.trim() !== state.previewSelection?.originalText
+  label.textContent = source.currentRevision
+    ? `Conflict · unsaved text draft · loaded ${source.revision} · current ${source.currentRevision}`
+    : `${dirty ? 'Unsaved text draft' : 'Loaded source'} · revision ${source.revision.slice(0, 12)}.`
+  if (source.currentRevision) label.dataset.currentRevision = source.currentRevision
+  else label.removeAttribute('data-current-revision')
+}
+
+function renderSourceRevision() {
+  const label = document.querySelector('#source-revision')
+  if (!label || !validSourceRevision(state.sourceRevision)) return
+  const dirty = document.querySelector('#source-editor')?.value !== state.sourceDisplayBaseline
+  label.dataset.revision = state.sourceRevision
+  label.textContent = state.sourceConflictRevision
+    ? `Conflict · ${dirty ? 'unsaved draft' : 'loaded source'} · loaded ${state.sourceRevision} · current ${state.sourceConflictRevision}`
+    : `${dirty ? 'Unsaved draft' : 'Loaded source'} · revision ${state.sourceRevision.slice(0, 12)}.`
+  if (state.sourceConflictRevision) label.dataset.currentRevision = state.sourceConflictRevision
+  else label.removeAttribute('data-current-revision')
+}
+
+async function loadSelectedTextSource(element = state.previewSelectedElement, path = state.previewSelection?.sourcePath) {
+  if (!element || !path) return
+  const generation = ++state.previewTextSourceGeneration
+  state.previewTextSourcePending = element
+  setControlDisabled('#settings-text-save', true)
+  output('#settings-source-revision', 'Reading latest source revision; the text draft is kept.')
+  try {
+    const result = await request(`/api/builder/source?path=${encodeURIComponent(path)}`)
+    if (generation !== state.previewTextSourceGeneration || state.previewSelectedElement !== element || state.previewSelection?.sourcePath !== path) return
+    if (result.path !== path || !validSourceRevision(result.revision)) throw new Error('Source revision unavailable. Choose Reload latest source before saving.')
+    state.previewTextSource = { element, path, content: result.content, revision: result.revision }
+    renderSelectedTextRevision()
+  } catch (error) {
+    if (generation === state.previewTextSourceGeneration) output('#settings-source-revision', `${error.message} The text draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
+  } finally {
+    if (generation === state.previewTextSourceGeneration) {
+      state.previewTextSourcePending = null
+      const loaded = state.previewTextSource
+      setControlDisabled('#settings-text-save', loaded?.element !== element || loaded.path !== path || state.previewTextSaving === element)
+    }
+  }
+}
+
+function updateSourceSaveAvailability() {
+  setControlDisabled('#save-source', state.sourceLoading || state.sourceSaving || !validSourceRevision(state.sourceRevision))
+  setControlDisabled('#load-source', state.sourceSaving)
+  setControlDisabled('#reload-source', state.sourceSaving)
+}
+
+function sourceContentForDraft(displayDraft) {
+  if (displayDraft === state.sourceDisplayBaseline) return state.sourceLoadedContent
+  const loaded = state.sourceLoadedContent
+  const uniformCrLf = loaded.includes('\r\n') && !/[\r\n]/.test(loaded.replaceAll('\r\n', ''))
+  return uniformCrLf ? displayDraft.replaceAll('\n', '\r\n') : displayDraft
+}
+
+async function loadSource({ path } = {}) {
   const select = document.querySelector('#source-file-select')
   const editor = document.querySelector('#source-editor')
-  if (!select || !editor || !select.value) return
-  const result = await request(`/api/builder/source?path=${encodeURIComponent(select.value)}`)
-  state.sourcePath = result.path
-  select.value = result.path
-  editor.value = result.content
-  text('#source-policy', result.policy)
-  output('#source-output', `${result.path} loaded · ${result.content.split(/\r?\n/).length} lines`)
+  const wantedPath = path || select?.value
+  if (!select || !editor || !wantedPath || state.sourceSaving) return
+  if (state.sourcePath && editor.value !== state.sourceDisplayBaseline && !window.confirm('Reload source and discard the unsaved source draft? Cancel keeps the draft and its loaded revision.')) {
+    select.value = state.sourcePath
+    output('#source-output', 'Reload cancelled. The source draft and loaded revision are kept.')
+    return
+  }
+  const generation = ++state.sourceLoadGeneration
+  state.sourceLoading = true
+  editor.disabled = true
+  updateSourceSaveAvailability()
+  try {
+    const result = await request(`/api/builder/source?path=${encodeURIComponent(wantedPath)}`)
+    if (generation !== state.sourceLoadGeneration) return
+    if (result.path !== wantedPath || !validSourceRevision(result.revision)) throw new Error('Source revision unavailable. Reload source before saving.')
+    state.sourcePath = result.path
+    state.sourceRevision = result.revision
+    state.sourceLoadedContent = result.content
+    state.sourceConflictRevision = null
+    select.value = result.path
+    editor.value = result.content
+    state.sourceDisplayBaseline = editor.value
+    text('#source-policy', result.policy)
+    renderSourceRevision()
+    setControlValue('#source-confirmation', '')
+    output('#source-output', `${result.path} loaded · ${result.content.split(/\r?\n/).length} lines`)
+  } catch (error) {
+    if (generation === state.sourceLoadGeneration) output('#source-output', `${error.message} The source draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
+  } finally {
+    if (generation === state.sourceLoadGeneration) {
+      state.sourceLoading = false
+      editor.disabled = false
+      updateSourceSaveAvailability()
+    }
+  }
 }
 
 async function saveSource() {
@@ -1824,7 +1990,7 @@ async function saveSource() {
   const editor = document.querySelector('#source-editor')
   const confirmation = document.querySelector('#source-confirmation')
   if (!select || !editor || !confirmation) return
-  if (!state.sourcePath) {
+  if (!state.sourcePath || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving) {
     output('#source-output', 'Load a source file before saving.')
     return
   }
@@ -1832,10 +1998,33 @@ async function saveSource() {
     output('#source-output', `Selected file changed to ${select.value}. Load it before saving.`)
     return
   }
-  const result = await post('/api/builder/source', { path: state.sourcePath, content: editor.value, confirmation: confirmation.value })
-  output('#source-output', result.status === 'saved' ? `Saved ${result.path}; backup: ${result.backup}. Vite preview can hot reload.` : result.status)
-  confirmation.value = ''
-  await refresh()
+  const path = state.sourcePath, baseRevision = state.sourceRevision, displayDraft = editor.value
+  const content = sourceContentForDraft(displayDraft)
+  state.sourceSaving = true
+  updateSourceSaveAvailability()
+  try {
+    const result = await post('/api/builder/source', { path, content, baseRevision, confirmation: confirmation.value })
+    if (!validSourceRevision(result.revision)) throw new Error('Saved source revision is unavailable. Reload latest source before another save.')
+    state.sourceRevision = result.revision
+    state.sourceLoadedContent = content
+    state.sourceDisplayBaseline = displayDraft
+    state.sourceConflictRevision = null
+    renderSourceRevision()
+    output('#source-output', result.status === 'saved' ? `Saved ${result.path}; backup: ${result.backup}. Vite preview can hot reload.` : result.status)
+    confirmation.value = ''
+    await refresh()
+  } catch (error) {
+    if (!sourceRevisionConflict(error)) {
+      output('#source-output', `${error.message} Save was not confirmed; the draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
+      return
+    }
+    state.sourceConflictRevision = error.currentRevision
+    renderSourceRevision()
+    output('#source-output', 'Source changed since it was loaded. The draft and loaded revision are kept. Choose Reload latest source to review the current file before saving again.')
+  } finally {
+    state.sourceSaving = false
+    updateSourceSaveAvailability()
+  }
 }
 
 async function savePageModel(event) {
@@ -2120,6 +2309,10 @@ function bind() {
   document.querySelector('#settings-text-preview')?.addEventListener('click', previewSelectedText)
   document.querySelector('#settings-text-revert')?.addEventListener('click', revertSelectedText)
   document.querySelector('#settings-text-source')?.addEventListener('click', openPreviewSource)
+  document.querySelector('#settings-text-editor')?.addEventListener('input', renderSelectedTextRevision)
+  document.querySelector('#settings-text-reload')?.addEventListener('click', () => {
+    void loadSelectedTextSource().catch((error) => output('#settings-source-revision', error.message))
+  })
   document.querySelector('#settings-text-save')?.addEventListener('click', () => {
     void saveSelectedText().catch((error) => output('#settings-text-output', error.message))
   })
@@ -2300,7 +2493,7 @@ function bind() {
   })
   document.querySelector('#page-meta-form')?.addEventListener('submit', (event) => void savePageModel(event).catch((error) => output('#command-output', error.message)))
   document.querySelector('#page-create-form')?.addEventListener('submit', (event) => void createPageModel(event).catch((error) => output('#command-output', `Page model blocked: ${error.message}`)))
-  document.querySelector('#open-page-source')?.addEventListener('click', () => { const page = selectedPage(); if (!page) return; state.sourcePath = page.source; const select = document.querySelector('#source-file-select'); if (select) select.value = page.source; activateRightPanel('source'); void loadSource().catch((error) => output('#source-output', error.message)) })
+  document.querySelector('#open-page-source')?.addEventListener('click', () => { const page = selectedPage(); if (!page) return; const select = document.querySelector('#source-file-select'); if (select) select.value = page.source; activateRightPanel('source'); void loadSource().catch((error) => output('#source-output', error.message)) })
   document.querySelector('#canvas-tree')?.addEventListener('click', (event) => { const button = event.target.closest('[data-remove-node]'); if (button) void removeNode(button.dataset.removeNode).catch((error) => output('#canvas-output', error.message)) })
   document.querySelector('#canvas-tree')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-select-node]')
@@ -2317,6 +2510,8 @@ function bind() {
   document.querySelector('#record-form')?.addEventListener('submit', (event) => void addRecord(event).catch((error) => output('#command-output', error.message)))
   document.querySelector('#user-form')?.addEventListener('submit', (event) => void addUser(event).catch((error) => output('#command-output', error.message)))
   document.querySelector('#load-source')?.addEventListener('click', () => void loadSource().catch((error) => output('#source-output', error.message)))
+  document.querySelector('#source-editor')?.addEventListener('input', renderSourceRevision)
+  document.querySelector('#reload-source')?.addEventListener('click', () => void loadSource({ path: state.sourcePath }).catch((error) => output('#source-output', error.message)))
   document.querySelector('#save-source')?.addEventListener('click', () => void saveSource().catch((error) => output('#source-output', error.message)))
   document.querySelector('#component-save-form')?.addEventListener('submit', (event) => void saveComponent(event).catch((error) => output('#component-output', `Module blocked: ${error.message}`)))
   document.querySelector('#ingest-form')?.addEventListener('submit', (event) => void ingestProject(event).catch((error) => output('#ingest-output', `Inventory blocked: ${error.message}`)))

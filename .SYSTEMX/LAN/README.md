@@ -515,3 +515,37 @@ project configures a trusted production adapter. The LAN endpoint
 `/api/auth/providers` and the `Providers` panel are read-only status projections;
 they never expose secrets or become cloud mutation authority. See the full
 contract in [`UNIFIED-AUTH-AND-STACK-CONTRACT.md`](UNIFIED-AUTH-AND-STACK-CONTRACT.md).
+
+## LAN delivery program and source revisions
+
+The [10,000-requirement execution plan](../../docs/LAN-10000-EXECUTION-PLAN.md)
+and [family index](../../docs/backlog/LAN-10000-TODO.md) track 2,000 proposed
+capabilities across 100 families. Five delivery lanes keep behavior, refusal,
+recovery, feedback and proof separate. Only reviewed, receipt-bound progress
+checks a requirement; generating the list or querying readiness does not run it.
+The original WebAppX catalog, blank seeds and research packages stay separate.
+
+Source GET responses now expose exact file-byte revisions. Confirmed source
+POST requests require the loaded `baseRevision`; stale saves return a safe409
+before backups, temporary writes or operation entries. The editor keeps its
+draft and old baseline. Use **Reload latest source** to review the current file;
+Cancel and failed loads keep the retained draft. Leaf-text editing has its own
+loaded snapshot and cannot silently advance a separate dirty raw editor.
+
+Unchanged valid-UTF8 textarea content preserves the loaded text despite browser
+newline normalization. Edited uniform CRLF source retains CRLF; edited mixed
+endings have no equivalent preservation claim. Hashes describe one allowed
+file's bytes, separate from Git cleanliness, provider publication and locking.
+See the [API contract](../../wiki/SYSTEMX-LAN-API-Reference.md) and
+[dated QA receipt](../../docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
+
+## Explicit emulator import
+
+Start from an existing private Firebase export with
+`npm run dev:systemx -- --emulator-import "/path/to/existing-export"`.
+Validation runs before allocating ports or starting processes. The selected
+export must have contained regular metadata and supported Auth/Firestore/Storage
+trees without links or traversal. Keep the export unchanged through startup.
+The default start does not import data. Session status emits complete JSON even
+through a pipe; readiness reports listener health separately from workflow tests.
+Exports and runtime paths belong outside tracked template files.

@@ -13,8 +13,7 @@ Build a repository-native visual Designer for the SFWA-WTL template using a cano
   capability and schema decisions now recorded in the repository.
 - Wave 0 implementation: COMPLETE — documentation, safety, characterization,
   link validation, capability manifest, and evidence packet pass.
-- Wave 1+ code implementation: NOT STARTED — the typed Designer kernel and
-  structural round-trip work remain future milestones.
+- Wave 1 preparation: source-revision contract and stale-edit client workflow are implemented for local verification. Full transport/domain modularization, the typed Designer kernel and structural round-trip work remain future milestones.
 
 ## Bounded LAN orientation delta — 2026-10-25
 
@@ -42,6 +41,25 @@ Final local acceptance on `dcca2b7300464a4df9a41460959ab907b9c58968` passed 16 N
 all 68 CI stages and separate Hosting preflight. Compatible root/starter/backend
 dependency audit repairs passed with zero reported vulnerabilities. App 3.4.0
 retains deployment count 0. Later kernel waves remain planned.
+
+## LAN execution program — 2026-10-26
+
+The [LAN execution plan](../../docs/LAN-10000-EXECUTION-PLAN.md) and
+[family checklist index](../../docs/backlog/LAN-10000-TODO.md) define 100 families,
+2,000 proposed capabilities and 10,000 delivery requirements. Cross-family
+prerequisites preserve document/ownership/commands before structural authoring,
+and schemas/review/build evidence before later integration/publication work.
+
+The first source-editing batch covers byte revisions, stale-save refusal,
+retained raw/leaf drafts, explicit reload, target binding, no-op/CRLF handling,
+transport feedback and revision scope. Only receipt-bound accepted requirements
+count toward progress; the list and readiness queue do not execute or grant
+provider authority. Read the [dated QA receipt](../../docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
+
+This program leaves the original 1,000-item catalog and unfinished foundation
+bundle separate. Managed releases, blank seeds and research fingerprints remain
+unchanged. The full Designer kernel and remaining waves are not completed by
+this increment.
 
 ## Wave 0 findings resolved
 

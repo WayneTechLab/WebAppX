@@ -1,0 +1,2391 @@
+{
+  "schemaVersion": 1,
+  "families": [
+    {
+      "id": "F021",
+      "name": "Flexbox layout authoring",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025",
+        "F026",
+        "F030"
+      ],
+      "scope": "Author flex declarations for a selected canonical node through a supported source adapter after document and command-journal prerequisites.",
+      "refusal": "Refuse unsupported source ownership, ambiguous selectors, invalid CSS values and stale revisions; retain the current rendered layout.",
+      "recovery": "Undo the exact flex declaration change without resetting sibling properties or unrelated breakpoint rules.",
+      "feedback": "Show main and cross axes, winning declaration, affected elements and breakpoint before confirmation.",
+      "evidence": "Use nested flex, wrapped content, RTL, intrinsic sizing and narrow viewport fixtures; compare declared source diffs and rendered boxes.",
+      "capabilities": [
+        {
+          "key": "set-flex-container-display",
+          "title": "Set flex container display",
+          "outcome": "Convert a selected owned container between block, flex and inline flex while preserving its children and unrelated declarations."
+        },
+        {
+          "key": "choose-flex-main-axis",
+          "title": "Choose flex main axis",
+          "outcome": "Switch row and column flow with a canvas axis indicator and a preview of the resulting child order."
+        },
+        {
+          "key": "reverse-flex-flow-direction",
+          "title": "Reverse flex flow direction",
+          "outcome": "Preview row reverse or column reverse while preserving DOM order and explaining the difference between visual and reading order."
+        },
+        {
+          "key": "configure-flex-wrapping",
+          "title": "Configure flex wrapping",
+          "outcome": "Choose nowrap, wrap or wrap reverse and show which children move onto additional lines at the active width."
+        },
+        {
+          "key": "set-main-axis-distribution",
+          "title": "Set main axis distribution",
+          "outcome": "Apply justify content options with a live distribution diagram that distinguishes available space from explicit margins and gaps."
+        },
+        {
+          "key": "set-cross-axis-alignment",
+          "title": "Set cross axis alignment",
+          "outcome": "Apply align items to the selected container and identify children whose explicit align self declaration overrides that result."
+        },
+        {
+          "key": "distribute-wrapped-flex-lines",
+          "title": "Distribute wrapped flex lines",
+          "outcome": "Edit align content only when multiple flex lines exist and explain why the property has no effect otherwise."
+        },
+        {
+          "key": "author-independent-flex-gaps",
+          "title": "Author independent flex gaps",
+          "outcome": "Set row and column gaps independently and show their physical direction for the current flex direction and writing mode."
+        },
+        {
+          "key": "set-flex-item-growth",
+          "title": "Set flex item growth",
+          "outcome": "Change an item's grow factor while comparing its resulting share against sibling factors at the same container size."
+        },
+        {
+          "key": "set-flex-item-shrinkage",
+          "title": "Set flex item shrinkage",
+          "outcome": "Adjust shrink factors and identify minimum content constraints that prevent the selected item from shrinking as expected."
+        },
+        {
+          "key": "author-flex-item-basis",
+          "title": "Author flex item basis",
+          "outcome": "Set a length, percentage or automatic flex basis and expose the source of the item's starting main size."
+        },
+        {
+          "key": "override-individual-item-alignment",
+          "title": "Override individual item alignment",
+          "outcome": "Set align self for one flex item without rewriting the container's shared alignment or the other children's overrides."
+        },
+        {
+          "key": "edit-visual-flex-order",
+          "title": "Edit visual flex order",
+          "outcome": "Change an item's order value with a reading order warning and an exact affected sibling preview before saving."
+        },
+        {
+          "key": "explain-automatic-flex-margins",
+          "title": "Explain automatic flex margins",
+          "outcome": "Display which automatic margins absorb free space and allow editing the selected margin without silently changing justify content."
+        },
+        {
+          "key": "compare-flex-shorthand-components",
+          "title": "Compare flex shorthand components",
+          "outcome": "Expand an existing flex shorthand into its interpreted grow, shrink and basis values before proposing an equivalent edit."
+        },
+        {
+          "key": "restore-intrinsic-flex-minimums",
+          "title": "Restore intrinsic flex minimums",
+          "outcome": "Inspect minimum width or height constraints and explicitly reset only the rule preventing the selected item from fitting."
+        },
+        {
+          "key": "preview-equal-width-flex-items",
+          "title": "Preview equal width flex items",
+          "outcome": "Preview a shared equal width recipe and list all affected items before changing their common source declaration."
+        },
+        {
+          "key": "preview-media-and-text-flex-rows",
+          "title": "Preview media and text flex rows",
+          "outcome": "Show how a fixed media item and flexible text item behave with long content and a narrow container."
+        },
+        {
+          "key": "inspect-nested-flex-constraints",
+          "title": "Inspect nested flex constraints",
+          "outcome": "Trace the selected item's size through nested flex ancestors and expose the first constraint responsible for overflow."
+        },
+        {
+          "key": "compare-flex-layouts-across-widths",
+          "title": "Compare flex layouts across widths",
+          "outcome": "Show synchronized flex overlays at selected widths so operators can verify wrapping and alignment before committing one scoped change."
+        }
+      ]
+    },
+    {
+      "id": "F022",
+      "name": "CSS Grid layout authoring",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025",
+        "F026",
+        "F030"
+      ],
+      "scope": "Author explicit and implicit grid declarations on owned containers and items while keeping named areas and source order reviewable.",
+      "refusal": "Refuse overlapping named area definitions, invalid track syntax, ambiguous shared selectors and unsupported subgrid persistence.",
+      "recovery": "Restore the previous track and placement declarations as one transaction without moving or recreating document children.",
+      "feedback": "Show numbered lines, named areas, implicit tracks and affected items in the existing canvas overlay and inspector.",
+      "evidence": "Exercise repeated tracks, nested grids, sparse and dense placement, RTL, intrinsic content and grid overflow at several widths.",
+      "capabilities": [
+        {
+          "key": "create-explicit-grid-columns",
+          "title": "Create explicit grid columns",
+          "outcome": "Add or remove explicit column tracks with numbered grid lines and a preview that preserves all existing child nodes."
+        },
+        {
+          "key": "create-explicit-grid-rows",
+          "title": "Create explicit grid rows",
+          "outcome": "Edit explicit row tracks while distinguishing authored rows from additional implicit rows created by the current grid items."
+        },
+        {
+          "key": "edit-grid-track-units",
+          "title": "Edit grid track units",
+          "outcome": "Choose fixed, fractional, percentage or automatic track sizing and show the resulting computed size for each track."
+        },
+        {
+          "key": "author-minimum-maximum-tracks",
+          "title": "Author minimum maximum tracks",
+          "outcome": "Edit minmax track constraints with validation for invalid minimums and a preview of their effect on intrinsic content."
+        },
+        {
+          "key": "configure-repeated-grid-tracks",
+          "title": "Configure repeated grid tracks",
+          "outcome": "Author repeat counts through structured controls and preserve equivalent supported source syntax when saving the selected container's rule."
+        },
+        {
+          "key": "preview-automatic-fill-tracks",
+          "title": "Preview automatic fill tracks",
+          "outcome": "Compare auto fill behavior at the active width and identify empty reserved tracks rather than presenting them as actual children."
+        },
+        {
+          "key": "preview-automatic-fit-tracks",
+          "title": "Preview automatic fit tracks",
+          "outcome": "Compare auto fit collapsing behavior with the same content and width so operators can choose an intentional responsive layout."
+        },
+        {
+          "key": "name-grid-template-areas",
+          "title": "Name grid template areas",
+          "outcome": "Create named area cells and reject disconnected or nonrectangular area shapes before the declaration reaches the command journal."
+        },
+        {
+          "key": "place-items-by-named-area",
+          "title": "Place items by named area",
+          "outcome": "Assign a selected grid item to an existing named area and identify other items that currently occupy that area."
+        },
+        {
+          "key": "place-items-by-grid-lines",
+          "title": "Place items by grid lines",
+          "outcome": "Edit start and end lines independently with visible line numbers and a preview of the resulting occupied cells."
+        },
+        {
+          "key": "set-grid-item-spans",
+          "title": "Set grid item spans",
+          "outcome": "Set a row or column span for one item while preserving its opposite axis placement and explicit source order."
+        },
+        {
+          "key": "author-implicit-track-sizes",
+          "title": "Author implicit track sizes",
+          "outcome": "Set grid auto rows or columns and clearly mark the tracks whose size comes from those implicit declarations."
+        },
+        {
+          "key": "choose-grid-auto-flow",
+          "title": "Choose grid auto flow",
+          "outcome": "Switch row or column placement and show which unpositioned children move while preserving their document identities and DOM order."
+        },
+        {
+          "key": "preview-dense-grid-packing",
+          "title": "Preview dense grid packing",
+          "outcome": "Preview dense placement separately and explain any visual sequence that differs from keyboard traversal or document reading order."
+        },
+        {
+          "key": "set-grid-container-alignment",
+          "title": "Set grid container alignment",
+          "outcome": "Edit justify and align content with track size feedback that distinguishes grid distribution from individual item alignment."
+        },
+        {
+          "key": "set-grid-item-alignment",
+          "title": "Set grid item alignment",
+          "outcome": "Edit justify self and align self for one item without changing sibling placement or container level alignment defaults."
+        },
+        {
+          "key": "author-independent-grid-gaps",
+          "title": "Author independent grid gaps",
+          "outcome": "Set row and column gaps with line overlays that distinguish gaps from track sizes and item margins."
+        },
+        {
+          "key": "inspect-subgrid-inheritance",
+          "title": "Inspect subgrid inheritance",
+          "outcome": "Display inherited subgrid tracks and their owning parent declaration; unsupported source adapters leave the subgrid inspection read only."
+        },
+        {
+          "key": "resize-grid-tracks-from-canvas",
+          "title": "Resize grid tracks from canvas",
+          "outcome": "Drag an authored grid boundary to preview a track change and require a reviewable declaration diff before persistence."
+        },
+        {
+          "key": "compare-named-area-breakpoint-changes",
+          "title": "Compare named area breakpoint changes",
+          "outcome": "Compare area maps across breakpoints and expose items that become unassigned or overlap when a narrower template takes effect."
+        }
+      ]
+    },
+    {
+      "id": "F023",
+      "name": "Box model and intrinsic sizing",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025",
+        "F026",
+        "F030"
+      ],
+      "scope": "Inspect and author dimensions, margins, padding and intrinsic constraints for selected owned nodes without replacing unrelated shorthand declarations.",
+      "refusal": "Refuse invalid dimensional expressions, unsupported unit conversions and edits that cannot identify a single intended source declaration.",
+      "recovery": "Undo one box model transaction while retaining neighboring declarations, source comments and other breakpoint overrides.",
+      "feedback": "Show physical and logical edges, computed sizes, constraint sources and the proposed source diff before saving.",
+      "evidence": "Compare content box and border box elements, long intrinsic content, mixed units, aspect ratios and vertical writing modes.",
+      "capabilities": [
+        {
+          "key": "inspect-the-computed-box-model",
+          "title": "Inspect the computed box model",
+          "outcome": "Display content, padding, border and margin dimensions from the rendered element alongside the declarations that contribute to those measurements."
+        },
+        {
+          "key": "edit-linked-padding-edges",
+          "title": "Edit linked padding edges",
+          "outcome": "Apply one padding value to explicitly linked edges while allowing an operator to unlink individual edges before making the change."
+        },
+        {
+          "key": "edit-independent-margin-edges",
+          "title": "Edit independent margin edges",
+          "outcome": "Change one margin edge without rewriting the remaining margins or replacing an unrelated authored margin shorthand in the source."
+        },
+        {
+          "key": "author-logical-padding-properties",
+          "title": "Author logical padding properties",
+          "outcome": "Edit block and inline padding with a writing mode preview that shows the corresponding physical edges for the selection."
+        },
+        {
+          "key": "author-logical-margin-properties",
+          "title": "Author logical margin properties",
+          "outcome": "Edit block and inline margins and explain their physical positions when text direction or writing mode changes across previews."
+        },
+        {
+          "key": "set-preferred-element-width",
+          "title": "Set preferred element width",
+          "outcome": "Author width using supported units and display the difference between the preferred value and the final constrained rendered width."
+        },
+        {
+          "key": "set-preferred-element-height",
+          "title": "Set preferred element height",
+          "outcome": "Author height with a preview that exposes content clipping or expansion rather than silently hiding overflow created by the change."
+        },
+        {
+          "key": "set-minimum-size-constraints",
+          "title": "Set minimum size constraints",
+          "outcome": "Edit minimum width and height independently and identify which minimum currently prevents the selected element from fitting its parent."
+        },
+        {
+          "key": "set-maximum-size-constraints",
+          "title": "Set maximum size constraints",
+          "outcome": "Edit maximum width and height with a canvas indicator that distinguishes capped elements from elements sized by their contents."
+        },
+        {
+          "key": "choose-box-sizing-behavior",
+          "title": "Choose box sizing behavior",
+          "outcome": "Compare content box and border box behavior with the same dimensions and show the resulting outer size before applying a change."
+        },
+        {
+          "key": "author-aspect-ratio-constraints",
+          "title": "Author aspect ratio constraints",
+          "outcome": "Set a supported aspect ratio and explain which definite dimension or intrinsic media size determines the resulting opposite dimension."
+        },
+        {
+          "key": "inspect-intrinsic-content-sizes",
+          "title": "Inspect intrinsic content sizes",
+          "outcome": "Compare min content, max content and available width for the selected element without persisting temporary measurement styles into application source."
+        },
+        {
+          "key": "author-fit-content-sizing",
+          "title": "Author fit content sizing",
+          "outcome": "Set supported fit content sizing and preview the limits imposed by the available container size and the selected element's contents."
+        },
+        {
+          "key": "preview-percentage-size-references",
+          "title": "Preview percentage size references",
+          "outcome": "Identify the containing block used for percentage dimensions and show when an indefinite ancestor prevents the expected percentage height."
+        },
+        {
+          "key": "compare-relative-dimension-units",
+          "title": "Compare relative dimension units",
+          "outcome": "Preview em, rem, viewport and container relative dimensions with their actual reference sizes before converting an authored supported value."
+        },
+        {
+          "key": "preserve-automatic-dimensional-values",
+          "title": "Preserve automatic dimensional values",
+          "outcome": "Expose automatic values as intentional constraints and prevent a measurement readout from replacing authored auto values with fixed pixels."
+        },
+        {
+          "key": "inspect-collapsed-block-margins",
+          "title": "Inspect collapsed block margins",
+          "outcome": "Show which adjacent block margins collapse and distinguish their resulting spacing from the sum of the individually authored margins."
+        },
+        {
+          "key": "author-bounded-fluid-dimensions",
+          "title": "Author bounded fluid dimensions",
+          "outcome": "Preview a supported clamp expression with its minimum, preferred and maximum values across a selected range of viewport widths."
+        },
+        {
+          "key": "explain-replaced-element-sizing",
+          "title": "Explain replaced element sizing",
+          "outcome": "Show intrinsic size and aspect ratio contributions for images and other replaced elements before changing their explicit size constraints."
+        },
+        {
+          "key": "audit-horizontal-sizing-overflow",
+          "title": "Audit horizontal sizing overflow",
+          "outcome": "Identify elements whose outer box exceeds the selected container and trace the contributing width, margin or intrinsic minimum declaration."
+        }
+      ]
+    },
+    {
+      "id": "F024",
+      "name": "Positioning overflow and stacking",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025",
+        "F026",
+        "F030"
+      ],
+      "scope": "Inspect containing blocks, scroll containers and stacking contexts; persist supported position and overflow declarations through bounded commands.",
+      "refusal": "Refuse unsupported containing-block rewrites, ambiguous stacking edits and changes that hide required controls without an explicit operator decision.",
+      "recovery": "Restore previous positioning and scroll constraints without resetting application scroll state or unrelated style rules.",
+      "feedback": "Show the containing block, sticky limits, scroll ownership and stacking context instead of treating z-index as a global depth number.",
+      "evidence": "Use nested scroll containers, sticky headers, transformed ancestors, dialogs, clipping and competing stacking contexts at several viewport sizes.",
+      "capabilities": [
+        {
+          "key": "choose-positioning-mode",
+          "title": "Choose positioning mode",
+          "outcome": "Preview static, relative, absolute, fixed and sticky positioning while showing the selected element's resulting containing block and normal flow participation."
+        },
+        {
+          "key": "edit-physical-position-offsets",
+          "title": "Edit physical position offsets",
+          "outcome": "Set top, right, bottom and left offsets independently and expose which offsets currently control the selected element's rendered position."
+        },
+        {
+          "key": "edit-logical-inset-properties",
+          "title": "Edit logical inset properties",
+          "outcome": "Author inset block and inline offsets with direction aware canvas guides that identify their physical edges for the current writing mode."
+        },
+        {
+          "key": "inspect-absolute-containing-blocks",
+          "title": "Inspect absolute containing blocks",
+          "outcome": "Trace the ancestor establishing an absolutely positioned element's containing block and identify the declaration responsible for that relationship."
+        },
+        {
+          "key": "inspect-fixed-containing-blocks",
+          "title": "Inspect fixed containing blocks",
+          "outcome": "Identify transformed or otherwise qualifying ancestors that contain a fixed element so viewport attachment is not incorrectly assumed in the inspector."
+        },
+        {
+          "key": "preview-sticky-positioning-bounds",
+          "title": "Preview sticky positioning bounds",
+          "outcome": "Display a sticky element's scroll container, threshold and containing block limits while scrolling the owned preview through its active range."
+        },
+        {
+          "key": "author-axis-specific-overflow",
+          "title": "Author axis specific overflow",
+          "outcome": "Edit horizontal and vertical overflow independently and explain any computed value interaction that changes the other axis's behavior."
+        },
+        {
+          "key": "inspect-clipping-ancestors",
+          "title": "Inspect clipping ancestors",
+          "outcome": "List the ancestors clipping the selected rendered box and reveal their overflow or clipping declarations without changing application visibility."
+        },
+        {
+          "key": "author-overflow-clipping-margins",
+          "title": "Author overflow clipping margins",
+          "outcome": "Set a supported overflow clip margin with a visible boundary preview and preserve the element's existing clipping mode and other dimensions."
+        },
+        {
+          "key": "inspect-stacking-context-ancestry",
+          "title": "Inspect stacking context ancestry",
+          "outcome": "Show the selected element's stacking context chain and the declarations creating each boundary before exposing a z-index edit control."
+        },
+        {
+          "key": "compare-competing-stacking-contexts",
+          "title": "Compare competing stacking contexts",
+          "outcome": "Compare two visible elements through their nearest competing contexts and explain why a larger child z-index cannot cross an ancestor boundary."
+        },
+        {
+          "key": "edit-local-stacking-order",
+          "title": "Edit local stacking order",
+          "outcome": "Set z-index within the selected stacking context and list the elements whose relative paint order can change at that level."
+        },
+        {
+          "key": "inspect-scroll-container-ownership",
+          "title": "Inspect scroll container ownership",
+          "outcome": "Identify which ancestor owns scrolling for the selected content and distinguish programmatic scrolling from overflow that actually creates a scroll container."
+        },
+        {
+          "key": "author-scroll-padding-edges",
+          "title": "Author scroll padding edges",
+          "outcome": "Set scroll padding on the owning container with a preview of the target alignment area used by navigation and snapping."
+        },
+        {
+          "key": "author-scroll-margin-edges",
+          "title": "Author scroll margin edges",
+          "outcome": "Set scroll margins for one target and preview its alignment against sticky headers without modifying neighboring targets or page navigation behavior."
+        },
+        {
+          "key": "configure-overscroll-behavior",
+          "title": "Configure overscroll behavior",
+          "outcome": "Preview supported overscroll containment independently on each axis and describe the resulting scroll chaining behavior in the local preview."
+        },
+        {
+          "key": "inspect-scrollbar-layout-effects",
+          "title": "Inspect scrollbar layout effects",
+          "outcome": "Compare available content width with scrollbar gutters and identify layout shifts caused by conditional scrollbars in the selected container."
+        },
+        {
+          "key": "author-scrollbar-gutter-policy",
+          "title": "Author scrollbar gutter policy",
+          "outcome": "Set supported scrollbar gutter values and preview reserved space without treating the operator's operating system scrollbar appearance as portable styling."
+        },
+        {
+          "key": "preview-isolated-paint-contexts",
+          "title": "Preview isolated paint contexts",
+          "outcome": "Inspect isolation and containment properties affecting paint order and preview a supported isolation change without rewriting unrelated positioning declarations."
+        },
+        {
+          "key": "audit-inaccessible-overflow-regions",
+          "title": "Audit inaccessible overflow regions",
+          "outcome": "Find clipped focusable controls and content regions lacking usable scrolling, then show the precise clipping or sizing rule responsible for each issue."
+        }
+      ]
+    },
+    {
+      "id": "F025",
+      "name": "Selectors cascade and style provenance",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F004",
+        "F009"
+      ],
+      "scope": "Explain winning CSS declarations and scope supported edits to explicit selectors, layers, states and source locations.",
+      "refusal": "Refuse selector edits with unresolved ownership, unsupported syntax, ambiguous source spans or an unreviewed increase in affected elements.",
+      "recovery": "Restore exact selector and declaration transactions with prior ordering, comments and neighboring rules preserved.",
+      "feedback": "Show specificity, layer, inheritance, importance, source location and affected element counts for every inspected supported property.",
+      "evidence": "Use layered stylesheets, inline declarations, repeated classes, inherited values, pseudo states and conflicting important rules with independently known winners.",
+      "capabilities": [
+        {
+          "key": "trace-a-winning-property-declaration",
+          "title": "Trace a winning property declaration",
+          "outcome": "Show the winning declaration for a selected computed property with its selector, stylesheet location, active condition and inherited origin where applicable."
+        },
+        {
+          "key": "compare-competing-declarations",
+          "title": "Compare competing declarations",
+          "outcome": "List the matched declarations for one property in cascade order and explain why each losing declaration does not determine the rendered result."
+        },
+        {
+          "key": "display-selector-specificity-components",
+          "title": "Display selector specificity components",
+          "outcome": "Present specificity as separate components and compare matching selectors without implying that specificity alone determines the complete cascade order."
+        },
+        {
+          "key": "inspect-cascade-layer-ordering",
+          "title": "Inspect cascade layer ordering",
+          "outcome": "Show declared layer order and explain how layered and unlayered declarations compete for the selected property at the active state."
+        },
+        {
+          "key": "explain-inherited-property-origins",
+          "title": "Explain inherited property origins",
+          "outcome": "Trace inherited values through ancestors and identify the source declaration that first supplies the selected element's effective inherited value."
+        },
+        {
+          "key": "distinguish-initial-and-unset-values",
+          "title": "Distinguish initial and unset values",
+          "outcome": "Preview initial, inherit, unset, revert and revert layer values separately with an explanation of the resulting winning value and its source."
+        },
+        {
+          "key": "inspect-custom-property-resolution",
+          "title": "Inspect custom property resolution",
+          "outcome": "Trace a custom property's references and fallback chain to the resolved value while exposing missing references and cycles without rewriting source."
+        },
+        {
+          "key": "count-selector-matched-elements",
+          "title": "Count selector matched elements",
+          "outcome": "Report the current rendered elements affected by a supported selector and identify the inspection scope before a shared rule change is proposed."
+        },
+        {
+          "key": "preview-a-shared-selector-edit",
+          "title": "Preview a shared selector edit",
+          "outcome": "Show before and after renderings for all inspected matched elements and require explicit confirmation of the shared edit scope before persistence."
+        },
+        {
+          "key": "create-an-owned-utility-class",
+          "title": "Create an owned utility class",
+          "outcome": "Create a new class in an explicitly owned stylesheet and attach it only to the selected supported node through one reviewed transaction."
+        },
+        {
+          "key": "rename-a-class-with-reference-review",
+          "title": "Rename a class with reference review",
+          "outcome": "Preview all supported source references for a class rename and refuse the operation when references outside the inspected source ownership remain unresolved."
+        },
+        {
+          "key": "inspect-compound-selector-matches",
+          "title": "Inspect compound selector matches",
+          "outcome": "Explain which parts of a supported compound selector match the selected element and identify the conditions preventing a related element from matching."
+        },
+        {
+          "key": "inspect-combinator-relationship-matches",
+          "title": "Inspect combinator relationship matches",
+          "outcome": "Visualize supported descendant, child and sibling selector relationships using the actual selected document nodes without changing their hierarchy or classes."
+        },
+        {
+          "key": "author-state-scoped-declarations",
+          "title": "Author state scoped declarations",
+          "outcome": "Edit an explicitly supported state rule separately from its base selector and show the inherited fallback when that state is inactive."
+        },
+        {
+          "key": "inspect-pseudo-element-declarations",
+          "title": "Inspect pseudo element declarations",
+          "outcome": "Display supported before and after pseudo element styles with their originating rule while clearly distinguishing generated boxes from editable document nodes."
+        },
+        {
+          "key": "review-importance-changes",
+          "title": "Review importance changes",
+          "outcome": "Preview the affected declarations and elements before adding or removing important, with a clear explanation of the resulting cascade winner."
+        },
+        {
+          "key": "preserve-declaration-order-intentionally",
+          "title": "Preserve declaration order intentionally",
+          "outcome": "Show duplicate declarations and their effective order, then update only the selected supported occurrence without silently deduplicating compatibility fallbacks."
+        },
+        {
+          "key": "explain-stylesheet-origin-boundaries",
+          "title": "Explain stylesheet origin boundaries",
+          "outcome": "Distinguish application, imported component, browser and unsupported stylesheet origins and expose write controls only for explicitly supported owned sources."
+        },
+        {
+          "key": "inspect-inline-style-ownership",
+          "title": "Inspect inline style ownership",
+          "outcome": "Show whether an inline value comes from authored markup, supported component props or runtime behavior before offering a safe persistence path."
+        },
+        {
+          "key": "preview-cascade-changes-across-states",
+          "title": "Preview cascade changes across states",
+          "outcome": "Compare the same property across selected states and widths so an edit's effect on base rules and active overrides is visible before saving."
+        }
+      ]
+    },
+    {
+      "id": "F026",
+      "name": "Viewport breakpoint authoring",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025"
+      ],
+      "scope": "Author ordered viewport media conditions and property overrides while preserving explicit base styles and supported source rule ownership.",
+      "refusal": "Refuse overlapping condition rewrites with unresolved precedence, invalid ranges or edits that silently affect unselected breakpoint branches.",
+      "recovery": "Undo breakpoint edits as scoped transactions and restore previous condition ordering without dropping narrower or wider overrides.",
+      "feedback": "Show active conditions, inherited values, override indicators and exact interval boundaries in the existing responsive canvas controls.",
+      "evidence": "Exercise boundary widths, orientation, mixed min and max conditions, landscape devices and multiple independent property override chains.",
+      "capabilities": [
+        {
+          "key": "inspect-active-viewport-conditions",
+          "title": "Inspect active viewport conditions",
+          "outcome": "List the media conditions currently matching the preview and map each supported condition to the property declarations it activates for the selected node."
+        },
+        {
+          "key": "create-a-minimum-width-breakpoint",
+          "title": "Create a minimum width breakpoint",
+          "outcome": "Add a supported minimum width condition with an explicit insertion position and preview which existing declarations remain inherited beneath that threshold."
+        },
+        {
+          "key": "create-a-maximum-width-breakpoint",
+          "title": "Create a maximum width breakpoint",
+          "outcome": "Add a supported maximum width condition and show the exact inclusive boundary and any neighboring condition that can also match there."
+        },
+        {
+          "key": "create-a-bounded-width-interval",
+          "title": "Create a bounded width interval",
+          "outcome": "Author a supported width range and preview its two boundaries without silently converting neighboring media conditions or altering their cascade order."
+        },
+        {
+          "key": "rename-an-editor-breakpoint-label",
+          "title": "Rename an editor breakpoint label",
+          "outcome": "Change a nonsecret editor label while preserving the underlying CSS condition, source order and references used by existing property overrides."
+        },
+        {
+          "key": "review-breakpoint-boundary-changes",
+          "title": "Review breakpoint boundary changes",
+          "outcome": "Preview every affected rule and viewport interval before changing a breakpoint's threshold, including overlaps with conditions that remain unchanged."
+        },
+        {
+          "key": "author-breakpoint-specific-property-overrides",
+          "title": "Author breakpoint specific property overrides",
+          "outcome": "Set a property inside one selected condition and show the base or ancestor condition from which its previous value was inherited."
+        },
+        {
+          "key": "reset-one-breakpoint-override",
+          "title": "Reset one breakpoint override",
+          "outcome": "Remove only the selected property's declaration from one supported condition and reveal the newly effective inherited or base value in the preview."
+        },
+        {
+          "key": "compare-adjacent-breakpoint-inheritance",
+          "title": "Compare adjacent breakpoint inheritance",
+          "outcome": "Display a property immediately on both sides of a threshold and identify the declaration responsible for the change between the two previews."
+        },
+        {
+          "key": "preview-exact-breakpoint-boundary-pixels",
+          "title": "Preview exact breakpoint boundary pixels",
+          "outcome": "Open synchronized previews at the threshold and neighboring pixel widths so inclusive conditions and one pixel gaps can be verified directly."
+        },
+        {
+          "key": "author-orientation-conditions",
+          "title": "Author orientation conditions",
+          "outcome": "Create or edit supported portrait and landscape media conditions independently from width presets and explain when both condition groups are simultaneously active."
+        },
+        {
+          "key": "inspect-viewport-height-conditions",
+          "title": "Inspect viewport height conditions",
+          "outcome": "Show active height conditions and allow a supported override to be previewed against short and tall viewport configurations without replacing width rules."
+        },
+        {
+          "key": "preview-aspect-ratio-conditions",
+          "title": "Preview aspect ratio conditions",
+          "outcome": "Preview supported viewport aspect ratio conditions with their actual evaluated ratio and identify any combined width or orientation constraints that also apply."
+        },
+        {
+          "key": "compare-screen-and-print-rules",
+          "title": "Compare screen and print rules",
+          "outcome": "Switch a read only media preview between screen and print conditions while keeping publication settings and physical printer behavior outside the local preview claim."
+        },
+        {
+          "key": "inspect-preference-media-conditions",
+          "title": "Inspect preference media conditions",
+          "outcome": "Identify active preference conditions such as reduced motion or contrast and keep their overrides separate from the viewport width breakpoint hierarchy."
+        },
+        {
+          "key": "duplicate-a-breakpoint-rule-selectively",
+          "title": "Duplicate a breakpoint rule selectively",
+          "outcome": "Copy explicitly selected supported declarations into another condition and show collisions without copying unrelated selectors or overwriting existing target declarations silently."
+        },
+        {
+          "key": "audit-empty-breakpoint-rules",
+          "title": "Audit empty breakpoint rules",
+          "outcome": "Identify supported media blocks with no effective declarations and preview a source cleanup that preserves comments and unrelated condition branches."
+        },
+        {
+          "key": "audit-contradictory-viewport-conditions",
+          "title": "Audit contradictory viewport conditions",
+          "outcome": "Report conditions that cannot match or produce uncovered intended intervals, with a concrete explanation based on their parsed bounds and conjunctions."
+        },
+        {
+          "key": "compare-a-responsive-layout-matrix",
+          "title": "Compare a responsive layout matrix",
+          "outcome": "Display selected routes at a bounded set of widths and conditions with consistent selection so operators can compare the same element's behavior."
+        },
+        {
+          "key": "export-breakpoint-definitions-as-metadata",
+          "title": "Export breakpoint definitions as metadata",
+          "outcome": "Export supported condition definitions and editor labels with source references, clearly separating this design inventory from a deployable stylesheet or production release."
+        }
+      ]
+    },
+    {
+      "id": "F027",
+      "name": "Container queries and adaptive components",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F021",
+        "F022",
+        "F026"
+      ],
+      "scope": "Inspect container eligibility and author supported size and style query rules for explicitly owned components and their query containers.",
+      "refusal": "Refuse unsupported container syntax, unresolved named container references and edits that would introduce an unreviewed containment boundary.",
+      "recovery": "Restore previous query conditions and containment declarations without changing component children, shared definitions or unrelated viewport rules.",
+      "feedback": "Show the selected query container, evaluated dimensions, condition matches and fallback declarations alongside the component preview.",
+      "evidence": "Use named and anonymous containers, nested containment, inline size limits, writing modes and components displayed in differently sized hosts.",
+      "capabilities": [
+        {
+          "key": "inspect-the-selected-query-container",
+          "title": "Inspect the selected query container",
+          "outcome": "Identify the eligible ancestor used by a supported container query and display its measured query dimensions without assuming it is the nearest parent."
+        },
+        {
+          "key": "declare-inline-size-containment",
+          "title": "Declare inline size containment",
+          "outcome": "Preview container type inline size on an owned container and explain its intrinsic sizing effects before the source declaration is persisted."
+        },
+        {
+          "key": "declare-size-containment",
+          "title": "Declare size containment",
+          "outcome": "Preview full size query containment with explicit feedback about dimensions and intrinsic layout contributions that can change for the selected container."
+        },
+        {
+          "key": "name-an-owned-query-container",
+          "title": "Name an owned query container",
+          "outcome": "Assign or edit a supported container name and list query rules whose named container lookup can be affected by that change."
+        },
+        {
+          "key": "create-an-inline-size-query",
+          "title": "Create an inline size query",
+          "outcome": "Author a supported inline size condition and show the matched container, threshold and affected component declarations in a bounded local preview."
+        },
+        {
+          "key": "create-a-block-size-query",
+          "title": "Create a block size query",
+          "outcome": "Author a supported block size condition only when the chosen container is eligible and explain why an ineligible container cannot evaluate the rule."
+        },
+        {
+          "key": "create-a-bounded-container-range",
+          "title": "Create a bounded container range",
+          "outcome": "Edit lower and upper size bounds as a structured condition and preview exact boundary behavior without altering adjacent query rules or source order."
+        },
+        {
+          "key": "inspect-nested-container-selection",
+          "title": "Inspect nested container selection",
+          "outcome": "Trace eligible nested containers and explain which named or anonymous ancestor is selected for each supported query affecting the current component."
+        },
+        {
+          "key": "preview-components-in-multiple-host-widths",
+          "title": "Preview components in multiple host widths",
+          "outcome": "Render the same component instance in several local host widths while preserving viewport dimensions so container driven changes are distinguishable from viewport breakpoints."
+        },
+        {
+          "key": "compare-viewport-and-container-overrides",
+          "title": "Compare viewport and container overrides",
+          "outcome": "Show when viewport and container conditions both match and explain the resulting winning declaration using the actual cascade order for the selected property."
+        },
+        {
+          "key": "author-container-relative-lengths",
+          "title": "Author container relative lengths",
+          "outcome": "Preview supported container query units with the actual eligible reference dimensions and identify the fallback reference when no qualifying container is available."
+        },
+        {
+          "key": "inspect-container-query-fallback-rules",
+          "title": "Inspect container query fallback rules",
+          "outcome": "Show the base declarations used when a container condition does not match and keep those fallbacks visible while editing the conditional override."
+        },
+        {
+          "key": "rename-named-container-references-safely",
+          "title": "Rename named container references safely",
+          "outcome": "Preview all supported declarations and query references for a container rename and refuse persistence when any required reference remains outside owned source."
+        },
+        {
+          "key": "inspect-supported-style-queries",
+          "title": "Inspect supported style queries",
+          "outcome": "Display the condition and matched custom property for a supported style query, leaving unsupported expressions read only with their original source retained."
+        },
+        {
+          "key": "author-supported-custom-property-queries",
+          "title": "Author supported custom property queries",
+          "outcome": "Create a supported custom property query through structured controls and show the queried container value independently from the descendant's computed value."
+        },
+        {
+          "key": "audit-ineffective-containment-declarations",
+          "title": "Audit ineffective containment declarations",
+          "outcome": "Report containment that cannot support the associated query and show the exact missing eligibility condition instead of silently adding layout altering declarations."
+        },
+        {
+          "key": "audit-unresolved-named-queries",
+          "title": "Audit unresolved named queries",
+          "outcome": "List supported query rules whose named container cannot be found for an inspected element and reveal the affected ancestor search path."
+        },
+        {
+          "key": "preview-adaptive-navigation-components",
+          "title": "Preview adaptive navigation components",
+          "outcome": "Show an owned navigation component at constrained host widths and verify that its container driven arrangement preserves usable controls and reading order."
+        },
+        {
+          "key": "preview-adaptive-content-cards",
+          "title": "Preview adaptive content cards",
+          "outcome": "Compare the same card data in wide and narrow hosts with stable instance identity and identify the query declaration causing each layout transition."
+        },
+        {
+          "key": "export-container-query-inventory",
+          "title": "Export container query inventory",
+          "outcome": "Export supported containers, query conditions and source references as a bounded design inventory without claiming unsupported syntax or generating production CSS implicitly."
+        }
+      ]
+    },
+    {
+      "id": "F028",
+      "name": "Typography and font shaping",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025",
+        "F026",
+        "F030"
+      ],
+      "scope": "Inspect and author supported typography declarations using local font inventories, explicit fallback behavior and source owned style rules.",
+      "refusal": "Refuse unavailable font substitutions, unsupported axis values and source edits that would silently load external font resources or overwrite shared text.",
+      "recovery": "Restore typography declarations and selected font previews without replacing the text content or unrelated language and accessibility preferences.",
+      "feedback": "Show actual loaded faces, fallback use, measured line boxes, writing mode and the source of each effective typography value.",
+      "evidence": "Use long titles, multilingual text, variable fonts, missing glyphs, text zoom and constrained content widths with local fixture fonts.",
+      "capabilities": [
+        {
+          "key": "inspect-rendered-font-fallback",
+          "title": "Inspect rendered font fallback",
+          "outcome": "Identify the declared font stack and available loaded faces, distinguishing missing fonts from actual glyph fallback without claiming unsupported per glyph certainty."
+        },
+        {
+          "key": "preview-a-local-font-family",
+          "title": "Preview a local font family",
+          "outcome": "Preview an installed or checked in font on the selected text while keeping the temporary choice separate from a confirmed source declaration change."
+        },
+        {
+          "key": "author-font-weight-values",
+          "title": "Author font weight values",
+          "outcome": "Set supported static or variable font weight values and show when the chosen face lacks the requested weight and browser synthesis may occur."
+        },
+        {
+          "key": "author-font-style-and-angle",
+          "title": "Author font style and angle",
+          "outcome": "Preview normal, italic and supported oblique angles with the actual available font face rather than silently substituting an unrelated family."
+        },
+        {
+          "key": "author-font-stretch-values",
+          "title": "Author font stretch values",
+          "outcome": "Set a supported font stretch value and show whether the selected font provides an appropriate width face or variable width axis."
+        },
+        {
+          "key": "edit-variable-font-axes",
+          "title": "Edit variable font axes",
+          "outcome": "Expose declared variable axes with their supported ranges and preview a bounded axis change without inventing unavailable font capabilities or modifying other axes."
+        },
+        {
+          "key": "configure-font-optical-sizing",
+          "title": "Configure font optical sizing",
+          "outcome": "Preview automatic or disabled optical sizing and show any available optical size axis contribution separately from the authored text size."
+        },
+        {
+          "key": "author-font-feature-settings",
+          "title": "Author font feature settings",
+          "outcome": "Edit a supported set of typographic feature tags and show the resulting local text specimen without changing its underlying character data."
+        },
+        {
+          "key": "author-font-kerning-behavior",
+          "title": "Author font kerning behavior",
+          "outcome": "Compare automatic, normal and disabled kerning using the selected local face and preserve the distinction between kerning and authored letter spacing."
+        },
+        {
+          "key": "author-fluid-font-sizes",
+          "title": "Author fluid font sizes",
+          "outcome": "Preview a supported clamp based font size across chosen widths and show its minimum, preferred and maximum values with the active root size."
+        },
+        {
+          "key": "inspect-line-height-measurements",
+          "title": "Inspect line height measurements",
+          "outcome": "Display authored line height, computed value and measured line boxes so unitless inheritance is distinguishable from fixed length or percentage declarations."
+        },
+        {
+          "key": "author-letter-and-word-spacing",
+          "title": "Author letter and word spacing",
+          "outcome": "Edit letter spacing and word spacing independently with wrapping feedback and no silent alteration of the selected text content or accessibility preferences."
+        },
+        {
+          "key": "configure-text-wrapping-strategy",
+          "title": "Configure text wrapping strategy",
+          "outcome": "Preview supported text wrap modes and show how balanced headings or preserved whitespace affect line breaks at the selected content width."
+        },
+        {
+          "key": "author-hyphenation-behavior",
+          "title": "Author hyphenation behavior",
+          "outcome": "Configure supported hyphenation settings with the element's language context visible and distinguish automatic browser opportunities from authored soft hyphens."
+        },
+        {
+          "key": "inspect-text-decoration-composition",
+          "title": "Inspect text decoration composition",
+          "outcome": "Show decoration line, style, color, thickness and offset independently and preserve inherited decorations when editing one supported declaration."
+        },
+        {
+          "key": "author-text-underline-geometry",
+          "title": "Author text underline geometry",
+          "outcome": "Preview underline offset, thickness and skip ink behavior using actual local glyphs without changing semantic links or the text's interaction target."
+        },
+        {
+          "key": "author-vertical-text-alignment",
+          "title": "Author vertical text alignment",
+          "outcome": "Inspect and edit supported inline alignment behavior while showing the relevant line box, baseline and neighboring inline content in the canvas."
+        },
+        {
+          "key": "preview-writing-mode-typography",
+          "title": "Preview writing mode typography",
+          "outcome": "Compare supported horizontal and vertical writing modes with explicit block and inline axes so glyph orientation and line progression remain understandable."
+        },
+        {
+          "key": "inspect-text-overflow-truncation",
+          "title": "Inspect text overflow truncation",
+          "outcome": "Show the sizing, overflow and whitespace conditions behind ellipsis or clipping, and keep the full accessible text distinguishable from its rendered truncation."
+        },
+        {
+          "key": "export-typography-specimen-sheets",
+          "title": "Export typography specimen sheets",
+          "outcome": "Generate a local specimen inventory for supported text styles with source references, fallback status and sample widths without publishing fonts or changing application content."
+        }
+      ]
+    },
+    {
+      "id": "F029",
+      "name": "Color themes gradients and contrast",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025",
+        "F030"
+      ],
+      "scope": "Inspect and author supported color declarations and gradients with explicit color spaces, compositing context and local theme previews.",
+      "refusal": "Refuse invalid color expressions, unresolved token ownership and changes that silently modify all theme modes or remove visible focus indication.",
+      "recovery": "Restore exact color and gradient declarations, preserving stops, interpolation spaces and unrelated theme assignments.",
+      "feedback": "Show computed colors, source tokens, composited backgrounds and any limits affecting contrast calculations or gamut previews.",
+      "evidence": "Use opaque and translucent surfaces, nested backgrounds, wide gamut values, gradients, light and dark themes and disabled controls.",
+      "capabilities": [
+        {
+          "key": "inspect-computed-color-provenance",
+          "title": "Inspect computed color provenance",
+          "outcome": "Show the selected property's authored color expression, resolved value and source token or declaration without replacing the original expression with a normalized string."
+        },
+        {
+          "key": "author-supported-color-spaces",
+          "title": "Author supported color spaces",
+          "outcome": "Edit supported RGB, HSL, Lab, LCH and OKLCH values with explicit space labels and preview conversions without silently changing the authored color model."
+        },
+        {
+          "key": "preview-gamut-clipping-effects",
+          "title": "Preview gamut clipping effects",
+          "outcome": "Indicate when a supported color lies outside the selected preview gamut and distinguish the authored value from the displayed approximation in the inspector."
+        },
+        {
+          "key": "edit-color-alpha-independently",
+          "title": "Edit color alpha independently",
+          "outcome": "Change opacity in a supported color expression without altering the element's overall opacity or the alpha values of other properties and descendants."
+        },
+        {
+          "key": "inspect-composited-surface-colors",
+          "title": "Inspect composited surface colors",
+          "outcome": "Trace translucent foreground and background layers relevant to the selected text and explain uncertainty when imagery or blending prevents a single reliable background value."
+        },
+        {
+          "key": "create-linear-gradient-backgrounds",
+          "title": "Create linear gradient backgrounds",
+          "outcome": "Author a supported linear gradient with ordered stops and angle controls while preserving unrelated background layers and the selected node's content."
+        },
+        {
+          "key": "create-radial-gradient-backgrounds",
+          "title": "Create radial gradient backgrounds",
+          "outcome": "Author supported radial gradient size, shape and position with a local preview that keeps its stops separate from neighboring background image layers."
+        },
+        {
+          "key": "create-conic-gradient-backgrounds",
+          "title": "Create conic gradient backgrounds",
+          "outcome": "Author a supported conic gradient with explicit origin and stop positions while exposing its source declaration and preserving the other background properties."
+        },
+        {
+          "key": "edit-gradient-stop-positions",
+          "title": "Edit gradient stop positions",
+          "outcome": "Move or insert a supported gradient stop with exact position readouts and a preview that preserves the intended stop order and interpolation behavior."
+        },
+        {
+          "key": "choose-gradient-interpolation-space",
+          "title": "Choose gradient interpolation space",
+          "outcome": "Preview supported interpolation spaces and hue methods explicitly so a source edit does not silently change the gradient's authored color behavior."
+        },
+        {
+          "key": "inspect-current-color-inheritance",
+          "title": "Inspect current color inheritance",
+          "outcome": "Trace currentColor to its effective color declaration and preview how changing that source can affect borders, icons and text sharing the same value."
+        },
+        {
+          "key": "preview-light-and-dark-theme-modes",
+          "title": "Preview light and dark theme modes",
+          "outcome": "Switch local theme previews without writing user preferences or publishing settings and show the declarations or tokens responsible for the resulting differences."
+        },
+        {
+          "key": "assign-theme-scoped-color-values",
+          "title": "Assign theme scoped color values",
+          "outcome": "Set a color value in one explicitly selected theme scope and display the unchanged values for the other theme modes before confirmation."
+        },
+        {
+          "key": "inspect-forced-color-behavior",
+          "title": "Inspect forced color behavior",
+          "outcome": "Preview supported forced color media behavior and identify controls whose current declarations can suppress expected system color adaptation or visible focus feedback."
+        },
+        {
+          "key": "author-accent-color-declarations",
+          "title": "Author accent color declarations",
+          "outcome": "Preview a supported accent color on relevant native controls and disclose browser appearance differences rather than claiming identical cross platform control styling."
+        },
+        {
+          "key": "compare-foreground-background-contrast",
+          "title": "Compare foreground background contrast",
+          "outcome": "Calculate contrast for supported solid foreground and background combinations and show the measured colors, text size assumptions and any compositing limitations."
+        },
+        {
+          "key": "audit-contrast-across-component-states",
+          "title": "Audit contrast across component states",
+          "outcome": "Compare supported default, hover, focus, selected and disabled state color pairs while clearly separating informative findings from complete accessibility certification."
+        },
+        {
+          "key": "inspect-blend-mode-dependencies",
+          "title": "Inspect blend mode dependencies",
+          "outcome": "Show the backgrounds and stacking boundaries relevant to a selected blend mode and preview changes without treating the composited result as a stable authored color."
+        },
+        {
+          "key": "compare-color-theme-diffs",
+          "title": "Compare color theme diffs",
+          "outcome": "Display the supported token and declaration changes between two local theme snapshots with unchanged values and unresolved references clearly distinguished."
+        },
+        {
+          "key": "export-a-source-linked-color-inventory",
+          "title": "Export a source linked color inventory",
+          "outcome": "Export supported colors, gradients and theme assignments with source references and usage counts without collecting rendered user text or publishing any design assets."
+        }
+      ]
+    },
+    {
+      "id": "F030",
+      "name": "Design tokens and variable collections",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025"
+      ],
+      "scope": "Author typed design token collections, aliases and mode values using a canonical token registry and supported source ownership mappings.",
+      "refusal": "Refuse alias cycles, incompatible token types, unresolved write ownership and deletion that would leave unreviewed references in owned source.",
+      "recovery": "Undo token transactions with prior collection membership, aliases and mode values preserved; retain unrelated tokens and their source references.",
+      "feedback": "Show token type, resolved mode value, alias path and affected usages before applying changes to shared design values.",
+      "evidence": "Use multi collection aliases, missing references, mode switching, unit values and token migrations with independently verified reference graphs.",
+      "capabilities": [
+        {
+          "key": "create-typed-token-collections",
+          "title": "Create typed token collections",
+          "outcome": "Create a named owned collection with explicit token types and source mapping while preserving existing collections and avoiding duplicate canonical collection identifiers."
+        },
+        {
+          "key": "create-color-design-tokens",
+          "title": "Create color design tokens",
+          "outcome": "Add a typed color token with a valid initial value and show the local declarations that can reference it through supported adapters."
+        },
+        {
+          "key": "create-dimensional-design-tokens",
+          "title": "Create dimensional design tokens",
+          "outcome": "Add a length or spacing token with explicit supported units and prevent it from being assigned to incompatible property types silently."
+        },
+        {
+          "key": "create-numeric-design-tokens",
+          "title": "Create numeric design tokens",
+          "outcome": "Add a number token with declared constraints and display its intended usage domains so raw numbers are not automatically interpreted as pixel dimensions."
+        },
+        {
+          "key": "create-text-design-tokens",
+          "title": "Create text design tokens",
+          "outcome": "Add a supported text token with a bounded value and keep it distinct from user content, localization records and arbitrary executable source expressions."
+        },
+        {
+          "key": "create-typography-token-groups",
+          "title": "Create typography token groups",
+          "outcome": "Group supported font, size, weight and line height tokens with explicit references while preserving the independent identity of each underlying typed value."
+        },
+        {
+          "key": "create-token-aliases",
+          "title": "Create token aliases",
+          "outcome": "Reference a compatible token through an explicit alias and show the resolved value and complete alias path before the reference is saved."
+        },
+        {
+          "key": "detect-token-reference-cycles",
+          "title": "Detect token reference cycles",
+          "outcome": "Identify the concrete alias cycle and its participating token identifiers before accepting a change, leaving all existing resolved values and source files untouched."
+        },
+        {
+          "key": "inspect-token-dependency-graphs",
+          "title": "Inspect token dependency graphs",
+          "outcome": "Display a bounded reference graph for one token with incoming usages and outgoing aliases, including any missing or unsupported references in the inspected scope."
+        },
+        {
+          "key": "create-explicit-token-modes",
+          "title": "Create explicit token modes",
+          "outcome": "Add a named mode to an owned collection and require an intentional value or supported fallback for each affected token before activation."
+        },
+        {
+          "key": "edit-one-token-mode-value",
+          "title": "Edit one token mode value",
+          "outcome": "Change a token's value in one selected mode while displaying the untouched values and fallbacks for every other defined mode."
+        },
+        {
+          "key": "assign-component-token-modes",
+          "title": "Assign component token modes",
+          "outcome": "Assign a supported mode override to one component scope and explain its inheritance without changing the project's default mode or unrelated component instances."
+        },
+        {
+          "key": "rename-tokens-with-reference-previews",
+          "title": "Rename tokens with reference previews",
+          "outcome": "Preview supported reference updates for a token rename and refuse persistence when owned references cannot be rewritten without ambiguity or unrelated diffs."
+        },
+        {
+          "key": "move-tokens-between-owned-collections",
+          "title": "Move tokens between owned collections",
+          "outcome": "Preview identifier, alias and usage effects when moving a token, retaining its supported references and rejecting collection type or mode incompatibilities."
+        },
+        {
+          "key": "review-token-deletion-consequences",
+          "title": "Review token deletion consequences",
+          "outcome": "List owned usages and dependent aliases before deleting a token and require explicit replacements or a refused operation for unresolved live references."
+        },
+        {
+          "key": "bind-supported-properties-to-tokens",
+          "title": "Bind supported properties to tokens",
+          "outcome": "Replace an explicitly selected literal declaration with a compatible token reference while showing the resulting computed value and all source changes."
+        },
+        {
+          "key": "detach-a-property-from-a-token",
+          "title": "Detach a property from a token",
+          "outcome": "Replace one supported token reference with its intentionally selected resolved value without modifying the shared token or other declarations that still reference it."
+        },
+        {
+          "key": "compare-token-collection-revisions",
+          "title": "Compare token collection revisions",
+          "outcome": "Show added, changed, removed and unresolved tokens between two collection revisions with mode and alias differences preserved in the comparison."
+        },
+        {
+          "key": "import-a-bounded-token-proposal",
+          "title": "Import a bounded token proposal",
+          "outcome": "Validate a local token proposal against supported types, identifiers, units and reference limits before previewing any changes to the canonical collection or source."
+        },
+        {
+          "key": "export-portable-token-metadata",
+          "title": "Export portable token metadata",
+          "outcome": "Export owned token definitions, modes, aliases and source references with an explicit format version and a report of unsupported target representations."
+        }
+      ]
+    },
+    {
+      "id": "F031",
+      "name": "Borders backgrounds and surface effects",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025",
+        "F030"
+      ],
+      "scope": "Author supported border, radius, background and shadow declarations while preserving independent surface layers and their source ownership.",
+      "refusal": "Refuse invalid layer syntax, unresolved asset ownership and changes that would silently replace unselected background layers or shared source rules.",
+      "recovery": "Restore prior surface layers and declaration order through one journal transaction without resetting typography, layout or unrelated node content.",
+      "feedback": "Show layer order, affected corners, source assets and clipping bounds with a preview of the exact declaration changes.",
+      "evidence": "Use asymmetric borders, elliptical radii, multiple backgrounds, inset shadows, transparent surfaces and replaced media with independently checked geometry.",
+      "capabilities": [
+        {
+          "key": "author-independent-border-edges",
+          "title": "Author independent border edges",
+          "outcome": "Set width, style and color for one border edge while preserving the remaining edges and any supported shorthand fallback declarations in source."
+        },
+        {
+          "key": "author-logical-border-edges",
+          "title": "Author logical border edges",
+          "outcome": "Edit block and inline border properties with a direction aware preview that identifies the corresponding physical edges for the selected element."
+        },
+        {
+          "key": "edit-asymmetric-corner-radii",
+          "title": "Edit asymmetric corner radii",
+          "outcome": "Set individual corner radii independently and show their computed clipping shape without silently linking corners that the operator has not selected."
+        },
+        {
+          "key": "author-elliptical-corner-radii",
+          "title": "Author elliptical corner radii",
+          "outcome": "Edit horizontal and vertical radius components for a supported corner and preview the browser's effective radius scaling when adjacent corners exceed available space."
+        },
+        {
+          "key": "inspect-background-layer-ordering",
+          "title": "Inspect background layer ordering",
+          "outcome": "Display supported background layers in paint order and distinguish image, gradient and color contributions without collecting unrelated asset metadata or page text."
+        },
+        {
+          "key": "reorder-owned-background-layers",
+          "title": "Reorder owned background layers",
+          "outcome": "Preview a background layer reorder with all associated size, repeat, origin and clipping values moving with the intended layer as one transaction."
+        },
+        {
+          "key": "set-background-image-positioning",
+          "title": "Set background image positioning",
+          "outcome": "Edit one supported background layer's position through structured controls and show its reference box without changing the image or other layers."
+        },
+        {
+          "key": "set-background-image-sizing",
+          "title": "Set background image sizing",
+          "outcome": "Compare auto, cover, contain and supported explicit sizes for one background layer while exposing the resulting crop and preserved intrinsic aspect ratio."
+        },
+        {
+          "key": "author-background-repeat-behavior",
+          "title": "Author background repeat behavior",
+          "outcome": "Set repeat behavior independently on both axes and show the resulting tile boundaries without altering the selected layer's size, position or origin."
+        },
+        {
+          "key": "choose-background-origin-and-clipping",
+          "title": "Choose background origin and clipping",
+          "outcome": "Edit one layer's origin and clipping boxes and visualize the difference between the positioning area and the actual area receiving paint."
+        },
+        {
+          "key": "preview-local-background-attachment",
+          "title": "Preview local background attachment",
+          "outcome": "Compare supported scroll, local and fixed background attachment behavior within the selected scroll context while showing platform dependent preview limitations."
+        },
+        {
+          "key": "create-layered-box-shadows",
+          "title": "Create layered box shadows",
+          "outcome": "Add a supported box shadow layer with independent offsets, blur, spread and color while preserving the order and values of other shadows."
+        },
+        {
+          "key": "author-inset-surface-shadows",
+          "title": "Author inset surface shadows",
+          "outcome": "Preview inset shadow layers separately from outer shadows and show the padding edge and clipping behavior that determine their visible extent."
+        },
+        {
+          "key": "edit-individual-shadow-layers",
+          "title": "Edit individual shadow layers",
+          "outcome": "Update one supported shadow layer and preview its effect without normalizing or rewriting the operator's other authored shadow expressions unnecessarily."
+        },
+        {
+          "key": "author-text-shadow-layers",
+          "title": "Author text shadow layers",
+          "outcome": "Add or edit supported text shadows while preserving the actual text, semantic markup, decoration properties and other shadow layers on the selection."
+        },
+        {
+          "key": "inspect-outline-geometry-separately",
+          "title": "Inspect outline geometry separately",
+          "outcome": "Show outline width, style and offset independently from borders so operators can distinguish nonlayout outlines from dimensions that change the box model."
+        },
+        {
+          "key": "preview-focus-safe-surface-effects",
+          "title": "Preview focus safe surface effects",
+          "outcome": "Compare a proposed surface effect with the existing focus indication and identify when clipping or contrast would obscure the focused control's visible boundary."
+        },
+        {
+          "key": "author-object-fit-behavior",
+          "title": "Author object fit behavior",
+          "outcome": "Preview fill, contain, cover, none and scale down on supported replaced media while keeping its intrinsic content and explicit box dimensions separate."
+        },
+        {
+          "key": "author-object-positioning",
+          "title": "Author object positioning",
+          "outcome": "Move supported replaced media within its content box using object position and show the crop without altering the underlying asset or its stored dimensions."
+        },
+        {
+          "key": "compare-reusable-surface-recipes",
+          "title": "Compare reusable surface recipes",
+          "outcome": "Preview a versioned local surface recipe's border, radius, background and shadow changes against one owned target before applying the declared supported properties."
+        }
+      ]
+    },
+    {
+      "id": "F032",
+      "name": "Transforms perspective and filters",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F025",
+        "F026"
+      ],
+      "scope": "Inspect transform composition and author supported transform, perspective and filter declarations with explicit local preview and source ownership.",
+      "refusal": "Refuse unsupported transform expressions, invalid filter resources and changes whose containing-block or stacking effects cannot be explained for the selected scope.",
+      "recovery": "Undo the exact transform or filter transaction with prior operation order and unrelated layout declarations retained.",
+      "feedback": "Show untransformed and transformed boxes, operation order, origins and any stacking or containing-block consequences before confirmation.",
+      "evidence": "Use nested transforms, replaced images, perspective parents, long filter chains and keyboard focus targets without asserting identical GPU rendering across platforms.",
+      "capabilities": [
+        {
+          "key": "inspect-transform-operation-composition",
+          "title": "Inspect transform operation composition",
+          "outcome": "Display the authored transform operations in order and show the selected element's transformed box separately from its original layout box and dimensions."
+        },
+        {
+          "key": "author-two-dimensional-translation",
+          "title": "Author two dimensional translation",
+          "outcome": "Set supported horizontal and vertical translation values with explicit reference dimensions while preserving layout position, margins and the order of other transform operations."
+        },
+        {
+          "key": "author-two-dimensional-scaling",
+          "title": "Author two dimensional scaling",
+          "outcome": "Preview independent horizontal and vertical scale factors and show their visual effect without silently changing the element's authored width, height or layout allocation."
+        },
+        {
+          "key": "author-two-dimensional-rotation",
+          "title": "Author two dimensional rotation",
+          "outcome": "Set a supported rotation angle around the selected transform origin and display its resulting visual bounds independently from the unrotated layout box."
+        },
+        {
+          "key": "author-supported-skew-transforms",
+          "title": "Author supported skew transforms",
+          "outcome": "Edit skew angles with a live bounds preview and keep their operation order distinct from rotation, scaling and translation in the source expression."
+        },
+        {
+          "key": "edit-transform-origins",
+          "title": "Edit transform origins",
+          "outcome": "Set supported transform origin coordinates and visualize the pivot point without rewriting the existing transform operations or unrelated object positioning declarations."
+        },
+        {
+          "key": "author-individual-transform-properties",
+          "title": "Author individual transform properties",
+          "outcome": "Inspect and edit supported translate, rotate and scale properties with feedback explaining their composition relative to the authored transform property on the same element."
+        },
+        {
+          "key": "inspect-nested-transform-coordinates",
+          "title": "Inspect nested transform coordinates",
+          "outcome": "Trace the selected element through transformed ancestors and distinguish local axes, parent axes and the final viewport coordinates used by selection overlays."
+        },
+        {
+          "key": "preview-three-dimensional-translation",
+          "title": "Preview three dimensional translation",
+          "outcome": "Set a supported depth translation in a local preview and expose the perspective and parent transform context required for a visible depth effect."
+        },
+        {
+          "key": "preview-three-dimensional-rotation",
+          "title": "Preview three dimensional rotation",
+          "outcome": "Preview supported axis rotations with a visible orientation guide while distinguishing the element's projected appearance from changes to document or focus order."
+        },
+        {
+          "key": "author-parent-perspective-depth",
+          "title": "Author parent perspective depth",
+          "outcome": "Set a supported perspective distance on an owned parent and show which transformed descendants participate in that perspective context before persistence."
+        },
+        {
+          "key": "edit-perspective-origins",
+          "title": "Edit perspective origins",
+          "outcome": "Move the supported perspective origin with a local vanishing point guide and preserve the parent's depth value and unrelated descendant transform declarations."
+        },
+        {
+          "key": "inspect-preserve-three-dimensional-contexts",
+          "title": "Inspect preserve three dimensional contexts",
+          "outcome": "Explain supported preserve three dimensional contexts and identify ancestor properties that flatten descendants rather than treating all nested transforms as one depth space."
+        },
+        {
+          "key": "configure-backface-visibility",
+          "title": "Configure backface visibility",
+          "outcome": "Preview visible or hidden backfaces on a supported transformed element and show the orientation at which the selected face stops contributing visible content."
+        },
+        {
+          "key": "inspect-transform-generated-contexts",
+          "title": "Inspect transform generated contexts",
+          "outcome": "Identify stacking or containing blocks introduced by a transform and preview any positioning consequences for selected fixed or absolutely positioned descendants."
+        },
+        {
+          "key": "author-ordered-image-filter-chains",
+          "title": "Author ordered image filter chains",
+          "outcome": "Edit supported brightness, contrast, saturation, grayscale and related filter operations while preserving operation order and the underlying media asset content."
+        },
+        {
+          "key": "author-blur-and-drop-shadow-filters",
+          "title": "Author blur and drop shadow filters",
+          "outcome": "Preview supported blur and drop shadow filters with visible effect bounds and distinguish them from layout dimensions and independent box shadow declarations."
+        },
+        {
+          "key": "inspect-backdrop-filter-boundaries",
+          "title": "Inspect backdrop filter boundaries",
+          "outcome": "Show the backdrop sampling and clipping context for supported backdrop filters, with an explicit limitation when the browser cannot provide a faithful local approximation."
+        },
+        {
+          "key": "compare-transformed-hit-regions",
+          "title": "Compare transformed hit regions",
+          "outcome": "Compare visual transform bounds with actual pointer and keyboard target regions so an operator can identify interactions that become difficult to discover or activate."
+        },
+        {
+          "key": "export-transform-and-filter-metadata",
+          "title": "Export transform and filter metadata",
+          "outcome": "Export supported operation lists, origins and source references as inspectable design metadata without converting arbitrary computed matrices into claimed editable source expressions."
+        }
+      ]
+    },
+    {
+      "id": "F033",
+      "name": "Interaction states and CSS transitions",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F009",
+        "F025"
+      ],
+      "scope": "Preview explicit component states and author supported CSS transitions while separating temporary editor forcing from application interaction behavior.",
+      "refusal": "Refuse unsupported state selectors, unsafe application event execution and transition changes without a resolvable owned rule and bounded property scope.",
+      "recovery": "Restore prior state and transition declarations and clear forced preview states without retaining them in application data or production output.",
+      "feedback": "Show the forced or genuine state, matching selector, animated property, duration and easing with keyboard reachable controls.",
+      "evidence": "Use hover, focus, focus visible, checked, expanded and disabled controls with deterministic local timing fixtures and reduced motion previews.",
+      "capabilities": [
+        {
+          "key": "force-a-local-hover-preview",
+          "title": "Force a local hover preview",
+          "outcome": "Temporarily preview a supported hover style in the editor and clearly label the forced state without changing actual application hover behavior or source markup."
+        },
+        {
+          "key": "force-a-local-focus-preview",
+          "title": "Force a local focus preview",
+          "outcome": "Preview supported focus styling without submitting forms or moving application focus to unavailable targets, and distinguish the forced style from genuine keyboard focus."
+        },
+        {
+          "key": "preview-focus-visible-styling",
+          "title": "Preview focus visible styling",
+          "outcome": "Compare focus and focus visible rules using explicit preview controls while preserving the browser's actual focus state and the application's keyboard interaction behavior."
+        },
+        {
+          "key": "preview-active-press-styling",
+          "title": "Preview active press styling",
+          "outcome": "Show a supported active press style as a temporary editor state and keep the simulation separate from a real pointer action or application command."
+        },
+        {
+          "key": "preview-checked-control-styling",
+          "title": "Preview checked control styling",
+          "outcome": "Preview supported checked styles using a synthetic control state without updating the product's persisted form data or invoking a change handler in the real application."
+        },
+        {
+          "key": "preview-expanded-control-styling",
+          "title": "Preview expanded control styling",
+          "outcome": "Inspect supported expanded state selectors and show their style effect without opening a real provider backed action or modifying the application's saved navigation state."
+        },
+        {
+          "key": "preview-selected-item-styling",
+          "title": "Preview selected item styling",
+          "outcome": "Compare supported selected and unselected visual rules on an owned component while retaining its semantic selection contract and clearly identifying temporary editor forcing."
+        },
+        {
+          "key": "preview-disabled-control-styling",
+          "title": "Preview disabled control styling",
+          "outcome": "Inspect native disabled and semantic disabled styling separately and explain that a visual preview does not establish the control's actual interaction or authorization behavior."
+        },
+        {
+          "key": "preview-invalid-input-styling",
+          "title": "Preview invalid input styling",
+          "outcome": "Show supported invalid and user invalid rules using synthetic local field fixtures while preventing actual submission, validation messages or persisted content from being altered."
+        },
+        {
+          "key": "compare-combined-pseudo-states",
+          "title": "Compare combined pseudo states",
+          "outcome": "Preview supported combinations such as hover with focus and identify the exact winning declarations without assuming that each state rule applies independently."
+        },
+        {
+          "key": "author-transition-property-lists",
+          "title": "Author transition property lists",
+          "outcome": "Select explicit supported properties for a transition and show the consequences of broad all transitions before any authored transition property declaration is changed."
+        },
+        {
+          "key": "author-transition-durations",
+          "title": "Author transition durations",
+          "outcome": "Set supported transition durations with units and a local playback preview while keeping editor demonstration timing separate from the stored application value."
+        },
+        {
+          "key": "author-transition-delays",
+          "title": "Author transition delays",
+          "outcome": "Set supported transition delays and display when the selected property's change begins relative to the triggering state without modifying other transition entries."
+        },
+        {
+          "key": "choose-standard-transition-easing",
+          "title": "Choose standard transition easing",
+          "outcome": "Compare supported named easing functions on the same synthetic property change and store the operator's selected function without changing duration or delay values."
+        },
+        {
+          "key": "author-cubic-bezier-easing",
+          "title": "Author cubic bezier easing",
+          "outcome": "Edit valid cubic bezier control points with constrained time coordinates and preview the resulting progression on a bounded deterministic local transition."
+        },
+        {
+          "key": "author-step-based-easing",
+          "title": "Author step based easing",
+          "outcome": "Configure supported step easing functions with explicit step count and jump behavior so discontinuous changes can be previewed before they enter application source."
+        },
+        {
+          "key": "inspect-transition-interruption-behavior",
+          "title": "Inspect transition interruption behavior",
+          "outcome": "Replay a supported state change interrupted midway and show how the browser continues from the current value rather than assuming a fresh transition from the initial state."
+        },
+        {
+          "key": "preview-transitions-with-reduced-motion",
+          "title": "Preview transitions with reduced motion",
+          "outcome": "Compare the active transition rules under default and reduced motion preferences and keep that preview preference separate from user accessibility settings or persisted source."
+        },
+        {
+          "key": "audit-ineffective-transition-properties",
+          "title": "Audit ineffective transition properties",
+          "outcome": "Identify transition entries whose properties do not change across the selected states or cannot animate as configured, with the matching rule and property shown."
+        },
+        {
+          "key": "capture-a-state-transition-comparison",
+          "title": "Capture a state transition comparison",
+          "outcome": "Capture a bounded local before, during and after comparison tied to the selected node, source revision and transition settings without presenting it as production interaction evidence."
+        }
+      ]
+    },
+    {
+      "id": "F034",
+      "name": "Animation timelines and keyframes",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F010",
+        "F033"
+      ],
+      "scope": "Author owned declarative animation timelines and supported keyframes after revisioned command and style ownership prerequisites are available.",
+      "refusal": "Refuse executable animation code, unresolved target ownership, unbounded timelines and keyframe changes that cannot preserve supported source references.",
+      "recovery": "Undo timeline transactions with keyframe ordering, target bindings and playback settings preserved; stop editor playback without leaving application state behind.",
+      "feedback": "Show targets, duration, iteration policy, active keyframes, unsupported properties and reduced motion behavior before saving.",
+      "evidence": "Use deterministic local clocks, interrupted playback, repeated targets, fractional offsets and preference variants with source and rendered state comparisons.",
+      "capabilities": [
+        {
+          "key": "create-an-owned-keyframe-definition",
+          "title": "Create an owned keyframe definition",
+          "outcome": "Create a named supported keyframe definition in an explicitly owned source location and keep it separate from animations belonging to imported or unsupported component code."
+        },
+        {
+          "key": "insert-a-keyframe-at-an-offset",
+          "title": "Insert a keyframe at an offset",
+          "outcome": "Add a supported keyframe at a validated percentage offset and preserve the order, declarations and comments of the existing supported keyframe definition."
+        },
+        {
+          "key": "move-a-keyframe-offset",
+          "title": "Move a keyframe offset",
+          "outcome": "Preview an offset change with duplicate offset behavior explained and keep the affected property values unchanged unless the operator explicitly edits them."
+        },
+        {
+          "key": "edit-keyframe-property-values",
+          "title": "Edit keyframe property values",
+          "outcome": "Change a supported animatable property at one keyframe and show the resulting interpolation while preserving other properties and keyframes in the definition."
+        },
+        {
+          "key": "remove-a-supported-keyframe",
+          "title": "Remove a supported keyframe",
+          "outcome": "Preview the interpolation changes caused by removing one keyframe and keep all remaining target bindings, offsets and declarations intact within the transaction."
+        },
+        {
+          "key": "bind-an-animation-to-an-owned-node",
+          "title": "Bind an animation to an owned node",
+          "outcome": "Assign an existing supported keyframe definition to a selected owned node and show every source declaration needed without changing unrelated animation bindings."
+        },
+        {
+          "key": "author-animation-duration",
+          "title": "Author animation duration",
+          "outcome": "Set a bounded supported animation duration and compare playback against the previous value without persisting the editor's current playhead position into application source."
+        },
+        {
+          "key": "author-animation-delays",
+          "title": "Author animation delays",
+          "outcome": "Preview supported positive or negative delays with the effective starting point shown and preserve the definition's keyframes and target binding while saving the delay."
+        },
+        {
+          "key": "configure-finite-animation-iterations",
+          "title": "Configure finite animation iterations",
+          "outcome": "Set an intentional finite iteration count with a local preview of the last cycle and the resulting retained or reverted visual state after playback."
+        },
+        {
+          "key": "configure-continuous-animation-iterations",
+          "title": "Configure continuous animation iterations",
+          "outcome": "Preview a supported continuous iteration policy with visible stop controls and reduced motion behavior before allowing the owned animation declaration to be saved."
+        },
+        {
+          "key": "choose-animation-playback-direction",
+          "title": "Choose animation playback direction",
+          "outcome": "Compare normal, reverse and alternate directions using the same keyframes while clearly showing the active cycle direction and preserving underlying document order."
+        },
+        {
+          "key": "choose-animation-fill-behavior",
+          "title": "Choose animation fill behavior",
+          "outcome": "Compare none, forwards, backwards and both fill policies with explicit before and after states so retained styles are not mistaken for authored base declarations."
+        },
+        {
+          "key": "author-keyframe-easing-segments",
+          "title": "Author keyframe easing segments",
+          "outcome": "Set supported easing for a keyframe segment and preview how it affects only the interval following that keyframe without rewriting the entire animation's timing policy."
+        },
+        {
+          "key": "compose-multiple-animation-tracks",
+          "title": "Compose multiple animation tracks",
+          "outcome": "Preview multiple supported animations on one target and expose property conflicts, composition rules and source order before the combined declaration is persisted."
+        },
+        {
+          "key": "scrub-an-isolated-animation-playhead",
+          "title": "Scrub an isolated animation playhead",
+          "outcome": "Scrub an editor controlled timeline using a deterministic local clock while keeping playback state separate from product timers, saved records and provider interactions."
+        },
+        {
+          "key": "inspect-animation-property-conflicts",
+          "title": "Inspect animation property conflicts",
+          "outcome": "Identify properties animated by competing tracks and show the effective composition or replacement behavior together with the responsible definitions and target bindings."
+        },
+        {
+          "key": "preview-animation-interruption-and-restart",
+          "title": "Preview animation interruption and restart",
+          "outcome": "Demonstrate interruption and restart behavior for a supported animation without invoking real application events or silently resetting the selected node's authored base style."
+        },
+        {
+          "key": "bind-declarative-animation-start-states",
+          "title": "Bind declarative animation start states",
+          "outcome": "Associate a supported local declarative state with an animation binding and preview its start behavior without introducing arbitrary executable callbacks into the source."
+        },
+        {
+          "key": "compare-reduced-motion-animation-variants",
+          "title": "Compare reduced motion animation variants",
+          "outcome": "Preview explicitly authored reduced motion variants against the default timeline and reveal missing alternatives without claiming that a short duration alone solves every motion concern."
+        },
+        {
+          "key": "export-animation-timeline-metadata",
+          "title": "Export animation timeline metadata",
+          "outcome": "Export supported keyframes, timings, target identifiers and source references with an explicit format version and an inventory of expressions that remain unsupported or read only."
+        }
+      ]
+    },
+    {
+      "id": "F035",
+      "name": "Scroll driven visual behavior",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F014",
+        "F034"
+      ],
+      "scope": "Inspect scroll ownership and author supported declarative scroll interactions using bounded local previews that preserve native navigation and focus.",
+      "refusal": "Refuse arbitrary scroll event code, unsupported timeline syntax and effects that require provider state or silently lock keyboard users into a scroll region.",
+      "recovery": "Restore prior scroll interaction declarations and clear preview offsets without altering saved routes, product data or the operator’s browser history.",
+      "feedback": "Show the owning scroller, progress range, target visibility, active effect and reduced motion alternatives with explicit preview controls.",
+      "evidence": "Use nested scrollers, sticky headers, short content, horizontal layouts, keyboard scrolling and reduced motion fixtures at deterministic local offsets.",
+      "capabilities": [
+        {
+          "key": "inspect-scroll-progress-for-a-target",
+          "title": "Inspect scroll progress for a target",
+          "outcome": "Display the selected element's position within its owning scroll container and distinguish document scroll progress from the visibility progress of the target itself."
+        },
+        {
+          "key": "preview-a-document-scroll-timeline",
+          "title": "Preview a document scroll timeline",
+          "outcome": "Preview a supported declarative document scroll timeline with a visible progress readout and a bounded set of owned animation targets before persistence."
+        },
+        {
+          "key": "preview-an-element-scroll-timeline",
+          "title": "Preview an element scroll timeline",
+          "outcome": "Associate a supported timeline with an explicitly chosen scroll container and show why other ancestor scrollers do not determine that timeline's progress."
+        },
+        {
+          "key": "author-named-scroll-timelines",
+          "title": "Author named scroll timelines",
+          "outcome": "Create or rename a supported named scroll timeline with a reference preview that identifies every owned animation binding affected by the proposed change."
+        },
+        {
+          "key": "author-view-progress-timelines",
+          "title": "Author view progress timelines",
+          "outcome": "Preview a supported view timeline for one target and show the intervals during which the element enters, occupies and leaves the selected scrollport."
+        },
+        {
+          "key": "set-timeline-attachment-ranges",
+          "title": "Set timeline attachment ranges",
+          "outcome": "Edit supported start and end attachment ranges and visualize their positions relative to the scroller and target rather than presenting them as generic percentages."
+        },
+        {
+          "key": "choose-timeline-scroll-axes",
+          "title": "Choose timeline scroll axes",
+          "outcome": "Select a supported block, inline, horizontal or vertical timeline axis and expose how writing mode changes the direction used for progress calculation."
+        },
+        {
+          "key": "preview-supported-parallax-offsets",
+          "title": "Preview supported parallax offsets",
+          "outcome": "Demonstrate bounded transform offsets tied to scroll progress while preserving normal document flow, native scrolling and a visible reduced motion alternative."
+        },
+        {
+          "key": "preview-sticky-section-transitions",
+          "title": "Preview sticky section transitions",
+          "outcome": "Compare sticky section positioning with supported progress driven visual changes and identify the actual scroller and containment limits that govern the combined result."
+        },
+        {
+          "key": "author-scroll-snap-alignment",
+          "title": "Author scroll snap alignment",
+          "outcome": "Set supported snap alignment for one target and show its alignment area together with existing scroll margin and container padding contributions."
+        },
+        {
+          "key": "author-scroll-snap-container-policy",
+          "title": "Author scroll snap container policy",
+          "outcome": "Configure a supported snapping axis and strictness on the owning container with a preview that preserves keyboard reachability of content between snap positions."
+        },
+        {
+          "key": "preview-scroll-snap-stop-behavior",
+          "title": "Preview scroll snap stop behavior",
+          "outcome": "Compare normal and always stop policies on selected owned targets while clearly separating the local browser demonstration from cross platform input device behavior."
+        },
+        {
+          "key": "inspect-unreachable-scroll-effects",
+          "title": "Inspect unreachable scroll effects",
+          "outcome": "Report supported timelines that cannot progress because content does not overflow or a target never crosses the required range in the current fixture."
+        },
+        {
+          "key": "compare-nested-scroll-interaction-progress",
+          "title": "Compare nested scroll interaction progress",
+          "outcome": "Show separate progress indicators for nested scrollers and identify which one drives each owned effect without merging unrelated scroll offsets or target identities."
+        },
+        {
+          "key": "preview-anchor-navigation-offsets",
+          "title": "Preview anchor navigation offsets",
+          "outcome": "Preview an existing local anchor jump against sticky content and supported scroll margins while leaving real browser history and persisted route state unchanged."
+        },
+        {
+          "key": "author-smooth-scroll-preference-behavior",
+          "title": "Author smooth scroll preference behavior",
+          "outcome": "Preview supported smooth scrolling separately from instant behavior and expose an intentional reduced motion policy without changing the operator's actual system preferences."
+        },
+        {
+          "key": "inspect-scroll-linked-focus-visibility",
+          "title": "Inspect scroll linked focus visibility",
+          "outcome": "Trace whether a focused target stays visibly reachable during a supported scroll effect and identify clipping, transforms or sticky layers responsible for its obstruction."
+        },
+        {
+          "key": "simulate-short-viewport-scroll-behavior",
+          "title": "Simulate short viewport scroll behavior",
+          "outcome": "Run a bounded local scroll comparison in short viewports and reveal effects whose progress or content accessibility depends on unavailable vertical space."
+        },
+        {
+          "key": "compare-reduced-motion-scroll-effects",
+          "title": "Compare reduced motion scroll effects",
+          "outcome": "Compare the default scroll driven effect with an explicitly authored reduced motion variant while preserving the same content, scroll range and semantic document order."
+        },
+        {
+          "key": "capture-scroll-interaction-checkpoints",
+          "title": "Capture scroll interaction checkpoints",
+          "outcome": "Capture selected deterministic scroll positions with target identifiers, active conditions and source revisions so the supported effect can be reviewed without publishing a live page."
+        }
+      ]
+    },
+    {
+      "id": "F036",
+      "name": "Form layout and visual state design",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F021",
+        "F033"
+      ],
+      "scope": "Design owned form layouts and supported control styles using synthetic preview values while preserving real submission, validation and data handling boundaries.",
+      "refusal": "Refuse provider submissions, credentials, real personal data and arbitrary event handlers; unsupported source controls remain inspectable with no persistence claim.",
+      "recovery": "Restore form design transactions without overwriting application values, validation state, submitted data or unrelated component behavior.",
+      "feedback": "Show label relationships, state origin, synthetic preview status, layout effects and supported source changes before confirmation.",
+      "evidence": "Use synthetic text fields, radios, checkboxes, select controls, validation summaries and keyboard navigation without sending any form or provider request.",
+      "capabilities": [
+        {
+          "key": "design-labeled-text-field-layouts",
+          "title": "Design labeled text field layouts",
+          "outcome": "Preview supported label and input arrangements with synthetic values and preserve the real control's identity, data binding and submission behavior during source scoped layout edits."
+        },
+        {
+          "key": "design-stacked-field-spacing",
+          "title": "Design stacked field spacing",
+          "outcome": "Edit supported spacing between form fields with error and help text present so the resulting layout does not assume every field occupies the same height."
+        },
+        {
+          "key": "design-responsive-field-columns",
+          "title": "Design responsive field columns",
+          "outcome": "Preview owned field groups in supported responsive columns while preserving the DOM and keyboard order of all controls at each selected width."
+        },
+        {
+          "key": "inspect-explicit-label-associations",
+          "title": "Inspect explicit label associations",
+          "outcome": "Show which supported label identifies each form control and reveal missing, repeated or unresolved references without collecting the control's current value or submitted data."
+        },
+        {
+          "key": "inspect-help-text-associations",
+          "title": "Inspect help text associations",
+          "outcome": "Show supported descriptive text relationships for a selected control and distinguish visible help text from the accessible description supplied through explicit references."
+        },
+        {
+          "key": "design-required-field-indicators",
+          "title": "Design required field indicators",
+          "outcome": "Preview required indicators with visible explanatory text and ensure the design does not rely only on a color or silently change the control's validation contract."
+        },
+        {
+          "key": "design-inline-validation-presentation",
+          "title": "Design inline validation presentation",
+          "outcome": "Preview a synthetic field error beside its control and show how the error text changes layout without invoking real validation or replacing the application's error handling."
+        },
+        {
+          "key": "design-form-error-summaries",
+          "title": "Design form error summaries",
+          "outcome": "Preview a synthetic error summary with supported control references and verify its layout and focus destinations without submitting the form or altering saved validation state."
+        },
+        {
+          "key": "design-checkbox-control-groups",
+          "title": "Design checkbox control groups",
+          "outcome": "Preview owned checkbox groups with supported labels, descriptions and mixed visual states while leaving the application's real selections and change handlers untouched."
+        },
+        {
+          "key": "design-radio-control-groups",
+          "title": "Design radio control groups",
+          "outcome": "Preview supported radio group arrangements with synthetic selections and preserve the grouping and keyboard contract instead of replacing native behavior with decorative boxes."
+        },
+        {
+          "key": "design-select-control-sizing",
+          "title": "Design select control sizing",
+          "outcome": "Preview supported native select dimensions with long synthetic option labels and disclose browser specific popup appearance that the local style editor cannot author reliably."
+        },
+        {
+          "key": "design-multiline-text-input-layouts",
+          "title": "Design multiline text input layouts",
+          "outcome": "Preview supported textarea sizing, resizing and wrapping with synthetic long content while preserving its actual value, selection and application input event handling."
+        },
+        {
+          "key": "design-input-prefix-and-suffix-regions",
+          "title": "Design input prefix and suffix regions",
+          "outcome": "Preview owned prefix, suffix and action regions with explicit control relationships and ensure decorative additions do not obscure the actual editable or focusable area."
+        },
+        {
+          "key": "design-file-input-presentation",
+          "title": "Design file input presentation",
+          "outcome": "Preview supported file input layout and labels using synthetic empty or selected states without opening a file picker, uploading content or reading local file paths."
+        },
+        {
+          "key": "design-form-action-group-spacing",
+          "title": "Design form action group spacing",
+          "outcome": "Preview primary, secondary and destructive form actions with long labels and narrow widths while preserving their explicit button types and original activation behavior."
+        },
+        {
+          "key": "preview-form-autofill-styling",
+          "title": "Preview form autofill styling",
+          "outcome": "Inspect supported autofill style rules with an explicitly simulated local appearance and avoid reading browser saved credentials or changing the user's autofill configuration."
+        },
+        {
+          "key": "preview-read-only-form-controls",
+          "title": "Preview read only form controls",
+          "outcome": "Compare read only and disabled visual treatments with synthetic controls and explain the distinct interaction and submission semantics without changing real application permissions."
+        },
+        {
+          "key": "preview-pending-submission-presentation",
+          "title": "Preview pending submission presentation",
+          "outcome": "Preview a synthetic pending state with visible progress text and preserved focus so busy styling does not imply that a provider request has been sent."
+        },
+        {
+          "key": "preview-successful-form-feedback",
+          "title": "Preview successful form feedback",
+          "outcome": "Preview a synthetic success state with clear text and layout retention while leaving actual submission receipts, provider responses and persisted application records unchanged."
+        },
+        {
+          "key": "audit-form-layout-under-text-expansion",
+          "title": "Audit form layout under text expansion",
+          "outcome": "Compare owned form layouts with longer synthetic labels, help and error text to identify clipped controls or broken associations without exposing real user field values."
+        }
+      ]
+    },
+    {
+      "id": "F037",
+      "name": "Canvas navigation and comparison workspaces",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F014",
+        "F017",
+        "F026"
+      ],
+      "scope": "Extend the existing center canvas and compact rails with bounded navigation and synchronized comparison controls without replacing the familiar editor shell.",
+      "refusal": "Refuse stale targets, inaccessible cross origin frame content and comparison requests beyond declared resource budgets; retain the current selected route and source scope.",
+      "recovery": "Restore the previous canvas view and selection after closing a comparison without changing application data, persistent forms or source content.",
+      "feedback": "Show active view scale, viewport dimensions, selected route, synchronization status and any preview inspection limits in visible controls.",
+      "evidence": "Use deeply nested targets, multiple local widths, dock changes, keyboard navigation, large pages and iframe reloads with protected source and model fingerprints.",
+      "capabilities": [
+        {
+          "key": "zoom-the-editor-canvas-independently",
+          "title": "Zoom the editor canvas independently",
+          "outcome": "Change the editor's visual zoom while retaining the actual preview viewport dimensions and clearly distinguishing canvas magnification from browser text scale or application breakpoints."
+        },
+        {
+          "key": "pan-a-magnified-canvas-view",
+          "title": "Pan a magnified canvas view",
+          "outcome": "Move around an oversized preview with explicit pointer and keyboard controls while preserving application scroll offsets and the selected element's stable inspection target."
+        },
+        {
+          "key": "fit-a-selected-element-in-view",
+          "title": "Fit a selected element in view",
+          "outcome": "Fit the available rendered bounds of the selected element within the canvas without changing application dimensions, making hidden content visible or rewriting source styles."
+        },
+        {
+          "key": "fit-a-selected-page-region",
+          "title": "Fit a selected page region",
+          "outcome": "Fit a bounded owned page region in the canvas and preserve the current viewport configuration, selected route and document scroll relationship shown by the editor."
+        },
+        {
+          "key": "show-page-coordinate-rulers",
+          "title": "Show page coordinate rulers",
+          "outcome": "Display local page coordinate rulers that account for canvas zoom and scrolling while keeping their overlays isolated from the application DOM and production assets."
+        },
+        {
+          "key": "show-configurable-alignment-guides",
+          "title": "Show configurable alignment guides",
+          "outcome": "Display temporary editor alignment guides in page coordinates and distinguish them from authored application grid, margin or layout declarations."
+        },
+        {
+          "key": "snap-editor-measurements-to-guides",
+          "title": "Snap editor measurements to guides",
+          "outcome": "Snap a measurement overlay to explicitly configured editor guides without moving document nodes or claiming that a visual measurement operation has authored layout changes."
+        },
+        {
+          "key": "measure-distances-between-rendered-boxes",
+          "title": "Measure distances between rendered boxes",
+          "outcome": "Measure spacing between two current rendered elements with their border and content boxes identified, refusing stale or unavailable targets rather than guessing missing dimensions."
+        },
+        {
+          "key": "measure-a-selected-rendered-region",
+          "title": "Measure a selected rendered region",
+          "outcome": "Create a temporary rectangular canvas measurement with page coordinate dimensions and clear dismissal controls without inserting elements or styles into application source."
+        },
+        {
+          "key": "compare-synchronized-viewport-previews",
+          "title": "Compare synchronized viewport previews",
+          "outcome": "Open a bounded set of local viewports for one route and preserve corresponding source selection while reporting unavailable elements independently for each rendered preview."
+        },
+        {
+          "key": "synchronize-preview-scroll-by-target",
+          "title": "Synchronize preview scroll by target",
+          "outcome": "Align comparison previews using the same current target or section identity and report missing targets instead of forcing identical raw pixel offsets across different layouts."
+        },
+        {
+          "key": "synchronize-inspected-source-across-previews",
+          "title": "Synchronize inspected source across previews",
+          "outcome": "Select the supported source identity in each comparison preview and distinguish exact, missing and ambiguous matches without selecting a similarly labeled unrelated element."
+        },
+        {
+          "key": "compare-two-local-routes-side-by-side",
+          "title": "Compare two local routes side by side",
+          "outcome": "Show two explicitly selected local routes within a bounded comparison workspace while retaining separate route, viewport and selection context for each preview pane."
+        },
+        {
+          "key": "compare-a-saved-local-visual-baseline",
+          "title": "Compare a saved local visual baseline",
+          "outcome": "Compare the current rendered view against an explicitly chosen local baseline image with its source and viewport metadata visible and no claim of live production equivalence."
+        },
+        {
+          "key": "overlay-rendered-box-differences",
+          "title": "Overlay rendered box differences",
+          "outcome": "Overlay bounded position and size differences for matched current elements between two previews and identify missing or unmatched targets without silently discarding them."
+        },
+        {
+          "key": "bookmark-a-local-canvas-inspection",
+          "title": "Bookmark a local canvas inspection",
+          "outcome": "Save a nonsecret editor bookmark for route, viewport and supported source identity, excluding application input values, private rendered text and provider session credentials."
+        },
+        {
+          "key": "restore-a-canvas-inspection-bookmark",
+          "title": "Restore a canvas inspection bookmark",
+          "outcome": "Restore an explicit local bookmark and report unresolved routes or targets without activating stale DOM references or overwriting the current application's persisted records."
+        },
+        {
+          "key": "keep-selection-visible-during-dock-changes",
+          "title": "Keep selection visible during dock changes",
+          "outcome": "Reposition only editor viewport framing when a dock changes size so the selected available element stays discoverable without altering the application's layout or authored dimensions."
+        },
+        {
+          "key": "navigate-editor-inspections-backward",
+          "title": "Navigate editor inspections backward",
+          "outcome": "Move through bounded editor selection history separately from product browser history and refuse stale document targets without triggering application navigation or source mutations."
+        },
+        {
+          "key": "export-bounded-canvas-measurement-notes",
+          "title": "Export bounded canvas measurement notes",
+          "outcome": "Export selected nonsecret measurement geometry, route and source references with viewport and zoom context while excluding rendered content, form values and local filesystem paths."
+        }
+      ]
+    },
+    {
+      "id": "F038",
+      "name": "Semantic accessibility inspection and authoring",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F005",
+        "F009"
+      ],
+      "scope": "Inspect supported semantic relationships and author explicit owned markup corrections through canonical document and source command boundaries.",
+      "refusal": "Refuse speculative role substitutions, unresolved accessible name references, private input reads and source edits that cannot preserve native interaction contracts.",
+      "recovery": "Restore semantic declaration transactions without losing labels, node identities, supported references or the application’s original event behavior.",
+      "feedback": "Show computed role, name sources, description references and native versus explicit semantics; identify the limits of browser derived inspection.",
+      "evidence": "Use synthetic headings, landmarks, links, buttons, composite controls, hidden references and multilingual labels with local keyboard and accessibility tree observations.",
+      "capabilities": [
+        {
+          "key": "inspect-computed-semantic-roles",
+          "title": "Inspect computed semantic roles",
+          "outcome": "Display the browser exposed role for the selected element alongside its native element type and explicit role attribute without implying equivalent interaction behavior between them."
+        },
+        {
+          "key": "trace-accessible-name-sources",
+          "title": "Trace accessible name sources",
+          "outcome": "Show supported label, referenced text and fallback name sources for a selected control while avoiding input values and clearly marking unresolved browser specific computations."
+        },
+        {
+          "key": "trace-accessible-descriptions",
+          "title": "Trace accessible descriptions",
+          "outcome": "Inspect supported description references and distinguish them from the control's accessible name and visible help text without aggregating unrelated private container content."
+        },
+        {
+          "key": "inspect-heading-hierarchy",
+          "title": "Inspect heading hierarchy",
+          "outcome": "Display the current rendered heading structure with levels, source references and skipped transitions while making the inspected route and hidden content scope explicit."
+        },
+        {
+          "key": "author-owned-heading-levels",
+          "title": "Author owned heading levels",
+          "outcome": "Preview a supported semantic heading level change separately from visual font size and preserve the selected heading's identity, text and source mapping in the transaction."
+        },
+        {
+          "key": "inspect-landmark-regions",
+          "title": "Inspect landmark regions",
+          "outcome": "Show supported landmark regions with names and nesting so operators can identify missing or duplicated navigation context without rewriting application structure automatically."
+        },
+        {
+          "key": "author-named-landmark-regions",
+          "title": "Author named landmark regions",
+          "outcome": "Add or edit a supported landmark's explicit accessible name through an owned source mapping without changing its descendants, visual styling or unrelated region labels."
+        },
+        {
+          "key": "inspect-image-alternative-text-ownership",
+          "title": "Inspect image alternative text ownership",
+          "outcome": "Show whether a supported image has authored alternative text, an explicit decorative designation or an unresolved source mapping without inventing a replacement description."
+        },
+        {
+          "key": "author-image-alternative-text-proposals",
+          "title": "Author image alternative text proposals",
+          "outcome": "Preview an operator supplied bounded alternative text change with its owned source diff and preserve the original media asset, captions and other image attributes."
+        },
+        {
+          "key": "inspect-decorative-media-semantics",
+          "title": "Inspect decorative media semantics",
+          "outcome": "Show supported decorative image and icon semantics and explain their effect on accessibility exposure without hiding interactive descendants or changing visible content automatically."
+        },
+        {
+          "key": "inspect-link-purpose-and-destination",
+          "title": "Inspect link purpose and destination",
+          "outcome": "Display a selected link's supported accessible label and local destination metadata without following external links, submitting credentials or treating destination text as an authorization grant."
+        },
+        {
+          "key": "inspect-button-element-semantics",
+          "title": "Inspect button element semantics",
+          "outcome": "Identify whether an apparent button uses a native button or an authored substitute and expose its declared type and supported interaction contract before offering corrections."
+        },
+        {
+          "key": "inspect-form-group-semantics",
+          "title": "Inspect form group semantics",
+          "outcome": "Show supported fieldset, legend and group label relationships using synthetic fixtures and identify unresolved references without reading or exporting actual form values."
+        },
+        {
+          "key": "inspect-expanded-control-relationships",
+          "title": "Inspect expanded control relationships",
+          "outcome": "Trace supported expanded state and controlled region references while distinguishing declared semantics from verified application behavior or actual visibility of the controlled content."
+        },
+        {
+          "key": "inspect-tab-and-panel-relationships",
+          "title": "Inspect tab and panel relationships",
+          "outcome": "Display supported tab, tablist and panel associations with selected state references and identify inconsistent identifiers without simulating unsupported keyboard interaction automatically."
+        },
+        {
+          "key": "inspect-dialog-naming-and-modality",
+          "title": "Inspect dialog naming and modality",
+          "outcome": "Show supported dialog name, description and modality declarations and distinguish them from actual focus containment or browser top layer behavior that needs runtime verification."
+        },
+        {
+          "key": "inspect-live-region-declarations",
+          "title": "Inspect live region declarations",
+          "outcome": "Display supported live region roles and politeness settings, preserving bounded fixture text and clearly separating declaration inspection from actual assistive technology announcements."
+        },
+        {
+          "key": "author-explicit-language-metadata",
+          "title": "Author explicit language metadata",
+          "outcome": "Preview a supported language or direction declaration for an owned node and show its inherited context without translating content or altering unrelated locale records."
+        },
+        {
+          "key": "inspect-hidden-accessibility-relationships",
+          "title": "Inspect hidden accessibility relationships",
+          "outcome": "Explain supported hidden, inert and semantic hidden ancestry separately and identify referenced labels that remain valid without changing app visibility or focus behavior."
+        },
+        {
+          "key": "export-a-bounded-semantic-inventory",
+          "title": "Export a bounded semantic inventory",
+          "outcome": "Export inspected roles, source identities and supported relationship identifiers with scope limitations while excluding private field values and avoiding any accessibility certification claim."
+        }
+      ]
+    },
+    {
+      "id": "F039",
+      "name": "Focus readability and reduced motion design",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F033",
+        "F038"
+      ],
+      "scope": "Preview and inspect perceptual accessibility behavior using explicit local preferences and synthetic interaction fixtures within the existing editor shell.",
+      "refusal": "Refuse silent changes to operating system preferences, destructive page actions and findings that require private user text, credentials or unsupported assistive technology assumptions.",
+      "recovery": "Clear local preference simulations and restore prior editor focus and visual state without modifying application records or the user’s saved accessibility preferences.",
+      "feedback": "Show the active simulation, measured geometry, observed focus target and inspection limitations using text and shape as well as color.",
+      "evidence": "Use text zoom, narrow viewports, forced color previews, obscured focus, reduced motion and keyboard traversal with deterministic synthetic controls.",
+      "capabilities": [
+        {
+          "key": "inspect-visible-keyboard-focus-regions",
+          "title": "Inspect visible keyboard focus regions",
+          "outcome": "Display the focused control's actual rendered focus region and identify clipping or covering layers while retaining the real keyboard navigation sequence in the local fixture."
+        },
+        {
+          "key": "preview-owned-focus-indicator-styles",
+          "title": "Preview owned focus indicator styles",
+          "outcome": "Preview a supported focus indicator declaration on an owned control with clear comparison to its previous appearance and no silent suppression of native outlines."
+        },
+        {
+          "key": "measure-focus-indicator-separation",
+          "title": "Measure focus indicator separation",
+          "outcome": "Measure a supported focus indicator against adjacent control boundaries and backgrounds with explicit geometry assumptions rather than presenting a complete compliance certification."
+        },
+        {
+          "key": "inspect-focus-obscured-by-sticky-content",
+          "title": "Inspect focus obscured by sticky content",
+          "outcome": "Identify when a focused target is covered by sticky or fixed content in the local preview and reveal the responsible layer and scroll position."
+        },
+        {
+          "key": "preview-focus-restoration-after-dismissal",
+          "title": "Preview focus restoration after dismissal",
+          "outcome": "Use a synthetic owned overlay flow to compare its explicit opener and restored focus target without changing real application dialogs or persisting product interaction state."
+        },
+        {
+          "key": "inspect-visual-and-focus-order-differences",
+          "title": "Inspect visual and focus order differences",
+          "outcome": "Compare current rendered position order with actual keyboard traversal for supported controls and identify layout declarations causing visible sequence differences without reordering source automatically."
+        },
+        {
+          "key": "measure-interactive-target-geometry",
+          "title": "Measure interactive target geometry",
+          "outcome": "Show the rendered activation area and neighboring target distances for supported controls, separating actual event targets from decorative icons or visually enlarged backgrounds."
+        },
+        {
+          "key": "preview-touch-sized-control-spacing",
+          "title": "Preview touch sized control spacing",
+          "outcome": "Preview an operator selected target size and spacing policy on owned controls while preserving their source identity, labels and actual activation behavior in the fixture."
+        },
+        {
+          "key": "preview-text-scale-without-layout-zoom",
+          "title": "Preview text scale without layout zoom",
+          "outcome": "Apply a temporary local text scale simulation and distinguish changes in font metrics from canvas zoom or authored responsive dimensions while preserving saved user preferences."
+        },
+        {
+          "key": "inspect-text-scale-overflow",
+          "title": "Inspect text scale overflow",
+          "outcome": "Identify clipped or overlapping supported text after a local scale simulation and trace the responsible sizing, overflow or line height declarations without reading private form values."
+        },
+        {
+          "key": "preview-narrow-layout-reflow",
+          "title": "Preview narrow layout reflow",
+          "outcome": "Compare the same synthetic content at constrained widths and identify regions that require unintended two dimensional scrolling while preserving the selected reading and keyboard order."
+        },
+        {
+          "key": "inspect-extended-line-spacing-effects",
+          "title": "Inspect extended line spacing effects",
+          "outcome": "Preview a declared local line spacing simulation and report clipping or overlapping content caused by fixed heights without modifying actual application accessibility settings."
+        },
+        {
+          "key": "inspect-expanded-character-spacing-effects",
+          "title": "Inspect expanded character spacing effects",
+          "outcome": "Preview supported character spacing adjustments on synthetic content and identify truncation or control clipping with the responsible style and source references visible."
+        },
+        {
+          "key": "preview-reduced-motion-preferences",
+          "title": "Preview reduced motion preferences",
+          "outcome": "Switch only the local preview's reduced motion simulation and show which supported media conditions become active without changing system settings or assuming all motion has stopped."
+        },
+        {
+          "key": "inventory-persistent-visual-motion",
+          "title": "Inventory persistent visual motion",
+          "outcome": "List supported declared animations that continue without interaction and expose their timing and source while distinguishing source declarations from a complete observation of runtime motion."
+        },
+        {
+          "key": "preview-animation-pause-controls",
+          "title": "Preview animation pause controls",
+          "outcome": "Use synthetic motion fixtures to inspect an owned pause control's label, state and focus behavior without pausing unrelated application processes or altering provider interactions."
+        },
+        {
+          "key": "inspect-flashing-visual-patterns-locally",
+          "title": "Inspect flashing visual patterns locally",
+          "outcome": "Analyze a bounded local animation fixture using an explicit measurement method and report uncertainty instead of presenting a complete medical or accessibility safety conclusion."
+        },
+        {
+          "key": "preview-high-contrast-design-variants",
+          "title": "Preview high contrast design variants",
+          "outcome": "Compare explicitly authored contrast preference variants with the same synthetic controls and content, keeping them separate from the operating system's actual contrast settings."
+        },
+        {
+          "key": "inspect-color-independent-state-feedback",
+          "title": "Inspect color independent state feedback",
+          "outcome": "Check selected synthetic component states for visible text or shape differences in addition to color and report missing cues without changing actual product status records."
+        },
+        {
+          "key": "export-perceptual-inspection-observations",
+          "title": "Export perceptual inspection observations",
+          "outcome": "Export bounded measurements, active simulations and source references with observed viewport conditions and limitations, excluding private content and any claim of assistive technology certification."
+        }
+      ]
+    },
+    {
+      "id": "F040",
+      "name": "Design review and visual quality evidence",
+      "area": "design",
+      "phase": "designer",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F037",
+        "F038",
+        "F039"
+      ],
+      "scope": "Produce bounded local design review observations tied to source, viewport and fixture identity; distinguish proposed improvements from accepted runtime behavior.",
+      "refusal": "Refuse unsupported baseline matches, missing source revisions, hidden private content capture and any attempt to turn local review into publication or universal quality certification.",
+      "recovery": "Retain original baselines and observations when a comparison fails; restore editor selection and remove temporary review overlays after dismissal.",
+      "feedback": "Show measured differences, capture conditions, source revisions and unresolved matches with explicit pending, passed or failed observation scope.",
+      "evidence": "Use deterministic local routes and synthetic data to verify source fingerprints, geometry comparisons, baseline immutability and honest incomplete review summaries.",
+      "capabilities": [
+        {
+          "key": "create-scoped-visual-review-runs",
+          "title": "Create scoped visual review runs",
+          "outcome": "Create a local review record with explicitly selected routes, widths, fixture identifiers and source revision before capturing observations or evaluating any declared visual policy."
+        },
+        {
+          "key": "capture-deterministic-route-screenshots",
+          "title": "Capture deterministic route screenshots",
+          "outcome": "Capture selected local routes after explicit readiness conditions with stable fixture data, viewport and rendering settings recorded alongside each image and source revision."
+        },
+        {
+          "key": "compare-screenshots-with-aligned-baselines",
+          "title": "Compare screenshots with aligned baselines",
+          "outcome": "Compare a current local capture against an explicitly matched baseline with identical declared conditions and report mismatches in route, viewport or fixture identity before computing differences."
+        },
+        {
+          "key": "inspect-geometry-regression-summaries",
+          "title": "Inspect geometry regression summaries",
+          "outcome": "Summarize bounded element position and size changes using supported stable identities and expose missing, ambiguous or newly added elements separately from matched geometry differences."
+        },
+        {
+          "key": "review-spacing-rhythm-consistency",
+          "title": "Review spacing rhythm consistency",
+          "outcome": "Compare selected owned elements against an explicit local spacing policy and show the source declarations behind deviations without silently normalizing authored design choices."
+        },
+        {
+          "key": "review-typography-hierarchy-consistency",
+          "title": "Review typography hierarchy consistency",
+          "outcome": "Compare selected text style roles against a declared local typography policy using metadata and synthetic specimens rather than collecting private rendered application text."
+        },
+        {
+          "key": "review-component-state-completeness",
+          "title": "Review component state completeness",
+          "outcome": "List explicitly declared visual states missing from a supported component's local review fixtures and keep absence of a fixture separate from proof that the state is broken."
+        },
+        {
+          "key": "review-breakpoint-coverage-gaps",
+          "title": "Review breakpoint coverage gaps",
+          "outcome": "Compare declared responsive conditions with the widths included in a local review run and identify unobserved intervals or exact boundaries without inventing passing results."
+        },
+        {
+          "key": "review-content-expansion-resilience",
+          "title": "Review content expansion resilience",
+          "outcome": "Run synthetic long text and label variants through selected owned components and record clipped, overlapping or unavailable regions with their source references and capture conditions."
+        },
+        {
+          "key": "review-empty-content-layout-states",
+          "title": "Review empty content layout states",
+          "outcome": "Preview explicitly supported empty content fixtures and capture missing structure or confusing feedback without deleting actual application records or treating the fixture as a production state."
+        },
+        {
+          "key": "review-loading-layout-stability",
+          "title": "Review loading layout stability",
+          "outcome": "Compare explicitly held synthetic loading and ready fixtures for selected components and record geometry changes with source and timing conditions instead of claiming live performance metrics."
+        },
+        {
+          "key": "review-error-state-layout-resilience",
+          "title": "Review error state layout resilience",
+          "outcome": "Capture declared local failure fixtures with synthetic messages and identify clipped controls, missing actions or disrupted reading order without causing real provider failures or submissions."
+        },
+        {
+          "key": "review-long-page-orientation-cues",
+          "title": "Review long page orientation cues",
+          "outcome": "Inspect selected long local routes for bounded heading, navigation and selected element context so an operator can locate review findings without losing the original canvas target."
+        },
+        {
+          "key": "review-hidden-overflow-findings",
+          "title": "Review hidden overflow findings",
+          "outcome": "Collect bounded findings for unavailable or clipped rendered regions and identify responsible ancestors while keeping hidden content private and avoiding automatic visibility changes."
+        },
+        {
+          "key": "review-visual-asset-fit-policies",
+          "title": "Review visual asset fit policies",
+          "outcome": "Compare supported media elements against an explicit local fit and crop policy and show mismatches without uploading assets, modifying original files or assuming a universal preferred crop."
+        },
+        {
+          "key": "attach-source-linked-design-observations",
+          "title": "Attach source linked design observations",
+          "outcome": "Attach a bounded local observation to a supported source identity and revision with plain text evidence while excluding credentials, private field values and invented acceptance status."
+        },
+        {
+          "key": "resolve-visual-observation-lifecycle",
+          "title": "Resolve visual observation lifecycle",
+          "outcome": "Track an observation as pending, addressed or verified with explicit evidence references and retain its original source basis rather than accepting a design change from a label alone."
+        },
+        {
+          "key": "compare-design-review-run-revisions",
+          "title": "Compare design review run revisions",
+          "outcome": "Compare two local review runs with their original capture conditions and expose changed, unresolved or incomparable observations without overwriting the earlier run's retained evidence."
+        },
+        {
+          "key": "export-a-bounded-design-review-package",
+          "title": "Export a bounded design review package",
+          "outcome": "Export selected nonsecret review metadata, captures and source fingerprints with a manifest while retaining the declared local scope and excluding runtime credentials or provider authority."
+        },
+        {
+          "key": "validate-design-review-evidence-integrity",
+          "title": "Validate design review evidence integrity",
+          "outcome": "Verify the referenced source and artifact fingerprints before presenting a review summary and report missing or altered evidence without repairing, deleting or relabeling original observations."
+        }
+      ]
+    }
+  ]
+}

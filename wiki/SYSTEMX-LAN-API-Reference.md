@@ -123,6 +123,7 @@ Common failure classes:
 | 404 | Unknown route, missing file, or unsupported operation. | Use the documented route or the CLI. |
 | 405 | Method not allowed. | Use the route's documented method. |
 | 409 | Conflicting local state, duplicate action, or unsafe mutation condition. | Review current state and diff before retrying. |
+| 428 | A source save has no loaded base revision. | Read the file and review its current revision before saving. |
 | 413 | Payload too large. | Reduce the bounded request; use a normal source workflow. |
 | 500 | Unexpected local failure. | Review sanitized logs and stop if data integrity is uncertain. |
 
@@ -274,7 +275,7 @@ does not install a component into another repository.
 
 ### GET /api/builder/source?path=<allowlisted-path>
 
-Purpose: read a bounded source file for inspection.
+Purpose: read an allowlisted source file and its current byte revision for inspection.
 
 Current source allowlist:
 
@@ -292,6 +293,11 @@ The query path must resolve within the repository and match the server's exact
 allowlist. The endpoint does not provide arbitrary repository browsing. It must
 not read environment files, secrets, private keys, runtime directories, or
 unbounded paths.
+
+Successful source reads include `path`, UTF-8 `content`, `writable`, the existing
+`policy` label, and `revision`: lowercase SHA-256 over the exact on-disk bytes,
+including line endings and BOM. The revision is an optimistic save precondition
+for this file. It is separate from Git state, publication and exclusive locking.
 
 ### GET /api/tools
 
@@ -333,32 +339,49 @@ records the result. Previewing a family does not call this endpoint.
 
 ### POST /api/builder/source
 
-Purpose: write a bounded replacement into an allowlisted local source file.
+Purpose: replace one existing allowlisted local source file after checking the
+revision loaded by the editor.
 
-Conceptual body:
+Conceptual body (replace the revision placeholder with the actual GET result):
 
 ~~~json
 {
   "path": "src/pages/HomePage.tsx",
-  "original": "exact text that occurs once",
-  "replacement": "replacement text",
+  "content": "complete reviewed replacement source",
+  "baseRevision": "<64 hexadecimal characters from the source GET>",
   "confirmation": "SAVE LOCAL CHANGE"
 }
 ~~~
 
-Required policy:
+The endpoint accepts complete `content`, limited to 500,000 characters and the
+request-body limit. The browser's leaf-text editor separately checks a unique
+source occurrence before constructing that replacement; `original` and
+`replacement` are not this endpoint's body fields.
 
-- path matches the allowlist;
-- original is non-empty and occurs exactly once;
-- replacement is non-empty and below the server size limit;
-- secret-shaped markers are rejected;
-- current source is backed up;
-- write goes through a temporary file and atomic rename;
-- response identifies the backup and next quality gate;
-- operation evidence is sanitized.
+Existing Host/Origin/session, confirmation, content, secret and path guards
+remain. After those checks, the server compares `baseRevision` with SHA-256 of
+the freshly read file bytes before creating a backup, temporary file or operation
+entry. Missing revision returns **428 / SOURCE_REVISION_REQUIRED**; malformed
+revision returns **400 / SOURCE_REVISION_INVALID**; stale revision returns
+**409 / SOURCE_REVISION_CONFLICT**, with `currentRevision` and fixed guidance.
+It does not return source or draft contents in the conflict response.
 
-This is not a general patch, code-generation, dependency, rules, or file-upload
-endpoint. Use Git and the normal engineering workflow for broad changes.
+A stale request remains a conflict even if its proposed text equals the latest
+file. A fresh matching no-op returns `status: unchanged` and `revision` without
+creating a backup or operation. A successful replacement uses the existing
+backup/secret-scan/temporary-file/atomic-rename workflow and returns the new
+`revision`, backup path and next quality checks.
+
+The controlled editor keeps its loaded base and draft after a conflict or an
+unconfirmed transport/server response. **Reload latest source** is explicit;
+cancelling or failing the reload retains the draft. Selected-text editing keeps
+an independent baseline, so a leaf save cannot silently rebase another dirty
+raw editor. Unchanged textarea content preserves the loaded valid UTF-8 text;
+edited uniform-CRLF source retains CRLF. Edited mixed endings are outside that
+format-preservation claim.
+
+This is an optimistic precondition, not an OS-wide file lock or a general patch,
+code-generation, dependency, rules or file-upload endpoint.
 
 ### POST /api/builder/page
 

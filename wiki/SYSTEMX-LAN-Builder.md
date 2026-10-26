@@ -7,6 +7,22 @@ modules, reusable components, templates, collections, design tokens, media,
 permissions, audit evidence, and publish separation—while keeping this
 template's Firebase, Vite, Node, and `.SYSTEMX` operating rules.
 
+## LAN expansion program and guarded source revisions
+
+The [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-10000-EXECUTION-PLAN.md)
+and [checklist index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/LAN-10000-TODO.md)
+contain 100 proposed families, 2,000 capabilities and 10,000 delivery requirements.
+Completion is reviewed against exact definitions, source revisions, dependencies
+and dated proof; a roadmap row or readiness query activates no provider.
+
+Source reads now return a byte revision. Saves require that loaded revision;
+a stale source change returns409 without backup/write/log effects. Drafts stay
+intact, and **Reload latest source** is explicit. Raw and leaf editors keep
+independent bases; conflict and transport guidance differ, and CRLF-preserving
+no-op behavior accounts for textarea normalization. Read the
+[API reference](SYSTEMX-LAN-API-Reference.md) and
+[source QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
+
 ## What it is for
 
 The first target is the **current checkout**. A staff member or builder should

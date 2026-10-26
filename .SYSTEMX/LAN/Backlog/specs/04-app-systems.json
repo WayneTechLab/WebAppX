@@ -1,0 +1,2393 @@
+{
+  "schemaVersion": 1,
+  "families": [
+    {
+      "id": "F061",
+      "name": "Local Firebase environment workspace",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F015",
+        "F016",
+        "F020"
+      ],
+      "scope": "Inspect and prepare loopback Firebase emulator connections for the explicitly selected LAN workspace; provider accounts remain separate.",
+      "refusal": "Refuse unknown workspace targets, non-loopback emulator addresses, credential-shaped configuration and connection claims based only on saved metadata.",
+      "recovery": "Keep the prior selected environment and fixture records intact when discovery fails or the owned session changes.",
+      "feedback": "Show observed endpoint, owning session, observation time and unavailable components independently, with no production readiness inference.",
+      "evidence": "Use two owned synthetic environments and occupied-port fixtures to prove correct target selection without contacting a provider.",
+      "capabilities": [
+        {
+          "key": "select-an-explicit-emulator-environment",
+          "title": "Select an explicit emulator environment",
+          "outcome": "An operator selects one named local environment and every Firebase inspector displays its exact project label, endpoint set and selected workspace."
+        },
+        {
+          "key": "inspect-emulator-component-readiness",
+          "title": "Inspect emulator component readiness",
+          "outcome": "The connection panel independently probes Auth, Firestore and Storage readiness and shows unsupported or unreachable components without combining their status."
+        },
+        {
+          "key": "display-session-endpoint-provenance",
+          "title": "Display session endpoint provenance",
+          "outcome": "Each displayed emulator endpoint identifies its owning recorded session and distinguishes a fresh observation from retained connection metadata."
+        },
+        {
+          "key": "preview-fixed-origin-compatibility",
+          "title": "Preview fixed-origin compatibility",
+          "outcome": "A connection preview explains whether the selected environment matches the current app origin and leaves the active session unchanged."
+        },
+        {
+          "key": "compare-two-local-environment-profiles",
+          "title": "Compare two local environment profiles",
+          "outcome": "A side-by-side comparison lists component endpoint differences between two saved non-secret profiles before the operator changes the selected target."
+        },
+        {
+          "key": "prepare-a-demo-project-profile",
+          "title": "Prepare a demo project profile",
+          "outcome": "The environment wizard prepares a clearly labeled demo project profile with loopback endpoints and no provider identifiers or credentials."
+        },
+        {
+          "key": "detect-stale-emulator-endpoints",
+          "title": "Detect stale emulator endpoints",
+          "outcome": "The panel identifies a stopped owning session and disables dependent inspectors until the operator selects or observes a current endpoint."
+        },
+        {
+          "key": "view-emulator-service-capabilities",
+          "title": "View emulator service capabilities",
+          "outcome": "A capability table separates supported local reads, guarded fixture operations and unavailable services for the currently selected emulator environment."
+        },
+        {
+          "key": "create-a-connection-diagnostic-packet",
+          "title": "Create a connection diagnostic packet",
+          "outcome": "The operator downloads bounded endpoint readiness and version metadata without tokens, account records, machine paths or application document contents."
+        },
+        {
+          "key": "link-directly-to-emulator-tools",
+          "title": "Link directly to emulator tools",
+          "outcome": "Each service card opens the observed local emulator UI section associated with that session instead of assuming a default UI port."
+        },
+        {
+          "key": "preview-client-emulator-configuration",
+          "title": "Preview client emulator configuration",
+          "outcome": "The builder shows the non-secret client connection values that would be used by preview without writing environment files or restarting services."
+        },
+        {
+          "key": "check-project-identity-mismatches",
+          "title": "Check project identity mismatches",
+          "outcome": "A mismatch card explains differences between selected demo identity, app configuration and emulator metadata before any data inspector becomes active."
+        },
+        {
+          "key": "isolate-per-workspace-connection-preferences",
+          "title": "Isolate per-workspace connection preferences",
+          "outcome": "Changing one workspace's preferred local environment does not alter another workspace's selection or overwrite its retained non-secret profile."
+        },
+        {
+          "key": "describe-unsupported-emulator-services",
+          "title": "Describe unsupported emulator services",
+          "outcome": "Functions, PubSub or other absent services show explicit unavailable contracts and never appear enabled because another emulator responds successfully."
+        },
+        {
+          "key": "inspect-local-connection-request-routing",
+          "title": "Inspect local connection request routing",
+          "outcome": "A request-routing view names the selected local service for a preview operation and identifies requests that require a separate provider adapter."
+        },
+        {
+          "key": "review-environment-switch-consequences",
+          "title": "Review environment switch consequences",
+          "outcome": "A switch preview lists affected inspectors and volatile selections while preserving stored fixture data and allowing cancellation before target replacement."
+        },
+        {
+          "key": "restore-a-previous-connection-selection",
+          "title": "Restore a previous connection selection",
+          "outcome": "The operator can return to the prior valid profile after a failed switch without silently changing app origin or importing remote configuration."
+        },
+        {
+          "key": "detect-duplicate-demo-project-labels",
+          "title": "Detect duplicate demo project labels",
+          "outcome": "The panel warns when separate local sessions share a demo label and continues routing through the explicitly selected component endpoints."
+        },
+        {
+          "key": "show-emulator-version-observations",
+          "title": "Show emulator version observations",
+          "outcome": "The environment inspector displays observed component versions or an explicit unknown state, with provenance independent from configured package versions."
+        },
+        {
+          "key": "export-reusable-local-environment-recipes",
+          "title": "Export reusable local environment recipes",
+          "outcome": "An exported recipe contains placeholders, component requirements and supported loopback settings while omitting active process identifiers and host-specific filesystem locations."
+        }
+      ]
+    },
+    {
+      "id": "F062",
+      "name": "Firestore data schema studio",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F050",
+        "F061"
+      ],
+      "scope": "Design typed document and subcollection contracts using synthetic records or an explicitly selected local Firestore emulator.",
+      "refusal": "Refuse unsupported field types, ambiguous document ownership and schema promotion that would silently coerce or discard retained fixture values.",
+      "recovery": "Preserve prior schema versions and original sample documents when validation or migration preview cannot complete.",
+      "feedback": "Display field paths, validation reasons, selected collection scope and schema version together in the data inspector.",
+      "evidence": "Exercise mixed document shapes, nested references and bounded migration fixtures against local schemas without provider access.",
+      "capabilities": [
+        {
+          "key": "model-typed-document-fields",
+          "title": "Model typed document fields",
+          "outcome": "The schema editor declares supported field types for one collection and validates a synthetic document against those declarations without writing records."
+        },
+        {
+          "key": "describe-optional-and-nullable-fields",
+          "title": "Describe optional and nullable fields",
+          "outcome": "The field inspector distinguishes missing values from explicit null values and previews each case using the selected document schema."
+        },
+        {
+          "key": "model-nested-object-contracts",
+          "title": "Model nested object contracts",
+          "outcome": "An operator defines bounded nested object fields and sees precise failing paths when a synthetic document violates an inner contract."
+        },
+        {
+          "key": "model-homogeneous-array-values",
+          "title": "Model homogeneous array values",
+          "outcome": "The schema editor declares array item types and length limits, then previews invalid elements without pruning or accepting a partial array."
+        },
+        {
+          "key": "declare-collection-document-identifiers",
+          "title": "Declare collection document identifiers",
+          "outcome": "A document identity contract states generated or authored identifier rules and rejects duplicate synthetic IDs within the selected collection preview."
+        },
+        {
+          "key": "design-subcollection-relationships",
+          "title": "Design subcollection relationships",
+          "outcome": "The data map connects a parent document contract to named subcollection contracts and shows their distinct ownership and lifecycle requirements."
+        },
+        {
+          "key": "declare-reference-target-contracts",
+          "title": "Declare reference target contracts",
+          "outcome": "Reference fields identify permitted target collections and visibly distinguish valid local references from missing, wrong-type or out-of-scope targets."
+        },
+        {
+          "key": "define-allowed-enum-values",
+          "title": "Define allowed enum values",
+          "outcome": "An enum editor maintains stable stored values separately from display labels and shows the effect of removing a currently used value."
+        },
+        {
+          "key": "model-timestamp-field-meaning",
+          "title": "Model timestamp field meaning",
+          "outcome": "Timestamp fields declare creation, update or domain-event meaning and distinguish fictional fixture time from observed local emulator timestamps."
+        },
+        {
+          "key": "prepare-numeric-range-contracts",
+          "title": "Prepare numeric range contracts",
+          "outcome": "Numeric fields expose integer and range constraints, with boundary examples that demonstrate rejection without modifying the original sample document."
+        },
+        {
+          "key": "declare-map-key-constraints",
+          "title": "Declare map key constraints",
+          "outcome": "A map field contract limits key syntax and value shape, while invalid synthetic keys remain visible in a non-destructive validation report."
+        },
+        {
+          "key": "create-deterministic-sample-documents",
+          "title": "Create deterministic sample documents",
+          "outcome": "The operator generates schema-conforming fictional examples from a named seed, preserving reproducibility without copying live or personal record contents."
+        },
+        {
+          "key": "compare-schema-versions-structurally",
+          "title": "Compare schema versions structurally",
+          "outcome": "A version comparison lists added, removed and changed field contracts and identifies stored synthetic values affected by each proposed change."
+        },
+        {
+          "key": "preview-schema-migration-mappings",
+          "title": "Preview schema migration mappings",
+          "outcome": "A migration preview maps old field paths to new paths and reports unsupported transformations before any local record replacement can occur."
+        },
+        {
+          "key": "detect-mixed-collection-document-shapes",
+          "title": "Detect mixed collection document shapes",
+          "outcome": "An inspector groups bounded local examples by shape and reports variants that do not conform to the selected collection contract."
+        },
+        {
+          "key": "explain-default-value-application",
+          "title": "Explain default value application",
+          "outcome": "The schema preview distinguishes authored defaults, missing stored fields and explicit values, showing exactly when a proposed default would apply."
+        },
+        {
+          "key": "model-immutable-document-fields",
+          "title": "Model immutable document fields",
+          "outcome": "A contract can designate fields immutable after creation and demonstrate refused changes using synthetic before-and-after document versions in the inspector."
+        },
+        {
+          "key": "prepare-collection-schema-manifests",
+          "title": "Prepare collection schema manifests",
+          "outcome": "An exported manifest records the schema version, supported Firestore types and reference contracts without including active credentials or arbitrary document payloads."
+        },
+        {
+          "key": "link-schemas-to-form-generators",
+          "title": "Link schemas to form generators",
+          "outcome": "A mapping panel exposes supported schema fields to the form builder and identifies fields requiring explicit editor widgets or custom handling."
+        },
+        {
+          "key": "retire-a-schema-version-safely",
+          "title": "Retire a schema version safely",
+          "outcome": "A retirement preview lists local consumers and stored examples that still reference the version, blocking removal while unresolved dependencies remain."
+        }
+      ]
+    },
+    {
+      "id": "F063",
+      "name": "Firestore query planning and exploration",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F062"
+      ],
+      "scope": "Compose and inspect bounded queries against synthetic collections or the selected local Firestore emulator, with explicit query scope.",
+      "refusal": "Refuse arbitrary query code, unbounded result requests, unsupported operator combinations and any target outside the selected local environment.",
+      "recovery": "Keep the last valid query definition and prior results distinguishable when a new query fails or its target becomes unavailable.",
+      "feedback": "Show query clauses, effective limits, result provenance, required indexes and incomplete-result notices without exposing hidden record fields.",
+      "evidence": "Run literal synthetic collection cases covering ordering, cursors, references and invalid combinations; compare complete result identities.",
+      "capabilities": [
+        {
+          "key": "compose-collection-query-filters",
+          "title": "Compose collection query filters",
+          "outcome": "The query builder combines typed field filters for one selected collection and previews matching fictional document identities within an explicit result limit."
+        },
+        {
+          "key": "inspect-query-operator-compatibility",
+          "title": "Inspect query operator compatibility",
+          "outcome": "An operator sees which filter and ordering combinations are supported and receives a precise explanation before an unsupported query is executed."
+        },
+        {
+          "key": "configure-deterministic-query-ordering",
+          "title": "Configure deterministic query ordering",
+          "outcome": "The query preview applies declared sort fields and tie-breaking identity order so repeated synthetic runs return the same ordered document list."
+        },
+        {
+          "key": "set-bounded-query-result-limits",
+          "title": "Set bounded query result limits",
+          "outcome": "The query editor requires a finite result limit and visibly marks truncated results rather than presenting a partial page as complete."
+        },
+        {
+          "key": "build-document-cursor-pagination",
+          "title": "Build document cursor pagination",
+          "outcome": "A query session advances through stable cursor pages and records the cursor basis so changing sort clauses invalidates the old cursor."
+        },
+        {
+          "key": "preview-collection-group-queries",
+          "title": "Preview collection group queries",
+          "outcome": "The builder distinguishes collection-group scope from one collection path and lists which fictional subcollections participate in the proposed query."
+        },
+        {
+          "key": "inspect-query-index-requirements",
+          "title": "Inspect query index requirements",
+          "outcome": "A planning panel describes candidate composite index requirements from the query clauses without creating indexes or claiming provider availability."
+        },
+        {
+          "key": "compare-query-definition-revisions",
+          "title": "Compare query definition revisions",
+          "outcome": "The operator compares changes to filters, ordering, limit and cursor state before replacing a saved query used by preview bindings."
+        },
+        {
+          "key": "parameterize-query-input-values",
+          "title": "Parameterize query input values",
+          "outcome": "A query definition declares typed parameters and rejects missing or invalid values before resolving them against synthetic collection data."
+        },
+        {
+          "key": "preview-missing-field-query-behavior",
+          "title": "Preview missing-field query behavior",
+          "outcome": "The explorer demonstrates how absent, null and differently typed fixture fields affect the selected filter and order clauses for that query."
+        },
+        {
+          "key": "explain-reference-field-filtering",
+          "title": "Explain reference field filtering",
+          "outcome": "A reference filter accepts a typed local document reference and distinguishes it from a plain string containing a similar document path."
+        },
+        {
+          "key": "inspect-query-result-field-projections",
+          "title": "Inspect query result field projections",
+          "outcome": "A result view shows only the selected permitted projection while retaining explicit indicators that additional source fields were not requested."
+        },
+        {
+          "key": "save-named-local-query-recipes",
+          "title": "Save named local query recipes",
+          "outcome": "An operator stores a non-secret query definition under a stable identifier and reopens it without importing old result payloads as fresh observations."
+        },
+        {
+          "key": "bind-query-pages-to-preview-lists",
+          "title": "Bind query pages to preview lists",
+          "outcome": "The data binding panel maps one bounded query page into a repeated UI component and exposes empty, loading and failed result states."
+        },
+        {
+          "key": "compare-two-query-result-sets",
+          "title": "Compare two query result sets",
+          "outcome": "A comparison view reports added, removed and reordered document identities between two explicit synthetic query runs using the same selected environment."
+        },
+        {
+          "key": "describe-offline-query-availability",
+          "title": "Describe offline query availability",
+          "outcome": "The inspector distinguishes cached fictional results from an actual local emulator observation and prevents a cached result from being labeled current."
+        },
+        {
+          "key": "inspect-aggregation-query-intent",
+          "title": "Inspect aggregation query intent",
+          "outcome": "Count, sum and average recipes declare supported numeric fields and show illustrative local results separately from unsupported provider aggregation execution."
+        },
+        {
+          "key": "export-query-contract-fixtures",
+          "title": "Export query contract fixtures",
+          "outcome": "The operator exports a query definition together with synthetic input and expected identity order for reproducible adapter tests in a temporary workspace."
+        },
+        {
+          "key": "invalidate-results-after-environment-switches",
+          "title": "Invalidate results after environment switches",
+          "outcome": "Switching the selected emulator environment clears active query observations and cursors while preserving the reusable definition and explicit parameter values."
+        },
+        {
+          "key": "explain-unavailable-query-targets",
+          "title": "Explain unavailable query targets",
+          "outcome": "When the target collection or environment cannot be observed, the explorer shows an actionable unavailable state without fabricating an empty successful result."
+        }
+      ]
+    },
+    {
+      "id": "F064",
+      "name": "Synthetic identity and membership preview",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F005",
+        "F061"
+      ],
+      "scope": "Compose authentication and membership UI with fictional accounts, emulator identity contracts and explicit trusted-backend adoption boundaries.",
+      "refusal": "Refuse browser-authored privilege grants, real provider credentials and simulated identities presented as authenticated production membership.",
+      "recovery": "Keep synthetic role selections and identity fixtures separate from provider sessions; restore prior preview state after failed fixture changes.",
+      "feedback": "Label mock identities, emulator observations, trusted claims and unavailable provider capabilities distinctly across login and membership screens.",
+      "evidence": "Use fictional accounts and denied-access cases to verify visible transitions without issuing production tokens or changing real membership.",
+      "capabilities": [
+        {
+          "key": "build-synthetic-sign-in-screen-states",
+          "title": "Build synthetic sign-in screen states",
+          "outcome": "The screen builder previews signed-out, loading, success and failure states using fictional identity results without requesting a real provider session."
+        },
+        {
+          "key": "compose-emulator-email-sign-in-bindings",
+          "title": "Compose emulator email sign-in bindings",
+          "outcome": "A binding contract maps form fields to the explicitly selected Auth emulator and identifies required local setup without enabling other identity providers."
+        },
+        {
+          "key": "preview-account-creation-validation",
+          "title": "Preview account creation validation",
+          "outcome": "The account creation preview shows invalid email, missing confirmation and synthetic duplicate-account states while leaving real user directories untouched."
+        },
+        {
+          "key": "design-password-recovery-response-screens",
+          "title": "Design password recovery response screens",
+          "outcome": "The builder renders generic fictional recovery outcomes without revealing account existence or sending recovery messages to any real address."
+        },
+        {
+          "key": "model-trusted-membership-claims",
+          "title": "Model trusted membership claims",
+          "outcome": "A membership inspector defines expected backend claim fields and distinguishes trusted-issued values from editable preview-only role selections in the browser."
+        },
+        {
+          "key": "preview-route-access-by-fictional-actor",
+          "title": "Preview route access by fictional actor",
+          "outcome": "The operator selects a synthetic actor and sees allowed, denied and unresolved route states according to the authored membership contract."
+        },
+        {
+          "key": "compose-membership-loading-fallbacks",
+          "title": "Compose membership loading fallbacks",
+          "outcome": "Protected layouts show explicit membership-loading and unavailable states before protected content can render, using deterministic local actor fixtures for verification."
+        },
+        {
+          "key": "model-invitation-acceptance-screens",
+          "title": "Model invitation acceptance screens",
+          "outcome": "An invitation flow preview covers pending, expired, revoked and already-used fictional invitations without creating tokens or contacting an invitation service."
+        },
+        {
+          "key": "design-account-linking-explanation-views",
+          "title": "Design account linking explanation views",
+          "outcome": "The builder explains separate provider identity and application membership steps with synthetic linked-account examples and no real account-linking operation."
+        },
+        {
+          "key": "preview-session-expiration-handling",
+          "title": "Preview session expiration handling",
+          "outcome": "A synthetic expired-session event moves protected preview content into the declared recovery screen while preserving only the explicitly permitted local draft fields."
+        },
+        {
+          "key": "compose-sign-out-cleanup-previews",
+          "title": "Compose sign-out cleanup previews",
+          "outcome": "A sign-out consequence panel lists preview identity and volatile selections that would clear, while distinguishing retained fictional workspace data and drafts."
+        },
+        {
+          "key": "design-multi-organization-membership-selectors",
+          "title": "Design multi-organization membership selectors",
+          "outcome": "A fictional actor can switch among explicitly assigned sample organizations, with organization-scoped navigation and record projections updated together in preview."
+        },
+        {
+          "key": "model-account-suspension-experiences",
+          "title": "Model account suspension experiences",
+          "outcome": "The preview renders suspended, disabled and reactivated fictional membership states without equating those screen states with provider account administration authority."
+        },
+        {
+          "key": "inspect-membership-provenance-labels",
+          "title": "Inspect membership provenance labels",
+          "outcome": "Each membership screen identifies whether its visible role comes from a mock fixture, local emulator observation or an unconfigured trusted backend contract."
+        },
+        {
+          "key": "prepare-provider-sign-in-adoption-cards",
+          "title": "Prepare provider sign-in adoption cards",
+          "outcome": "The UI describes required provider setup and redirect contracts but keeps unsupported sign-in buttons disabled until separately verified configuration is selected."
+        },
+        {
+          "key": "compose-step-up-verification-placeholders",
+          "title": "Compose step-up verification placeholders",
+          "outcome": "A protected-action preview identifies when additional verification would be required and renders fictional verification states without claiming an implemented authentication factor."
+        },
+        {
+          "key": "preview-profile-correction-workflows",
+          "title": "Preview profile correction workflows",
+          "outcome": "A fictional member can propose allowed profile corrections, see field-level validation and review the declared backend approval boundary before acceptance."
+        },
+        {
+          "key": "model-consent-version-acknowledgments",
+          "title": "Model consent version acknowledgments",
+          "outcome": "The preview records fictional acknowledgment of a named document version and preserves the distinction between interface testing and a real legal agreement."
+        },
+        {
+          "key": "inspect-identity-error-disclosure",
+          "title": "Inspect identity error disclosure",
+          "outcome": "A design audit identifies screens that expose unnecessary account or membership detail and previews the configured generic error messages for those cases."
+        },
+        {
+          "key": "export-identity-journey-fixtures",
+          "title": "Export identity journey fixtures",
+          "outcome": "The operator exports synthetic actor definitions and expected screen transitions without passwords, authentication cookies, real email addresses or provider-issued tokens."
+        }
+      ]
+    },
+    {
+      "id": "F065",
+      "name": "Authorization and rules review workbench",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F062",
+        "F064"
+      ],
+      "scope": "Prepare and exercise policy contracts using synthetic actors and local rules fixtures; production rule publication remains separately authorized.",
+      "refusal": "Refuse policy bypasses, browser self-promotion and rule changes with ambiguous target scope or missing negative-case evidence.",
+      "recovery": "Preserve the last reviewed policy draft and test fixture set when compilation, evaluation or proposed rule replacement fails.",
+      "feedback": "Show actor, resource, requested operation and allow/deny reasoning alongside policy revision and local-only evaluation provenance.",
+      "evidence": "Compare literal allow/deny expectations for synthetic actors, nested documents and constrained uploads in temporary rule-test workspaces.",
+      "capabilities": [
+        {
+          "key": "create-a-policy-decision-table",
+          "title": "Create a policy decision table",
+          "outcome": "The workbench maps fictional actor roles and resource operations into expected allow, deny and unresolved outcomes before drafting implementation rules."
+        },
+        {
+          "key": "preview-firestore-rule-matches",
+          "title": "Preview Firestore rule matches",
+          "outcome": "A local policy explorer shows which authored match paths apply to a synthetic document operation and identifies broader fallback rules."
+        },
+        {
+          "key": "model-owner-scoped-document-access",
+          "title": "Model owner-scoped document access",
+          "outcome": "The builder prepares owner-based read and write contracts and demonstrates denial when a fictional actor targets another owner's document."
+        },
+        {
+          "key": "model-organization-scoped-access-rules",
+          "title": "Model organization-scoped access rules",
+          "outcome": "An organization policy preview verifies membership and resource organization agreement using synthetic claims, including mismatched and missing organization cases explicitly."
+        },
+        {
+          "key": "explain-create-versus-update-authorization",
+          "title": "Explain create versus update authorization",
+          "outcome": "The workbench separates proposed create, update and delete operations and displays which before-and-after document fields each authorization decision depends upon."
+        },
+        {
+          "key": "design-immutable-identity-field-checks",
+          "title": "Design immutable identity field checks",
+          "outcome": "A rule template prevents changing declared ownership or organization identity fields after creation, with rejected synthetic transfer attempts shown in the decision table."
+        },
+        {
+          "key": "preview-field-level-write-restrictions",
+          "title": "Preview field-level write restrictions",
+          "outcome": "The operator declares allowed changed keys for one resource type and sees synthetic writes rejected when they include undeclared or protected fields."
+        },
+        {
+          "key": "model-storage-upload-constraints",
+          "title": "Model storage upload constraints",
+          "outcome": "A Storage contract declares permitted ownership, media types and size limits, then previews accepted and refused synthetic upload metadata without uploading files."
+        },
+        {
+          "key": "inspect-default-deny-policy-coverage",
+          "title": "Inspect default-deny policy coverage",
+          "outcome": "The policy map highlights unmatched document and object paths and confirms that those examples receive the declared default-deny result."
+        },
+        {
+          "key": "draft-trusted-backend-bypass-boundaries",
+          "title": "Draft trusted backend bypass boundaries",
+          "outcome": "The workbench documents which service operations require trusted backend authority and prevents their representation as ordinary browser membership permissions or claims."
+        },
+        {
+          "key": "compare-policy-draft-revisions",
+          "title": "Compare policy draft revisions",
+          "outcome": "A revision view highlights changes to actor conditions, resource scope and permitted operations before the operator accepts a new local rule draft."
+        },
+        {
+          "key": "generate-negative-authorization-fixtures",
+          "title": "Generate negative authorization fixtures",
+          "outcome": "The operator derives explicit missing-claim, wrong-owner and extra-field cases from a policy contract and can edit their expected denial reasons."
+        },
+        {
+          "key": "exercise-rules-in-temporary-emulator-workspaces",
+          "title": "Exercise rules in temporary emulator workspaces",
+          "outcome": "A test action evaluates reviewed synthetic fixtures in an isolated rules workspace and records the exact candidate policy digest and result set."
+        },
+        {
+          "key": "explain-policy-evaluation-failures",
+          "title": "Explain policy evaluation failures",
+          "outcome": "Compilation and fixture failures identify the relevant policy location and synthetic case, leaving production status and unrelated rule drafts unchanged and visible."
+        },
+        {
+          "key": "prepare-a-rule-publication-checklist",
+          "title": "Prepare a rule publication checklist",
+          "outcome": "An export lists the candidate digest, selected target requirements, negative cases and required operator approval without executing any provider publication command."
+        },
+        {
+          "key": "preview-attachment-access-inheritance",
+          "title": "Preview attachment access inheritance",
+          "outcome": "The policy explorer checks whether a synthetic attachment follows its declared parent resource's visibility and reports conflicting or missing parent authorization contracts."
+        },
+        {
+          "key": "model-delegated-manager-access",
+          "title": "Model delegated manager access",
+          "outcome": "A fictional manager policy permits only explicitly assigned resource scopes and demonstrates denial for peer teams, unassigned records and protected administrative fields."
+        },
+        {
+          "key": "inspect-policy-dependency-references",
+          "title": "Inspect policy dependency references",
+          "outcome": "The workbench lists referenced role definitions, schema fields and membership claims, flagging renamed or absent dependencies before rule generation is allowed."
+        },
+        {
+          "key": "retain-policy-review-evidence",
+          "title": "Retain policy review evidence",
+          "outcome": "A local review packet binds the policy digest, fixture identities and observed results without including real account records or private application payloads."
+        },
+        {
+          "key": "restore-an-earlier-local-policy-draft",
+          "title": "Restore an earlier local policy draft",
+          "outcome": "The operator can restore a prior reviewed policy draft in the temporary workbench while retaining the rejected draft and explaining the changed permissions."
+        }
+      ]
+    },
+    {
+      "id": "F066",
+      "name": "Function and HTTP contract studio",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F006",
+        "F061",
+        "F065"
+      ],
+      "scope": "Compose function and HTTP endpoint contracts with local mock handlers, typed payloads and explicit trusted-server implementation boundaries.",
+      "refusal": "Refuse arbitrary executable snippets, undeclared endpoints, credential-bearing fixtures and any claim that prepared handlers are deployed services.",
+      "recovery": "Keep endpoint contract versions and original synthetic requests intact when generated handlers, schema checks or local rehearsals fail.",
+      "feedback": "Show endpoint identity, method, payload contract, authorization assumptions and observed mock response separately from provider deployment state.",
+      "evidence": "Rehearse typed synthetic requests and deliberate error cases against owned local mock handlers, with exact contract and response digests.",
+      "capabilities": [
+        {
+          "key": "define-typed-endpoint-contracts",
+          "title": "Define typed endpoint contracts",
+          "outcome": "The endpoint editor declares method, path, request and response schemas for one local handler and presents unsupported shapes before mock generation."
+        },
+        {
+          "key": "compose-callable-function-envelopes",
+          "title": "Compose callable function envelopes",
+          "outcome": "A callable contract distinguishes its envelope and error semantics from ordinary HTTP requests, using synthetic payloads without a provider function deployment."
+        },
+        {
+          "key": "generate-local-handler-skeletons",
+          "title": "Generate local handler skeletons",
+          "outcome": "The builder prepares a typed handler candidate in a reviewable file diff, with explicit ownership and no implicit installation or source promotion."
+        },
+        {
+          "key": "preview-request-authorization-contracts",
+          "title": "Preview request authorization contracts",
+          "outcome": "Each endpoint displays the trusted claims or capabilities it expects and rejects fictional requests with absent, malformed or mismatched authorization context."
+        },
+        {
+          "key": "configure-bounded-request-body-contracts",
+          "title": "Configure bounded request body contracts",
+          "outcome": "The endpoint schema sets finite body, string and collection limits, with synthetic boundary examples and visible refusal before handler execution begins."
+        },
+        {
+          "key": "compose-structured-error-responses",
+          "title": "Compose structured error responses",
+          "outcome": "An error contract maps supported failure conditions into stable codes and safe messages while omitting stack traces, secrets and private record details."
+        },
+        {
+          "key": "inspect-endpoint-response-projections",
+          "title": "Inspect endpoint response projections",
+          "outcome": "The response editor selects permitted fields from a synthetic domain result and makes excluded internal fields visible only as metadata in the contract."
+        },
+        {
+          "key": "prepare-idempotency-key-handling",
+          "title": "Prepare idempotency key handling",
+          "outcome": "A mock handler binds repeated synthetic requests to one declared operation result and distinguishes a conflicting request that reuses the same key."
+        },
+        {
+          "key": "model-transactional-write-intents",
+          "title": "Model transactional write intents",
+          "outcome": "The contract studio lists documents a future command intends to read and write, then previews atomic success and complete refusal using fictional records."
+        },
+        {
+          "key": "describe-webhook-signature-boundaries",
+          "title": "Describe webhook signature boundaries",
+          "outcome": "A webhook contract identifies verification requirements and synthetic signature outcomes without collecting real signing secrets or accepting unverifiable provider authority."
+        },
+        {
+          "key": "simulate-scheduled-function-invocations",
+          "title": "Simulate scheduled function invocations",
+          "outcome": "The local runner invokes a named schedule contract at explicit fictional times and shows expected records without creating a background or cloud schedule."
+        },
+        {
+          "key": "model-background-event-payloads",
+          "title": "Model background event payloads",
+          "outcome": "An event contract declares supported resource changes and produces synthetic before-and-after payloads with deterministic identifiers for local handler tests."
+        },
+        {
+          "key": "preview-retryable-endpoint-errors",
+          "title": "Preview retryable endpoint errors",
+          "outcome": "The endpoint inspector marks which declared failures permit retry and demonstrates a synthetic retry without duplicating an already accepted operation result."
+        },
+        {
+          "key": "stage-function-environment-requirements",
+          "title": "Stage function environment requirements",
+          "outcome": "A requirements card lists named server-only configuration placeholders and refuses secret values in browser fields, generated public files or exported contract fixtures."
+        },
+        {
+          "key": "explain-endpoint-cancellation-behavior",
+          "title": "Explain endpoint cancellation behavior",
+          "outcome": "A mock request can be cancelled through its declared contract, showing whether work was accepted before cancellation without inventing rollback or remote termination."
+        },
+        {
+          "key": "prepare-pagination-response-contracts",
+          "title": "Prepare pagination response contracts",
+          "outcome": "The studio specifies bounded item pages, opaque cursor shape and completion markers, then previews malformed or stale cursor responses using local fixtures."
+        },
+        {
+          "key": "inspect-endpoint-version-compatibility",
+          "title": "Inspect endpoint version compatibility",
+          "outcome": "A compatibility view compares request and response contract versions and flags breaking field changes before a local consumer switches its selected version."
+        },
+        {
+          "key": "compose-function-health-response-contracts",
+          "title": "Compose function health response contracts",
+          "outcome": "A health endpoint contract separates process reachability, dependency availability and application readiness so one successful probe cannot imply complete service acceptance."
+        },
+        {
+          "key": "export-endpoint-rehearsal-collections",
+          "title": "Export endpoint rehearsal collections",
+          "outcome": "The operator exports synthetic requests, expected safe responses and contract revisions as a reproducible collection without credentials, real records or remote target activation."
+        },
+        {
+          "key": "retire-an-endpoint-contract-version",
+          "title": "Retire an endpoint contract version",
+          "outcome": "A retirement preview lists local bindings and rehearsal fixtures still using the version, blocking removal until their replacement contracts are explicitly selected."
+        }
+      ]
+    },
+    {
+      "id": "F067",
+      "name": "HR people and onboarding interface builder",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F052",
+        "F064",
+        "F065"
+      ],
+      "scope": "Build reusable HR directory and onboarding interfaces against fictional employment records; real employment decisions and provider actions are outside scope.",
+      "refusal": "Refuse cross-person record leakage, unassigned checklist completion and any transition that presents synthetic onboarding as verified real employment or payroll setup.",
+      "recovery": "Preserve accepted fictional employment history, checklist versions and unfinished drafts when a preview transition is cancelled or cannot validate.",
+      "feedback": "Display fictional person, employment instance, acting preview role, checklist version and pending versus accepted changes throughout the HR canvas.",
+      "evidence": "Use distinct fictional people, employment instances and role projections to verify directory, checklist and onboarding link behavior without accounts.",
+      "capabilities": [
+        {
+          "key": "bind-a-fictional-employee-directory",
+          "title": "Bind a fictional employee directory",
+          "outcome": "The directory component renders permitted fields from selected synthetic employment records and exposes loading, empty and unavailable states through the same binding contract."
+        },
+        {
+          "key": "design-employment-instance-selectors",
+          "title": "Design employment instance selectors",
+          "outcome": "An employee view distinguishes separate fictional employments for one person and updates dependent panels only after an explicit employment instance selection."
+        },
+        {
+          "key": "compose-onboarding-checklist-sections",
+          "title": "Compose onboarding checklist sections",
+          "outcome": "The checklist designer groups versioned tasks into ordered sections and previews required, optional, assigned and unavailable tasks for one fictional hire."
+        },
+        {
+          "key": "model-onboarding-prerequisite-locks",
+          "title": "Model onboarding prerequisite locks",
+          "outcome": "A fictional checklist task remains unavailable until its declared prior tasks are accepted, with the specific unmet prerequisite shown to the preview actor."
+        },
+        {
+          "key": "preview-assigned-onboarding-work",
+          "title": "Preview assigned onboarding work",
+          "outcome": "The operator selects a fictional employee or manager role and sees only the tasks assigned to that actor under the authored checklist contract."
+        },
+        {
+          "key": "design-employee-profile-completion-forms",
+          "title": "Design employee profile completion forms",
+          "outcome": "A profile editor binds permitted fictional fields to explicit validation rules and distinguishes unsaved input from an accepted local profile correction."
+        },
+        {
+          "key": "compose-onboarding-document-acknowledgments",
+          "title": "Compose onboarding document acknowledgments",
+          "outcome": "The preview links a fictional acknowledgment to a named document revision while clearly separating interface rehearsal from a real signature or legal acceptance."
+        },
+        {
+          "key": "build-manager-onboarding-summaries",
+          "title": "Build manager onboarding summaries",
+          "outcome": "A manager component summarizes assigned fictional hires by checklist state without exposing private form values or records outside the selected team scope."
+        },
+        {
+          "key": "preview-onboarding-reminder-copy",
+          "title": "Preview onboarding reminder copy",
+          "outcome": "The editor renders reminder templates for incomplete fictional tasks without scheduling notifications or sending messages to real employees or external addresses."
+        },
+        {
+          "key": "design-onboarding-completion-reviews",
+          "title": "Design onboarding completion reviews",
+          "outcome": "A final review lists the exact fictional employment, required task results and captured checklist revision before a local completion transition can be accepted."
+        },
+        {
+          "key": "bind-onboarding-events-to-directory-cards",
+          "title": "Bind onboarding events to directory cards",
+          "outcome": "A directory status component updates from an accepted fictional onboarding event and displays that event's employment instance and local provenance separately."
+        },
+        {
+          "key": "compose-role-specific-people-navigation",
+          "title": "Compose role-specific people navigation",
+          "outcome": "The HR navigation builder derives visible pages from the selected fictional actor's declared capabilities and keeps hidden routes from being treated as authorization."
+        },
+        {
+          "key": "preview-dated-employment-transfers",
+          "title": "Preview dated employment transfers",
+          "outcome": "A transfer interface shows old and proposed fictional team, manager and effective date, with complete consequences before any local change is accepted."
+        },
+        {
+          "key": "build-offboarding-checklist-screens",
+          "title": "Build offboarding checklist screens",
+          "outcome": "An offboarding component renders captured fictional task versions and distinguishes employment termination status from unfinished access or equipment checklist work."
+        },
+        {
+          "key": "design-rehire-journey-selection",
+          "title": "Design rehire journey selection",
+          "outcome": "A rehire preview creates a distinct fictional employment instance and preserves earlier employment history rather than overwriting an already completed onboarding record."
+        },
+        {
+          "key": "inspect-captured-hr-template-versions",
+          "title": "Inspect captured HR template versions",
+          "outcome": "The template inspector shows the checklist version captured by a fictional employment and explains why later template edits do not rewrite its historical tasks."
+        },
+        {
+          "key": "compose-employee-self-service-projections",
+          "title": "Compose employee self-service projections",
+          "outcome": "A self-service page exposes only the selected fictional person's permitted employment and profile fields, with explicit handling for unavailable records and restricted sections."
+        },
+        {
+          "key": "preview-directory-correction-approval",
+          "title": "Preview directory correction approval",
+          "outcome": "A correction review shows original and proposed fictional values, target revision and assigned approver role before acceptance or rejection in the local fixture."
+        },
+        {
+          "key": "design-onboarding-progress-visualizations",
+          "title": "Design onboarding progress visualizations",
+          "outcome": "Progress components display completed required tasks, remaining prerequisites and optional work separately, preserving textual meaning when color or motion is disabled."
+        },
+        {
+          "key": "export-hr-interface-rehearsal-fixtures",
+          "title": "Export HR interface rehearsal fixtures",
+          "outcome": "An export binds fictional people, actor scopes, checklist versions and expected screen transitions without real employee data, provider credentials or payroll authorization claims."
+        }
+      ]
+    },
+    {
+      "id": "F068",
+      "name": "HR time and payroll simulation builder",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F067"
+      ],
+      "scope": "Compose time, benefit-deduction and payroll preview interfaces using fictional records and illustrative arithmetic; no funds, filing or real payroll processing.",
+      "refusal": "Refuse unsupported pay calculations, unapproved fictional time inputs, stale payroll previews and any simulated receipt labeled as real payment or tax compliance.",
+      "recovery": "Preserve original fictional time approvals and immutable payroll receipts when corrections, recalculations or local rehearsal transitions fail.",
+      "feedback": "Label all amounts and receipts fictional, show input provenance and expose approved time, eligibility and deduction effects before local acceptance.",
+      "evidence": "Compare complete synthetic time, deduction and payroll records across preview, correction, backup and restore journeys; prove zero provider or payment requests.",
+      "capabilities": [
+        {
+          "key": "bind-approved-time-into-payroll-previews",
+          "title": "Bind approved time into payroll previews",
+          "outcome": "A payroll component consumes only approved fictional time within the selected company window and exposes excluded entries with their explicit exclusion reasons."
+        },
+        {
+          "key": "design-time-entry-correction-forms",
+          "title": "Design time entry correction forms",
+          "outcome": "A time editor previews before-and-after fictional dates and durations, validates the declared bounds and preserves the original accepted entry until confirmation."
+        },
+        {
+          "key": "compose-time-approval-queues",
+          "title": "Compose time approval queues",
+          "outcome": "A manager view lists fictional entries assigned to the selected approver and separates pending, approved, rejected and superseded records without silent transitions."
+        },
+        {
+          "key": "preview-hourly-rate-effective-dates",
+          "title": "Preview hourly rate effective dates",
+          "outcome": "The payroll view resolves a fictional hourly rate for the selected effective date and shows the exact version used in illustrative arithmetic."
+        },
+        {
+          "key": "model-salaried-payroll-preview-rows",
+          "title": "Model salaried payroll preview rows",
+          "outcome": "A salary component presents fictional period amounts under an explicit fixture convention and refuses unsupported proration or tax assumptions rather than inventing calculations."
+        },
+        {
+          "key": "inspect-payroll-input-provenance",
+          "title": "Inspect payroll input provenance",
+          "outcome": "Each fictional payroll row links eligible employment, approved time, rate version and selected deductions to the exact preview inputs used for that calculation."
+        },
+        {
+          "key": "design-benefit-deduction-summaries",
+          "title": "Design benefit deduction summaries",
+          "outcome": "A summary component shows active fictional employee and employer deduction amounts separately and identifies enrollments that do not apply to the selected payroll window."
+        },
+        {
+          "key": "preview-payroll-window-eligibility",
+          "title": "Preview payroll window eligibility",
+          "outcome": "An eligibility panel explains fictional hire, termination and employment dates against the chosen payroll window before any local run can be accepted."
+        },
+        {
+          "key": "compose-payroll-review-checkpoints",
+          "title": "Compose payroll review checkpoints",
+          "outcome": "The review interface requires the operator to inspect complete fictional totals and unresolved warnings before allowing the separate simulated submission action."
+        },
+        {
+          "key": "build-immutable-simulated-payroll-receipts",
+          "title": "Build immutable simulated payroll receipts",
+          "outcome": "A receipt component displays captured fictional inputs and totals from an accepted mock run, with persistent labels that no payment or filing occurred."
+        },
+        {
+          "key": "design-payroll-adjustment-entry-screens",
+          "title": "Design payroll adjustment entry screens",
+          "outcome": "An adjustment form links a fictional correction to its immutable original receipt and displays cumulative effect without rewriting the original captured amounts."
+        },
+        {
+          "key": "preview-payroll-closure-consequences",
+          "title": "Preview payroll closure consequences",
+          "outcome": "A closure review identifies the exact fictional company window, affected mock runs and correction rules before accepting a separate local period closure."
+        },
+        {
+          "key": "inspect-excluded-time-entry-reasons",
+          "title": "Inspect excluded time entry reasons",
+          "outcome": "A payroll explanation view distinguishes unapproved, outside-window, superseded and ineligible-employment time entries without modifying their original fictional approval history."
+        },
+        {
+          "key": "compose-employee-payroll-self-service-views",
+          "title": "Compose employee payroll self-service views",
+          "outcome": "A fictional employee can view only their own simulated receipt and permitted adjustments, while company totals and other employees' details remain unavailable."
+        },
+        {
+          "key": "design-auditor-payroll-history-projections",
+          "title": "Design auditor payroll history projections",
+          "outcome": "An auditor component exposes allowed receipt metadata and totals without free-text notes or employee details outside the declared fictional audit scope."
+        },
+        {
+          "key": "preview-rounding-convention-differences",
+          "title": "Preview rounding convention differences",
+          "outcome": "A comparison panel applies explicitly selected illustrative rounding conventions to the same fictional inputs and reports changed totals before the convention is adopted locally."
+        },
+        {
+          "key": "model-overtime-policy-placeholders",
+          "title": "Model overtime policy placeholders",
+          "outcome": "The builder represents an explicitly selected fictional overtime convention and labels unsupported jurisdictions or policies instead of asserting legal or production calculation accuracy."
+        },
+        {
+          "key": "compose-payroll-anomaly-explanations",
+          "title": "Compose payroll anomaly explanations",
+          "outcome": "A local insights component flags synthetic missing approvals, rate gaps and unusual deltas using declared thresholds, with traceable inputs and no automatic financial action."
+        },
+        {
+          "key": "preview-payroll-replacement-and-restore-effects",
+          "title": "Preview payroll replacement and restore effects",
+          "outcome": "A restore view compares complete fictional payroll, time approval and deduction snapshots and explains which captured receipts and correction links would change together."
+        },
+        {
+          "key": "export-payroll-simulation-test-bundles",
+          "title": "Export payroll simulation test bundles",
+          "outcome": "The export includes fictional inputs, arithmetic conventions and expected mock totals with explicit simulation labels and no bank details, credentials or production payroll claims."
+        }
+      ]
+    },
+    {
+      "id": "F069",
+      "name": "HR people program interface previews",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F067"
+      ],
+      "scope": "Compose fictional benefits, recruiting, performance and survey interfaces that remain separate from real hiring, coverage or employment decisions.",
+      "refusal": "Refuse private answer leakage, unassigned reviewer access, ambiguous mock enrollment effects and any automatic real employment or benefits outcome.",
+      "recovery": "Preserve accepted fictional enrollment selections, recruiting history and submitted review versions when preview actions are cancelled or validation fails.",
+      "feedback": "Show fictional subject, actor scope, program version and draft or accepted state; distinguish simulation from coverage, hiring or personnel authority.",
+      "evidence": "Use synthetic applicants, enrollments, reviews and survey answers with scoped actors to verify interfaces and recovery without external services.",
+      "capabilities": [
+        {
+          "key": "design-fictional-benefits-plan-comparisons",
+          "title": "Design fictional benefits plan comparisons",
+          "outcome": "The comparison component shows authored fictional plan attributes and illustrative employee costs without implying real coverage, insurance eligibility or provider enrollment availability."
+        },
+        {
+          "key": "compose-benefits-enrollment-review-screens",
+          "title": "Compose benefits enrollment review screens",
+          "outcome": "An enrollment review identifies the fictional employee, selected plan version, effective date and deduction effect before accepting a local mock selection."
+        },
+        {
+          "key": "preview-benefits-eligibility-explanations",
+          "title": "Preview benefits eligibility explanations",
+          "outcome": "A benefits card explains the authored fictional eligibility rule and missing fixture fields, without making a real insurance or employment eligibility determination."
+        },
+        {
+          "key": "bind-enrollment-changes-to-deduction-previews",
+          "title": "Bind enrollment changes to deduction previews",
+          "outcome": "A visual binding shows how an accepted fictional enrollment changes illustrative deduction inputs and distinguishes draft choices from currently accepted local selections."
+        },
+        {
+          "key": "design-recruiting-requisition-forms",
+          "title": "Design recruiting requisition forms",
+          "outcome": "A requisition editor captures fictional role, team and assigned reviewers, with explicit draft and approved states before a local posting preview becomes available."
+        },
+        {
+          "key": "compose-mock-job-posting-previews",
+          "title": "Compose mock job posting previews",
+          "outcome": "The posting component renders the selected fictional requisition revision and marks it as an unpublished preview without contacting any job board."
+        },
+        {
+          "key": "build-candidate-application-lists",
+          "title": "Build candidate application lists",
+          "outcome": "A recruiting list distinguishes multiple fictional applications for one person and scopes visible records to the currently selected preview actor and requisition."
+        },
+        {
+          "key": "design-interview-scheduling-interfaces",
+          "title": "Design interview scheduling interfaces",
+          "outcome": "The scheduling preview records explicit fictional time, timezone and assigned participants without sending invitations, booking calendars or asserting anyone's real availability."
+        },
+        {
+          "key": "compose-private-interview-scorecards",
+          "title": "Compose private interview scorecards",
+          "outcome": "A scorecard component limits fictional draft answers to the assigned interviewer and separates saved draft values from an explicitly submitted review version."
+        },
+        {
+          "key": "preview-recruiting-stage-transitions",
+          "title": "Preview recruiting stage transitions",
+          "outcome": "A stage review shows the fictional application, current revision and required prior outcomes before accepting a local transition in its own application history."
+        },
+        {
+          "key": "design-a-fictional-hiring-handoff",
+          "title": "Design a fictional hiring handoff",
+          "outcome": "A handoff preview links the selected mock application to a new fictional employment and captured onboarding template without claiming a real hiring decision."
+        },
+        {
+          "key": "compose-performance-review-cycles",
+          "title": "Compose performance review cycles",
+          "outcome": "The review-cycle builder declares fictional participants, reviewer roles and captured question versions, keeping cycle creation distinct from review submission or personnel action."
+        },
+        {
+          "key": "preview-employee-self-review-forms",
+          "title": "Preview employee self-review forms",
+          "outcome": "A fictional employee can edit only their assigned draft responses and inspect submission consequences before a captured local self-review version is accepted."
+        },
+        {
+          "key": "design-manager-review-projections",
+          "title": "Design manager review projections",
+          "outcome": "A manager component displays only assigned fictional review subjects and permitted submitted answers, keeping private drafts and unrelated team records unavailable."
+        },
+        {
+          "key": "build-review-acknowledgment-screens",
+          "title": "Build review acknowledgment screens",
+          "outcome": "An acknowledgment preview identifies a captured fictional review version and records a local rehearsal action without representing a real employee agreement or legal signature."
+        },
+        {
+          "key": "compose-anonymous-survey-previews",
+          "title": "Compose anonymous survey previews",
+          "outcome": "The survey builder previews authored anonymity rules and sample aggregate thresholds while explaining that synthetic fixture labels are not a real anonymity guarantee."
+        },
+        {
+          "key": "preview-survey-response-submission",
+          "title": "Preview survey response submission",
+          "outcome": "A fictional respondent can review their draft answer set, see required-field errors and explicitly submit one captured response version to the local fixture."
+        },
+        {
+          "key": "design-bounded-survey-result-summaries",
+          "title": "Design bounded survey result summaries",
+          "outcome": "The results component displays fictional aggregate counts under the authored disclosure threshold and withholds small or disallowed breakdowns according to that preview contract."
+        },
+        {
+          "key": "inspect-people-program-data-boundaries",
+          "title": "Inspect people program data boundaries",
+          "outcome": "A program map shows which fictional benefits, recruiting, review and survey fields may feed shared HR screens and which remain isolated or restricted."
+        },
+        {
+          "key": "export-people-program-rehearsal-packages",
+          "title": "Export people program rehearsal packages",
+          "outcome": "The export binds fictional program versions, actor scopes and expected interface transitions without real applicant records, employee answers or provider enrollment authority."
+        }
+      ]
+    },
+    {
+      "id": "F070",
+      "name": "CRM sales and relationship modeling",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F052",
+        "F064",
+        "F065"
+      ],
+      "scope": "Build CRM account, contact, lead and opportunity interfaces over fictional relationship graphs with explicit ownership and captured local histories.",
+      "refusal": "Refuse hidden-owner disclosure, broken relationship references and graph changes that silently discard retained fictional contacts, tasks or merge provenance.",
+      "recovery": "Keep complete fictional relationship graphs and accepted history intact when imports, ownership changes, merges or stage previews cannot validate.",
+      "feedback": "Show selected fictional owner, relationship scope, current revision and graph consequences before a local sales action is accepted.",
+      "evidence": "Exercise literal synthetic contacts, companies, opportunities and ownership boundaries; compare full graph snapshots through accepted and refused actions.",
+      "capabilities": [
+        {
+          "key": "compose-fictional-crm-account-directories",
+          "title": "Compose fictional CRM account directories",
+          "outcome": "The account component renders permitted fields for fictional companies in the selected ownership scope and distinguishes empty, filtered and unavailable result states explicitly."
+        },
+        {
+          "key": "build-contact-relationship-inspectors",
+          "title": "Build contact relationship inspectors",
+          "outcome": "A contact view displays fictional company, owner and linked work references, with missing or inaccessible relationships identified without leaking hidden record labels."
+        },
+        {
+          "key": "design-lead-qualification-forms",
+          "title": "Design lead qualification forms",
+          "outcome": "A lead editor captures authored fictional qualification fields and reasons, keeping draft inputs separate from an accepted local lead status change."
+        },
+        {
+          "key": "compose-opportunity-pipeline-boards",
+          "title": "Compose opportunity pipeline boards",
+          "outcome": "A pipeline board groups fictional opportunities by the selected stage definition and exposes incomplete or unknown-stage records without silently moving them."
+        },
+        {
+          "key": "preview-opportunity-stage-transitions",
+          "title": "Preview opportunity stage transitions",
+          "outcome": "A stage-change review displays required fictional fields, affected linked work and target revision before one explicit local opportunity transition can be accepted."
+        },
+        {
+          "key": "inspect-account-ownership-scope",
+          "title": "Inspect account ownership scope",
+          "outcome": "The relationship inspector explains which fictional actor owns an account and how that ownership constrains visible contacts, opportunities and assigned work records."
+        },
+        {
+          "key": "design-lead-conversion-previews",
+          "title": "Design lead conversion previews",
+          "outcome": "A conversion review lists the fictional account, contact and opportunity records that would be created or linked, with complete conflict and ownership explanations."
+        },
+        {
+          "key": "compose-account-health-summaries",
+          "title": "Compose account health summaries",
+          "outcome": "A summary card derives fictional open work, recent activity and opportunity counts from declared sources without presenting illustrative scores as verified business outcomes."
+        },
+        {
+          "key": "build-opportunity-amount-history-views",
+          "title": "Build opportunity amount history views",
+          "outcome": "An opportunity component displays captured fictional amount and stage revisions in order, distinguishing current values from historical observations and unsaved changes."
+        },
+        {
+          "key": "design-crm-activity-timeline-components",
+          "title": "Design CRM activity timeline components",
+          "outcome": "A timeline joins permitted fictional calls, notes, meetings and stage events by explicit timestamps while preserving their original event identity and scope."
+        },
+        {
+          "key": "preview-scoped-duplicate-candidate-reports",
+          "title": "Preview scoped duplicate candidate reports",
+          "outcome": "A duplicate view explains matching fictional contact or company attributes within the selected owner scope without searching hidden owners or implying automatic merge authority."
+        },
+        {
+          "key": "compose-contact-merge-consequence-reviews",
+          "title": "Compose contact merge consequence reviews",
+          "outcome": "A merge preview lists complete fictional field and relationship effects in both directions before a separate confirmation can accept the selected local graph change."
+        },
+        {
+          "key": "design-company-merge-consequence-reviews",
+          "title": "Design company merge consequence reviews",
+          "outcome": "A company merge component shows affected fictional contacts, opportunities and work references, retaining the losing company's historical identity in a captured merge receipt."
+        },
+        {
+          "key": "preview-crm-ownership-transfers",
+          "title": "Preview CRM ownership transfers",
+          "outcome": "A transfer review identifies the fictional source owner, target owner and complete linked graph consequences before any local ownership command can be accepted."
+        },
+        {
+          "key": "build-crm-task-relationship-selectors",
+          "title": "Build CRM task relationship selectors",
+          "outcome": "A task form selects allowed fictional contacts, companies and opportunities, rejecting out-of-scope or retired references while preserving unrelated draft task inputs."
+        },
+        {
+          "key": "compose-next-action-recommendation-previews",
+          "title": "Compose next-action recommendation previews",
+          "outcome": "The builder displays rule-based fictional next actions with their input facts and reasons, requiring explicit operator acceptance before any local task is created."
+        },
+        {
+          "key": "design-opportunity-forecast-explanations",
+          "title": "Design opportunity forecast explanations",
+          "outcome": "A forecast component shows authored fictional probability conventions and contributing opportunities, distinguishing illustrative estimates from recognized revenue or actual financial results explicitly."
+        },
+        {
+          "key": "inspect-relationship-graph-integrity",
+          "title": "Inspect relationship graph integrity",
+          "outcome": "A graph diagnostics view identifies dangling, retired or mismatched fictional references and proposes bounded repair previews without silently rewriting accepted sales history records."
+        },
+        {
+          "key": "preview-crm-archive-and-restore-effects",
+          "title": "Preview CRM archive and restore effects",
+          "outcome": "An archive review lists the fictional account graph and retained history consequences, while restore previews reveal relationship collisions before any replacement is accepted."
+        },
+        {
+          "key": "export-sales-interface-fixture-collections",
+          "title": "Export sales interface fixture collections",
+          "outcome": "The export contains a coherent fictional CRM graph, selected actor scopes and expected UI outcomes without real prospect details, private notes or external communication actions."
+        }
+      ]
+    },
+    {
+      "id": "F071",
+      "name": "CRM service and communication previews",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F070"
+      ],
+      "scope": "Compose customer service and communication interfaces using fictional messages and cases; all outbound delivery remains disabled in this local family.",
+      "refusal": "Refuse real destination delivery, hidden-owner message disclosure and case transitions that discard retained fictional conversation or assignment history.",
+      "recovery": "Preserve fictional message drafts, case versions and accepted assignments when preview actions are cancelled or a template cannot render.",
+      "feedback": "Label all communication as unsent previews or mock receipts and show case scope, fictional actor and pending changes together.",
+      "evidence": "Use fictional addresses, cases and conversations to verify template rendering, scope and recovery while proving no external message requests occur.",
+      "capabilities": [
+        {
+          "key": "design-scoped-service-case-lists",
+          "title": "Design scoped service case lists",
+          "outcome": "A case list renders permitted fictional customer issues by selected owner and status, while inaccessible linked contacts appear only as unavailable relationship metadata."
+        },
+        {
+          "key": "compose-case-assignment-reviews",
+          "title": "Compose case assignment reviews",
+          "outcome": "An assignment preview shows the fictional case, previous assignee, proposed assignee and open linked work before accepting a local assignment change."
+        },
+        {
+          "key": "build-case-priority-explanation-cards",
+          "title": "Build case priority explanation cards",
+          "outcome": "A priority component displays authored fictional severity and urgency inputs with their resulting queue position, keeping manual overrides explicit and separately recorded."
+        },
+        {
+          "key": "design-customer-conversation-timelines",
+          "title": "Design customer conversation timelines",
+          "outcome": "A conversation component orders fictional inbound and outbound sample messages by captured timestamps, displaying unsent drafts separately from accepted mock conversation events."
+        },
+        {
+          "key": "preview-email-template-personalization",
+          "title": "Preview email template personalization",
+          "outcome": "The editor renders an unsent email using permitted fictional contact and account fields, clearly identifying unresolved variables without contacting a mail provider."
+        },
+        {
+          "key": "compose-sms-content-previews",
+          "title": "Compose SMS content previews",
+          "outcome": "A text-message component shows the unsent fictional body, variable substitutions and declared segment convention without sending messages or collecting real telephone numbers."
+        },
+        {
+          "key": "design-communication-preference-screens",
+          "title": "Design communication preference screens",
+          "outcome": "A preference interface previews fictional channel choices and consent versions, distinguishing local fixture settings from legally effective subscription status or provider suppression records."
+        },
+        {
+          "key": "build-case-response-draft-editors",
+          "title": "Build case response draft editors",
+          "outcome": "An assigned fictional agent can draft a response linked to one case revision and inspect permitted personalization without changing accepted conversation history."
+        },
+        {
+          "key": "preview-mock-delivery-result-states",
+          "title": "Preview mock delivery result states",
+          "outcome": "A communication card renders fictional queued, delivered, failed and suppressed outcomes with persistent simulation labels and no network delivery side effects."
+        },
+        {
+          "key": "compose-reusable-service-reply-libraries",
+          "title": "Compose reusable service reply libraries",
+          "outcome": "The builder organizes versioned fictional reply templates by case type and shows the selected captured revision used in a response preview."
+        },
+        {
+          "key": "design-case-escalation-consequence-reviews",
+          "title": "Design case escalation consequence reviews",
+          "outcome": "An escalation review lists the fictional queue, responsible role and linked work that would change, with explicit cancellation before a local transition is accepted."
+        },
+        {
+          "key": "preview-service-level-timers",
+          "title": "Preview service level timers",
+          "outcome": "A case timer uses an authored fictional calendar and clock, showing paused and expired states without asserting contractual compliance or scheduling real notifications."
+        },
+        {
+          "key": "build-support-knowledge-suggestions",
+          "title": "Build support knowledge suggestions",
+          "outcome": "A case component suggests permitted local sample knowledge entries from explicit matching rules and exposes the facts supporting each suggested link."
+        },
+        {
+          "key": "compose-case-resolution-review-screens",
+          "title": "Compose case resolution review screens",
+          "outcome": "A resolution preview identifies required fictional outcomes, unfinished tasks and captured response versions before allowing the separate local case closure action."
+        },
+        {
+          "key": "design-reopened-case-histories",
+          "title": "Design reopened case histories",
+          "outcome": "A reopened-case component preserves earlier fictional closure events and distinguishes the new active service interval from its retained resolution and assignment history."
+        },
+        {
+          "key": "preview-bulk-communication-audiences",
+          "title": "Preview bulk communication audiences",
+          "outcome": "A local audience preview lists bounded fictional recipient identities and exclusion reasons without creating delivery jobs, revealing hidden contacts or submitting any provider request."
+        },
+        {
+          "key": "inspect-message-template-dependencies",
+          "title": "Inspect message template dependencies",
+          "outcome": "A dependency view identifies fictional field bindings, document versions and permitted attachment references required to render the selected unsent communication template."
+        },
+        {
+          "key": "compose-internal-case-note-projections",
+          "title": "Compose internal case note projections",
+          "outcome": "A note component separates fictional private staff notes from customer-visible sample messages and enforces the selected preview role's declared projection contract."
+        },
+        {
+          "key": "preview-conversation-export-scope",
+          "title": "Preview conversation export scope",
+          "outcome": "An export review shows which fictional case events, private notes and attachments are included for the selected actor before creating a local download."
+        },
+        {
+          "key": "export-communication-rehearsal-fixtures",
+          "title": "Export communication rehearsal fixtures",
+          "outcome": "The package contains unsent templates, fictional contacts, mock delivery outcomes and expected service transitions without real destinations, provider secrets or delivery authority."
+        }
+      ]
+    },
+    {
+      "id": "F072",
+      "name": "Application content and data binding debugger",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F052",
+        "F063",
+        "F065"
+      ],
+      "scope": "Connect authored application components to typed local CMS or API fixture contracts, showing source ownership and query provenance rather than editing content schemas.",
+      "refusal": "Refuse incompatible bindings, unresolved scope, unbounded collection expansion and implicit promotion of draft or mock data into production content.",
+      "recovery": "Retain the prior valid binding and local component configuration when a new source, mapping or query parameter cannot validate.",
+      "feedback": "Show component target, field path, collection or endpoint revision, ownership and loading/empty/error fallback behavior in one binding inspector.",
+      "evidence": "Run synthetic content and endpoint variants through real preview components, comparing selected values, fallback states and unaffected binding identities.",
+      "capabilities": [
+        {
+          "key": "map-content-fields-into-application-props",
+          "title": "Map content fields into application props",
+          "outcome": "The binding inspector maps permitted typed CMS fields into declared component props and rejects incompatible value shapes before the application preview changes."
+        },
+        {
+          "key": "bind-repeated-content-into-component-lists",
+          "title": "Bind repeated content into component lists",
+          "outcome": "A list binding renders bounded fictional collection records through a selected component definition and preserves stable item identities when their order changes."
+        },
+        {
+          "key": "compose-missing-content-fallback-states",
+          "title": "Compose missing-content fallback states",
+          "outcome": "The operator defines an explicit fallback for absent local content and can distinguish missing data from an intentionally authored empty string or collection."
+        },
+        {
+          "key": "preview-application-binding-loading-states",
+          "title": "Preview application binding loading states",
+          "outcome": "A binding can deliberately hold its local fixture response so the selected component's authored loading state remains observable without provider requests."
+        },
+        {
+          "key": "design-application-binding-error-states",
+          "title": "Design application binding error states",
+          "outcome": "An adapter failure preview renders the component's declared safe error state while preserving prior accepted binding configuration and unrelated application selections."
+        },
+        {
+          "key": "inspect-binding-source-ownership",
+          "title": "Inspect binding source ownership",
+          "outcome": "Every mapped prop identifies whether its value is source-owned, authored in a local document or supplied by a selected fixture adapter."
+        },
+        {
+          "key": "trace-nested-binding-field-paths",
+          "title": "Trace nested binding field paths",
+          "outcome": "The inspector follows a permitted nested path through a synthetic record and reports the exact missing or incompatible segment without evaluating arbitrary expressions."
+        },
+        {
+          "key": "compose-typed-route-parameter-bindings",
+          "title": "Compose typed route parameter bindings",
+          "outcome": "A binding declares route parameters and validates their type before selecting matching fictional content or resolving a local endpoint request definition."
+        },
+        {
+          "key": "preview-draft-versus-reviewed-content",
+          "title": "Preview draft versus reviewed content",
+          "outcome": "The application component can compare explicitly selected draft and reviewed fictional records, with each preview labeled and no implicit public content publication."
+        },
+        {
+          "key": "bind-media-metadata-into-application-views",
+          "title": "Bind media metadata into application views",
+          "outcome": "A media binding maps permitted fictional asset references, alternative text and dimensions into declared component properties, flagging unavailable or unsupported media contracts."
+        },
+        {
+          "key": "design-reference-resolution-fallbacks",
+          "title": "Design reference resolution fallbacks",
+          "outcome": "A relational binding explains missing, retired or out-of-scope fictional targets and renders its declared fallback without exposing hidden target labels or values."
+        },
+        {
+          "key": "inspect-collection-pagination-bindings",
+          "title": "Inspect collection pagination bindings",
+          "outcome": "The binding view shows which bounded local query page feeds a list and invalidates an old cursor when its parameter or ordering contract changes."
+        },
+        {
+          "key": "compose-locale-aware-content-selection",
+          "title": "Compose locale-aware content selection",
+          "outcome": "An application binding resolves the selected fictional locale and explicit fallback order while identifying untranslated fields rather than silently switching content ownership."
+        },
+        {
+          "key": "preview-date-and-number-formatting",
+          "title": "Preview date and number formatting",
+          "outcome": "A formatting contract applies an explicit locale, timezone and display convention to fictional values without altering their original stored types or numeric units."
+        },
+        {
+          "key": "bind-derived-display-values-safely",
+          "title": "Bind derived display values safely",
+          "outcome": "The operator selects from allowlisted pure transformations for fictional field values and sees inputs and outputs without executing arbitrary source snippets."
+        },
+        {
+          "key": "inspect-component-binding-fan-out",
+          "title": "Inspect component binding fan-out",
+          "outcome": "A dependency map lists application instances using one content or endpoint contract revision before a proposed binding change can affect those instances."
+        },
+        {
+          "key": "compare-application-binding-revisions",
+          "title": "Compare application binding revisions",
+          "outcome": "A comparison highlights changed sources, field paths, parameters and fallback contracts while showing unrelated component bindings that remain unchanged and valid."
+        },
+        {
+          "key": "preview-empty-related-record-sections",
+          "title": "Preview empty related-record sections",
+          "outcome": "A relation component displays its authored zero-result state for fictional linked records and distinguishes a successful empty query from an unavailable source."
+        },
+        {
+          "key": "export-application-binding-contracts",
+          "title": "Export application binding contracts",
+          "outcome": "The export records component identities, source contract revisions, permitted field mappings and synthetic examples without real content payloads, credentials or runtime machine paths."
+        },
+        {
+          "key": "retire-an-application-data-binding",
+          "title": "Retire an application data binding",
+          "outcome": "A retirement preview lists affected component instances and required replacement values, preventing removal that would leave declared application props unresolved or ambiguous."
+        }
+      ]
+    },
+    {
+      "id": "F073",
+      "name": "Workflow graph composition",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F005",
+        "F008"
+      ],
+      "scope": "Author declarative workflow graphs using typed local command and condition contracts; diagrams do not activate schedules or provider operations.",
+      "refusal": "Refuse cycles without declared iteration bounds, untyped edge mappings, unsupported command capabilities and graph nodes that imply unavailable external authority.",
+      "recovery": "Preserve the last valid workflow graph and node configuration when connection, validation or schema migration proposals fail.",
+      "feedback": "Show graph revision, node type, input/output contracts, execution boundary and unresolved dependencies with text alternatives to visual wiring.",
+      "evidence": "Validate synthetic branching graphs and exact data mappings, proving unsupported capabilities remain blocked before any runner or provider action is invoked.",
+      "capabilities": [
+        {
+          "key": "compose-typed-workflow-trigger-nodes",
+          "title": "Compose typed workflow trigger nodes",
+          "outcome": "The graph editor declares a supported local trigger contract and exposes the exact synthetic input shape available to connected workflow nodes."
+        },
+        {
+          "key": "connect-compatible-workflow-data-edges",
+          "title": "Connect compatible workflow data edges",
+          "outcome": "A connection preview maps one node's typed output into another node's required input and identifies incompatible or missing fields before accepting the edge."
+        },
+        {
+          "key": "design-conditional-branch-nodes",
+          "title": "Design conditional branch nodes",
+          "outcome": "A branch editor combines allowlisted typed comparisons and shows the path selected by a synthetic input without evaluating arbitrary executable expressions."
+        },
+        {
+          "key": "compose-explicit-merge-nodes",
+          "title": "Compose explicit merge nodes",
+          "outcome": "A merge node declares whether all or one incoming paths are required and previews missing or conflicting outputs with deterministic synthetic branch results."
+        },
+        {
+          "key": "model-bounded-iteration-nodes",
+          "title": "Model bounded iteration nodes",
+          "outcome": "An iteration node declares a finite item and step budget, showing its per-item input contract and refusing unbounded or structurally cyclic graph execution."
+        },
+        {
+          "key": "build-local-command-action-nodes",
+          "title": "Build local command action nodes",
+          "outcome": "An action node references a versioned local command capability and displays its required scope and confirmation boundary before the workflow can be rehearsed."
+        },
+        {
+          "key": "prepare-provider-handoff-placeholders",
+          "title": "Prepare provider handoff placeholders",
+          "outcome": "A provider placeholder documents required external capability and target evidence while remaining non-executable in account-free workflow previews and generated local rehearsal plans."
+        },
+        {
+          "key": "compose-human-review-checkpoints",
+          "title": "Compose human review checkpoints",
+          "outcome": "A review node captures an explicit fictional decision and graph revision, keeping approval requirements visible without granting the runner unattended authority to proceed."
+        },
+        {
+          "key": "design-delay-and-fictional-clock-nodes",
+          "title": "Design delay and fictional clock nodes",
+          "outcome": "A timing node uses an explicit local rehearsal clock and shows scheduled synthetic time without registering a background job or claiming an active scheduler."
+        },
+        {
+          "key": "map-workflow-actor-context",
+          "title": "Map workflow actor context",
+          "outcome": "The graph declares which fictional actor context a local node receives and refuses edges that would implicitly widen capabilities or expose unavailable actor fields."
+        },
+        {
+          "key": "compose-workflow-error-branches",
+          "title": "Compose workflow error branches",
+          "outcome": "An error branch maps stable local failure codes to explicit handling nodes and distinguishes unhandled failure from a successful result with an empty payload."
+        },
+        {
+          "key": "model-compensation-action-contracts",
+          "title": "Model compensation action contracts",
+          "outcome": "A compensation node identifies the exact prior local operation it can reverse and exposes unsupported rollback cases before a workflow is accepted for rehearsal."
+        },
+        {
+          "key": "design-workflow-output-contracts",
+          "title": "Design workflow output contracts",
+          "outcome": "The workflow declares its terminal output schema and shows which completed branches supply each required result field or leave an unresolved terminal outcome."
+        },
+        {
+          "key": "inspect-graph-entry-and-terminal-coverage",
+          "title": "Inspect graph entry and terminal coverage",
+          "outcome": "A graph audit identifies unreachable nodes, missing terminal paths and orphaned inputs, with selectable node references and explicit reasons for each finding."
+        },
+        {
+          "key": "compose-reusable-workflow-subgraphs",
+          "title": "Compose reusable workflow subgraphs",
+          "outcome": "A subgraph definition declares typed inputs, outputs and versioned dependencies, preserving separate instance parameters when reused in more than one workflow diagram."
+        },
+        {
+          "key": "preview-subgraph-version-upgrades",
+          "title": "Preview subgraph version upgrades",
+          "outcome": "An upgrade preview shows changed ports, affected parent workflows and required parameter mappings before replacing one selected subgraph version in a local graph."
+        },
+        {
+          "key": "design-workflow-parameter-forms",
+          "title": "Design workflow parameter forms",
+          "outcome": "The builder generates a typed rehearsal input form from declared workflow parameters, showing defaults, required values and validation failures before a run is prepared."
+        },
+        {
+          "key": "inspect-workflow-capability-requirements",
+          "title": "Inspect workflow capability requirements",
+          "outcome": "A requirements view lists every local, operator or provider capability referenced by the graph and explains why an unavailable capability blocks the proposed run."
+        },
+        {
+          "key": "export-workflow-graph-definitions",
+          "title": "Export workflow graph definitions",
+          "outcome": "The export includes stable node and edge identities, typed contracts and dependency versions without active schedules, credentials, real event payloads or implicit execution instructions."
+        },
+        {
+          "key": "retire-workflow-node-definitions",
+          "title": "Retire workflow node definitions",
+          "outcome": "A retirement review identifies graph instances and subgraphs still using the node contract, blocking removal until compatible replacements are explicitly mapped and accepted."
+        }
+      ]
+    },
+    {
+      "id": "F074",
+      "name": "Deterministic local workflow execution",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F009",
+        "F066",
+        "F073"
+      ],
+      "scope": "Rehearse versioned workflow graphs against synthetic inputs and allowlisted local commands, using bounded execution and no background provider activation.",
+      "refusal": "Refuse stale graph revisions, unresolved capabilities, unbounded retries and replay that could repeat an already accepted local side effect.",
+      "recovery": "Retain run journals and accepted synthetic operation receipts after failure, allowing only declared retry, compensation or independent fresh-run actions.",
+      "feedback": "Show run identity, graph revision, fictional clock, active node, accepted effects and stop reasons without presenting local rehearsal as deployed automation.",
+      "evidence": "Run deterministic fixture graphs through success, cancellation, retry and compensation; compare journals and outputs while asserting zero provider requests.",
+      "capabilities": [
+        {
+          "key": "prepare-a-version-bound-workflow-run",
+          "title": "Prepare a version-bound workflow run",
+          "outcome": "The runner captures the selected graph revision, typed synthetic inputs and required capabilities in a reviewable plan before any local node executes."
+        },
+        {
+          "key": "execute-bounded-local-workflow-steps",
+          "title": "Execute bounded local workflow steps",
+          "outcome": "A rehearsal advances only through supported local nodes under declared step and time budgets, recording a stable outcome or explicit stop reason."
+        },
+        {
+          "key": "inspect-per-node-input-and-output",
+          "title": "Inspect per-node input and output",
+          "outcome": "The run inspector displays permitted synthetic inputs and outputs for one node, with omitted private fields and exact contract revision shown as metadata."
+        },
+        {
+          "key": "replay-pure-workflow-computations",
+          "title": "Replay pure workflow computations",
+          "outcome": "A replay of a completed pure fixture graph reproduces the same terminal output and node ordering without repeating accepted local mutation commands."
+        },
+        {
+          "key": "pause-at-a-human-review-node",
+          "title": "Pause at a human review node",
+          "outcome": "The rehearsal stops at a declared review checkpoint and records the exact pending revision, refusing continuation from an unrelated or stale fictional decision."
+        },
+        {
+          "key": "resume-an-explicitly-reviewed-local-run",
+          "title": "Resume an explicitly reviewed local run",
+          "outcome": "A resume action validates the captured graph and pending review state before advancing, preserving prior node results and preventing duplicated accepted local operations."
+        },
+        {
+          "key": "cancel-a-workflow-rehearsal",
+          "title": "Cancel a workflow rehearsal",
+          "outcome": "Cancellation stops future local nodes and records already accepted effects separately, without claiming that cancellation reverses operations completed before the stop request."
+        },
+        {
+          "key": "retry-a-declared-transient-node-failure",
+          "title": "Retry a declared transient node failure",
+          "outcome": "A retry uses the node's bounded policy and original idempotency context, preserving prior accepted outputs and refusing failures the contract marks non-retryable."
+        },
+        {
+          "key": "inspect-workflow-retry-schedules",
+          "title": "Inspect workflow retry schedules",
+          "outcome": "The run view shows the fictional retry count, next permitted time and remaining budget, with no real timer or background scheduling side effect."
+        },
+        {
+          "key": "rehearse-compensation-after-local-failure",
+          "title": "Rehearse compensation after local failure",
+          "outcome": "A compensation action reverses only locally supported accepted operations in their declared order and records unresolved effects when complete reversal is unavailable or unsafe."
+        },
+        {
+          "key": "detect-stale-workflow-inputs-before-acceptance",
+          "title": "Detect stale workflow inputs before acceptance",
+          "outcome": "A local mutation node rechecks the revision of its selected fixture data and refuses acceptance when the source changed after the run plan was prepared."
+        },
+        {
+          "key": "compare-two-workflow-rehearsal-runs",
+          "title": "Compare two workflow rehearsal runs",
+          "outcome": "A comparison lists differing synthetic inputs, graph revisions, node outcomes and terminal outputs, preserving the original journals and avoiding inferred causal conclusions."
+        },
+        {
+          "key": "inspect-branch-execution-provenance",
+          "title": "Inspect branch execution provenance",
+          "outcome": "The run graph explains which declared condition selected each executed branch and identifies branches not evaluated because their required inputs were unavailable."
+        },
+        {
+          "key": "rehearse-workflow-timeout-outcomes",
+          "title": "Rehearse workflow timeout outcomes",
+          "outcome": "An injected fictional timeout produces the declared node failure and downstream handling path while retaining completed results and distinguishing timeout from cancellation or compensation."
+        },
+        {
+          "key": "model-workflow-concurrency-limits",
+          "title": "Model workflow concurrency limits",
+          "outcome": "A local rehearsal enforces declared simultaneous node limits and shows which ready nodes are waiting, with deterministic scheduling under the selected fixture clock."
+        },
+        {
+          "key": "verify-workflow-idempotency-receipts",
+          "title": "Verify workflow idempotency receipts",
+          "outcome": "Repeated local action requests with the same captured identity resolve to one recorded result, while changed payloads under that identity produce explicit conflict."
+        },
+        {
+          "key": "inspect-workflow-dead-letter-fixtures",
+          "title": "Inspect workflow dead-letter fixtures",
+          "outcome": "A failed synthetic event appears in a local dead-letter view with safe failure metadata and separate reviewable replay intent, without contacting a remote queue."
+        },
+        {
+          "key": "export-workflow-run-evidence",
+          "title": "Export workflow run evidence",
+          "outcome": "A local packet binds graph revision, synthetic input digest, node journal and declared outcomes while omitting secrets, real event payloads and unsupported production automation claims."
+        },
+        {
+          "key": "restore-a-local-workflow-rehearsal-checkpoint",
+          "title": "Restore a local workflow rehearsal checkpoint",
+          "outcome": "The operator previews restoring a captured rehearsal state, including accepted effects and pending nodes, and refuses checkpoints inconsistent with the selected graph version."
+        },
+        {
+          "key": "explain-blocked-workflow-runs",
+          "title": "Explain blocked workflow runs",
+          "outcome": "The runner names missing local commands, unresolved provider boundaries or invalid graph contracts and preserves the prepared inputs without inventing successful execution evidence."
+        }
+      ]
+    },
+    {
+      "id": "F075",
+      "name": "API adapter and request contract registry",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F006",
+        "F066"
+      ],
+      "scope": "Design versioned provider adapter contracts and account-free response fixtures; provider connection, credentials and live requests require separate verified adoption.",
+      "refusal": "Refuse secret-bearing client configuration, undeclared network targets, arbitrary response transforms and mock outcomes presented as successful live provider operations.",
+      "recovery": "Keep the prior adapter contract, synthetic response fixtures and consumer bindings intact when an adapter revision or request recipe is invalid.",
+      "feedback": "Show adapter version, data ownership, local versus provider boundary, supported methods and unavailable operations before any request preview is prepared.",
+      "evidence": "Use owned mock endpoints and exact synthetic request/response cases to prove scope, redaction and compatibility without external credentials or network access.",
+      "capabilities": [
+        {
+          "key": "register-versioned-adapter-capabilities",
+          "title": "Register versioned adapter capabilities",
+          "outcome": "The registry describes supported reads, writes and unavailable operations for a named adapter version, keeping a catalog entry separate from an active provider connection."
+        },
+        {
+          "key": "design-typed-adapter-request-profiles",
+          "title": "Design typed adapter request profiles",
+          "outcome": "A request profile declares method, path template, parameter types and allowed body shape, with synthetic examples and no editable credential values in the browser."
+        },
+        {
+          "key": "compose-deterministic-adapter-response-fixtures",
+          "title": "Compose deterministic adapter response fixtures",
+          "outcome": "The fixture editor prepares named success and failure responses for a selected request contract and preserves their explicit synthetic origin in consumer previews."
+        },
+        {
+          "key": "preview-provider-field-mappings",
+          "title": "Preview provider field mappings",
+          "outcome": "A mapping view translates permitted synthetic provider fields into an application contract and reports unsupported, missing or conflicting fields without silently coercing stored values."
+        },
+        {
+          "key": "inspect-adapter-ownership-boundaries",
+          "title": "Inspect adapter ownership boundaries",
+          "outcome": "An adapter card identifies which object fields belong to the external source, local application or controlled mapping, preventing ambiguous ownership from being advertised as editable."
+        },
+        {
+          "key": "model-adapter-pagination-contracts",
+          "title": "Model adapter pagination contracts",
+          "outcome": "The request designer declares bounded page size, cursor shape and completion markers, then previews empty, partial and final synthetic provider pages explicitly."
+        },
+        {
+          "key": "describe-adapter-rate-limit-handling",
+          "title": "Describe adapter rate limit handling",
+          "outcome": "A mock response can expose fictional retry timing and request limits, with clear suspended operations and no claim about a real account's available quota."
+        },
+        {
+          "key": "preview-adapter-retry-policies",
+          "title": "Preview adapter retry policies",
+          "outcome": "The operator declares bounded retries for specific synthetic failure codes and sees which requests require idempotency protection before a retry can be prepared."
+        },
+        {
+          "key": "compose-safe-adapter-error-projections",
+          "title": "Compose safe adapter error projections",
+          "outcome": "An error mapping selects stable application codes and permitted text from a synthetic provider failure while excluding secrets, raw headers and private payload fragments."
+        },
+        {
+          "key": "design-adapter-request-correlation",
+          "title": "Design adapter request correlation",
+          "outcome": "Synthetic request and response records share an explicit correlation identity so the inspector can trace one operation without relying on sensitive user or account identifiers."
+        },
+        {
+          "key": "prepare-adapter-oauth-scope-descriptions",
+          "title": "Prepare adapter OAuth scope descriptions",
+          "outcome": "A setup card lists documented capability requirements and named server-only token placeholders without opening a login flow, requesting consent or retaining an access token."
+        },
+        {
+          "key": "preview-disconnected-provider-experiences",
+          "title": "Preview disconnected provider experiences",
+          "outcome": "An application binding renders explicit unconfigured, disconnected and unavailable adapter states while preserving local mock functionality and avoiding fabricated empty provider results or records."
+        },
+        {
+          "key": "model-webhook-event-adapter-contracts",
+          "title": "Model webhook event adapter contracts",
+          "outcome": "An event mapping declares supported synthetic provider event types, version fields and verification prerequisites, keeping unverified fixture events distinct from authenticated provider deliveries."
+        },
+        {
+          "key": "compose-adapter-idempotency-mappings",
+          "title": "Compose adapter idempotency mappings",
+          "outcome": "A request contract states how one local operation identity maps to a future provider idempotency field and demonstrates conflicts using only fictional requests."
+        },
+        {
+          "key": "inspect-adapter-contract-compatibility",
+          "title": "Inspect adapter contract compatibility",
+          "outcome": "A comparison shows breaking parameter, result and capability changes between adapter versions and identifies local consumers that need an explicit migration mapping."
+        },
+        {
+          "key": "design-adapter-health-evidence-cards",
+          "title": "Design adapter health evidence cards",
+          "outcome": "A health contract separates configured metadata, owned mock reachability and real provider verification, with each displayed state carrying its own observation basis explicitly."
+        },
+        {
+          "key": "prepare-adapter-redaction-previews",
+          "title": "Prepare adapter redaction previews",
+          "outcome": "The operator supplies synthetic sensitive markers and sees which request, response and error fields the adapter contract would exclude from browser views and local evidence."
+        },
+        {
+          "key": "bind-adapter-fixtures-to-component-states",
+          "title": "Bind adapter fixtures to component states",
+          "outcome": "A selected synthetic response drives a consumer component's loading, success, empty and failure views without switching that component to a live provider target."
+        },
+        {
+          "key": "export-adapter-contract-test-packs",
+          "title": "Export adapter contract test packs",
+          "outcome": "The package includes versioned request schemas, synthetic response cases and expected safe projections without credentials, real provider records or implicit integration activation instructions."
+        },
+        {
+          "key": "retire-an-adapter-contract-revision",
+          "title": "Retire an adapter contract revision",
+          "outcome": "A retirement review lists dependent bindings, workflow nodes and rehearsal fixtures, preventing removal while they still reference the old request or response contract version."
+        }
+      ]
+    },
+    {
+      "id": "F076",
+      "name": "Form and submission experience builder",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F036",
+        "F050",
+        "F065",
+        "F075"
+      ],
+      "scope": "Compose accessible application forms and synthetic submission handling with typed contracts, explicit field ownership and local rehearsal outcomes.",
+      "refusal": "Refuse undeclared fields, hidden-value submission, secret-bearing examples and any real delivery or provider write presented as a local preview action.",
+      "recovery": "Preserve unsaved fictional form values and captured submission versions when validation, navigation, cancellation or local replacement encounters a failure.",
+      "feedback": "Show field labels, required state, specific validation messages and draft versus accepted submission status with predictable keyboard focus.",
+      "evidence": "Exercise complete synthetic forms using keyboard-only input, invalid values, duplicate submissions and recovery, proving unchanged unrelated fixture records.",
+      "capabilities": [
+        {
+          "key": "generate-forms-from-typed-application-contracts",
+          "title": "Generate forms from typed application contracts",
+          "outcome": "The form designer maps supported contract fields to appropriate editor controls and identifies unsupported fields before generating a reviewable component candidate or binding."
+        },
+        {
+          "key": "compose-labeled-field-groups",
+          "title": "Compose labeled field groups",
+          "outcome": "An author groups related inputs under semantic names and instructions, with keyboard order and required information remaining understandable without visual position or color."
+        },
+        {
+          "key": "design-conditional-field-visibility",
+          "title": "Design conditional field visibility",
+          "outcome": "A form preview shows or hides fields through declared typed conditions and explains whether hidden field values are preserved or excluded from the synthetic submission."
+        },
+        {
+          "key": "model-cross-field-validation-rules",
+          "title": "Model cross-field validation rules",
+          "outcome": "An allowlisted validation editor compares related fictional fields and displays precise errors without evaluating arbitrary code or silently changing entered values during validation."
+        },
+        {
+          "key": "compose-server-validation-result-mappings",
+          "title": "Compose server validation result mappings",
+          "outcome": "The form maps safe local response error codes to specific fields and a summary, preserving entered fictional values and distinguishing unavailable validation from success."
+        },
+        {
+          "key": "design-multi-step-form-navigation",
+          "title": "Design multi-step form navigation",
+          "outcome": "A multi-step preview retains declared fictional inputs, identifies incomplete steps and permits returning to an earlier step without accepting a partial final submission."
+        },
+        {
+          "key": "preview-form-draft-recovery",
+          "title": "Preview form draft recovery",
+          "outcome": "The operator rehearses restoring a captured fictional draft and sees schema-version or field conflicts before any current unsaved input is replaced locally."
+        },
+        {
+          "key": "compose-accessible-submission-feedback",
+          "title": "Compose accessible submission feedback",
+          "outcome": "The form exposes submitting, accepted, rejected and unavailable states with explicit text and focus behavior, without depending on color, animation or disabled controls alone."
+        },
+        {
+          "key": "design-duplicate-submission-prevention",
+          "title": "Design duplicate submission prevention",
+          "outcome": "Repeated synthetic submit actions resolve to one accepted local receipt under the same submission identity, with conflicting changed payloads reported explicitly instead of duplicated."
+        },
+        {
+          "key": "preview-form-exit-consequences",
+          "title": "Preview form exit consequences",
+          "outcome": "A navigation review distinguishes unsaved fictional inputs from accepted local submission records and offers a predictable cancel path with focus returned to its opener."
+        },
+        {
+          "key": "model-repeatable-form-field-sections",
+          "title": "Model repeatable form field sections",
+          "outcome": "A repeatable group assigns stable item identities, validates bounded item counts and preserves the correct fictional values after reordering or removing one group."
+        },
+        {
+          "key": "compose-file-attachment-metadata-inputs",
+          "title": "Compose file attachment metadata inputs",
+          "outcome": "A file-input preview declares permitted synthetic size and media metadata, rejecting unsupported examples without uploading a file or treating a filename as trusted content."
+        },
+        {
+          "key": "design-consent-text-version-fields",
+          "title": "Design consent text version fields",
+          "outcome": "A form binds a fictional acknowledgment to one displayed document revision while clearly labeling rehearsal rather than representing a real legal agreement or signature."
+        },
+        {
+          "key": "preview-form-prefilling-provenance",
+          "title": "Preview form prefilling provenance",
+          "outcome": "The inspector identifies which permitted fictional source supplied each initial field value and keeps authored defaults, user input and computed display values distinguishable."
+        },
+        {
+          "key": "compose-typed-form-submission-previews",
+          "title": "Compose typed form submission previews",
+          "outcome": "Before local acceptance, a review displays the exact permitted synthetic payload, omitted fields and target contract revision without sending anything to a real backend."
+        },
+        {
+          "key": "build-submission-review-queues",
+          "title": "Build submission review queues",
+          "outcome": "A review component lists captured fictional submissions within the selected actor's scope and separates pending review from accepted, rejected and superseded local outcomes."
+        },
+        {
+          "key": "design-resumable-form-error-boundaries",
+          "title": "Design resumable form error boundaries",
+          "outcome": "A simulated rendering or adapter failure retains permitted draft input and exposes an actionable recovery view without resetting unrelated components or accepted submission history."
+        },
+        {
+          "key": "preview-localized-form-messages",
+          "title": "Preview localized form messages",
+          "outcome": "The form switches among authored fictional locales and fallback messages, retaining field identity, direction and validation meaning without changing stored input units or values."
+        },
+        {
+          "key": "inspect-generated-form-data-ownership",
+          "title": "Inspect generated form data ownership",
+          "outcome": "Each form field identifies whether it edits a local draft, proposes an application command or remains read-only because another source owns its accepted value."
+        },
+        {
+          "key": "export-form-journey-rehearsal-bundles",
+          "title": "Export form journey rehearsal bundles",
+          "outcome": "The export includes typed schemas, fictional input cases, expected errors and focus transitions without real respondent information, uploaded documents or external submission authority."
+        }
+      ]
+    },
+    {
+      "id": "F077",
+      "name": "Account-free commerce and billing sandbox",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F064",
+        "F065",
+        "F075"
+      ],
+      "scope": "Compose commerce, order and billing interfaces using fictional catalogs, integer money units and mock receipts; no payment or fulfillment action is available.",
+      "refusal": "Refuse real payment credentials, provider account actions, unsupported monetary assumptions and any simulated order or refund presented as actual funds movement.",
+      "recovery": "Preserve fictional order history and immutable mock receipts when pricing, cancellation, refund or data replacement previews are rejected or fail.",
+      "feedback": "Label all pricing, inventory, tax and receipts illustrative; display currency units, source versions and pending versus accepted mock effects before acceptance.",
+      "evidence": "Use synthetic products, carts, customers and billing states to compare exact integer totals, lifecycle links and recovery without provider or payment requests.",
+      "capabilities": [
+        {
+          "key": "compose-fictional-product-catalog-views",
+          "title": "Compose fictional product catalog views",
+          "outcome": "A catalog component renders authored fictional products, variants and availability states from the selected local fixture without contacting a commerce or inventory provider."
+        },
+        {
+          "key": "design-product-variant-selection",
+          "title": "Design product variant selection",
+          "outcome": "The product preview resolves explicitly defined fictional option combinations and marks unavailable variants without inventing stock, pricing or fulfillment information from a provider."
+        },
+        {
+          "key": "model-cart-line-item-identities",
+          "title": "Model cart line item identities",
+          "outcome": "A cart assigns stable identities to fictional product variants and preserves distinct configured items when quantities, display order or selected options change locally."
+        },
+        {
+          "key": "preview-integer-money-arithmetic",
+          "title": "Preview integer money arithmetic",
+          "outcome": "The pricing inspector calculates fictional totals from integer minor units and declared currencies, refusing unsupported conversions or ambiguous decimal input before accepting a mock cart."
+        },
+        {
+          "key": "compose-discount-rule-previews",
+          "title": "Compose discount rule previews",
+          "outcome": "A discount editor applies authored fictional eligibility and stacking conventions, showing excluded items and before-and-after totals without creating a real coupon or promotion."
+        },
+        {
+          "key": "design-shipping-option-simulations",
+          "title": "Design shipping option simulations",
+          "outcome": "A checkout preview presents authored fictional delivery choices, illustrative fees and unsupported addresses without booking shipping, validating real service availability or requesting carrier quotes."
+        },
+        {
+          "key": "model-illustrative-tax-line-displays",
+          "title": "Model illustrative tax line displays",
+          "outcome": "The checkout component labels authored fictional tax rates and assumptions explicitly and separates illustrative amounts from real tax calculation, jurisdiction coverage or filing compliance."
+        },
+        {
+          "key": "compose-mock-checkout-review-screens",
+          "title": "Compose mock checkout review screens",
+          "outcome": "A checkout review displays exact fictional cart contents, currency, illustrative charges and unresolved assumptions before accepting a separate local simulated order action."
+        },
+        {
+          "key": "build-immutable-mock-order-receipts",
+          "title": "Build immutable mock order receipts",
+          "outcome": "A receipt component renders captured fictional line items and totals from one accepted mock order, persistently stating that no payment or fulfillment occurred."
+        },
+        {
+          "key": "preview-order-status-transitions",
+          "title": "Preview order status transitions",
+          "outcome": "A local order lifecycle review identifies permitted fictional transitions and linked inventory effects before accepting a simulated state change into its captured history."
+        },
+        {
+          "key": "design-cancellation-consequence-reviews",
+          "title": "Design cancellation consequence reviews",
+          "outcome": "A cancellation preview lists fictional order lines, mock allocation changes and retained receipt history, with no provider cancellation or actual funds reversal implied."
+        },
+        {
+          "key": "compose-mock-refund-request-previews",
+          "title": "Compose mock refund request previews",
+          "outcome": "A refund interface references an immutable fictional order receipt and shows requested amounts and cumulative mock refunds without transferring money or contacting a payment service."
+        },
+        {
+          "key": "model-fictional-inventory-reservations",
+          "title": "Model fictional inventory reservations",
+          "outcome": "A sandbox reservation contract reduces only the selected fictional availability pool and demonstrates release on declared local cancellation without affecting real stock or fulfillment."
+        },
+        {
+          "key": "design-billing-subscription-state-screens",
+          "title": "Design billing subscription state screens",
+          "outcome": "A billing component previews fictional trial, active, paused, cancelled and past-due states while distinguishing display fixtures from actual service entitlements or provider subscriptions."
+        },
+        {
+          "key": "preview-subscription-plan-changes",
+          "title": "Preview subscription plan changes",
+          "outcome": "A review compares authored fictional plans and illustrative period effects, refusing unsupported proration assumptions before any local mock subscription version can be accepted."
+        },
+        {
+          "key": "compose-invoice-preview-components",
+          "title": "Compose invoice preview components",
+          "outcome": "An invoice component renders fictional line items, payment labels and due dates with explicit simulation status and no claim of a legally issued billing document."
+        },
+        {
+          "key": "design-customer-billing-self-service-projections",
+          "title": "Design customer billing self-service projections",
+          "outcome": "A fictional customer view exposes only permitted mock orders, invoices and subscription states, leaving other customer records and administrative pricing controls unavailable to that actor."
+        },
+        {
+          "key": "inspect-commerce-event-provenance",
+          "title": "Inspect commerce event provenance",
+          "outcome": "Each visible mock order or billing status links its captured fixture inputs and local transition history, distinguishing imported examples from newly accepted sandbox actions."
+        },
+        {
+          "key": "preview-commerce-backup-replacement-effects",
+          "title": "Preview commerce backup replacement effects",
+          "outcome": "A restore review compares complete fictional catalogs, carts, orders and linked mock refunds, refusing inconsistent histories before any selected local workspace replacement occurs."
+        },
+        {
+          "key": "export-commerce-simulation-fixture-packs",
+          "title": "Export commerce simulation fixture packs",
+          "outcome": "The export records fictional products, currencies, arithmetic conventions and expected mock lifecycle results without payment instruments, real customer details or provider action credentials."
+        }
+      ]
+    },
+    {
+      "id": "F078",
+      "name": "Application reporting and metric composition",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F052",
+        "F063"
+      ],
+      "scope": "Build local reporting contracts and dashboards from explicitly selected synthetic application records with declared metric definitions and disclosure scope.",
+      "refusal": "Refuse ambiguous measures, cross-owner data leakage, unbounded detail extraction and charts that imply actual business, payroll or provider outcomes from fictional inputs.",
+      "recovery": "Preserve saved report definitions and prior observations when a changed query, metric version or fixture replacement cannot validate.",
+      "feedback": "Display each metric definition, units, time window, source revision and fictional or unavailable status with accessible chart and table alternatives.",
+      "evidence": "Compare literal synthetic datasets against independently calculated expected measures, including empty, partial, restricted and invalid input cases.",
+      "capabilities": [
+        {
+          "key": "define-versioned-local-metric-contracts",
+          "title": "Define versioned local metric contracts",
+          "outcome": "A metric editor declares the selected fictional data source, measure, units, aggregation and time basis before a dashboard can render the computed result."
+        },
+        {
+          "key": "compose-filtered-reporting-datasets",
+          "title": "Compose filtered reporting datasets",
+          "outcome": "A report selects explicit fictional workspace, owner and date filters, showing the exact eligible record scope and excluding records outside the permitted projection."
+        },
+        {
+          "key": "design-count-and-distinct-count-measures",
+          "title": "Design count and distinct-count measures",
+          "outcome": "The metric preview distinguishes total records from distinct declared identities and exposes duplicates or missing keys that affect the illustrated count result explicitly."
+        },
+        {
+          "key": "model-monetary-report-measures",
+          "title": "Model monetary report measures",
+          "outcome": "A monetary metric uses declared fictional currency and integer units, refusing mixed-currency aggregation or unsupported conversion rather than presenting a misleading combined total."
+        },
+        {
+          "key": "compose-time-window-comparison-reports",
+          "title": "Compose time-window comparison reports",
+          "outcome": "A comparison report states both fictional periods, timezone and inclusion conventions and shows missing or incomparable input ranges alongside the displayed change calculation."
+        },
+        {
+          "key": "design-accessible-dashboard-cards",
+          "title": "Design accessible dashboard cards",
+          "outcome": "A metric card presents value, units, sample status and interpretation text, retaining meaning when color, animation, icons or visual chart position are unavailable."
+        },
+        {
+          "key": "compose-chart-and-table-counterparts",
+          "title": "Compose chart and table counterparts",
+          "outcome": "Every authored report chart has a corresponding permitted data table with equivalent fictional values, ordering and filter scope for keyboard and assistive-technology use."
+        },
+        {
+          "key": "model-reporting-snapshot-provenance",
+          "title": "Model reporting snapshot provenance",
+          "outcome": "A report snapshot records its definition revision and synthetic input digest, distinguishing a retained observation from a newly computed view over current local records."
+        },
+        {
+          "key": "preview-report-empty-data-states",
+          "title": "Preview report empty-data states",
+          "outcome": "The dashboard distinguishes successful zero results, no eligible records and unavailable source data, with explicit messages instead of replacing every condition with numeric zero."
+        },
+        {
+          "key": "design-aggregation-disclosure-thresholds",
+          "title": "Design aggregation disclosure thresholds",
+          "outcome": "A report contract withholds fictional breakdowns below an authored group-size threshold and explains the suppression without exposing the hidden individual values or labels."
+        },
+        {
+          "key": "compose-cross-portal-summary-metrics",
+          "title": "Compose cross-portal summary metrics",
+          "outcome": "A summary combines only explicitly mapped fictional HR, CMS and CRM measures, preserving separate definitions and refusing incompatible dates, units or record ownership scopes."
+        },
+        {
+          "key": "design-drill-through-report-navigation",
+          "title": "Design drill-through report navigation",
+          "outcome": "A metric links to its permitted fictional contributing records with the same captured filters, leaving hidden or out-of-scope detail unavailable after navigation completes."
+        },
+        {
+          "key": "inspect-metric-dependency-graphs",
+          "title": "Inspect metric dependency graphs",
+          "outcome": "The report inspector lists source fields, query recipes and derived metric versions that contribute to one value, highlighting missing or retired dependencies before recomputation."
+        },
+        {
+          "key": "compare-reporting-definition-revisions",
+          "title": "Compare reporting definition revisions",
+          "outcome": "A comparison explains changes to formulas, filters, units and grouping dimensions before a saved dashboard switches its selected local report definition version."
+        },
+        {
+          "key": "preview-dashboard-loading-and-failures",
+          "title": "Preview dashboard loading and failures",
+          "outcome": "A dashboard rehearses held and failed local data responses independently per card, preserving valid neighboring results and avoiding a false whole-dashboard success state."
+        },
+        {
+          "key": "compose-bounded-report-export-previews",
+          "title": "Compose bounded report export previews",
+          "outcome": "An export review identifies the fictional columns, filters, row limit and restricted-field exclusions before producing a local CSV or JSON download."
+        },
+        {
+          "key": "design-authored-report-annotations",
+          "title": "Design authored report annotations",
+          "outcome": "An annotation attaches explanatory text to a fictional report snapshot and preserves that snapshot reference when later source records or metric definitions change locally."
+        },
+        {
+          "key": "model-reporting-refresh-policies",
+          "title": "Model reporting refresh policies",
+          "outcome": "A report declares manual or preview-session refresh behavior and labels retained values stale without creating a background schedule or claiming real-time provider synchronization."
+        },
+        {
+          "key": "preview-report-layout-at-narrow-widths",
+          "title": "Preview report layout at narrow widths",
+          "outcome": "Dashboard composition preserves metric labels, controls and table access at supported narrow widths without truncating units or relying on inaccessible horizontal chart interactions."
+        },
+        {
+          "key": "export-reproducible-report-rehearsal-data",
+          "title": "Export reproducible report rehearsal data",
+          "outcome": "The package includes metric definitions, fictional inputs and independently stated expected results, making illustrative dashboards reproducible without exporting real business or employee records."
+        }
+      ]
+    },
+    {
+      "id": "F079",
+      "name": "Integration dataset import and export planning",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F058",
+        "F062",
+        "F075"
+      ],
+      "scope": "Prepare and validate bounded synthetic dataset transfers between local application contracts; imported files are untrusted data and do not grant execution authority.",
+      "refusal": "Refuse unknown formats, oversized or malformed graphs, hidden-scope merges and partial replacement that could discard accepted local fixture history.",
+      "recovery": "Keep raw fictional source data and the current workspace unchanged until complete validation and explicit replacement or merge review succeed.",
+      "feedback": "Show file format, schema version, selected target scope, graph differences and unresolved mappings before any accepted local dataset transfer.",
+      "evidence": "Use synthetic valid and hostile-shaped files to prove bounded parsing, complete graph validation, atomic acceptance and exact rollback on injected write failure.",
+      "capabilities": [
+        {
+          "key": "identify-supported-dataset-transfer-formats",
+          "title": "Identify supported dataset transfer formats",
+          "outcome": "The import panel detects a declared local format and schema version, presenting unsupported files as unavailable rather than guessing mappings or executing embedded instructions."
+        },
+        {
+          "key": "preview-dataset-field-mappings",
+          "title": "Preview dataset field mappings",
+          "outcome": "A mapping view pairs source columns or fields with typed application paths and identifies missing, conflicting or unsupported transformations before validating fictional records."
+        },
+        {
+          "key": "validate-complete-import-graphs",
+          "title": "Validate complete import graphs",
+          "outcome": "The importer checks every fictional identity and relationship required by the selected format, rejecting inconsistent graphs instead of accepting only the apparently valid records."
+        },
+        {
+          "key": "compose-import-consequence-summaries",
+          "title": "Compose import consequence summaries",
+          "outcome": "A review reports bounded add, update, retain and remove counts for the exact selected local scope, while preserving access to complete fictional record differences."
+        },
+        {
+          "key": "design-duplicate-import-resolution-choices",
+          "title": "Design duplicate import resolution choices",
+          "outcome": "The operator reviews deterministic fictional duplicate candidates and selects explicit retain, replace or allowed merge behavior without silently overwriting accepted source records or history."
+        },
+        {
+          "key": "model-transfer-schema-migrations",
+          "title": "Model transfer schema migrations",
+          "outcome": "A migration preview converts a supported fictional source version into a declared target version, preserving unmodified raw input and refusing ambiguous or lossy field changes."
+        },
+        {
+          "key": "preview-cross-portal-dataset-selection",
+          "title": "Preview cross-portal dataset selection",
+          "outcome": "An import review lets the operator select supported fictional portal scopes and rejects packages whose references require omitted or unavailable dependent data collections."
+        },
+        {
+          "key": "compose-portable-fixture-identity-maps",
+          "title": "Compose portable fixture identity maps",
+          "outcome": "The transfer planner records explicit old-to-new fictional identity mappings and validates all linked references before accepting a renamed local dataset graph into its target."
+        },
+        {
+          "key": "inspect-imported-dataset-provenance",
+          "title": "Inspect imported dataset provenance",
+          "outcome": "A dataset card retains format, schema version and source-file digest, distinguishing imported fictional examples from locally authored records without asserting historical authenticity or provider origin."
+        },
+        {
+          "key": "design-invalid-record-explanation-views",
+          "title": "Design invalid-record explanation views",
+          "outcome": "The importer displays bounded safe validation reasons and paths, preserving complete refusal counts without exposing hidden free-text fields or evaluating suspicious source content."
+        },
+        {
+          "key": "preview-export-projection-contracts",
+          "title": "Preview export projection contracts",
+          "outcome": "An export planner declares which fictional fields and history collections are included, making restricted data and scope differences visible before a local package is produced."
+        },
+        {
+          "key": "compose-deterministic-dataset-exports",
+          "title": "Compose deterministic dataset exports",
+          "outcome": "Repeated export of the same accepted fictional state and format produces equivalent ordered data, excluding volatile process details, credentials and host-specific paths from the payload."
+        },
+        {
+          "key": "model-transfer-package-checksums",
+          "title": "Model transfer package checksums",
+          "outcome": "A local package records digests for its declared data files and refuses missing, extra or changed files before any selected workspace replacement can be accepted."
+        },
+        {
+          "key": "design-selective-dataset-replacement-reviews",
+          "title": "Design selective dataset replacement reviews",
+          "outcome": "A replacement preview compares complete fictional selected collections and explains effects on retained dependent records before allowing one explicit atomic local acceptance action."
+        },
+        {
+          "key": "preview-automatic-transfer-restore-points",
+          "title": "Preview automatic transfer restore points",
+          "outcome": "An opt-in review explains the exact fictional pre-transfer state that would be captured, its storage effect and the failure behavior if a checkpoint cannot persist."
+        },
+        {
+          "key": "compose-undo-reviews-for-accepted-transfers",
+          "title": "Compose undo reviews for accepted transfers",
+          "outcome": "An undo preview names the accepted local transfer and its captured scope, rejecting stale or incompatible current graphs before restoring the prior fictional records."
+        },
+        {
+          "key": "inspect-transfer-storage-budgets",
+          "title": "Inspect transfer storage budgets",
+          "outcome": "The planner estimates bounded serialized fictional workspace, checkpoint and candidate package sizes, refusing unsupported or over-budget acceptance without deleting retained history or partial data."
+        },
+        {
+          "key": "design-transfer-cancellation-semantics",
+          "title": "Design transfer cancellation semantics",
+          "outcome": "Cancelling parsing, mapping or review leaves the current fictional workspace unchanged and distinguishes abandoned candidate data from an already accepted local transfer operation."
+        },
+        {
+          "key": "preview-transfer-write-failure-recovery",
+          "title": "Preview transfer write failure recovery",
+          "outcome": "An injected local storage failure restores the exact prior fictional slots and reports any unresolved recovery state instead of displaying a successful partially written import."
+        },
+        {
+          "key": "export-transfer-rehearsal-manifests",
+          "title": "Export transfer rehearsal manifests",
+          "outcome": "The manifest lists synthetic format cases, expected scope effects, source digests and rollback outcomes without real records, private filenames or credentials from unrelated environments."
+        }
+      ]
+    },
+    {
+      "id": "F080",
+      "name": "Cross-portal consistency and access simulation",
+      "area": "app-systems",
+      "phase": "applications",
+      "priority": "P2",
+      "gate": "local",
+      "dependsOnFamilies": [
+        "F067",
+        "F070",
+        "F072",
+        "F078"
+      ],
+      "scope": "Inspect and rehearse shared fictional identities, references and role projections across HR, CMS, CRM and local application modules without merging their authority.",
+      "refusal": "Refuse implicit cross-portal permission grants, inconsistent reference repairs and replacement plans that silently prune private drafts or captured fictional histories.",
+      "recovery": "Preserve each portal snapshot, revision and draft boundary after cancelled cross-portal reviews or failed atomic local consistency operations.",
+      "feedback": "Show selected fictional actor, portal boundary, source identity, proposed relation and every affected scope with explicit unresolved or unavailable states.",
+      "evidence": "Use coherent and inconsistent synthetic multi-portal graphs to verify scoped projections, directional replacement and complete rollback across all involved local stores.",
+      "capabilities": [
+        {
+          "key": "inspect-shared-fictional-person-identities",
+          "title": "Inspect shared fictional person identities",
+          "outcome": "A cross-portal map shows explicit links between fictional employee, contact and application identities while preserving each portal's independent record ownership and history."
+        },
+        {
+          "key": "design-portal-specific-role-projections",
+          "title": "Design portal-specific role projections",
+          "outcome": "The preview actor's declared HR, CMS and CRM capabilities appear separately, preventing a role selected in one portal from silently widening access in another."
+        },
+        {
+          "key": "compose-cross-portal-navigation-contracts",
+          "title": "Compose cross-portal navigation contracts",
+          "outcome": "A link contract identifies the target fictional record, permitted actor scope and return location, with an unavailable state for missing or inaccessible destinations."
+        },
+        {
+          "key": "preview-linked-record-deletion-consequences",
+          "title": "Preview linked-record deletion consequences",
+          "outcome": "A review lists fictional references in every selected portal before a local archive or deletion proposal can be accepted, retaining captured historical identities explicitly."
+        },
+        {
+          "key": "inspect-cross-portal-revision-freshness",
+          "title": "Inspect cross-portal revision freshness",
+          "outcome": "A consistency view compares captured fictional portal revisions and identifies which linked observations became stale after one workspace accepted a new local change."
+        },
+        {
+          "key": "design-ownership-disagreement-explanations",
+          "title": "Design ownership disagreement explanations",
+          "outcome": "The inspector highlights fictional linked records with incompatible owners or organizations and explains each portal's authority without automatically choosing a new owner or rewriting records."
+        },
+        {
+          "key": "compose-unified-fictional-activity-summaries",
+          "title": "Compose unified fictional activity summaries",
+          "outcome": "A summary joins permitted event metadata from selected portals while retaining original event identity, source portal, actor scope and timestamp meaning without exposing private notes."
+        },
+        {
+          "key": "model-cross-portal-command-preconditions",
+          "title": "Model cross-portal command preconditions",
+          "outcome": "A prepared local action declares every fictional portal revision and relationship it depends upon, refusing acceptance if any required scope changed after preview preparation."
+        },
+        {
+          "key": "preview-atomic-multi-portal-fixture-changes",
+          "title": "Preview atomic multi-portal fixture changes",
+          "outcome": "An explicitly supported local operation reviews all fictional record effects together and accepts either the complete selected change or no portal changes at all."
+        },
+        {
+          "key": "design-partial-availability-portal-layouts",
+          "title": "Design partial-availability portal layouts",
+          "outcome": "A shared dashboard keeps available fictional portal summaries usable while identifying unavailable modules independently, without fabricating missing records or elevating access through fallback panels."
+        },
+        {
+          "key": "inspect-cross-portal-history-boundaries",
+          "title": "Inspect cross-portal history boundaries",
+          "outcome": "A record inspector explains which fictional captures are immutable history, which values are current projections and which unsaved drafts are excluded from portable workspace state."
+        },
+        {
+          "key": "compose-shared-lookup-selection-controls",
+          "title": "Compose shared lookup selection controls",
+          "outcome": "A lookup component returns only permitted fictional identities from explicitly selected portals and distinguishes identical display labels with source and stable identity metadata."
+        },
+        {
+          "key": "preview-portal-disable-consequences",
+          "title": "Preview portal-disable consequences",
+          "outcome": "A review lists hidden navigation, retained fictional storage and unsupported cross-portal references before a module is disabled in the selected local application configuration."
+        },
+        {
+          "key": "design-re-enabled-portal-recovery-views",
+          "title": "Design re-enabled portal recovery views",
+          "outcome": "A re-enabled module explains retained fictional data versions and unresolved references before mounting its normal views, with no implicit import or silent schema repair."
+        },
+        {
+          "key": "inspect-cross-portal-export-disclosure",
+          "title": "Inspect cross-portal export disclosure",
+          "outcome": "An export review makes clear which selected fictional scopes include private drafts or historical captures and prevents a scoped screen projection from being mistaken for file redaction."
+        },
+        {
+          "key": "compose-coherent-multi-portal-seed-packs",
+          "title": "Compose coherent multi-portal seed packs",
+          "outcome": "A seed pack defines explicitly linked fictional HR, CMS and CRM records with stable identities, ensuring repeated temporary rehearsals reproduce the same complete relationship graph."
+        },
+        {
+          "key": "preview-cross-portal-replacement-collisions",
+          "title": "Preview cross-portal replacement collisions",
+          "outcome": "A restore comparison detects fictional identity and ownership conflicts between selected replacement scopes and retained portals, refusing silent remapping or pruning of incompatible linked records."
+        },
+        {
+          "key": "design-cross-portal-permission-test-matrices",
+          "title": "Design cross-portal permission test matrices",
+          "outcome": "A visual matrix compares expected allowed and refused views for fictional actors across modules, with each decision tied to the relevant portal-specific contract revision."
+        },
+        {
+          "key": "inspect-integration-readiness-per-boundary",
+          "title": "Inspect integration readiness per boundary",
+          "outcome": "A readiness panel separates local fixture integrity, emulator reachability, adapter configuration and provider verification rather than collapsing them into one misleading connected or ready state."
+        },
+        {
+          "key": "export-cross-portal-consistency-evidence",
+          "title": "Export cross-portal consistency evidence",
+          "outcome": "The packet binds synthetic actor scopes, portal revision digests, complete graph checks and expected projections without real employee, customer or content payloads from live systems."
+        }
+      ]
+    }
+  ]
+}

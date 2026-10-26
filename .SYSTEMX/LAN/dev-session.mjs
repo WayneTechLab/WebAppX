@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { closeSync, constants, existsSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, readdirSync, readSync, realpathSync, unlinkSync, writeFileSync } from 'node:fs'
+import { isAbsolute, join, relative, resolve, win32 } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { cleanStalePidFiles, clearSession, readSession, removePidFile, writePidFile, writeSession } from './Builder/runtime/port-utils.mjs'
 import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
@@ -25,6 +25,91 @@ function processAlive(pid) {
   try { process.kill(pid, 0); return true } catch (error) { return error.code === 'EPERM' }
 }
 
+/** Validate only local file structure; never read or print emulator dataset values. */
+export function validateEmulatorImport(directory) {
+  if (directory === undefined) return undefined
+  const fail = message => { throw new Error(`Emulator import refused: ${message}`) }
+  if (typeof directory !== 'string' || !directory.trim() || directory.includes('\0')) fail('select an existing Firebase export directory.')
+  const requested = resolve(directory)
+  let root
+  try {
+    const entry = lstatSync(requested)
+    if (entry.isSymbolicLink() || !entry.isDirectory()) fail('the export directory must be a real directory, not a link.')
+    // Canonicalize ordinary OS aliases in ancestor paths (for example macOS tmp).
+    root = realpathSync(requested)
+  } catch (error) {
+    if (error.message.startsWith('Emulator import refused:')) throw error
+    fail('the export directory is missing or unreadable.')
+  }
+  const inside = path => {
+    const suffix = relative(root, path)
+    return !isAbsolute(suffix) && suffix !== '..' && !suffix.startsWith(`..${win32.sep}`) && !suffix.startsWith('../')
+  }
+  const inspect = (path, label) => {
+    try {
+      const entry = lstatSync(path)
+      if (entry.isSymbolicLink() || (!entry.isDirectory() && !entry.isFile()) || !inside(realpathSync(path))) fail(`${label} must contain only regular files and directories inside the export.`)
+      return entry
+    } catch (error) {
+      if (error.message.startsWith('Emulator import refused:')) throw error
+      fail(`${label} is missing or unreadable.`)
+    }
+  }
+  const metadataPath = join(root, 'firebase-export-metadata.json')
+  const metadataEntry = inspect(metadataPath, 'firebase-export-metadata.json')
+  const metadataLimit = 64 * 1024
+  if (!metadataEntry.isFile() || metadataEntry.size < 1 || metadataEntry.size > metadataLimit) fail('firebase-export-metadata.json must be a regular JSON file of at most 64 KiB.')
+  let metadata
+  let descriptor
+  try {
+    descriptor = openSync(metadataPath, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0))
+    const opened = fstatSync(descriptor)
+    if (!opened.isFile() || opened.dev !== metadataEntry.dev || opened.ino !== metadataEntry.ino || opened.size < 1 || opened.size > metadataLimit) fail('firebase-export-metadata.json changed during validation.')
+    const bytes = Buffer.alloc(metadataLimit + 1)
+    let length = 0
+    let read
+    do { read = readSync(descriptor, bytes, length, bytes.length - length, null); length += read } while (read && length < bytes.length)
+    if (length > metadataLimit) fail('firebase-export-metadata.json exceeds 64 KiB.')
+    metadata = JSON.parse(bytes.subarray(0, length).toString('utf8'))
+  } catch (error) {
+    if (error.message.startsWith('Emulator import refused:')) throw error
+    fail('firebase-export-metadata.json is unreadable or malformed JSON.')
+  } finally { if (descriptor !== undefined) closeSync(descriptor) }
+  if (!metadata || Array.isArray(metadata) || typeof metadata !== 'object' || typeof metadata.version !== 'string' || !metadata.version.trim()) fail('Firebase export metadata must contain a version and supported emulator sections.')
+  let visited = 0
+  const checkTree = (path, label, depth = 0) => {
+    if (++visited > 100_000 || depth > 128) fail('the referenced export tree exceeds the local validation limit.')
+    const entry = inspect(path, label)
+    if (entry.isDirectory()) {
+      let names
+      try { names = readdirSync(path) } catch { fail(`${label} is unreadable.`) }
+      for (const name of names) checkTree(join(path, name), label, depth + 1)
+    }
+  }
+  const referenced = (value, label, kind) => {
+    if (typeof value !== 'string' || !value || value.includes(':') || [...value].some(character => character.charCodeAt(0) < 32) || isAbsolute(value) || win32.isAbsolute(value)) fail(`${label} must be a relative path inside the export.`)
+    const segments = value.split(/[\\/]/)
+    if (segments.some(segment => !segment || segment === '.' || segment === '..')) fail(`${label} must not traverse outside the export.`)
+    let path = root
+    for (const segment of segments) { path = join(path, segment); inspect(path, label) }
+    if (!inside(path)) fail(`${label} must remain inside the export.`)
+    const entry = inspect(path, label)
+    if (kind === 'directory' ? !entry.isDirectory() : !entry.isFile()) fail(`${label} must reference a regular ${kind}.`)
+    checkTree(path, label)
+  }
+  let supported = 0
+  for (const name of ['auth', 'firestore', 'storage']) {
+    if (metadata[name] === undefined) continue
+    const section = metadata[name]
+    if (!section || Array.isArray(section) || typeof section !== 'object') fail(`${name} metadata must be an object.`)
+    referenced(section.path, `${name}.path`, 'directory')
+    if (name === 'firestore') referenced(section.metadata_file, 'firestore.metadata_file', 'file')
+    supported += 1
+  }
+  if (!supported) fail('metadata must reference auth, firestore or storage export data.')
+  return root
+}
+
 /** Dependencies let tests exercise supervision without running Firebase or Vite. */
 export async function startDevSession(options, {
   repoRoot = repository,
@@ -41,6 +126,7 @@ export async function startDevSession(options, {
   readinessIntervalMs = 500,
   command = firebaseCommand({ environment }),
 } = {}) {
+  const emulatorImport = validateEmulatorImport(options.emulatorImport)
   const viteBin = join(repoRoot, 'node_modules', 'vite', 'bin', 'vite.js')
   if (!existsSync(viteBin)) throw new Error('Missing local Vite dependency. Run npm ci first.')
   const existing = readSession(repoRoot)
@@ -79,7 +165,7 @@ export async function startDevSession(options, {
     ports,
     origin: { scheme: 'http', host: options.host, port: ports.app, url: `http://${options.host}:${ports.app}`, fixed: options.fixedOrigin },
     urls: sessionUrls(options.host, ports),
-    runtime: { firebaseConfig: firebaseConfigFile },
+    runtime: { firebaseConfig: firebaseConfigFile, ...(emulatorImport ? { emulatorImport } : {}) },
     mode: 'combined',
     startedAt: new Date(now()).toISOString(),
   }
@@ -176,12 +262,13 @@ export async function startDevSession(options, {
     mkdirSync(stateRoot, { recursive: true, mode: 0o700 })
     cleanStalePidFiles(repoRoot)
     writeFileSync(firebaseConfigFile, `${JSON.stringify(firebaseConfig, null, 2)}\n`, { mode: 0o600 })
-    start('firebase', command.executable, [...command.args, 'emulators:start', '--config', firebaseConfigFile, '--project', 'demo-systemx', '--only', 'auth,firestore,storage'])
+    start('firebase', command.executable, [...command.args, 'emulators:start', '--config', firebaseConfigFile, '--project', 'demo-systemx', '--only', 'auth,firestore,storage', ...(emulatorImport ? ['--import', emulatorImport] : [])])
     start('lan', process.execPath, [join(repoRoot, '.SYSTEMX', 'LAN', 'server.mjs')])
     start('vite', process.execPath, [viteBin, '--host', options.host, '--port', String(ports.app), '--strictPort'])
     writeSession(repoRoot, session)
     published = true
     output.write(formatSessionSummary(session))
+    if (emulatorImport) output.write('[SYSTEMX] Firebase will import the explicitly selected local export. Keep that export unchanged until emulator startup completes; readiness does not verify imported workflows.\n')
     const pollReadiness = async () => {
       await tracker.check()
       if (tracker.settled()) clearInterval(interval)
@@ -198,7 +285,7 @@ export async function startDevSession(options, {
 export async function main(args = process.argv.slice(2), environment = process.env) {
   const options = parseSessionOptions(args, environment)
   if (options.help) {
-    console.log('Usage: npm run dev:systemx -- [--host <127.0.0.1|localhost>] [--port <1024-65535>] [--fixed-origin]\nDefault: select free loopback ports. Supplying --host, --port, SYSTEMX_DEV_HOST or SYSTEMX_APP_PORT fixes the app origin; SYSTEMX_FIXED_ORIGIN=true also fixes the default origin. A busy fixed app port fails before any child starts. Vite always uses --strictPort. Mock saves belong to the printed HTTP origin and browser profile. App/LAN HTTP readiness and individual emulator readiness are reported separately.')
+    console.log('Usage: npm run dev:systemx -- [--host <127.0.0.1|localhost>] [--port <1024-65535>] [--fixed-origin] [--emulator-import <exportdir>]\nDefault: select free loopback ports. Supplying --host, --port, SYSTEMX_DEV_HOST or SYSTEMX_APP_PORT fixes the app origin; SYSTEMX_FIXED_ORIGIN=true also fixes the default origin. A busy fixed app port fails before any child starts. Vite always uses --strictPort. Mock saves belong to the printed HTTP origin and browser profile. App/LAN HTTP readiness and individual emulator readiness are reported separately. Emulator import occurs only with --emulator-import and requires an existing local Firebase export directory; quote paths containing spaces as one argument. Keep the export unchanged during startup.')
     return
   }
   const owned = await startDevSession(options, { environment })

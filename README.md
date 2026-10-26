@@ -27,6 +27,9 @@ To reopen the same browser saves, choose an origin explicitly with
 port fails without falling back to another address. Use
 `npm run systemx:session:status` to read component readiness and
 `npm run systemx:session:stop` to stop the recorded owned session.
+To restore an existing private emulator export, add
+`--emulator-import "/path/to/existing-export"` to `npm run dev:systemx --`.
+The export is validated before startup; keep it unchanged while launching.
 For a Windows combined session, stop refuses and preserves state; use **Ctrl+C
 in its owning terminal** and inspect the children/listeners after shutdown.
 Firebase configuration belongs to the adopted project.
@@ -65,6 +68,36 @@ installed current SYSTEMX CLI can route child records explicitly with
 Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
+
+## LAN 10,000-item delivery program — 2026-10-26
+
+The LAN expansion now has **100 authored families, 2,000 proposed functional
+capabilities and 10,000 delivery requirements**. Each capability has behavior,
+boundary, recovery, feedback and evidence requirements. The counts distinguish
+capabilities from acceptance work; they do not claim 10,000 shipped features.
+
+Read the [execution plan](docs/LAN-10000-EXECUTION-PLAN.md) and
+[family checklist index](docs/backlog/LAN-10000-TODO.md). The separate LAN IDs do not alter the
+original WebAppX 1,000-item catalog or its saved unfinished foundation bundle.
+The dependency graph gates design, components, CMS, applications and delivery on
+source ownership, document, command, schema, review and build prerequisites.
+Local/provider/operator readiness does not grant execution permission.
+
+The first implementation batch adds exact source-byte revisions, stale-save
+refusal, independent raw/leaf editor baselines, explicit reload recovery and
+clear transport/conflict feedback. It preserves unsaved drafts and uniform CRLF
+source formatting. Local acceptance is recorded in the
+[dated source-editing receipt](docs/LAN-SOURCE-REVISION-QA-2026-10-26.md); generated completion counts come from
+its explicitly bound requirement records.
+
+Inspect the program without running any tasks:
+
+```bash
+node scripts/lan-backlog.mjs --summary --json
+node scripts/lan-backlog.mjs --ready --limit 20 --json
+node scripts/lan-backlog.mjs --item LAN-00001 --json
+node scripts/lan-backlog.mjs --check
+```
 
 ## LAN Navigator and Webflow research — 2026-10-25
 
