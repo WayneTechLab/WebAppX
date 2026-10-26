@@ -137,6 +137,43 @@ click failure, 734 GET requests, no page errors or refused requests, and all
 685 protected source/model files preserved. This is a failed attempt against
 the preceding freeze, retained separately from the final repair proof.
 
+## Integration environment and publication gates
+
+The implementation is committed as
+`84f718e8d4f2b75f664fedd86fb6ce070df347b5`, matching the four frozen runtime
+fingerprints above. Browser execution originally observed the earlier base plus
+those exact working files; it is not relabeled as an execution of a later commit.
+Local checks used macOS Apple Silicon, Node 25.8.1, Python 3.14.5 and Java 21.
+The template's Node 24.22.0 pins and native Windows acceptance boundaries remain.
+
+- `npm test` passed 19 tests (the existing characterization/security tests and
+  eight new Navigator model fixtures) in the named isolated checkout.
+- `npm run ci:plan:test` passed 14 tests. Script names remain 134; the maintained
+  CI runner still has 68 ordered gates.
+- The prepublication full CI attempt passed gates 1–59 and stopped at gate 60,
+  `browser:sdk-quality`. Its app never mounted because the SDK harness refused
+  a Vite asset URL containing encoded spaces from borrowed dependency paths.
+  The failed report has no SDK observations or mock API requests. It remains
+  failed; gates 61–68 did not run in that attempt.
+- Installed dependencies were copied into the isolated checkout without a
+  download, lockfile change, test modification or request-filter exception.
+  The unchanged standalone SDK suite then passed five workflow groups and
+  all 44 expected status meanings. The source and test hashes are unchanged.
+- `npm run deploy -- hosting --preflight` passed with terminal exit 0 on this
+  implementation and review metadata. It skipped commit/push/deploy and retained
+  app 3.4.0 with deployment count 0. Build output passed LAN production isolation.
+- A full 68-stage rerun is pending after the environment correction. No aggregate
+  CI success or publication is inferred from the standalone SDK or preflight pass.
+- Documentation freshness source review at the implementation commit retained
+  five affected guides with explicit rationales and preserved the 33-record
+  decision prefix, for 38 total decisions. Original guide/receipt dates and
+  source qualifications remain unchanged. This review performs no execution.
+
+The running local session uses an explicit fixed Vite origin so a restart
+preserves the browser's mock-storage origin. Other projects' listeners are not
+owned or stopped by this session. The separate local emulators establish no
+provider account, production identity, payroll, deployment or Windows acceptance.
+
 ## Research and acceptance boundary
 
 The [2026-10-25 Webflow research refresh](../.SYSTEMX/LAN/WEBFLOW-RESEARCH-2026-10-25.md)
