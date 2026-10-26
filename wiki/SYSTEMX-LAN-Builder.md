@@ -27,7 +27,7 @@ The [accepted iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/
 protection and explicitly reviewed replacement. The [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) records
 the exact candidate, repairs, acceptance and limits.
 
-Use **Build → Source → Compare latest** to inspect the retained proposal beside
+Use **Build → Code → Compare latest** to inspect the retained proposal beside
 the latest source and changed line excerpts. Comparison leaves the draft and its
 loaded revision intact. **Review replacement** prepares that exact proposal;
 type `SAVE LOCAL CHANGE` again and choose **Save reviewed replacement** to submit

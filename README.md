@@ -97,8 +97,9 @@ The first implementation batch adds exact source-byte revisions, stale-save
 refusal, independent raw/leaf editor baselines, explicit reload recovery and
 clear transport/conflict feedback. It preserves unsaved drafts and uniform CRLF
 source formatting. Local acceptance is recorded in the
-[dated source-editing receipt](docs/LAN-SOURCE-REVISION-QA-2026-10-26.md); generated completion counts come from
-its explicitly bound requirement records.
+[first source-editing receipt](docs/LAN-SOURCE-REVISION-QA-2026-10-26.md) and
+[conflict-review receipt](docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md).
+Generated completion counts combine their exact bound requirement records.
 
 Inspect the program without running any tasks:
 

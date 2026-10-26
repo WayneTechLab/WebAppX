@@ -8,7 +8,7 @@ The [active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LA
 and [generated queue](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-10000-EXECUTION-PLAN.md)
 record the next work. The original WebAppX catalog remains 179 done / 821 remaining.
 
-Build → Source now supports read-only comparison, explicitly reviewed replacement
+Build → Code now supports read-only comparison, explicitly reviewed replacement
 with fresh confirmation, stale-review refusal and retained missing-file drafts.
 The refresh selector retains an omitted loaded path; only source reads establish
 unavailability. A streaming UTF-8 decoder preserves reviewed Unicode across
