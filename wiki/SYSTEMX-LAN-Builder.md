@@ -23,6 +23,11 @@ no-op behavior accounts for textarea normalization. Read the
 [API reference](SYSTEMX-LAN-API-Reference.md) and
 [source QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
 
+**Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
+remain TODO.** Tested source `136a4cf` passed all 68 CI stages, 11 source-editing
+browser groups, 16 Navigator regression groups and separate Hosting preflight.
+Production deployment was skipped.
+
 ## What it is for
 
 The first target is the **current checkout**. A staff member or builder should

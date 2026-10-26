@@ -13,6 +13,11 @@ feature roadmap. The sections below describe retained webapp extensions.
 
 ## LAN 10,000-item delivery program — 2026-10-26
 
+**Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
+remain TODO.** Tested source `136a4cf` passed all 68 CI stages, 11 source-editing
+browser groups, 16 Navigator regression groups and separate Hosting preflight.
+Production deployment was skipped.
+
 The LAN expansion now has **100 authored families, 2,000 proposed functional
 capabilities and 10,000 delivery requirements**. Each capability has behavior,
 boundary, recovery, feedback and evidence requirements. The counts distinguish

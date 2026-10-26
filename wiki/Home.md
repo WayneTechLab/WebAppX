@@ -2,6 +2,11 @@
 
 ## LAN 10,000-requirement execution program — 2026-10-26
 
+**Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
+remain TODO.** Tested source `136a4cf` passed all 68 CI stages, 11 source-editing
+browser groups, 16 Navigator regression groups and separate Hosting preflight.
+Production deployment was skipped.
+
 The LAN [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-10000-EXECUTION-PLAN.md)
 and [family checklist index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/LAN-10000-TODO.md)
 track 2,000 proposed capabilities through 10,000 delivery requirements. The
@@ -9,7 +14,7 @@ first source-editing batch adds loaded file revisions, stale-save refusal,
 retained drafts, explicit reload and independent raw/leaf baselines. Read the
 [LAN guide](SYSTEMX-LAN-Builder.md) and
 [dated QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-REVISION-QA-2026-10-26.md)
-for actual acceptance. The original WebAppX1,000-item catalog stays separate.
+for actual acceptance. The original WebAppX 1,000-item catalog stays separate.
 
 
 ## LAN Navigator and Webflow research — 2026-10-25

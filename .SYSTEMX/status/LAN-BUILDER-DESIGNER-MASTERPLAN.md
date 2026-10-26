@@ -44,6 +44,11 @@ retains deployment count 0. Later kernel waves remain planned.
 
 ## LAN execution program — 2026-10-26
 
+**Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
+remain TODO.** Tested source `136a4cf` passed all 68 CI stages, 11 source-editing
+browser groups, 16 Navigator regression groups and separate Hosting preflight.
+Production deployment was skipped.
+
 The [LAN execution plan](../../docs/LAN-10000-EXECUTION-PLAN.md) and
 [family checklist index](../../docs/backlog/LAN-10000-TODO.md) define 100 families,
 2,000 proposed capabilities and 10,000 delivery requirements. Cross-family

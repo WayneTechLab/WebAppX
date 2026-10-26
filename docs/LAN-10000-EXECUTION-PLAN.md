@@ -4,7 +4,7 @@ Planning source: `053382b383d0fbffbe5161e9fb4d5f07a3c1fed8`; created 2026-10-26.
 
 The catalog contains 100 authored capability families, 2000 capabilities and 10000 delivery requirements. Five lanes describe behavior, boundaries/refusal, recovery, feedback and evidence. They are acceptance requirements, not a claim that this many independent features ship today.
 
-Current accepted status: 0/10000 requirements and 0/2000 capabilities. 0 capabilities have partial acceptance.
+Current accepted status: 60/10000 requirements and 12/2000 capabilities. 0 capabilities have partial acceptance.
 
 ## Execution and ownership
 

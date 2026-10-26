@@ -82,9 +82,10 @@
   "guarded": [
     {
       "id": "lan.source-write",
-      "label": "Source writes with backup, secret scan, atomic promotion, and confirmation",
+      "label": "Source writes with exact-byte revision precondition, backup, secret scan, atomic promotion and confirmation",
       "requiredConfirmation": "SAVE LOCAL CHANGE",
-      "status": "implemented-but-high-friction"
+      "status": "revision-precondition-backup-confirm",
+      "evidence": "source-revision.test.mjs; source-revision-browser.mjs: 11 passed groups; Agent 0 reviewed docs/LAN-SOURCE-REVISION-QA-2026-10-26.md"
     },
     {
       "id": "lan.inventory-ingest",

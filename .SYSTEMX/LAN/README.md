@@ -526,18 +526,23 @@ checks a requirement; generating the list or querying readiness does not run it.
 The original WebAppX catalog, blank seeds and research packages stay separate.
 
 Source GET responses now expose exact file-byte revisions. Confirmed source
-POST requests require the loaded `baseRevision`; stale saves return a safe409
+POST requests require the loaded `baseRevision`; stale saves return a safe 409
 before backups, temporary writes or operation entries. The editor keeps its
 draft and old baseline. Use **Reload latest source** to review the current file;
 Cancel and failed loads keep the retained draft. Leaf-text editing has its own
 loaded snapshot and cannot silently advance a separate dirty raw editor.
 
-Unchanged valid-UTF8 textarea content preserves the loaded text despite browser
+Unchanged valid UTF-8 textarea content preserves the loaded text despite browser
 newline normalization. Edited uniform CRLF source retains CRLF; edited mixed
 endings have no equivalent preservation claim. Hashes describe one allowed
 file's bytes, separate from Git cleanliness, provider publication and locking.
 See the [API contract](../../wiki/SYSTEMX-LAN-API-Reference.md) and
 [dated QA receipt](../../docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
+
+**Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
+remain TODO.** Tested source `136a4cf` passed all 68 CI stages, 11 source-editing
+browser groups, 16 Navigator regression groups and separate Hosting preflight.
+Production deployment was skipped.
 
 ## Explicit emulator import
 
