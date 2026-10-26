@@ -2,25 +2,27 @@
 
 Updated 2026-10-26 from published baseline `ca6acec6e6780ac738b4ad3e87006a5052f7358a`.
 
-The active goal is to finish the next three F001 capabilities: compare a retained
+This iteration completed three F001 capabilities: compare a retained
 source draft with the current file, preserve drafts when source becomes
 unavailable, and explicitly review and confirm an intentional replacement.
-Accepted baseline: **60/10,000 requirements and 12/2,000 capabilities**. These
-counts change only after observed verification and exact receipt acceptance.
+Accepted result: **75/10,000 requirements and 15/2,000 capabilities**, a delta of
+15 requirements and three capabilities from the 60/12 baseline. The
+[acceptance receipt](LAN-CONFLICT-REVIEW-QA-2026-10-26.md) binds exact definitions
+and the tested candidate. Source/wiki publication is verified in the final handoff.
 
 ## Selected work and acceptance
 
 | Requirements | Capability | Observable acceptance | State |
 | --- | --- | --- | --- |
-| LAN-00026–LAN-00030 | Compare retained drafts with current source | Read current source without changing the draft or its loaded revision; show both revisions and changed lines; choose neither version automatically. | In progress |
-| LAN-00031–LAN-00035 | Detect externally removed source | Report unavailable source, retain the draft and loaded revision, and refuse source recreation or backup/log effects. | In progress |
-| LAN-00041–LAN-00045 | Confirm intentional conflict replacement | Review the exact current source and proposed replacement, then separately confirm a save against that reviewed revision; a later external change still conflicts. | Depends on comparison |
+| LAN-00026–LAN-00030 | Compare retained drafts with current source | Read current source without changing the draft or its loaded revision; show both revisions and changed lines; choose neither version automatically. | Accepted |
+| LAN-00031–LAN-00035 | Detect externally removed source | Report unavailable source, retain the draft and loaded revision, and refuse source recreation or backup/log effects. | Accepted |
+| LAN-00041–LAN-00045 | Confirm intentional conflict replacement | Review the exact current source and proposed replacement, then separately confirm a save against that reviewed revision; a later external change still conflicts. | Accepted |
 
 The last capability depends on the comparison evidence and already accepted
 revision preconditions. The other accepted F001 requirements remain unchanged.
-Target after acceptance: **75 requirements / 15 capabilities**; this is a target,
-not a completion claim. The remaining F001 history, preview, font and recovered
-draft work stays in the [family checklist](backlog/lan-10000/F001.md).
+Verified result: **75 requirements / 15 capabilities**, with 9,925 requirements
+remaining. The generated plan owns the next dependency-ready queue. Remaining
+F001 history, preview, font and recovered draft work stays in the [family checklist](backlog/lan-10000/F001.md).
 
 ## Execution sequence
 
@@ -48,8 +50,8 @@ draft work stays in the [family checklist](backlog/lan-10000/F001.md).
   verify availability through a source read; a partial inventory is not proof
   of deletion. The final 21-group source browser run covers the repaired case.
 - Independent review found that request chunks were decoded separately, allowing
-  split multibyte UTF-8 content to change before saving. A streaming decoder now preserves state
-  across chunks; the actual chunked HTTP regression verifies exact saved text,
+  split multibyte UTF-8 content to change before saving. A streaming decoder now
+  preserves state across chunks; the actual chunked HTTP regression verifies exact saved text,
   returned revision and backup.
 - Browser actions after a completed save must wait for refresh and explicitly
   return to the Source inspector when retained preview selection opens Settings.

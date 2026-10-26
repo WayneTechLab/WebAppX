@@ -71,13 +71,14 @@ macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
 ## LAN 10,000-item delivery program — 2026-10-26
 
-The [active iteration](docs/LAN-ACTIVE-ITERATION.md) continues with source comparison, missing-file
-draft protection and explicitly reviewed replacement. Its 15 requirements stay
-pending until the new browser and release checks are accepted.
+The [accepted iteration](docs/LAN-ACTIVE-ITERATION.md) adds source comparison, missing-file draft
+protection and explicitly reviewed replacement. The [QA receipt](docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) records
+the exact candidate, repairs, acceptance and limits.
 
-**Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
-remain TODO.** Tested source `136a4cf` passed all 68 CI stages, 11 source-editing
-browser groups, 16 Navigator regression groups and separate Hosting preflight.
+**Accepted total: 75 requirements / 15 capabilities; 9,925 requirements remain
+TODO.** The source-conflict batch adds 15 completions. Functional candidate
+`d9bd9e7` passed all 68 CI stages, 21 source-flow browser groups, 16 Navigator
+groups, three actual-app read-only observations and separate Hosting preflight.
 Production deployment was skipped.
 
 The LAN expansion now has **100 authored families, 2,000 proposed functional

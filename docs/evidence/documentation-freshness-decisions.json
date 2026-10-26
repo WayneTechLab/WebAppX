@@ -651,6 +651,84 @@
       "scopeSha256": "0ed152dce0e0cb779189c07f45974eb2476a0e2b14ca022555f848fb85998c07",
       "decision": "retain",
       "rationale": "Reviewed all37 mapped changed paths: LAN Navigator/revision/session/import and separate delivery-plan changes, compatible root/starter/backend locks, tests and command/parity metadata. No optional identity, service, CSP/report collector, OAuth, telemetry, Windows runner, deployment identity or provider policy is installed or activated. The original WX catalog and artifact designs remain separate;134 script names and68 CI stages remain. Retain the index and its exact historical receipt qualifications; this review performs no adoption or provider operation."
+    },
+    {
+      "id": "DFR-88272173076df481",
+      "guideId": "portal-state-contract",
+      "reviewedBy": "Codex (LAN capability audit)",
+      "reviewedOn": "2026-10-26",
+      "targetRevision": "d9bd9e763ef2274ebaace559c32c92103c53ca12",
+      "reportDigest": "b15de01a1d4d2ce038d2a057b86abb4b14527a42ae9599c420ce7dd876aebf77",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "b67717fcd38a4307a0ac94873d6eb208fad694222559dd678857afd278586021",
+      "decision": "retain",
+      "rationale": "Freshly reviewed the sole mapped change since 3ae29392: compatible backend lock updates to body-parser 2.4.0 and qs 6.16.1. Native HR/CMS/CRM persistence, retention, navigation, drafts, recovery and inspection source is unchanged. The guide retains explicit native versus SDK/backend boundaries and dated source/receipt qualifications. This source review records no new browser observation or provider operation."
+    },
+    {
+      "id": "DFR-1c9a93394018b64c",
+      "guideId": "portal-lifecycle",
+      "reviewedBy": "Codex (LAN capability audit)",
+      "reviewedOn": "2026-10-26",
+      "targetRevision": "d9bd9e763ef2274ebaace559c32c92103c53ca12",
+      "reportDigest": "b15de01a1d4d2ce038d2a057b86abb4b14527a42ae9599c420ce7dd876aebf77",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "5a8be277835174c5d58780fc9e43ff8c288a323440a77b18cea47518036eaaf5",
+      "decision": "retain",
+      "rationale": "Freshly reviewed the backend lock repair and CI registrations for expanded LAN/session/catalog/comparison tests. No native employment, release, ownership or journal implementation, dedicated lifecycle journey or documented workflow command changed. The guide keeps its original lifecycle/recruiting/payroll observations bound to their dates and sources. Retain without relabeling historical receipts as candidate execution."
+    },
+    {
+      "id": "DFR-0bc9f209d3727856",
+      "guideId": "hr-recruiting-lifecycle",
+      "reviewedBy": "Codex (LAN capability audit)",
+      "reviewedOn": "2026-10-26",
+      "targetRevision": "d9bd9e763ef2274ebaace559c32c92103c53ca12",
+      "reportDigest": "b15de01a1d4d2ce038d2a057b86abb4b14527a42ae9599c420ce7dd876aebf77",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "5b715919714102ea72ca2228eac75fab58c229170178d54007458b004aeb5d68",
+      "decision": "retain",
+      "rationale": "Freshly reviewed the only mapped change, scripts/ci-plan.mjs, including the new generic source-comparison test registration. Recruiting implementation, dedicated runner, literal expectations, private-draft/export rules and typed-provider boundary remain unchanged. Existing recruiting command strings and historical receipt qualifications still match. This review performs no recruiting execution or acceptance."
+    },
+    {
+      "id": "DFR-2e17a4181bf95aac",
+      "guideId": "developer-setup-contracts",
+      "reviewedBy": "Codex (LAN capability audit)",
+      "reviewedOn": "2026-10-26",
+      "targetRevision": "d9bd9e763ef2274ebaace559c32c92103c53ca12",
+      "reportDigest": "b15de01a1d4d2ce038d2a057b86abb4b14527a42ae9599c420ce7dd876aebf77",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "98912ae8ad59b4051713bcae170b6be3dc1f63e9501774998d4a2b2f93eadbed",
+      "decision": "retain",
+      "rationale": "Reviewed all 38 mapped changed paths and unchanged guide inputs. Added LAN behavior covers bounded comparison, missing-file draft protection, explicit normal revision-conditioned replacement and streaming UTF-8 JSON decoding; the separate delivery queue remains nonexecuting. Existing command aliases and six discovery purposes remain valid. The manifest retains 134 script names and the read-only CI source report retains 68 stages with no unknown classification. Dated execution counts remain historical; this review supplies no new test or deployment result."
+    },
+    {
+      "id": "DFR-3fd588f4a233e4f4",
+      "guideId": "crm-duplicates-and-merges",
+      "reviewedBy": "Codex (LAN capability audit)",
+      "reviewedOn": "2026-10-26",
+      "targetRevision": "d9bd9e763ef2274ebaace559c32c92103c53ca12",
+      "reportDigest": "b15de01a1d4d2ce038d2a057b86abb4b14527a42ae9599c420ce7dd876aebf77",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "f72592540ef56cd6f0859e1cac372326aa681b1d6524c681dbe2081bf89487fb",
+      "decision": "retain",
+      "rationale": "Freshly reviewed package.json test-list expansions and exact CI registrations, including generic LAN source-comparison coverage. CRM merge implementation, privacy and ownership guards, finite limits, full recovery and the dedicated lifecycle journey remain unchanged. The documented portals:test and browser:portal-lifecycle commands still match. Retain the guide with its original dated acceptance and receipt scope; no fresh CRM execution is inferred."
+    },
+    {
+      "id": "DFR-dd50a1a0fb0c0521",
+      "guideId": "optional-adoption-contracts",
+      "reviewedBy": "Codex (LAN capability audit)",
+      "reviewedOn": "2026-10-26",
+      "targetRevision": "d9bd9e763ef2274ebaace559c32c92103c53ca12",
+      "reportDigest": "b15de01a1d4d2ce038d2a057b86abb4b14527a42ae9599c420ce7dd876aebf77",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "0ed152dce0e0cb779189c07f45974eb2476a0e2b14ca022555f848fb85998c07",
+      "decision": "retain",
+      "rationale": "Reviewed all 39 mapped changed paths and unchanged artifact/receipt inputs. Local LAN comparison, revision-conditioned replacement, missing-source refusal, UTF-8 parsing, session controls and the separate ready queue install no optional identity, service, OAuth, telemetry, CSP collector, Windows runner, deployment identity or provider policy. The original WX catalog remains separate, with 134 script names and 68 CI stages retained. Keep the design index and historical observations unchanged; this review performs no adoption, provider operation or acceptance."
     }
   ]
 }

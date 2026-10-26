@@ -115,7 +115,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root documents the complete template, native portals and host operations; the starter has a separate standalone scaffold introduction.",
-      "rootSha256": "bc5f992584e29ef24850871ef0a9334840b7e6951981298288333c9a89874662",
+      "rootSha256": "dd64b60a473e0de1b0f7a91af76392bfee45cdf7b927a4819d11ce3ac6af6a61",
       "starterSha256": "baf20c16fecb6fd11e47a5d60a2d5f70b208f21db55e06ae8d9415e721ca5c21"
     },
     {

@@ -23,9 +23,9 @@ no-op behavior accounts for textarea normalization. Read the
 [API reference](SYSTEMX-LAN-API-Reference.md) and
 [source QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
 
-The [active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) continues with source comparison, missing-file
-draft protection and explicitly reviewed replacement. Its 15 requirements stay
-pending until the new browser and release checks are accepted.
+The [accepted iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) adds source comparison, missing-file draft
+protection and explicitly reviewed replacement. The [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) records
+the exact candidate, repairs, acceptance and limits.
 
 Use **Build → Source → Compare latest** to inspect the retained proposal beside
 the latest source and changed line excerpts. Comparison leaves the draft and its
@@ -40,9 +40,10 @@ and blocks saving; restore the file externally or select an existing file and
 reload. It offers no recreation or force-save action.
 
 
-**Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
-remain TODO.** Tested source `136a4cf` passed all 68 CI stages, 11 source-editing
-browser groups, 16 Navigator regression groups and separate Hosting preflight.
+**Accepted total: 75 requirements / 15 capabilities; 9,925 requirements remain
+TODO.** The source-conflict batch adds 15 completions. Functional candidate
+`d9bd9e7` passed all 68 CI stages, 21 source-flow browser groups, 16 Navigator
+groups, three actual-app read-only observations and separate Hosting preflight.
 Production deployment was skipped.
 
 ## What it is for

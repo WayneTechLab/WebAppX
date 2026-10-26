@@ -1,5 +1,23 @@
 # Update Log
 
+## Source conflict review and goal milestone — 2026-10-26
+
+The next LAN milestone is accepted: **15 new requirements / three capabilities**,
+bringing the program to **75/10,000 requirements and 15/2,000 capabilities**.
+The [active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md)
+and [generated queue](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-10000-EXECUTION-PLAN.md)
+record the next work. The original WebAppX catalog remains 179 done / 821 remaining.
+
+Build → Source now supports read-only comparison, explicitly reviewed replacement
+with fresh confirmation, stale-review refusal and retained missing-file drafts.
+The refresh selector retains an omitted loaded path; only source reads establish
+unavailability. A streaming UTF-8 decoder preserves reviewed Unicode across
+network chunks. Candidate `d9bd9e7` passed all 68 CI stages, 21 source-flow groups,
+16 Navigator groups, three actual-app read-only observations and separate Hosting
+preflight. Deployment was skipped. Read the
+[QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md).
+
+
 ## LAN 10,000-requirement execution program — 2026-10-26
 
 **Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
