@@ -113,7 +113,7 @@
     },
     {
       "name": "backlog:test",
-      "purpose": "Tests the original WebAppX catalog and the separate LAN capability/requirement catalog, dependency graph and evidence bindings.",
+      "purpose": "SYSTEMX",
       "description": "Tests the original WebAppX catalog and the separate LAN capability/requirement catalog, dependency graph and evidence bindings."
     },
     {
