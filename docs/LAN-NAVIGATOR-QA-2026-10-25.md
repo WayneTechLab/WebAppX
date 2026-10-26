@@ -162,12 +162,35 @@ The template's Node 24.22.0 pins and native Windows acceptance boundaries remain
 - `npm run deploy -- hosting --preflight` passed with terminal exit 0 on this
   implementation and review metadata. It skipped commit/push/deploy and retained
   app 3.4.0 with deployment count 0. Build output passed LAN production isolation.
-- A full 68-stage rerun is pending after the environment correction. No aggregate
-  CI success or publication is inferred from the standalone SDK or preflight pass.
+- The environment-corrected full CI rerun passed gates 1–62, including all 15
+  main browser suites (218 check entries) and the separate eight-check HR-disabled
+  rehearsal. It stopped at gate 63 on a newly reported backend dependency audit
+  finding. Its 226 combined browser/rehearsal checks do not establish full CI.
+  Gates 64–68 did not run. The dependency-corrected full rerun is pending.
 - Documentation freshness source review at the implementation commit retained
   five affected guides with explicit rationales and preserved the 33-record
   decision prefix, for 38 total decisions. Original guide/receipt dates and
   source qualifications remain unchanged. This review performs no execution.
+
+### Compatible dependency audit repairs
+
+Current registry audits reported three affected package families. The root and
+starter locks now resolve **Vite 8.1.6** and **Zod 4.6.6**. Vite's required
+Rolldown/platform bindings, picomatch and OXC type updates accompany that fix.
+The Gusto backend lock now resolves **body-parser 2.4.0** and its required
+**qs 6.16.1**. Direct dependency specifications and all three package manifests
+remain unchanged; no overrides, audit exceptions or provider configuration were
+added. There are no package-record additions or removals.
+
+The maintainer sources identify the fixed
+[Vite backport](https://github.com/vitejs/vite/security/advisories/GHSA-rq7h-c2jc-7f22),
+[Windows editor fix](https://github.com/vitejs/launch-editor/security/advisories/GHSA-587h-7wmj-h5pm),
+[Zod collection validation fix](https://github.com/colinhacks/zod/pull/6652) and
+[body-parser fix](https://github.com/expressjs/body-parser/security/advisories/GHSA-27r3-jxmh-p828).
+All three lock audits reported **zero vulnerabilities** after the changes.
+Installed root dependencies, the complete CI pipeline and Hosting preflight must
+also pass before publication. Registry audit results remain observations of the
+retrieval date; they are not a claim of exhaustive security or deployed fixes.
 
 The running local session uses an explicit fixed Vite origin so a restart
 preserves the browser's mock-storage origin. Other projects' listeners are not

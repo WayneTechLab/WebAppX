@@ -166,8 +166,8 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Separate reviewed lockfiles retain their own complete dependency trees; shared root metadata is checked without regenerating either lock.",
-      "rootSha256": "b8246a11033ec7597f62854ceb75136978380e123801d0fc42c92aa73feb8df6",
-      "starterSha256": "8e1e93ecb50adb4e5d5ed53208b062cdec74748b42a70efaadf9de31366f671a"
+      "rootSha256": "f3a74ceb08851c3fb6f6387b2d44e7ecebce1979f6d5fb0dad832a030bc3c935",
+      "starterSha256": "0911492b8f178972a5f9977aea3634897e79cc154b3c197f84fdde3fe31cca9c"
     },
     {
       "group": "dependency",
