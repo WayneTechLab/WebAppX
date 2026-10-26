@@ -1,0 +1,157 @@
+# LAN Navigator QA receipt — 2026-10-25
+
+**Status:** bounded read-only Navigator slice passed focused model checks and
+the final 16-group rendered browser run. Agent 0 confirmed independent review
+and approved this capability. Aggregate CI and publication gates remain a
+separate result; this receipt does not assert their completion.
+
+**Source baseline:** WebAppX `e73aa4fddba5dbc4f6b853750af9fb482266bba4`, with a
+local Navigator increment. The baseline commit does not contain the increment.
+The file fingerprints below identify the fourth frozen implementation under
+review; they are independent of any later commit or publication claim.
+
+## Scope and behavior
+
+The change retains the existing LAN shell, structure rail, center Vite preview,
+right inspector, responsive controls, and guarded source APIs. It extends
+read-only orientation within one live preview document:
+
+- Bounded hierarchy discovery beyond the former ten-immediate-child view.
+- Expansion/collapse independent of selection and unrelated DOM updates.
+- Search by tag, ID, class, explicit name, or component metadata, including
+  `#id` and `.class` forms; no bulk descendant text or input-value search.
+- Selection shared by canvas, Navigator, breadcrumb, Settings, and Components.
+- Ancestor breadcrumb selection, selected-path reveal, and off-screen scroll
+  when the target has an available rendered box.
+- ARIA tree rows, roving focus, local arrow/Home/End handling, and explicit
+  Enter/Space selection that retains tree focus.
+- Current-document/connected-target checks and debounced live DOM refresh.
+- Labeled hidden/inert metadata and honest unavailable reveal without changing
+  app visibility, hierarchy, or app focus.
+
+Selected leaf-text editing continues through the existing explicit preview,
+revert, and confirmation-gated source-save flow. Selection labels use a bounded
+leaf fallback; they do not aggregate a selected container's descendant text or
+name form controls from their contents.
+
+A full iframe reload may safely clear selection while the application remounts;
+automatic anchor restoration is not an acceptance guarantee. The operator can
+select the current target again. A stale object from the previous document must
+never be used to select a different current element.
+
+## Bounds and evidence limits
+
+| Surface | Bound and behavior |
+| --- | --- |
+| Traversal | At most 1,500 examined nodes and 40 descendant levels below Body. Excluded executable/document metadata nodes do not enter the tree. |
+| Metadata | First 500 raw characters per searchable attribute, clipped before whitespace normalization. Oversized metadata is disclosed. |
+| Search | 160 query characters; the first 120 inspected matches include their ancestor paths. Literal matching uses only the permitted metadata. |
+| Rendered view | At most 500 rows. Truncation is explicit; a zero-match result over an incomplete scan is described as incomplete. |
+| Selection | The actual element must be connected and belong to the current preview document's Body. Detached or old iframe references cannot select a replacement by index or label. |
+| Reveal | Scrolls an available rendered target. Hidden/inert or unrendered targets stay inspectable and receive an unavailable message; no app visibility or hierarchy mutation occurs. |
+
+The tree is runtime DOM inspection. It does not establish a canonical
+DesignerDocument, stable source identity, discovery of unmounted routes or
+closed shadow roots, cross-origin iframe access, drag/reorder, structural source
+editing, undo/redo, token/cascade provenance, or production readiness. Existing
+source/API/session controls are preserved and remain separate from navigation.
+
+## Fourth frozen source fingerprints
+
+SHA-256 values were captured after the two narrow pre-review repairs (preserve
+collapsed branches on unrelated DOM refresh and avoid container/form-content
+aggregation in selection labels), the leaf-indicator repair, and removal of an
+existing CSS rule that blocked ordinary iframe clicks in Interact mode while
+the right inspector was open. Disclosure clicks toggle branches; clicking a
+leaf's dot selects the leaf normally. Interact mode must allow actual product
+links and controls even when an inspector remains open.
+
+| Repository-relative file | SHA-256 |
+| --- | --- |
+| `.SYSTEMX/LAN/Website/dashboard.js` | `86f9e47af76a180b8072ba1d82ab2d16828f69a0eea7a68341906f54ba35e052` |
+| `.SYSTEMX/LAN/Website/dashboard.css` | `acfa35f8df79c76a16660b43a6fda05bd85bb8b18232a066dca9f4510623adc7` |
+| `.SYSTEMX/LAN/Website_Dashboard.html` | `d5f20ea40eb3c7df0f78d0c8fa00afb25527aa022a7e375c5eef8403aa98964e` |
+| `.SYSTEMX/LAN/Website/preview-navigator.js` | `76ede06eb1be383d9b86b9ebd09a131a6baca48f57493088af8218e97082ce78` |
+| `.SYSTEMX/LAN/tests/preview-navigator.test.mjs` | `0726e4ff9bb291c9cb732866870a2a636bdbb297867a352eb35adc605c481303` |
+
+## Verification recorded so far
+
+| Check | Observed result | Boundary |
+| --- | --- | --- |
+| `node --test .SYSTEMX/LAN/tests/preview-navigator.test.mjs` | 8 passed, 0 failed after the last repair. | Pure model fixtures: hierarchy width/expansion, metadata-only search, hidden/inert inheritance, excluded nodes, budgets, stale scope, and DOM replacement/reparenting. This does not verify browser layout or event behavior. |
+| `node --check .SYSTEMX/LAN/Website/dashboard.js` and model syntax check | Passed after the last repair. | Syntax only. |
+| Targeted ESLint with `--max-warnings=0` for dashboard, model, and focused test | Passed after the last repair. | Static lint only. |
+| First browser attempt | Partial run retained; its route-picker assertion expected a legacy label that differed from the actual existing UI. It is not a passing suite or acceptance receipt. | First frozen implementation, before the two review repairs. |
+| Second rendered browser attempt | Failed after 10 completed checks because its reload assertion required automatic About-heading selection restoration. The accepted contract permits safe clear/reselection instead. The retained result records no page errors, read-only requests, preserved protected bytes, and matching before/after second-freeze hashes. | Partial evidence on the second frozen source; not final acceptance. Its completed checks include preserved branch collapse and poisoned-container privacy. |
+| Third rendered browser attempt | Failed after 12 completed checks when a genuine About-page link click was blocked in Interact mode with Settings open. The blocking `pointer-events: none` CSS rule was removed for the fourth freeze. | Actual UX defect; layout and other focus rules were preserved. The final rendered retest below passed. |
+| Final rendered browser run | Passed all 16 groups against the fourth frozen runtime fingerprints. The result records 734 GET requests, zero page errors or refused requests, all 685 protected source/model files unchanged, and matching before/after runtime hashes. | Actual Home/About journeys and isolated DOM fixtures, with no source/provider write. The final artifact is `webappx-navigator-browser-FRaeCR`. |
+| Independent integration review | Agent 0 confirmed approval of the bounded read-only capability after the final result. The leaf-indicator finding was repaired and tested. | Supports `lan.live-dom-navigator` only; planned kernel/authoring features remain planned. |
+| Aggregate CI, host drift, template/research checks, Hosting preflight | Not established by this receipt. | Agent 0 records actual commands/results separately. |
+
+The browser test source is
+[navigator-browser.mjs](../.SYSTEMX/LAN/tests/navigator-browser.mjs); the focused
+model test is
+[preview-navigator.test.mjs](../.SYSTEMX/LAN/tests/preview-navigator.test.mjs).
+Browser screenshots, result JSON, source-fingerprint comparisons, and exact
+retained evidence locations come from the actual browser run. No result or
+artifact has been inferred from source presence or a worker's intention.
+
+The final passing report ran from `2026-10-26T05:56:05.345Z` through
+`2026-10-26T05:56:14.868Z` (2026-10-25 in America/Los_Angeles). Its retained
+artifact is `webappx-navigator-browser-FRaeCR`, containing:
+
+- `result.json`, `protected-before.json`, and `protected-after.json`.
+- `01-actual-home-three-panels.png`, `02-fixture-beyond-ten.png`,
+  `03-fixture-breadcrumbs-reveal.png`, `04-fixture-bounded-scan.png`, and
+  `05-actual-home-final.png`.
+- `trace.zip` for the full run.
+
+The 16 groups include real Home heading selection; the 36th sibling and leaf
+indicator; permitted metadata search and typing safety; ARIA tree navigation;
+collapse persistence; poisoned-container privacy; breadcrumb and off-screen
+reveal; hidden/inert/unrendered inspection; selected-node removal; actual page
+picker and safe-clear About reload; native AppLink interaction with Settings
+open and same-document route refresh; 1,700-node and 45-level budget fixtures;
+and final preservation checks. Fixtures existed only in the owned browser's
+iframe DOM. They were not persisted app content or local builder models.
+
+The harness used a supplied, already owned loopback Vite/LAN session. It created
+and closed its own Chromium/context, and did not start or stop application
+processes. Non-read methods and external requests were refused by the harness
+before dispatch; the passing run attempted neither. Same-origin Vite HMR
+websockets were permitted. Source-save, production/provider mutation, and owner
+acceptance were outside the browser proof.
+
+The second attempt's retained evidence artifact is
+`webappx-navigator-browser-UdanJd`: `result.json`,
+`01-actual-home-three-panels.png`, `02-fixture-beyond-ten.png`,
+`03-fixture-breadcrumbs-reveal.png`, `failure.png`, and `trace.zip`. Its result
+is explicitly `failed`; the final passing report must remain a separate
+artifact. Host-local absolute locations belong in the integration handoff,
+rather than reusable template paths.
+
+The third attempt's retained artifact is
+`webappx-navigator-browser-6SaiS7`, with `result.json`, screenshots, and
+`trace.zip`. It records 12 completed groups followed by the genuine Interact
+click failure, 734 GET requests, no page errors or refused requests, and all
+685 protected source/model files preserved. This is a failed attempt against
+the preceding freeze, retained separately from the final repair proof.
+
+## Research and acceptance boundary
+
+The [2026-10-25 Webflow research refresh](../.SYSTEMX/LAN/WEBFLOW-RESEARCH-2026-10-25.md)
+links the current first-party workspace, Navigator, and keyboard documentation.
+Hierarchy selection/reveal and selectable breadcrumbs inform this increment.
+Navigator metadata search is a LAN requirement; this research did not establish
+that Webflow's Navigator provides equivalent text search. No comparative
+usability or performance claim is accepted without measurement.
+
+The original research packages/checksums and managed release snapshots remain
+untouched. This increment does not complete the planned kernel waves, accept
+unrelated backlog items, apply the saved unfinished HR foundation, publish a
+provider artifact, or authorize production deployment. The
+[capability manifest](../.SYSTEMX/LAN/Builder/contracts/capability-manifest.json)
+adds only `lan.live-dom-navigator`, backed by the focused `npm test` entry, the
+final browser artifact, and Agent 0's independent review confirmation.
+Publication still requires the repository's normal checks and explicit
+production authorization.

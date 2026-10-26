@@ -66,16 +66,38 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
-## Full stop and resume savepoint — 2026-10-15
+## LAN Navigator and Webflow research — 2026-10-25
 
-Work is **paused at the owner's request**. The accepted catalog is **179 done /
+The owner resumed a bounded LAN builder iteration on 2026-10-25. Open the
+same-origin `/__systemx/` bridge after `npm run dev:systemx`, then choose
+**Navigator**. Search the current rendered hierarchy by tag, ID, class or explicit
+component name, expand branches, select with the keyboard, follow ancestor
+breadcrumbs and use **Reveal selection**. These controls inspect the live page;
+structural source authoring remains a later roadmap gate.
+
+The [dated Webflow study](.SYSTEMX/LAN/WEBFLOW-RESEARCH-2026-10-25.md) reviews 25 official sources and defines
+measurable priorities for local source ownership, recoverable commands, style
+provenance, component contracts and portable releases. It retains familiar
+structure/canvas/inspector orientation and records Webflow's current React/Vite,
+component and MCP capabilities. Proposed advantages still require comparative
+acceptance evidence. Read the [Navigator guide](.SYSTEMX/LAN/README.md) and
+[dated QA receipt](docs/LAN-NAVIGATOR-QA-2026-10-25.md) for tested scope, limits and repeatable checks.
+
+The original catalog remains **179 done / 821 remaining**. This LAN iteration
+leaves the seven saved foundation candidates unchecked and their bundle unapplied.
+App **3.4.0**, pinned SYSTEMX **1.9.0-alpha.6** and deployment count **0** remain
+unchanged.
+
+## Historical full-stop savepoint — 2026-10-15
+
+The owner paused work at this historical checkpoint. The accepted catalog is **179 done /
 821 remaining**, a **+45** verified delta from the published 134-item baseline.
 Seven unfinished foundation items remain unchecked. Their 56-file source snapshot
 is preserved as an unapplied, verified Git bundle in the
 [full-stop savepoint](docs/checkpoints/FULL-STOP-2026-10-15.md), with exact hashes,
 focused results, known integration gaps and resume instructions. Main's app source
 retains the tested CRM predecessor; this checkpoint adds no feature acceptance,
-provider activation or production deployment. Resume requires a new owner request.
+provider activation or production deployment. The 2026-10-25 owner request resumes the bounded LAN iteration above; the saved foundation work remains paused.
 
 ## CRM merges and complete checklist reconciliation — locally accepted
 

@@ -308,6 +308,84 @@ workspace map, route rules, and acceptance checks. The supporting 56-record
 de-identified public builder review is in
 [`LAN-BUILDER-UX-RESEARCH.md`](LAN-BUILDER-UX-RESEARCH.md).
 
+## Live preview Navigator
+
+The Navigator shows a bounded hierarchy of the current same-origin preview
+document before a canvas element is selected. Open it with the left rail or
+`Z`, expand a branch, and select a row to inspect that element while retaining
+Navigator focus. Canvas selection reveals the matching ancestor path in the
+tree. The breadcrumb provides selectable ancestors, and **Reveal selection**
+clears the current search, expands the selected path, and scrolls the preview
+target into view when it has an available rendered box.
+
+**Search live hierarchy** matches tags, IDs, classes, `data-systemx-name`, and
+`data-systemx-component` metadata. Both raw names and `#id` or `.class` queries
+work. The projection does not collect descendant text, input values,
+placeholders, or accessibility labels for search. **Clear search** returns to
+the unfiltered tree. Search displays matching elements together with their
+ancestors; clear it before manually collapsing those filtered paths.
+
+Within the tree, keyboard focus and selection are separate:
+
+| Key | Tree behavior |
+| --- | --- |
+| Up / Down | Focus the previous or next visible row. |
+| Right | Expand a collapsed branch, or focus its first visible child. |
+| Left | Collapse an expanded branch, or focus its parent. |
+| Home / End | Focus the first or last visible row. |
+| Enter / Space | Select and reveal the focused element without opening Settings. |
+
+These tree keys are scoped to tree rows. Inputs retain their native typing and
+arrow behavior, and existing canvas parent/child/sibling shortcuts remain
+available outside the tree. A deliberate click on a safe leaf-text element in
+the canvas still opens the guarded text editor.
+
+The inspection budgets are explicit:
+
+| Budget | Limit |
+| --- | ---: |
+| Examined DOM nodes | 1,500 |
+| Descendant depth below Body | 40 |
+| Search query | 160 characters |
+| Search matches included with ancestor paths | First 120 |
+| Rendered tree rows | 500 |
+| Searchable metadata per attribute | 500 characters |
+
+The status explains when a node, depth, metadata, query, match, or row budget
+limits the result. A search with no matches in an incomplete scan is identified
+as incomplete. Script, style, head, template, and related executable/document
+metadata nodes are excluded. Expand/collapse state is temporary UI state and
+survives unrelated mutations in the same preview document; it is reset for a
+new document. DOM replacement and route changes invalidate stale selections.
+Every selection checks that its target is connected to the current preview
+Body before using it. A full iframe reload may clear selection while React
+mounts; select the current element again. Reload does not guarantee durable
+source identity or automatic selection restoration.
+
+Hidden, inert, and ARIA-hidden attributes are labeled, including inherited
+states. These nodes remain inspectable as runtime metadata. Reveal reports
+hidden/inert targets or targets without an available rendered box; it does not
+remove visibility controls, change app hierarchy, or focus the app element.
+CSS-hidden elements can remain present in the tree even when they have no
+rendered box. Selecting one does not make it visible.
+
+This hierarchy describes the rendered DOM of one current preview document.
+Unloaded routes, unmounted/virtualized source objects, closed shadow roots,
+and cross-origin iframe contents are outside that projection. The tree does
+not supply stable source IDs, structural source editing, reorder, a command
+journal, or a CSS cascade engine. Existing source saves retain their separate
+allowlist, session-token, confirmation, backup, secret-scan, and atomic-write
+controls.
+
+The [dated Webflow research refresh](WEBFLOW-RESEARCH-2026-10-25.md) explains the
+source basis and remaining roadmap. Official Navigator and workspace research
+informs hierarchy selection, reveal, and breadcrumbs; Navigator text search is
+a proposed LAN usability feature, rather than an established Webflow parity
+claim. See the [dated Navigator QA receipt](../../docs/LAN-NAVIGATOR-QA-2026-10-25.md)
+for the exact source fingerprints and verification status. Source
+implementation, local browser evidence, aggregate checks, and publication
+remain distinct acceptance boundaries.
+
 ## Directory rules
 
 Committed local-control source belongs under `Builder/` and its contracts.

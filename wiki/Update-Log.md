@@ -1,5 +1,28 @@
 # Update Log
 
+## LAN Navigator and Webflow research — 2026-10-25
+
+The owner resumed a bounded LAN builder iteration on 2026-10-25. Open the
+same-origin `/__systemx/` bridge after `npm run dev:systemx`, then choose
+**Navigator**. Search the current rendered hierarchy by tag, ID, class or explicit
+component name, expand branches, select with the keyboard, follow ancestor
+breadcrumbs and use **Reveal selection**. These controls inspect the live page;
+structural source authoring remains a later roadmap gate.
+
+The [dated Webflow study](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/LAN/WEBFLOW-RESEARCH-2026-10-25.md) reviews 25 official sources and defines
+measurable priorities for local source ownership, recoverable commands, style
+provenance, component contracts and portable releases. It retains familiar
+structure/canvas/inspector orientation and records Webflow's current React/Vite,
+component and MCP capabilities. Proposed advantages still require comparative
+acceptance evidence. Read the [Navigator guide](SYSTEMX-LAN-Builder.md) and
+[dated QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-NAVIGATOR-QA-2026-10-25.md) for tested scope, limits and repeatable checks.
+
+The original catalog remains **179 done / 821 remaining**. This LAN iteration
+leaves the seven saved foundation candidates unchecked and their bundle unapplied.
+App **3.4.0**, pinned SYSTEMX **1.9.0-alpha.6** and deployment count **0** remain
+unchanged.
+
+
 ## 3.4.0 recruiting lifecycle and provider adapter accepted locally — 2026-10-15
 
 Agent 0 accepted **eleven original local criteria: WX-0201–WX-0210 and

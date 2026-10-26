@@ -52,6 +52,35 @@ token, backup, secret scan, and explicit `SAVE LOCAL CHANGE` confirmation.
 Cloud writes are not enabled by a readiness card; they require a future
 authenticated adapter and the existing `.SYSTEMX` preflight.
 
+## Live Navigator — 2026-10-25
+
+Open the Vite-origin `/__systemx/` bridge and select **Navigator** (shortcut `Z`).
+Search tags, IDs, classes, `data-systemx-name` or `data-systemx-component`; labels
+use bounded structural metadata. Click a row to inspect it, use branch chevrons
+to expand/collapse, and use the clickable canvas breadcrumbs to select an ancestor.
+**Reveal selection** clears a hiding query, opens the ancestor path and scrolls
+a visible target into view. Hidden, inert or unrendered elements remain unavailable
+on the canvas and are not made visible by inspection.
+
+Inside the tree, Up/Down move through visible rows, Right expands or enters a
+branch, Left collapses or moves to its parent, Home/End reach the visible ends,
+and Enter/Space select. Keyboard focus stays in the Navigator. Typing in search
+does not run canvas navigation shortcuts. Route changes, removed nodes and replaced
+iframe documents cannot activate stale targets; reload may clear selection.
+
+The snapshot is bounded to 1,500 nodes, depth 40, 500-character metadata fields,
+a 160-character query, 120 matches and 500 projected rows. Incomplete results
+show a truncation notice. It covers the current rendered DOM, excluding unmounted
+routes, shadow roots and cross-origin frame contents. The existing guarded leaf
+text editor remains separate; this tree adds no source-write or reorder operation.
+
+Read the [25-source official Webflow study](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/LAN/WEBFLOW-RESEARCH-2026-10-25.md),
+[local usage guide](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/LAN/README.md)
+and [dated Navigator QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-NAVIGATOR-QA-2026-10-25.md).
+The study retains the familiar structure/canvas/inspector layout, corrects stale
+competitor assumptions and sequences later canonical document, command journal,
+style, component/CMS and release work. Those later capabilities remain planned.
+
 ## LAN Builder Designer research overlay
 
 The supplied `SFWA-WTL-LAN-BUILDER-DESIGNER-RESEARCH-PACKAGE-v1.0.0` package is now

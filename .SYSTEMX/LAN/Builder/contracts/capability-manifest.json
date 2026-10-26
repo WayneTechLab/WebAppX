@@ -71,6 +71,12 @@
       "label": "Offline-first Google Fonts browser and live Vite font inventory",
       "surface": "GET /api/fonts/catalog, GET /api/fonts/project, Style inspector Font browser",
       "evidence": "font-catalog.json, Google CSS2 preview loading, and live document.fonts read model"
+    },
+    {
+      "id": "lan.live-dom-navigator",
+      "label": "Bounded read-only live preview hierarchy, metadata search, selection and reveal",
+      "surface": "Same-origin Vite /__systemx/ Navigator, ancestor breadcrumbs and Reveal selection",
+      "evidence": "npm test: preview-navigator.test.mjs; navigator-browser.mjs: 16 passed groups in webappx-navigator-browser-FRaeCR; Agent 0 reviewed docs/LAN-NAVIGATOR-QA-2026-10-25.md"
     }
   ],
   "guarded": [

@@ -1,3 +1,5 @@
+import { previewNavigatorLimits, collectPreviewHierarchy, projectPreviewRows, ancestorPreviewEntries, isCurrentPreviewElement } from './preview-navigator.js'
+
 const apiBase = window.location.pathname.startsWith('/__systemx') ? '/__systemx' : ''
 const sessionToken = document.querySelector('meta[name="systemx-session"]')?.content ?? ''
 const layoutStorageKey = 'systemx.lan.builder.layout.v4'
@@ -77,6 +79,15 @@ const state = {
   previewContextTarget: null,
   previewParentElements: [],
   previewLayerElements: [],
+  previewBreadcrumbElements: [],
+  previewNavigatorSnapshot: null,
+  previewNavigatorRows: [],
+  previewNavigatorExpanded: new Set(),
+  previewNavigatorFocus: null,
+  previewNavigatorQuery: '',
+  previewNavigatorObserver: null,
+  previewNavigatorTimer: null,
+  previewNavigatorRoute: null,
   previewTextOriginals: new WeakMap(),
   previewInspectorRetry: null,
   fontCatalog: [],
@@ -642,7 +653,11 @@ function elementLabel(element) {
     IMG: 'Image',
   }
   const prefix = semanticLabels[element.tagName] ?? element.tagName.toLowerCase()
-  const textValue = element.textContent?.replace(/\s+/g, ' ').trim()
+  // Selection labels may summarize a leaf, but never aggregate a container's
+  // private subtree or use form control contents as a name.
+  const textValue = element.children.length === 0 && !['INPUT', 'TEXTAREA', 'SELECT', 'OPTION'].includes(element.tagName)
+    ? element.textContent?.slice(0, 160).replace(/\s+/g, ' ').trim()
+    : ''
   return textValue ? `${prefix}: ${textValue.slice(0, 54)}` : prefix
 }
 
@@ -812,7 +827,8 @@ function clearPreviewSelection() {
   state.previewSelectionAnchor = null
   state.previewLayerElements = []
   hidePreviewContextMenu()
-  document.querySelector('#preview-layer-tree')?.replaceChildren()
+  renderPreviewBreadcrumbs()
+  renderPreviewNavigator()
   text('#selected-element-state', 'Page canvas')
   text('#settings-element-state', 'Page canvas')
   text('#settings-element-location', 'Select an element in the live preview to inspect its stack location.')
@@ -828,7 +844,6 @@ function clearPreviewSelection() {
   setControlDisabled('#settings-text-save', true)
   setControlDisabled('#style-edit-text', true)
   text('#settings-text-state', 'select leaf text')
-  output('#preview-layer-summary', 'Select an element in the preview.')
   output('#preview-selection-location', 'Select an element · right-click for actions')
 }
 
@@ -865,37 +880,186 @@ function renderPreviewParentList(element) {
   }
 }
 
-function renderPreviewLayerTree(element, location) {
-  const tree = document.querySelector('#preview-layer-tree')
-  if (!tree) return
-  tree.replaceChildren()
+function resetPreviewNavigator() {
+  state.previewNavigatorObserver?.disconnect()
+  state.previewNavigatorObserver = null
+  if (state.previewNavigatorTimer) window.clearTimeout(state.previewNavigatorTimer)
+  state.previewNavigatorTimer = null
+  state.previewNavigatorSnapshot = null
+  state.previewNavigatorRows = []
+  state.previewNavigatorExpanded.clear()
+  state.previewNavigatorFocus = null
+  state.previewNavigatorRoute = null
   state.previewLayerElements = []
-  const ancestors = []
-  let current = element
-  while (current && current.tagName !== 'HTML') {
-    ancestors.unshift(current)
-    if (current.tagName === 'BODY') break
+  renderPreviewNavigator()
+}
+
+function renderPreviewBreadcrumbs() {
+  const container = document.querySelector('#canvas-element-breadcrumbs')
+  if (!container) return
+  container.replaceChildren()
+  state.previewBreadcrumbElements = []
+  const selected = state.previewSelectedElement
+  const root = previewDocument()?.body
+  if (!isCurrentPreviewElement(selected, root)) {
+    const label = create('strong', '', 'Body')
+    label.id = 'canvas-breadcrumb-element'
+    container.append(label)
+    return
+  }
+  const elements = []
+  let current = selected
+  while (current && elements.length <= previewNavigatorLimits.depth) {
+    elements.unshift(current)
+    if (current === root) break
     current = current.parentElement
   }
-  const rows = ancestors.map((item, index) => ({ element: item, depth: index, selected: item === element }))
-  const childDepth = rows.length
-  for (const child of [...element.children].slice(0, 10)) {
-    rows.push({ element: child, depth: childDepth, selected: false })
+  if (elements[0] !== root) container.append(create('span', 'breadcrumb-limited', '… path limited'))
+  for (const element of elements) {
+    if (container.children.length) container.append(create('span', '', '›'))
+    const entry = state.previewNavigatorSnapshot?.byElement.get(element)
+    // Labels use authored metadata only; never aggregate a subtree's text or input values.
+    const label = entry?.label || element.tagName.toLowerCase()
+    const button = create('button', 'breadcrumb-element', label)
+    button.type = 'button'
+    button.dataset.previewBreadcrumbIndex = String(state.previewBreadcrumbElements.push(element) - 1)
+    if (element === selected) {
+      button.id = 'canvas-breadcrumb-element'
+      button.setAttribute('aria-current', 'true')
+    }
+    container.append(button)
   }
+}
+
+function renderPreviewNavigator({ focus = false, reveal = false } = {}) {
+  const tree = document.querySelector('#preview-layer-tree')
+  if (!tree) return
+  const hadFocus = tree.contains(document.activeElement)
+  tree.replaceChildren()
+  state.previewLayerElements = []
+  const snapshot = state.previewNavigatorSnapshot
+  if (!snapshot) {
+    state.previewNavigatorRows = []
+    output('#preview-layer-summary', 'Live hierarchy unavailable. Open the same-origin Vite preview to inspect elements.')
+    return
+  }
+  const projection = projectPreviewRows(snapshot, { expanded: state.previewNavigatorExpanded, query: state.previewNavigatorQuery })
+  const rows = projection.rows
+  state.previewNavigatorRows = rows
+  if (!rows.some((entry) => entry.element === state.previewNavigatorFocus)) {
+    state.previewNavigatorFocus = rows.find((entry) => entry.element === state.previewSelectedElement)?.element || rows[0]?.element || null
+  }
+  let focusedRow
   rows.forEach((entry) => {
     const index = state.previewLayerElements.push(entry.element) - 1
-    const button = create('button', `preview-layer-row${entry.selected ? ' selected' : ''}`)
+    const selected = entry.element === state.previewSelectedElement
+    const button = create('button', `preview-layer-row${selected ? ' selected' : ''}${entry.matched ? ' search-match' : ''}`)
     button.type = 'button'
     button.dataset.previewLayerIndex = String(index)
     button.dataset.previewDepth = String(Math.min(entry.depth, 8))
-    button.setAttribute('aria-pressed', String(entry.selected))
+    button.setAttribute('role', 'treeitem')
+    button.setAttribute('aria-level', String(entry.depth + 1))
+    button.setAttribute('aria-selected', String(selected))
+    const siblings = entry.parent?.children || [entry]
+    button.setAttribute('aria-posinset', String(siblings.findIndex((sibling) => sibling.element === entry.element) + 1))
+    button.setAttribute('aria-setsize', String(siblings.length))
+    button.tabIndex = entry.element === state.previewNavigatorFocus ? 0 : -1
+    if (entry.children.length) button.setAttribute('aria-expanded', String(entry.expanded))
+    const toggle = create('span', '', entry.children.length ? entry.expanded ? '▾' : '▸' : selected ? '◎' : '·')
+    if (entry.children.length) toggle.dataset.previewToggle = 'true'
+    toggle.setAttribute('aria-hidden', 'true')
+    const flags = [entry.hidden && 'hidden', entry.inert && 'inert', entry.ariaHidden && 'ARIA hidden'].filter(Boolean)
     button.append(
-      create('span', '', entry.selected ? '◎' : entry.element.children.length ? '▾' : '↳'),
-      create('small', '', elementLabel(entry.element)),
+      toggle,
+      create('small', '', `${entry.label}${flags.length ? ` (${flags.join(', ')})` : ''}`),
     )
     tree.append(button)
+    if (button.tabIndex === 0) focusedRow = button
   })
-  output('#preview-layer-summary', `${location.route} · ${rows.length} live hierarchy rows · ${location.sourcePath || 'source unmapped'}`)
+  const result = projection.query
+    ? `${projection.matchCount} match${projection.matchCount === 1 ? '' : 'es'} in ${snapshot.entries.length} inspected nodes`
+    : `${snapshot.entries.length} inspected nodes · ${rows.length} visible rows`
+  const selectedOutside = state.previewSelectedElement && !snapshot.byElement.has(state.previewSelectedElement)
+    ? ' Selected element is outside the inspected range.' : ''
+  const empty = projection.query && !projection.matchCount
+    ? projection.truncated ? ' No matches in the inspected range; the search is incomplete.' : ' No matching element metadata.' : ''
+  output('#preview-layer-summary', `${result}.${empty}${selectedOutside} ${projection.reasons.join(' ')}`.trim())
+  if (focus || hadFocus) focusedRow?.focus({ preventScroll: true })
+  if (reveal) tree.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+}
+
+function expandPreviewAncestors(element) {
+  for (const entry of ancestorPreviewEntries(state.previewNavigatorSnapshot, element)) {
+    if (entry.parent) state.previewNavigatorExpanded.add(entry.parent.element)
+  }
+}
+
+function rebuildPreviewNavigator() {
+  state.previewNavigatorTimer = null
+  const root = previewDocument()?.body
+  if (!root) { resetPreviewNavigator(); return }
+  const previous = state.previewNavigatorSnapshot
+  const newDocument = previous?.root !== root
+  const route = currentPreviewRoute().split('#')[0] || '/'
+  if (newDocument) state.previewNavigatorExpanded.clear()
+  state.previewNavigatorSnapshot = collectPreviewHierarchy(root)
+  const currentElements = state.previewNavigatorSnapshot.byElement
+  state.previewNavigatorExpanded = new Set([...state.previewNavigatorExpanded].filter((element) => currentElements.has(element)))
+  if (newDocument) state.previewNavigatorExpanded.add(root)
+  if (state.previewSelectedElement && (!isCurrentPreviewElement(state.previewSelectedElement, root)
+    || state.previewNavigatorRoute && state.previewNavigatorRoute !== route)) clearPreviewSelection()
+  state.previewNavigatorRoute = route
+  renderPreviewNavigator()
+  renderPreviewBreadcrumbs()
+}
+
+function schedulePreviewNavigatorRefresh() {
+  if (state.previewNavigatorTimer) return
+  state.previewNavigatorTimer = window.setTimeout(rebuildPreviewNavigator, 100)
+}
+
+function installPreviewNavigator(frameDocument) {
+  if (state.previewNavigatorSnapshot?.root !== frameDocument.body) {
+    resetPreviewNavigator()
+    rebuildPreviewNavigator()
+    const observer = new MutationObserver(schedulePreviewNavigatorRefresh)
+    observer.observe(frameDocument.documentElement, {
+      subtree: true, childList: true, attributes: true,
+      attributeFilter: ['id', 'class', 'hidden', 'inert', 'aria-hidden', 'data-systemx-name', 'data-systemx-component'],
+    })
+    state.previewNavigatorObserver = observer
+    frameDocument.defaultView?.addEventListener('popstate', schedulePreviewNavigatorRefresh)
+    frameDocument.defaultView?.addEventListener('hashchange', schedulePreviewNavigatorRefresh)
+  }
+}
+
+function revealPreviewElement(element) {
+  const root = previewDocument()?.body
+  if (!isCurrentPreviewElement(element, root)) {
+    rebuildPreviewNavigator()
+    output('#preview-layer-summary', 'That element is no longer in the current preview. The hierarchy was refreshed.')
+    return false
+  }
+  const style = element.ownerDocument.defaultView.getComputedStyle(element)
+  const unavailable = element.closest('[hidden], [inert]') || style.display === 'none' || style.visibility === 'hidden' || !element.getClientRects().length
+  if (unavailable) {
+    output('#preview-layer-summary', 'Element selected for inspection. It is hidden, inert, or has no rendered box; reveal cannot make it visible.')
+    return true
+  }
+  element.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' })
+  return true
+}
+
+function selectNavigatorElement(element, { focus = false } = {}) {
+  if (!isCurrentPreviewElement(element, previewDocument()?.body)) {
+    rebuildPreviewNavigator()
+    output('#preview-layer-summary', 'That element is no longer in the current preview. The hierarchy was refreshed.')
+    return
+  }
+  state.previewNavigatorFocus = element
+  selectPreviewElement(element)
+  renderPreviewNavigator({ focus, reveal: true })
+  revealPreviewElement(element)
 }
 
 function setControlValue(selector, value) {
@@ -936,11 +1100,14 @@ function renderSelectedElementEditors(element, location) {
       ? `Original: "${location.originalText}". Preview changes stay in this local iframe until explicitly saved.`
       : location.textReason,
   )
-  renderPreviewLayerTree(element, location)
+  if (!state.previewNavigatorSnapshot?.byElement.has(element)) rebuildPreviewNavigator()
+  expandPreviewAncestors(element)
+  renderPreviewNavigator({ reveal: true })
+  renderPreviewBreadcrumbs()
 }
 
 function selectPreviewElement(element, options = {}) {
-  if (!isElement(element)) return
+  if (!isCurrentPreviewElement(element, previewDocument()?.body)) return
   state.previewSelectedElement?.removeAttribute('data-systemx-inspector-selected')
   element.setAttribute('data-systemx-inspector-selected', '')
   state.previewSelectedElement = element
@@ -950,7 +1117,6 @@ function selectPreviewElement(element, options = {}) {
   const location = state.previewSelection
   const page = mappedPageForRoute(location.route.split('#')[0])
   text('#canvas-breadcrumb-page', page?.name ?? location.route)
-  text('#canvas-breadcrumb-element', location.label)
   text('#selected-element-state', location.label)
   text('#settings-element-state', location.label)
   text('#preview-selection-location', locationSummary(location))
@@ -993,8 +1159,11 @@ function installPreviewInspector() {
   if (!frame || !frameDocument) {
     text('#preview-selection-location', 'Inspection requires the same-origin Vite bridge')
     setPreviewInspectMode(false, false)
+    resetPreviewNavigator()
     return
   }
+
+  installPreviewNavigator(frameDocument)
 
   if (!frameDocument.querySelector('#systemx-preview-inspector-style')) {
     const style = frameDocument.createElement('link')
@@ -1442,7 +1611,7 @@ function selectPage(pageId) {
   text('#selected-element-state', `${page.name} · ${page.route}`)
   text('#settings-element-state', `${page.name} · ${page.route}`)
   text('#canvas-breadcrumb-page', page.name ?? 'Page')
-  text('#canvas-breadcrumb-element', 'Body')
+  renderPreviewBreadcrumbs()
   text('#canvas-page-label', `${page.name} · ${page.route}`)
   renderCanvas(page)
 }
@@ -1855,23 +2024,98 @@ function bind() {
     )
   })
   document.querySelector('#app-preview-frame')?.addEventListener('load', () => {
+    resetPreviewNavigator()
     state.previewSelectedElement = null
     state.previewHoveredElement = null
     state.previewLayerElements = []
     state.previewTextOriginals = new WeakMap()
     state.previewContextTarget = null
     hidePreviewContextMenu()
-    document.querySelector('#preview-layer-tree')?.replaceChildren()
-    output('#preview-layer-summary', 'Select an element in the preview.')
+    renderPreviewBreadcrumbs()
     schedulePreviewInspector()
     renderLoadedFonts()
     if (state.selectedFont) window.setTimeout(() => void loadFontInPreview(state.selectedFont, false), 150)
   })
   document.querySelector('#preview-layer-tree')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-preview-layer-index]')
+    if (!button || !event.currentTarget.contains(button)) return
+    const element = state.previewLayerElements[Number.parseInt(button.dataset.previewLayerIndex, 10)]
+    if (!isCurrentPreviewElement(element, previewDocument()?.body)) {
+      rebuildPreviewNavigator()
+      output('#preview-layer-summary', 'That element is no longer in the current preview. The hierarchy was refreshed.')
+      return
+    }
+    if (event.target.closest('[data-preview-toggle]')) {
+      if (state.previewNavigatorQuery.trim()) {
+        output('#preview-layer-summary', 'Search shows matching ancestor paths. Clear search to collapse branches.')
+        return
+      }
+      if (state.previewNavigatorExpanded.has(element)) state.previewNavigatorExpanded.delete(element)
+      else state.previewNavigatorExpanded.add(element)
+      state.previewNavigatorFocus = element
+      renderPreviewNavigator({ focus: true })
+      return
+    }
+    selectNavigatorElement(element, { focus: true })
+  })
+  document.querySelector('#preview-layer-tree')?.addEventListener('focusin', (event) => {
+    const button = event.target.closest('[data-preview-layer-index]')
     if (!button) return
     const element = state.previewLayerElements[Number.parseInt(button.dataset.previewLayerIndex, 10)]
-    if (element) selectPreviewElement(element, { openEditor: true })
+    if (!isCurrentPreviewElement(element, previewDocument()?.body)) return
+    state.previewNavigatorFocus = element
+    event.currentTarget.querySelectorAll('[role="treeitem"]').forEach((row) => { row.tabIndex = row === button ? 0 : -1 })
+  })
+  document.querySelector('#preview-layer-tree')?.addEventListener('keydown', (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Enter', ' '].includes(event.key)) return
+    const button = event.target.closest('[data-preview-layer-index]')
+    if (!button) return
+    event.preventDefault()
+    event.stopPropagation()
+    const index = Number.parseInt(button.dataset.previewLayerIndex, 10)
+    const entry = state.previewNavigatorRows[index]
+    if (!entry || !isCurrentPreviewElement(entry.element, previewDocument()?.body)) { rebuildPreviewNavigator(); return }
+    if (event.key === 'Enter' || event.key === ' ') { selectNavigatorElement(entry.element, { focus: true }); return }
+    const rows = state.previewNavigatorRows
+    let next = entry
+    if (event.key === 'ArrowUp') next = rows[Math.max(0, index - 1)]
+    if (event.key === 'ArrowDown') next = rows[Math.min(rows.length - 1, index + 1)]
+    if (event.key === 'Home') next = rows[0]
+    if (event.key === 'End') next = rows[rows.length - 1]
+    if (event.key === 'ArrowRight' && entry.children.length) {
+      if (!entry.expanded && !state.previewNavigatorQuery.trim()) state.previewNavigatorExpanded.add(entry.element)
+      else next = rows[index + 1]?.parent?.element === entry.element ? rows[index + 1] : entry
+    }
+    if (event.key === 'ArrowLeft') {
+      if (entry.expanded && entry.children.length && !state.previewNavigatorQuery.trim()) state.previewNavigatorExpanded.delete(entry.element)
+      else next = rows.find((row) => row.element === entry.parent?.element) || entry
+    }
+    state.previewNavigatorFocus = next.element
+    renderPreviewNavigator({ focus: true })
+    document.querySelector('#preview-layer-tree [tabindex="0"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  })
+  document.querySelector('#preview-navigator-search')?.addEventListener('input', (event) => {
+    state.previewNavigatorQuery = event.target.value
+    renderPreviewNavigator()
+  })
+  document.querySelector('#preview-navigator-clear')?.addEventListener('click', () => {
+    state.previewNavigatorQuery = ''
+    setControlValue('#preview-navigator-search', '')
+    renderPreviewNavigator()
+    document.querySelector('#preview-navigator-search')?.focus({ preventScroll: true })
+  })
+  document.querySelector('#preview-navigator-reveal')?.addEventListener('click', () => {
+    if (!state.previewSelectedElement) { output('#preview-layer-summary', 'Select an element in the preview or hierarchy first.'); return }
+    state.previewNavigatorQuery = ''
+    setControlValue('#preview-navigator-search', '')
+    selectNavigatorElement(state.previewSelectedElement, { focus: true })
+  })
+  document.querySelector('#canvas-element-breadcrumbs')?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-preview-breadcrumb-index]')
+    if (!button || !event.currentTarget.contains(button)) return
+    const element = state.previewBreadcrumbElements[Number.parseInt(button.dataset.previewBreadcrumbIndex, 10)]
+    selectNavigatorElement(element)
+    document.querySelector('#canvas-breadcrumb-element')?.focus({ preventScroll: true })
   })
   document.querySelector('#settings-text-preview')?.addEventListener('click', previewSelectedText)
   document.querySelector('#settings-text-revert')?.addEventListener('click', revertSelectedText)

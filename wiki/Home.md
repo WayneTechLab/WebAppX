@@ -1,8 +1,30 @@
 # WebAppX Wiki
 
-## Full stop and resume — 2026-10-15
+## LAN Navigator and Webflow research — 2026-10-25
 
-Work is **paused at the owner's request** at **179 done / 821 remaining**,
+The owner resumed a bounded LAN builder iteration on 2026-10-25. Open the
+same-origin `/__systemx/` bridge after `npm run dev:systemx`, then choose
+**Navigator**. Search the current rendered hierarchy by tag, ID, class or explicit
+component name, expand branches, select with the keyboard, follow ancestor
+breadcrumbs and use **Reveal selection**. These controls inspect the live page;
+structural source authoring remains a later roadmap gate.
+
+The [dated Webflow study](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/LAN/WEBFLOW-RESEARCH-2026-10-25.md) reviews 25 official sources and defines
+measurable priorities for local source ownership, recoverable commands, style
+provenance, component contracts and portable releases. It retains familiar
+structure/canvas/inspector orientation and records Webflow's current React/Vite,
+component and MCP capabilities. Proposed advantages still require comparative
+acceptance evidence. Read the [Navigator guide](SYSTEMX-LAN-Builder.md) and
+[dated QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-NAVIGATOR-QA-2026-10-25.md) for tested scope, limits and repeatable checks.
+
+The original catalog remains **179 done / 821 remaining**. This LAN iteration
+leaves the seven saved foundation candidates unchecked and their bundle unapplied.
+App **3.4.0**, pinned SYSTEMX **1.9.0-alpha.6** and deployment count **0** remain
+unchanged.
+
+## Historical full stop and resume — 2026-10-15
+
+At this historical checkpoint the owner paused work at **179 done / 821 remaining**,
 with a **+45** verified delta. Seven foundation candidates remain unchecked.
 Their 56-file unfinished source is preserved in an unapplied Git bundle on main;
 read [the complete savepoint and resume guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/checkpoints/FULL-STOP-2026-10-15.md)

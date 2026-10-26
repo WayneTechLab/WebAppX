@@ -172,10 +172,13 @@
               <h2>Navigator</h2>
               <span class="count-label">current page</span>
             </div>
-            <p class="panel-help">The live hierarchy follows the element selected inside the Vite preview. Choose any row to move selection without leaving the canvas.</p>
-            <div class="navigator-legend"><span>▾ container</span><span>↳ child</span><span>◎ selected</span></div>
+            <p class="panel-help">Inspect the live preview hierarchy. Search element names, tags, IDs, or classes; source structure and editing remain separate.</p>
+            <label class="navigator-search-label" for="preview-navigator-search">Search live hierarchy</label>
+            <input id="preview-navigator-search" class="navigator-search" type="search" maxlength="160" placeholder="header, #hero, .card…" autocomplete="off" />
+            <div class="navigator-actions"><button id="preview-navigator-clear" class="button" type="button">Clear search</button><button id="preview-navigator-reveal" class="button" type="button">Reveal selection</button></div>
+            <div class="navigator-legend"><span>▾ expanded</span><span>▸ collapsed</span><span>◎ selected</span></div>
             <output id="preview-layer-summary" class="command-output" aria-live="polite">Select an element in the preview.</output>
-            <div id="preview-layer-tree" class="preview-layer-tree" aria-label="Live preview hierarchy"></div>
+            <div id="preview-layer-tree" class="preview-layer-tree" role="tree" aria-label="Live preview hierarchy" aria-describedby="preview-layer-summary"></div>
             <a class="button button-dark panel-action" href="#canvas">Open layer tree</a>
           </section>
 
@@ -263,7 +266,7 @@
                   <option value="">Loading pages…</option>
                 </select>
               </label>
-              <nav class="breadcrumbs" aria-label="Selected element path"><a href="#pages">Pages</a><span>›</span><strong id="canvas-breadcrumb-page">Home</strong><span>›</span><strong id="canvas-breadcrumb-element">Body</strong></nav>
+              <nav class="breadcrumbs" aria-label="Selected element path"><a href="#pages">Pages</a><span>›</span><strong id="canvas-breadcrumb-page">Home</strong><span>›</span><span id="canvas-element-breadcrumbs"><strong id="canvas-breadcrumb-element">Body</strong></span></nav>
               <div class="target-mode-strip" aria-label="Builder target mode">
                 <span class="mode-chip active">Template edit</span>
                 <span class="mode-chip">WebApp mode</span>
