@@ -299,6 +299,11 @@ Successful source reads include `path`, UTF-8 `content`, `writable`, the existin
 including line endings and BOM. The revision is an optimistic save precondition
 for this file. It is separate from Git state, publication and exclusive locking.
 
+A missing allowlisted target beneath ordinary contained directories returns
+**404 / SOURCE_UNAVAILABLE**, with fixed recovery guidance and no path, source
+content or revision. A disallowed path, directory or symbolic link retains its
+400 refusal. Reads never recreate missing source.
+
 ### GET /api/tools
 
 Purpose: report detected local tooling and versions.
@@ -382,6 +387,22 @@ format-preservation claim.
 
 This is an optimistic precondition, not an OS-wide file lock or a general patch,
 code-generation, dependency, rules or file-upload endpoint.
+
+Request JSON is decoded as one UTF-8 stream across network chunks. The body
+limit remains 1,000,000 decoded UTF-16 units, with the separate 500,000-unit
+source-content limit. Chunk boundaries do not change the reviewed source text.
+
+Missing contained source returns **404 / SOURCE_UNAVAILABLE** after the existing
+authority, confirmation, content and secret checks. It creates no source, backup,
+temporary file or operation entry. There is no force-save bypass.
+
+The raw editor's **Compare latest** performs a normal GET and retains its loaded
+base and proposed text. **Review replacement** binds the exact displayed proposal
+and latest revision, clears the prior approval, and requires a new
+`SAVE LOCAL CHANGE` confirmation. Only that prepared save sends the reviewed
+latest revision as `baseRevision`. A later external edit still receives 409.
+Draft, file, load and observed-source changes invalidate the review; incomplete,
+truncated or text/hash-inconsistent comparisons cannot prepare a replacement.
 
 ### POST /api/builder/page
 

@@ -216,6 +216,7 @@ const csv = value => {
 }
 export function renderArtifacts(catalog, { maximumCombinedMarkdownBytes = 1024 * 1024 } = {}) {
   const stats = summary(catalog)
+  const localQueue = readyItems(catalog, { gate: 'local', limit: 20 })
   const families = [...new Map(catalog.items.map(item => [item.familyId, item])).values()]
   const intro = [
     '# SYSTEMX LAN — 10,000 delivery requirements', '',
@@ -258,7 +259,13 @@ export function renderArtifacts(catalog, { maximumCombinedMarkdownBytes = 1024 *
     `Current accepted status: ${stats.requirements.done}/${stats.requirements.total} requirements and ${stats.capabilities.done}/${stats.capabilities.total} capabilities. ${stats.capabilities.partial} capabilities have partial acceptance.`, '',
     '## Execution and ownership', '',
     'Agent 0 selects bounded work from the dependency-ready local queue, assigns one write owner and preserves the existing React/Vite/Firebase application and familiar LAN editor shell. Querying readiness never assigns or executes work. Existing work, reusable blank seeds, managed release fingerprints, and both checksummed research packages remain separate.', '',
+    'Read the [active iteration](LAN-ACTIVE-ITERATION.md) for the selected bounded batch, its pending requirements, dependencies and verification scope. Batch requirements remain TODO until Agent 0 accepts their revision-bound receipts in the progress ledger. An iteration record does not establish completion or change capability counts.', '',
     'Preserve the source ownership, Designer kernel, command journal, style engine, component, CMS, preview and extension sequencing in the [Webflow master plan](../.SYSTEMX/LAN/WEBFLOW-DEEP-RESEARCH-MASTER-PLAN.md). The [dated refresh](../.SYSTEMX/LAN/WEBFLOW-RESEARCH-2026-10-25.md) supplies current source distinctions. Family dependencies refine that plan without accepting unimplemented editor behavior.', '',
+    '## Dependency-ready local queue', '',
+    `The validated progress ledger currently makes **${localQueue.matches} local TODO requirement(s)** dependency-ready. This snapshot displays ${localQueue.items.length} in catalog ID order, with a maximum of 20 rows. The active iteration identifies the selected batch; its blocked requirements remain pending until their prerequisites are accepted. Queue membership grants no assignment, execution or publication authority.`, '',
+    ...(localQueue.items.length ? ['| Requirement | Capability | Lane | Priority | Direct prerequisites |', '| --- | --- | --- | --- | --- |', ...localQueue.items.map(item => `| ${item.id} | ${markdown(item.capabilityTitle)} | ${item.lane} | ${item.priority} | ${item.dependsOn.length ? item.dependsOn.join(', ') : 'none'} |`), ''] : ['No local TODO requirement currently has every prerequisite accepted.', '']),
+    ...(localQueue.matches > localQueue.items.length ? [`${localQueue.matches - localQueue.items.length} additional ready requirement(s) are omitted from this bounded snapshot. Run \`node scripts/lan-backlog.mjs --ready --limit 100 --json\` for up to 100 rows.`, ''] : []),
+    'Recompute this generated snapshot with `node scripts/lan-backlog.mjs --write` after a reviewed progress change. Use `--ready --json` for the current validated queue without writing any artifacts.', '',
     '## Dependency and gate contract', '',
     '- A behavior requirement has a direct edge to the terminal evidence requirement of each explicitly named prerequisite capability, and to every capability evidence requirement in each prerequisite family. Each evidence node requires its own first four lanes, so the transitive closure still requires all five capability requirements and every prerequisite-family requirement. These compressed direct edges avoid duplicating the same prerequisite proof.',
     '- Boundary, recovery and feedback requirements depend on their own behavior. Evidence depends on its own first four lanes. The expanded dependency graph must be acyclic.',

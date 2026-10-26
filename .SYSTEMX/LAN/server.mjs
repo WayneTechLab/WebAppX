@@ -5,6 +5,7 @@ import {
   copyFileSync,
   createReadStream,
   existsSync,
+  lstatSync,
   mkdirSync,
   readFileSync,
   renameSync,
@@ -16,6 +17,7 @@ import { execFileSync } from 'node:child_process'
 import { randomBytes, randomUUID } from 'node:crypto'
 import { dirname, extname, join, posix, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { StringDecoder } from 'node:string_decoder'
 import net from 'node:net'
 import { inspectCurrentRepository, inspectExternalProject } from './Builder/importer/current-repo.mjs'
 import { hashSourceRevision, checkSourceRevision } from './Builder/source-revision.mjs'
@@ -520,14 +522,52 @@ function recordOperation(event, detail = {}) {
   })}\n`)
 }
 
-function editableSourcePath(value) {
+function editableSourceCandidate(value) {
   if (typeof value !== 'string') return null
   const normalized = posix.normalize(value.replaceAll('\\', '/')).replace(/^\.\//, '')
   if (normalized.startsWith('../') || normalized.includes('/../') || !editableSourceRules.some((rule) => rule.test(normalized))) return null
   const target = resolve(repoRoot, normalized)
   const relativeTarget = relative(repoRoot, target).replaceAll('\\', '/')
-  if (relativeTarget !== normalized || !confinedFile(repoRoot, target)) return null
+  if (relativeTarget !== normalized) return null
   return { normalized, target }
+}
+
+function editableSourcePath(value) {
+  const sourcePath = editableSourceCandidate(value)
+  return sourcePath && confinedFile(repoRoot, sourcePath.target) ? sourcePath : null
+}
+
+// Missing descendants are unavailable only after every existing ancestor passes
+// the same no-link/directory boundary. A dangling link is still a refused path.
+function missingConfinedSource(sourcePath) {
+  const parts = relative(repoRoot, sourcePath.target).split(sep)
+  let current = repoRoot
+  for (let index = 0; index < parts.length; index += 1) {
+    current = join(current, parts[index])
+    let entry
+    try { entry = lstatSync(current) } catch (error) { return error.code === 'ENOENT' }
+    if (entry.isSymbolicLink() || (index < parts.length - 1 && !entry.isDirectory())) return false
+  }
+  return false
+}
+
+function readEditableSource(value) {
+  const refused = { statusCode: 400, error: 'Source path is outside the editable allowlist' }
+  const unavailable = {
+    statusCode: 404,
+    code: 'SOURCE_UNAVAILABLE',
+    error: 'Source is unavailable. Select an existing allowlisted source file, then reload before saving.',
+  }
+  const sourcePath = editableSourceCandidate(value)
+  if (!sourcePath) return refused
+  if (!confinedFile(repoRoot, sourcePath.target)) return missingConfinedSource(sourcePath) ? unavailable : refused
+  try {
+    return { sourcePath, bytes: readFileSync(sourcePath.target) }
+  } catch (error) {
+    // Deletion can occur after the boundary check. Do not expose filesystem paths
+    // or let a missing read escape the request handler as an unhandled error.
+    return error.code === 'ENOENT' && missingConfinedSource(sourcePath) ? unavailable : refused
+  }
 }
 
 function containsSecretMarker(value) {
@@ -587,29 +627,45 @@ function requireSessionToken(request, response) {
 
 function readRequestBody(request) {
   return new Promise((resolveBody, rejectBody) => {
+    const decoder = new StringDecoder('utf8')
     let body = ''
-    request.on('data', (chunk) => {
-      body += chunk
-      if (body.length > 1_000_000) {
-        rejectBody(new Error('Request body exceeds local builder limit'))
+    let settled = false
+    const fail = (error) => {
+      if (settled) return
+      settled = true
+      rejectBody(error)
+    }
+    const append = (text) => {
+      if (settled) return false
+      // Keep the existing decoded UTF-16 length limit. The decoder retains only
+      // an incomplete UTF-8 character; the accumulated body never exceeds it.
+      if (body.length + text.length > 1_000_000) {
+        fail(new Error('Request body exceeds local builder limit'))
         request.destroy()
+        return false
       }
-    })
+      body += text
+      return true
+    }
+    request.on('data', (chunk) => { if (!settled) append(decoder.write(chunk)) })
     request.on('end', () => {
+      if (settled || !append(decoder.end())) return
       try {
-        resolveBody(body ? JSON.parse(body) : {})
+        const value = body ? JSON.parse(body) : {}
+        settled = true
+        resolveBody(value)
       } catch {
-        rejectBody(new Error('Request body must be valid JSON'))
+        fail(new Error('Request body must be valid JSON'))
       }
     })
-    request.on('error', rejectBody)
+    request.on('error', fail)
   })
 }
 
 function sourceRead(value) {
-  const sourcePath = editableSourcePath(value)
-  if (!sourcePath) return { error: 'Source path is outside the editable allowlist' }
-  const bytes = readFileSync(sourcePath.target)
+  const source = readEditableSource(value)
+  if (source.error) return source
+  const { sourcePath, bytes } = source
   return {
     path: sourcePath.normalized,
     content: bytes.toString('utf8'),
@@ -1148,8 +1204,8 @@ const server = createServer(async (request, response) => {
   }
 
   if (requestUrl.pathname === '/api/builder/source' && request.method === 'GET') {
-    const result = sourceRead(requestUrl.searchParams.get('path'))
-    sendJson(response, result.error ? 400 : 200, result)
+    const { statusCode = 200, ...result } = sourceRead(requestUrl.searchParams.get('path'))
+    sendJson(response, statusCode, result)
     return
   }
 
@@ -1178,9 +1234,13 @@ const server = createServer(async (request, response) => {
         if (body.confirmation !== 'SAVE LOCAL CHANGE') throw new Error('Type SAVE LOCAL CHANGE to approve this local write')
         if (typeof body.content !== 'string' || body.content.length > 500_000) throw new Error('Source content is missing or exceeds the local limit')
         if (containsSecretMarker(body.content)) throw new Error('Secret-shaped content is rejected by SYSTEMX')
-        const sourcePath = editableSourcePath(body.path)
-        if (!sourcePath) throw new Error('Source path is outside the editable allowlist')
-        const previousBytes = readFileSync(sourcePath.target)
+        const source = readEditableSource(body.path)
+        if (source.error) {
+          const { statusCode, ...failure } = source
+          sendJson(response, statusCode, failure)
+          return
+        }
+        const { sourcePath, bytes: previousBytes } = source
         const precondition = checkSourceRevision(body.baseRevision, previousBytes)
         if (precondition.statusCode !== 200) {
           const { statusCode, ...failure } = precondition

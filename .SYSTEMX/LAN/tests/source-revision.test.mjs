@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, renameSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { request as httpRequest } from 'node:http'
 import { createServer } from 'node:net'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
@@ -68,14 +69,20 @@ function artifactSnapshot(lanRoot, sourceFile) {
   }
   visit(join(lanRoot, 'Backup'))
   const log = join(lanRoot, 'Temp', 'operations.jsonl')
+  let source = null
+  try {
+    const entry = lstatSync(sourceFile)
+    source = entry.isSymbolicLink() ? { link: readlinkSync(sourceFile) }
+      : entry.isFile() ? readFileSync(sourceFile).toString('base64') : { kind: 'non-file' }
+  } catch (error) { if (error.code !== 'ENOENT') throw error }
   return {
-    source: readFileSync(sourceFile).toString('base64'), backups,
+    source, backups,
     log: existsSync(log) ? readFileSync(log, 'utf8') : null,
-    temporary: readdirSync(dirname(sourceFile)).filter((name) => name.endsWith('.tmp')).sort(),
+    temporary: existsSync(dirname(sourceFile)) ? readdirSync(dirname(sourceFile)).filter((name) => name.endsWith('.tmp')).sort() : [],
   }
 }
 
-test('isolated source API rejects stale writes before backup/log/write and accepts a reviewed latest revision', async () => {
+test('isolated source API rejects stale writes before backup/log/write and accepts a reviewed latest revision', async (t) => {
   const temporary = mkdtempSync(join(tmpdir(), 'webappx-source-revision-'))
   const fixture = join(temporary, 'fixture')
   const originalLan = join(repoRoot, '.SYSTEMX', 'LAN')
@@ -117,10 +124,14 @@ test('isolated source API rejects stale writes before backup/log/write and accep
     const html = await (await fetch(origin)).text()
     const session = html.match(/meta name="systemx-session" content="([^"]+)"/)?.[1]
     assert.ok(session, 'Owned fixture must expose its local session token')
+    const requestRead = async (path = relativeSource) => {
+      const response = await fetch(`${origin}/api/builder/source?path=${encodeURIComponent(path)}`)
+      return { status: response.status, body: await response.json() }
+    }
     const read = async () => {
-      const response = await fetch(`${origin}/api/builder/source?path=${encodeURIComponent(relativeSource)}`)
+      const response = await requestRead()
       assert.equal(response.status, 200)
-      return response.json()
+      return response.body
     }
     const post = async (fields, options = {}) => {
       const response = await fetch(`${origin}/api/builder/source`, {
@@ -129,6 +140,30 @@ test('isolated source API rejects stale writes before backup/log/write and accep
       })
       return { status: response.status, body: await response.json() }
     }
+    const postChunks = (chunks) => new Promise((resolveResponse, rejectResponse) => {
+      const request = httpRequest(`${origin}/api/builder/source`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'transfer-encoding': 'chunked', 'x-systemx-session': session },
+      }, (response) => {
+        let body = ''
+        response.on('data', (chunk) => { body += chunk })
+        response.once('end', () => {
+          try { resolveResponse({ status: response.statusCode, body: JSON.parse(body) }) } catch (error) { rejectResponse(error) }
+        })
+        response.once('error', rejectResponse)
+      })
+      request.once('error', rejectResponse)
+      const write = async () => {
+        for (const chunk of chunks) {
+          await new Promise((resolveWrite, rejectWrite) => request.write(chunk, (error) => error ? rejectWrite(error) : resolveWrite()))
+          // Separate real HTTP chunks rather than relying on one buffer's TCP
+          // segmentation to happen to split a multi-byte character.
+          if (chunks.length > 1) await delay(5)
+        }
+        request.end()
+      }
+      write().catch(rejectResponse)
+    })
     const loaded = await read()
     assert.equal(loaded.content, original)
     assert.equal(loaded.revision, sha256(Buffer.from(original)))
@@ -187,6 +222,174 @@ test('isolated source API rejects stale writes before backup/log/write and accep
     assert.equal(unchanged.status, 200)
     assert.deepEqual(unchanged.body, { status: 'unchanged', path: relativeSource, revision: afterSaveRead.revision })
     assert.deepEqual(artifactSnapshot(fixtureLan, sourceFile), savedArtifacts)
+
+    await t.test('deleted source returns fixed 404 guidance for GET and POST without recreating files or artifacts', async () => {
+      rmSync(sourceFile)
+      const unavailable = {
+        code: 'SOURCE_UNAVAILABLE',
+        error: 'Source is unavailable. Select an existing allowlisted source file, then reload before saving.',
+      }
+      const removedArtifacts = artifactSnapshot(fixtureLan, sourceFile)
+      for (const result of [await requestRead(), await post({ baseRevision: afterSaveRead.revision }), await post({})]) {
+        assert.equal(result.status, 404)
+        assert.deepEqual(result.body, unavailable)
+        assert.doesNotMatch(JSON.stringify(result.body), /HomePage|Reviewed edit|currentRevision|baseRevision|[A-Za-z]:|\/private\/|\/Users\//)
+      }
+      const neverCreated = await requestRead('src/pages/AbsentPage.tsx')
+      assert.equal(neverCreated.status, 404)
+      assert.deepEqual(neverCreated.body, unavailable)
+      assert.equal(existsSync(join(fixture, 'src/pages/AbsentPage.tsx')), false)
+
+      // Token and existing approval/content/secret validation still precede path
+      // availability. An unavailable target cannot bypass those earlier guards.
+      assert.equal((await post({ baseRevision: afterSaveRead.revision }, { headers: { 'x-systemx-session': 'wrong-token' } })).status, 403)
+      assert.match((await post({ confirmation: 'not approved' })).body.error, /Type SAVE LOCAL CHANGE/)
+      assert.match((await post({ content: null })).body.error, /content is missing/)
+      assert.match((await post({ content: 'const key = "sk_live_fixture-only"' })).body.error, /Secret-shaped/)
+      for (const path of ['../HomePage.tsx', 'package.json', 'src/pages/HomePage.tsx/child']) {
+        assert.deepEqual(await requestRead(path), { status: 400, body: { error: 'Source path is outside the editable allowlist' } })
+        assert.deepEqual(await post({ path }), { status: 400, body: { error: 'Source path is outside the editable allowlist' } })
+      }
+      assert.deepEqual(artifactSnapshot(fixtureLan, sourceFile), removedArtifacts)
+      assert.equal(existsSync(sourceFile), false)
+      writeFileSync(sourceFile, reviewed)
+    })
+
+    await t.test('replacement after a comparison remains an ordinary stale conflict and cannot force a save', async () => {
+      const comparison = await read()
+      const replacement = 'export default function HomePage() { return <h1>Replacement after review</h1> }\n'
+      // Only the isolated fixture simulates the other editor replacing the file.
+      rmSync(sourceFile)
+      writeFileSync(sourceFile, replacement)
+      const replacementArtifacts = artifactSnapshot(fixtureLan, sourceFile)
+      const stale = await post({ baseRevision: comparison.revision, force: true, replace: true })
+      assert.equal(stale.status, 409)
+      assert.deepEqual(stale.body, {
+        code: 'SOURCE_REVISION_CONFLICT',
+        error: 'Source changed since it was loaded. Reload source before saving.',
+        currentRevision: sha256(replacement),
+      })
+      assert.deepEqual(artifactSnapshot(fixtureLan, sourceFile), replacementArtifacts)
+      const current = await read()
+      assert.equal(current.content, replacement)
+      assert.equal(current.revision, sha256(replacement))
+      writeFileSync(sourceFile, reviewed)
+    })
+
+    await t.test('regular-file boundary refuses directories and linked files or ancestors rather than reporting them missing', async (boundaryTest) => {
+      const refused = { status: 400, body: { error: 'Source path is outside the editable allowlist' } }
+      const assertRefusedWithoutEffects = async () => {
+        const before = artifactSnapshot(fixtureLan, sourceFile)
+        assert.deepEqual(await requestRead(), refused)
+        assert.deepEqual(await post({ baseRevision: afterSaveRead.revision }), refused)
+        assert.deepEqual(artifactSnapshot(fixtureLan, sourceFile), before)
+      }
+      rmSync(sourceFile)
+      mkdirSync(sourceFile)
+      await assertRefusedWithoutEffects()
+      rmSync(sourceFile, { recursive: true })
+
+      const inRootTarget = join(fixture, 'src/pages/LinkTarget.tsx')
+      const outsideTarget = join(temporary, 'outside-source.tsx')
+      const outsideBytes = 'synthetic outside content: never expose or overwrite\n'
+      writeFileSync(inRootTarget, 'synthetic linked in-root source\n')
+      writeFileSync(outsideTarget, outsideBytes)
+      try {
+        for (const target of [inRootTarget, outsideTarget, join(temporary, 'missing-target.tsx')]) {
+          try { symlinkSync(target, sourceFile, 'file') } catch (error) {
+            if (process.platform === 'win32' && ['EPERM', 'EACCES'].includes(error.code)) {
+              boundaryTest.skip('File-link creation is unavailable without Windows symlink privileges')
+              return
+            }
+            throw error
+          }
+          await assertRefusedWithoutEffects()
+          rmSync(sourceFile)
+        }
+        assert.equal(readFileSync(outsideTarget, 'utf8'), outsideBytes)
+        assert.equal(readFileSync(inRootTarget, 'utf8'), 'synthetic linked in-root source\n')
+      } finally {
+        rmSync(sourceFile, { force: true })
+        writeFileSync(sourceFile, reviewed)
+      }
+
+      const pages = dirname(sourceFile)
+      const preservedPages = join(fixture, 'src/preserved-pages')
+      const outsidePages = join(temporary, 'outside-pages')
+      mkdirSync(outsidePages)
+      writeFileSync(join(outsidePages, 'HomePage.tsx'), outsideBytes)
+      renameSync(pages, preservedPages)
+      try {
+        for (const target of [preservedPages, outsidePages, join(temporary, 'missing-pages')]) {
+          symlinkSync(target, pages, process.platform === 'win32' ? 'junction' : 'dir')
+          await assertRefusedWithoutEffects()
+          rmSync(pages)
+        }
+        assert.equal(readFileSync(join(outsidePages, 'HomePage.tsx'), 'utf8'), outsideBytes)
+      } finally {
+        rmSync(pages, { force: true })
+        renameSync(preservedPages, pages)
+      }
+    })
+
+    await t.test('real HTTP chunks preserve exact reviewed UTF-8, BOM and CRLF content and its backup', async () => {
+      const previous = '\ufeff// Initial café 😀\r\nexport default function HomePage() { return <h1>Initial</h1> }\r\n'
+      const content = '\ufeffexport default function HomePage() { return <h1>A😀B café 漢字</h1> }\r\n'
+      writeFileSync(sourceFile, previous)
+      const loaded = await read()
+      const encoded = Buffer.from(JSON.stringify({ path: relativeSource, content, baseRevision: loaded.revision, confirmation: 'SAVE LOCAL CHANGE' }))
+      const cuts = [0, encoded.length]
+      for (const character of ['\ufeff', '😀', 'é', '漢', '字']) {
+        const start = encoded.indexOf(Buffer.from(character))
+        assert.ok(start >= 0, `Chunk fixture must contain ${character}`)
+        for (let offset = 1; offset < Buffer.byteLength(character); offset += 1) cuts.push(start + offset)
+      }
+      cuts.sort((left, right) => left - right)
+      const chunks = cuts.slice(1).map((end, index) => encoded.subarray(cuts[index], end))
+      const saved = await postChunks(chunks)
+      assert.equal(saved.status, 200)
+      assert.equal(saved.body.status, 'saved')
+      assert.equal(saved.body.revision, sha256(Buffer.from(content)))
+      assert.deepEqual(readFileSync(sourceFile), Buffer.from(content))
+      assert.deepEqual(readFileSync(join(fixture, saved.body.backup)), Buffer.from(previous))
+      const loadedAfter = await read()
+      assert.equal(loadedAfter.content, content)
+      assert.equal(loadedAfter.revision, saved.body.revision)
+    })
+
+    await t.test('shared JSON parser keeps malformed and oversized refusals plus its decoded-length boundary without write effects', async () => {
+      const loaded = await read()
+      const before = artifactSnapshot(fixtureLan, sourceFile)
+      assert.deepEqual(await postChunks([Buffer.from('{"path":')]), {
+        status: 400, body: { error: 'Request body must be valid JSON' },
+      })
+      const fields = { path: relativeSource, content: loaded.content, baseRevision: loaded.revision, confirmation: 'SAVE LOCAL CHANGE' }
+      const empty = JSON.stringify({ ...fields, padding: '' })
+      const padding = '漢'.repeat(1_000_000 - empty.length)
+      const atLimit = JSON.stringify({ ...fields, padding })
+      assert.equal(atLimit.length, 1_000_000)
+      assert.ok(Buffer.byteLength(atLimit) > 2_000_000, 'The existing body limit counts decoded UTF-16 units rather than UTF-8 bytes')
+      const unchanged = await postChunks([Buffer.from(atLimit)])
+      assert.deepEqual(unchanged, {
+        status: 200, body: { status: 'unchanged', path: relativeSource, revision: loaded.revision },
+      })
+      const overLimit = JSON.stringify({ ...fields, padding: `${padding}漢` })
+      assert.equal(overLimit.length, 1_000_001)
+      let oversized
+      try { oversized = await postChunks([Buffer.from(overLimit)]) } catch (error) {
+        // The established oversized-body policy destroys the request. Depending
+        // on socket timing, callers receive its fixed 400 or a closed transport.
+        assert.ok(['ECONNRESET', 'EPIPE'].includes(error.code), `Unexpected oversized-body failure: ${error.code}`)
+      }
+      if (oversized) assert.deepEqual(oversized, {
+        status: 400, body: { error: 'Request body exceeds local builder limit' },
+      })
+      const oversizedSource = await post({ baseRevision: loaded.revision, content: 'x'.repeat(500_001) })
+      assert.equal(oversizedSource.status, 400)
+      assert.equal(oversizedSource.body.error, 'Source content is missing or exceeds the local limit')
+      assert.deepEqual(artifactSnapshot(fixtureLan, sourceFile), before)
+      assert.equal((await read()).revision, loaded.revision)
+    })
   } finally {
     const exited = new Promise((resolveExit) => {
       if (child.exitCode !== null || child.signalCode !== null) { resolveExit(true); return }

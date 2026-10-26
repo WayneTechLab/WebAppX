@@ -1,4 +1,5 @@
 import { previewNavigatorLimits, collectPreviewHierarchy, projectPreviewRows, ancestorPreviewEntries, isCurrentPreviewElement } from './preview-navigator.js'
+import { sourceComparisonLimits, compareSourceText } from './source-comparison.js'
 
 const apiBase = window.location.pathname.startsWith('/__systemx') ? '/__systemx' : ''
 const sessionToken = document.querySelector('meta[name="systemx-session"]')?.content ?? ''
@@ -78,6 +79,12 @@ const state = {
   sourceLoadGeneration: 0,
   sourceLoading: false,
   sourceSaving: false,
+  sourceUnavailable: false,
+  sourceComparison: null,
+  sourceComparisonGeneration: 0,
+  sourceComparisonController: null,
+  sourceComparing: false,
+  sourceReviewMessage: '',
   components: [],
   previewSelectedElement: null,
   previewHoveredElement: null,
@@ -1440,6 +1447,7 @@ async function saveSelectedText() {
     if (state.previewSelectedElement === element) setControlDisabled('#settings-text-save', state.previewTextSourcePending === element)
   }
   if (state.previewTextSource === source) state.previewTextSource = { ...source, content: nextContent, revision: result.revision, currentRevision: null }
+  if (location.sourcePath === state.sourcePath) invalidateSourceComparison('Source changed through a selected-text save. Compare latest and review again.')
   if (confirmation && state.previewSelectedElement === element) confirmation.value = ''
   state.previewTextOriginals.set(element, nextText)
   element.textContent = nextText
@@ -1609,18 +1617,27 @@ function renderPageFiles(files) {
   if (!select) return
   const previousValue = select.value
   const editable = files.filter((file) => /^(src\/pages\/[^/]+\.tsx|src\/components\/(layout|navigation|shell)\/[^/]+\.tsx|src\/config\/siteControls\.ts|src\/index\.css|src\/router\.tsx)$/.test(file))
+  const loadedNotListed = Boolean(state.sourcePath && !editable.includes(state.sourcePath))
   select.replaceChildren()
   for (const file of editable) {
     const option = create('option', '', file)
     option.value = file
     select.append(option)
   }
-  const preferredValue = state.sourcePath && editable.includes(state.sourcePath)
-    ? state.sourcePath
-    : previousValue && editable.includes(previousValue)
-      ? previousValue
-      : ''
+  if (loadedNotListed) {
+    const retained = create('option', '', `${state.sourcePath} (loaded, not in current inventory)`)
+    retained.value = state.sourcePath
+    retained.dataset.sourceInventory = 'not-listed'
+    select.append(retained)
+  }
+  const available = new Set([...editable, ...(loadedNotListed ? [state.sourcePath] : [])])
+  const preferredValue = previousValue && available.has(previousValue)
+    ? previousValue
+    : state.sourcePath && available.has(state.sourcePath) ? state.sourcePath : ''
   if (preferredValue) select.value = preferredValue
+  if (loadedNotListed && state.sourceComparison) invalidateSourceComparison('The loaded source is not in the current inventory. The draft and loaded base are kept; compare latest to check its current state before reviewing replacement.')
+  else if (previousValue !== select.value && state.sourceComparison) invalidateSourceComparison('Selected source changed. Compare latest and review again.')
+  updateSourceSaveAvailability()
 }
 
 function renderPages(pages) {
@@ -1878,6 +1895,176 @@ function sourceRevisionConflict(error) {
   return error.status === 409 && error.code === 'SOURCE_REVISION_CONFLICT'
 }
 
+function sourceUnavailable(error) {
+  return error.status === 404 && error.code === 'SOURCE_UNAVAILABLE'
+}
+
+function setSourceUnavailable(path) {
+  if (path === state.sourcePath) { state.sourceUnavailable = true; state.sourceConflictRevision = null }
+  invalidateSourceComparison('Source is unavailable. The retained draft and loaded base are kept; no file will be recreated.', path !== state.sourcePath)
+  const availability = document.querySelector('#source-availability')
+  if (availability) {
+    availability.hidden = false
+    availability.textContent = 'Source is unavailable. The draft and loaded revision are kept. Restore the file externally or select an existing allowlisted file and reload. No file will be recreated.'
+  }
+  renderSourceRevision()
+  output('#source-output', 'Source is unavailable. The draft and loaded revision are kept; no file will be recreated. Select an existing file or restore it externally, then reload.')
+  updateSourceSaveAvailability()
+}
+
+function clearSourceUnavailable() {
+  state.sourceUnavailable = false
+  const availability = document.querySelector('#source-availability')
+  if (availability) { availability.hidden = true; availability.textContent = '' }
+}
+
+function sourceReviewMatches(review = state.sourceComparison) {
+  const editor = document.querySelector('#source-editor')
+  return Boolean(review && !review.pending && !review.stale && !state.sourceUnavailable
+    && review.comparison?.complete && !review.comparison.truncated && review.currentTextMatchesRevision
+    && review.generation === state.sourceComparisonGeneration
+    && review.path === state.sourcePath && document.querySelector('#source-file-select')?.value === review.path
+    && review.loadedRevision === state.sourceRevision && validSourceRevision(review.currentRevision)
+    && editor?.value === review.draftDisplay && sourceContentForDraft(editor.value) === review.draftContent)
+}
+
+function renderSourceComparison() {
+  const panel = document.querySelector('#source-review')
+  if (!panel) return
+  const review = state.sourceComparison
+  panel.hidden = !review
+  if (!review) return
+  text('#source-review-path', review.path)
+  text('#source-review-loaded-revision', review.loadedRevision)
+  text('#source-review-draft-revision', review.draftRevision || 'Not calculated yet')
+  text('#source-review-current-revision', state.sourceUnavailable ? 'Unavailable' : review.currentRevision || (review.pending ? 'Reading latest source…' : 'Not available'))
+  text('#source-review-draft', review.draftContent)
+  text('#source-review-current', state.sourceUnavailable ? '' : review.currentContent)
+  const status = state.sourceReviewMessage || (review.prepared
+    ? 'Reviewed replacement prepared against the displayed latest revision. Type SAVE LOCAL CHANGE again, then Save reviewed replacement.'
+    : 'Comparison is read-only. The retained draft and loaded base are unchanged. Review the snapshots before preparing a replacement.')
+  text('#source-review-status', status)
+  const result = review.comparison
+  text('#source-review-summary', result
+    ? `${result.counts.changedRows} inspected changed line rows · ${result.counts.shownRows} shown · ${result.counts.omittedRows} omitted. Lines are compared by position; inserted lines can shift this view. ${result.reasons.join(' ')}${!review.currentTextMatchesRevision ? ' Latest file bytes cannot be reproduced by this text snapshot; replacement is unavailable.' : ''}`
+    : review.pending ? 'Reading a bounded comparison; no source write is requested.' : 'No completed comparison. Compare latest again before reviewing replacement.')
+  const lines = document.querySelector('#source-review-lines')
+  lines?.replaceChildren()
+  for (const entry of result?.rows ?? []) {
+    const row = create('div', 'source-comparison-line')
+    row.dataset.changeKind = entry.kind
+    row.dataset.draftLine = entry.draftLine ?? ''
+    row.dataset.currentLine = entry.currentLine ?? ''
+    for (const [name, number, ending, value, cropped] of [
+      ['Draft', entry.draftLine, entry.draftEnding, entry.draftText, entry.draftTextTruncated],
+      ['Latest', entry.currentLine, entry.currentEnding, entry.currentText, entry.currentTextTruncated],
+    ]) {
+      const cell = create('div')
+      cell.append(create('small', '', `${name} line ${number ?? '—'} · ${ending ?? 'absent'}${cropped ? ' · excerpt truncated' : ''}`), create('pre', '', value))
+      row.append(cell)
+    }
+    lines?.append(row)
+  }
+  setControlDisabled('#prepare-source-replacement', state.sourceLoading || state.sourceSaving || state.sourceComparing || !sourceReviewMatches())
+}
+
+function invalidateSourceComparison(reason, clear = false) {
+  state.sourceComparisonGeneration += 1
+  state.sourceComparisonController?.abort()
+  state.sourceComparisonController = null
+  state.sourceComparing = false
+  const review = state.sourceComparison
+  const firstInvalidation = review && !review.stale
+  if (review?.prepared) setControlValue('#source-confirmation', '')
+  if (review) { review.stale = true; review.prepared = false; review.pending = false }
+  state.sourceReviewMessage = reason
+  if (clear) state.sourceComparison = null
+  if (firstInvalidation || clear) renderSourceComparison()
+  else if (review) {
+    text('#source-review-status', reason)
+    setControlDisabled('#prepare-source-replacement', true)
+  }
+  updateSourceSaveAvailability()
+}
+
+async function sourceTextDigest(content) {
+  const bytes = new TextEncoder().encode(content)
+  const digest = await window.crypto.subtle.digest('SHA-256', bytes)
+  return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, '0')).join('')
+}
+
+async function compareLatestSource() {
+  const editor = document.querySelector('#source-editor')
+  const path = state.sourcePath
+  if (!editor || !path || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || state.sourceComparing) return
+  if (document.querySelector('#source-file-select')?.value !== path) {
+    output('#source-output', 'Load the selected file before comparing; the retained draft still belongs to its loaded file.')
+    return
+  }
+  if (editor.value.length > sourceComparisonLimits.characters) {
+    output('#source-output', `Draft exceeds the ${sourceComparisonLimits.characters}-character comparison limit. The draft and base are kept.`)
+    return
+  }
+  const draftDisplay = editor.value, draftContent = sourceContentForDraft(draftDisplay)
+  if (draftContent.length > sourceComparisonLimits.characters) {
+    output('#source-output', `Proposed source exceeds the ${sourceComparisonLimits.characters}-character comparison limit. The draft and base are kept.`)
+    return
+  }
+  invalidateSourceComparison('Reading latest source; the draft and loaded base are kept.', true)
+  const generation = state.sourceComparisonGeneration
+  const controller = new AbortController()
+  state.sourceComparisonController = controller
+  state.sourceComparing = true
+  const review = { generation, path, loadedRevision: state.sourceRevision, draftDisplay, draftContent, currentContent: '', currentRevision: null, draftRevision: null, currentTextMatchesRevision: false, comparison: null, pending: true, stale: false, prepared: false }
+  state.sourceComparison = review
+  renderSourceComparison()
+  updateSourceSaveAvailability()
+  try {
+    const result = await request(`/api/builder/source?path=${encodeURIComponent(path)}`, { signal: controller.signal })
+    if (generation !== state.sourceComparisonGeneration) return
+    if (result.path !== path || !validSourceRevision(result.revision) || typeof result.content !== 'string') throw new Error('Latest source revision is unavailable.')
+    if (result.content.length > sourceComparisonLimits.characters) throw new Error(`Latest source exceeds the ${sourceComparisonLimits.characters}-character comparison limit.`)
+    const [draftRevision, currentTextRevision] = await Promise.all([sourceTextDigest(draftContent), sourceTextDigest(result.content)])
+    if (generation !== state.sourceComparisonGeneration) return
+    clearSourceUnavailable()
+    Object.assign(review, { currentContent: result.content, currentRevision: result.revision, draftRevision, currentTextMatchesRevision: currentTextRevision === result.revision, comparison: compareSourceText(draftContent, result.content), pending: false })
+    state.sourceReviewMessage = ''
+    state.sourceConflictRevision = result.revision !== state.sourceRevision ? result.revision : null
+    renderSourceRevision()
+    renderSourceComparison()
+  } catch (error) {
+    if (generation !== state.sourceComparisonGeneration) return
+    if (sourceUnavailable(error)) setSourceUnavailable(path)
+    else {
+      review.pending = false
+      review.stale = true
+      state.sourceReviewMessage = `${error.message} Comparison was not completed. The draft and loaded base are kept; check the local connection and compare again.`
+      output('#source-output', state.sourceReviewMessage)
+      renderSourceComparison()
+    }
+  } finally {
+    if (generation === state.sourceComparisonGeneration) {
+      state.sourceComparing = false
+      state.sourceComparisonController = null
+      renderSourceComparison()
+      updateSourceSaveAvailability()
+    }
+  }
+}
+
+function prepareSourceReplacement() {
+  if (state.sourceLoading || state.sourceSaving || state.sourceComparing || !sourceReviewMatches()) {
+    output('#source-output', 'Replacement review is incomplete or outdated. Compare latest again; the draft and loaded base are kept.')
+    return
+  }
+  state.sourceComparison.prepared = true
+  state.sourceReviewMessage = ''
+  setControlValue('#source-confirmation', '')
+  renderSourceComparison()
+  updateSourceSaveAvailability()
+  document.querySelector('#source-confirmation')?.focus()
+}
+
 function renderSelectedTextRevision() {
   const source = state.previewTextSource
   const label = document.querySelector('#settings-source-revision')
@@ -1902,7 +2089,9 @@ function renderSourceRevision() {
   if (!label || !validSourceRevision(state.sourceRevision)) return
   const dirty = document.querySelector('#source-editor')?.value !== state.sourceDisplayBaseline
   label.dataset.revision = state.sourceRevision
-  label.textContent = state.sourceConflictRevision
+  label.textContent = state.sourceUnavailable
+    ? `Source unavailable · ${dirty ? 'unsaved draft' : 'loaded source'} · loaded ${state.sourceRevision}`
+    : state.sourceConflictRevision
     ? `Conflict · ${dirty ? 'unsaved draft' : 'loaded source'} · loaded ${state.sourceRevision} · current ${state.sourceConflictRevision}`
     : `${dirty ? 'Unsaved draft' : 'Loaded source'} · revision ${state.sourceRevision.slice(0, 12)}.`
   if (state.sourceConflictRevision) label.dataset.currentRevision = state.sourceConflictRevision
@@ -1919,6 +2108,7 @@ async function loadSelectedTextSource(element = state.previewSelectedElement, pa
     const result = await request(`/api/builder/source?path=${encodeURIComponent(path)}`)
     if (generation !== state.previewTextSourceGeneration || state.previewSelectedElement !== element || state.previewSelection?.sourcePath !== path) return
     if (result.path !== path || !validSourceRevision(result.revision)) throw new Error('Source revision unavailable. Choose Reload latest source before saving.')
+    if (state.sourceComparison?.path === path && state.sourceComparison.currentRevision && state.sourceComparison.currentRevision !== result.revision) invalidateSourceComparison('A newer source revision was observed. Compare latest and review again.')
     state.previewTextSource = { element, path, content: result.content, revision: result.revision }
     renderSelectedTextRevision()
   } catch (error) {
@@ -1933,9 +2123,12 @@ async function loadSelectedTextSource(element = state.previewSelectedElement, pa
 }
 
 function updateSourceSaveAvailability() {
-  setControlDisabled('#save-source', state.sourceLoading || state.sourceSaving || !validSourceRevision(state.sourceRevision))
+  setControlDisabled('#save-source', state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable || !validSourceRevision(state.sourceRevision))
   setControlDisabled('#load-source', state.sourceSaving)
   setControlDisabled('#reload-source', state.sourceSaving)
+  setControlDisabled('#compare-source', state.sourceLoading || state.sourceSaving || state.sourceComparing || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
+  setControlDisabled('#prepare-source-replacement', state.sourceLoading || state.sourceSaving || state.sourceComparing || !sourceReviewMatches())
+  text('#save-source', state.sourceComparison?.prepared && sourceReviewMatches() ? 'Save reviewed replacement' : 'Save')
 }
 
 function sourceContentForDraft(displayDraft) {
@@ -1950,6 +2143,7 @@ async function loadSource({ path } = {}) {
   const editor = document.querySelector('#source-editor')
   const wantedPath = path || select?.value
   if (!select || !editor || !wantedPath || state.sourceSaving) return
+  invalidateSourceComparison('Source load requested. Compare latest again before reviewing replacement.')
   if (state.sourcePath && editor.value !== state.sourceDisplayBaseline && !window.confirm('Reload source and discard the unsaved source draft? Cancel keeps the draft and its loaded revision.')) {
     select.value = state.sourcePath
     output('#source-output', 'Reload cancelled. The source draft and loaded revision are kept.')
@@ -1970,12 +2164,18 @@ async function loadSource({ path } = {}) {
     select.value = result.path
     editor.value = result.content
     state.sourceDisplayBaseline = editor.value
+    clearSourceUnavailable()
     text('#source-policy', result.policy)
     renderSourceRevision()
     setControlValue('#source-confirmation', '')
     output('#source-output', `${result.path} loaded · ${result.content.split(/\r?\n/).length} lines`)
   } catch (error) {
-    if (generation === state.sourceLoadGeneration) output('#source-output', `${error.message} The source draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
+    if (generation === state.sourceLoadGeneration) {
+      if (sourceUnavailable(error)) setSourceUnavailable(wantedPath)
+      output('#source-output', sourceUnavailable(error)
+        ? 'Source is unavailable. The source draft and loaded revision are kept; no file will be recreated. Select an existing file or restore it externally, then reload.'
+        : `${error.message} The source draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
+    }
   } finally {
     if (generation === state.sourceLoadGeneration) {
       state.sourceLoading = false
@@ -1990,7 +2190,7 @@ async function saveSource() {
   const editor = document.querySelector('#source-editor')
   const confirmation = document.querySelector('#source-confirmation')
   if (!select || !editor || !confirmation) return
-  if (!state.sourcePath || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving) {
+  if (!state.sourcePath || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable) {
     output('#source-output', 'Load a source file before saving.')
     return
   }
@@ -1998,8 +2198,18 @@ async function saveSource() {
     output('#source-output', `Selected file changed to ${select.value}. Load it before saving.`)
     return
   }
-  const path = state.sourcePath, baseRevision = state.sourceRevision, displayDraft = editor.value
-  const content = sourceContentForDraft(displayDraft)
+  const review = state.sourceComparison?.prepared ? state.sourceComparison : null
+  if (review && !sourceReviewMatches(review)) {
+    invalidateSourceComparison('Replacement review is outdated. Compare latest and review again.')
+    return
+  }
+  if (review && confirmation.value !== 'SAVE LOCAL CHANGE') {
+    output('#source-output', 'Reviewed replacement requires a new SAVE LOCAL CHANGE confirmation before saving.')
+    return
+  }
+  const path = state.sourcePath, baseRevision = review ? review.currentRevision : state.sourceRevision, displayDraft = editor.value
+  const content = review ? review.draftContent : sourceContentForDraft(displayDraft)
+  if (!review) invalidateSourceComparison('A source save was requested. Compare latest again before reviewing replacement.')
   state.sourceSaving = true
   updateSourceSaveAvailability()
   try {
@@ -2009,18 +2219,27 @@ async function saveSource() {
     state.sourceLoadedContent = content
     state.sourceDisplayBaseline = displayDraft
     state.sourceConflictRevision = null
+    clearSourceUnavailable()
+    invalidateSourceComparison('Source save accepted. Compare latest again before another replacement.', true)
     renderSourceRevision()
     output('#source-output', result.status === 'saved' ? `Saved ${result.path}; backup: ${result.backup}. Vite preview can hot reload.` : result.status)
     confirmation.value = ''
     await refresh()
   } catch (error) {
+    if (sourceUnavailable(error)) {
+      setSourceUnavailable(path)
+      output('#source-output', 'Source is unavailable. The draft and loaded revision are kept; no file will be recreated. Select an existing file or restore it externally, then reload.')
+      return
+    }
     if (!sourceRevisionConflict(error)) {
+      if (review) invalidateSourceComparison('Save was not confirmed. Compare latest and review again before another replacement.')
       output('#source-output', `${error.message} Save was not confirmed; the draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
       return
     }
     state.sourceConflictRevision = error.currentRevision
+    invalidateSourceComparison(`Source changed again${error.currentRevision ? ` · current ${error.currentRevision}` : ''}. Compare latest and review again.`)
     renderSourceRevision()
-    output('#source-output', 'Source changed since it was loaded. The draft and loaded revision are kept. Choose Reload latest source to review the current file before saving again.')
+    output('#source-output', 'Source changed since it was loaded. The draft and loaded revision are kept. Choose Compare latest for a non-destructive review, or Reload latest source to explicitly replace the retained draft after confirmation.')
   } finally {
     state.sourceSaving = false
     updateSourceSaveAvailability()
@@ -2510,9 +2729,19 @@ function bind() {
   document.querySelector('#record-form')?.addEventListener('submit', (event) => void addRecord(event).catch((error) => output('#command-output', error.message)))
   document.querySelector('#user-form')?.addEventListener('submit', (event) => void addUser(event).catch((error) => output('#command-output', error.message)))
   document.querySelector('#load-source')?.addEventListener('click', () => void loadSource().catch((error) => output('#source-output', error.message)))
-  document.querySelector('#source-editor')?.addEventListener('input', renderSourceRevision)
+  document.querySelector('#source-editor')?.addEventListener('input', () => {
+    renderSourceRevision()
+    invalidateSourceComparison('Draft changed. Comparison is outdated; compare latest and review again.')
+  })
+  document.querySelector('#source-file-select')?.addEventListener('change', () => invalidateSourceComparison('Selected source changed. Comparison is outdated; compare latest and review again.'))
   document.querySelector('#reload-source')?.addEventListener('click', () => void loadSource({ path: state.sourcePath }).catch((error) => output('#source-output', error.message)))
   document.querySelector('#save-source')?.addEventListener('click', () => void saveSource().catch((error) => output('#source-output', error.message)))
+  document.querySelector('#compare-source')?.addEventListener('click', () => void compareLatestSource().catch((error) => output('#source-output', error.message)))
+  document.querySelector('#cancel-source-review')?.addEventListener('click', () => {
+    invalidateSourceComparison('Comparison cancelled. The draft and loaded base are kept.', true)
+    output('#source-output', 'Comparison cancelled. The draft and loaded base are kept; no source was saved.')
+  })
+  document.querySelector('#prepare-source-replacement')?.addEventListener('click', prepareSourceReplacement)
   document.querySelector('#component-save-form')?.addEventListener('submit', (event) => void saveComponent(event).catch((error) => output('#component-output', `Module blocked: ${error.message}`)))
   document.querySelector('#ingest-form')?.addEventListener('submit', (event) => void ingestProject(event).catch((error) => output('#ingest-output', `Inventory blocked: ${error.message}`)))
 }

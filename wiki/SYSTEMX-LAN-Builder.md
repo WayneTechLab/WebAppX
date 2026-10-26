@@ -23,6 +23,23 @@ no-op behavior accounts for textarea normalization. Read the
 [API reference](SYSTEMX-LAN-API-Reference.md) and
 [source QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
 
+The [active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) continues with source comparison, missing-file
+draft protection and explicitly reviewed replacement. Its 15 requirements stay
+pending until the new browser and release checks are accepted.
+
+Use **Build → Source → Compare latest** to inspect the retained proposal beside
+the latest source and changed line excerpts. Comparison leaves the draft and its
+loaded revision intact. **Review replacement** prepares that exact proposal;
+type `SAVE LOCAL CHANGE` again and choose **Save reviewed replacement** to submit
+against the reviewed revision. A newer external edit still conflicts.
+
+Cancel the comparison to discard its review authority while keeping the draft.
+Editing the draft, switching files or requesting a load invalidates the review.
+When the source is unavailable, the editor keeps the draft and loaded revision
+and blocks saving; restore the file externally or select an existing file and
+reload. It offers no recreation or force-save action.
+
+
 **Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
 remain TODO.** Tested source `136a4cf` passed all 68 CI stages, 11 source-editing
 browser groups, 16 Navigator regression groups and separate Hosting preflight.

@@ -223,6 +223,28 @@ test('compressed evidence edges cannot accept a dependent through incomplete tra
   })
 })
 
+test('execution plan reflects the complete local-ready count, ordered bounded rows and subsequent acceptance', () => {
+  const source = [{ schemaVersion: 1, families: [family(1, { capabilities: 22 }), family(2, { gate: 'operator', capabilities: 22 })] }]
+  const value = buildCatalog(source, { ...options, capabilitiesPerFamily: 22 })
+  const before = structuredClone(value)
+  const plan = renderArtifacts(value).plan
+  const displayed = [...plan.matchAll(/^\| (LAN-\d{5}) \|/gm)].map(match => match[1])
+  assert.match(plan, /\*\*22 local TODO requirement\(s\)\*\*/)
+  assert.match(plan, /2 additional ready requirement\(s\) are omitted/)
+  assert.deepEqual(displayed, Array.from({ length: 20 }, (_, index) => `LAN-${String(index * 5 + 1).padStart(5, '0')}`))
+  assert.match(plan, /\[active iteration\]\(LAN-ACTIVE-ITERATION\.md\)/)
+  assert.match(plan, /Batch requirements remain TODO until Agent 0 accepts their revision-bound receipts/)
+  assert.ok(!displayed.includes('LAN-00111'), 'Operator-gated requirements do not enter the local queue.')
+  const accepted = applyProgress(value, { schemaVersion: 1, completions: value.items.slice(0, 5).map(completion) })
+  const nextPlan = renderArtifacts(accepted).plan
+  const nextDisplayed = [...nextPlan.matchAll(/^\| (LAN-\d{5}) \|/gm)].map(match => match[1])
+  assert.match(nextPlan, /\*\*21 local TODO requirement\(s\)\*\*/)
+  assert.equal(nextDisplayed[0], 'LAN-00006')
+  assert.equal(nextDisplayed.at(-1), 'LAN-00101')
+  assert.equal(nextDisplayed.length, 20)
+  assert.deepEqual(value, before)
+})
+
 test('CLI parsing rejects ambiguous modes, invalid bounds and unknown input paths', () => {
   assert.deepEqual(parseArgs([]), { mode: 'summary', json: false, limit: 20, gate: 'local' })
   assert.equal(parseArgs(['--ready', '--gate', 'provider', '--limit', '100', '--json']).limit, 100)

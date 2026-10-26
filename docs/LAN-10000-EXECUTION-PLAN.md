@@ -10,7 +10,24 @@ Current accepted status: 60/10000 requirements and 12/2000 capabilities. 0 capab
 
 Agent 0 selects bounded work from the dependency-ready local queue, assigns one write owner and preserves the existing React/Vite/Firebase application and familiar LAN editor shell. Querying readiness never assigns or executes work. Existing work, reusable blank seeds, managed release fingerprints, and both checksummed research packages remain separate.
 
+Read the [active iteration](LAN-ACTIVE-ITERATION.md) for the selected bounded batch, its pending requirements, dependencies and verification scope. Batch requirements remain TODO until Agent 0 accepts their revision-bound receipts in the progress ledger. An iteration record does not establish completion or change capability counts.
+
 Preserve the source ownership, Designer kernel, command journal, style engine, component, CMS, preview and extension sequencing in the [Webflow master plan](../.SYSTEMX/LAN/WEBFLOW-DEEP-RESEARCH-MASTER-PLAN.md). The [dated refresh](../.SYSTEMX/LAN/WEBFLOW-RESEARCH-2026-10-25.md) supplies current source distinctions. Family dependencies refine that plan without accepting unimplemented editor behavior.
+
+## Dependency-ready local queue
+
+The validated progress ledger currently makes **6 local TODO requirement(s)** dependency-ready. This snapshot displays 6 in catalog ID order, with a maximum of 20 rows. The active iteration identifies the selected batch; its blocked requirements remain pending until their prerequisites are accepted. Queue membership grants no assignment, execution or publication authority.
+
+| Requirement | Capability | Lane | Priority | Direct prerequisites |
+| --- | --- | --- | --- | --- |
+| LAN-00026 | Compare draft and current source | behavior | P1 | LAN-00020, LAN-00025 |
+| LAN-00031 | Detect externally removed source | behavior | P1 | LAN-00010 |
+| LAN-00051 | Refresh revisions after guarded font changes | behavior | P1 | LAN-00015 |
+| LAN-00056 | Bind previews to source baselines | behavior | P1 | LAN-00010, LAN-00015 |
+| LAN-00076 | Recover revision-bound local drafts | behavior | P1 | LAN-00010, LAN-00025 |
+| LAN-00086 | Inspect source revision history | behavior | P1 | LAN-00015, LAN-00050 |
+
+Recompute this generated snapshot with `node scripts/lan-backlog.mjs --write` after a reviewed progress change. Use `--ready --json` for the current validated queue without writing any artifacts.
 
 ## Dependency and gate contract
 

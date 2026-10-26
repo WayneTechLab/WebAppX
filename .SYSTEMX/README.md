@@ -13,6 +13,10 @@ feature roadmap. The sections below describe retained webapp extensions.
 
 ## LAN 10,000-item delivery program — 2026-10-26
 
+The [active iteration](../docs/LAN-ACTIVE-ITERATION.md) continues with source comparison, missing-file
+draft protection and explicitly reviewed replacement. Its 15 requirements stay
+pending until the new browser and release checks are accepted.
+
 **Accepted first batch: 60 requirements / 12 capabilities; 9,940 requirements
 remain TODO.** Tested source `136a4cf` passed all 68 CI stages, 11 source-editing
 browser groups, 16 Navigator regression groups and separate Hosting preflight.

@@ -467,11 +467,31 @@
               <label>File<select id="source-file-select"></select></label>
               <button class="button" id="load-source" type="button">Load</button>
               <button class="button" id="reload-source" type="button">Reload latest source</button>
+              <button class="button" id="compare-source" type="button" disabled>Compare latest</button>
               <span id="source-policy" class="badge warn">backup-diff-confirm</span>
             </div>
             <textarea id="source-editor" spellcheck="false" aria-label="Source editor" placeholder="Choose an allowlisted source file."></textarea>
             <output id="source-revision" class="source-revision-row" aria-live="polite">No source revision loaded.</output>
+            <output id="source-availability" class="command-output" aria-live="polite" hidden></output>
             <p id="source-revision-help" class="panel-help">A revision covers the bytes of one allowlisted source file. It does not establish Git cleanliness, provider publication, or an exclusive lock.</p>
+            <section id="source-review" class="source-comparison" aria-label="Source comparison" hidden>
+              <div class="panel-heading compact"><h3>Draft and latest source</h3><button id="cancel-source-review" class="button" type="button">Cancel comparison</button></div>
+              <output id="source-review-status" class="command-output" aria-live="polite"></output>
+              <dl class="source-comparison-revisions">
+                <dt>Reviewed path</dt><dd id="source-review-path"></dd>
+                <dt>Loaded base revision</dt><dd id="source-review-loaded-revision"></dd>
+                <dt>Draft text digest</dt><dd id="source-review-draft-revision"></dd>
+                <dt>Latest snapshot revision</dt><dd id="source-review-current-revision"></dd>
+              </dl>
+              <div class="source-comparison-panes">
+                <div><h4>Retained draft · proposed text</h4><pre id="source-review-draft" tabindex="0" aria-label="Retained source draft"></pre></div>
+                <div><h4>Latest source snapshot</h4><pre id="source-review-current" tabindex="0" aria-label="Latest source snapshot"></pre></div>
+              </div>
+              <output id="source-review-summary" class="panel-help" aria-live="polite"></output>
+              <div id="source-review-lines" class="source-comparison-lines" aria-label="Changed source line excerpts"></div>
+              <p class="panel-help">Comparison keeps the draft and loaded base. Review replacement prepares this exact draft against the displayed latest revision. A new SAVE LOCAL CHANGE confirmation is still required before saving.</p>
+              <button id="prepare-source-replacement" class="button" type="button" disabled>Review replacement</button>
+            </section>
             <div class="source-save-row">
               <label>Confirmation<input id="source-confirmation" placeholder="SAVE LOCAL CHANGE" autocomplete="off" /></label>
               <button class="button button-dark" id="save-source" type="button" disabled>Save</button>

@@ -20,7 +20,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "node --test .SYSTEMX/LAN/tests/characterization.test.mjs tests/security/controls.test.mjs .SYSTEMX/LAN/tests/preview-navigator.test.mjs .SYSTEMX/LAN/tests/source-revision.test.mjs",
+    "test": "node --test .SYSTEMX/LAN/tests/characterization.test.mjs tests/security/controls.test.mjs .SYSTEMX/LAN/tests/preview-navigator.test.mjs .SYSTEMX/LAN/tests/source-revision.test.mjs .SYSTEMX/LAN/tests/source-comparison.test.mjs",
     "emulators": "npx --yes firebase-tools emulators:start",
     "emulators:export": "npx --yes firebase-tools emulators:start --export-on-exit=.emulator-data --import=.emulator-data",
     "deploy": "bash .SYSTEMX/scripts/deploy.sh",
