@@ -42,17 +42,21 @@ all 68 CI stages and separate Hosting preflight. Compatible root/starter/backend
 dependency audit repairs passed with zero reported vulnerabilities. App 3.4.0
 retains deployment count 0. Later kernel waves remain planned.
 
-## LAN execution program — 2026-10-26
+## LAN execution program — 2026-10-28
 
 The prior [conflict-review milestone](../../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
 missing-file draft protection and explicitly reviewed replacement. The
 [current iteration](../../docs/LAN-ACTIVE-ITERATION.md) continues with revision-aware font changes and literal draft previews.
 
-**Accepted total: 75 requirements / 15 capabilities; 9,925 requirements remain
-TODO.** The source-conflict batch adds 15 completions. Functional candidate
-`d9bd9e7` passed all 68 CI stages, 21 source-flow browser groups, 16 Navigator
-groups, three actual-app read-only observations and separate Hosting preflight.
-Production deployment was skipped.
+**Accepted total: 85 requirements / 17 capabilities; 9,915 requirements remain
+TODO.** The font/preview batch adds ten completions. Candidate `781b624` passed
+all 68 CI stages, 49 npm tests, 37 source-flow browser groups with four inspector
+geometry checkpoints, 16 actual-stack Navigator groups and separate Hosting
+preflight. Production deployment was skipped.
+
+The batch also pins patched re2js 2.8.7 in root and starter dependency trees.
+Root audit retains two low Gusto/deepmerge package findings with zero
+high/critical; starter audit is clean. The SDK and audit threshold are unchanged.
 
 The [LAN execution plan](../../docs/LAN-10000-EXECUTION-PLAN.md) and
 [family checklist index](../../docs/backlog/LAN-10000-TODO.md) define 100 families,
@@ -98,3 +102,18 @@ versioned API boundary, and compatibility tests with no UX regression.
 ## Operator note
 
 Do not copy the `INJECT/` files blindly over newer repository work. Merge on a working branch, review schema/architecture decisions, and preserve current LAN source until characterization tests exist.
+
+## Font revisions and source previews — accepted 2026-10-28
+
+LAN-00051–LAN-00060 are accepted at candidate `781b624bc322c4d851fa3dfc91a165a087dea5d7`.
+Confirmed font writes check their own stylesheet baseline and expose resulting
+byte revisions without rebasing a retained raw CSS draft. Literal draft snapshots
+record path, loaded baseline, displayed-text digest and current observation;
+GET-only checks report advancement or unavailability without promotion.
+
+The normal 336 px inspector now contains full hashes and receipts. Integration
+verification also repaired the missing CSS inventory entry and an inherited
+full-reload selection race while preserving explicit page-picker context. Read
+[the dated receipt](../../docs/LAN-FONT-PREVIEW-QA-2026-10-28.md) for final proof,
+retained failures and limits. The next ready work is local draft recovery,
+comparison export and source history; the typed Designer kernel remains planned.

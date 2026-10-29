@@ -4,7 +4,7 @@ Created 2026-10-26; source baseline `053382b383d0fbffbe5161e9fb4d5f07a3c1fed8`.
 
 100 authored families × 20 capabilities × 5 acceptance lanes = **10,000 separately trackable delivery requirements**.
 These requirements describe delivery work; the count does not mean 10,000 shipped standalone features.
-Status: **75 accepted requirements / 9925 TODO**; **15 fully accepted capabilities / 0 partial / 1985 TODO**.
+Status: **85 accepted requirements / 9915 TODO**; **17 fully accepted capabilities / 0 partial / 1983 TODO**.
 
 Authored specifications and [progress](lan-10000-progress.json) are the inputs. This page, [JSON](lan-10000.json), [CSV](lan-10000.csv), and the [execution plan](../LAN-10000-EXECUTION-PLAN.md) are deterministic generated views. CSV cells with formula-leading text receive a protective apostrophe; JSON retains the authored values.
 Run `node scripts/lan-backlog.mjs --check` to verify them; `--ready` reports local dependency-ready TODO requirements and grants no execution authority.

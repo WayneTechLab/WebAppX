@@ -586,3 +586,10 @@ See the [font/preview QA receipt](../../docs/LAN-FONT-PREVIEW-QA-2026-10-28.md)
 for actual verification and the [active iteration](../../docs/LAN-ACTIVE-ITERATION.md)
 for the current selected batch. The Work sources board keeps the separate
 original WebAppX catalog and reusable project records distinct from LAN progress.
+
+The font/preview milestone is accepted at `781b624bc322c4d851fa3dfc91a165a087dea5d7`:
+**85/10,000 requirements and 17/2,000 capabilities**, with 9,915 requirements TODO.
+The final checks passed all 68 CI stages, 49 npm tests, 37 isolated browser groups
+with four normal-dock geometry checkpoints, 16 actual Navigator groups and
+separate Hosting preflight. The [dated receipt](../../docs/LAN-FONT-PREVIEW-QA-2026-10-28.md)
+keeps the prior inventory, visual and reload failures separate from final passes.

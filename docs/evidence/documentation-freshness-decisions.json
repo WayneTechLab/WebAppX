@@ -1119,6 +1119,84 @@
       "scopeSha256": "0ed152dce0e0cb779189c07f45974eb2476a0e2b14ca022555f848fb85998c07",
       "decision": "retain",
       "rationale": "Reviewed the one-line conditional selection-clear increment after 045454e2bdaff135a8f95af0704fbe9adb536b08. A new iframe document clears retained DOM/leaf-read authority when selection remains, while already-cleared explicit page picks retain their new context labels. Raw editor, font and captured draft snapshot state are unaffected. The complete mapped set remains 40 paths; API, importer, CSS, harness, package and CI source are unchanged. No optional identity, provider, telemetry, Windows runner or deployment policy is activated. Retain original artifact fingerprints, dates and unadopted boundaries; no browser result is relabeled by this review."
+    },
+    {
+      "id": "DFR-b4bf32d509ce1a6b",
+      "guideId": "portal-state-contract",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "reportDigest": "d2e363b51cd3aa0ebe5f0705045730e73c8039c82bc383c5697bbb0ec1989d57",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "b67717fcd38a4307a0ac94873d6eb208fad694222559dd678857afd278586021",
+      "decision": "retain",
+      "rationale": "Retain the source review at 912f2c26fbf211e1936813cfd25c25c102dcef3e. Root/starter dependency and parity repairs introduce no new path in this guide mapped scopes. Native persistence, retention, exports and recovery implementation, guide bytes and original receipt qualifications remain unchanged. Historical zero-audit observations keep their original dates and sources; this review supplies no new audit, functional or browser result."
+    },
+    {
+      "id": "DFR-089eaffd0c2c63a3",
+      "guideId": "portal-lifecycle",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "reportDigest": "d2e363b51cd3aa0ebe5f0705045730e73c8039c82bc383c5697bbb0ec1989d57",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "5a8be277835174c5d58780fc9e43ff8c288a323440a77b18cea47518036eaaf5",
+      "decision": "retain",
+      "rationale": "Retain the source review at 912f2c26fbf211e1936813cfd25c25c102dcef3e. The new root/starter re2js override, lock and parity paths do not match this lifecycle mapping. Dedicated employment, CMS release and CRM ownership source, browser runner, workflow command strings, guide and receipt bytes remain unchanged. Historical audit and lifecycle observations are not relabeled to this candidate. No execution or acceptance is inferred."
+    },
+    {
+      "id": "DFR-8a146f1ece5dda46",
+      "guideId": "hr-recruiting-lifecycle",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "reportDigest": "d2e363b51cd3aa0ebe5f0705045730e73c8039c82bc383c5697bbb0ec1989d57",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "5b715919714102ea72ca2228eac75fab58c229170178d54007458b004aeb5d68",
+      "decision": "retain",
+      "rationale": "Retain the source review at 912f2c26fbf211e1936813cfd25c25c102dcef3e. The dependency/parity repair adds no path in recruiting mapped scopes. Recruiting source, dedicated runner, literal expectations, command strings and original qualified guide/receipt inputs are unchanged. The SDK declaration is unchanged. Historical audit and browser observations retain their original dates; this source review performs no recruiting execution."
+    },
+    {
+      "id": "DFR-2bcb47d94a580dc0",
+      "guideId": "developer-setup-contracts",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "reportDigest": "d2e363b51cd3aa0ebe5f0705045730e73c8039c82bc383c5697bbb0ec1989d57",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "98912ae8ad59b4051713bcae170b6be3dc1f63e9501774998d4a2b2f93eadbed",
+      "decision": "retain",
+      "rationale": "Reviewed the dependency/parity increment after 912f2c26fbf211e1936813cfd25c25c102dcef3e. Root and starter add only exact re2js2.8.7 overrides; each lock changes only that package entry. Its Node>=20 requirement fits the unchanged project>=24 contract. Four new-candidate paths match this guide, with the full mapped set now40 paths. Refreshed parity changes only package/lock fingerprints. Script names remain134 and the source CI plan retains68 stages with no unknown classification. General setup guidance remains accurate. Preserve all historical audit/validation dates; current audit outcomes belong to the new QA receipt, not this source review."
+    },
+    {
+      "id": "DFR-42e7f886abf30dcf",
+      "guideId": "crm-duplicates-and-merges",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "reportDigest": "d2e363b51cd3aa0ebe5f0705045730e73c8039c82bc383c5697bbb0ec1989d57",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "f72592540ef56cd6f0859e1cac372326aa681b1d6524c681dbe2081bf89487fb",
+      "decision": "retain",
+      "rationale": "Reviewed the new package.json override after the source review at 912f2c26fbf211e1936813cfd25c25c102dcef3e. Exact re2js2.8.7 adds no changed script string, direct SDK declaration or CRM implementation path. CRM merge, privacy, ownership, complete recovery and dedicated lifecycle source remain unchanged; generic workflow commands still match the guide. Retain original dated acceptance, artifact fingerprints and receipt qualifications. This dependency source review does not assert a fresh zero-vulnerability audit, CRM run or browser result."
+    },
+    {
+      "id": "DFR-66c969c91c0e97df",
+      "guideId": "optional-adoption-contracts",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "reportDigest": "d2e363b51cd3aa0ebe5f0705045730e73c8039c82bc383c5697bbb0ec1989d57",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "0ed152dce0e0cb779189c07f45974eb2476a0e2b14ca022555f848fb85998c07",
+      "decision": "retain",
+      "rationale": "Reviewed the five dependency/parity paths after 912f2c26fbf211e1936813cfd25c25c102dcef3e; the complete mapped set is now41 paths. Root/starter exact re2js2.8.7 overrides and single-entry lock repairs fit unchanged project Node>=24, with only reviewed package/lock parity hashes refreshed. Runtime LAN/app source, SDK declaration, optional backend and134 script names/68 CI stages are unchanged. No identity, provider, telemetry, Windows runner or deployment policy is activated. Retain original historical fingerprints and zero-audit observations at their original dates/sources; new QA must separately qualify current audits. No adoption or audit acceptance is inferred here."
     }
   ]
 }

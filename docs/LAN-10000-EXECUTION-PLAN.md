@@ -4,7 +4,7 @@ Planning source: `053382b383d0fbffbe5161e9fb4d5f07a3c1fed8`; created 2026-10-26.
 
 The catalog contains 100 authored capability families, 2000 capabilities and 10000 delivery requirements. Five lanes describe behavior, boundaries/refusal, recovery, feedback and evidence. They are acceptance requirements, not a claim that this many independent features ship today.
 
-Current accepted status: 75/10000 requirements and 15/2000 capabilities. 0 capabilities have partial acceptance.
+Current accepted status: 85/10000 requirements and 17/2000 capabilities. 0 capabilities have partial acceptance.
 
 ## Execution and ownership
 
@@ -16,12 +16,10 @@ Preserve the source ownership, Designer kernel, command journal, style engine, c
 
 ## Dependency-ready local queue
 
-The validated progress ledger currently makes **5 local TODO requirement(s)** dependency-ready. This snapshot displays 5 in catalog ID order, with a maximum of 20 rows. The active iteration identifies the selected batch; its blocked requirements remain pending until their prerequisites are accepted. Queue membership grants no assignment, execution or publication authority.
+The validated progress ledger currently makes **3 local TODO requirement(s)** dependency-ready. This snapshot displays 3 in catalog ID order, with a maximum of 20 rows. The active iteration identifies the selected batch; its blocked requirements remain pending until their prerequisites are accepted. Queue membership grants no assignment, execution or publication authority.
 
 | Requirement | Capability | Lane | Priority | Direct prerequisites |
 | --- | --- | --- | --- | --- |
-| LAN-00051 | Refresh revisions after guarded font changes | behavior | P1 | LAN-00015 |
-| LAN-00056 | Bind previews to source baselines | behavior | P1 | LAN-00010, LAN-00015 |
 | LAN-00076 | Recover revision-bound local drafts | behavior | P1 | LAN-00010, LAN-00025 |
 | LAN-00081 | Export a conflict comparison | behavior | P1 | LAN-00030 |
 | LAN-00086 | Inspect source revision history | behavior | P1 | LAN-00015, LAN-00050 |

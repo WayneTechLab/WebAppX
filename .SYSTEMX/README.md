@@ -11,17 +11,21 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
-## LAN 10,000-item delivery program — 2026-10-26
+## LAN 10,000-item delivery program — 2026-10-28
 
 The prior [conflict-review milestone](../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
 missing-file draft protection and explicitly reviewed replacement. The
 [current iteration](../docs/LAN-ACTIVE-ITERATION.md) continues with revision-aware font changes and literal draft previews.
 
-**Accepted total: 75 requirements / 15 capabilities; 9,925 requirements remain
-TODO.** The source-conflict batch adds 15 completions. Functional candidate
-`d9bd9e7` passed all 68 CI stages, 21 source-flow browser groups, 16 Navigator
-groups, three actual-app read-only observations and separate Hosting preflight.
-Production deployment was skipped.
+**Accepted total: 85 requirements / 17 capabilities; 9,915 requirements remain
+TODO.** The font/preview batch adds ten completions. Candidate `781b624` passed
+all 68 CI stages, 49 npm tests, 37 source-flow browser groups with four inspector
+geometry checkpoints, 16 actual-stack Navigator groups and separate Hosting
+preflight. Production deployment was skipped.
+
+The batch also pins patched re2js 2.8.7 in root and starter dependency trees.
+Root audit retains two low Gusto/deepmerge package findings with zero
+high/critical; starter audit is clean. The SDK and audit threshold are unchanged.
 
 The LAN expansion now has **100 authored families, 2,000 proposed functional
 capabilities and 10,000 delivery requirements**. Each capability has behavior,

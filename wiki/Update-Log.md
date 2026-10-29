@@ -1,5 +1,31 @@
 # Update Log
 
+## Revision-aware fonts, literal previews and goal update — 2026-10-28
+
+Accepted LAN-00051–LAN-00060: **85/10,000 requirements and 17/2,000 capabilities**,
+with 9,915 requirements remaining. The [active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md)
+and [generated plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-10000-EXECUTION-PLAN.md)
+now distinguish this completed ten-requirement batch from the next ready work.
+
+Font reads/saves expose exact stylesheet revisions. Confirmed font writes require
+the observed baseline, and stale/no-op/missing/error cases retain independent raw
+CSS drafts. **Refresh font source** is explicit. **Build → Code → Preview draft**
+records a literal snapshot, loaded baseline and displayed-text digest; **Check
+source** observes freshness through GET only, and **Close preview** keeps the editor.
+
+Verification repaired a missing stylesheet inventory entry, overflowing inspector
+metadata and a full-reload selection race while preserving page-picker labels.
+All 68 CI stages, 49 npm tests, 37 source/font/preview browser groups, four geometry
+checkpoints at the normal 336 px dock, 16 actual Navigator groups and Hosting
+preflight passed on candidate `781b624bc322c4d851fa3dfc91a165a087dea5d7`. Read the
+[QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-FONT-PREVIEW-QA-2026-10-28.md)
+for retained failures, exact proof and conservative CSS/literal-preview limits.
+
+The local Work sources board retains the original WebAppX catalog at 179 completed / 821 TODO and
+blank reusable records. Its empty adopted task ledger does not imply completion
+of the separate LAN program. App 3.4.0, pinned SYSTEMX 1.9.0-alpha.6 and deploy count 0
+are unchanged. Production deployment was skipped.
+
 ## Source conflict review and goal milestone — 2026-10-26
 
 The next LAN milestone is accepted: **15 new requirements / three capabilities**,

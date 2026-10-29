@@ -1,14 +1,18 @@
 # WebAppX Wiki
 
-## LAN 10,000-requirement execution program — 2026-10-26
+## LAN 10,000-requirement execution program — 2026-10-28
 
-**Accepted total: 75 requirements / 15 capabilities; 9,925 requirements remain
-TODO.** The source-conflict batch adds 15 completions. Functional candidate
-`d9bd9e7` passed all 68 CI stages, 21 source-flow browser groups, 16 Navigator
-groups, three actual-app read-only observations and separate Hosting preflight.
-Production deployment was skipped.
+**Accepted total: 85 requirements / 17 capabilities; 9,915 requirements remain
+TODO.** The font/preview batch adds ten completions. Candidate `781b624` passed
+all 68 CI stages, 49 npm tests, 37 source-flow browser groups with four inspector
+geometry checkpoints, 16 actual-stack Navigator groups and separate Hosting
+preflight. Production deployment was skipped.
 
-Read the [source-conflict QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) for exact new acceptance and limits.
+The batch also pins patched re2js 2.8.7 in root and starter dependency trees.
+Root audit retains two low Gusto/deepmerge package findings with zero
+high/critical; starter audit is clean. The SDK and audit threshold are unchanged.
+
+Read the [font/preview QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-FONT-PREVIEW-QA-2026-10-28.md) for the latest acceptance and the [source-conflict QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) for the earlier conflict-review acceptance and limits.
 
 The LAN [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-10000-EXECUTION-PLAN.md)
 and [family checklist index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/LAN-10000-TODO.md)

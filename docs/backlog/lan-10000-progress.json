@@ -600,6 +600,86 @@
       "verifiedOn": "2026-10-26",
       "evidence": "docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md",
       "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00051",
+      "definitionSha256": "9cadba93cfde690143ae93d7af8e58a335f2bbf02c9f16dce3f84dec3f54b762",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00052",
+      "definitionSha256": "d149efc02ed07c25ade581970f402cf7a917b79d075489f19d1496197182d4e6",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00053",
+      "definitionSha256": "9d630a7ec8b6c44210d9a5e9de97d4262aeb0ee26e18c3ef9e2b907f6a12bf11",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00054",
+      "definitionSha256": "acfa273506151e3b6e6ed0bfc7fe6deaa916238ca453c22dc72d68c4c58e9a39",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00055",
+      "definitionSha256": "49f463d92882f4dd458a0bbc89c4b226826db4cb929b1c9d8cdd7699b9c7cea5",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00056",
+      "definitionSha256": "e59f1a9ba8791addbdcd05b853ebccb707531a85d95d39df66128c49135b85a2",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00057",
+      "definitionSha256": "5be84dd5938385271861f8c0c451e906502bfa5edfce435aa8f47b497ee91b56",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00058",
+      "definitionSha256": "fbca67949e096ef93f93918b07f233e19de8713f705a2c8d58e16deda03517e6",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00059",
+      "definitionSha256": "773a9e1a776fada91973b8a8577dea81f9f33883912b9066018126a870e565f2",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00060",
+      "definitionSha256": "988657013fca478b183dc938dcb752b22e8f64351eb54486096aa8d98ba7cc78",
+      "sourceRevision": "781b624bc322c4d851fa3dfc91a165a087dea5d7",
+      "verifiedOn": "2026-10-28",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
+      "reviewedBy": "agent.0"
     }
   ]
 }

@@ -77,6 +77,12 @@
       "label": "Bounded read-only live preview hierarchy, metadata search, selection and reveal",
       "surface": "Same-origin Vite /__systemx/ Navigator, ancestor breadcrumbs and Reveal selection",
       "evidence": "npm test: preview-navigator.test.mjs; navigator-browser.mjs: 16 passed groups in webappx-navigator-browser-FRaeCR; Agent 0 reviewed docs/LAN-NAVIGATOR-QA-2026-10-25.md"
+    },
+    {
+      "id": "lan.source-draft-preview",
+      "label": "Source-bound literal draft snapshots and explicit freshness checks",
+      "surface": "Code inspector Preview draft / Check source / Close preview; GET /api/builder/source",
+      "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md; 37 source-flow groups and four inspector geometry checkpoints"
     }
   ],
   "guarded": [
@@ -101,9 +107,9 @@
     },
     {
       "id": "lan.project-font-write",
-      "label": "Update the template font import and CSS token",
+      "label": "Revision-guarded template font import and CSS token changes",
       "requiredConfirmation": "SAVE FONT CHANGE",
-      "status": "backup-diff-secret-scan-atomic-write"
+      "status": "revision-required-backup-secret-scan-atomic-write"
     }
   ],
   "planned": [
