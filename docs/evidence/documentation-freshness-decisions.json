@@ -885,6 +885,84 @@
       "scopeSha256": "0ed152dce0e0cb779189c07f45974eb2476a0e2b14ca022555f848fb85998c07",
       "decision": "retain",
       "rationale": "Reviewed the two-path stylesheet inventory increment after the source review at deba0c1ffee84bcb56564783d77725d1918b259f. Existing confinedFile policy limits the newly listed fixed CSS target to a regular contained file; the characterization additions use owned temporary fixtures. The complete mapped set is now 40 paths. The correction activates no optional identity, provider, telemetry, Windows runner or deployment policy, and preserves 134 script names and 68 CI stages. Retain original artifact fingerprints and historical receipt boundaries; no adoption acceptance is inferred."
+    },
+    {
+      "id": "DFR-e2f2a219f38132c8",
+      "guideId": "portal-state-contract",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "d4c4c7bbd4e286667121c0ad5eb3ddb16b6098bb",
+      "reportDigest": "e81c8d45db1930ddae1b4c02c4ee33fd245eaa4cc6e06023b4a847e12dbc93da",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "b67717fcd38a4307a0ac94873d6eb208fad694222559dd678857afd278586021",
+      "decision": "retain",
+      "rationale": "Retain the source review at 0009a20ab62cc41ea3a60a6e11054b9d94132fd6. The new CSS geometry declarations and source-editor browser assertions do not enter this guide mapped scopes. Native persistence, retention, export and recovery source, guide bytes and original receipt qualifications remain unchanged. This incremental documentation review supplies no fresh functional or browser result."
+    },
+    {
+      "id": "DFR-eb7e5aa39fc80974",
+      "guideId": "portal-lifecycle",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "d4c4c7bbd4e286667121c0ad5eb3ddb16b6098bb",
+      "reportDigest": "e81c8d45db1930ddae1b4c02c4ee33fd245eaa4cc6e06023b4a847e12dbc93da",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "5a8be277835174c5d58780fc9e43ff8c288a323440a77b18cea47518036eaaf5",
+      "decision": "retain",
+      "rationale": "Retain the source review at 0009a20ab62cc41ea3a60a6e11054b9d94132fd6. The only new source paths are LAN dashboard CSS and its source-editor browser harness; neither matches this lifecycle mapping. Employment, CMS release, CRM ownership, dedicated journey, documented command strings and historical receipt bytes are unchanged. No lifecycle execution or acceptance is inferred."
+    },
+    {
+      "id": "DFR-2c475c177d1e2922",
+      "guideId": "hr-recruiting-lifecycle",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "d4c4c7bbd4e286667121c0ad5eb3ddb16b6098bb",
+      "reportDigest": "e81c8d45db1930ddae1b4c02c4ee33fd245eaa4cc6e06023b4a847e12dbc93da",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "5b715919714102ea72ca2228eac75fab58c229170178d54007458b004aeb5d68",
+      "decision": "retain",
+      "rationale": "Retain the source review at 0009a20ab62cc41ea3a60a6e11054b9d94132fd6. The geometry repair and LAN browser assertions add no changed path inside recruiting mapped scopes. Recruiting source, dedicated runner and literal expectations, command strings and original qualified evidence remain unchanged. This review does not rerun or accept recruiting behavior."
+    },
+    {
+      "id": "DFR-c177c00925e49b0e",
+      "guideId": "developer-setup-contracts",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "d4c4c7bbd4e286667121c0ad5eb3ddb16b6098bb",
+      "reportDigest": "e81c8d45db1930ddae1b4c02c4ee33fd245eaa4cc6e06023b4a847e12dbc93da",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "98912ae8ad59b4051713bcae170b6be3dc1f63e9501774998d4a2b2f93eadbed",
+      "decision": "retain",
+      "rationale": "Reviewed only the two-path increment after 0009a20ab62cc41ea3a60a6e11054b9d94132fd6: minmax grid tracks and font-status wrapping keep metadata within the inspector, while four browser checkpoints assert dock, metadata and text-line geometry. Runtime JavaScript, APIs, importer, command aliases and CI source are unchanged; the complete mapped set remains 39 paths with 134 script names and 68 CI stages. Existing generic setup guidance and historical dates/platform qualifications remain accurate. No rendered geometry or test outcome is accepted by this source review."
+    },
+    {
+      "id": "DFR-b6c004fbb057fd2e",
+      "guideId": "crm-duplicates-and-merges",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "d4c4c7bbd4e286667121c0ad5eb3ddb16b6098bb",
+      "reportDigest": "e81c8d45db1930ddae1b4c02c4ee33fd245eaa4cc6e06023b4a847e12dbc93da",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "f72592540ef56cd6f0859e1cac372326aa681b1d6524c681dbe2081bf89487fb",
+      "decision": "retain",
+      "rationale": "Retain the source review at 0009a20ab62cc41ea3a60a6e11054b9d94132fd6. LAN CSS and source-browser geometry assertions do not match CRM source scopes. CRM merge, privacy, ownership, complete recovery and the dedicated lifecycle implementation remain unchanged, as do documented command strings, guide and receipt bytes. No new CRM execution is inferred."
+    },
+    {
+      "id": "DFR-e23516119c428dfb",
+      "guideId": "optional-adoption-contracts",
+      "reviewedBy": "Codex (LAN documentation review)",
+      "reviewedOn": "2026-10-28",
+      "targetRevision": "d4c4c7bbd4e286667121c0ad5eb3ddb16b6098bb",
+      "reportDigest": "e81c8d45db1930ddae1b4c02c4ee33fd245eaa4cc6e06023b4a847e12dbc93da",
+      "mappingSha256": "bc75850ab5f61777c53bf968f05e9277b7f938f66004ac1f6c3cee554df82dc2",
+      "inputsSha256": "04af57f195a4a9508be5e7468e2098eb3f1ee2a6cfe814e8ff1e724d345d2886",
+      "scopeSha256": "0ed152dce0e0cb779189c07f45974eb2476a0e2b14ca022555f848fb85998c07",
+      "decision": "retain",
+      "rationale": "Reviewed only the two-path geometry increment after 0009a20ab62cc41ea3a60a6e11054b9d94132fd6. Three dashboard CSS declarations constrain grid and status wrapping; the owned source-browser harness adds geometry assertions at four checkpoints. The complete mapped set remains 40 paths. Runtime JavaScript, API, importer, package and CI source are unchanged. These local layout/test changes activate no optional identity, provider, telemetry, Windows runner or deployment policy. Retain original artifact fingerprints, dates and unadopted boundaries; no browser acceptance is supplied here."
     }
   ]
 }

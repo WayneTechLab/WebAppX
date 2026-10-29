@@ -2755,7 +2755,7 @@ function bind() {
   })
   document.querySelector('#app-preview-frame')?.addEventListener('load', () => {
     resetPreviewNavigator()
-    state.previewSelectedElement = null
+    clearPreviewSelection()
     state.previewHoveredElement = null
     state.previewLayerElements = []
     state.previewTextOriginals = new WeakMap()
