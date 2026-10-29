@@ -35,7 +35,7 @@ const authProviderRegistryFile = join(lanRoot, 'Builder', 'contracts', 'auth-pro
 const localDataFile = join(lanRoot, 'Files', 'local-data.json')
 const componentRegistryFile = join(lanRoot, 'Files', 'component-registry.json')
 const fontCatalogFile = join(lanRoot, 'Builder', 'contracts', 'font-catalog.json')
-const projectCssFile = join(repoRoot, 'src', 'index.css')
+const projectCssPath = 'src/index.css'
 const ingestRoot = join(lanRoot, 'Temp', 'ingest')
 const operationsLog = join(lanRoot, 'Temp', 'operations.jsonl')
 const backupRoot = join(lanRoot, 'Backup')
@@ -253,15 +253,118 @@ function findFontFamily(items, family) {
   return items.find((item) => item.family.toLocaleLowerCase() === normalized) ?? null
 }
 
-function projectFontState() {
-  if (!confinedFile(repoRoot, projectCssFile)) {
-    return { path: 'src/index.css', configured: false, family: null, cssUrl: null, fallback: true }
+function fontSourceFailure(code, error) {
+  return { statusCode: 400, code, error }
+}
+
+function decodeProjectFontSource(bytes) {
+  const content = bytes.toString('utf8')
+  if (!Buffer.from(content, 'utf8').equals(bytes)) {
+    return fontSourceFailure('SOURCE_ENCODING_UNSUPPORTED', 'Project font changes require valid UTF-8 source.')
   }
-  const content = readFileSync(projectCssFile, 'utf8')
-  const familyMatch = content.match(/--wtl-font-family:\s*["']([^"']+)["']/)
-  const importMatch = content.match(/\/\* SYSTEMX FONT IMPORT START \*\/[\s\S]*?@import url\("([^"]+)"\);/)
+  const withoutCrLf = content.replaceAll('\r\n', '')
+  if (withoutCrLf.includes('\r') || (content.includes('\r\n') && withoutCrLf.includes('\n'))) {
+    return fontSourceFailure('SOURCE_LINE_ENDINGS_UNSUPPORTED', 'Project font changes require LF or uniform CRLF line endings.')
+  }
+  return { content, newline: content.includes('\r\n') ? '\r\n' : '\n' }
+}
+
+function fontDeclarations(rule, property, caseInsensitive = false) {
+  const matches = []
+  const end = rule[0].lastIndexOf('}')
+  let cursor = rule[0].indexOf('{') + 1
+  const record = (next, terminated) => {
+    const declaration = rule[0].slice(cursor, next).match(/^\s*([^\s:;{}]+)\s*:/)
+    const name = declaration?.[1]
+    if (name && (caseInsensitive ? name.toLowerCase() === property : name === property)) {
+      const index = cursor + declaration[0].indexOf(name)
+      matches.push({ index, length: next - index + (terminated ? 1 : 0), terminated })
+    }
+  }
+  const nesting = []
+  for (let index = cursor; index < end; index += 1) {
+    const character = rule[0][index]
+    // Escaped identifiers/delimiters and nested semicolons are outside this
+    // literal-declaration editor. Refuse instead of guessing CSS token identity.
+    if (character === '\\') return null
+    if (character === '(' || character === '[') nesting.push(character)
+    else if (character === ')' || character === ']') {
+      if (nesting.pop() !== (character === ')' ? '(' : '[')) return null
+    } else if (character === ';') {
+      if (nesting.length) return null
+      record(index, true)
+      cursor = index + 1
+    }
+  }
+  if (nesting.length) return null
+  if (cursor < end) record(end, false)
+  return matches
+}
+
+function projectFontLayout(content) {
+  const comments = []
+  // Mask comments and strings without moving source offsets. Only the supported
+  // unambiguous top-level root/body rules are edited; this is not a CSS parser.
+  const masked = content.replace(/\/\*[\s\S]*?\*\/|"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'/g, (token, offset) => {
+    if (token.startsWith('/*')) comments.push({ token, offset })
+    return token.replace(/[^\r\n]/g, ' ')
+  })
+  const failure = () => fontSourceFailure('SOURCE_FORMAT_UNSUPPORTED', 'Project font changes require unambiguous top-level :root/body rules, semicolon-terminated font declarations and a managed block in the import prelude.')
+  const roots = [...masked.matchAll(/:root\s*\{[^{}]*\}/g)]
+  const bodies = [...masked.matchAll(/(?<![-\w])body\s*\{[^{}]*\}/g)]
+  const topLevel = (match) => {
+    let boundary = match.index - 1
+    while (boundary >= 0 && !'{};'.includes(masked[boundary])) boundary -= 1
+    if (masked.slice(boundary + 1, match.index).trim()) return false
+    let depth = 0
+    for (const character of masked.slice(0, match.index)) {
+      if (character === '{') depth += 1
+      else if (character === '}') depth -= 1
+    }
+    return depth === 0
+  }
+  if (roots.length !== 1 || bodies.length !== 1 || !topLevel(roots[0]) || !topLevel(bodies[0])) return failure()
+  const rootDeclarations = fontDeclarations(roots[0], '--wtl-font-family')
+  const bodyDeclarations = fontDeclarations(bodies[0], 'font-family', true)
+  if (!rootDeclarations || !bodyDeclarations) return failure()
+  if ([rootDeclarations, bodyDeclarations].some((declarations) => declarations.length > 1 || declarations.some(({ terminated }) => !terminated))) return failure()
+  if (fontDeclarations(bodies[0], 'font', true).length || fontDeclarations(bodies[0], 'all', true).length) return failure()
+  const starts = comments.filter(({ token }) => token === '/* SYSTEMX FONT IMPORT START */')
+  const ends = comments.filter(({ token }) => token === '/* SYSTEMX FONT IMPORT END */')
+  if (starts.length !== ends.length || starts.length > 1) return failure()
+  let managedImport = null
+  if (starts.length) {
+    const start = starts[0].offset, end = ends[0].offset + ends[0].token.length
+    if (end <= start) return failure()
+    const contents = content.slice(start + starts[0].token.length, ends[0].offset).trim()
+    if (contents && !/^@import url\("[^"\r\n]+"\);$/.test(contents)) return failure()
+    managedImport = { start, end }
+  }
+  const bomLength = content.startsWith('\ufeff') ? 1 : 0
+  const charset = content.slice(bomLength).match(/^@charset "([^"]+)";/)
+  if (charset && !/^utf-8$/i.test(charset[1])) return fontSourceFailure('SOURCE_ENCODING_UNSUPPORTED', 'Project font changes require valid UTF-8 source.')
+  const importStart = bomLength + (charset?.[0].length ?? 0)
+  if (/@charset\b/.test(masked.slice(importStart))) return failure()
+  if (managedImport && !/^(?:\s*@import[^;{}]+;\s*)*\s*$/.test(masked.slice(importStart, managedImport.start))) return failure()
+  const leadingImports = masked.slice(importStart).match(/^(?:\s*@import[^;{}]+;\s*)+/)
+  return { root: roots[0], body: bodies[0], rootDeclaration: rootDeclarations[0], bodyDeclaration: bodyDeclarations[0], managedImport, importAt: importStart + (leadingImports?.[0].length ?? 0) }
+}
+
+function projectFontState(target = projectCssPath) {
+  if (target !== projectCssPath) return fontSourceFailure('SOURCE_TARGET_UNSUPPORTED', 'Project font changes only support src/index.css.')
+  const source = readEditableSource(projectCssPath)
+  if (source.error) return source
+  const decoded = decodeProjectFontSource(source.bytes)
+  if (decoded.error) return decoded
+  const layout = projectFontLayout(decoded.content)
+  if (layout.error) return layout
+  const { content } = decoded
+  const familyDeclaration = layout.rootDeclaration
+  const familyMatch = familyDeclaration && content.slice(layout.root.index + familyDeclaration.index, layout.root.index + familyDeclaration.index + familyDeclaration.length).match(/^--wtl-font-family\s*:\s*["']([^"']+)["']/)
+  const importMatch = layout.managedImport && content.slice(layout.managedImport.start, layout.managedImport.end).match(/@import url\("([^"]+)"\);/)
   return {
-    path: 'src/index.css',
+    path: projectCssPath,
+    revision: hashSourceRevision(source.bytes),
     configured: Boolean(importMatch && familyMatch),
     family: familyMatch?.[1] ?? null,
     cssUrl: importMatch?.[1] ?? null,
@@ -274,38 +377,69 @@ function cssFontStack(family) {
   return `"${escaped}", system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif`
 }
 
-function updateProjectFontSource(content, family, cssUrl) {
-  const importBlock = `/* SYSTEMX FONT IMPORT START */\n@import url("${cssUrl}");\n/* SYSTEMX FONT IMPORT END */`
-  const importMarker = /\/\* SYSTEMX FONT IMPORT START \*\/[\s\S]*?\/\* SYSTEMX FONT IMPORT END \*\//
-  let updated = importMarker.test(content)
-    ? content.replace(importMarker, () => importBlock)
-    : content.replace(/((?:^|\n)@import[^;]+;\s*)+/, (imports) => `${imports}${importBlock}\n`)
+function updateProjectFontSource(content, family, cssUrl, newline) {
+  const layout = projectFontLayout(content)
+  if (layout.error) return layout
+  const patches = []
+  const importBlock = ['/* SYSTEMX FONT IMPORT START */', `@import url("${cssUrl}");`, '/* SYSTEMX FONT IMPORT END */'].join(newline)
+  if (layout.managedImport) patches.push({ ...layout.managedImport, text: importBlock })
+  else {
+    const prefix = layout.importAt > 0 && !content.slice(0, layout.importAt).endsWith('\n') && layout.importAt !== (content.startsWith('\ufeff') ? 1 : 0) ? newline : ''
+    patches.push({ start: layout.importAt, end: layout.importAt, text: `${prefix}${importBlock}${newline}` })
+  }
   const stack = cssFontStack(family)
-  if (/--wtl-font-family:\s*[^;]+;/.test(updated)) {
-    updated = updated.replace(/--wtl-font-family:\s*[^;]+;/, () => `--wtl-font-family: ${stack};`)
-  } else {
-    updated = updated.replace(/:root\s*\{/, (rootStart) => `${rootStart}\n  --wtl-font-family: ${stack};`)
+  for (const [rule, declarationMatch, declaration] of [
+    [layout.root, layout.rootDeclaration, `--wtl-font-family: ${stack};`],
+    [layout.body, layout.bodyDeclaration, 'font-family: var(--wtl-font-family);'],
+  ]) {
+    const start = rule.index + (declarationMatch?.index ?? rule[0].indexOf('{') + 1)
+    patches.push({ start, end: start + (declarationMatch?.length ?? 0), text: declarationMatch ? declaration : `${newline}  ${declaration}` })
   }
-  if (/body\s*\{[\s\S]*?font-family:\s*[^;]+;/.test(updated)) {
-    updated = updated.replace(/(body\s*\{[\s\S]*?font-family:\s*)[^;]+;/, '$1var(--wtl-font-family);')
-  }
+  let updated = content
+  for (const patch of patches.sort((left, right) => right.start - left.start)) updated = updated.slice(0, patch.start) + patch.text + updated.slice(patch.end)
   return updated
 }
 
 async function saveProjectFont(body) {
   if (body.confirmation !== 'SAVE FONT CHANGE') throw new Error('Type SAVE FONT CHANGE to approve this local font write')
+  if (body.path !== undefined && body.path !== projectCssPath) return fontSourceFailure('SOURCE_TARGET_UNSUPPORTED', 'Project font changes only support src/index.css.')
+  // Preserve catalog-validation precedence where the local/cached catalog can
+  // answer without fetching metadata or changing the cache before the guard.
+  const cached = fontCatalogCache.expiresAt > Date.now() && fontCatalogCache.items.length
+  const locallyAvailable = cached ? fontCatalogCache.items : readCuratedFontCatalog()
+  const completeLocalCatalog = cached || !process.env.SYSTEMX_GOOGLE_FONTS_API_KEY?.trim() || typeof globalThis.fetch !== 'function'
+  if (((completeLocalCatalog || body.baseRevision === undefined) && !findFontFamily(locallyAvailable, body.family)) || typeof body.family !== 'string' || !body.family.trim()) throw new Error('Choose a font from the verified local or Google Fonts catalog')
+  const initial = readEditableSource(projectCssPath)
+  if (initial.error) return initial
+  const initialPrecondition = checkSourceRevision(body.baseRevision, initial.bytes)
+  if (initialPrecondition.statusCode !== 200) return initialPrecondition
+  const initialDecoded = decodeProjectFontSource(initial.bytes)
+  if (initialDecoded.error) return initialDecoded
+  const initialLayout = projectFontLayout(initialDecoded.content)
+  if (initialLayout.error) return initialLayout
   const catalog = await getFontCatalog()
   const font = findFontFamily(catalog.items, body.family)
   if (!font) throw new Error('Choose a font from the verified local or Google Fonts catalog')
-  const sourcePath = editableSourcePath('src/index.css')
-  if (!sourcePath) throw new Error('src/index.css is not available through the editable source policy')
-  const previous = readFileSync(sourcePath.target, 'utf8')
+  // Metadata may await a response while another editor changes or removes CSS.
+  const source = readEditableSource(projectCssPath)
+  if (source.error) return source
+  const precondition = checkSourceRevision(body.baseRevision, source.bytes)
+  if (precondition.statusCode !== 200) return precondition
+  const decoded = decodeProjectFontSource(source.bytes)
+  if (decoded.error) return decoded
+  const { sourcePath } = source
+  const previous = decoded.content
   const cssUrl = fontCssUrl(font.family, font.variants)
-  const next = updateProjectFontSource(previous, font.family, cssUrl)
-  if (previous === next) return { status: 'unchanged', path: sourcePath.normalized, family: font.family, cssUrl }
+  const next = updateProjectFontSource(previous, font.family, cssUrl, decoded.newline)
+  if (typeof next !== 'string') return next
+  if (containsSecretMarker(next)) throw new Error('Secret-shaped content is rejected by SYSTEMX')
+  const nextBytes = Buffer.from(next, 'utf8')
+  const revision = hashSourceRevision(nextBytes)
+  const revisions = { previousRevision: precondition.revision, revision, currentRevision: revision }
+  if (source.bytes.equals(nextBytes)) return { status: 'unchanged', path: sourcePath.normalized, family: font.family, cssUrl, ...revisions }
   const backup = backupSource(sourcePath)
   const temporary = `${sourcePath.target}.${randomUUID()}.tmp`
-  writeFileSync(temporary, next, { flag: 'wx', mode: 0o600 })
+  writeFileSync(temporary, nextBytes, { flag: 'wx', mode: 0o600 })
   renameSync(temporary, sourcePath.target)
   recordOperation('font_saved', {
     path: sourcePath.normalized,
@@ -314,6 +448,7 @@ async function saveProjectFont(body) {
     backup,
     previousLines: lineCount(previous),
     nextLines: lineCount(next),
+    ...revisions,
   })
   return {
     status: 'saved',
@@ -321,6 +456,7 @@ async function saveProjectFont(body) {
     family: font.family,
     cssUrl,
     backup,
+    ...revisions,
     qualityNext: ['npm run typecheck', 'npm run lint', 'npm run build'],
   }
 }
@@ -530,11 +666,6 @@ function editableSourceCandidate(value) {
   const relativeTarget = relative(repoRoot, target).replaceAll('\\', '/')
   if (relativeTarget !== normalized) return null
   return { normalized, target }
-}
-
-function editableSourcePath(value) {
-  const sourcePath = editableSourceCandidate(value)
-  return sourcePath && confinedFile(repoRoot, sourcePath.target) ? sourcePath : null
 }
 
 // Missing descendants are unavailable only after every existing ancestor passes
@@ -1162,7 +1293,8 @@ const server = createServer(async (request, response) => {
   }
 
   if (requestUrl.pathname === '/api/fonts/project' && request.method === 'GET') {
-    sendJson(response, 200, projectFontState())
+    const { statusCode = 200, ...result } = projectFontState(requestUrl.searchParams.get('path') ?? projectCssPath)
+    sendJson(response, statusCode, result)
     return
   }
 
@@ -1226,7 +1358,8 @@ const server = createServer(async (request, response) => {
 
     try {
       if (requestUrl.pathname === '/api/builder/font') {
-        sendJson(response, 200, await saveProjectFont(body))
+        const { statusCode = 200, ...result } = await saveProjectFont(body)
+        sendJson(response, statusCode, result)
         return
       }
 

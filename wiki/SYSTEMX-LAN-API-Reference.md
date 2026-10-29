@@ -123,7 +123,7 @@ Common failure classes:
 | 404 | Unknown route, missing file, or unsupported operation. | Use the documented route or the CLI. |
 | 405 | Method not allowed. | Use the route's documented method. |
 | 409 | Conflicting local state, duplicate action, or unsafe mutation condition. | Review current state and diff before retrying. |
-| 428 | A source save has no loaded base revision. | Read the file and review its current revision before saving. |
+| 428 | A source or font save has no loaded base revision. | Read the file and review its current revision before saving. |
 | 413 | Payload too large. | Reduce the bounded request; use a normal source workflow. |
 | 500 | Unexpected local failure. | Review sanitized logs and stop if data integrity is uncertain. |
 
@@ -218,18 +218,15 @@ responsible for font licensing, privacy, performance, and fallback behavior.
 
 ### GET /api/fonts/project
 
-Purpose: report the current controlled project typography state.
+Purpose: report the current controlled project typography state from one
+allowlisted `src/index.css` byte snapshot. The response includes `path`,
+`revision` (64-character SHA-256 of the exact source bytes), `configured`,
+`family`, `cssUrl` and `fallback`.
 
-The response can include:
-
-- selected family;
-- controlled CSS import or CSS2 URL metadata;
-- token presence;
-- source path;
-- line or file summary;
-- loaded preview metadata when available.
-
-It must not expose unrelated environment values or arbitrary files.
+The client keeps this font baseline independent of an open raw source editor.
+A successful read does not rebase a retained CSS draft. Missing source uses the
+same fixed `404 SOURCE_UNAVAILABLE` contract as source reads; unsupported linked
+or nonregular targets are refused. No arbitrary path parameter is accepted.
 
 ### GET /api/builder/workspace
 
@@ -327,20 +324,41 @@ Every mutation requires:
 
 ### POST /api/builder/font
 
-Purpose: stage a controlled project font change.
+Purpose: apply a confirmed project font change to the fixed `src/index.css`
+target after checking the stylesheet revision observed by the operator.
 
-Conceptual body:
+Conceptual body (replace the revision placeholder with the actual font GET):
 
 ~~~json
 {
-  "family": "Family Name",
+  "family": "Inter",
+  "baseRevision": "<64 hexadecimal characters from GET /api/fonts/project>",
   "confirmation": "SAVE FONT CHANGE"
 }
 ~~~
 
-The server validates the family against the catalog/metadata, creates a local
-backup, changes only the controlled typography source, writes atomically, and
-records the result. Previewing a family does not call this endpoint.
+The server validates the family against the catalog, requires a current raw-byte
+baseline and checks it again after any metadata await. Missing, malformed and
+stale revisions use the existing `428 SOURCE_REVISION_REQUIRED`,
+`400 SOURCE_REVISION_INVALID` and `409 SOURCE_REVISION_CONFLICT` responses.
+A stale request is refused even when the selected font would otherwise be a
+no-op. Refusals precede source writes, backups, temporary files and operation
+entries. Missing source returns `404 SOURCE_UNAVAILABLE`; source recreation is
+unavailable.
+
+Success returns `status` (`saved` or `unchanged`), `path`, `family`, `cssUrl`,
+`previousRevision`, `revision` and `currentRevision`. The last two identify the
+resulting exact bytes; all three hashes match for a no-op. A saved change also
+returns its predecessor backup and records the old/new revisions. The transform
+preserves valid UTF-8/BOM and uniform LF or CRLF; unsupported encodings or mixed
+line endings fail closed, and secret-shaped output is refused.
+
+The Style inspector shows its observed font revision and offers **Refresh font
+source** before a deliberate retry. A font save can advance an open CSS editor's
+source observation, but preserves its draft and older loaded baseline. Previewing
+a font does not call this endpoint. Google CSS/font loading is an independent
+browser network request; offline catalog availability does not promise offline
+web-font delivery.
 
 ### POST /api/builder/source
 

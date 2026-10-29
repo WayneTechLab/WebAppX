@@ -71,9 +71,9 @@ macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
 ## LAN 10,000-item delivery program — 2026-10-26
 
-The [accepted iteration](docs/LAN-ACTIVE-ITERATION.md) adds source comparison, missing-file draft
-protection and explicitly reviewed replacement. The [QA receipt](docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) records
-the exact candidate, repairs, acceptance and limits.
+The prior [conflict-review milestone](docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
+missing-file draft protection and explicitly reviewed replacement. The
+[current iteration](docs/LAN-ACTIVE-ITERATION.md) continues with revision-aware font changes and literal draft previews.
 
 **Accepted total: 75 requirements / 15 capabilities; 9,925 requirements remain
 TODO.** The source-conflict batch adds 15 completions. Functional candidate
@@ -1421,6 +1421,20 @@ font faces, and stage a controlled `src/index.css` change only after the exact
 `SAVE FONT CHANGE` confirmation. An optional server-only
 `SYSTEMX_GOOGLE_FONTS_API_KEY` enables refreshed family metadata; otherwise the
 checked-in catalog is used.
+
+Font saves carry the observed `src/index.css` revision. **Refresh font source**
+reads the current revision before a deliberate retry; a stale save, including a
+no-op, is refused before source or backup effects. An open raw CSS draft keeps
+its own text and loaded revision when a confirmed font change succeeds.
+
+The Code inspector also offers **Preview draft**, **Check source** and **Close
+preview**. It captures bounded literal source with its path, loaded source
+baseline, displayed draft digest and current source observation. Freshness checks
+are GET-only; later source changes are visible without rebasing or saving the
+draft. This source snapshot does not execute JSX or replace the compiled Vite
+canvas. Read the [active iteration](docs/LAN-ACTIVE-ITERATION.md) and
+[font/preview QA receipt](docs/LAN-FONT-PREVIEW-QA-2026-10-28.md) for current
+verification and acceptance status.
 
 ### Unified login and management shell
 

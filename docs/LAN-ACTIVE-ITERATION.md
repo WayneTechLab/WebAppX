@@ -1,83 +1,78 @@
-# LAN active iteration — source conflict review
+# LAN active iteration — font revisions and draft previews
 
-Updated 2026-10-26 from published baseline `ca6acec6e6780ac738b4ad3e87006a5052f7358a`.
+Updated 2026-10-28 from published baseline `42886165e315f8d7b6c89c754d2b81221a9c7972`.
 
-This iteration completed three F001 capabilities: compare a retained
-source draft with the current file, preserve drafts when source becomes
-unavailable, and explicitly review and confirm an intentional replacement.
-Accepted result: **75/10,000 requirements and 15/2,000 capabilities**, a delta of
-15 requirements and three capabilities from the 60/12 baseline. The
-[acceptance receipt](LAN-CONFLICT-REVIEW-QA-2026-10-26.md) binds exact definitions
-and the tested candidate. Source/wiki publication is verified in the final handoff.
+The current bounded goal continues F001 source revisions with confirmed font
+changes and source-bound draft previews. The accepted baseline remains
+**75/10,000 requirements and 15/2,000 capabilities**. The ten requirements below
+remain TODO until their exact definitions, tested revision and public receipts
+are accepted. Prior comparison, missing-source and replacement acceptance is
+preserved in the [conflict review receipt](LAN-CONFLICT-REVIEW-QA-2026-10-26.md).
 
 ## Selected work and acceptance
 
 | Requirements | Capability | Observable acceptance | State |
 | --- | --- | --- | --- |
-| LAN-00026–LAN-00030 | Compare retained drafts with current source | Read current source without changing the draft or its loaded revision; show both revisions and changed lines; choose neither version automatically. | Accepted |
-| LAN-00031–LAN-00035 | Detect externally removed source | Report unavailable source, retain the draft and loaded revision, and refuse source recreation or backup/log effects. | Accepted |
-| LAN-00041–LAN-00045 | Confirm intentional conflict replacement | Review the exact current source and proposed replacement, then separately confirm a save against that reviewed revision; a later external change still conflicts. | Accepted |
+| LAN-00051–LAN-00055 | Refresh revisions after guarded font changes | A confirmed font save requires the observed stylesheet revision, exposes the resulting revision, and lets an open stylesheet draft detect the change without losing its draft or loaded baseline. | In progress |
+| LAN-00056–LAN-00060 | Bind previews to source baselines | A literal draft snapshot records its source path, loaded baseline, draft digest and freshly observed revision; explicit checks report changed or unavailable source without promoting the preview to disk. | In progress |
 
-The last capability depends on the comparison evidence and already accepted
-revision preconditions. The other accepted F001 requirements remain unchanged.
-Verified result: **75 requirements / 15 capabilities**, with 9,925 requirements
-remaining. The generated plan owns the next dependency-ready queue. Remaining
-F001 history, preview, font and recovered draft work stays in the [family checklist](backlog/lan-10000/F001.md).
+Both behavior requirements are dependency-ready at this baseline. Their
+boundary, recovery, feedback and evidence lanes remain pending as part of the
+same selected batch. Acceptance would add ten requirements and two capabilities;
+it does not imply completion of F001 or of the wider LAN program.
 
 ## Execution sequence
 
-1. Reconcile the published source, exact checklist definitions, saved handoff,
-   managed instructions and active local process ownership.
-2. Implement bounded read-only comparison and explicit replacement review in the
-   existing Source inspector. Backend reads and writes report unavailable files
-   without weakening containment, confirmation or revision checks.
-3. Run isolated tests for comparison safety, draft retention, source removal,
-   changed review inputs, stale replacement and exact backup bytes. Retain the
-   existing source-editing and Navigator browser checks.
-4. Commit the functional candidate, run all required CI stages, separate Hosting
-   preflight and host drift checks. Preserve the owned emulator data before any
-   runtime restart; leave unrelated listeners untouched.
-5. Bind only verified requirements to the tested commit and public QA receipt;
-   regenerate checklists, update README/wiki and host status, check metadata,
-   publish normal fast-forward main and wiki updates, and read them back.
-6. Record the next dependency-ready queue and a precise resume handoff. Complete
-   this bounded goal only after its accepted publication and verification.
+1. Verify clean checkout, direct GitHub main revision and owned local services;
+   inspect the LAN Work sources board and open the local project and this plan.
+2. Add raw stylesheet revisions to project-font reads and guarded writes. Check
+   the observed revision before source, backup, operation or temporary effects;
+   preserve existing confirmation, path, origin, token and encoding controls.
+3. Add literal draft preview snapshots and read-only freshness checks in the
+   existing Code inspector. Preserve the source draft, loaded baseline and
+   independent raw/leaf editing authority through changes, failures and races.
+4. Extend the real HTTP and disposable browser tests. Exercise matching, stale,
+   missing and no-op fonts; exact source/backup bytes; literal preview content;
+   edits and file-selection races; and zero promotion from preview actions.
+5. Review the frozen functional candidate. Run `npm run ci:all`, separate
+   Hosting preflight, host drift and template checks. Before any owned runtime
+   restart, export its emulator data; leave unrelated listeners untouched.
+6. Bind only verified requirements to the tested commit and public receipt;
+   regenerate the checklist, update README/wiki and host documentation, verify
+   metadata, publish authorized normal fast-forward main/wiki updates and read
+   them back. Record exact local entry points and a resume handoff.
 
-## Findings repaired before aggregate acceptance
+## Board and local project check
 
-- The real workspace-refresh browser case reproduced a dropped selector entry for
-  an open file removed externally. Preserve its bound draft and target, then
-  verify availability through a source read; a partial inventory is not proof
-  of deletion. The final 21-group source browser run covers the repaired case.
-- Independent review found that request chunks were decoded separately, allowing
-  split multibyte UTF-8 content to change before saving. A streaming decoder now
-  preserves state across chunks; the actual chunked HTTP regression verifies exact saved text,
-  returned revision and backup.
-- Browser actions after a completed save must wait for refresh and explicitly
-  return to the Source inspector when retained preview selection opens Settings.
-  Earlier incomplete or failed runs remain evidence of those attempts, not passes.
+The live LAN **Ops → Agent 0 → Work sources** view correctly reports blank
+reusable task/focus seeds, no adopted project scope, and the separate original
+WebAppX catalog at **179 recorded completions / 821 proposed TODO**. Its empty
+root task ledger does not mean that the LAN program is finished. The generated
+[LAN plan](LAN-10000-EXECUTION-PLAN.md) and [family checklist](backlog/lan-10000/F001.md)
+own this program's accepted counts and next queue.
+
+Runtime URLs, process identities and emulator data remain private session state.
+Recheck `.SYSTEMX/state/local-session.json` and `npm run systemx:session:status`
+before process control; a recorded ready flag needs a fresh endpoint probe.
 
 ## Ownership and controls
 
-Agent 0 owns integration, goal state, documentation, acceptance and Git. One UI
-owner, one backend owner, one browser-test owner and one plan-renderer owner work
-on separate paths. Their work is reviewed before integration; worker completion
-alone does not accept requirements.
+Agent 0 owns integration, goal state, plan, documentation, acceptance and Git.
+One UI owner, one backend/API owner and one isolated-browser owner edit separate
+paths, with an independent reviewer. Worker completion alone accepts nothing.
 
-The Source inspector retains the familiar structure/canvas/inspector layout.
-Comparison reads use text rendering, explicit size/work bounds and no source
-promotion. A review binds its file, draft and current revision; changed inputs
-invalidate it. A separate explicit save uses the existing source endpoint and
-`SAVE LOCAL CHANGE` confirmation. There is no force-save bypass or implied merge.
-Existing independent raw/leaf baselines, valid UTF-8/BOM and uniform CRLF behavior
-remain required. This iteration does not claim edited mixed-line-ending or
-invalid-UTF-8 preservation, operating-system locking or a multi-file transaction.
+The draft preview is bounded literal source inspection. It does not execute
+untrusted HTML/JSX or claim compiled canvas equivalence. Freshness is an observed
+comparison with a single allowlisted file, not a filesystem lock or automatic
+merge. Confirmation and current revision preconditions remain mandatory for
+source or font saves. The familiar structure/canvas/inspector layout remains.
 
-The original WebAppX catalog remains **179 done / 821 remaining** with its saved
-foundation bundle unapplied. Reusable context, task, plan and memory seeds stay
-blank; managed snapshots and both checksummed research packages stay immutable.
-No production deployment is authorized by this plan.
+The original WebAppX catalog stays **179 done / 821 remaining**; its historical
+foundation bundle remains unapplied and unaccepted. Reusable context, task, plan
+and memory seeds stay blank. Managed snapshots and both checksummed research
+packages remain immutable. Production deployment requires separate explicit
+operator authorization.
 
 See the [generated program plan](LAN-10000-EXECUTION-PLAN.md),
 [checklist index](backlog/LAN-10000-TODO.md) and
-[first batch receipt](LAN-SOURCE-REVISION-QA-2026-10-26.md).
+[source revision receipt](LAN-SOURCE-REVISION-QA-2026-10-26.md).

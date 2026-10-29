@@ -44,9 +44,9 @@ retains deployment count 0. Later kernel waves remain planned.
 
 ## LAN execution program — 2026-10-26
 
-The [accepted iteration](../../docs/LAN-ACTIVE-ITERATION.md) adds source comparison, missing-file draft
-protection and explicitly reviewed replacement. The [QA receipt](../../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) records
-the exact candidate, repairs, acceptance and limits.
+The prior [conflict-review milestone](../../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
+missing-file draft protection and explicitly reviewed replacement. The
+[current iteration](../../docs/LAN-ACTIVE-ITERATION.md) continues with revision-aware font changes and literal draft previews.
 
 **Accepted total: 75 requirements / 15 capabilities; 9,925 requirements remain
 TODO.** The source-conflict batch adds 15 completions. Functional candidate

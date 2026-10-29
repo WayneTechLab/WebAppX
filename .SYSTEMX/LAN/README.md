@@ -457,6 +457,16 @@ backup, secret-scan, atomic-write, and operation-evidence policy. The project
 keeps a system fallback and the production build remains independent of the
 LAN dashboard.
 
+Font project reads expose the exact `src/index.css` byte revision. The Font
+browser retains that independent baseline and shows **Refresh font source** for
+a deliberate refresh. A confirmed save requires `baseRevision`; stale requests,
+including no-ops, are refused before backup/write/log effects. Success returns
+predecessor and resulting revisions. Existing raw CSS drafts retain their own
+text and loaded revision, so they detect the font edit rather than overwriting
+it silently. Valid UTF-8/BOM and uniform LF/CRLF are supported; unsupported byte
+encoding or mixed endings fail closed. Browser CSS/font requests remain separate
+from the offline metadata catalog.
+
 Google Fonts CSS2 requests are weight-specific and use `display=swap`; the
 catalog does not request every available style. That keeps preview and future
 production loads deliberate and smaller. See the official [Google Fonts CSS2
@@ -559,3 +569,20 @@ trees without links or traversal. Keep the export unchanged through startup.
 The default start does not import data. Session status emits complete JSON even
 through a pipe; readiness reports listener health separately from workflow tests.
 Exports and runtime paths belong outside tracked template files.
+
+## Source-bound literal draft preview
+
+Use **Build → Code → Preview draft** after loading and editing an allowlisted
+file. The snapshot records its path, loaded raw-byte baseline, displayed draft
+UTF-8 digest and fresh source observation. The complete snapshot is capped at 500,000 UTF-16 units; its literal excerpt is
+capped at 20,000 units with explicit omission counts and surrogate-safe clipping. It does not execute source or claim compiled canvas equivalence.
+**Check source** is a GET-only observation: advanced, unavailable or unknown
+source never silently becomes a new loaded editor baseline. Edited drafts and
+changed file bindings are identified separately from the captured snapshot.
+**Close preview** keeps the editor draft. Snapshot actions create no source,
+backup, temporary file, operation entry or replacement-save authority.
+
+See the [font/preview QA receipt](../../docs/LAN-FONT-PREVIEW-QA-2026-10-28.md)
+for actual verification and the [active iteration](../../docs/LAN-ACTIVE-ITERATION.md)
+for the current selected batch. The Work sources board keeps the separate
+original WebAppX catalog and reusable project records distinct from LAN progress.

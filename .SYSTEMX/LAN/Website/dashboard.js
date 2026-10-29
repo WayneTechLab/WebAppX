@@ -77,6 +77,7 @@ const state = {
   sourceDisplayBaseline: null,
   sourceConflictRevision: null,
   sourceLoadGeneration: 0,
+  sourceTargetGeneration: 0,
   sourceLoading: false,
   sourceSaving: false,
   sourceUnavailable: false,
@@ -85,6 +86,9 @@ const state = {
   sourceComparisonController: null,
   sourceComparing: false,
   sourceReviewMessage: '',
+  sourceDraftPreview: null,
+  sourceDraftPreviewGeneration: 0,
+  sourceDraftPreviewController: null,
   components: [],
   previewSelectedElement: null,
   previewHoveredElement: null,
@@ -112,9 +116,19 @@ const state = {
   fontCatalogMeta: null,
   selectedFont: null,
   projectFont: null,
+  fontSourceGeneration: 0,
+  fontSourceLoading: false,
+  fontSaving: false,
+  fontSourceUnavailable: false,
+  fontSourceNeedsRefresh: true,
+  fontConflictRevision: null,
+  fontIntentGeneration: 0,
   layout: loadLayout(),
 }
 
+const sourceDraftPreviewLimits = Object.freeze({ characters: 500000, displayedCharacters: 20000 })
+const sourceObservationVersions = new Map()
+const sourceObservedRevisions = new Map()
 const runtimeStyleRules = new Map()
 
 function setRuntimeStyleRule(name, css) {
@@ -520,6 +534,7 @@ function renderFontList() {
 
 function renderProjectFont(fontState) {
   state.projectFont = fontState
+  renderFontSourceRevision()
   text('#project-font-family', fontState?.configured ? fontState.family : 'System fallback')
   text('#project-font-source', fontState?.configured
     ? `${fontState.path} · Google CSS2 import`
@@ -571,10 +586,14 @@ async function loadFontInPreview(font, announce = true) {
 function selectFont(fontFamily, options = {}) {
   const font = state.fontCatalog.find((item) => item.family === fontFamily)
   if (!font) return
+  if (state.selectedFont?.family !== font.family) {
+    state.fontIntentGeneration += 1
+    setControlValue('#font-confirmation', '')
+  }
   state.selectedFont = font
   document.querySelector('#font-preview-selected')?.removeAttribute('disabled')
   document.querySelector('#font-load-selected')?.removeAttribute('disabled')
-  document.querySelector('#font-save-project')?.removeAttribute('disabled')
+  updateFontSaveAvailability()
   renderFontList()
   const sample = document.querySelector('#font-preview-sample')
   if (sample) sample.style.fontFamily = fontStack(font.family)
@@ -582,20 +601,130 @@ function selectFont(fontFamily, options = {}) {
   if (options.load !== false) void loadFontInPreview(font)
 }
 
+function updateFontSaveAvailability() {
+  setControlDisabled('#font-save-project', !state.selectedFont || !validSourceRevision(state.projectFont?.revision) || state.fontSourceLoading || state.fontSaving || state.fontSourceUnavailable || state.fontSourceNeedsRefresh || Boolean(state.fontConflictRevision))
+  setControlDisabled('#font-refresh-source', state.fontSourceLoading || state.fontSaving)
+}
+
+function renderFontSourceRevision() {
+  const label = document.querySelector('#font-source-revision')
+  if (!label) return
+  const revision = state.projectFont?.revision
+  if (validSourceRevision(revision)) label.dataset.revision = revision
+  else label.removeAttribute('data-revision')
+  if (state.fontConflictRevision) label.dataset.currentRevision = state.fontConflictRevision
+  else label.removeAttribute('data-current-revision')
+  label.textContent = state.fontSourceUnavailable
+    ? `Font source unavailable. Loaded revision ${revision || 'not available'}; refresh after restoring the source.`
+    : state.fontSourceLoading ? `Reading font source. Loaded revision ${revision || 'not available'}.`
+    : state.fontConflictRevision ? `Font source changed. Loaded ${revision}; current ${state.fontConflictRevision}. Refresh font source before saving.`
+    : state.fontSourceNeedsRefresh ? `Font source needs refresh · loaded ${revision || 'not available'}.`
+    : validSourceRevision(revision) ? `Font source baseline · ${revision}` : 'No font source revision loaded. Refresh font source before saving.'
+  updateFontSaveAvailability()
+}
+
+async function refreshFontSource({ selectCurrent = false } = {}) {
+  if (state.fontSaving) return
+  const generation = ++state.fontSourceGeneration
+  const selectedFamily = state.selectedFont?.family
+  const intentGeneration = state.fontIntentGeneration
+  const observation = sourceObservationVersions.get('src/index.css') || 0
+  state.fontSourceLoading = true
+  renderFontSourceRevision()
+  try {
+    const project = await request('/api/fonts/project')
+    if (generation !== state.fontSourceGeneration) return
+    if (sourceObservationSuperseded('src/index.css', observation, project.revision)) throw new Error('A newer stylesheet observation arrived while reading. Refresh font source again.')
+    if (project.path !== 'src/index.css' || !validSourceRevision(project.revision)) throw new Error('Font source revision is unavailable.')
+    state.fontSourceUnavailable = false
+    state.fontSourceNeedsRefresh = false
+    state.fontConflictRevision = null
+    renderProjectFont(project)
+    observeSourceRevision(project.path, project.revision, 'Font source refresh')
+    if (selectCurrent && state.selectedFont?.family === selectedFamily && state.fontCatalog.some((font) => font.family === project.family)) selectFont(project.family, { load: false })
+    if (state.fontIntentGeneration === intentGeneration) setControlValue('#font-confirmation', '')
+    output('#font-status', `Font source refreshed · ${project.revision}. The raw source draft and loaded base are kept.`)
+  } catch (error) {
+    if (generation !== state.fontSourceGeneration) return
+    state.fontSourceNeedsRefresh = true
+    if (sourceUnavailable(error) && observation === (sourceObservationVersions.get('src/index.css') || 0)) {
+      state.fontSourceUnavailable = true
+      observeSourceUnavailable('src/index.css')
+    }
+    output('#font-status', `${error.message} The selected font, raw draft and loaded source revision are kept. Check the local connection or restore the source, then Refresh font source before retrying.`)
+  } finally {
+    if (generation === state.fontSourceGeneration) {
+      state.fontSourceLoading = false
+      renderFontSourceRevision()
+    }
+  }
+}
+
 async function loadFontWorkspace() {
-  const [catalog, project] = await Promise.all([
-    request('/api/fonts/catalog'),
-    request('/api/fonts/project'),
-  ])
+  const catalog = await request('/api/fonts/catalog')
   state.fontCatalog = catalog.items ?? []
   state.fontCatalogMeta = catalog
-  renderProjectFont(project)
   text('#font-catalog-state', `${state.fontCatalog.length} families · ${catalog.source === 'google-developer-api' ? 'live metadata' : 'offline fallback'}`)
   renderFontList()
   if (catalog.warning) output('#font-status', catalog.warning)
-  const projectFont = state.fontCatalog.find((font) => font.family === project.family)
-  if (projectFont) selectFont(projectFont.family, { load: false })
+  await refreshFontSource({ selectCurrent: true })
   renderLoadedFonts()
+}
+
+async function saveProjectFont() {
+  if (!state.selectedFont || !validSourceRevision(state.projectFont?.revision) || state.fontSourceLoading || state.fontSaving || state.fontSourceUnavailable || state.fontSourceNeedsRefresh || state.fontConflictRevision) {
+    output('#font-status', 'Select a font and Refresh font source before saving a project change.')
+    return
+  }
+  const family = state.selectedFont.family, baseRevision = state.projectFont.revision
+  const intentGeneration = state.fontIntentGeneration
+  const observation = sourceObservationVersions.get('src/index.css') || 0
+  const confirmation = document.querySelector('#font-confirmation')
+  state.fontSaving = true
+  state.fontSourceGeneration += 1
+  updateFontSaveAvailability()
+  renderFontList()
+  try {
+    const result = await post('/api/builder/font', { family, baseRevision, confirmation: confirmation?.value })
+    if (result.path !== 'src/index.css' || !validSourceRevision(result.revision) || result.currentRevision !== result.revision || result.previousRevision !== baseRevision) throw new Error('Font save revision could not be verified. Refresh font source before another save.')
+    const superseded = sourceObservationSuperseded(result.path, observation, result.revision)
+    if (superseded) {
+      state.fontSourceNeedsRefresh = true
+      state.fontConflictRevision = sourceObservedRevisions.get(result.path) || null
+    } else {
+      state.fontSourceUnavailable = false
+      state.fontSourceNeedsRefresh = false
+      state.fontConflictRevision = null
+      renderProjectFont({ ...state.projectFont, ...result, configured: true })
+      observeSourceRevision(result.path, result.revision, 'Font save accepted')
+    }
+    if (confirmation && state.fontIntentGeneration === intentGeneration) confirmation.value = ''
+    output('#font-status', result.status === 'unchanged'
+      ? `${family} is already the active project font. No source change · revision ${result.revision}.`
+      : `${family} saved to ${result.path}. Previous revision ${result.previousRevision}; current revision ${result.revision}. Backup: ${result.backup}. The raw draft and loaded base are kept.`)
+    if (superseded) output('#font-status', `${family} save accepted at revision ${result.revision}; a newer source observation superseded this response. The raw draft and loaded base are kept. Refresh font source before another save.`)
+    if (!superseded && state.selectedFont?.family === family) void loadFontInPreview(state.selectedFont, false)
+  } catch (error) {
+    state.fontSourceNeedsRefresh = true
+    if (sourceRevisionConflict(error)) {
+      const superseded = sourceObservationSuperseded('src/index.css', observation, error.currentRevision)
+      state.fontConflictRevision = superseded ? sourceObservedRevisions.get('src/index.css') || null : error.currentRevision
+      if (!superseded && error.currentRevision) observeSourceRevision('src/index.css', error.currentRevision, 'Font save conflict')
+      output('#font-status', 'Font source changed since it was loaded. The selected font, confirmation, raw draft and loaded base are kept. Refresh font source, review the current font, then confirm again before saving.')
+    } else if (sourceUnavailable(error)) {
+      if (observation === (sourceObservationVersions.get('src/index.css') || 0)) {
+        state.fontSourceUnavailable = true
+        observeSourceUnavailable('src/index.css')
+      }
+      output('#font-status', 'Font source was unavailable at the save attempt. The selected font, raw draft and loaded base are kept; no file will be recreated. Restore it externally if needed, then Refresh font source.')
+    } else {
+      output('#font-status', `${error.message} Font save was not confirmed. The selected font, raw draft and loaded base are kept. Check the local connection and Refresh font source before retrying.`)
+    }
+  } finally {
+    state.fontSaving = false
+    renderFontSourceRevision()
+    renderFontList()
+  }
 }
 
 function output(selector, value) {
@@ -1421,6 +1550,7 @@ async function saveSelectedText() {
   }
   const nextContent = source.content.replace(textInfo.originalText, escapeJsxText(nextText))
   let result
+  const observation = sourceObservationVersions.get(location.sourcePath) || 0
   state.previewTextSaving = element
   setControlDisabled('#settings-text-save', true)
   try {
@@ -1433,8 +1563,9 @@ async function saveSelectedText() {
     if (!validSourceRevision(result.revision)) throw new Error('Saved source revision is unavailable. Reload latest source before another save.')
   } catch (error) {
     if (sourceRevisionConflict(error)) {
+      if (error.currentRevision) observeSourceRevision(location.sourcePath, error.currentRevision, 'Selected-text save conflict', true, null, observation)
       if (state.previewSelectedElement === element) {
-        if (state.previewTextSource === source) source.currentRevision = error.currentRevision
+        if (state.previewTextSource === source) source.currentRevision = observation !== (sourceObservationVersions.get(location.sourcePath) || 0) ? sourceObservedRevisions.get(location.sourcePath) : error.currentRevision
         renderSelectedTextRevision()
         output('#settings-text-output', 'Source changed since this text draft was loaded. The draft and selected source revision are kept. Choose Reload latest source before reviewing and saving again.')
       }
@@ -1446,8 +1577,9 @@ async function saveSelectedText() {
     if (state.previewTextSaving === element) state.previewTextSaving = null
     if (state.previewSelectedElement === element) setControlDisabled('#settings-text-save', state.previewTextSourcePending === element)
   }
-  if (state.previewTextSource === source) state.previewTextSource = { ...source, content: nextContent, revision: result.revision, currentRevision: null }
-  if (location.sourcePath === state.sourcePath) invalidateSourceComparison('Source changed through a selected-text save. Compare latest and review again.')
+  const superseded = sourceObservationSuperseded(location.sourcePath, observation, result.revision)
+  if (state.previewTextSource === source) state.previewTextSource = { ...source, content: nextContent, revision: result.revision, currentRevision: superseded ? sourceObservedRevisions.get(location.sourcePath) : null }
+  observeSourceRevision(location.sourcePath, result.revision, 'Selected-text save accepted', true, null, observation)
   if (confirmation && state.previewSelectedElement === element) confirmation.value = ''
   state.previewTextOriginals.set(element, nextText)
   element.textContent = nextText
@@ -1891,6 +2023,162 @@ function validSourceRevision(revision) {
   return typeof revision === 'string' && revision.length === 64 && /^[a-f0-9]{64}$/i.test(revision)
 }
 
+function sourceDraftPreviewBound(preview = state.sourceDraftPreview) {
+  return Boolean(preview && preview.path === state.sourcePath && document.querySelector('#source-file-select')?.value === preview.path)
+}
+
+function stopSourceDraftPreviewRead(message) {
+  state.sourceDraftPreviewGeneration += 1
+  state.sourceDraftPreviewController?.abort()
+  state.sourceDraftPreviewController = null
+  const preview = state.sourceDraftPreview
+  if (preview) {
+    if (preview.pending) { preview.currentRevision = null; preview.freshness = 'Unknown' }
+    preview.pending = false
+    preview.digestPending = false
+    if (message) preview.message = message
+  }
+  renderSourceDraftPreview()
+}
+
+function renderSourceDraftPreview() {
+  const panel = document.querySelector('#source-draft-preview')
+  if (!panel) return
+  const preview = state.sourceDraftPreview
+  panel.hidden = !preview
+  setControlDisabled('#preview-source-draft', state.sourceLoading || state.sourceSaving || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
+  if (!preview) return
+  const bound = sourceDraftPreviewBound(preview)
+  const edited = !bound || document.querySelector('#source-editor')?.value !== preview.draftDisplay
+  const baselineChanged = bound && state.sourceRevision !== preview.loadedRevision
+  panel.dataset.freshness = preview.freshness.toLowerCase()
+  panel.dataset.edited = String(edited)
+  text('#source-draft-preview-path', preview.path)
+  text('#source-draft-preview-loaded-revision', preview.loadedRevision)
+  text('#source-draft-preview-draft-revision', preview.draftRevision || (preview.digestPending ? 'Calculating displayed draft digest…' : 'Not calculated; choose Preview draft again'))
+  text('#source-draft-preview-current-revision', preview.currentRevision || (preview.pending ? 'Checking source…' : preview.freshness === 'Unavailable' ? 'Unavailable' : 'Unknown'))
+  text('#source-draft-preview-text', preview.excerpt)
+  text('#source-draft-preview-summary', `${preview.draftDisplay.length} UTF-16 units captured · ${preview.excerpt.length} displayed · ${preview.draftDisplay.length - preview.excerpt.length} omitted${preview.excerpt.length < preview.draftDisplay.length ? ' (display truncated)' : ''}. Digest covers the complete displayed editor draft encoded as UTF-8; the loaded baseline hashes raw source bytes.`)
+  text('#source-draft-preview-status', `${preview.freshness} source observation${preview.pending ? ' · check pending' : ''}. ${!bound ? 'Selected source changed; this snapshot belongs to its captured path. ' : baselineChanged ? 'Loaded baseline changed; this snapshot retains its original baseline. ' : ''}${edited ? 'Draft edited or target changed since preview; captured text and digest are kept. ' : 'Draft matches the captured snapshot. '}${preview.message || ''}`)
+  setControlDisabled('#check-source-draft-preview', !bound || preview.pending || state.sourceLoading || state.sourceSaving || !preview.draftRevision)
+}
+
+function sourceObservationSuperseded(path, observation, revision) {
+  return observation !== (sourceObservationVersions.get(path) || 0) && sourceObservedRevisions.get(path) !== revision
+}
+
+function observeSourceRevision(path, revision, reason, invalidateReview = true, ownPreviewRead = null, observation = null) {
+  if (!validSourceRevision(revision)) return
+  if (observation !== null && sourceObservationSuperseded(path, observation, revision)) {
+    if (path === state.sourcePath) {
+      if (sourceObservedRevisions.get(path) === null) setSourceUnavailable(path)
+      else { state.sourceConflictRevision = sourceObservedRevisions.get(path); renderSourceRevision() }
+    }
+    return
+  }
+  sourceObservationVersions.set(path, (sourceObservationVersions.get(path) || 0) + 1)
+  sourceObservedRevisions.set(path, revision)
+  if (path === state.sourcePath) {
+    state.sourceConflictRevision = revision === state.sourceRevision ? null : revision
+    renderSourceRevision()
+  }
+  if (path === 'src/index.css') {
+    state.fontSourceUnavailable = false
+    if (validSourceRevision(state.projectFont?.revision) && state.projectFont.revision !== revision) {
+      state.fontConflictRevision = revision
+      state.fontSourceNeedsRefresh = true
+    }
+    renderFontSourceRevision()
+  }
+  if (invalidateReview && state.sourceComparison?.path === path && (state.sourceComparison.currentRevision || state.sourceComparison.loadedRevision) !== revision) invalidateSourceComparison(`${reason}: source revision changed. Compare latest and review again.`)
+  const preview = state.sourceDraftPreview
+  if (preview?.path === path) {
+    if (preview.pending && preview !== ownPreviewRead) stopSourceDraftPreviewRead('A newer source observation superseded the pending check.')
+    preview.currentRevision = revision
+    preview.freshness = revision === preview.loadedRevision ? 'Current' : 'Changed'
+    preview.message = `${reason} observed this revision. A read is a snapshot, not an exclusive lock; Check source again for a fresh observation.`
+    renderSourceDraftPreview()
+  }
+}
+
+function observeSourceUnavailable(path) {
+  sourceObservationVersions.set(path, (sourceObservationVersions.get(path) || 0) + 1)
+  sourceObservedRevisions.set(path, null)
+  if (path === state.sourcePath) setSourceUnavailable(path)
+  const preview = state.sourceDraftPreview
+  if (preview?.path === path) {
+    preview.currentRevision = null
+    preview.freshness = 'Unavailable'
+    preview.message = 'Source is unavailable. The captured text, draft and loaded baseline are kept; no file will be recreated.'
+    renderSourceDraftPreview()
+  }
+}
+
+async function checkSourceDraftPreview() {
+  const preview = state.sourceDraftPreview
+  if (!sourceDraftPreviewBound(preview) || !preview.draftRevision || preview.pending || state.sourceLoading || state.sourceSaving) return
+  stopSourceDraftPreviewRead()
+  const generation = state.sourceDraftPreviewGeneration
+  const observation = sourceObservationVersions.get(preview.path) || 0
+  const controller = new AbortController()
+  state.sourceDraftPreviewController = controller
+  preview.pending = true
+  preview.currentRevision = null
+  preview.freshness = 'Unknown'
+  preview.message = 'Reading source revision only; the captured text and raw draft are kept.'
+  renderSourceDraftPreview()
+  try {
+    const result = await request(`/api/builder/source?path=${encodeURIComponent(preview.path)}`, { signal: controller.signal })
+    if (generation !== state.sourceDraftPreviewGeneration || state.sourceDraftPreview !== preview || !sourceDraftPreviewBound(preview)) return
+    if (observation !== (sourceObservationVersions.get(preview.path) || 0)) throw new Error('A newer source observation arrived while checking. Check source again.')
+    if (result.path !== preview.path || !validSourceRevision(result.revision)) throw new Error('Source revision is unavailable.')
+    observeSourceRevision(preview.path, result.revision, 'Explicit preview check', true, preview)
+  } catch (error) {
+    if (generation !== state.sourceDraftPreviewGeneration || state.sourceDraftPreview !== preview || !sourceDraftPreviewBound(preview)) return
+    if (sourceUnavailable(error)) observeSourceUnavailable(preview.path)
+    else {
+      preview.currentRevision = null
+      preview.freshness = 'Unknown'
+      preview.message = `${error.message} Source freshness is unknown. The snapshot, raw draft and loaded baseline are kept; check the local connection and Check source again.`
+    }
+  } finally {
+    if (generation === state.sourceDraftPreviewGeneration && state.sourceDraftPreview === preview) {
+      preview.pending = false
+      state.sourceDraftPreviewController = null
+      renderSourceDraftPreview()
+    }
+  }
+}
+
+async function previewSourceDraft() {
+  const editor = document.querySelector('#source-editor')
+  if (!editor || !state.sourcePath || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || document.querySelector('#source-file-select')?.value !== state.sourcePath) return
+  if (editor.value.length > sourceDraftPreviewLimits.characters) {
+    output('#source-output', `Draft exceeds the ${sourceDraftPreviewLimits.characters}-unit preview limit. The previous snapshot, draft and loaded base are kept.`)
+    return
+  }
+  stopSourceDraftPreviewRead()
+  const generation = state.sourceDraftPreviewGeneration
+  const draftDisplay = editor.value
+  let excerpt = draftDisplay.slice(0, sourceDraftPreviewLimits.displayedCharacters)
+  if (/[\uD800-\uDBFF]$/.test(excerpt) && excerpt.length < draftDisplay.length) excerpt = excerpt.slice(0, -1)
+  const preview = { path: state.sourcePath, loadedRevision: state.sourceRevision, draftDisplay, excerpt, draftRevision: null, currentRevision: null, freshness: 'Unknown', pending: false, digestPending: true, message: 'Capturing a literal text snapshot; no source is saved or executed.' }
+  state.sourceDraftPreview = preview
+  renderSourceDraftPreview()
+  try {
+    const digest = await sourceTextDigest(draftDisplay)
+    if (generation !== state.sourceDraftPreviewGeneration || state.sourceDraftPreview !== preview || !sourceDraftPreviewBound(preview) || state.sourceRevision !== preview.loadedRevision) return
+    preview.draftRevision = digest
+    preview.digestPending = false
+    await checkSourceDraftPreview()
+  } catch (error) {
+    if (generation !== state.sourceDraftPreviewGeneration || state.sourceDraftPreview !== preview) return
+    preview.digestPending = false
+    preview.message = `Displayed draft digest is unavailable: ${error.message}. The draft and baseline are kept.`
+    renderSourceDraftPreview()
+  }
+}
+
 function sourceRevisionConflict(error) {
   return error.status === 409 && error.code === 'SOURCE_REVISION_CONFLICT'
 }
@@ -1900,6 +2188,11 @@ function sourceUnavailable(error) {
 }
 
 function setSourceUnavailable(path) {
+  sourceObservationVersions.set(path, (sourceObservationVersions.get(path) || 0) + 1)
+  sourceObservedRevisions.set(path, null)
+  if (state.sourceDraftPreview?.path === path) stopSourceDraftPreviewRead('Source is unavailable; pending checks are discarded.')
+  const preview = state.sourceDraftPreview
+  if (preview?.path === path) { preview.currentRevision = null; preview.freshness = 'Unavailable'; preview.message = 'Source is unavailable; captured text and baseline are kept.'; renderSourceDraftPreview() }
   if (path === state.sourcePath) { state.sourceUnavailable = true; state.sourceConflictRevision = null }
   invalidateSourceComparison('Source is unavailable. The retained draft and loaded base are kept; no file will be recreated.', path !== state.sourcePath)
   const availability = document.querySelector('#source-availability')
@@ -2012,6 +2305,7 @@ async function compareLatestSource() {
   }
   invalidateSourceComparison('Reading latest source; the draft and loaded base are kept.', true)
   const generation = state.sourceComparisonGeneration
+  const observation = sourceObservationVersions.get(path) || 0
   const controller = new AbortController()
   state.sourceComparisonController = controller
   state.sourceComparing = true
@@ -2022,18 +2316,28 @@ async function compareLatestSource() {
   try {
     const result = await request(`/api/builder/source?path=${encodeURIComponent(path)}`, { signal: controller.signal })
     if (generation !== state.sourceComparisonGeneration) return
+    if (sourceObservationSuperseded(path, observation, result.revision)) throw new Error('A newer source observation arrived while comparing. Compare latest again.')
     if (result.path !== path || !validSourceRevision(result.revision) || typeof result.content !== 'string') throw new Error('Latest source revision is unavailable.')
     if (result.content.length > sourceComparisonLimits.characters) throw new Error(`Latest source exceeds the ${sourceComparisonLimits.characters}-character comparison limit.`)
     const [draftRevision, currentTextRevision] = await Promise.all([sourceTextDigest(draftContent), sourceTextDigest(result.content)])
     if (generation !== state.sourceComparisonGeneration) return
+    if (sourceObservationSuperseded(path, observation, result.revision)) throw new Error('A newer source observation arrived while comparing. Compare latest again.')
     clearSourceUnavailable()
     Object.assign(review, { currentContent: result.content, currentRevision: result.revision, draftRevision, currentTextMatchesRevision: currentTextRevision === result.revision, comparison: compareSourceText(draftContent, result.content), pending: false })
     state.sourceReviewMessage = ''
-    state.sourceConflictRevision = result.revision !== state.sourceRevision ? result.revision : null
+    observeSourceRevision(path, result.revision, 'Source comparison', false)
     renderSourceRevision()
     renderSourceComparison()
   } catch (error) {
     if (generation !== state.sourceComparisonGeneration) return
+    if (observation !== (sourceObservationVersions.get(path) || 0)) {
+      review.pending = false
+      review.stale = true
+      state.sourceReviewMessage = 'Comparison response was superseded by a newer source observation. The draft, loaded base and newer source observation are kept; compare latest again.'
+      output('#source-output', state.sourceReviewMessage)
+      renderSourceComparison()
+      return
+    }
     if (sourceUnavailable(error)) setSourceUnavailable(path)
     else {
       review.pending = false
@@ -2101,14 +2405,16 @@ function renderSourceRevision() {
 async function loadSelectedTextSource(element = state.previewSelectedElement, path = state.previewSelection?.sourcePath) {
   if (!element || !path) return
   const generation = ++state.previewTextSourceGeneration
+  const observation = sourceObservationVersions.get(path) || 0
   state.previewTextSourcePending = element
   setControlDisabled('#settings-text-save', true)
   output('#settings-source-revision', 'Reading latest source revision; the text draft is kept.')
   try {
     const result = await request(`/api/builder/source?path=${encodeURIComponent(path)}`)
     if (generation !== state.previewTextSourceGeneration || state.previewSelectedElement !== element || state.previewSelection?.sourcePath !== path) return
+    if (sourceObservationSuperseded(path, observation, result.revision)) throw new Error('A newer source observation arrived while reading. Reload latest source before saving.')
     if (result.path !== path || !validSourceRevision(result.revision)) throw new Error('Source revision unavailable. Choose Reload latest source before saving.')
-    if (state.sourceComparison?.path === path && state.sourceComparison.currentRevision && state.sourceComparison.currentRevision !== result.revision) invalidateSourceComparison('A newer source revision was observed. Compare latest and review again.')
+    observeSourceRevision(path, result.revision, 'Selected-text source read')
     state.previewTextSource = { element, path, content: result.content, revision: result.revision }
     renderSelectedTextRevision()
   } catch (error) {
@@ -2129,6 +2435,7 @@ function updateSourceSaveAvailability() {
   setControlDisabled('#compare-source', state.sourceLoading || state.sourceSaving || state.sourceComparing || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
   setControlDisabled('#prepare-source-replacement', state.sourceLoading || state.sourceSaving || state.sourceComparing || !sourceReviewMatches())
   text('#save-source', state.sourceComparison?.prepared && sourceReviewMatches() ? 'Save reviewed replacement' : 'Save')
+  renderSourceDraftPreview()
 }
 
 function sourceContentForDraft(displayDraft) {
@@ -2143,6 +2450,7 @@ async function loadSource({ path } = {}) {
   const editor = document.querySelector('#source-editor')
   const wantedPath = path || select?.value
   if (!select || !editor || !wantedPath || state.sourceSaving) return
+  stopSourceDraftPreviewRead('Source load requested. The preview keeps its captured text and baseline.')
   invalidateSourceComparison('Source load requested. Compare latest again before reviewing replacement.')
   if (state.sourcePath && editor.value !== state.sourceDisplayBaseline && !window.confirm('Reload source and discard the unsaved source draft? Cancel keeps the draft and its loaded revision.')) {
     select.value = state.sourcePath
@@ -2150,13 +2458,17 @@ async function loadSource({ path } = {}) {
     return
   }
   const generation = ++state.sourceLoadGeneration
+  const targetGeneration = state.sourceTargetGeneration
+  const observation = sourceObservationVersions.get(wantedPath) || 0
   state.sourceLoading = true
   editor.disabled = true
   updateSourceSaveAvailability()
   try {
     const result = await request(`/api/builder/source?path=${encodeURIComponent(wantedPath)}`)
     if (generation !== state.sourceLoadGeneration) return
-    if (result.path !== wantedPath || !validSourceRevision(result.revision)) throw new Error('Source revision unavailable. Reload source before saving.')
+    if (targetGeneration !== state.sourceTargetGeneration) throw new Error('Selected source changed while reading. Load the selected file explicitly.')
+    if (sourceObservationSuperseded(wantedPath, observation, result.revision)) throw new Error('A newer source observation arrived while reading. Reload source again.')
+    if (result.path !== wantedPath || !validSourceRevision(result.revision) || typeof result.content !== 'string') throw new Error('Source revision unavailable. Reload source before saving.')
     state.sourcePath = result.path
     state.sourceRevision = result.revision
     state.sourceLoadedContent = result.content
@@ -2165,14 +2477,16 @@ async function loadSource({ path } = {}) {
     editor.value = result.content
     state.sourceDisplayBaseline = editor.value
     clearSourceUnavailable()
+    observeSourceRevision(result.path, result.revision, 'Explicit source load')
     text('#source-policy', result.policy)
     renderSourceRevision()
     setControlValue('#source-confirmation', '')
     output('#source-output', `${result.path} loaded · ${result.content.split(/\r?\n/).length} lines`)
   } catch (error) {
     if (generation === state.sourceLoadGeneration) {
-      if (sourceUnavailable(error)) setSourceUnavailable(wantedPath)
-      output('#source-output', sourceUnavailable(error)
+      const superseded = targetGeneration !== state.sourceTargetGeneration || observation !== (sourceObservationVersions.get(wantedPath) || 0)
+      if (sourceUnavailable(error) && !superseded) setSourceUnavailable(wantedPath)
+      output('#source-output', superseded ? 'Source read was superseded by a selected target or newer source observation. The draft and loaded base are kept. Load the intended source explicitly.' : sourceUnavailable(error)
         ? 'Source is unavailable. The source draft and loaded revision are kept; no file will be recreated. Select an existing file or restore it externally, then reload.'
         : `${error.message} The source draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
     }
@@ -2209,6 +2523,7 @@ async function saveSource() {
   }
   const path = state.sourcePath, baseRevision = review ? review.currentRevision : state.sourceRevision, displayDraft = editor.value
   const content = review ? review.draftContent : sourceContentForDraft(displayDraft)
+  const observation = sourceObservationVersions.get(path) || 0
   if (!review) invalidateSourceComparison('A source save was requested. Compare latest again before reviewing replacement.')
   state.sourceSaving = true
   updateSourceSaveAvailability()
@@ -2220,6 +2535,8 @@ async function saveSource() {
     state.sourceDisplayBaseline = displayDraft
     state.sourceConflictRevision = null
     clearSourceUnavailable()
+    if (state.sourceDraftPreview?.path === path) stopSourceDraftPreviewRead('Source save accepted. The preview retains its captured text and original baseline.')
+    observeSourceRevision(path, result.revision, 'Source save accepted', false, null, observation)
     invalidateSourceComparison('Source save accepted. Compare latest again before another replacement.', true)
     renderSourceRevision()
     output('#source-output', result.status === 'saved' ? `Saved ${result.path}; backup: ${result.backup}. Vite preview can hot reload.` : result.status)
@@ -2227,6 +2544,10 @@ async function saveSource() {
     await refresh()
   } catch (error) {
     if (sourceUnavailable(error)) {
+      if (observation !== (sourceObservationVersions.get(path) || 0)) {
+        output('#source-output', 'Source was unavailable at the save attempt; a newer source observation superseded that response. The draft and loaded base are kept. Compare latest or reload explicitly.')
+        return
+      }
       setSourceUnavailable(path)
       output('#source-output', 'Source is unavailable. The draft and loaded revision are kept; no file will be recreated. Select an existing file or restore it externally, then reload.')
       return
@@ -2236,7 +2557,8 @@ async function saveSource() {
       output('#source-output', `${error.message} Save was not confirmed; the draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
       return
     }
-    state.sourceConflictRevision = error.currentRevision
+    state.sourceConflictRevision = observation !== (sourceObservationVersions.get(path) || 0) ? sourceObservedRevisions.get(path) : error.currentRevision
+    if (error.currentRevision) observeSourceRevision(path, error.currentRevision, 'Source save conflict', false, null, observation)
     invalidateSourceComparison(`Source changed again${error.currentRevision ? ` · current ${error.currentRevision}` : ''}. Compare latest and review again.`)
     renderSourceRevision()
     output('#source-output', 'Source changed since it was loaded. The draft and loaded revision are kept. Choose Compare latest for a non-destructive review, or Reload latest source to explicitly replace the retained draft after confirmation.')
@@ -2543,6 +2865,7 @@ function bind() {
     activateRightPanel('settings')
     window.requestAnimationFrame(() => document.querySelector('#settings-text-editor')?.focus({ preventScroll: true }))
   })
+  document.querySelector('#font-confirmation')?.addEventListener('input', () => { state.fontIntentGeneration += 1 })
   document.querySelector('#font-search')?.addEventListener('input', renderFontList)
   document.querySelector('#font-category')?.addEventListener('change', renderFontList)
   document.querySelector('#font-list')?.addEventListener('click', (event) => {
@@ -2555,26 +2878,8 @@ function bind() {
   document.querySelector('#font-load-selected')?.addEventListener('click', () => {
     if (state.selectedFont) void loadFontInPreview(state.selectedFont)
   })
-  document.querySelector('#font-save-project')?.addEventListener('click', async () => {
-    if (!state.selectedFont) {
-      output('#font-status', 'Select a font before saving a project change.')
-      return
-    }
-    try {
-      const result = await post('/api/builder/font', {
-        family: state.selectedFont.family,
-        confirmation: document.querySelector('#font-confirmation')?.value,
-      })
-      document.querySelector('#font-confirmation').value = ''
-      output('#font-status', result.status === 'unchanged'
-        ? `${result.family} is already the active project font.`
-        : `${result.family} saved to ${result.path}. Backup: ${result.backup}. Run the quality gates before publishing.`)
-      await loadFontWorkspace()
-      void loadFontInPreview(state.selectedFont, false)
-    } catch (error) {
-      output('#font-status', error.message)
-    }
-  })
+  document.querySelector('#font-refresh-source')?.addEventListener('click', () => void refreshFontSource())
+  document.querySelector('#font-save-project')?.addEventListener('click', () => void saveProjectFont())
   document.querySelector('#preview-context-menu')?.addEventListener('click', (event) => {
     const parentButton = event.target.closest('[data-preview-parent-index]')
     if (parentButton) {
@@ -2731,9 +3036,21 @@ function bind() {
   document.querySelector('#load-source')?.addEventListener('click', () => void loadSource().catch((error) => output('#source-output', error.message)))
   document.querySelector('#source-editor')?.addEventListener('input', () => {
     renderSourceRevision()
+    stopSourceDraftPreviewRead('Draft edited since preview. Captured text, digest and baseline are kept; Preview draft captures the newer text.')
     invalidateSourceComparison('Draft changed. Comparison is outdated; compare latest and review again.')
   })
-  document.querySelector('#source-file-select')?.addEventListener('change', () => invalidateSourceComparison('Selected source changed. Comparison is outdated; compare latest and review again.'))
+  document.querySelector('#source-file-select')?.addEventListener('change', () => {
+    state.sourceTargetGeneration += 1
+    stopSourceDraftPreviewRead('Selected source changed. The preview retains its captured path, text and baseline.')
+    invalidateSourceComparison('Selected source changed. Comparison is outdated; compare latest and review again.')
+  })
+  document.querySelector('#preview-source-draft')?.addEventListener('click', () => void previewSourceDraft())
+  document.querySelector('#check-source-draft-preview')?.addEventListener('click', () => void checkSourceDraftPreview())
+  document.querySelector('#close-source-draft-preview')?.addEventListener('click', () => {
+    stopSourceDraftPreviewRead()
+    state.sourceDraftPreview = null
+    renderSourceDraftPreview()
+  })
   document.querySelector('#reload-source')?.addEventListener('click', () => void loadSource({ path: state.sourcePath }).catch((error) => output('#source-output', error.message)))
   document.querySelector('#save-source')?.addEventListener('click', () => void saveSource().catch((error) => output('#source-output', error.message)))
   document.querySelector('#compare-source')?.addEventListener('click', () => void compareLatestSource().catch((error) => output('#source-output', error.message)))

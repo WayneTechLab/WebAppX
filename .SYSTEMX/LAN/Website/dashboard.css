@@ -1300,6 +1300,9 @@ h3 {
 .source-comparison h4 { margin: 4px 0; font-size: 11px; }
 .source-comparison pre { margin: 0; padding: 6px; overflow: auto; white-space: pre; font-size: 10px; line-height: 1.5; background: #fff; border: 1px solid var(--line); }
 .source-comparison-panes pre { height: 180px; }
+.source-draft-preview > pre { max-height: 260px; }
+.source-draft-preview > .panel-help { display: block; margin-block: 8px; }
+#font-source-revision { display: block; font-family: monospace; line-height: 1.5; }
 .source-comparison-lines { max-height: 280px; overflow: auto; }
 .source-comparison-line { margin-bottom: 6px; }
 .source-comparison-line small { color: var(--muted); font-size: 10px; }

@@ -445,6 +445,8 @@
                 <span>Template font source</span>
                 <strong id="project-font-family">System fallback</strong>
                 <small id="project-font-source">Checking src/index.css…</small>
+                <output id="font-source-revision" class="source-revision-row" aria-live="polite">No font source revision loaded.</output>
+                <button id="font-refresh-source" class="button" type="button">Refresh font source</button>
                 <small id="font-loaded-state">Checking loaded fonts in the Vite canvas…</small>
               </div>
               <div class="font-action-row">
@@ -468,12 +470,27 @@
               <button class="button" id="load-source" type="button">Load</button>
               <button class="button" id="reload-source" type="button">Reload latest source</button>
               <button class="button" id="compare-source" type="button" disabled>Compare latest</button>
+              <button class="button" id="preview-source-draft" type="button" disabled>Preview draft</button>
               <span id="source-policy" class="badge warn">backup-diff-confirm</span>
             </div>
             <textarea id="source-editor" spellcheck="false" aria-label="Source editor" placeholder="Choose an allowlisted source file."></textarea>
             <output id="source-revision" class="source-revision-row" aria-live="polite">No source revision loaded.</output>
             <output id="source-availability" class="command-output" aria-live="polite" hidden></output>
             <p id="source-revision-help" class="panel-help">A revision covers the bytes of one allowlisted source file. It does not establish Git cleanliness, provider publication, or an exclusive lock.</p>
+            <section id="source-draft-preview" class="source-comparison source-draft-preview" aria-label="Literal source draft preview" hidden>
+              <div class="panel-heading compact"><h3>Literal draft snapshot</h3><button id="close-source-draft-preview" class="button" type="button">Close preview</button></div>
+              <p class="panel-help">This text snapshot is not compiled or executed. Preview and Check source only read source; they do not prepare a replacement or save a file. A source check observes one point in time.</p>
+              <dl class="source-comparison-revisions">
+                <dt>Captured path</dt><dd id="source-draft-preview-path"></dd>
+                <dt>Captured loaded baseline · raw file SHA-256</dt><dd id="source-draft-preview-loaded-revision"></dd>
+                <dt>Displayed draft · UTF-8 SHA-256</dt><dd id="source-draft-preview-draft-revision"></dd>
+                <dt>Observed current source revision</dt><dd id="source-draft-preview-current-revision"></dd>
+              </dl>
+              <output id="source-draft-preview-status" class="command-output" aria-live="polite"></output>
+              <pre id="source-draft-preview-text" tabindex="0" aria-label="Literal captured draft text"></pre>
+              <output id="source-draft-preview-summary" class="panel-help" aria-live="polite"></output>
+              <button id="check-source-draft-preview" class="button" type="button" disabled>Check source</button>
+            </section>
             <section id="source-review" class="source-comparison" aria-label="Source comparison" hidden>
               <div class="panel-heading compact"><h3>Draft and latest source</h3><button id="cancel-source-review" class="button" type="button">Cancel comparison</button></div>
               <output id="source-review-status" class="command-output" aria-live="polite"></output>

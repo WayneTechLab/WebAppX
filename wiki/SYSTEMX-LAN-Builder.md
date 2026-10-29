@@ -23,9 +23,9 @@ no-op behavior accounts for textarea normalization. Read the
 [API reference](SYSTEMX-LAN-API-Reference.md) and
 [source QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
 
-The [accepted iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) adds source comparison, missing-file draft
-protection and explicitly reviewed replacement. The [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) records
-the exact candidate, repairs, acceptance and limits.
+The prior [conflict-review milestone](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
+missing-file draft protection and explicitly reviewed replacement. The
+[current iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) continues with revision-aware font changes and literal draft previews.
 
 Use **Build → Code → Compare latest** to inspect the retained proposal beside
 the latest source and changed line excerpts. Comparison leaves the draft and its
@@ -45,6 +45,31 @@ TODO.** The source-conflict batch adds 15 completions. Functional candidate
 `d9bd9e7` passed all 68 CI stages, 21 source-flow browser groups, 16 Navigator
 groups, three actual-app read-only observations and separate Hosting preflight.
 Production deployment was skipped.
+
+## Font revisions and source draft previews
+
+In **Design → Style**, the Font browser shows the observed raw revision of
+`src/index.css`. **Refresh font source** reads it again without replacing an open
+Code draft. A `SAVE FONT CHANGE` save submits that observed baseline; source that
+changed since the observation is refused until it is reviewed and refreshed.
+Success exposes the new revision and preserves the exact predecessor backup.
+An open raw CSS draft keeps its own baseline and receives the usual stale-save
+refusal if the font operation advanced its source.
+
+In **Build → Code**, load an allowlisted source file, edit its draft and choose
+**Preview draft**. This captures literal source text, its displayed-text digest,
+loaded source revision, path and current source observation. **Check source**
+performs a source GET and reports matching, changed, unavailable or unknown state;
+**Close preview** discards the snapshot and preserves the editor. A later editor
+change is identified separately from that immutable snapshot. The excerpt is
+bounded and omission is explicit. The preview neither executes markup/JSX nor
+compiles an alternate application, saves source or creates replacement authority.
+
+The [font/preview QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-FONT-PREVIEW-QA-2026-10-28.md)
+records the candidate and actual verification status. The [active plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md)
+keeps pending work separate from accepted counts. The LAN **Ops → Agent 0 → Work
+sources** board reports the original WebAppX catalog and reusable/adopted records;
+this separate LAN program's acceptance lives in its generated plan and checklist.
 
 ## What it is for
 

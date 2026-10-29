@@ -38,12 +38,16 @@ const initial = 'export function HomePage() { return <h1>Fixture original</h1> }
 writeFileSync(sourceFile, initial)
 const secondInitial = 'export function AboutPage() { return <h1>About fixture original</h1> }\n'
 writeFileSync(secondFile, secondInitial)
+const stylesheetPath = 'src/index.css', stylesheetFile = join(fixture, stylesheetPath)
+const stylesheetInitial = '@import "tailwindcss";\n/* Owned stylesheet fixture — café 🌈 */\n:root { --wtl-font-family: "Fixture Sans", system-ui; }\nbody { font-family: var(--wtl-font-family); }\n'
+writeFileSync(stylesheetFile, stylesheetInitial)
 const filesBelow = (directory) => !existsSync(directory) ? [] : readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
   const path = join(directory, entry.name)
   return entry.isDirectory() ? filesBelow(path) : [path]
 }).sort()
 const effects = () => ({
   source: existsSync(sourceFile) ? readFileSync(sourceFile, 'utf8') : null,
+  stylesheet: existsSync(stylesheetFile) ? readFileSync(stylesheetFile, 'utf8') : null,
   backups: filesBelow(join(fixture, '.SYSTEMX/LAN/Backup')).map((path) => [relative(fixture, path), sha(readFileSync(path))]),
   log: existsSync(join(fixture, '.SYSTEMX/LAN/Temp/operations.jsonl')) ? readFileSync(join(fixture, '.SYSTEMX/LAN/Temp/operations.jsonl'), 'utf8') : null,
   temporaryFiles: filesBelow(join(fixture, 'src')).filter((path) => path.endsWith('.tmp')).map((path) => relative(fixture, path)),
@@ -56,7 +60,7 @@ const freePort = () => new Promise((resolvePort, reject) => {
 const port = await freePort()
 let appPort, server, browser, browserServer, context, page, failure, releasePendingResponse
 let serverOutput = ''
-const checks = [], pageErrors = [], posts = [], unexpectedRequests = []
+const checks = [], pageErrors = [], posts = [], fontPosts = [], sourceReads = [], unexpectedRequests = [], syntheticFontRequests = []
 const loadedBrowserAssets = [], browserAssetCaptures = []
 const app = createServer(async (request, response) => {
   try {
@@ -76,7 +80,7 @@ const app = createServer(async (request, response) => {
     response.end('<!doctype html><html><head><title>Owned source guard fixture</title></head><body><h1 data-systemx-source="src/pages/HomePage.tsx">Fixture original</h1><p>Owned source guard browser document.</p></body></html>')
   } catch { response.writeHead(502); response.end('Owned fixture bridge unavailable') }
 })
-const report = { schemaVersion: 1, kind: 'isolated-source-revision-browser-evidence', checks, pageErrors, posts, unexpectedRequests, loadedBrowserAssets,
+const report = { schemaVersion: 1, kind: 'isolated-source-revision-browser-evidence', checks, pageErrors, posts, fontPosts, sourceReads, unexpectedRequests, syntheticFontRequests, loadedBrowserAssets,
   startedAt: new Date().toISOString(),
   boundaries: 'Source writes and external changes target only an owned temporary copy. Fresh Chromium context; no user browser/storage, provider, real app source, or existing listener is changed.' }
 if (process.env.SYSTEMX_SOURCE_REVISION_ATTEMPT_NOTE) report.attemptNote = process.env.SYSTEMX_SOURCE_REVISION_ATTEMPT_NOTE
@@ -88,7 +92,7 @@ const inputManifest = {
   files: [...filesBelow(join(fixture, '.SYSTEMX/LAN')).filter((path) => /\.(?:mjs|js|html|css)$/.test(path)).map((path) => ({ path: relative(fixture, path).replaceAll('\\', '/'), bytes: readFileSync(path).length, sha256: sha(readFileSync(path)) })),
     ...filesBelow(join(root, '.SYSTEMX/LAN/tests')).filter((path) => /\.mjs$/.test(path)).map((path) => ({ path: relative(root, path).replaceAll('\\', '/'), bytes: readFileSync(path).length, sha256: sha(readFileSync(path)) }))],
   protectedSourceAndSeeds: original,
-  syntheticSource: { path: sourcePath, sha256: sha(initial), secondPath, secondSha256: sha(secondInitial) },
+  syntheticSource: { path: sourcePath, sha256: sha(initial), secondPath, secondSha256: sha(secondInitial), stylesheetPath, stylesheetSha256: sha(stylesheetInitial) },
 }
 writeFileSync(join(evidence, 'input-manifest.json'), `${JSON.stringify(inputManifest, null, 2)}\n`)
 try {
@@ -97,7 +101,7 @@ try {
   const origin = `http://127.0.0.1:${appPort}`
   report.origin = origin
   server = spawn(process.execPath, [join(fixture, '.SYSTEMX/LAN/server.mjs')], {
-    cwd: fixture, env: { ...process.env, SYSTEMX_LAN_PORT: String(port), SYSTEMX_APP_PORT: String(appPort), SYSTEMX_STRICT_PORT: 'true', SYSTEMX_LAN_TEST_MODE: 'true' },
+    cwd: fixture, env: { ...process.env, SYSTEMX_LAN_PORT: String(port), SYSTEMX_APP_PORT: String(appPort), SYSTEMX_STRICT_PORT: 'true', SYSTEMX_LAN_TEST_MODE: 'true', SYSTEMX_GOOGLE_FONTS_API_KEY: '' },
     stdio: ['ignore', 'pipe', 'pipe'],
   })
   report.ownedProcesses = { harness: process.pid, lan: server.pid }
@@ -117,6 +121,10 @@ try {
   writeFileSync(join(evidence, 'execution.json'), `${JSON.stringify({ ...report.ownedProcesses, fixture, origin }, null, 2)}\n`)
   browser = await chromium.connect(browserServer.wsEndpoint(), { timeout: 15000 })
   context = await browser.newContext({ viewport: { width: 1600, height: 1100 }, serviceWorkers: 'block', reducedMotion: 'reduce' })
+  context.on('request', (request) => {
+    const url = new URL(request.url())
+    if (url.origin === origin && request.method() === 'GET' && url.pathname.endsWith('/api/builder/source')) sourceReads.push({ path: url.searchParams.get('path') })
+  })
   context.on('response', (response) => {
     const url = new URL(response.url())
     if (url.origin !== origin || !url.pathname.startsWith('/__systemx/Website/') || !/\.(?:js|css)$/.test(url.pathname)) return
@@ -128,11 +136,19 @@ try {
   assert.deepEqual(await context.storageState(), { cookies: [], origins: [] })
   await context.route('**/*', async (route) => {
     const request = route.request(), url = new URL(request.url())
-    if (url.origin !== origin || !['GET', 'HEAD', 'POST'].includes(request.method()) || request.method() === 'POST' && url.pathname !== '/__systemx/api/builder/source') {
+    if (request.method() === 'GET' && url.protocol === 'https:' && url.hostname === 'fonts.googleapis.com' && url.pathname === '/css2') {
+      syntheticFontRequests.push({ host: url.hostname, path: url.pathname, disposition: 'synthetic-empty-stylesheet' })
+      return route.fulfill({ status: 200, contentType: 'text/css; charset=utf-8', headers: { 'Access-Control-Allow-Origin': '*' }, body: '/* Isolated font CSS fixture; no external font resources. */' })
+    }
+    if (request.method() === 'GET' && url.protocol === 'https:' && url.hostname === 'fonts.gstatic.com' && request.resourceType() === 'font') {
+      syntheticFontRequests.push({ host: url.hostname, path: url.pathname, disposition: 'expected-font-resource-abort' })
+      return route.abort('blockedbyclient')
+    }
+    if (url.origin !== origin || !['GET', 'HEAD', 'POST'].includes(request.method()) || request.method() === 'POST' && !['/__systemx/api/builder/source', '/__systemx/api/builder/font'].includes(url.pathname)) {
       unexpectedRequests.push({ method: request.method(), origin: url.origin, path: url.pathname })
       return route.abort('blockedbyclient')
     }
-    if (request.method() === 'POST') posts.push(request.postDataJSON())
+    if (request.method() === 'POST') (url.pathname.endsWith('/font') ? fontPosts : posts).push(request.postDataJSON())
     await route.continue()
   })
   page = await context.newPage()
@@ -762,8 +778,541 @@ try {
   await expect(save).toBeDisabled()
   checks.push('A real workspace Refresh after source deletion retains the loaded file option, exact draft/base/approval and available Compare retry; a bounded inventory omission never silently selects another source or creates a write.')
 
+  const showCode = async () => {
+    await page.locator('[data-inspector-group-tab="build"]').click()
+    await page.locator('[data-inspector-tab="source"]').click()
+    await expect(page.locator('#panel-source')).toBeVisible()
+  }
+  const showFonts = async () => {
+    await page.locator('[data-inspector-group-tab="design"]').click()
+    await page.locator('[data-inspector-tab="style"]').click()
+    await expect(page.locator('#font-search')).toBeVisible()
+  }
+  await file.selectOption(stylesheetPath)
+  page.once('dialog', (dialog) => dialog.accept())
+  await page.locator('#load-source').click()
+  await expect(editor).toHaveValue(stylesheetInitial)
+  await expect(revision).toHaveAttribute('data-revision', sha(stylesheetInitial))
+  const stylesheetDraft = stylesheetInitial + '/* Retained independent raw CSS draft. */\n'
+  await editor.fill(stylesheetDraft)
+  await confirmation.fill('SAVE LOCAL CHANGE')
+  const rawStylesheetBinding = await editorBinding()
+  await showFonts()
+  const fontRevision = page.locator('#font-source-revision'), fontRefresh = page.locator('#font-refresh-source')
+  const fontSave = page.locator('#font-save-project'), fontApproval = page.locator('#font-confirmation'), fontOutput = page.locator('#font-status')
+  const chooseFont = async (family) => {
+    await page.locator('#font-search').fill(family)
+    const choice = page.locator(`[data-font-family="${family}"]`)
+    await expect(choice).toHaveCount(1)
+    await choice.click()
+    await expect(choice).toHaveClass(/selected/)
+  }
+  const fontBinding = async () => ({
+    loadedRevision: await fontRevision.getAttribute('data-revision'),
+    approval: await fontApproval.inputValue(),
+    selectedFamily: await page.locator('[data-font-family].selected').getAttribute('data-font-family'),
+  })
+  const refreshFont = async () => {
+    const response = waitForResponse((item) => item.request().method() === 'GET' && item.url().endsWith('/api/fonts/project'))
+    await fontRefresh.click()
+    const result = await response
+    assert.equal(result.status(), 200)
+    const body = await result.json()
+    await expect(fontRevision).toHaveAttribute('data-revision', body.revision)
+    return body
+  }
+  const beforeFontRead = effects(), beforeFontMutations = posts.length + fontPosts.length
+  await expect(page.locator('#font-catalog-state')).toContainText('offline fallback')
+  const initialFontState = await refreshFont()
+  assert.equal(initialFontState.path, stylesheetPath)
+  assert.equal(initialFontState.revision, sha(stylesheetInitial))
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  assert.deepEqual(effects(), beforeFontRead)
+  assert.equal(posts.length + fontPosts.length, beforeFontMutations)
+  checks.push('Explicit font source refresh returns the exact stylesheet byte revision while an independently loaded raw CSS draft, its base and approval stay unchanged; the read creates no disk or POST effects.')
+
+  await chooseFont('Inter')
+  await fontApproval.fill('SAVE FONT CHANGE')
+  const beforeFontSave = effects()
+  let releaseFontSave, notifyFontSaved
+  const fontSaveRelease = new Promise((resolveRelease) => { releaseFontSave = resolveRelease })
+  const fontSavedAtServer = new Promise((resolveSaved) => { notifyFontSaved = resolveSaved })
+  releasePendingResponse = releaseFontSave
+  await page.route('**/api/builder/font', async (route) => {
+    fontPosts.push(route.request().postDataJSON())
+    const response = await route.fetch()
+    notifyFontSaved()
+    await fontSaveRelease
+    await route.fulfill({ response })
+  })
+  await fontSave.click()
+  await Promise.race([fontSavedAtServer, delay(15000).then(() => { throw new Error('Owned font save did not reach the held-response fixture.') })])
+  await expect(fontSave).toBeDisabled()
+  await chooseFont('Roboto')
+  await expect(fontApproval).toHaveValue('')
+  await fontApproval.fill('SAVE FONT CHANGE')
+  const completedFontSave = waitForResponse((item) => item.request().method() === 'POST' && item.url().endsWith('/api/builder/font'))
+  releaseFontSave()
+  const firstFontResponse = await completedFontSave
+  assert.equal(firstFontResponse.status(), 200)
+  const firstFontResult = await firstFontResponse.json()
+  await page.unroute('**/api/builder/font')
+  releasePendingResponse = null
+  const firstFontContent = readFileSync(stylesheetFile, 'utf8')
+  assert.equal(firstFontResult.status, 'saved')
+  assert.equal(firstFontResult.family, 'Inter')
+  assert.equal(firstFontResult.previousRevision, sha(stylesheetInitial))
+  assert.equal(firstFontResult.revision, sha(firstFontContent))
+  assert.equal(firstFontResult.currentRevision, sha(firstFontContent))
+  assert.equal(fontPosts.at(-1).baseRevision, sha(stylesheetInitial))
+  assert.equal(readFileSync(join(fixture, firstFontResult.backup), 'utf8'), stylesheetInitial)
+  assert.equal(effects().backups.length, beforeFontSave.backups.length + 1)
+  await expect(fontRevision).toHaveAttribute('data-revision', sha(firstFontContent))
+  await expect(page.locator('#project-font-family')).toHaveText('Inter')
+  await expect(page.locator('[data-font-family="Roboto"]')).toHaveClass(/selected/)
+  await expect(fontApproval).toHaveValue('SAVE FONT CHANGE')
+  await expect(fontSave).toBeEnabled()
+  await expect(fontOutput).toContainText('Inter')
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  await fontRevision.scrollIntoViewIfNeeded()
+  await page.locator('.font-project-card').screenshot({ path: join(evidence, '10-font-save-captured-selection-and-revision.png') })
+  await fontOutput.scrollIntoViewIfNeeded()
+  await fontOutput.screenshot({ path: join(evidence, '10a-font-save-captured-receipt.png') })
+  checks.push('A held confirmed Inter font save persists and reports its exact new CSS revision and predecessor backup; a later Roboto selection and freshly typed identical approval survive the Inter response without rebasing the independent raw CSS draft.')
+
+  await showCode()
+  const afterFontSave = effects()
+  const staleCssSave = waitForResponse((item) => item.request().method() === 'POST' && item.url().endsWith('/api/builder/source'))
+  await save.click()
+  const staleCssResponse = await staleCssSave
+  assert.equal(staleCssResponse.status(), 409)
+  const staleCssBody = await staleCssResponse.json()
+  assert.equal(staleCssBody.code, 'SOURCE_REVISION_CONFLICT')
+  assert.equal(staleCssBody.currentRevision, sha(firstFontContent))
+  assert.equal(posts.at(-1).baseRevision, sha(stylesheetInitial))
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  assert.deepEqual(effects(), afterFontSave)
+  await expect(revision).toHaveAttribute('data-current-revision', sha(firstFontContent))
+  await page.locator('#panel-source').screenshot({ path: join(evidence, '11-font-write-stale-raw-css-draft409.png') })
+  checks.push('Saving the CSS editor draft after a guarded font write still sends its original loaded revision and receives409 with the font-written current hash; the full raw draft/base/approval and source/backup/log/temp inventories remain intact.')
+
+  await showFonts()
+  await chooseFont('Inter')
+  await fontApproval.fill('SAVE FONT CHANGE')
+  const beforeFontNoop = effects()
+  const fontNoop = waitForResponse((item) => item.request().method() === 'POST' && item.url().endsWith('/api/builder/font'))
+  await fontSave.click()
+  const fontNoopResponse = await fontNoop
+  assert.equal(fontNoopResponse.status(), 200)
+  const fontNoopBody = await fontNoopResponse.json()
+  assert.equal(fontNoopBody.status, 'unchanged')
+  for (const field of ['previousRevision', 'revision', 'currentRevision']) assert.equal(fontNoopBody[field], sha(firstFontContent))
+  assert.deepEqual(effects(), beforeFontNoop)
+  await expect(fontApproval).toHaveValue('')
+  await expect(fontSave).toBeEnabled()
+  checks.push('A confirmed same-font no-op uses the current font baseline, reports identical previous/current/new revisions, clears only its completed font approval and creates no redundant backup, operation or source write.')
+
+  const externallyChangedCss = firstFontContent + '/* External stylesheet revision after font selection. */\n'
+  writeFileSync(stylesheetFile, externallyChangedCss)
+  await fontApproval.fill('SAVE FONT CHANGE')
+  const beforeStaleFont = effects()
+  const staleFontSave = waitForResponse((item) => item.request().method() === 'POST' && item.url().endsWith('/api/builder/font'))
+  await fontSave.click()
+  const staleFontResponse = await staleFontSave
+  assert.equal(staleFontResponse.status(), 409)
+  assert.equal((await staleFontResponse.json()).currentRevision, sha(externallyChangedCss))
+  assert.equal(fontPosts.at(-1).baseRevision, sha(firstFontContent))
+  await expect(fontRevision).toHaveAttribute('data-revision', sha(firstFontContent))
+  await expect(fontRevision).toHaveAttribute('data-current-revision', sha(externallyChangedCss))
+  await expect(fontApproval).toHaveValue('SAVE FONT CHANGE')
+  await expect(fontSave).toBeDisabled()
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  assert.deepEqual(effects(), beforeStaleFont)
+  const refreshedFont = await refreshFont()
+  assert.equal(refreshedFont.revision, sha(externallyChangedCss))
+  await expect(fontApproval).toHaveValue('')
+  await chooseFont('Roboto')
+  await fontApproval.fill('SAVE FONT CHANGE')
+  const retriedFontSave = waitForResponse((item) => item.request().method() === 'POST' && item.url().endsWith('/api/builder/font'))
+  await fontSave.click()
+  const retriedFontResponse = await retriedFontSave
+  assert.equal(retriedFontResponse.status(), 200)
+  const retriedFontBody = await retriedFontResponse.json()
+  const retriedFontContent = readFileSync(stylesheetFile, 'utf8')
+  assert.equal(fontPosts.at(-1).baseRevision, sha(externallyChangedCss))
+  assert.equal(retriedFontBody.previousRevision, sha(externallyChangedCss))
+  assert.equal(retriedFontBody.revision, sha(retriedFontContent))
+  assert.equal(readFileSync(join(fixture, retriedFontBody.backup), 'utf8'), externallyChangedCss)
+  await expect(fontRevision).toHaveAttribute('data-revision', sha(retriedFontContent))
+  await expect(fontSave).toBeEnabled()
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  checks.push('Even a same-font no-op intent refuses a stale stylesheet baseline with409 and no effects; explicit font Refresh obtains the current hash and clears old font approval before a newly confirmed retry saves with an exact predecessor backup.')
+
+  await chooseFont('Inter')
+  await fontApproval.fill('SAVE FONT CHANGE')
+  let releaseOlderFont, notifyOlderFont
+  const olderFontRelease = new Promise((resolveRelease) => { releaseOlderFont = resolveRelease })
+  const olderFontCaptured = new Promise((resolveCaptured) => { notifyOlderFont = resolveCaptured })
+  let olderFontContent
+  releasePendingResponse = releaseOlderFont
+  await page.route('**/api/builder/font', async (route) => {
+    fontPosts.push(route.request().postDataJSON())
+    const response = await route.fetch()
+    olderFontContent = readFileSync(stylesheetFile, 'utf8')
+    notifyOlderFont()
+    await olderFontRelease
+    await route.fulfill({ response })
+  })
+  await fontSave.click()
+  await Promise.race([olderFontCaptured, delay(15000).then(() => { throw new Error('Older font receipt was not captured.') })])
+  await chooseFont('Roboto')
+  await fontApproval.fill('SAVE FONT CHANGE')
+  const newerObservedCss = olderFontContent + '/* Newer source observed while older font response is held. */\n'
+  writeFileSync(stylesheetFile, newerObservedCss)
+  await showCode()
+  const cssComparison = waitForResponse((item) => item.request().method() === 'GET' && new URL(item.url()).pathname.endsWith('/api/builder/source') && new URL(item.url()).searchParams.get('path') === stylesheetPath)
+  await compare.click()
+  assert.equal((await cssComparison).status(), 200)
+  await expect(page.locator('#source-review-current-revision')).toContainText(sha(newerObservedCss))
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  const beforeOlderFontRelease = effects()
+  await showFonts()
+  const olderFontResponse = waitForResponse((item) => item.request().method() === 'POST' && item.url().endsWith('/api/builder/font'))
+  releaseOlderFont()
+  const olderFontBody = await (await olderFontResponse).json()
+  await page.unroute('**/api/builder/font')
+  releasePendingResponse = null
+  assert.equal(olderFontBody.revision, sha(olderFontContent))
+  assert.equal(olderFontBody.previousRevision, sha(retriedFontContent))
+  assert.equal(readFileSync(join(fixture, olderFontBody.backup), 'utf8'), retriedFontContent)
+  await expect(fontRevision).toHaveAttribute('data-current-revision', sha(newerObservedCss))
+  await expect(fontSave).toBeDisabled()
+  await expect(fontOutput).toContainText(/superseded|newer source/i)
+  await expect(page.locator('[data-font-family="Roboto"]')).toHaveClass(/selected/)
+  await expect(fontApproval).toHaveValue('SAVE FONT CHANGE')
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  assert.deepEqual(effects(), beforeOlderFontRelease)
+  const recoveredFontState = await refreshFont()
+  assert.equal(recoveredFontState.revision, sha(newerObservedCss))
+  checks.push('A delayed accepted font receipt remains an accepted-write receipt after a newer real CSS comparison observes another revision; it cannot roll back that latest observation, rebase the raw draft, discard newer selection/approval, or enable another write without Refresh.')
+
+  await fontApproval.fill('SAVE FONT CHANGE')
+  const beforeFontReadFailure = effects(), retainedFontReadBinding = await fontBinding()
+  await page.route('**/api/fonts/project', (route) => route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"Owned font read unavailable"}' }))
+  const failedFontRead = waitForResponse((item) => item.request().method() === 'GET' && item.url().endsWith('/api/fonts/project') && item.status() === 503)
+  await fontRefresh.click()
+  await failedFontRead
+  await expect(fontOutput).toContainText('Owned font read unavailable')
+  await expect(fontSave).toBeDisabled()
+  assert.deepEqual(await fontBinding(), retainedFontReadBinding)
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  assert.deepEqual(effects(), beforeFontReadFailure)
+  await page.unroute('**/api/fonts/project')
+  await refreshFont()
+  await chooseFont('Inter')
+  await fontApproval.fill('SAVE FONT CHANGE')
+  const beforeFontSaveFailure = effects(), retainedFontSaveBinding = await fontBinding()
+  await page.route('**/api/builder/font', (route) => {
+    fontPosts.push(route.request().postDataJSON())
+    return route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"Owned font save unavailable"}' })
+  })
+  const failedFontSave = waitForResponse((item) => item.request().method() === 'POST' && item.url().endsWith('/api/builder/font') && item.status() === 503)
+  await fontSave.click()
+  await failedFontSave
+  await expect(fontOutput).toContainText('Owned font save unavailable')
+  await expect(fontSave).toBeDisabled()
+  assert.deepEqual(await fontBinding(), retainedFontSaveBinding)
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  assert.deepEqual(effects(), beforeFontSaveFailure)
+  await page.unroute('**/api/builder/font')
+  checks.push('HTTP503 font read and save failures retain the selected family, loaded font revision, font approval and independent raw CSS draft; neither claims a confirmed save or creates effects, and another write requires explicit successful Refresh.')
+
+  await refreshFont()
+  await fontApproval.fill('SAVE FONT CHANGE')
+  const removedFontBinding = await fontBinding()
+  rmSync(stylesheetFile)
+  const beforeMissingStylesheet = effects()
+  const missingFontSave = waitForResponse((item) => item.request().method() === 'POST' && item.url().endsWith('/api/builder/font'))
+  await fontSave.click()
+  const missingFontResponse = await missingFontSave
+  assert.equal(missingFontResponse.status(), 404)
+  assert.deepEqual(await missingFontResponse.json(), unavailableBody)
+  await expect(fontOutput).toContainText(/unavailable/i)
+  await expect(fontSave).toBeDisabled()
+  assert.deepEqual(await fontBinding(), removedFontBinding)
+  const missingFontRead = waitForResponse((item) => item.request().method() === 'GET' && item.url().endsWith('/api/fonts/project'))
+  await fontRefresh.click()
+  const missingFontReadResponse = await missingFontRead
+  assert.equal(missingFontReadResponse.status(), 404)
+  assert.deepEqual(await missingFontReadResponse.json(), unavailableBody)
+  await expect(fontSave).toBeDisabled()
+  assert.deepEqual(await fontBinding(), removedFontBinding)
+  assert.deepEqual(await editorBinding(), rawStylesheetBinding)
+  assert.deepEqual(effects(), beforeMissingStylesheet)
+  assert.equal(existsSync(stylesheetFile), false)
+  await fontRevision.scrollIntoViewIfNeeded()
+  await page.locator('.font-project-card').screenshot({ path: join(evidence, '12-font-source-unavailable-retained-state.png') })
+  checks.push('Removing the loaded stylesheet yields the exact SOURCE_UNAVAILABLE404 contract for font Save and Refresh; selection, both editors baseline/draft/approval states and all inventories persist, writes stay disabled, and no stylesheet is recreated.')
+
+  const previewSourceBase = stylesheetInitial + '/* <img data-literal-preview-probe src="https://literal-preview.invalid/probe" onerror="globalThis.literalPreviewInjected=true"> */\n'
+  writeFileSync(stylesheetFile, previewSourceBase)
+  await showCode()
+  page.once('dialog', (dialog) => dialog.accept())
+  await reload.click()
+  await expect(editor).toHaveValue(previewSourceBase)
+  await expect(revision).toHaveAttribute('data-revision', sha(previewSourceBase))
+  const previewButton = page.locator('#preview-source-draft'), literalPreview = page.locator('#source-draft-preview')
+  const previewText = page.locator('#source-draft-preview-text'), previewBaseRevision = page.locator('#source-draft-preview-loaded-revision')
+  const previewDigest = page.locator('#source-draft-preview-draft-revision'), previewCurrentRevision = page.locator('#source-draft-preview-current-revision')
+  const previewStatus = page.locator('#source-draft-preview-status'), previewSummary = page.locator('#source-draft-preview-summary')
+  const checkPreview = page.locator('#check-source-draft-preview'), closePreview = page.locator('#close-source-draft-preview')
+  const stylesheetGet = (item) => item.request().method() === 'GET' && new URL(item.url()).pathname.endsWith('/api/builder/source') && new URL(item.url()).searchParams.get('path') === stylesheetPath
+  const capturePreview = async () => {
+    const display = await editor.inputValue(), response = waitForResponse(stylesheetGet)
+    await previewButton.click()
+    assert.equal((await response).status(), 200)
+    await expect(previewDigest).toHaveText(sha(display))
+    await expect(previewCurrentRevision).toHaveText(sha(readFileSync(stylesheetFile, 'utf8')))
+    await expect(checkPreview).toBeEnabled()
+  }
+  const beforePreview = effects(), beforePreviewMutations = posts.length + fontPosts.length
+  await capturePreview()
+  await expect(page.locator('#source-draft-preview-path')).toHaveText(stylesheetPath)
+  await expect(previewBaseRevision).toHaveText(sha(previewSourceBase))
+  await expect(literalPreview).toHaveAttribute('data-freshness', 'current')
+  assert.equal(await previewText.textContent(), previewSourceBase)
+  await expect(literalPreview.locator('img, script, iframe')).toHaveCount(0)
+  assert.equal(await page.evaluate(() => globalThis.literalPreviewInjected === true), false)
+  assert.equal(posts.length + fontPosts.length, beforePreviewMutations)
+  assert.deepEqual(effects(), beforePreview)
+  await literalPreview.scrollIntoViewIfNeeded()
+  await literalPreview.screenshot({ path: join(evidence, '13-literal-preview-bound-current-source.png') })
+  checks.push('Literal draft preview captures the exact path, raw source baseline, full editor-text digest and observed current revision through GET only; source-like markup renders as inert text and creates no source, backup, log or temp effects.')
+
+  const beforeOldMissingBinding = await editorBinding(), beforeOldMissingMutations = posts.length + fontPosts.length
+  let releaseOldMissing, notifyOldMissing
+  const oldMissingRelease = new Promise((resolveRelease) => { releaseOldMissing = resolveRelease })
+  const oldMissingCaptured = new Promise((resolveCaptured) => { notifyOldMissing = resolveCaptured })
+  releasePendingResponse = releaseOldMissing
+  rmSync(stylesheetFile)
+  await page.route('**/api/builder/source?path=src%2Findex.css', async (route) => {
+    const response = await route.fetch()
+    assert.equal(response.status(), 404)
+    notifyOldMissing()
+    await oldMissingRelease
+    await route.fulfill({ response })
+  })
+  await compare.click()
+  await Promise.race([oldMissingCaptured, delay(15000).then(() => { throw new Error('Older missing-source comparison response was not captured.') })])
+  writeFileSync(stylesheetFile, previewSourceBase)
+  await showFonts()
+  const restoredFontObservation = await refreshFont()
+  assert.equal(restoredFontObservation.revision, sha(previewSourceBase))
+  const beforeOldMissingRelease = effects()
+  const olderMissingResponse = waitForResponse((item) => stylesheetGet(item) && item.status() === 404)
+  releaseOldMissing()
+  await olderMissingResponse
+  await page.unroute('**/api/builder/source?path=src%2Findex.css')
+  releasePendingResponse = null
+  await showCode()
+  await expect(literalPreview).toHaveAttribute('data-freshness', 'current')
+  await expect(previewCurrentRevision).toHaveText(sha(previewSourceBase))
+  await expect(fontRevision).toHaveAttribute('data-revision', sha(previewSourceBase))
+  await expect(save).toBeEnabled()
+  await expect(page.locator('#source-availability')).toBeHidden()
+  await expect(prepareReplacement).toBeDisabled()
+  await expect(reviewStatus).toContainText('superseded')
+  assert.deepEqual(await editorBinding(), beforeOldMissingBinding)
+  assert.equal(posts.length + fontPosts.length, beforeOldMissingMutations)
+  assert.deepEqual(effects(), beforeOldMissingRelease)
+  checks.push('A delayed comparison404 cannot replace a newer positive font-source observation after restoring identical source bytes: raw and preview remain available/current at the restored hash, the old comparison is superseded, and draft/base/approval and disk inventories remain unchanged.')
+
+  await confirmation.fill('SAVE LOCAL CHANGE')
+  let releaseRawNoop, notifyRawNoop
+  const rawNoopRelease = new Promise((resolveRelease) => { releaseRawNoop = resolveRelease })
+  const rawNoopCaptured = new Promise((resolveCaptured) => { notifyRawNoop = resolveCaptured })
+  releasePendingResponse = releaseRawNoop
+  await page.route('**/api/builder/source', async (route) => {
+    posts.push(route.request().postDataJSON())
+    const response = await route.fetch()
+    notifyRawNoop()
+    await rawNoopRelease
+    await route.fulfill({ response })
+  })
+  await save.click()
+  await Promise.race([rawNoopCaptured, delay(15000).then(() => { throw new Error('Raw no-op save response was not captured.') })])
+  const observedAfterRawNoop = previewSourceBase + '/* Source advanced while raw no-op response is held. */\n'
+  writeFileSync(stylesheetFile, observedAfterRawNoop)
+  await showFonts()
+  const fontObservesNewSource = await refreshFont()
+  assert.equal(fontObservesNewSource.revision, sha(observedAfterRawNoop))
+  await expect(literalPreview).toHaveAttribute('data-freshness', 'changed')
+  await expect(previewCurrentRevision).toHaveText(sha(observedAfterRawNoop))
+  const beforeRawNoopRelease = effects()
+  const completedRawNoop = waitForResponse((item) => item.request().method() === 'POST' && item.url().endsWith('/api/builder/source'))
+  releaseRawNoop()
+  const rawNoopBody = await (await completedRawNoop).json()
+  await page.unroute('**/api/builder/source')
+  releasePendingResponse = null
+  assert.equal(rawNoopBody.status, 'unchanged')
+  assert.equal(rawNoopBody.revision, sha(previewSourceBase))
+  await expect(save).toBeEnabled()
+  await showCode()
+  await expect(revision).toHaveAttribute('data-revision', sha(previewSourceBase))
+  await expect(literalPreview).toHaveAttribute('data-freshness', 'changed')
+  await expect(previewCurrentRevision).toHaveText(sha(observedAfterRawNoop))
+  await expect(fontRevision).toHaveAttribute('data-revision', sha(observedAfterRawNoop))
+  assert.equal(await previewText.textContent(), previewSourceBase)
+  assert.deepEqual(effects(), beforeRawNoopRelease)
+  checks.push('An accepted raw no-op receipt delayed behind a newer font-source GET retains its own accepted baseline but cannot downgrade the preview, font baseline or latest known source to the older receipt revision; no-op and response release create no backup or write.')
+
+  const advancedPreviewSource = observedAfterRawNoop + '/* Another source advance checked explicitly. */\n'
+  writeFileSync(stylesheetFile, advancedPreviewSource)
+  const beforeAdvancedCheck = effects(), beforeCheckMutations = posts.length + fontPosts.length
+  const checkedAdvanced = waitForResponse(stylesheetGet)
+  await checkPreview.click()
+  assert.equal((await checkedAdvanced).status(), 200)
+  await expect(literalPreview).toHaveAttribute('data-freshness', 'changed')
+  await expect(previewCurrentRevision).toHaveText(sha(advancedPreviewSource))
+  await expect(previewBaseRevision).toHaveText(sha(previewSourceBase))
+  const editedPreviewDraft = previewSourceBase + '/* New raw draft after immutable preview capture. */\n'
+  await editor.fill(editedPreviewDraft)
+  await confirmation.fill('SAVE LOCAL CHANGE')
+  await expect(literalPreview).toHaveAttribute('data-edited', 'true')
+  await expect(checkPreview).toBeEnabled()
+  assert.equal(await previewText.textContent(), previewSourceBase)
+  await expect(previewDigest).toHaveText(sha(previewSourceBase))
+  await expect(revision).toHaveAttribute('data-revision', sha(previewSourceBase))
+  assert.equal(posts.length + fontPosts.length, beforeCheckMutations)
+  assert.deepEqual(effects(), beforeAdvancedCheck)
+  checks.push('Explicit Check source reports an advanced real source revision while keeping the preview baseline and captured text; subsequent same-path typing marks the immutable snapshot edited without changing its digest, rebasing the editor or writing source.')
+
+  const boundaryPrefix = 'x'.repeat(19999) + '🌈'
+  const boundaryDraft = boundaryPrefix + 'y'.repeat(500000 - boundaryPrefix.length)
+  await editor.fill(boundaryDraft)
+  const beforeBoundaryPreview = effects(), boundaryMutations = posts.length + fontPosts.length
+  await capturePreview()
+  assert.equal(await previewText.textContent(), 'x'.repeat(19999))
+  await expect(previewSummary).toContainText('500000 UTF-16 units captured')
+  await expect(previewSummary).toContainText('19999 displayed')
+  await expect(previewSummary).toContainText('480001 omitted')
+  const boundaryReads = sourceReads.length
+  await editor.fill(boundaryDraft + 'z')
+  await previewButton.click()
+  await expect(output).toContainText('500000')
+  await expect(output).toContainText(/exceeds/i)
+  assert.equal(sourceReads.length, boundaryReads)
+  await expect(previewDigest).toHaveText(sha(boundaryDraft))
+  assert.equal(await previewText.textContent(), 'x'.repeat(19999))
+  assert.equal(posts.length + fontPosts.length, boundaryMutations)
+  assert.deepEqual(effects(), beforeBoundaryPreview)
+  checks.push('The inclusive500000-unit preview budget hashes the complete draft while a20000-unit display boundary avoids splitting a surrogate pair and reports omissions; one extra unit refuses recapture before any GET and preserves the prior snapshot and all disk effects.')
+
+  await editor.fill(editedPreviewDraft)
+  for (const mode of ['draft', 'selection', 'close']) {
+    await capturePreview()
+    const snapshotText = await previewText.textContent(), snapshotDigest = await previewDigest.textContent()
+    const unseenSource = readFileSync(stylesheetFile, 'utf8') + `/* New source behind invalidated ${mode} check. */\n`
+    writeFileSync(stylesheetFile, unseenSource)
+    const beforeInvalidatedCheck = effects(), beforeInvalidatedMutations = posts.length + fontPosts.length
+    let releasePreview, notifyPreview, notifyPreviewDone
+    const previewRelease = new Promise((resolveRelease) => { releasePreview = resolveRelease })
+    const previewCaptured = new Promise((resolveCaptured) => { notifyPreview = resolveCaptured })
+    const previewDone = new Promise((resolveDone) => { notifyPreviewDone = resolveDone })
+    releasePendingResponse = releasePreview
+    await page.route('**/api/builder/source?path=src%2Findex.css', async (route) => {
+      try {
+        const response = await route.fetch()
+        notifyPreview()
+        await previewRelease
+        await route.fulfill({ response })
+      } catch { /* These checks deliberately abort their own pending GET. */ }
+      finally { notifyPreviewDone() }
+    })
+    await checkPreview.click()
+    await Promise.race([previewCaptured, delay(15000).then(() => { throw new Error('Preview check was not captured.') })])
+    if (mode === 'draft') await editor.fill(editedPreviewDraft + '/* New input invalidates the pending observation. */\n')
+    if (mode === 'selection') await file.selectOption(secondPath)
+    if (mode === 'close') await closePreview.click()
+    releasePreview()
+    await Promise.race([previewDone, delay(15000).then(() => { throw new Error('Invalidated preview request did not finish.') })])
+    await page.unroute('**/api/builder/source?path=src%2Findex.css')
+    releasePendingResponse = null
+    if (mode === 'close') await expect(literalPreview).toBeHidden()
+    else {
+      assert.equal(await previewText.textContent(), snapshotText)
+      assert.equal(await previewDigest.textContent(), snapshotDigest)
+      await expect(literalPreview).toHaveAttribute('data-freshness', 'unknown')
+      await expect(previewCurrentRevision).toHaveText('Unknown')
+    }
+    if (mode === 'selection') { await expect(checkPreview).toBeDisabled(); await file.selectOption(stylesheetPath); await expect(checkPreview).toBeEnabled() }
+    if (mode === 'draft') await expect(literalPreview).toHaveAttribute('data-edited', 'true')
+    await expect(revision).toHaveAttribute('data-revision', sha(previewSourceBase))
+    assert.equal(posts.length + fontPosts.length, beforeInvalidatedMutations)
+    assert.deepEqual(effects(), beforeInvalidatedCheck)
+  }
+  checks.push('New input, a different selected file and Close each invalidate a held preview GET; late responses cannot change captured text/digest, promote an unseen current revision, resurrect a closed preview or write source. Returning to the captured path permits an explicit retry.')
+
+  await capturePreview()
+  const retainedPreviewText = await previewText.textContent(), retainedPreviewDigest = await previewDigest.textContent(), retainedPreviewBinding = await editorBinding()
+  const beforePreviewError = effects(), beforePreviewErrorMutations = posts.length + fontPosts.length
+  await page.route('**/api/builder/source?path=src%2Findex.css', (route) => route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"Owned literal preview read unavailable"}' }))
+  const failedPreviewRead = waitForResponse((item) => stylesheetGet(item) && item.status() === 503)
+  await checkPreview.click()
+  await failedPreviewRead
+  await expect(literalPreview).toHaveAttribute('data-freshness', 'unknown')
+  await expect(previewStatus).toContainText('Owned literal preview read unavailable')
+  await page.unroute('**/api/builder/source?path=src%2Findex.css')
+  assert.equal(await previewText.textContent(), retainedPreviewText)
+  await expect(previewDigest).toHaveText(retainedPreviewDigest)
+  assert.deepEqual(await editorBinding(), retainedPreviewBinding)
+  assert.deepEqual(effects(), beforePreviewError)
+  rmSync(stylesheetFile)
+  const beforePreviewMissing = effects()
+  const missingPreviewRead = waitForResponse(stylesheetGet)
+  await checkPreview.click()
+  const missingPreviewResponse = await missingPreviewRead
+  assert.equal(missingPreviewResponse.status(), 404)
+  assert.deepEqual(await missingPreviewResponse.json(), unavailableBody)
+  await expect(literalPreview).toHaveAttribute('data-freshness', 'unavailable')
+  assert.equal(await previewText.textContent(), retainedPreviewText)
+  await expect(previewDigest).toHaveText(retainedPreviewDigest)
+  assert.deepEqual(await editorBinding(), retainedPreviewBinding)
+  assert.equal(posts.length + fontPosts.length, beforePreviewErrorMutations)
+  assert.deepEqual(effects(), beforePreviewMissing)
+  assert.equal(existsSync(stylesheetFile), false)
+  await literalPreview.scrollIntoViewIfNeeded()
+  await literalPreview.screenshot({ path: join(evidence, '14-literal-preview-unavailable-retained-snapshot.png') })
+  checks.push('Failed preview freshness reads distinguish503 Unknown from actual404 Unavailable, retaining the exact literal snapshot/digest and raw draft/base/approval without POST, backup, log, temp or missing-source recreation effects.')
+
+  const beforeCancelledReload = await editorBinding(), cancelledSnapshot = await previewText.textContent()
+  page.once('dialog', (dialog) => dialog.dismiss())
+  await reload.click()
+  await expect(output).toContainText('Reload cancelled')
+  assert.deepEqual(await editorBinding(), beforeCancelledReload)
+  assert.equal(await previewText.textContent(), cancelledSnapshot)
+  const restoredPreviewSource = previewSourceBase + '/* Source restored before explicit operator reload. */\n'
+  writeFileSync(stylesheetFile, restoredPreviewSource)
+  const beforeExplicitReload = effects()
+  page.once('dialog', (dialog) => dialog.accept())
+  await reload.click()
+  await expect(editor).toHaveValue(restoredPreviewSource)
+  await expect(revision).toHaveAttribute('data-revision', sha(restoredPreviewSource))
+  await expect(confirmation).toHaveValue('')
+  await expect(previewBaseRevision).toHaveText(sha(previewSourceBase))
+  assert.equal(await previewText.textContent(), cancelledSnapshot)
+  await expect(previewStatus).toContainText('Loaded baseline changed')
+  assert.deepEqual(effects(), beforeExplicitReload)
+  await closePreview.click()
+  await expect(literalPreview).toBeHidden()
+  await expect(editor).toHaveValue(restoredPreviewSource)
+  await expect(revision).toHaveAttribute('data-revision', sha(restoredPreviewSource))
+  assert.deepEqual(effects(), beforeExplicitReload)
+  checks.push('Cancel Reload retains both raw and preview bindings; only confirmed explicit Reload replaces the raw draft/base and clears its approval, while the old literal snapshot remains marked with its original baseline until Close removes the preview without a write.')
+
   assert.deepEqual(pageErrors, [])
   assert.deepEqual(unexpectedRequests, [])
+  assert.ok(syntheticFontRequests.some((item) => item.disposition === 'synthetic-empty-stylesheet'), 'Font CSS requests must exercise the local synthetic response instead of a provider')
   await Promise.all(browserAssetCaptures)
   for (const path of ['.SYSTEMX/LAN/Website/dashboard.js', '.SYSTEMX/LAN/Website/dashboard.css', '.SYSTEMX/LAN/Website/source-comparison.js'].filter((path) => inputManifest.files.some((item) => item.path === path))) {
     assert.ok(loadedBrowserAssets.some((item) => item.path === path && item.status === 200 && item.matchesCopiedInput), `Browser must load the copied bytes of ${path}`)
@@ -792,8 +1341,10 @@ try {
   report.finishedAt = new Date().toISOString()
   report.originalSourceAndSeedsPreserved = protectedFiles.every((path) => sha(readFileSync(join(root, path))) === original[path])
   report.fixtureSourceExistsAtFinish = existsSync(sourceFile)
+  report.fixtureStylesheetExistsAtFinish = existsSync(stylesheetFile)
   writeFileSync(join(evidence, 'result.json'), `${JSON.stringify(report, null, 2)}\n`)
   if (existsSync(sourceFile)) writeFileSync(join(evidence, 'fixture-final-source.txt'), readFileSync(sourceFile))
+  if (existsSync(stylesheetFile)) writeFileSync(join(evidence, 'fixture-final-stylesheet.txt'), readFileSync(stylesheetFile))
   writeFileSync(join(evidence, 'server-output.log'), serverOutput)
   if (context) { await context.tracing.stop({ path: join(evidence, 'trace.zip') }).catch(() => {}); await context.close().catch(() => {}) }
   if (browser) await Promise.race([browser.close().catch(() => {}), delay(3000)])
@@ -811,6 +1362,7 @@ try {
   report.implementationFilesPreserved = inputManifest.files.every((item) => sha(readFileSync(join(root, item.path))) === item.sha256)
   report.originalSourceAndSeedsPreserved = protectedFiles.every((path) => sha(readFileSync(join(root, path))) === original[path])
   report.fixtureSourceExistsAtFinish = existsSync(sourceFile)
+  report.fixtureStylesheetExistsAtFinish = existsSync(stylesheetFile)
   report.finishedAt = new Date().toISOString()
   writeFileSync(join(evidence, 'result.json'), `${JSON.stringify(report, null, 2)}\n`)
   writeFileSync(join(evidence, 'manifest.json'), `${JSON.stringify({ ...inputManifest, status: report.status, evidenceFiles: filesBelow(evidence).map((path) => ({ path: relative(evidence, path), bytes: readFileSync(path).length, sha256: sha(readFileSync(path)) })) }, null, 2)}\n`)

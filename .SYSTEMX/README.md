@@ -13,9 +13,9 @@ feature roadmap. The sections below describe retained webapp extensions.
 
 ## LAN 10,000-item delivery program — 2026-10-26
 
-The [accepted iteration](../docs/LAN-ACTIVE-ITERATION.md) adds source comparison, missing-file draft
-protection and explicitly reviewed replacement. The [QA receipt](../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) records
-the exact candidate, repairs, acceptance and limits.
+The prior [conflict-review milestone](../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
+missing-file draft protection and explicitly reviewed replacement. The
+[current iteration](../docs/LAN-ACTIVE-ITERATION.md) continues with revision-aware font changes and literal draft previews.
 
 **Accepted total: 75 requirements / 15 capabilities; 9,925 requirements remain
 TODO.** The source-conflict batch adds 15 completions. Functional candidate
@@ -637,6 +637,16 @@ inspector can preview Google Fonts CSS2 families in the live Vite frame and
 save a selected project font only after `SAVE FONT CHANGE`. Local evidence is documented in
 [`../wiki/SYSTEMX-Logs-and-Evidence.md`](../wiki/SYSTEMX-Logs-and-Evidence.md)
 and recorded under ignored LAN runtime folders.
+
+Font reads and confirmed saves now carry the exact stylesheet revision;
+**Refresh font source** is explicit, and a font save does not rebase an open raw
+CSS draft. The Code inspector's **Preview draft** captures literal text with its
+loaded source baseline and draft digest. **Check source** reports current,
+advanced, unavailable or unknown state through a source GET; **Close preview**
+keeps the editor. It executes no source and creates no source-write authority.
+Read the [font/preview QA receipt](../docs/LAN-FONT-PREVIEW-QA-2026-10-28.md) for
+actual tests and the [active iteration](../docs/LAN-ACTIVE-ITERATION.md) for the
+current goal. Managed release snapshots remain unchanged.
 
 The left and right editor docks have independent close controls plus an
 explicit **Keep open / Always shown** policy button. Auto visibility is the
