@@ -160,6 +160,35 @@ try {
     void pending.catch(() => {})
     return pending
   }
+  const assertInspectorGeometry = async (checkpoint, selectors, wrappedSelectors) => {
+    const geometry = await page.locator('.right-panel').evaluate((dock, config) => {
+      const document = dock.ownerDocument
+      const bounds = (element) => {
+        const box = element.getBoundingClientRect()
+        return { left: box.left, right: box.right, width: box.width, clientWidth: element.clientWidth, scrollWidth: element.scrollWidth }
+      }
+      const nodes = config.selectors.flatMap((selector) => [...dock.querySelectorAll(selector)].map((element, index) => ({ selector, index, ...bounds(element) })))
+      const wrapped = config.wrappedSelectors.flatMap((selector) => [...dock.querySelectorAll(selector)].map((element, index) => {
+        const range = document.createRange()
+        range.selectNodeContents(element)
+        return { selector, index, ...bounds(element), textLines: [...range.getClientRects()].filter((box) => box.width > 0).map((box) => ({ left: box.left, right: box.right })) }
+      }))
+      return { checkpoint: config.checkpoint, dock: bounds(dock), declaredWidth: Number(document.querySelector('#right-panel-resizer')?.getAttribute('aria-valuenow')), nodes, wrapped }
+    }, { checkpoint, selectors, wrappedSelectors })
+    report.visibleGeometry ??= []
+    report.visibleGeometry.push(geometry)
+    assert.equal(geometry.declaredWidth, 336, `${checkpoint}: check the normal336px inspector, without widening it for evidence`)
+    assert.ok(Math.abs(geometry.dock.width - 336) <= 1, `${checkpoint}: inspector outer width must match its declared normal width`)
+    for (const selector of selectors) assert.ok(geometry.nodes.some((item) => item.selector === selector), `${checkpoint}: missing visible geometry target ${selector}`)
+    for (const item of geometry.nodes) {
+      assert.ok(item.width > 0, `${checkpoint}: ${item.selector} must have visible horizontal geometry`)
+      assert.ok(item.left >= geometry.dock.left - 1 && item.right <= geometry.dock.right + 1, `${checkpoint}: ${item.selector} must fit inside the inspector instead of being clipped`)
+    }
+    for (const item of geometry.wrapped) {
+      assert.ok(item.scrollWidth <= item.clientWidth + 1, `${checkpoint}: ${item.selector} must wrap complete hash metadata without horizontal overflow`)
+      assert.ok(item.textLines.every((line) => line.left >= item.left - 1 && line.right <= item.right + 1), `${checkpoint}: every hash text line must fit its metadata box`)
+    }
+  }
   await page.goto(`${origin}/__systemx/#source`, { waitUntil: 'domcontentloaded' })
   const file = page.locator('#source-file-select'), editor = page.getByRole('textbox', { name: 'Source editor', exact: true, includeHidden: true })
   const confirmation = page.locator('#source-confirmation'), save = page.locator('#save-source'), reload = page.locator('#reload-source')
@@ -875,6 +904,7 @@ try {
   await expect(fontOutput).toContainText('Inter')
   assert.deepEqual(await editorBinding(), rawStylesheetBinding)
   await fontRevision.scrollIntoViewIfNeeded()
+  await assertInspectorGeometry('font-save-current-revision', ['#panel-style', '.font-tool-card', '.font-project-card', '#font-source-revision', '#font-status'], ['#font-source-revision', '#font-status'])
   await page.locator('.font-project-card').screenshot({ path: join(evidence, '10-font-save-captured-selection-and-revision.png') })
   await fontOutput.scrollIntoViewIfNeeded()
   await fontOutput.screenshot({ path: join(evidence, '10a-font-save-captured-receipt.png') })
@@ -1051,6 +1081,7 @@ try {
   assert.deepEqual(effects(), beforeMissingStylesheet)
   assert.equal(existsSync(stylesheetFile), false)
   await fontRevision.scrollIntoViewIfNeeded()
+  await assertInspectorGeometry('font-unavailable-retained-revision', ['#panel-style', '.font-tool-card', '.font-project-card', '#font-source-revision', '#font-status'], ['#font-source-revision', '#font-status'])
   await page.locator('.font-project-card').screenshot({ path: join(evidence, '12-font-source-unavailable-retained-state.png') })
   checks.push('Removing the loaded stylesheet yields the exact SOURCE_UNAVAILABLE404 contract for font Save and Refresh; selection, both editors baseline/draft/approval states and all inventories persist, writes stay disabled, and no stylesheet is recreated.')
 
@@ -1086,6 +1117,7 @@ try {
   assert.equal(posts.length + fontPosts.length, beforePreviewMutations)
   assert.deepEqual(effects(), beforePreview)
   await literalPreview.scrollIntoViewIfNeeded()
+  await assertInspectorGeometry('literal-preview-current-source', ['#panel-source', '#source-draft-preview', '#source-draft-preview dl', '#source-draft-preview dd', '#source-draft-preview-text', '#source-draft-preview-status', '#check-source-draft-preview', '#close-source-draft-preview'], ['#source-draft-preview dd'])
   await literalPreview.screenshot({ path: join(evidence, '13-literal-preview-bound-current-source.png') })
   checks.push('Literal draft preview captures the exact path, raw source baseline, full editor-text digest and observed current revision through GET only; source-like markup renders as inert text and creates no source, backup, log or temp effects.')
 
@@ -1282,6 +1314,7 @@ try {
   assert.deepEqual(effects(), beforePreviewMissing)
   assert.equal(existsSync(stylesheetFile), false)
   await literalPreview.scrollIntoViewIfNeeded()
+  await assertInspectorGeometry('literal-preview-unavailable-source', ['#panel-source', '#source-draft-preview', '#source-draft-preview dl', '#source-draft-preview dd', '#source-draft-preview-text', '#source-draft-preview-status', '#check-source-draft-preview', '#close-source-draft-preview'], ['#source-draft-preview dd'])
   await literalPreview.screenshot({ path: join(evidence, '14-literal-preview-unavailable-retained-snapshot.png') })
   checks.push('Failed preview freshness reads distinguish503 Unknown from actual404 Unavailable, retaining the exact literal snapshot/digest and raw draft/base/approval without POST, backup, log, temp or missing-source recreation effects.')
 

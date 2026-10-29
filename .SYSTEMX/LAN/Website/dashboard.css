@@ -730,6 +730,7 @@ textarea {
 }
 
 .right-panel {
+  grid-template-columns: minmax(0, 1fr);
   border-right: 0;
   border-left: 1px solid var(--line);
 }
@@ -1303,6 +1304,7 @@ h3 {
 .source-draft-preview > pre { max-height: 260px; }
 .source-draft-preview > .panel-help { display: block; margin-block: 8px; }
 #font-source-revision { display: block; font-family: monospace; line-height: 1.5; }
+#font-status { overflow-wrap: anywhere; }
 .source-comparison-lines { max-height: 280px; overflow: auto; }
 .source-comparison-line { margin-bottom: 6px; }
 .source-comparison-line small { color: var(--muted); font-size: 10px; }
@@ -2466,6 +2468,7 @@ code,
 
 .font-tool-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 9px;
   margin-top: 12px;
   padding: 11px;
