@@ -89,7 +89,7 @@ const inputManifest = {
   algorithm: 'sha256',
   gitRevision: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
   nodeVersion: process.version,
-  files: [...filesBelow(join(fixture, '.SYSTEMX/LAN')).filter((path) => /\.(?:mjs|js|html|css)$/.test(path)).map((path) => ({ path: relative(fixture, path).replaceAll('\\', '/'), bytes: readFileSync(path).length, sha256: sha(readFileSync(path)) })),
+  files: [...filesBelow(join(fixture, '.SYSTEMX/LAN')).filter((path) => /\.(?:mjs|js|html|css)$/.test(path) || path === join(fixture, '.SYSTEMX/LAN/Builder/contracts/font-catalog.json')).map((path) => ({ path: relative(fixture, path).replaceAll('\\', '/'), bytes: readFileSync(path).length, sha256: sha(readFileSync(path)) })),
     ...filesBelow(join(root, '.SYSTEMX/LAN/tests')).filter((path) => /\.mjs$/.test(path)).map((path) => ({ path: relative(root, path).replaceAll('\\', '/'), bytes: readFileSync(path).length, sha256: sha(readFileSync(path)) }))],
   protectedSourceAndSeeds: original,
   syntheticSource: { path: sourcePath, sha256: sha(initial), secondPath, secondSha256: sha(secondInitial), stylesheetPath, stylesheetSha256: sha(stylesheetInitial) },

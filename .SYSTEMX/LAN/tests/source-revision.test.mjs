@@ -8,7 +8,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 import { test } from 'node:test'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { checkSourceRevision, hashSourceRevision } from '../Builder/source-revision.mjs'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
@@ -646,7 +646,7 @@ test('font source is checked before metadata effects and rechecked after an awai
   writeFileSync(preload, `import { existsSync, writeFileSync } from 'node:fs'\nimport { setTimeout as delay } from 'node:timers/promises'\nglobalThis.fetch = async (url, { signal } = {}) => {\n  if (!String(url).startsWith('https://www.googleapis.com/webfonts/v1/webfonts?')) throw new Error('Unexpected offline fixture request')\n  writeFileSync(${JSON.stringify(started)}, 'metadata-requested')\n  while (!existsSync(${JSON.stringify(released)})) await delay(5, undefined, { signal })\n  return { ok: true, json: async () => ({ items: [{ family: 'Inter', category: 'sans-serif', variants: ['400'] }] }) }\n}\n`)
   const port = await freePort(), unusedAppPort = await freePort()
   const origin = `http://127.0.0.1:${port}`
-  const child = spawn(process.execPath, ['--import', preload, join(fixtureLan, 'server.mjs')], {
+  const child = spawn(process.execPath, ['--import', pathToFileURL(preload).href, join(fixtureLan, 'server.mjs')], {
     cwd: fixture,
     env: {
       ...process.env, SYSTEMX_LAN_PORT: String(port), SYSTEMX_APP_PORT: String(unusedAppPort),
