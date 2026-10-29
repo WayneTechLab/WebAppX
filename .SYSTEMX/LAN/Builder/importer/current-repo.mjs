@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
+import { confinedFile } from '../runtime/file-boundary.mjs'
 
 const routeByPage = {
   HomePage: '/',
@@ -60,6 +61,7 @@ function componentCandidate(source) {
 
 function sourceFiles(root) {
   const candidates = [
+    ...(confinedFile(root, join(root, 'src/index.css')) ? ['src/index.css'] : []),
     ...filesUnder(root, 'src/pages'),
     ...filesUnder(root, 'src/components/layout'),
     ...filesUnder(root, 'src/components/navigation'),

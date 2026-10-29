@@ -1,14 +1,17 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { request as httpRequest } from 'node:http'
 import { readFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import { test, before, after } from 'node:test'
 import { setTimeout as delay } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
 import { findAvailablePort } from '../Builder/runtime/port-utils.mjs'
+import { inspectCurrentRepository } from '../Builder/importer/current-repo.mjs'
 
 const testDirectory = dirname(fileURLToPath(import.meta.url))
 const repoRoot = resolve(testDirectory, '../../..')
@@ -18,6 +21,22 @@ let child
 let baseUrl
 let sessionToken
 let childOutput = ''
+
+test('stylesheet inventory includes only an existing regular controlled file', () => {
+  const fixture = mkdtempSync(resolve(tmpdir(), 'webappx-source-inventory-'))
+  const source = resolve(fixture, 'src/index.css')
+  try {
+    mkdirSync(resolve(fixture, 'src'))
+    assert.equal(inspectCurrentRepository(fixture).sourceFiles.includes('src/index.css'), false)
+    writeFileSync(source, ':root {}\nbody {}\n')
+    assert.equal(inspectCurrentRepository(fixture).sourceFiles.filter(path => path === 'src/index.css').length, 1)
+    rmSync(source)
+    mkdirSync(source)
+    assert.equal(inspectCurrentRepository(fixture).sourceFiles.includes('src/index.css'), false)
+  } finally {
+    rmSync(fixture, { recursive: true, force: true })
+  }
+})
 
 async function getJson(pathname, options = {}) {
   const response = await fetch(`${baseUrl}${pathname}`, options)
@@ -158,6 +177,8 @@ test('read models expose the current repository without cloud authority', async 
   assert.equal(fonts.response.status, 200)
   assert.equal(projectFont.response.status, 200)
   assert.equal(workspace.body.target, 'current-repo')
+  assert.ok(status.body.files.includes('src/index.css'), 'The controlled stylesheet must be selectable in the Code inventory')
+  assert.ok(status.body.workspace.sourceFiles.includes('src/index.css'), 'The shared source inventory must include the controlled stylesheet')
   const branch = execFileSync('git', ['branch', '--show-current'], { cwd: repoRoot, encoding: 'utf8' }).trim()
   assert.equal(workspace.body.repository.branch, branch)
   assert.ok(Array.isArray(workspace.body.pages))
