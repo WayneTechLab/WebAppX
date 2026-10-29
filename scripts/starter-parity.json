@@ -166,8 +166,8 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Separate reviewed lockfiles retain their own complete dependency trees; shared root metadata is checked without regenerating either lock.",
-      "rootSha256": "f3a74ceb08851c3fb6f6387b2d44e7ecebce1979f6d5fb0dad832a030bc3c935",
-      "starterSha256": "0911492b8f178972a5f9977aea3634897e79cc154b3c197f84fdde3fe31cca9c"
+      "rootSha256": "05a36387b0cc420c4896ab58267fc550ddffa166a171437262aef0a61dcfa0f9",
+      "starterSha256": "84a7951f1ef31ce5c5f974cd8664005e27a96b43bbe9d91b24a7fcde1b6279bb"
     },
     {
       "group": "dependency",
@@ -176,8 +176,8 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root adds native SDK/query/browser dependencies and host setup, test, CI and release scripts; shared package identity/runtime/dependencies remain checked.",
-      "rootSha256": "2c503f136596c79b51c95ab236e06ab81744593400492f96fbcc0efb1bcec1c8",
-      "starterSha256": "27365c66834e43309edac534a2b6795b7c806530aac12aad840c28ca97acc57e"
+      "rootSha256": "91f8d389c40f98f130ab8920dd136be772d07d26da5925ccbda188b22967d289",
+      "starterSha256": "2c4dcbe51214ae866e8e3e8fa2264ec0a37ab3f3880fea0b3e0107f914500ce4"
     },
     {
       "group": "asset",
