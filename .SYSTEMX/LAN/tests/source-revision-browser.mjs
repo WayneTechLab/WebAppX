@@ -191,6 +191,21 @@ try {
     }
   }
   await page.goto(`${origin}/__systemx/#source`, { waitUntil: 'domcontentloaded' })
+  // Finish the normal boot reads, then use the supported visibility control.
+  // Long source readbacks must not depend on the inspector's Auto layout.
+  await expect(page.locator('#font-source-revision')).toHaveAttribute('data-revision', sha(stylesheetInitial))
+  if (await page.locator('#right-panel-toggle').getAttribute('aria-expanded') !== 'true') await page.locator('#right-panel-toggle').click()
+  await page.locator('[data-inspector-group-tab="build"]').click()
+  await page.locator('[data-inspector-tab="source"]').click()
+  await expect(page.locator('#right-panel-visibility')).toHaveAttribute('aria-pressed', 'false')
+  await page.locator('#right-panel-visibility').click()
+  await expect(page.locator('#right-panel-visibility')).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('#right-panel-toggle')).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.locator('.builder-shell')).not.toHaveClass(/right-panel-collapsed/)
+  await expect(page.locator('#right-panel-resizer')).toHaveAttribute('aria-valuenow', '336')
+  const initialInspectorBounds = await page.locator('.right-panel').boundingBox()
+  assert.ok(initialInspectorBounds && Math.abs(initialInspectorBounds.width - 336) <= 1)
+  report.inspectorSetup = { bootStylesheetRevision: sha(stylesheetInitial), pinned: true, expanded: true, width: initialInspectorBounds.width }
   const file = page.locator('#source-file-select'), editor = page.getByRole('textbox', { name: 'Source editor', exact: true, includeHidden: true })
   const confirmation = page.locator('#source-confirmation'), save = page.locator('#save-source'), reload = page.locator('#reload-source')
   const revision = page.locator('#source-revision'), output = page.locator('#source-output')
