@@ -69,21 +69,34 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
-## LAN 10,000-item delivery program — 2026-10-28
+## LAN 10,000-item delivery program — 2026-10-30
 
 The prior [conflict-review milestone](docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
 missing-file draft protection and explicitly reviewed replacement. The
-[current iteration](docs/LAN-ACTIVE-ITERATION.md) continues with revision-aware font changes and literal draft previews.
+[current iteration](docs/LAN-ACTIVE-ITERATION.md) completes source-family acceptance with draft recovery, comparison export and revision history.
 
-**Accepted total: 85 requirements / 17 capabilities; 9,915 requirements remain
-TODO.** The font/preview batch adds ten completions. Candidate `781b624` passed
-all 68 CI stages, 49 npm tests, 37 source-flow browser groups with four inspector
-geometry checkpoints, 16 actual-stack Navigator groups and separate Hosting
-preflight. Production deployment was skipped.
+**Accepted total: 100 requirements / 20 capabilities; 9,900 requirements remain
+TODO.** The recovery/export/history batch adds fifteen exact completions and
+finishes F001's 100 requirements. Fonts and source-bound previews retain their
+earlier acceptance; they are regression-tested without being counted again.
 
-The batch also pins patched re2js 2.8.7 in root and starter dependency trees.
-Root audit retains two low Gusto/deepmerge package findings with zero
-high/critical; starter audit is clean. The SDK and audit threshold are unchanged.
+Candidate `04813b3` passed all 68 CI stages, 72 npm tests, 55 source-flow browser
+groups, seven inspector geometry checks, 16 actual-stack Navigator groups and separate
+Hosting preflight. The initial missing-helper fixture failure and browser
+startup-readiness failure remain separate from the terminal reruns.
+Production deployment was skipped.
+
+The actual WebAppX Home was changed through LAN's Code and visual-text GUI, with
+three exact predecessor backups and rendered readback. Its new portal link
+opens account-free HR, CMS and CRM. The current receipt and GUI walkthrough
+separate plan, code, function, local working, GitHub delivery and production.
+
+The previous font/preview milestone pinned re2js 2.8.7; this batch changes no
+dependency versions or audit thresholds. Historical audit observations retain
+their original scope. Read the new QA receipt for this candidate's validation.
+
+Read the [current QA receipt](docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
+[LAN GUI walkthrough](docs/LAN-TEMPLATE-GUI-WORKFLOW.md).
 
 The LAN expansion now has **100 authored families, 2,000 proposed functional
 capabilities and 10,000 delivery requirements**. Each capability has behavior,
@@ -1698,3 +1711,16 @@ secure it, and make it yours.
 ## Security review
 
 The 2026-10-05 Codex Security review repaired Firebase authority, LAN filesystem, synchronization and operator-tooling boundaries. Read the [security review and compatibility guide](docs/SECURITY-REVIEW.md) before adapting account administration or secret files.
+
+## Customize Home through the LAN GUI
+
+The template Home now links directly to **Explore demo portals**. Use **Design →
+Settings** for a supported literal heading/text preview and `SAVE TEXT CHANGE`
+save. Use **Build → Code** for an allowlisted source draft and `SAVE LOCAL CHANGE`.
+Both paths check the loaded revision and back up exact predecessor bytes.
+
+Code also provides explicit checkout-scoped recovery, confirmed comparison JSON
+downloads and read-only source history. These preserve original baselines and
+keep source, browser-local records, portal simulations and production delivery
+separate. Follow the [GUI walkthrough](docs/LAN-TEMPLATE-GUI-WORKFLOW.md) and
+[current QA receipt](docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md).

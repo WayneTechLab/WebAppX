@@ -1,18 +1,31 @@
 # WebAppX Wiki
 
-## LAN 10,000-requirement execution program — 2026-10-28
+## LAN 10,000-requirement execution program — 2026-10-30
 
-**Accepted total: 85 requirements / 17 capabilities; 9,915 requirements remain
-TODO.** The font/preview batch adds ten completions. Candidate `781b624` passed
-all 68 CI stages, 49 npm tests, 37 source-flow browser groups with four inspector
-geometry checkpoints, 16 actual-stack Navigator groups and separate Hosting
-preflight. Production deployment was skipped.
+**Accepted total: 100 requirements / 20 capabilities; 9,900 requirements remain
+TODO.** The recovery/export/history batch adds fifteen exact completions and
+finishes F001's 100 requirements. Fonts and source-bound previews retain their
+earlier acceptance; they are regression-tested without being counted again.
 
-The batch also pins patched re2js 2.8.7 in root and starter dependency trees.
-Root audit retains two low Gusto/deepmerge package findings with zero
-high/critical; starter audit is clean. The SDK and audit threshold are unchanged.
+Candidate `04813b3` passed all 68 CI stages, 72 npm tests, 55 source-flow browser
+groups, seven inspector geometry checks, 16 actual-stack Navigator groups and separate
+Hosting preflight. The initial missing-helper fixture failure and browser
+startup-readiness failure remain separate from the terminal reruns.
+Production deployment was skipped.
 
-Read the [font/preview QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-FONT-PREVIEW-QA-2026-10-28.md) for the latest acceptance and the [source-conflict QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) for the earlier conflict-review acceptance and limits.
+The actual WebAppX Home was changed through LAN's Code and visual-text GUI, with
+three exact predecessor backups and rendered readback. Its new portal link
+opens account-free HR, CMS and CRM. The current receipt and GUI walkthrough
+separate plan, code, function, local working, GitHub delivery and production.
+
+The previous font/preview milestone pinned re2js 2.8.7; this batch changes no
+dependency versions or audit thresholds. Historical audit observations retain
+their original scope. Read the new QA receipt for this candidate's validation.
+
+Read the [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
+[LAN GUI walkthrough](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-TEMPLATE-GUI-WORKFLOW.md).
+
+Read the [recovery/history QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) for the latest acceptance; the [font/preview receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-FONT-PREVIEW-QA-2026-10-28.md) retains its earlier scope and the [source-conflict QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) for the earlier conflict-review acceptance and limits.
 
 The LAN [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-10000-EXECUTION-PLAN.md)
 and [family checklist index](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/LAN-10000-TODO.md)

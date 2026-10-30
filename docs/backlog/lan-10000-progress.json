@@ -680,6 +680,126 @@
       "verifiedOn": "2026-10-28",
       "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md",
       "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00076",
+      "definitionSha256": "e8ef66d5a23d693a7cfee2fa5bc08af64a69d3f64e75f461ab5a49eb8811cebb",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00077",
+      "definitionSha256": "5489c79fffca757c89d6d75da5dc9d94b4dea2e67f2e48afb7ad2a9c090432f2",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00078",
+      "definitionSha256": "98768104e29825bd79f171710fcc02f96c9d18a0b0651d81477314ecfe463d0c",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00079",
+      "definitionSha256": "e865dbf72ed612ac4e1d6eed2680494ac376add46a824cb39480e61967e9a5e4",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00080",
+      "definitionSha256": "511667a2f46c71dd9e48e3e178bf2b8f4149ffad18f5f2827e2901d4a2cd494e",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00081",
+      "definitionSha256": "1841658d16295949d2ba28b7e96c63283b0581e7ed655bc31be55d0db39a5a1b",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00082",
+      "definitionSha256": "2469de3275c3402691e852f31fb803cde1129a170295fb09e73f8ac1bebfcc85",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00083",
+      "definitionSha256": "0e5fa734b15fb1a8e918afcb4c0a8a0d60e8dc05d81ebe7db63e0e62a08001f4",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00084",
+      "definitionSha256": "8fe4dab965abdaef666e741886b171b14c7812298c2013c234b2d2a6d181a2db",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00085",
+      "definitionSha256": "c4f6a7284a6ee212b00509f5cba158deef5341a69357a4620b4d2b4a2c4d062d",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00086",
+      "definitionSha256": "e00841f7f7f5beff1fe717163bd85063be90287f3ded92af797b2605805c8830",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00087",
+      "definitionSha256": "29b69e6b8d2687abe9caf8f31d8d4eec7fec1b93c9ca2b585ee0effc630bf2e7",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00088",
+      "definitionSha256": "8d957ed0f48a36d058db4c8ea333bee8ec266979a9e44a5a9aa84e4dcc5c335f",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00089",
+      "definitionSha256": "29b92f7588f121940fd47792b2e4e02df4dab094e1226954846b1d8b0642001b",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00090",
+      "definitionSha256": "cb150ad7705c43d225f1cedde798806a8e633ff6ee9e103429534c99c3bf52e1",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5",
+      "verifiedOn": "2026-10-30",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md",
+      "reviewedBy": "agent.0"
     }
   ]
 }

@@ -1,12 +1,15 @@
 # LAN recovery, comparison export, source history and template GUI QA — 2026-10-29
 
-Status: **implemented and source-reviewed; final verification pending; no new requirements accepted**.
+Status: **locally accepted fifteen-requirement batch completing F001**.
+Milestone started 2026-10-29; local acceptance recorded 2026-10-30.
+Agent 0 accepted LAN-00076–LAN-00090 on 2026-10-30 at tested candidate `04813b380cda7656650db752049a8e0661c55bc5`.
 Published baseline: `ba8b0bbda8b7ef0c044dfe243448e646b793a66f`.
-The accepted baseline is 85/10,000 requirements and 17/2,000 capabilities.
-LAN-00076–LAN-00090 remain TODO until a frozen candidate, terminal browser
-results, independent review and all required publication gates support acceptance.
-The earlier font and preview capabilities are regression prerequisites; this
-batch does not count them twice.
+The accepted program is now **100/10,000 requirements and 20/2,000 capabilities**,
+a delta of fifteen requirements and three capabilities. **F001's 100 requirements
+are complete; 9,900 requirements remain in the wider program.** Font revisions
+and source-bound previews retain their earlier acceptance and were regression
+tested without counting them twice. App 3.4.0, managed SYSTEMX 1.9.0-alpha.6 and
+deployment count 0 remain unchanged.
 
 Read the [active iteration](LAN-ACTIVE-ITERATION.md),
 [GUI walkthrough](LAN-TEMPLATE-GUI-WORKFLOW.md) and
@@ -74,19 +77,191 @@ fingerprints remained identical across recovery, restore, export and history.
 The rehearsal record was removed by opting out; comparison/export were canceled
 and the editor returned to its clean loaded source. The intended Home edits remain.
 
+## Accepted capability behavior
+
+| Requirements | Capability | Accepted local behavior |
+| --- | --- | --- |
+| LAN-00076–LAN-00080 | Revision-bound draft recovery | Explicit opt-in and Store preserve one checkout-scoped path, raw baseline and revision, displayed draft and digest. Review reads current source before explicit Restore; stale restoration retains the old base and ordinary stale saves still refuse. |
+| LAN-00081–LAN-00085 | Comparison export | The exact inclusion scope precedes EXPORT COMPARISON and a bounded JSON download. Content, revisions, digest and truncation metadata agree; edits or new observations invalidate consent. Download grants no source replacement authority. |
+| LAN-00086–LAN-00090 | Source revision history | A read-only bounded view separates recorded workspace-bound saves, qualified legacy operations and unattributed session observations. Missing hashes remain unavailable; no rollback or raw log export is provided. |
+
+Each capability's behavior, boundaries/refusal, recovery, feedback and evidence
+lanes bind to the exact tuples below. The original 85 completion objects and
+their ordering are preserved. The original WebAppX catalog remains 179 done /
+821 remaining, and its historical foundation bundle remains unapplied.
+
+## Terminal validation
+
+| Check | Result at `04813b380cda7656650db752049a8e0661c55bc5` |
+| --- | --- |
+| Full CI | All 68 ordered stages, exit 0. |
+| Core npm unit/API tests | 72 passed, zero skips; includes 16 draft-record and seven history tests. |
+| Source/font/preview/recovery/export/history browser | 55 groups and seven normal 336 px inspector geometry checkpoints, exit 0. The inspector is explicitly kept open through the supported GUI control. |
+| Actual-stack Navigator | 16 groups, no page errors or refused requests; all 689 protected fingerprints unchanged. Includes actual app and deliberate DOM fixtures. |
+| Separate Hosting preflight | Exit 0; commit, push and production deployment skipped. |
+| Template, host and distribution integrity | Required CI gates passed; immutable managed releases, blank seeds and both research packages preserved. |
+
+The isolated source suite exercises the real LAN server and controls with writes
+confined to owned temporary copies and a synthetic app document. The actual Home
+GUI proof above and live Navigator cover the running Vite app separately. The
+font provider responses in the isolated suite are synthetic. These results do
+not qualify a real Google Fonts delivery, Gusto account, provider activation,
+native Windows installation or production deployment. Local runtime facts and
+browser assets were rechecked against the frozen implementation.
+
+## Findings and retained attempts
+
+- Source review repaired responding-checkout identity binding across raw, leaf,
+  font, preview and recovery reads. A delayed or foreign response cannot label
+  another checkout's bytes as the active project. Drafts retain their own bases.
+- Complete legacy history tuples without checkout binding now have row-specific
+  unverified labels. Valid historical hashes are retained; missing values are
+  never fabricated.
+- The first aggregate CI stopped because its supervisor fixture copied the new
+  server without the history helper. The explicit fixture inventory was repaired;
+  its 55 session tests and the terminal full CI pass. The original failure remains.
+- The first expanded browser attempt passed 38 groups, then a startup font read
+  invalidated a recovery offer for that same source. The stable case now waits
+  for startup readiness; deliberate newer-observation races remain tested.
+- A later attempt passed 46 groups before an overstrict Store assertion. The
+  corrected oracle explicitly stores the exact retained original-checkout
+  snapshot and checks every binding/digest, the absent other-checkout slot and
+  unchanged repository effects. Stale snapshots remain a supported recovery aid.
+- A development attempt passed 48 groups before its export CSS fixture lacked a
+  supported font body. The fixture was repaired while preserving BOM/CRLF and
+  exact changed-line coordinates. Complete and truncated exports remain checked.
+- A committed attempt stopped after three legacy checks when the Auto inspector
+  collapsed and intercepted a click. The final harness uses the normal visible
+  Keep open control and verifies the expanded 336 px inspector. It uses no forced
+  clicks or injected pin state. The failed attempt remains separate.
+- The later Work sources browser check exposed the same Auto-resize screenshot
+  precondition. It now uses the normal Keep open control and records the expanded
+  inspector, retaining all six source-status assertions and original seed checks.
+- An incomplete aggregate was deliberately interrupted after its superseding
+  test setup was ready; its exit 130 receipt remains incomplete evidence.
+- Held-read checks retain the original non-edit binding and the post-action
+  binding, await the exact captured request's terminal event, then assert before
+  cleanup. These strengthen the evidence without changing the runtime behavior.
+
+All failed, development and earlier successful attempts retain their original
+artifacts and scope. Only the exact committed terminal run is counted above.
+The native in-app confirmation interruption and user's explicit OK are recorded
+in the real GUI proof rather than relabeled as a fully automated restoration.
+
 ## Plan, code, function, local working and production delta
 
-| Boundary | Current observation | Remaining evidence |
+| Boundary | Verified state | Remaining boundary |
 | --- | --- | --- |
-| Plan | Five selected capabilities; fonts/previews previously accepted. | Accept exactly the fifteen new requirements only after their full gates pass. |
-| Code | Recovery, export and history implementation is frozen and source-reviewed. | Final expanded browser result and revision-bound acceptance. |
-| Function | 72 unit/API tests and real Home Code/visual saves, recovery, confirmed export and history passed. | Terminal expanded 55-group source-browser proof and final candidate gates. |
-| Working local project | The changed Home and all three account-free portal entry pages rendered; actual Navigator passed 16 groups on candidate `a728c2a`. | Final candidate runtime and aggregate verification binding. |
-| GitHub delivery | Baseline main is published. | Publish the verified candidate and wiki, then read remote revisions back. |
-| Production | No deployment or provider activation performed. | Separately authorized deployment and deployed-route acceptance. |
+| Plan | Exactly fifteen new requirements accepted; program 100/10,000 and 20/2,000, F001 complete. | Remaining 9,900 requirements and future families stay TODO. |
+| Code | Reviewed frozen implementation and independent approval match the tested candidate. | Full structural Designer kernel, automatic portal-route mapping and data bindings remain later work. |
+| Function | 72 unit/API tests, 55 source-flow browser groups and 16 Navigator groups pass. | Future provider and native-platform qualifications remain separate. |
+| Working local project | Three Home GUI saves have exact predecessor backups; recovery, confirmed comparison download, history and portal entry readbacks passed. | Local health is volatile; recheck the owned session on resume. |
+| GitHub delivery | Source/wiki publication is recorded by the final handoff after remote readback. | A commit or push does not deploy the app. |
+| Production | Hosting preflight passed; no production deployment or provider activation occurred. | Deployment and deployed-route acceptance require their own operator authorization and evidence. |
 
 The Work sources board still separates blank reusable seeds, the original
-WebAppX catalog at 179 recorded completions / 821 proposed TODO and explicitly
-selected adopted work. The LAN plan and completion ledger own this separate
-10,000-requirement program. Neither the empty reusable task ledger nor a local
-GUI save completes the program or accepts the historical foundation bundle.
+WebAppX catalog and explicitly selected adopted work. LAN's generated plan and
+progress ledger own this separate program. Local page models, source text edits,
+native portal data and provider/production operations retain their distinct
+authority and persistence rules. Read the [GUI walkthrough](LAN-TEMPLATE-GUI-WORKFLOW.md).
+
+## Evidence fingerprints
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Final source browser result | `bc33412bae9d3e435a7d6b344e3931e9a099cf07ab802e9fc931ef7a834cc7b4` |
+| Final source browser manifest | `7bc0e111ea4ff23631f20aa5232a57b8643214d7dec1297e5bb11fee381ce72d` |
+| Final source browser trace | `8f94d735a07aa3c4b3e9be35789229bf32cfea420cabbe97ddd2f9b3f6451c69` |
+| Final Navigator result | `e4d381d93eb9116c1e2076771163a89c7c40ae0568d3919fb896da580c35ccca` |
+| Real comparison download | `3e001ccfa6aec2034049fda04fe0a060d56e8335d00561b1caf0253d19c605c9` |
+
+Private paths, tokens, browser state, traces and emulator snapshots stay outside
+Git. Owned emulator state was exported before restart and the same snapshot was
+supplied for import. Startup and health are not record-by-record dataset or
+production acceptance. The [active iteration](LAN-ACTIVE-ITERATION.md) and
+[generated plan](LAN-10000-EXECUTION-PLAN.md) identify the next unaccepted work.
+
+## Exact completion bindings
+
+```lan-completion-evidence
+{
+  "schemaVersion": 1,
+  "requirements": [
+    {
+      "id": "LAN-00076",
+      "definitionSha256": "e8ef66d5a23d693a7cfee2fa5bc08af64a69d3f64e75f461ab5a49eb8811cebb",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00077",
+      "definitionSha256": "5489c79fffca757c89d6d75da5dc9d94b4dea2e67f2e48afb7ad2a9c090432f2",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00078",
+      "definitionSha256": "98768104e29825bd79f171710fcc02f96c9d18a0b0651d81477314ecfe463d0c",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00079",
+      "definitionSha256": "e865dbf72ed612ac4e1d6eed2680494ac376add46a824cb39480e61967e9a5e4",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00080",
+      "definitionSha256": "511667a2f46c71dd9e48e3e178bf2b8f4149ffad18f5f2827e2901d4a2cd494e",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00081",
+      "definitionSha256": "1841658d16295949d2ba28b7e96c63283b0581e7ed655bc31be55d0db39a5a1b",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00082",
+      "definitionSha256": "2469de3275c3402691e852f31fb803cde1129a170295fb09e73f8ac1bebfcc85",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00083",
+      "definitionSha256": "0e5fa734b15fb1a8e918afcb4c0a8a0d60e8dc05d81ebe7db63e0e62a08001f4",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00084",
+      "definitionSha256": "8fe4dab965abdaef666e741886b171b14c7812298c2013c234b2d2a6d181a2db",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00085",
+      "definitionSha256": "c4f6a7284a6ee212b00509f5cba158deef5341a69357a4620b4d2b4a2c4d062d",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00086",
+      "definitionSha256": "e00841f7f7f5beff1fe717163bd85063be90287f3ded92af797b2605805c8830",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00087",
+      "definitionSha256": "29b69e6b8d2687abe9caf8f31d8d4eec7fec1b93c9ca2b585ee0effc630bf2e7",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00088",
+      "definitionSha256": "8d957ed0f48a36d058db4c8ea333bee8ec266979a9e44a5a9aa84e4dcc5c335f",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00089",
+      "definitionSha256": "29b92f7588f121940fd47792b2e4e02df4dab094e1226954846b1d8b0642001b",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    },
+    {
+      "id": "LAN-00090",
+      "definitionSha256": "cb150ad7705c43d225f1cedde798806a8e633ff6ee9e103429534c99c3bf52e1",
+      "sourceRevision": "04813b380cda7656650db752049a8e0661c55bc5"
+    }
+  ]
+}
+```

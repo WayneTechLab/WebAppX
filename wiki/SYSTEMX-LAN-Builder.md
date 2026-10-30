@@ -25,7 +25,7 @@ no-op behavior accounts for textarea normalization. Read the
 
 The prior [conflict-review milestone](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
 missing-file draft protection and explicitly reviewed replacement. The
-[current iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) continues with revision-aware font changes and literal draft previews.
+[current iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) completes source-family acceptance with draft recovery, comparison export and revision history.
 
 Use **Build → Code → Compare latest** to inspect the retained proposal beside
 the latest source and changed line excerpts. Comparison leaves the draft and its
@@ -40,15 +40,28 @@ and blocks saving; restore the file externally or select an existing file and
 reload. It offers no recreation or force-save action.
 
 
-**Accepted total: 85 requirements / 17 capabilities; 9,915 requirements remain
-TODO.** The font/preview batch adds ten completions. Candidate `781b624` passed
-all 68 CI stages, 49 npm tests, 37 source-flow browser groups with four inspector
-geometry checkpoints, 16 actual-stack Navigator groups and separate Hosting
-preflight. Production deployment was skipped.
+**Accepted total: 100 requirements / 20 capabilities; 9,900 requirements remain
+TODO.** The recovery/export/history batch adds fifteen exact completions and
+finishes F001's 100 requirements. Fonts and source-bound previews retain their
+earlier acceptance; they are regression-tested without being counted again.
 
-The batch also pins patched re2js 2.8.7 in root and starter dependency trees.
-Root audit retains two low Gusto/deepmerge package findings with zero
-high/critical; starter audit is clean. The SDK and audit threshold are unchanged.
+Candidate `04813b3` passed all 68 CI stages, 72 npm tests, 55 source-flow browser
+groups, seven inspector geometry checks, 16 actual-stack Navigator groups and separate
+Hosting preflight. The initial missing-helper fixture failure and browser
+startup-readiness failure remain separate from the terminal reruns.
+Production deployment was skipped.
+
+The actual WebAppX Home was changed through LAN's Code and visual-text GUI, with
+three exact predecessor backups and rendered readback. Its new portal link
+opens account-free HR, CMS and CRM. The current receipt and GUI walkthrough
+separate plan, code, function, local working, GitHub delivery and production.
+
+The previous font/preview milestone pinned re2js 2.8.7; this batch changes no
+dependency versions or audit thresholds. Historical audit observations retain
+their original scope. Read the new QA receipt for this candidate's validation.
+
+Read the [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
+[LAN GUI walkthrough](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-TEMPLATE-GUI-WORKFLOW.md).
 
 ## Font revisions and source draft previews
 
@@ -74,6 +87,36 @@ records the candidate and actual verification status. The [active plan](https://
 keeps pending work separate from accepted counts. The LAN **Ops → Agent 0 → Work
 sources** board reports the original WebAppX catalog and reusable/adopted records;
 this separate LAN program's acceptance lives in its generated plan and checklist.
+
+## Recovery, comparison downloads and source history
+
+In **Build → Code**, opt in to one browser-local recovery slot for this checkout,
+then choose **Store recovery draft** explicitly. Typing never stores it. After
+refresh, **Review saved draft** checks current source before **Restore saved
+draft** offers a deliberate editor replacement. The original raw baseline and
+revision remain; a stale restored draft still receives the normal stale-save
+refusal. Discard or opt out removes the slot while retaining the open editor.
+
+Choose **Compare latest → Review export scope**, read the included source-text
+scope, enter `EXPORT COMPARISON`, then choose **Download comparison JSON**.
+The bounded download contains the path, revisions, complete proposed/current
+text and honest comparison truncation metadata. It grants no source-save or
+replacement authority. Edits or newer observations invalidate inclusion consent.
+
+**Refresh history** reads selected operation metadata and current source. Rows
+distinguish recorded checkout-bound saves, qualified legacy operations and
+unattributed session observations. Missing hashes are not invented. The view
+does not restore backups or write source. Source/font responses carry an opaque
+checkout identity, which protects recovery against another checkout using the
+same browser address; it is not a credential or a Git commit identity.
+
+The actual Home was updated through Code and visual text controls, with three
+exact predecessor backups. Its new **Explore demo portals** link opens the
+account-free HR/CMS/CRM directory. The live recovery/restore, confirmed 9,039-byte
+comparison download and history readback preserved source, backups and logs.
+Read the [GUI walkthrough](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-TEMPLATE-GUI-WORKFLOW.md)
+and [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md)
+for the plan/code/function/local/production delta and exact bounds.
 
 ## What it is for
 

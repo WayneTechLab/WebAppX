@@ -1,5 +1,35 @@
 # Update Log
 
+## Revision-bound recovery, comparison export and source history — 2026-10-30
+
+Accepted LAN-00076–LAN-00090 at `04813b380cda7656650db752049a8e0661c55bc5`: **100/10,000 requirements and
+20/2,000 capabilities**. F001 is complete; 9,900 requirements remain. The two
+earlier font/preview capabilities are regression-tested without duplicate counts.
+
+Recovery is explicit and scoped to one checkout/browser slot. Restored drafts
+keep their original base. Comparison JSON requires reviewed inclusion scope and
+EXPORT COMPARISON. Bounded read-only history distinguishes recorded saves,
+qualified legacy records and unattributed observations. Responding-checkout
+identity checks preserve source and browser-storage boundaries.
+
+The real Home was edited through LAN Code and visual text controls, with three
+exact predecessor backups. Its portal CTA opens account-free HR/CMS/CRM. Actual
+recovery/restore, the verified 9,039-byte comparison download and history left
+source, backups and logs unchanged. The native restore prompt used the user's
+explicit OK; its initial automation interruption remains qualified in the receipt.
+
+Terminal proof: **55 source browser groups**, **seven 336 px inspector geometry
+checks**, **16 actual-stack Navigator groups**, **72 npm unit/API tests**, all
+**68 CI stages** and separate Hosting preflight. The source harness uses normal
+Keep open controls. Failed/development/interrupted attempts remain distinct.
+
+Read the [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md),
+[GUI walkthrough](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-TEMPLATE-GUI-WORKFLOW.md)
+and [active plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md).
+Original WebAppX status remains 179/1,000; its foundation bundle is unaccepted.
+App 3.4.0, deployment count 0 and managed 1.9.0-alpha.6 remain unchanged.
+Production deployment and provider activation were not performed.
+
 ## Revision-aware fonts, literal previews and goal update — 2026-10-28
 
 Accepted LAN-00051–LAN-00060: **85/10,000 requirements and 17/2,000 capabilities**,

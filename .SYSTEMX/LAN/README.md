@@ -593,3 +593,22 @@ The final checks passed all 68 CI stages, 49 npm tests, 37 isolated browser grou
 with four normal-dock geometry checkpoints, 16 actual Navigator groups and
 separate Hosting preflight. The [dated receipt](../../docs/LAN-FONT-PREVIEW-QA-2026-10-28.md)
 keeps the prior inventory, visual and reload failures separate from final passes.
+
+## Revision-bound recovery and GUI proof — accepted 2026-10-30
+
+LAN-00076–LAN-00090 are accepted at `04813b380cda7656650db752049a8e0661c55bc5`. The program is now 100/10,000
+requirements and 20/2,000 capabilities; F001 is complete and 9,900 requirements
+remain. Explicit browser-local Store/Review/Restore preserves the original
+checkout/path/baseline. Comparison downloads require reviewed inclusion scope
+and EXPORT COMPARISON. History reads bounded metadata and qualifies legacy and
+unattributed observations. No source authority comes from storing, restoring,
+exporting or reading history.
+
+The actual Home Code/visual edits, three predecessor backups, account-free portal
+entry points, recovered draft and confirmed comparison download were verified.
+Read the [GUI workflow](../../docs/LAN-TEMPLATE-GUI-WORKFLOW.md),
+[QA receipt](../../docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
+[active iteration](../../docs/LAN-ACTIVE-ITERATION.md). The 55-group source suite uses
+the supported Keep open inspector setting and checks seven 336 px states;
+Navigator separately passes 16 groups. Full 68-stage CI and Hosting preflight
+pass. Production deployment and provider activation remain unperformed.

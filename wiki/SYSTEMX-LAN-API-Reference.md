@@ -157,7 +157,7 @@ Purpose: return the current co-management read model.
 
 The status model includes:
 
-- repository branch, cleanliness, and changed-file summary;
+- repository branch, cleanliness, changed-file summary and opaque `repository.workspaceId`;
 - Vite listening state and active URL;
 - current session ID, LAN URL, app URL, bridge URL, port policy, and owner PID;
 - selected Auth, Firestore, and Storage emulator ports;
@@ -220,7 +220,7 @@ responsible for font licensing, privacy, performance, and fallback behavior.
 
 Purpose: report the current controlled project typography state from one
 allowlisted `src/index.css` byte snapshot. The response includes `path`,
-`revision` (64-character SHA-256 of the exact source bytes), `configured`,
+`workspaceId`, `revision` (64-character SHA-256 of the exact source bytes), `configured`,
 `family`, `cssUrl` and `fallback`.
 
 The client keeps this font baseline independent of an open raw source editor.
@@ -291,7 +291,7 @@ allowlist. The endpoint does not provide arbitrary repository browsing. It must
 not read environment files, secrets, private keys, runtime directories, or
 unbounded paths.
 
-Successful source reads include `path`, UTF-8 `content`, `writable`, the existing
+Successful source reads include `path`, opaque `workspaceId`, UTF-8 `content`, `writable`, the existing
 `policy` label, and `revision`: lowercase SHA-256 over the exact on-disk bytes,
 including line endings and BOM. The revision is an optimistic save precondition
 for this file. It is separate from Git state, publication and exclusive locking.
@@ -300,6 +300,38 @@ A missing allowlisted target beneath ordinary contained directories returns
 **404 / SOURCE_UNAVAILABLE**, with fixed recovery guidance and no path, source
 content or revision. A disallowed path, directory or symbolic link retains its
 400 refusal. Reads never recreate missing source.
+
+### GET /api/builder/source/history?path=<allowlisted-path>&limit=1..100
+
+Read-only source history uses the existing confined source allowlist. Exactly one
+path is required; limit defaults to 50 and accepts integers 1–100. Duplicate or
+unknown query fields and invalid limits return SOURCE_HISTORY_QUERY_INVALID.
+Unavailable or unsupported source retains the normal source-read refusal.
+
+Schema 1 returns workspaceId, path, currentRevision, observedAt, newest-first
+entries, limits, log-window status/counts, observation retention and warnings.
+Workspace-bound complete source/font tuples are recorded builder saves. Older
+unbound tuples remain visibly legacy/unverified, with valid known hashes kept;
+missing/inconsistent tuples have unavailable hashes. Session snapshots and
+changes are unattributed, even when a hash matches an older recorded revision.
+
+The log reader inspects at most 256 KiB, 1,000 lines and 16 KiB per line. Response
+entries are capped at 100. In-memory observations retain 32 paths × 20 observations;
+the GUI requests 30 rows. Truncation, omissions, unreadable/partial/oversized
+records and observation eviction are disclosed. Linked log paths are refused.
+The response contains no raw source/log, backup path, session token/ID or absolute
+project path. A history GET creates no source, backup or operation-log write.
+There is no rollback endpoint or authorship guarantee.
+
+Source, font and history GET responses carry the responding checkout's opaque
+workspaceId. The UI validates it against the captured/current checkout before
+adopting data. The identity is derived locally from the canonical checkout path;
+it is not a session token, account credential, Git SHA or portable project ID.
+
+Browser-local recovery and comparison downloads use the source GET for freshness
+and do not add a mutation endpoint. Store is explicit, Restore keeps the original
+baseline, and EXPORT COMPARISON separately confirms readable source inclusion.
+See the [GUI workflow](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-TEMPLATE-GUI-WORKFLOW.md).
 
 ### GET /api/tools
 

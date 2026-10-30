@@ -83,6 +83,24 @@
       "label": "Source-bound literal draft snapshots and explicit freshness checks",
       "surface": "Code inspector Preview draft / Check source / Close preview; GET /api/builder/source",
       "evidence": "docs/LAN-FONT-PREVIEW-QA-2026-10-28.md; 37 source-flow groups and four inspector geometry checkpoints"
+    },
+    {
+      "id": "lan.source-draft-recovery",
+      "label": "Explicit checkout-bound browser-local draft recovery retaining original source revisions",
+      "surface": "Code inspector opt-in / Store recovery draft / Review saved draft / Restore / Discard",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md; source-draft-records/source-history unit tests and 55-group browser proof"
+    },
+    {
+      "id": "lan.source-comparison-export",
+      "label": "Confirmed bounded source comparison JSON download with explicit inclusion scope",
+      "surface": "Code inspector Review export scope / EXPORT COMPARISON / Download comparison JSON",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md; source-draft-records/source-history unit tests and 55-group browser proof"
+    },
+    {
+      "id": "lan.source-revision-history",
+      "label": "Bounded read-only recorded and unattributed source revision history",
+      "surface": "GET /api/builder/source/history; Code inspector Refresh history",
+      "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md; source-draft-records/source-history unit tests and 55-group browser proof"
     }
   ],
   "guarded": [
