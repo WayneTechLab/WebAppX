@@ -1411,6 +1411,9 @@ try {
   const beforeRecoveryReload = effects()
   await page.reload({ waitUntil: 'domcontentloaded' })
   await showCode()
+  // Startup font reads are independent source observations. Let that known
+  // workflow finish before testing an intentionally stable recovery offer.
+  await expect(fontRevision).toHaveAttribute('data-revision', sha(recoveryBaseline))
   await expect(recoveryOptIn).toBeChecked()
   await expect(recoveryPanel).toHaveAttribute('data-state', 'stored')
   await expect(editor).toHaveValue('')
@@ -2126,6 +2129,11 @@ try {
     saveLabel: panel.querySelector('#save-source')?.textContent,
     output: panel.querySelector('#source-output')?.textContent,
     reviewStatus: panel.querySelector('#source-review-status')?.textContent,
+    recoveryState: panel.querySelector('#source-recovery')?.dataset.state,
+    recoveryStatus: panel.querySelector('#source-recovery-status')?.textContent,
+    exportState: panel.querySelector('#source-export')?.dataset.state,
+    historyState: panel.querySelector('#source-history')?.dataset.state,
+    historyStatus: panel.querySelector('#source-history-status')?.textContent,
   })).catch(() => null)
   if (page && !page.isClosed()) await page.screenshot({ path: join(evidence, 'failure.png'), fullPage: true, timeout: 5000 }).catch(() => {})
 } finally {
