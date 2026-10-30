@@ -23,9 +23,9 @@ they do not accept the new work. Earlier conflict acceptance remains in its
 | --- | --- | --- | --- |
 | LAN-00051–LAN-00055 | Refresh revisions after guarded font changes | Confirmed font saves check the observed stylesheet revision and expose the result while keeping an open raw draft and its independent baseline. | Previously accepted |
 | LAN-00056–LAN-00060 | Bind previews to source baselines | Literal snapshots retain their path, loaded revision and draft digest; source checks report freshness without source promotion. | Previously accepted |
-| LAN-00076–LAN-00080 | Recover revision-bound local drafts | Explicitly opted-in recovery retains the source path and baseline; reopening compares current source before offering a deliberate draft restoration. | In progress; all five requirements TODO |
-| LAN-00081–LAN-00085 | Export a conflict comparison | Show the bounded download scope, then require explicit confirmation before including the draft, path and revisions in the exported comparison. | In progress; all five requirements TODO |
-| LAN-00086–LAN-00090 | Inspect source revision history | Show bounded local revision evidence and distinguish confirmed builder saves from observed external changes without promoting source. | In progress; all five requirements TODO |
+| LAN-00076–LAN-00080 | Recover revision-bound local drafts | Explicitly opted-in recovery retains the source path and baseline; reopening compares current source before offering a deliberate draft restoration. | Implemented; all five requirements await acceptance |
+| LAN-00081–LAN-00085 | Export a conflict comparison | Show the bounded download scope, then require explicit confirmation before including the draft, path and revisions in the exported comparison. | Implemented; all five requirements await acceptance |
+| LAN-00086–LAN-00090 | Inspect source revision history | Show bounded local revision evidence and distinguish confirmed builder saves from observed external changes without promoting source. | Implemented; all five requirements await acceptance |
 
 Each new capability includes behavior, boundaries/refusal, recovery, feedback
 and verification requirements. Source implementation, worker completion or a
@@ -97,9 +97,9 @@ saved foundation bundle remains unapplied and unaccepted.
 | Evidence boundary | Current state | Completion evidence needed |
 | --- | --- | --- |
 | Plan and checklist | Three new capabilities selected; accepted baseline stays 85/17. | Fifteen exact receipt-bound acceptances before generated checkmarks change. |
-| Code | Accepted font/preview code is the baseline; recovery/export/history work is in progress. | Reviewed frozen implementation with bounds, revision checks and preserved source authority. |
-| Function | Prior tests remain historical; the three new workflows are not yet accepted. | Terminal matching/stale/refusal/recovery/feedback tests and complete isolated browser receipts. |
-| Working local project | Local service ownership and rendered behavior need fresh observation. | Owned endpoint probes, actual Navigator regression and real Home GUI save/readback evidence. |
+| Code | All five selected capabilities are implemented; recovery/export/history source review passed. | Final revision-bound browser and aggregate acceptance. |
+| Function | New unit/API tests pass 72/72; expanded browser verification remains in progress. | Terminal matching/stale/refusal/recovery/feedback tests and complete isolated browser receipts. |
+| Working local project | Real Home GUI changes, predecessor backups, recovery/restore, comparison download and history readback passed; actual Navigator passed 16 groups at `a728c2a`. | Final candidate runtime and verification binding. |
 | Production and provider state | This plan authorizes no production deployment or provider activation. | Source/wiki publication readback is recorded separately; deployed acceptance requires its own explicit operator authority and evidence. |
 
 ## Ownership and controls

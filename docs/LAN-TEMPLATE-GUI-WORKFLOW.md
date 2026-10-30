@@ -137,3 +137,10 @@ the original WebAppX roadmap and explicitly selected adopted-project work.
 Blank reusable task records are intentional and do not mean the LAN program is
 complete. The app's CMS publication controls simulate fictional content releases;
 they do not replace this repository's source or production release workflow.
+
+The Pages controls maintain local builder models. Source and router changes still
+use the controlled source workflow. LAN's Data workspace likewise maintains its
+own local fixtures; the app's native HR/CMS/CRM records use the app portal
+controls. Automatic structural editing, complete dynamic portal-route mapping
+and bindings between these data surfaces remain later Designer work. Use the
+app's Home portal link for the account-free workspaces covered by this walkthrough.

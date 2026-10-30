@@ -1,6 +1,6 @@
 # LAN recovery, comparison export, source history and template GUI QA — 2026-10-29
 
-Status: **implementation and verification in progress; no new requirements accepted**.
+Status: **implemented and source-reviewed; final verification pending; no new requirements accepted**.
 Published baseline: `ba8b0bbda8b7ef0c044dfe243448e646b793a66f`.
 The accepted baseline is 85/10,000 requirements and 17/2,000 capabilities.
 LAN-00076–LAN-00090 remain TODO until a frozen candidate, terminal browser
@@ -57,18 +57,31 @@ snapshot was exported, then supplied for import. The actual recovery GUI stored
 an explicit unsaved Home draft, survived a browser refresh and reported that its
 saved baseline matched the current source. Its native Restore confirmation then
 blocked the in-app browser automation: the documented dialog/tab APIs timed out,
-and native control of the Codex app was denied. Agent 0 requested a manual
-dismissal and continued independent tests. This attempt is not a completed
-automated restoration result. No source save was requested by that action.
+and native control of the Codex app was denied. The user clicked **OK**. Subsequent
+GUI readback confirmed the exact recovered draft and original baseline, with no
+source save. The initial automation timeout remains qualified; the restoration
+used that explicit manual confirmation.
+
+Agent 0 then used **Compare latest → Review export scope → EXPORT COMPARISON →
+Download comparison JSON**. The downloaded file was exactly **9,039 bytes** and
+matched the scope's SHA-256
+`3e001ccfa6aec2034049fda04fe0a060d56e8335d00561b1caf0253d19c605c9`.
+Its path, loaded/current revisions, complete current Home source and proposed
+unsaved text matched independently. Its draft digest was
+`f91c97f01866eff4a04d2d16a19722b67f80b5707120137f79bc63fc897a8f6d`.
+The comparison was complete and untruncated. All eight source/backup/operation-log
+fingerprints remained identical across recovery, restore, export and history.
+The rehearsal record was removed by opting out; comparison/export were canceled
+and the editor returned to its clean loaded source. The intended Home edits remain.
 
 ## Plan, code, function, local working and production delta
 
 | Boundary | Current observation | Remaining evidence |
 | --- | --- | --- |
 | Plan | Five selected capabilities; fonts/previews previously accepted. | Accept exactly the fifteen new requirements only after their full gates pass. |
-| Code | Recovery, export and history implementation is in progress. | Frozen patch and independent final review. |
-| Function | Real Home Code and visual saves, revision readbacks and exact predecessor backups passed. | New capability model/API/browser tests and existing source/font/preview regressions. |
-| Working local project | The changed Home and all three account-free portal entry pages rendered. | Final candidate runtime readback, Navigator and full CI. |
+| Code | Recovery, export and history implementation is frozen and source-reviewed. | Final expanded browser result and revision-bound acceptance. |
+| Function | 72 unit/API tests and real Home Code/visual saves, recovery, confirmed export and history passed. | Terminal expanded 55-group source-browser proof and final candidate gates. |
+| Working local project | The changed Home and all three account-free portal entry pages rendered; actual Navigator passed 16 groups on candidate `a728c2a`. | Final candidate runtime and aggregate verification binding. |
 | GitHub delivery | Baseline main is published. | Publish the verified candidate and wiki, then read remote revisions back. |
 | Production | No deployment or provider activation performed. | Separately authorized deployment and deployed-route acceptance. |
 

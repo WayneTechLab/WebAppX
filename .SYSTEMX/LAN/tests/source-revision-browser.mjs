@@ -1649,8 +1649,27 @@ try {
     const recoveryRelease = new Promise((resolveRelease) => { releaseRecovery = resolveRelease })
     const recoveryCaptured = new Promise((resolveCaptured) => { notifyRecovery = resolveCaptured })
     const recoveryDone = new Promise((resolveDone) => { notifyRecoveryDone = resolveDone })
+    let heldRecoveryRequest
+    const recoveryRequestTerminal = new Promise((resolveTerminal, rejectTerminal) => {
+      const cleanup = () => {
+        clearTimeout(deadline)
+        page.off('requestfinished', finished)
+        page.off('requestfailed', failed)
+      }
+      const complete = (event) => (request) => {
+        if (request !== heldRecoveryRequest) return
+        cleanup()
+        resolveTerminal(event)
+      }
+      const finished = complete('requestfinished'), failed = complete('requestfailed')
+      const deadline = setTimeout(() => { cleanup(); rejectTerminal(new Error('Held recovery request did not reach a browser terminal event.')) }, 15000)
+      page.on('requestfinished', finished)
+      page.on('requestfailed', failed)
+    })
+    void recoveryRequestTerminal.catch(() => {})
     releasePendingResponse = releaseRecovery
     await page.route('**/api/builder/source?path=src%2Findex.css', async (route) => {
+      heldRecoveryRequest = route.request()
       try {
         const response = await route.fetch()
         notifyRecovery()
@@ -1673,15 +1692,19 @@ try {
       await showCode()
       expectedRecoveryRaceEffects = effects()
     }
+    const bindingAfterRecoveryAction = { ...await editorBinding(), selectedPath: await file.inputValue() }
     releaseRecovery()
     await Promise.race([recoveryDone, delay(15000).then(() => { throw new Error('Invalidated recovery review did not finish.') })])
+    report.recoveryReadTerminals ||= []
+    report.recoveryReadTerminals.push({ mode, event: await recoveryRequestTerminal })
     await page.unroute('**/api/builder/source?path=src%2Findex.css')
     releasePendingResponse = null
     await expect(restoreRecovery).toBeDisabled()
     if (mode === 'discard' || mode === 'off') assert.equal(await storedRecovery(), null)
     else assert.equal(await storedRecovery(), recordBeforeRace)
+    assert.deepEqual({ ...await editorBinding(), selectedPath: await file.inputValue() }, bindingAfterRecoveryAction, 'A held recovery response must preserve the post-action draft, base, approval and selected path before fixture cleanup')
+    if (mode !== 'edit') assert.deepEqual(await editorBinding(), bindingBeforeRace, 'Review invalidation actions must preserve the original draft, base and approval')
     if (mode === 'edit') await editor.fill(safeStorageDraft)
-    else assert.deepEqual(await editorBinding(), bindingBeforeRace)
     if (mode === 'selection') await file.selectOption(stylesheetPath)
     assert.deepEqual(effects(), expectedRecoveryRaceEffects)
   }
@@ -1759,14 +1782,35 @@ try {
   await reload.click()
   assert.equal((await mismatchedContent).status(), 200)
   await expect(editor).toBeEnabled()
-  await expect(storeRecovery).toBeDisabled()
   assert.deepEqual(await editorBinding(), beforeMismatchedResponse)
   assert.equal(await storedRecovery(), beforeIdentitySlot.serialized)
   assert.deepEqual(effects(), beforeIdentityEffects)
   await page.unroute('**/api/builder/source?path=src%2Findex.css')
-  checks.push('An old checkout response cannot adopt a newer same-origin identity, and a content response carrying the wrong workspace ID cannot adopt the stale status identity; original drafts/bases and the A slot survive, B stays empty, and a new bound load is required before Store.')
+  // Returning to the same stable checkout A retains its old A snapshot. A
+  // refused B response must never relabel that snapshot or enter either slot.
+  const identityReadsBeforeStore = sourceReads.length, identityMutationsBeforeStore = posts.length + fontPosts.length
+  await expect(recoveryStatus).toContainText('Source load requested')
+  const retainedCheckoutRecovery = await storeExplicitRecovery()
+  await expect(recoveryStatus).toContainText('stored explicitly')
+  assert.equal(retainedCheckoutRecovery.record.workspaceId, workspaceId)
+  assert.equal(retainedCheckoutRecovery.record.path, stylesheetPath)
+  assert.equal(retainedCheckoutRecovery.record.path, beforeIdentitySlot.record.path)
+  assert.equal(retainedCheckoutRecovery.record.baselineContent, beforeIdentitySlot.record.baselineContent)
+  assert.equal(retainedCheckoutRecovery.record.baseRevision, beforeIdentitySlot.record.baseRevision)
+  assert.equal(retainedCheckoutRecovery.record.draftDisplay, beforeIdentitySlot.record.draftDisplay)
+  assert.equal(retainedCheckoutRecovery.record.draftDigest, beforeIdentitySlot.record.draftDigest)
+  assert.equal(sha(retainedCheckoutRecovery.record.baselineContent), retainedCheckoutRecovery.record.baseRevision)
+  assert.equal(sha(retainedCheckoutRecovery.record.draftDisplay), retainedCheckoutRecovery.record.draftDigest)
+  assert.deepEqual(Object.keys(retainedCheckoutRecovery.record).sort(), Object.keys(beforeIdentitySlot.record).sort())
+  assert.equal(new Date(retainedCheckoutRecovery.record.storedAt).toISOString(), retainedCheckoutRecovery.record.storedAt)
+  assert.equal(await page.evaluate((key) => localStorage.getItem(key), `systemx.lan.source-recovery.v1.${foreignWorkspaceId}`), null)
+  assert.equal(sourceReads.length, identityReadsBeforeStore)
+  assert.equal(posts.length + fontPosts.length, identityMutationsBeforeStore)
+  assert.deepEqual(await editorBinding(), beforeMismatchedResponse)
+  assert.deepEqual(effects(), beforeIdentityEffects)
+  checks.push('An old checkout response cannot adopt a newer same-origin identity, and wrong-workspace source content is refused. Returning to the same stable checkout A can explicitly Store only its retained exact A path, raw baseline, revision, draft and digest; B stays empty and no source, backup, log or temp effects occur.')
 
-  const exportBaseline = '\uFEFF:root { color: blue; }\r\n/* Shared export anchor. */\r\n'
+  const exportBaseline = '\uFEFF:root { color: blue; --wtl-font-family: "Fixture Sans", system-ui; } body { font-family: var(--wtl-font-family); }\r\n/* Shared export anchor. */\r\n'
   const exportDraftDisplay = exportBaseline.replaceAll('\r\n', '\n').replace('blue', 'red') + '/* Draft-only export line — café 🌈. */\n'
   const exportDraftWire = exportDraftDisplay.replaceAll('\n', '\r\n')
   const exportCurrent = exportBaseline.replace('blue', 'green') + '/* Current-only export line. */\r\n'
