@@ -13,15 +13,15 @@ export function HomePage() {
       <section data-snap-label="Overview" className="mx-auto max-w-6xl px-4 py-16 sm:py-24">
         <div className="max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
-          Basic template
+          Your app starts here
         </p>
         <h1 className="mt-4 text-4xl font-bold tracking-tight text-neutral-950 sm:text-6xl">
           WebAppX
         </h1>
         <p className="mt-6 text-lg leading-8 text-neutral-600">
-          Template Provided by Wayne Tech Lab LLC. This is a clean, generic
-          starting point for a simple web app with a small page set, neutral
-          styling, and setup documentation ready to customize.
+          Template provided by Wayne Tech Lab LLC. Start with React, Firebase
+          and account-free HR, CMS and CRM workspaces. Customize your pages
+          locally with SYSTEMX LAN, then review and test before release.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <AppLink
@@ -29,6 +29,12 @@ export function HomePage() {
             className="rounded-md bg-neutral-950 px-5 py-3 text-sm font-semibold text-white hover:bg-neutral-800"
           >
             Read docs
+          </AppLink>
+          <AppLink
+            to="/portals"
+            className="rounded-md border border-neutral-300 px-5 py-3 text-sm font-semibold text-neutral-800 hover:bg-neutral-100"
+          >
+            Explore demo portals
           </AppLink>
           <AppLink
             to="/about"
@@ -49,7 +55,7 @@ export function HomePage() {
       <section data-snap-label="Included" className="mx-auto max-w-6xl px-4 py-12 sm:py-16">
         <div className="border-y border-neutral-200 py-10">
           <p className="text-sm font-semibold uppercase tracking-wide text-neutral-500">Included</p>
-          <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">A clean, adaptable foundation.</h2>
+          <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">Build pages. Test portals. Make it yours.</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {sections.map((item) => (
               <div key={item} className="border border-neutral-200 bg-white p-6">
@@ -68,7 +74,7 @@ export function HomePage() {
         <div className="max-w-3xl border-l-4 border-neutral-950 pl-6">
           <p className="text-sm font-semibold uppercase tracking-wide text-neutral-500">Start here</p>
           <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
-            Build your project with a consistent operating standard.
+            Customize your app with a consistent operating standard.
           </h2>
           <p className="mt-4 leading-7 text-neutral-600">
             Use the top-left control to move through this page, the top-right menu

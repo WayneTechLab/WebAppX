@@ -176,7 +176,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root adds native SDK/query/browser dependencies and host setup, test, CI and release scripts; shared package identity/runtime/dependencies remain checked.",
-      "rootSha256": "91f8d389c40f98f130ab8920dd136be772d07d26da5925ccbda188b22967d289",
+      "rootSha256": "789986ef3a4943320993282accf639a196998d74abcf3c6da827f52c98bcd787",
       "starterSha256": "2c4dcbe51214ae866e8e3e8fa2264ec0a37ab3f3880fea0b3e0107f914500ce4"
     },
     {
@@ -359,7 +359,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root home introduces the full WebAppX template and portal entry points; starter home describes its standalone scaffold.",
-      "rootSha256": "f41310f9b37cb9ccef4af1d09ffa3f78ee1c429a6a1cc051b23c792890d7c5ee",
+      "rootSha256": "cf753da247db7e2a66b667510ed211d879a39b77a6c122d672a97ee609a25aa6",
       "starterSha256": "949e2a8d23073387cc65512e42687a65ba50a467069418373676f14671e67f3d"
     },
     {

@@ -1,5 +1,6 @@
 import { previewNavigatorLimits, collectPreviewHierarchy, projectPreviewRows, ancestorPreviewEntries, isCurrentPreviewElement } from './preview-navigator.js'
 import { sourceComparisonLimits, compareSourceText } from './source-comparison.js'
+import { sourceRecordLimits, createRecoveryRecord, parseRecoveryRecord, normalizeSourceDisplay, createComparisonExport } from './source-draft-records.js'
 
 const apiBase = window.location.pathname.startsWith('/__systemx') ? '/__systemx' : ''
 const sessionToken = document.querySelector('meta[name="systemx-session"]')?.content ?? ''
@@ -89,6 +90,23 @@ const state = {
   sourceDraftPreview: null,
   sourceDraftPreviewGeneration: 0,
   sourceDraftPreviewController: null,
+  sourceLoadedWorkspaceId: null,
+  sourceRecoveryWorkspaceId: null,
+  sourceRecoveryEnabled: false,
+  sourceRecoveryRecord: null,
+  sourceRecoveryHasStored: false,
+  sourceRecoveryReview: null,
+  sourceRecoveryGeneration: 0,
+  sourceRecoveryController: null,
+  sourceRecoveryBusy: false,
+  sourceRecoveryState: 'empty',
+  sourceRecoveryMessage: 'Local draft recovery is off. Nothing is stored automatically.',
+  sourceExport: null,
+  sourceExportGeneration: 0,
+  sourceHistory: null,
+  sourceHistoryGeneration: 0,
+  sourceHistoryController: null,
+  sourceHistoryLoading: false,
   components: [],
   previewSelectedElement: null,
   previewHoveredElement: null,
@@ -602,7 +620,7 @@ function selectFont(fontFamily, options = {}) {
 }
 
 function updateFontSaveAvailability() {
-  setControlDisabled('#font-save-project', !state.selectedFont || !validSourceRevision(state.projectFont?.revision) || state.fontSourceLoading || state.fontSaving || state.fontSourceUnavailable || state.fontSourceNeedsRefresh || Boolean(state.fontConflictRevision))
+  setControlDisabled('#font-save-project', !state.selectedFont || state.projectFont?.workspaceId !== state.sourceRecoveryWorkspaceId || !validSourceRevision(state.projectFont?.revision) || state.fontSourceLoading || state.fontSaving || state.fontSourceUnavailable || state.fontSourceNeedsRefresh || Boolean(state.fontConflictRevision))
   setControlDisabled('#font-refresh-source', state.fontSourceLoading || state.fontSaving)
 }
 
@@ -627,6 +645,7 @@ async function refreshFontSource({ selectCurrent = false } = {}) {
   if (state.fontSaving) return
   const generation = ++state.fontSourceGeneration
   const selectedFamily = state.selectedFont?.family
+  const workspaceId = state.sourceRecoveryWorkspaceId
   const intentGeneration = state.fontIntentGeneration
   const observation = sourceObservationVersions.get('src/index.css') || 0
   state.fontSourceLoading = true
@@ -635,7 +654,7 @@ async function refreshFontSource({ selectCurrent = false } = {}) {
     const project = await request('/api/fonts/project')
     if (generation !== state.fontSourceGeneration) return
     if (sourceObservationSuperseded('src/index.css', observation, project.revision)) throw new Error('A newer stylesheet observation arrived while reading. Refresh font source again.')
-    if (project.path !== 'src/index.css' || !validSourceRevision(project.revision)) throw new Error('Font source revision is unavailable.')
+    if (!sourceSnapshotForWorkspace(project, workspaceId) || project.path !== 'src/index.css' || !validSourceRevision(project.revision)) throw new Error('Font source revision is unavailable.')
     state.fontSourceUnavailable = false
     state.fontSourceNeedsRefresh = false
     state.fontConflictRevision = null
@@ -647,7 +666,7 @@ async function refreshFontSource({ selectCurrent = false } = {}) {
   } catch (error) {
     if (generation !== state.fontSourceGeneration) return
     state.fontSourceNeedsRefresh = true
-    if (sourceUnavailable(error) && observation === (sourceObservationVersions.get('src/index.css') || 0)) {
+    if (sourceUnavailable(error) && workspaceId === state.sourceRecoveryWorkspaceId && observation === (sourceObservationVersions.get('src/index.css') || 0)) {
       state.fontSourceUnavailable = true
       observeSourceUnavailable('src/index.css')
     }
@@ -672,11 +691,12 @@ async function loadFontWorkspace() {
 }
 
 async function saveProjectFont() {
-  if (!state.selectedFont || !validSourceRevision(state.projectFont?.revision) || state.fontSourceLoading || state.fontSaving || state.fontSourceUnavailable || state.fontSourceNeedsRefresh || state.fontConflictRevision) {
+  if (!state.selectedFont || state.projectFont?.workspaceId !== state.sourceRecoveryWorkspaceId || !validSourceRevision(state.projectFont?.revision) || state.fontSourceLoading || state.fontSaving || state.fontSourceUnavailable || state.fontSourceNeedsRefresh || state.fontConflictRevision) {
     output('#font-status', 'Select a font and Refresh font source before saving a project change.')
     return
   }
   const family = state.selectedFont.family, baseRevision = state.projectFont.revision
+  const workspaceId = state.sourceRecoveryWorkspaceId
   const intentGeneration = state.fontIntentGeneration
   const observation = sourceObservationVersions.get('src/index.css') || 0
   const confirmation = document.querySelector('#font-confirmation')
@@ -687,7 +707,7 @@ async function saveProjectFont() {
   try {
     const result = await post('/api/builder/font', { family, baseRevision, confirmation: confirmation?.value })
     if (result.path !== 'src/index.css' || !validSourceRevision(result.revision) || result.currentRevision !== result.revision || result.previousRevision !== baseRevision) throw new Error('Font save revision could not be verified. Refresh font source before another save.')
-    const superseded = sourceObservationSuperseded(result.path, observation, result.revision)
+    const superseded = workspaceId !== state.sourceRecoveryWorkspaceId || sourceObservationSuperseded(result.path, observation, result.revision)
     if (superseded) {
       state.fontSourceNeedsRefresh = true
       state.fontConflictRevision = sourceObservedRevisions.get(result.path) || null
@@ -707,12 +727,12 @@ async function saveProjectFont() {
   } catch (error) {
     state.fontSourceNeedsRefresh = true
     if (sourceRevisionConflict(error)) {
-      const superseded = sourceObservationSuperseded('src/index.css', observation, error.currentRevision)
+      const superseded = workspaceId !== state.sourceRecoveryWorkspaceId || sourceObservationSuperseded('src/index.css', observation, error.currentRevision)
       state.fontConflictRevision = superseded ? sourceObservedRevisions.get('src/index.css') || null : error.currentRevision
       if (!superseded && error.currentRevision) observeSourceRevision('src/index.css', error.currentRevision, 'Font save conflict')
       output('#font-status', 'Font source changed since it was loaded. The selected font, confirmation, raw draft and loaded base are kept. Refresh font source, review the current font, then confirm again before saving.')
     } else if (sourceUnavailable(error)) {
-      if (observation === (sourceObservationVersions.get('src/index.css') || 0)) {
+      if (workspaceId === state.sourceRecoveryWorkspaceId && observation === (sourceObservationVersions.get('src/index.css') || 0)) {
         state.fontSourceUnavailable = true
         observeSourceUnavailable('src/index.css')
       }
@@ -1534,7 +1554,7 @@ async function saveSelectedText() {
     return
   }
   const source = state.previewTextSource
-  if (source?.element !== element || source.path !== location.sourcePath || !validSourceRevision(source.revision)) {
+  if (source?.element !== element || source.path !== location.sourcePath || source.workspaceId !== state.sourceRecoveryWorkspaceId || !validSourceRevision(source.revision)) {
     output('#settings-text-output', 'Load the latest source revision before saving this text draft.')
     return
   }
@@ -1558,12 +1578,13 @@ async function saveSelectedText() {
       path: location.sourcePath,
       content: nextContent,
       baseRevision: source.revision,
+      sourceKind: 'leaf-text',
       confirmation: 'SAVE LOCAL CHANGE',
     })
     if (!validSourceRevision(result.revision)) throw new Error('Saved source revision is unavailable. Reload latest source before another save.')
   } catch (error) {
     if (sourceRevisionConflict(error)) {
-      if (error.currentRevision) observeSourceRevision(location.sourcePath, error.currentRevision, 'Selected-text save conflict', true, null, observation)
+      if (error.currentRevision && source.workspaceId === state.sourceRecoveryWorkspaceId) observeSourceRevision(location.sourcePath, error.currentRevision, 'Selected-text save conflict', true, null, observation)
       if (state.previewSelectedElement === element) {
         if (state.previewTextSource === source) source.currentRevision = observation !== (sourceObservationVersions.get(location.sourcePath) || 0) ? sourceObservedRevisions.get(location.sourcePath) : error.currentRevision
         renderSelectedTextRevision()
@@ -1575,11 +1596,11 @@ async function saveSelectedText() {
     return
   } finally {
     if (state.previewTextSaving === element) state.previewTextSaving = null
-    if (state.previewSelectedElement === element) setControlDisabled('#settings-text-save', state.previewTextSourcePending === element)
+    if (state.previewSelectedElement === element) setControlDisabled('#settings-text-save', state.previewTextSourcePending === element || source.workspaceId !== state.sourceRecoveryWorkspaceId)
   }
   const superseded = sourceObservationSuperseded(location.sourcePath, observation, result.revision)
   if (state.previewTextSource === source) state.previewTextSource = { ...source, content: nextContent, revision: result.revision, currentRevision: superseded ? sourceObservedRevisions.get(location.sourcePath) : null }
-  observeSourceRevision(location.sourcePath, result.revision, 'Selected-text save accepted', true, null, observation)
+  if (source.workspaceId === state.sourceRecoveryWorkspaceId) observeSourceRevision(location.sourcePath, result.revision, 'Selected-text save accepted', true, null, observation)
   if (confirmation && state.previewSelectedElement === element) confirmation.value = ''
   state.previewTextOriginals.set(element, nextText)
   element.textContent = nextText
@@ -1674,6 +1695,7 @@ function renderWorkStatus(work) {
 
 function renderStatus(status) {
   state.status = status
+  initializeSourceRecovery(status.repository?.workspaceId)
   const operating = status.operating
   text('#systemx-version-state', operating?.installed
     ? `SYSTEMX ${operating.selectedVersion} · ${operating.updatePolicy} updates · pinned ${operating.pinnedVersion}`
@@ -2024,7 +2046,7 @@ function validSourceRevision(revision) {
 }
 
 function sourceDraftPreviewBound(preview = state.sourceDraftPreview) {
-  return Boolean(preview && preview.path === state.sourcePath && document.querySelector('#source-file-select')?.value === preview.path)
+  return Boolean(preview && sourceLoadedForWorkspace() && preview.workspaceId === state.sourceRecoveryWorkspaceId && preview.path === state.sourcePath && document.querySelector('#source-file-select')?.value === preview.path)
 }
 
 function stopSourceDraftPreviewRead(message) {
@@ -2046,7 +2068,7 @@ function renderSourceDraftPreview() {
   if (!panel) return
   const preview = state.sourceDraftPreview
   panel.hidden = !preview
-  setControlDisabled('#preview-source-draft', state.sourceLoading || state.sourceSaving || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
+  setControlDisabled('#preview-source-draft', state.sourceLoading || state.sourceSaving || !sourceLoadedForWorkspace() || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
   if (!preview) return
   const bound = sourceDraftPreviewBound(preview)
   const edited = !bound || document.querySelector('#source-editor')?.value !== preview.draftDisplay
@@ -2067,7 +2089,7 @@ function sourceObservationSuperseded(path, observation, revision) {
   return observation !== (sourceObservationVersions.get(path) || 0) && sourceObservedRevisions.get(path) !== revision
 }
 
-function observeSourceRevision(path, revision, reason, invalidateReview = true, ownPreviewRead = null, observation = null) {
+function observeSourceRevision(path, revision, reason, invalidateReview = true, ownPreviewRead = null, observation = null, invalidateRecovery = true) {
   if (!validSourceRevision(revision)) return
   if (observation !== null && sourceObservationSuperseded(path, observation, revision)) {
     if (path === state.sourcePath) {
@@ -2076,6 +2098,9 @@ function observeSourceRevision(path, revision, reason, invalidateReview = true, 
     }
     return
   }
+  if (invalidateRecovery && state.sourceRecoveryRecord?.path === path) invalidateSourceRecoveryReview('A source observation changed. Review saved draft again before restoring.')
+  if (state.sourceExport?.review.path === path) invalidateSourceExport('A newer source observation requires a fresh export scope and inclusion confirmation.')
+  if (state.sourceHistory?.path === path) { state.sourceHistory.stale = true; renderSourceHistory() }
   sourceObservationVersions.set(path, (sourceObservationVersions.get(path) || 0) + 1)
   sourceObservedRevisions.set(path, revision)
   if (path === state.sourcePath) {
@@ -2120,6 +2145,7 @@ async function checkSourceDraftPreview() {
   stopSourceDraftPreviewRead()
   const generation = state.sourceDraftPreviewGeneration
   const observation = sourceObservationVersions.get(preview.path) || 0
+  const workspaceId = state.sourceRecoveryWorkspaceId
   const controller = new AbortController()
   state.sourceDraftPreviewController = controller
   preview.pending = true
@@ -2131,7 +2157,7 @@ async function checkSourceDraftPreview() {
     const result = await request(`/api/builder/source?path=${encodeURIComponent(preview.path)}`, { signal: controller.signal })
     if (generation !== state.sourceDraftPreviewGeneration || state.sourceDraftPreview !== preview || !sourceDraftPreviewBound(preview)) return
     if (observation !== (sourceObservationVersions.get(preview.path) || 0)) throw new Error('A newer source observation arrived while checking. Check source again.')
-    if (result.path !== preview.path || !validSourceRevision(result.revision)) throw new Error('Source revision is unavailable.')
+    if (!sourceSnapshotForWorkspace(result, workspaceId) || result.path !== preview.path || !validSourceRevision(result.revision)) throw new Error('Source revision is unavailable.')
     observeSourceRevision(preview.path, result.revision, 'Explicit preview check', true, preview)
   } catch (error) {
     if (generation !== state.sourceDraftPreviewGeneration || state.sourceDraftPreview !== preview || !sourceDraftPreviewBound(preview)) return
@@ -2152,7 +2178,7 @@ async function checkSourceDraftPreview() {
 
 async function previewSourceDraft() {
   const editor = document.querySelector('#source-editor')
-  if (!editor || !state.sourcePath || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || document.querySelector('#source-file-select')?.value !== state.sourcePath) return
+  if (!editor || !state.sourcePath || !sourceLoadedForWorkspace() || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || document.querySelector('#source-file-select')?.value !== state.sourcePath) return
   if (editor.value.length > sourceDraftPreviewLimits.characters) {
     output('#source-output', `Draft exceeds the ${sourceDraftPreviewLimits.characters}-unit preview limit. The previous snapshot, draft and loaded base are kept.`)
     return
@@ -2162,7 +2188,7 @@ async function previewSourceDraft() {
   const draftDisplay = editor.value
   let excerpt = draftDisplay.slice(0, sourceDraftPreviewLimits.displayedCharacters)
   if (/[\uD800-\uDBFF]$/.test(excerpt) && excerpt.length < draftDisplay.length) excerpt = excerpt.slice(0, -1)
-  const preview = { path: state.sourcePath, loadedRevision: state.sourceRevision, draftDisplay, excerpt, draftRevision: null, currentRevision: null, freshness: 'Unknown', pending: false, digestPending: true, message: 'Capturing a literal text snapshot; no source is saved or executed.' }
+  const preview = { path: state.sourcePath, workspaceId: state.sourceRecoveryWorkspaceId, loadedRevision: state.sourceRevision, draftDisplay, excerpt, draftRevision: null, currentRevision: null, freshness: 'Unknown', pending: false, digestPending: true, message: 'Capturing a literal text snapshot; no source is saved or executed.' }
   state.sourceDraftPreview = preview
   renderSourceDraftPreview()
   try {
@@ -2188,6 +2214,9 @@ function sourceUnavailable(error) {
 }
 
 function setSourceUnavailable(path) {
+  if (state.sourceRecoveryRecord?.path === path) invalidateSourceRecoveryReview('Source is unavailable. The saved recovery slot and open editor are kept; review again after restoring it externally.')
+  invalidateSourceExport('Source is unavailable. Export requires a new completed comparison.')
+  if (state.sourceHistory?.path === path) { state.sourceHistory.stale = true; renderSourceHistory() }
   sourceObservationVersions.set(path, (sourceObservationVersions.get(path) || 0) + 1)
   sourceObservedRevisions.set(path, null)
   if (state.sourceDraftPreview?.path === path) stopSourceDraftPreviewRead('Source is unavailable; pending checks are discarded.')
@@ -2211,9 +2240,389 @@ function clearSourceUnavailable() {
   if (availability) { availability.hidden = true; availability.textContent = '' }
 }
 
+function sourceLoadedForWorkspace() {
+  return validSourceRevision(state.sourceRecoveryWorkspaceId) && state.sourceLoadedWorkspaceId === state.sourceRecoveryWorkspaceId
+}
+
+function sourceSnapshotForWorkspace(result, workspaceId) {
+  return validSourceRevision(workspaceId) && state.sourceRecoveryWorkspaceId === workspaceId && result.workspaceId === workspaceId
+}
+
+function sourceRecoveryKey() {
+  return validSourceRevision(state.sourceRecoveryWorkspaceId) ? `systemx.lan.source-recovery.v1.${state.sourceRecoveryWorkspaceId}` : null
+}
+
+function renderSourceRecovery() {
+  const panel = document.querySelector('#source-recovery')
+  if (!panel) return
+  panel.dataset.state = state.sourceRecoveryState
+  const record = state.sourceRecoveryRecord, review = state.sourceRecoveryReview
+  const busy = state.sourceRecoveryBusy || state.sourceLoading || state.sourceSaving
+  const checkbox = document.querySelector('#source-recovery-opt-in')
+  if (checkbox) { checkbox.checked = state.sourceRecoveryEnabled; checkbox.disabled = !sourceRecoveryKey() }
+  text('#source-recovery-path', record?.path || 'No saved draft')
+  text('#source-recovery-base-revision', record?.baseRevision || 'Not available')
+  text('#source-recovery-current-revision', review?.currentRevision || (state.sourceRecoveryState === 'unavailable' ? 'Unavailable' : 'Not checked'))
+  text('#source-recovery-draft-digest', record?.draftDigest || 'Not available')
+  let excerpt = record ? record.draftDisplay.slice(0, 20000) : ''
+  if (record && /[\uD800-\uDBFF]$/.test(excerpt) && excerpt.length < record.draftDisplay.length) excerpt = excerpt.slice(0, -1)
+  text('#source-recovery-draft', excerpt)
+  text('#source-recovery-summary', record ? `${record.draftDisplay.length} displayed draft units stored; ${excerpt.length} displayed; ${record.draftDisplay.length - excerpt.length} omitted from this literal excerpt. The saved raw baseline is retained, including line endings. Nothing is restored automatically.` : 'One recovery slot per checkout in this browser origin. Turning recovery off or Discard saved draft removes only that slot.')
+  text('#source-recovery-status', state.sourceRecoveryMessage)
+  setControlDisabled('#store-source-recovery', busy || !state.sourceRecoveryEnabled || !sourceRecoveryKey() || state.sourceLoadedWorkspaceId !== state.sourceRecoveryWorkspaceId || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
+  setControlDisabled('#review-source-recovery', busy || !state.sourceRecoveryEnabled || !sourceRecoveryKey())
+  setControlDisabled('#restore-source-recovery', busy || !review || review.generation !== state.sourceRecoveryGeneration || !['matching', 'stale'].includes(state.sourceRecoveryState))
+  setControlDisabled('#discard-source-recovery', !sourceRecoveryKey() || (!state.sourceRecoveryHasStored && !record))
+}
+
+function invalidateSourceRecoveryReview(message) {
+  state.sourceRecoveryGeneration += 1
+  state.sourceRecoveryController?.abort()
+  state.sourceRecoveryController = null
+  state.sourceRecoveryBusy = false
+  state.sourceRecoveryReview = null
+  state.sourceRecoveryState = state.sourceRecoveryRecord ? 'stored' : state.sourceRecoveryHasStored ? 'invalid' : 'empty'
+  if (message) state.sourceRecoveryMessage = message
+  renderSourceRecovery()
+}
+
+function readSourceRecoveryRecord() {
+  const key = sourceRecoveryKey()
+  if (!key) throw new Error('Checkout identity is unavailable; recovery storage remains off.')
+  const serialized = window.localStorage.getItem(key)
+  state.sourceRecoveryHasStored = serialized !== null
+  if (serialized === null) { state.sourceRecoveryRecord = null; return null }
+  const record = parseRecoveryRecord(serialized, state.sourceRecoveryWorkspaceId)
+  state.sourceRecoveryRecord = record
+  return { record, serialized }
+}
+
+function initializeSourceRecovery(workspaceId) {
+  const nextId = validSourceRevision(workspaceId) ? workspaceId : null
+  if (state.sourceRecoveryWorkspaceId === nextId) return
+  const previousId = state.sourceRecoveryWorkspaceId
+  invalidateSourceRecoveryReview()
+  state.sourceRecoveryWorkspaceId = nextId
+  state.sourceRecoveryRecord = null
+  state.sourceRecoveryHasStored = false
+  state.sourceRecoveryEnabled = false
+  if (previousId) {
+    stopSourceDraftPreviewRead('Checkout changed. The literal preview retains its previous checkout snapshot; load source explicitly before making a new preview.')
+    if (state.sourceDraftPreview) { state.sourceDraftPreview.currentRevision = null; state.sourceDraftPreview.freshness = 'Unknown' }
+    invalidateSourceComparison('Checkout changed. The raw draft and old loaded baseline are kept; load the current checkout source explicitly before reviewing replacement.', true)
+    setControlValue('#source-confirmation', '')
+    invalidateSourceHistory()
+    state.sourceHistory = null
+    sourceObservationVersions.clear()
+    sourceObservedRevisions.clear()
+    state.fontSourceGeneration += 1
+    state.fontIntentGeneration += 1
+    state.fontSourceLoading = false
+    state.fontSourceNeedsRefresh = true
+    state.fontSourceUnavailable = false
+    state.fontConflictRevision = null
+    setControlValue('#font-confirmation', '')
+    setControlDisabled('#settings-text-save', true)
+    renderFontSourceRevision()
+    renderSelectedTextRevision()
+    renderSourceRevision()
+    updateSourceSaveAvailability()
+  }
+  if (!nextId) {
+    state.sourceRecoveryMessage = 'Checkout identity is unavailable. Recovery remains disabled; the open editor and saved browser slots are kept.'
+    renderSourceRecovery()
+    return
+  }
+  try {
+    const saved = readSourceRecoveryRecord()
+    state.sourceRecoveryEnabled = Boolean(saved)
+    state.sourceRecoveryState = saved ? 'stored' : 'empty'
+    state.sourceRecoveryMessage = saved ? 'A local saved draft is available. Review saved draft reads current source before offering Restore; the editor is unchanged.' : 'Local draft recovery is off. Opt in and Store recovery draft to keep an explicit snapshot; typing never stores it.'
+  } catch {
+    state.sourceRecoveryState = 'invalid'
+    state.sourceRecoveryMessage = 'Local recovery storage is unavailable or the stored record is invalid. Nothing was restored. Discard the saved slot or check browser storage access.'
+  }
+  renderSourceRecovery()
+}
+
+async function storeSourceRecovery() {
+  const editor = document.querySelector('#source-editor')
+  if (!editor || !state.sourceRecoveryEnabled || !sourceRecoveryKey() || state.sourceLoadedWorkspaceId !== state.sourceRecoveryWorkspaceId || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || state.sourceRecoveryBusy || document.querySelector('#source-file-select')?.value !== state.sourcePath) return
+  invalidateSourceRecoveryReview('Validating the explicit recovery snapshot; no source is saved.')
+  const generation = state.sourceRecoveryGeneration
+  const input = { schemaVersion: 1, workspaceId: state.sourceRecoveryWorkspaceId, path: state.sourcePath, baseRevision: state.sourceRevision, baselineContent: state.sourceLoadedContent, draftDisplay: editor.value, draftDigest: '0'.repeat(64), storedAt: new Date().toISOString() }
+  state.sourceRecoveryBusy = true
+  state.sourceRecoveryState = 'checking'
+  renderSourceRecovery()
+  try {
+    createRecoveryRecord(input)
+    const [baselineDigest, draftDigest] = await Promise.all([sourceTextDigest(input.baselineContent), sourceTextDigest(input.draftDisplay)])
+    if (generation !== state.sourceRecoveryGeneration || !state.sourceRecoveryEnabled) return
+    if (baselineDigest !== input.baseRevision.toLowerCase()) throw new Error('The raw baseline cannot be reproduced as UTF-8; recovery is unavailable for this source snapshot.')
+    const record = createRecoveryRecord({ ...input, draftDigest })
+    const prior = readSourceRecoveryRecord()
+    if (prior && (prior.record.path !== record.path || prior.record.baseRevision !== record.baseRevision || prior.record.draftDisplay !== record.draftDisplay) && !window.confirm('Replace the one saved recovery draft for this checkout? The open editor and repository are unchanged.')) {
+      state.sourceRecoveryState = 'stored'
+      state.sourceRecoveryMessage = 'Recovery storage replacement cancelled. The saved record and open draft are kept.'
+      return
+    }
+    if (generation !== state.sourceRecoveryGeneration || !state.sourceRecoveryEnabled || state.sourceRecoveryWorkspaceId !== input.workspaceId || window.localStorage.getItem(sourceRecoveryKey()) !== (prior?.serialized ?? null)) throw new Error('The reviewed recovery slot changed.')
+    const serialized = JSON.stringify(record)
+    if (serialized.length > sourceRecordLimits.serializedRecovery) throw new Error('The recovery snapshot exceeds its storage limit.')
+    window.localStorage.setItem(sourceRecoveryKey(), serialized)
+    state.sourceRecoveryRecord = record
+    state.sourceRecoveryHasStored = true
+    state.sourceRecoveryState = 'stored'
+    state.sourceRecoveryMessage = 'Recovery draft stored explicitly in this browser for this checkout. Typing does not update it. Review saved draft before restoring; no source was saved.'
+  } catch {
+    if (generation !== state.sourceRecoveryGeneration) return
+    state.sourceRecoveryState = 'invalid'
+    state.sourceRecoveryMessage = 'Recovery snapshot was not stored: unsupported record, sensitive content, size, UTF-8 baseline or browser storage refusal. The open draft and previous stored slot are kept.'
+  } finally {
+    if (generation === state.sourceRecoveryGeneration) { state.sourceRecoveryBusy = false; renderSourceRecovery() }
+  }
+}
+
+async function reviewSourceRecovery() {
+  if (!state.sourceRecoveryEnabled || !sourceRecoveryKey() || state.sourceLoading || state.sourceSaving || state.sourceRecoveryBusy) return
+  invalidateSourceRecoveryReview('Checking the saved baseline against current source. The open draft and loaded base are kept.')
+  const generation = state.sourceRecoveryGeneration
+  const controller = new AbortController()
+  state.sourceRecoveryController = controller
+  state.sourceRecoveryBusy = true
+  state.sourceRecoveryState = 'checking'
+  renderSourceRecovery()
+  let saved, observation
+  let phase = 'validating'
+  try {
+    saved = readSourceRecoveryRecord()
+    if (!saved) throw new Error('No saved recovery draft is available.')
+    const { record } = saved
+    const [baselineDigest, draftDigest] = await Promise.all([sourceTextDigest(record.baselineContent), sourceTextDigest(record.draftDisplay)])
+    if (generation !== state.sourceRecoveryGeneration) return
+    if (baselineDigest !== record.baseRevision.toLowerCase() || draftDigest !== record.draftDigest.toLowerCase()) throw new Error('The saved recovery digests do not match.')
+    observation = sourceObservationVersions.get(record.path) || 0
+    phase = 'reading'
+    const current = await request(`/api/builder/source?path=${encodeURIComponent(record.path)}`, { signal: controller.signal })
+    if (generation !== state.sourceRecoveryGeneration) return
+    if (!sourceSnapshotForWorkspace(current, record.workspaceId) || sourceObservationSuperseded(record.path, observation, current.revision) || current.path !== record.path || !validSourceRevision(current.revision)) throw new Error('A current source revision was not confirmed.')
+    observeSourceRevision(record.path, current.revision, 'Recovery source check', true, null, null, false)
+    state.sourceRecoveryReview = { ...saved, generation, currentRevision: current.revision, observation: sourceObservationVersions.get(record.path) || 0 }
+    state.sourceRecoveryState = current.revision === record.baseRevision.toLowerCase() ? 'matching' : 'stale'
+    state.sourceRecoveryMessage = state.sourceRecoveryState === 'matching'
+      ? 'Saved baseline matches the observed current revision. Restore saved draft explicitly replaces the open editor and keeps the saved baseline; no source is saved.'
+      : 'Saved baseline is stale. Restore saved draft keeps its older baseline and replaces only the open editor. A later normal save will conflict until you compare or explicitly reload.'
+  } catch (error) {
+    if (generation !== state.sourceRecoveryGeneration) return
+    state.sourceRecoveryReview = null
+    const superseded = saved && observation !== undefined && observation !== (sourceObservationVersions.get(saved.record.path) || 0)
+    state.sourceRecoveryState = sourceUnavailable(error) && !superseded ? 'unavailable' : phase === 'reading' ? 'unknown' : 'invalid'
+    state.sourceRecoveryMessage = state.sourceRecoveryState === 'unavailable' ? 'Saved source is unavailable. The saved record and open draft are kept; Restore is disabled and no file will be recreated.' : 'Recovery review was not completed: invalid record, changed observation or local connection failure. The saved slot and open draft are kept; review again before restoring.'
+  } finally {
+    if (generation === state.sourceRecoveryGeneration) { state.sourceRecoveryBusy = false; state.sourceRecoveryController = null; renderSourceRecovery() }
+  }
+}
+
+function restoreSourceRecovery() {
+  const review = state.sourceRecoveryReview
+  if (!review || review.generation !== state.sourceRecoveryGeneration || state.sourceRecoveryBusy || state.sourceLoading || state.sourceSaving || !state.sourceRecoveryEnabled) return
+  try {
+    if (window.localStorage.getItem(sourceRecoveryKey()) !== review.serialized || review.observation !== (sourceObservationVersions.get(review.record.path) || 0)) throw new Error('Recovery review changed.')
+  } catch {
+    invalidateSourceRecoveryReview('The saved record or current source observation changed. Review saved draft again before restoring.')
+    return
+  }
+  if (!window.confirm(`Restore the saved draft for ${review.record.path} and replace the open editor draft? Its original baseline is retained; no source file is saved.`)) return
+  try {
+    if (review !== state.sourceRecoveryReview || review.generation !== state.sourceRecoveryGeneration || !state.sourceRecoveryEnabled || review.record.workspaceId !== state.sourceRecoveryWorkspaceId || window.localStorage.getItem(sourceRecoveryKey()) !== review.serialized || review.observation !== (sourceObservationVersions.get(review.record.path) || 0)) throw new Error('The reviewed recovery slot changed.')
+  } catch {
+    invalidateSourceRecoveryReview('The saved slot or source observation changed during confirmation. Review saved draft again; the open editor is kept.')
+    return
+  }
+  const record = review.record, editor = document.querySelector('#source-editor'), select = document.querySelector('#source-file-select')
+  stopSourceDraftPreviewRead('A recovery draft replaced the open editor. The literal preview keeps its captured snapshot.')
+  invalidateSourceComparison('A saved draft was restored. Compare latest again before reviewing replacement.', true)
+  state.sourceTargetGeneration += 1
+  state.sourceLoadGeneration += 1
+  state.sourcePath = record.path
+  state.sourceRevision = record.baseRevision.toLowerCase()
+  state.sourceLoadedContent = record.baselineContent
+  state.sourceDisplayBaseline = normalizeSourceDisplay(record.baselineContent)
+  state.sourceLoadedWorkspaceId = state.sourceRecoveryWorkspaceId
+  if (![...select.options].some((option) => option.value === record.path)) { const option = create('option', '', `${record.path} (recovered source)`); option.value = record.path; select.append(option) }
+  select.value = record.path
+  editor.value = record.draftDisplay
+  clearSourceUnavailable()
+  state.sourceConflictRevision = review.currentRevision === state.sourceRevision ? null : review.currentRevision
+  setControlValue('#source-confirmation', '')
+  renderSourceRevision()
+  invalidateSourceRecoveryReview('Saved draft restored into the editor with its original baseline. The repository is unchanged. The saved slot remains until you discard or replace it.')
+  updateSourceSaveAvailability()
+}
+
+function discardSourceRecovery(disable = false) {
+  invalidateSourceRecoveryReview()
+  if (disable) state.sourceRecoveryEnabled = false
+  try {
+    const key = sourceRecoveryKey()
+    if (!key) throw new Error('Checkout identity unavailable.')
+    window.localStorage.removeItem(key)
+    state.sourceRecoveryRecord = null
+    state.sourceRecoveryHasStored = false
+    state.sourceRecoveryState = 'empty'
+    state.sourceRecoveryMessage = disable ? 'Local recovery is off and its saved slot was removed. The open draft is kept.' : 'Saved recovery draft discarded. The open editor, loaded base and repository are unchanged.'
+  } catch {
+    state.sourceRecoveryState = 'unknown'
+    state.sourceRecoveryMessage = 'Browser storage refused removal. The saved slot may still exist; the open draft is kept. Recovery will not save automatically.'
+  }
+  renderSourceRecovery()
+}
+
+function comparisonExportMatches(review = state.sourceComparison) {
+  return Boolean(review && sourceLoadedForWorkspace() && !review.pending && !review.stale && !state.sourceLoading && !state.sourceSaving && !state.sourceComparing && !state.sourceUnavailable && review.comparison && review.currentTextMatchesRevision
+    && review.generation === state.sourceComparisonGeneration && review.path === state.sourcePath && document.querySelector('#source-file-select')?.value === review.path
+    && review.loadedRevision === state.sourceRevision && validSourceRevision(review.currentRevision) && validSourceRevision(review.draftRevision)
+    && document.querySelector('#source-editor')?.value === review.draftDisplay && sourceContentForDraft(review.draftDisplay) === review.draftContent)
+}
+
+function invalidateSourceExport(message) {
+  state.sourceExportGeneration += 1
+  if (state.sourceExport) { state.sourceExport.stale = true; state.sourceExport.message = message; state.sourceExport.pending = false }
+  setControlValue('#source-export-confirmation', '')
+  renderSourceExport()
+}
+
+function renderSourceExport() {
+  const snapshot = state.sourceExport, panel = document.querySelector('#source-export')
+  if (!panel) return
+  panel.hidden = !snapshot
+  setControlDisabled('#review-source-export', !comparisonExportMatches())
+  if (!snapshot) return
+  panel.dataset.state = snapshot.stale ? 'stale' : snapshot.pending ? 'reviewing' : 'ready'
+  text('#source-export-scope', snapshot.scope ? JSON.stringify(snapshot.scope, null, 2) : 'Calculating the bounded export scope…')
+  text('#source-export-status', snapshot.message || 'This download includes the full proposed draft and latest source text plus bounded line comparison metadata. Review the exact scope, then type EXPORT COMPARISON. It does not authorize a source write.')
+  setControlDisabled('#source-export-confirmation', snapshot.pending || snapshot.stale)
+  setControlDisabled('#download-source-export', snapshot.pending || snapshot.stale || !comparisonExportMatches(snapshot.review) || snapshot.generation !== state.sourceExportGeneration)
+}
+
+async function reviewSourceExport() {
+  const review = state.sourceComparison
+  if (!comparisonExportMatches(review)) return
+  invalidateSourceExport()
+  const generation = state.sourceExportGeneration
+  const snapshot = { generation, review, pending: true, stale: false, scope: null, json: null, message: '' }
+  state.sourceExport = snapshot
+  renderSourceExport()
+  try {
+    const { payload, json } = createComparisonExport({ schemaVersion: 1, path: review.path, loadedRevision: review.loadedRevision, currentRevision: review.currentRevision, draftRevision: review.draftRevision, draftContent: review.draftContent, currentContent: review.currentContent, comparison: review.comparison })
+    const jsonDigest = await sourceTextDigest(json)
+    if (generation !== state.sourceExportGeneration || state.sourceExport !== snapshot || !comparisonExportMatches(review)) return
+    Object.assign(snapshot, { pending: false, json, scope: { path: payload.path, loadedRevision: payload.loadedRevision, currentRevision: payload.currentRevision, draftRevision: payload.draftRevision, draftCharacters: payload.draftContent.length, currentCharacters: payload.currentContent.length, jsonCharacters: json.length, jsonBytes: new Blob([json]).size, jsonDigest, comparison: { complete: payload.comparison.complete, truncated: payload.comparison.truncated, counts: payload.comparison.counts, reasons: payload.comparison.reasons }, includedFields: Object.keys(payload) } })
+    renderSourceExport()
+  } catch {
+    if (generation !== state.sourceExportGeneration || state.sourceExport !== snapshot) return
+    snapshot.pending = false
+    snapshot.stale = true
+    snapshot.message = 'Export is unavailable: unsupported comparison, sensitive content or export size limit. The draft, loaded baseline and source are unchanged.'
+    renderSourceExport()
+  }
+}
+
+function downloadSourceExport() {
+  const snapshot = state.sourceExport
+  if (!snapshot || snapshot.pending || snapshot.stale || snapshot.generation !== state.sourceExportGeneration || !comparisonExportMatches(snapshot.review)) return
+  if (document.querySelector('#source-export-confirmation')?.value !== 'EXPORT COMPARISON') { text('#source-export-status', 'Type EXPORT COMPARISON after reviewing the included source text scope before downloading.'); return }
+  let url, anchor
+  try {
+    url = URL.createObjectURL(new Blob([snapshot.json], { type: 'application/json;charset=utf-8' }))
+    anchor = create('a')
+    anchor.href = url
+    anchor.download = 'systemx-source-comparison.json'
+    anchor.hidden = true
+    document.body.append(anchor)
+    anchor.click()
+    setControlValue('#source-export-confirmation', '')
+    text('#source-export-status', 'Confirmed comparison JSON download requested. The included source text is explicit; the repository and save authority are unchanged.')
+  } catch {
+    text('#source-export-status', 'The browser refused the comparison download. The draft, loaded base and source are kept. Check browser download access, then confirm inclusion again.')
+  } finally {
+    anchor?.remove()
+    if (url) window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+}
+
+function invalidateSourceHistory() {
+  state.sourceHistoryGeneration += 1
+  state.sourceHistoryController?.abort()
+  state.sourceHistoryController = null
+  state.sourceHistoryLoading = false
+  if (state.sourceHistory) state.sourceHistory.stale = true
+  renderSourceHistory()
+}
+
+function renderSourceHistory() {
+  const history = state.sourceHistory
+  const panel = document.querySelector('#source-history')
+  if (panel) panel.dataset.state = state.sourceHistoryLoading ? 'checking' : !history ? 'empty' : history.unavailable ? 'unavailable' : history.message ? 'unknown' : history.stale ? 'stale' : 'current'
+  setControlDisabled('#refresh-source-history', !sourceLoadedForWorkspace() || state.sourceHistoryLoading || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
+  text('#source-history-path', history?.path || 'No history read')
+  text('#source-history-current-revision', history?.currentRevision || 'Not observed')
+  if (!history) return
+  text('#source-history-status', state.sourceHistoryLoading ? 'Reading bounded source history; no source or recovery data is written.' : history.message || `${history.stale ? 'History snapshot is outdated; refresh to observe current source. ' : ''}${history.entries.length} rows shown · ${history.omittedEntries} omitted · truncated: ${history.truncated}. Observations do not identify an external author. ${history.warnings.join(' ')}`)
+  const list = document.querySelector('#source-history-list')
+  list?.replaceChildren()
+  const labels = { 'builder-save': 'Recorded builder save', 'legacy-builder-operation': 'Legacy/unverified builder operation', 'observed-current': 'Observed source snapshot · author unverified', 'observed-change': 'Observed source change · author unverified' }
+  for (const entry of history.entries) {
+    const row = create('article', 'source-history-entry')
+    row.dataset.historyKind = entry.kind
+    if (entry.revision) row.dataset.revision = entry.revision
+    row.dataset.workspaceBound = String(entry.workspaceBound === true)
+    row.dataset.revisionAvailable = String(entry.revisionAvailable === true)
+    const label = entry.kind === 'legacy-builder-operation' ? `${labels[entry.kind]} · ${entry.workspaceBound ? 'checkout-bound record' : 'checkout unverified'} · ${entry.revisionAvailable ? 'recorded hashes retained' : 'revision unavailable'}` : labels[entry.kind]
+    row.append(create('strong', '', label), create('small', '', `${entry.timestamp} · ${entry.operation || 'source observation'} · ${entry.provenance}`), create('code', '', `Previous: ${entry.previousRevision || 'Not recorded'}`), create('code', '', `Revision: ${entry.revision || 'Not recorded'}`))
+    list?.append(row)
+  }
+}
+
+async function refreshSourceHistory() {
+  const path = state.sourcePath
+  if (!path || !sourceLoadedForWorkspace() || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== path || state.sourceHistoryLoading) return
+  invalidateSourceHistory()
+  const generation = state.sourceHistoryGeneration, targetGeneration = state.sourceTargetGeneration
+  const observation = sourceObservationVersions.get(path) || 0
+  const controller = new AbortController()
+  state.sourceHistoryController = controller
+  state.sourceHistoryLoading = true
+  text('#source-history-status', 'Reading bounded source history; no source or recovery data is written.')
+  renderSourceHistory()
+  try {
+    const result = await request(`/api/builder/source/history?path=${encodeURIComponent(path)}&limit=30`, { signal: controller.signal })
+    if (generation !== state.sourceHistoryGeneration || targetGeneration !== state.sourceTargetGeneration || state.sourcePath !== path) return
+    if (result.schemaVersion !== 1 || result.workspaceId !== state.sourceRecoveryWorkspaceId || result.path !== path || !validSourceRevision(result.currentRevision) || !Array.isArray(result.entries) || sourceObservationSuperseded(path, observation, result.currentRevision)) throw new Error('History response could not be bound to the current checkout.')
+    const kinds = ['builder-save', 'legacy-builder-operation', 'observed-current', 'observed-change']
+    const entries = result.entries.slice(0, sourceRecordLimits.historyEntries).filter((entry) => {
+      if (!entry || !kinds.includes(entry.kind) || ![null, 'source', 'leaf-text', 'font'].includes(entry.operation) || typeof entry.timestamp !== 'string' || entry.timestamp.length > 40 || (entry.previousRevision !== null && !validSourceRevision(entry.previousRevision)) || (entry.revision !== null && !validSourceRevision(entry.revision))) return false
+      if (entry.kind === 'builder-save') return entry.provenance === 'operation-log' && entry.attribution === 'recorded-builder-operation' && entry.workspaceBound === true && entry.revisionAvailable === true && validSourceRevision(entry.previousRevision) && validSourceRevision(entry.revision)
+      if (entry.kind === 'legacy-builder-operation') return entry.provenance === 'operation-log' && ['recorded-builder-operation', 'unattributed'].includes(entry.attribution) && typeof entry.workspaceBound === 'boolean' && typeof entry.revisionAvailable === 'boolean' && (entry.revisionAvailable ? validSourceRevision(entry.previousRevision) && validSourceRevision(entry.revision) : entry.previousRevision === null && entry.revision === null)
+      return entry.provenance === 'session-observation' && entry.attribution === 'unattributed' && entry.operation === null && validSourceRevision(entry.revision)
+    })
+    observeSourceRevision(path, result.currentRevision, 'Source history read')
+    state.sourceHistory = { path, currentRevision: result.currentRevision, entries, omittedEntries: (Number.isSafeInteger(result.omittedEntries) && result.omittedEntries >= 0 ? result.omittedEntries : 0) + result.entries.length - entries.length, truncated: Boolean(result.truncated) || result.entries.length > entries.length, warnings: Array.isArray(result.warnings) ? result.warnings.filter((value) => typeof value === 'string').slice(0, 6).map((value) => value.slice(0, 250)) : [], stale: false }
+    renderSourceHistory()
+  } catch (error) {
+    if (generation !== state.sourceHistoryGeneration || targetGeneration !== state.sourceTargetGeneration || state.sourcePath !== path) return
+    const superseded = observation !== (sourceObservationVersions.get(path) || 0)
+    if (sourceUnavailable(error) && !superseded) setSourceUnavailable(path)
+    state.sourceHistory = { path, currentRevision: null, entries: [], omittedEntries: 0, truncated: false, warnings: [], stale: true, unavailable: sourceUnavailable(error) && !superseded, message: sourceUnavailable(error) && !superseded ? 'Source is unavailable. The open draft and loaded baseline are kept; history cannot recreate the file.' : 'History read was not confirmed or was superseded. The draft, loaded baseline and existing source are kept; check the local connection and refresh history.' }
+    renderSourceHistory()
+  } finally {
+    if (generation === state.sourceHistoryGeneration) { state.sourceHistoryLoading = false; state.sourceHistoryController = null; renderSourceHistory() }
+  }
+}
+
 function sourceReviewMatches(review = state.sourceComparison) {
   const editor = document.querySelector('#source-editor')
-  return Boolean(review && !review.pending && !review.stale && !state.sourceUnavailable
+  return Boolean(review && sourceLoadedForWorkspace() && !review.pending && !review.stale && !state.sourceUnavailable
     && review.comparison?.complete && !review.comparison.truncated && review.currentTextMatchesRevision
     && review.generation === state.sourceComparisonGeneration
     && review.path === state.sourcePath && document.querySelector('#source-file-select')?.value === review.path
@@ -2262,6 +2671,7 @@ function renderSourceComparison() {
 }
 
 function invalidateSourceComparison(reason, clear = false) {
+  invalidateSourceExport(reason)
   state.sourceComparisonGeneration += 1
   state.sourceComparisonController?.abort()
   state.sourceComparisonController = null
@@ -2289,7 +2699,7 @@ async function sourceTextDigest(content) {
 async function compareLatestSource() {
   const editor = document.querySelector('#source-editor')
   const path = state.sourcePath
-  if (!editor || !path || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || state.sourceComparing) return
+  if (!editor || !path || !sourceLoadedForWorkspace() || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || state.sourceComparing) return
   if (document.querySelector('#source-file-select')?.value !== path) {
     output('#source-output', 'Load the selected file before comparing; the retained draft still belongs to its loaded file.')
     return
@@ -2305,6 +2715,7 @@ async function compareLatestSource() {
   }
   invalidateSourceComparison('Reading latest source; the draft and loaded base are kept.', true)
   const generation = state.sourceComparisonGeneration
+  const workspaceId = state.sourceRecoveryWorkspaceId
   const observation = sourceObservationVersions.get(path) || 0
   const controller = new AbortController()
   state.sourceComparisonController = controller
@@ -2317,7 +2728,7 @@ async function compareLatestSource() {
     const result = await request(`/api/builder/source?path=${encodeURIComponent(path)}`, { signal: controller.signal })
     if (generation !== state.sourceComparisonGeneration) return
     if (sourceObservationSuperseded(path, observation, result.revision)) throw new Error('A newer source observation arrived while comparing. Compare latest again.')
-    if (result.path !== path || !validSourceRevision(result.revision) || typeof result.content !== 'string') throw new Error('Latest source revision is unavailable.')
+    if (!sourceSnapshotForWorkspace(result, workspaceId) || result.path !== path || !validSourceRevision(result.revision) || typeof result.content !== 'string') throw new Error('Latest source revision is unavailable.')
     if (result.content.length > sourceComparisonLimits.characters) throw new Error(`Latest source exceeds the ${sourceComparisonLimits.characters}-character comparison limit.`)
     const [draftRevision, currentTextRevision] = await Promise.all([sourceTextDigest(draftContent), sourceTextDigest(result.content)])
     if (generation !== state.sourceComparisonGeneration) return
@@ -2381,7 +2792,7 @@ function renderSelectedTextRevision() {
   }
   label.dataset.revision = source.revision
   const dirty = document.querySelector('#settings-text-editor')?.value.trim() !== state.previewSelection?.originalText
-  label.textContent = source.currentRevision
+  label.textContent = source.workspaceId !== state.sourceRecoveryWorkspaceId ? `Previous checkout · text draft kept · loaded ${source.revision}. Reload source before saving.` : source.currentRevision
     ? `Conflict · unsaved text draft · loaded ${source.revision} · current ${source.currentRevision}`
     : `${dirty ? 'Unsaved text draft' : 'Loaded source'} · revision ${source.revision.slice(0, 12)}.`
   if (source.currentRevision) label.dataset.currentRevision = source.currentRevision
@@ -2393,7 +2804,7 @@ function renderSourceRevision() {
   if (!label || !validSourceRevision(state.sourceRevision)) return
   const dirty = document.querySelector('#source-editor')?.value !== state.sourceDisplayBaseline
   label.dataset.revision = state.sourceRevision
-  label.textContent = state.sourceUnavailable
+  label.textContent = !sourceLoadedForWorkspace() ? `Previous checkout · retained ${dirty ? 'draft' : 'source'} · loaded ${state.sourceRevision}. Load current checkout source explicitly before saving.` : state.sourceUnavailable
     ? `Source unavailable · ${dirty ? 'unsaved draft' : 'loaded source'} · loaded ${state.sourceRevision}`
     : state.sourceConflictRevision
     ? `Conflict · ${dirty ? 'unsaved draft' : 'loaded source'} · loaded ${state.sourceRevision} · current ${state.sourceConflictRevision}`
@@ -2405,6 +2816,7 @@ function renderSourceRevision() {
 async function loadSelectedTextSource(element = state.previewSelectedElement, path = state.previewSelection?.sourcePath) {
   if (!element || !path) return
   const generation = ++state.previewTextSourceGeneration
+  const workspaceId = state.sourceRecoveryWorkspaceId
   const observation = sourceObservationVersions.get(path) || 0
   state.previewTextSourcePending = element
   setControlDisabled('#settings-text-save', true)
@@ -2413,9 +2825,9 @@ async function loadSelectedTextSource(element = state.previewSelectedElement, pa
     const result = await request(`/api/builder/source?path=${encodeURIComponent(path)}`)
     if (generation !== state.previewTextSourceGeneration || state.previewSelectedElement !== element || state.previewSelection?.sourcePath !== path) return
     if (sourceObservationSuperseded(path, observation, result.revision)) throw new Error('A newer source observation arrived while reading. Reload latest source before saving.')
-    if (result.path !== path || !validSourceRevision(result.revision)) throw new Error('Source revision unavailable. Choose Reload latest source before saving.')
+    if (!sourceSnapshotForWorkspace(result, workspaceId) || result.path !== path || !validSourceRevision(result.revision)) throw new Error('Source revision unavailable. Choose Reload latest source before saving.')
     observeSourceRevision(path, result.revision, 'Selected-text source read')
-    state.previewTextSource = { element, path, content: result.content, revision: result.revision }
+    state.previewTextSource = { element, path, content: result.content, revision: result.revision, workspaceId }
     renderSelectedTextRevision()
   } catch (error) {
     if (generation === state.previewTextSourceGeneration) output('#settings-source-revision', `${error.message} The text draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
@@ -2423,19 +2835,22 @@ async function loadSelectedTextSource(element = state.previewSelectedElement, pa
     if (generation === state.previewTextSourceGeneration) {
       state.previewTextSourcePending = null
       const loaded = state.previewTextSource
-      setControlDisabled('#settings-text-save', loaded?.element !== element || loaded.path !== path || state.previewTextSaving === element)
+      setControlDisabled('#settings-text-save', loaded?.element !== element || loaded.path !== path || loaded.workspaceId !== state.sourceRecoveryWorkspaceId || state.previewTextSaving === element)
     }
   }
 }
 
 function updateSourceSaveAvailability() {
-  setControlDisabled('#save-source', state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable || !validSourceRevision(state.sourceRevision))
+  setControlDisabled('#save-source', !sourceLoadedForWorkspace() || state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable || !validSourceRevision(state.sourceRevision))
   setControlDisabled('#load-source', state.sourceSaving)
   setControlDisabled('#reload-source', state.sourceSaving)
-  setControlDisabled('#compare-source', state.sourceLoading || state.sourceSaving || state.sourceComparing || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
+  setControlDisabled('#compare-source', !sourceLoadedForWorkspace() || state.sourceLoading || state.sourceSaving || state.sourceComparing || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
   setControlDisabled('#prepare-source-replacement', state.sourceLoading || state.sourceSaving || state.sourceComparing || !sourceReviewMatches())
   text('#save-source', state.sourceComparison?.prepared && sourceReviewMatches() ? 'Save reviewed replacement' : 'Save')
   renderSourceDraftPreview()
+  renderSourceRecovery()
+  renderSourceExport()
+  renderSourceHistory()
 }
 
 function sourceContentForDraft(displayDraft) {
@@ -2450,6 +2865,8 @@ async function loadSource({ path } = {}) {
   const editor = document.querySelector('#source-editor')
   const wantedPath = path || select?.value
   if (!select || !editor || !wantedPath || state.sourceSaving) return
+  invalidateSourceRecoveryReview('Source load requested. Review saved draft again before restoring.')
+  invalidateSourceHistory()
   stopSourceDraftPreviewRead('Source load requested. The preview keeps its captured text and baseline.')
   invalidateSourceComparison('Source load requested. Compare latest again before reviewing replacement.')
   if (state.sourcePath && editor.value !== state.sourceDisplayBaseline && !window.confirm('Reload source and discard the unsaved source draft? Cancel keeps the draft and its loaded revision.')) {
@@ -2459,6 +2876,7 @@ async function loadSource({ path } = {}) {
   }
   const generation = ++state.sourceLoadGeneration
   const targetGeneration = state.sourceTargetGeneration
+  const workspaceId = state.sourceRecoveryWorkspaceId
   const observation = sourceObservationVersions.get(wantedPath) || 0
   state.sourceLoading = true
   editor.disabled = true
@@ -2468,10 +2886,11 @@ async function loadSource({ path } = {}) {
     if (generation !== state.sourceLoadGeneration) return
     if (targetGeneration !== state.sourceTargetGeneration) throw new Error('Selected source changed while reading. Load the selected file explicitly.')
     if (sourceObservationSuperseded(wantedPath, observation, result.revision)) throw new Error('A newer source observation arrived while reading. Reload source again.')
-    if (result.path !== wantedPath || !validSourceRevision(result.revision) || typeof result.content !== 'string') throw new Error('Source revision unavailable. Reload source before saving.')
+    if (!sourceSnapshotForWorkspace(result, workspaceId) || result.path !== wantedPath || !validSourceRevision(result.revision) || typeof result.content !== 'string') throw new Error('Source revision unavailable. Reload source before saving.')
     state.sourcePath = result.path
     state.sourceRevision = result.revision
     state.sourceLoadedContent = result.content
+    state.sourceLoadedWorkspaceId = workspaceId
     state.sourceConflictRevision = null
     select.value = result.path
     editor.value = result.content
@@ -2504,7 +2923,7 @@ async function saveSource() {
   const editor = document.querySelector('#source-editor')
   const confirmation = document.querySelector('#source-confirmation')
   if (!select || !editor || !confirmation) return
-  if (!state.sourcePath || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable) {
+  if (!state.sourcePath || !sourceLoadedForWorkspace() || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable) {
     output('#source-output', 'Load a source file before saving.')
     return
   }
@@ -2513,6 +2932,7 @@ async function saveSource() {
     return
   }
   const review = state.sourceComparison?.prepared ? state.sourceComparison : null
+  invalidateSourceRecoveryReview('Source save requested. Review saved draft again before restoring.')
   if (review && !sourceReviewMatches(review)) {
     invalidateSourceComparison('Replacement review is outdated. Compare latest and review again.')
     return
@@ -2522,6 +2942,7 @@ async function saveSource() {
     return
   }
   const path = state.sourcePath, baseRevision = review ? review.currentRevision : state.sourceRevision, displayDraft = editor.value
+  const workspaceId = state.sourceRecoveryWorkspaceId
   const content = review ? review.draftContent : sourceContentForDraft(displayDraft)
   const observation = sourceObservationVersions.get(path) || 0
   if (!review) invalidateSourceComparison('A source save was requested. Compare latest again before reviewing replacement.')
@@ -2536,7 +2957,7 @@ async function saveSource() {
     state.sourceConflictRevision = null
     clearSourceUnavailable()
     if (state.sourceDraftPreview?.path === path) stopSourceDraftPreviewRead('Source save accepted. The preview retains its captured text and original baseline.')
-    observeSourceRevision(path, result.revision, 'Source save accepted', false, null, observation)
+    if (workspaceId === state.sourceRecoveryWorkspaceId) observeSourceRevision(path, result.revision, 'Source save accepted', false, null, observation)
     invalidateSourceComparison('Source save accepted. Compare latest again before another replacement.', true)
     renderSourceRevision()
     output('#source-output', result.status === 'saved' ? `Saved ${result.path}; backup: ${result.backup}. Vite preview can hot reload.` : result.status)
@@ -2544,7 +2965,7 @@ async function saveSource() {
     await refresh()
   } catch (error) {
     if (sourceUnavailable(error)) {
-      if (observation !== (sourceObservationVersions.get(path) || 0)) {
+      if (workspaceId !== state.sourceRecoveryWorkspaceId || observation !== (sourceObservationVersions.get(path) || 0)) {
         output('#source-output', 'Source was unavailable at the save attempt; a newer source observation superseded that response. The draft and loaded base are kept. Compare latest or reload explicitly.')
         return
       }
@@ -2558,7 +2979,7 @@ async function saveSource() {
       return
     }
     state.sourceConflictRevision = observation !== (sourceObservationVersions.get(path) || 0) ? sourceObservedRevisions.get(path) : error.currentRevision
-    if (error.currentRevision) observeSourceRevision(path, error.currentRevision, 'Source save conflict', false, null, observation)
+    if (error.currentRevision && workspaceId === state.sourceRecoveryWorkspaceId) observeSourceRevision(path, error.currentRevision, 'Source save conflict', false, null, observation)
     invalidateSourceComparison(`Source changed again${error.currentRevision ? ` · current ${error.currentRevision}` : ''}. Compare latest and review again.`)
     renderSourceRevision()
     output('#source-output', 'Source changed since it was loaded. The draft and loaded revision are kept. Choose Compare latest for a non-destructive review, or Reload latest source to explicitly replace the retained draft after confirmation.')
@@ -3036,13 +3457,34 @@ function bind() {
   document.querySelector('#load-source')?.addEventListener('click', () => void loadSource().catch((error) => output('#source-output', error.message)))
   document.querySelector('#source-editor')?.addEventListener('input', () => {
     renderSourceRevision()
+    invalidateSourceRecoveryReview('The open draft changed. Review saved draft again before restoring over it.')
     stopSourceDraftPreviewRead('Draft edited since preview. Captured text, digest and baseline are kept; Preview draft captures the newer text.')
     invalidateSourceComparison('Draft changed. Comparison is outdated; compare latest and review again.')
   })
   document.querySelector('#source-file-select')?.addEventListener('change', () => {
     state.sourceTargetGeneration += 1
+    invalidateSourceRecoveryReview('Selected source changed. Review saved draft again before restoring.')
+    invalidateSourceHistory()
     stopSourceDraftPreviewRead('Selected source changed. The preview retains its captured path, text and baseline.')
     invalidateSourceComparison('Selected source changed. Comparison is outdated; compare latest and review again.')
+  })
+  document.querySelector('#source-recovery-opt-in')?.addEventListener('change', (event) => {
+    if (!event.target.checked) discardSourceRecovery(true)
+    else { state.sourceRecoveryEnabled = true; invalidateSourceRecoveryReview('Recovery enabled for explicit snapshots only. Store recovery draft records one snapshot; typing never stores it.') }
+  })
+  document.querySelector('#store-source-recovery')?.addEventListener('click', () => void storeSourceRecovery())
+  document.querySelector('#review-source-recovery')?.addEventListener('click', () => void reviewSourceRecovery())
+  document.querySelector('#restore-source-recovery')?.addEventListener('click', restoreSourceRecovery)
+  document.querySelector('#discard-source-recovery')?.addEventListener('click', () => discardSourceRecovery())
+  document.querySelector('#review-source-export')?.addEventListener('click', () => void reviewSourceExport())
+  document.querySelector('#download-source-export')?.addEventListener('click', downloadSourceExport)
+  document.querySelector('#cancel-source-export')?.addEventListener('click', () => { invalidateSourceExport(); state.sourceExport = null; renderSourceExport() })
+  document.querySelector('#refresh-source-history')?.addEventListener('click', () => void refreshSourceHistory())
+  window.addEventListener('storage', (event) => {
+    if (event.key !== null && event.key !== sourceRecoveryKey()) return
+    invalidateSourceRecoveryReview('The saved recovery slot changed in another tab. Review it again before restoring.')
+    try { readSourceRecoveryRecord() } catch { state.sourceRecoveryRecord = null; state.sourceRecoveryState = 'invalid' }
+    renderSourceRecovery()
   })
   document.querySelector('#preview-source-draft')?.addEventListener('click', () => void previewSourceDraft())
   document.querySelector('#check-source-draft-preview')?.addEventListener('click', () => void checkSourceDraftPreview())

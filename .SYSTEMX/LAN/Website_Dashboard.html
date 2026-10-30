@@ -477,6 +477,26 @@
             <output id="source-revision" class="source-revision-row" aria-live="polite">No source revision loaded.</output>
             <output id="source-availability" class="command-output" aria-live="polite" hidden></output>
             <p id="source-revision-help" class="panel-help">A revision covers the bytes of one allowlisted source file. It does not establish Git cleanliness, provider publication, or an exclusive lock.</p>
+            <section id="source-recovery" class="source-comparison" aria-label="Local source draft recovery" data-state="empty">
+              <h3>Local draft recovery</h3>
+              <label class="source-consent"><input id="source-recovery-opt-in" type="checkbox" />Allow one recovery draft for this checkout in this browser</label>
+              <p class="panel-help">Store recovery draft explicitly records the path, raw baseline text and revision, displayed draft and digest. Typing never stores it. Turning this off removes the saved slot. Storage is local to this browser; do not store sensitive source.</p>
+              <dl class="source-comparison-revisions">
+                <dt>Saved path</dt><dd id="source-recovery-path">No saved draft</dd>
+                <dt>Saved raw baseline revision</dt><dd id="source-recovery-base-revision">Not available</dd>
+                <dt>Saved displayed draft digest</dt><dd id="source-recovery-draft-digest">Not available</dd>
+                <dt>Current revision checked for restore</dt><dd id="source-recovery-current-revision">Not checked</dd>
+              </dl>
+              <pre id="source-recovery-draft" tabindex="0" aria-label="Saved recovery draft excerpt"></pre>
+              <output id="source-recovery-summary" class="panel-help"></output>
+              <div class="source-toolbar">
+                <button id="store-source-recovery" class="button" type="button" disabled>Store recovery draft</button>
+                <button id="review-source-recovery" class="button" type="button" disabled>Review saved draft</button>
+                <button id="restore-source-recovery" class="button" type="button" disabled>Restore saved draft</button>
+                <button id="discard-source-recovery" class="button" type="button" disabled>Discard saved draft</button>
+              </div>
+              <output id="source-recovery-status" class="command-output" aria-live="polite">Local draft recovery is off. Nothing is stored automatically.</output>
+            </section>
             <section id="source-draft-preview" class="source-comparison source-draft-preview" aria-label="Literal source draft preview" hidden>
               <div class="panel-heading compact"><h3>Literal draft snapshot</h3><button id="close-source-draft-preview" class="button" type="button">Close preview</button></div>
               <p class="panel-help">This text snapshot is not compiled or executed. Preview and Check source only read source; they do not prepare a replacement or save a file. A source check observes one point in time.</p>
@@ -507,7 +527,23 @@
               <output id="source-review-summary" class="panel-help" aria-live="polite"></output>
               <div id="source-review-lines" class="source-comparison-lines" aria-label="Changed source line excerpts"></div>
               <p class="panel-help">Comparison keeps the draft and loaded base. Review replacement prepares this exact draft against the displayed latest revision. A new SAVE LOCAL CHANGE confirmation is still required before saving.</p>
+              <button id="review-source-export" class="button" type="button" disabled>Review export scope</button>
               <button id="prepare-source-replacement" class="button" type="button" disabled>Review replacement</button>
+            </section>
+            <section id="source-export" class="source-comparison" aria-label="Comparison download scope" hidden>
+              <div class="panel-heading compact"><h3>Comparison export scope</h3><button id="cancel-source-export" class="button" type="button">Cancel export</button></div>
+              <p class="panel-help">The JSON includes complete proposed draft and latest source text, their revisions, and bounded changed-line metadata. Truncation flags describe the line comparison; no omitted line rows are invented. The displayed scope describes this exact download.</p>
+              <pre id="source-export-scope" tabindex="0" aria-label="Exact comparison export scope"></pre>
+              <label class="source-export-consent">Inclusion confirmation<input id="source-export-confirmation" placeholder="EXPORT COMPARISON" autocomplete="off" disabled /></label>
+              <button id="download-source-export" class="button" type="button" disabled>Download comparison JSON</button>
+              <output id="source-export-status" class="command-output" aria-live="polite"></output>
+            </section>
+            <section id="source-history" class="source-comparison" aria-label="Read-only source revision history">
+              <div class="panel-heading compact"><h3>Source revision history</h3><button id="refresh-source-history" class="button" type="button" disabled>Refresh history</button></div>
+              <p class="panel-help">History reads local operation metadata and current source. Observed changes identify no external author; legacy records may have no revision. This view does not restore a backup or write source.</p>
+              <dl class="source-comparison-revisions"><dt>History path</dt><dd id="source-history-path">No history read</dd><dt>Observed current revision</dt><dd id="source-history-current-revision">Not observed</dd></dl>
+              <div id="source-history-list" aria-label="Source history entries"></div>
+              <output id="source-history-status" class="command-output" aria-live="polite">Refresh history for the loaded source.</output>
             </section>
             <div class="source-save-row">
               <label>Confirmation<input id="source-confirmation" placeholder="SAVE LOCAL CHANGE" autocomplete="off" /></label>

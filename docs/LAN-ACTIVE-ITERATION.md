@@ -1,101 +1,130 @@
-# LAN active iteration — font revisions and draft previews
+# LAN active iteration — draft recovery, comparison export and revision history
 
-Updated 2026-10-28 from published baseline `42886165e315f8d7b6c89c754d2b81221a9c7972`.
+Updated 2026-10-29 from published baseline `ba8b0bbda8b7ef0c044dfe243448e646b793a66f`.
 
-This bounded goal is complete. Agent 0 accepted **LAN-00051–LAN-00060** at
-candidate `781b624bc322c4d851fa3dfc91a165a087dea5d7` after both browser suites,
-all 68 CI stages and separate Hosting preflight passed. The program is now
-**85/10,000 requirements and 17/2,000 capabilities**, a delta of ten requirements
-and two capabilities from 75 requirements / 15 capabilities. There are 9,915
-requirements remaining. Read the
-[font/preview receipt](LAN-FONT-PREVIEW-QA-2026-10-28.md) for exact bindings,
-retained failures and verification limits. Prior conflict acceptance remains
-preserved in its [original receipt](LAN-CONFLICT-REVIEW-QA-2026-10-26.md).
+This goal is **in progress**. It completes the remaining three capabilities in
+an explicitly selected five-capability source-editor group and records a real
+Home-page GUI edit proof. Font revisions and literal draft previews are already
+accepted; they are retained as prerequisites and regression coverage, with no
+new completion counted for them.
+
+The accepted baseline remains **85/10,000 requirements and 17/2,000 capabilities**,
+with **9,915 requirements TODO**. The prior
+[font/preview receipt](LAN-FONT-PREVIEW-QA-2026-10-28.md) binds LAN-00051–LAN-00060
+to tested candidate `781b624bc322c4d851fa3dfc91a165a087dea5d7`. Its 37 source-browser
+groups, four inspector geometry checkpoints, 16 Navigator groups, 49 npm tests,
+68 CI stages and Hosting preflight are historical observations of that candidate;
+they do not accept the new work. Earlier conflict acceptance remains in its
+[original receipt](LAN-CONFLICT-REVIEW-QA-2026-10-26.md).
 
 ## Selected work and acceptance
 
 | Requirements | Capability | Observable acceptance | State |
 | --- | --- | --- | --- |
-| LAN-00051–LAN-00055 | Refresh revisions after guarded font changes | A confirmed font save requires the observed stylesheet revision, exposes the resulting revision, and lets an open stylesheet draft detect the change without losing its draft or loaded baseline. | Accepted |
-| LAN-00056–LAN-00060 | Bind previews to source baselines | A literal draft snapshot records its source path, loaded baseline, draft digest and freshly observed revision; explicit checks report changed or unavailable source without promoting the preview to disk. | Accepted |
+| LAN-00051–LAN-00055 | Refresh revisions after guarded font changes | Confirmed font saves check the observed stylesheet revision and expose the result while keeping an open raw draft and its independent baseline. | Previously accepted |
+| LAN-00056–LAN-00060 | Bind previews to source baselines | Literal snapshots retain their path, loaded revision and draft digest; source checks report freshness without source promotion. | Previously accepted |
+| LAN-00076–LAN-00080 | Recover revision-bound local drafts | Explicitly opted-in recovery retains the source path and baseline; reopening compares current source before offering a deliberate draft restoration. | In progress; all five requirements TODO |
+| LAN-00081–LAN-00085 | Export a conflict comparison | Show the bounded download scope, then require explicit confirmation before including the draft, path and revisions in the exported comparison. | In progress; all five requirements TODO |
+| LAN-00086–LAN-00090 | Inspect source revision history | Show bounded local revision evidence and distinguish confirmed builder saves from observed external changes without promoting source. | In progress; all five requirements TODO |
 
-All five lanes of each capability are receipt-bound and accepted. This does
-not complete F001 or the wider program. The generated queue now identifies:
+Each new capability includes behavior, boundaries/refusal, recovery, feedback
+and verification requirements. Source implementation, worker completion or a
+passing focused test does not accept those lanes. The real Home GUI proof is
+additional integration evidence, not an extra catalog completion.
 
-- LAN-00076: recover revision-bound local drafts.
-- LAN-00081: export a conflict comparison.
-- LAN-00086: inspect source revision history.
+## Dependency closure and acceptance target
 
-Those capabilities and their remaining lanes stay TODO. The generated plan owns
-exact readiness and prerequisites; querying it does not start work.
+The validated ready queue contains exactly three behavior requirements:
 
-## Completed execution sequence
+- LAN-00076 depends on accepted LAN-00010 and LAN-00025.
+- LAN-00081 depends on accepted LAN-00030.
+- LAN-00086 depends on accepted LAN-00015 and LAN-00050.
 
-1. Verified the clean checkout, direct GitHub main revision and owned local services;
-   inspected the LAN Work sources board and opened the local project and this plan.
-2. Added raw stylesheet revisions to project-font reads and guarded writes. Check
-   the observed revision before source, backup, operation or temporary effects;
-   preserve existing confirmation, path, origin, token and encoding controls.
-3. Added literal draft preview snapshots and read-only freshness checks in the
-   existing Code inspector. Preserve the source draft, loaded baseline and
-   independent raw/leaf editing authority through changes, failures and races.
-4. Extended the real HTTP and disposable browser tests. Exercise matching, stale,
-   missing and no-op fonts; exact source/backup bytes; literal preview content;
-   edits and file-selection races; and zero promotion from preview actions.
-5. Reviewed the frozen functional candidate and ran `npm run ci:all`, separate
-   Hosting preflight, host drift and template checks. Before any owned runtime
-   restart, export its emulator data; leave unrelated listeners untouched.
-6. Bound only verified requirements to the tested commit and public receipt;
-   regenerate the checklist, update README/wiki and host documentation, verify
-   metadata, publish authorized normal fast-forward main/wiki updates and read
-   them back. Record exact local entry points and a resume handoff.
+All 35 external requirements in their transitive prerequisite closure are already
+accepted. The selected fifteen requirements have no missing dependency outside
+the accepted baseline and this batch. Each capability's boundary, recovery and
+feedback lanes depend on its behavior; its terminal evidence lane depends on all
+four earlier lanes. These remain unaccepted until Agent 0 reviews their proof.
 
-## Board and local project check
+Accepting all fifteen would produce **100/10,000 requirements and 20/2,000
+capabilities**, complete the 100 requirements of **F001 only**, and leave 9,900
+requirements in the wider program. This is an acceptance target, not current
+status. The original WebAppX catalog remains **179 done / 821 remaining** and its
+saved foundation bundle remains unapplied and unaccepted.
 
-The live LAN **Ops → Agent 0 → Work sources** view correctly reports blank
-reusable task/focus seeds, no adopted project scope, and the separate original
-WebAppX catalog at **179 recorded completions / 821 proposed TODO**. Its empty
-root task ledger does not mean that the LAN program is finished. The generated
-[LAN plan](LAN-10000-EXECUTION-PLAN.md) and [family checklist](backlog/lan-10000/F001.md)
-own this program's accepted counts and next queue.
+## Execution and evidence sequence
 
-Runtime URLs, process identities and emulator data remain private session state.
-Recheck `.SYSTEMX/state/local-session.json` and `npm run systemx:session:status`
-before process control; a recorded ready flag needs a fresh endpoint probe.
+1. Reconcile the checkout, published baseline, exact definitions, saved handoff,
+   Work sources board and owned local service identities. Recheck live endpoints
+   separately from recorded readiness. Keep reusable outer project seeds blank.
+2. Implement bounded, explicitly opted-in draft recovery. A recovery record is
+   local source text, with clear scope and a deliberate restore decision. Read
+   the current allowlisted source and compare its revision before offering
+   restoration; retain drafts and records through refusal or unavailable storage.
+   Restoring a draft must not authorize or perform a repository save.
+3. Implement a bounded comparison export with visible inclusion scope and fresh
+   confirmation. Inspect the actual browser download and its exact path, revision
+   and text fields. Cancellation, stale input and export failure retain the draft
+   and create no repository, backup or operation effects.
+4. Implement bounded read-only revision history. Label confirmed source/font
+   operations separately from observed external revisions; preserve their actual
+   provenance and unknown cases. Reading history must not write source, recreate
+   missing files, create backups or invent confirmed operations.
+5. Run focused model/API tests and owned disposable browser journeys covering
+   matching, stale, malformed, missing and bounded inputs; storage faults; explicit
+   recovery/export decisions; literal text handling; pending-response races; and
+   exact source, backup, operation and temporary-file effects. Preserve the
+   existing source/font/preview, inspector geometry and Navigator contracts.
+6. Perform the authorized real Home-page edit through the LAN GUI. Record the
+   intended visible change, exact source path, prior and resulting byte revisions,
+   explicit confirmation and exact predecessor backup. Read back the file and
+   rendered Home page at the owned Vite origin, then record the change's final
+   disposition. This real integration proof remains separate from disposable
+   fault fixtures and from any production acceptance.
+7. Freeze the functional candidate and bind all proof to its exact files and
+   revision. Review source/documentation freshness without relabeling historical
+   receipts. Await terminal browser results, `npm run ci:all`, separate
+   `npm run deploy -- hosting --preflight`, `npm run sync:system:check` and
+   `npm run template:check`. Preserve failed or interrupted attempts honestly.
+8. Agent 0 accepts only verified LAN-00076–LAN-00090 against their original
+   definition digests, tested commit and a public dated receipt containing exact
+   completion tuples. Only then update the progress ledger and regenerate the
+   checklist, counts and next queue. Update README/wiki and host status, publish
+   authorized source/wiki changes, read them back and write a precise handoff.
+
+## Plan, code, function, working and production delta
+
+| Evidence boundary | Current state | Completion evidence needed |
+| --- | --- | --- |
+| Plan and checklist | Three new capabilities selected; accepted baseline stays 85/17. | Fifteen exact receipt-bound acceptances before generated checkmarks change. |
+| Code | Accepted font/preview code is the baseline; recovery/export/history work is in progress. | Reviewed frozen implementation with bounds, revision checks and preserved source authority. |
+| Function | Prior tests remain historical; the three new workflows are not yet accepted. | Terminal matching/stale/refusal/recovery/feedback tests and complete isolated browser receipts. |
+| Working local project | Local service ownership and rendered behavior need fresh observation. | Owned endpoint probes, actual Navigator regression and real Home GUI save/readback evidence. |
+| Production and provider state | This plan authorizes no production deployment or provider activation. | Source/wiki publication readback is recorded separately; deployed acceptance requires its own explicit operator authority and evidence. |
 
 ## Ownership and controls
 
-Agent 0 owns integration, goal state, plan, documentation, acceptance and Git.
-One UI owner, one backend/API owner and one isolated-browser owner edit separate
-paths, with an independent reviewer. Worker completion alone accepts nothing.
+Agent 0 owns integration, the goal, acceptance, real Home GUI proof, README/wiki,
+QA receipts and Git. Assigned UI, recovery/history/API and browser owners work on
+separate paths; this iteration document and later freshness decisions have their
+own documentation owner. Worker results remain subject to independent review.
 
-The draft preview is bounded literal source inspection. It does not execute
-untrusted HTML/JSX or claim compiled canvas equivalence. Freshness is an observed
-comparison with a single allowlisted file, not a filesystem lock or automatic
-merge. Confirmation and current revision preconditions remain mandatory for
-source or font saves. The familiar structure/canvas/inspector layout remains.
+The familiar structure/canvas/inspector layout remains. Preserve session token,
+Host/Origin, path containment, secret-shaped content refusal, explicit source/font
+confirmation and current-revision preconditions. Recovery and exports disclose
+source-text storage or inclusion; history and literal preview observations grant
+no save authority. A single-file hash is an observation, not a filesystem lock,
+automatic merge, compiled-canvas guarantee or Git cleanliness claim.
 
-The original WebAppX catalog stays **179 done / 821 remaining**; its historical
-foundation bundle remains unapplied and unaccepted. Reusable context, task, plan
-and memory seeds stay blank. Managed snapshots and both checksummed research
-packages remain immutable. Production deployment requires separate explicit
-operator authorization.
+Runtime URLs, process identities, browser saves, emulator data and private proof
+paths stay outside tracked release files. Before process control, recheck the
+private session record and `npm run systemx:session:status`; export owned emulator
+data before a controlled restart and leave unrelated listeners untouched.
+Managed release snapshots and both checksummed research packages stay immutable.
+Reusable context, task, plan and memory seeds remain blank. New observations do
+not change the dates or scope of prior receipts.
 
 See the [generated program plan](LAN-10000-EXECUTION-PLAN.md),
+[F001 checklist](backlog/lan-10000/F001.md),
 [checklist index](backlog/LAN-10000-TODO.md) and
 [source revision receipt](LAN-SOURCE-REVISION-QA-2026-10-26.md).
-
-## Verified result and savepoint
-
-The final source suite passed 37 groups plus four normal 336 px inspector geometry
-checkpoints; actual-stack Navigator passed 16 groups; npm tests passed 49 with no
-skips; all 68 CI stages and Hosting preflight passed. Browser runs exposed and
-verified repairs for CSS inventory, clipped revision feedback, full-reload
-selection cleanup and explicit page-picker context. Earlier failed/qualified
-proofs and interrupted CI attempts remain separate.
-
-README, wiki and host documentation are updated alongside exact checklist
-acceptance. The final private handoff records source/wiki publication readback,
-owned runtime URLs/processes, emulator export/import provenance and the next
-ready queue. Runtime facts must be rechecked when resuming. Production deployment
-remains unperformed; the managed release and reusable seeds remain unchanged.

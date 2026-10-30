@@ -3604,3 +3604,16 @@ code,
 .work-scope-label { display: block; margin: 14px 0 6px; font-size: 12px; font-weight: 600; }
 .work-scope-select { width: 100%; min-height: 38px; padding: 8px; border: 1px solid var(--line, #d8dce3); border-radius: 6px; background: var(--panel, #fff); color: inherit; }
 .work-scope-select:focus-visible { outline: 2px solid #1874da; outline-offset: 2px; }
+
+/* Source recovery, export and history remain contained in the inspector column. */
+#source-recovery pre, #source-export-scope { max-height: 220px; }
+#source-export-scope { white-space: pre-wrap; overflow-wrap: anywhere; }
+#source-recovery .command-output, #source-export .command-output, #source-history .command-output { overflow-wrap: anywhere; }
+.source-consent { display: flex; align-items: start; gap: 7px; font-size: 11px; }
+.source-consent input { flex: 0 0 auto; }
+.source-export-consent { display: grid; gap: 5px; min-width: 0; font-size: 11px; }
+.source-export-consent input { width: 100%; min-width: 0; box-sizing: border-box; }
+#source-history-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; max-height: 420px; overflow: auto; }
+.source-history-entry { display: grid; grid-template-columns: minmax(0, 1fr); gap: 5px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 11px; }
+.source-history-entry small { color: var(--muted); }
+.source-history-entry code { white-space: normal; overflow-wrap: anywhere; }

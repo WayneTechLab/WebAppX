@@ -8,6 +8,7 @@ import {
   lstatSync,
   mkdirSync,
   readFileSync,
+  realpathSync,
   renameSync,
   statSync,
   writeFileSync,
@@ -21,6 +22,7 @@ import { StringDecoder } from 'node:string_decoder'
 import net from 'node:net'
 import { inspectCurrentRepository, inspectExternalProject } from './Builder/importer/current-repo.mjs'
 import { hashSourceRevision, checkSourceRevision } from './Builder/source-revision.mjs'
+import { createSourceHistory, readSourceOperationHistory, sourceHistoryLimits } from './Builder/source-history.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
 import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
@@ -28,6 +30,8 @@ import { readOperatingStatus } from './work-status.mjs'
 
 const lanRoot = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(lanRoot, '..', '..')
+const workspaceId = hashSourceRevision(`systemx-workspace\0${realpathSync(repoRoot)}`)
+const sourceHistory = createSourceHistory()
 const websiteRoot = join(lanRoot, 'Website')
 const dashboardFile = join(lanRoot, 'Website_Dashboard.html')
 const providerRegistryFile = join(lanRoot, 'Builder', 'contracts', 'provider-registry.json')
@@ -364,6 +368,7 @@ function projectFontState(target = projectCssPath) {
   const importMatch = layout.managedImport && content.slice(layout.managedImport.start, layout.managedImport.end).match(/@import url\("([^"]+)"\);/)
   return {
     path: projectCssPath,
+    workspaceId,
     revision: hashSourceRevision(source.bytes),
     configured: Boolean(importMatch && familyMatch),
     family: familyMatch?.[1] ?? null,
@@ -652,6 +657,7 @@ function recordOperation(event, detail = {}) {
   mkdirSync(dirname(operationsLog), { recursive: true })
   appendFileSync(operationsLog, `${JSON.stringify({
     event,
+    workspaceId,
     sessionId,
     timestamp: new Date().toISOString(),
     ...detail,
@@ -799,6 +805,7 @@ function sourceRead(value) {
   const { sourcePath, bytes } = source
   return {
     path: sourcePath.normalized,
+    workspaceId,
     content: bytes.toString('utf8'),
     revision: hashSourceRevision(bytes),
     writable: true,
@@ -1136,6 +1143,7 @@ async function getStatus(workSelection = null) {
 
   return {
     repository: {
+      workspaceId,
       branch,
       clean: changedFiles === 0,
       changedFiles,
@@ -1341,6 +1349,28 @@ const server = createServer(async (request, response) => {
     return
   }
 
+  if (requestUrl.pathname === '/api/builder/source/history' && request.method === 'GET') {
+    const query = requestUrl.searchParams
+    const limitValue = query.get('limit')
+    const limit = limitValue === null ? 50 : Number(limitValue)
+    if (query.getAll('path').length !== 1 || !query.get('path') || query.get('path').length > 512 || query.getAll('limit').length > 1
+      || [...query.keys()].some((key) => !['path', 'limit'].includes(key))
+      || (limitValue !== null && !/^[1-9]\d{0,2}$/.test(limitValue)) || !Number.isInteger(limit) || limit > sourceHistoryLimits.entries) {
+      sendJson(response, 400, { code: 'SOURCE_HISTORY_QUERY_INVALID', error: 'Choose one allowlisted source path and an optional history limit from 1 through 100.' })
+      return
+    }
+    const source = readEditableSource(query.get('path'))
+    if (source.error) {
+      const { statusCode, ...failure } = source
+      sendJson(response, statusCode, failure)
+      return
+    }
+    const path = source.sourcePath.normalized
+    const operationWindow = readSourceOperationHistory({ root: lanRoot, file: operationsLog, path, workspaceId })
+    sendJson(response, 200, sourceHistory.snapshot({ path, workspaceId, currentRevision: hashSourceRevision(source.bytes), operationWindow, limit }))
+    return
+  }
+
   if (requestUrl.pathname === '/api/tools' && request.method === 'GET') {
     sendJson(response, 200, { environment: 'local-only', tools: toolingStatus() })
     return
@@ -1391,6 +1421,10 @@ const server = createServer(async (request, response) => {
         renameSync(temporary, sourcePath.target)
         recordOperation('source_saved', {
           path: sourcePath.normalized,
+          sourceKind: body.sourceKind === 'leaf-text' ? 'leaf-text' : 'source',
+          previousRevision: precondition.revision,
+          revision: hashSourceRevision(body.content),
+          currentRevision: hashSourceRevision(body.content),
           backup,
           previousLines: lineCount(previous),
           nextLines: lineCount(body.content),
