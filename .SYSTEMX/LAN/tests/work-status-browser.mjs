@@ -106,6 +106,16 @@ try {
   await expect(cards.nth(1)).toContainText(`${expectedDone} recorded source completions`)
   await expect(cards.nth(2)).toContainText('No adopted scope selected.')
   await expect(select).toHaveValue('')
+  // Element screenshots can resize the viewport. Use the normal supported pin
+  // control so Auto layout does not hide the panel during long record readbacks.
+  await expect(page.locator('#right-panel-visibility')).toHaveAttribute('aria-pressed', 'false')
+  await page.locator('#right-panel-visibility').click()
+  await expect(page.locator('#right-panel-visibility')).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('#right-panel-toggle')).toHaveAttribute('aria-expanded', 'true')
+  await expect(page.locator('.builder-shell')).not.toHaveClass(/right-panel-collapsed/)
+  const inspectorBounds = await page.locator('.right-panel').boundingBox()
+  assert.ok(inspectorBounds && Math.abs(inspectorBounds.width - 336) <= 1)
+  const inspectorSetup = { pinned: true, expanded: true, width: inspectorBounds.width }
   await section.screenshot({ path: join(evidence, '01-seeds-roadmap-unselected.png') })
   checks.push('Three rendered source sections start with exact blank work seeds, computed catalog counts and no selected adopted scope.')
 
@@ -168,7 +178,7 @@ try {
   checks.push('Malformed roadmap counts become unavailable independently of valid blank root records.')
   assert.deepEqual(pageErrors, [])
   for (const [index, name] of files.entries()) assert.deepEqual(readFileSync(join(repoRoot, '.SYSTEMX', name)), originalBytes[index])
-  writeFileSync(join(evidence, 'result.json'), `${JSON.stringify({ schemaVersion: 1, kind: 'isolated-work-status-browser-evidence', checks, pageErrors, sourceRecordBytesPreserved: true }, null, 2)}\n`)
+  writeFileSync(join(evidence, 'result.json'), `${JSON.stringify({ schemaVersion: 1, kind: 'isolated-work-status-browser-evidence', checks, pageErrors, inspectorSetup, sourceRecordBytesPreserved: true }, null, 2)}\n`)
   console.log(JSON.stringify({ status: 'passed', checks: checks.length, evidence }, null, 2))
 } finally {
   clearTimeout(deadline)
