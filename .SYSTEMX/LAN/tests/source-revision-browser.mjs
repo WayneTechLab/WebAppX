@@ -431,11 +431,13 @@ try {
 
   await file.selectOption(secondPath)
   const attemptedPosts = posts.length
-  await save.click()
-  await expect(output).toContainText(`Selected file changed to ${secondPath}`)
+  const beforeMismatchedSelection = effects()
+  await expect(save).toBeDisabled()
   assert.equal(posts.length, attemptedPosts)
   await expect(editor).toHaveValue(transportDraft)
   await expect(revision).toHaveAttribute('data-revision', failedBase)
+  await expect(confirmation).toHaveValue('SAVE LOCAL CHANGE')
+  assert.deepEqual(effects(), beforeMismatchedSelection)
   page.once('dialog', (dialog) => dialog.dismiss())
   await page.locator('#load-source').click()
   await expect(output).toContainText('Reload cancelled')
@@ -449,9 +451,15 @@ try {
   await expect(output).toContainText('Owned second-file read unavailable')
   await expect(editor).toHaveValue(transportDraft)
   await expect(revision).toHaveAttribute('data-revision', failedBase)
-  await save.click()
+  await expect(confirmation).toHaveValue('SAVE LOCAL CHANGE')
+  await expect(file).toHaveValue(sourcePath)
+  // A failed cross-target Load restores the prior valid selection. It must not
+  // be followed by a synthetic Save click that would approve that retained file.
+  await expect(save).toBeEnabled()
   assert.equal(posts.length, attemptedPosts)
+  assert.deepEqual(effects(), beforeMismatchedSelection)
   await page.unroute('**/api/builder/source?path=src%2Fpages%2FAboutPage.tsx')
+  await file.selectOption(secondPath)
   page.once('dialog', (dialog) => dialog.accept())
   await page.locator('#load-source').click()
   await expect(editor).toBeEnabled()
@@ -476,7 +484,7 @@ try {
   await page.locator('#load-source').click()
   await expect(editor).toBeEnabled()
   await expect(revision).toHaveAttribute('data-revision', sha(contentSent))
-  checks.push('Selecting a second file cannot POST an old draft/base; Cancel and failed GET preserve the old binding, while successful explicit load binds the second file hash and saves only that target with an exact backup.')
+  checks.push('Selecting a second file disables Save with zero POSTs and preserves the exact draft/base/approval; Cancel and failed GET restore the prior valid selection, while a newly selected successful explicit load binds the second file hash and saves only that target with an exact backup.')
 
   const retainedRawBase = await revision.getAttribute('data-revision')
   const retainedRawDraft = accepted + '// Independent raw editor draft.\n'
@@ -2152,6 +2160,13 @@ try {
 
   writeFileSync(sourceFile, leafContent)
   await refreshWorkspaceInUi()
+  // External restoration does not expand the independently observed eligible
+  // inventory. Refresh it through its normal control before selecting the file.
+  if (!await page.locator('#source-browser').evaluate((node) => node.open)) await page.locator('#source-browser summary').click()
+  const restoredLeafInventory = waitForResponse((item) => item.request().method() === 'GET' && new URL(item.url()).pathname.endsWith('/api/builder/source/inventory'))
+  await page.locator('#refresh-source-inventory').click()
+  assert.equal((await restoredLeafInventory).status(), 200)
+  await expect(page.locator('#refresh-source-inventory')).toBeEnabled()
   await file.selectOption(sourcePath)
   page.once('dialog', (dialog) => dialog.accept())
   await page.locator('#load-source').click()
@@ -2162,7 +2177,7 @@ try {
   assert.ok(leafHistory.entries.some((entry) => entry.kind.startsWith('observed-') && entry.revision === sha(leafContent) && entry.attribution === 'unattributed'))
   assert.deepEqual(effects(), beforeLeafHistory)
   assert.equal(posts.length + fontPosts.length, historyMutations)
-  checks.push('Confirmed leaf-text history keeps its recorded operation kind and exact saved revision; an external restoration to identical bytes remains a separate unattributed observed snapshot rather than borrowing that historical author claim.')
+  checks.push('After external restoration and an explicit eligible-inventory refresh, confirmed leaf-text history keeps its recorded operation kind and exact saved revision; identical restored bytes remain a separate unattributed observed snapshot rather than borrowing that historical author claim.')
 
   assert.deepEqual(pageErrors, [])
   assert.deepEqual(unexpectedRequests, [])
