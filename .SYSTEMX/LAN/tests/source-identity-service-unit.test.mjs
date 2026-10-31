@@ -116,7 +116,7 @@ test('separate workspaces and ineligible paths cannot share authority', t => {
 test('ownership change remains a separate reviewed proposal', t => {
   const { service } = fixture(t)
   const { map } = accepted(service)
-  const preview = service.ownershipPreview({ documentId: map.documentId, changes: [] })
+  const preview = service.ownershipPreview({ documentId: map.documentId, changes: [{ nodeId: map.nodes.find(node => node.fields.text).id, mode: 'source-owned', adapterId: 'tsx-static-v1', fields: { text: { owner: 'source', supported: true } } }] })
   assert.equal(preview.proposal.requiresReview, true)
   assert.throws(() => service.ownershipAccept({ digest: preview.proposal.digest, confirmation: 'yes' }), { code: /./ })
   assert.equal(service.status().documents.length, 1)
@@ -132,7 +132,7 @@ test('failed reopen and stale ownership acceptance preserve prior authority', t 
   const wrongWorkspace = structuredClone(exported)
   wrongWorkspace.workspaceId = '0'.repeat(64)
   assert.throws(() => service.reopen({ document: wrongWorkspace, confirmation: 'REOPEN IDENTITY DOCUMENT' }), { code: 'SOURCE_IDENTITY_EXPORT_INVALID' })
-  const pending = service.ownershipPreview({ documentId: map.documentId, changes: [] })
+  const pending = service.ownershipPreview({ documentId: map.documentId, changes: [{ nodeId: map.nodes.find(node => node.fields.text).id, mode: 'source-owned', adapterId: 'tsx-static-v1', fields: { text: { owner: 'source', supported: true } } }] })
   writeFileSync(file, `${CONTENT}\n`)
   assert.throws(() => service.ownershipAccept({ digest: pending.proposal.digest, confirmation: 'ACCEPT OWNERSHIP CHANGE' }), { code: 'SOURCE_IDENTITY_STALE' })
   assert.deepEqual(service.read({ documentId: map.documentId }).map, before)

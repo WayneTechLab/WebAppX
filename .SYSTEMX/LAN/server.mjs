@@ -33,13 +33,14 @@ const lanRoot = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(lanRoot, '..', '..')
 const workspaceId = hashSourceRevision(`systemx-workspace\0${realpathSync(repoRoot)}`)
 const sourceHistory = createSourceHistory()
-let sourceIdentity
+let sourceIdentityPromise
 async function identityService() {
-  if (!sourceIdentity) {
-    const { createSourceIdentityService } = await import('./Builder/source-identity-service.mjs')
-    sourceIdentity = createSourceIdentityService(repoRoot, { workspaceId })
+  if (!sourceIdentityPromise) {
+    sourceIdentityPromise = import('./Builder/source-identity-service.mjs')
+      .then(({ createSourceIdentityService }) => createSourceIdentityService(repoRoot, { workspaceId }))
+      .catch(error => { sourceIdentityPromise = null; throw error })
   }
-  return sourceIdentity
+  return sourceIdentityPromise
 }
 const websiteRoot = join(lanRoot, 'Website')
 const dashboardFile = join(lanRoot, 'Website_Dashboard.html')
@@ -1410,8 +1411,41 @@ const server = createServer(async (request, response) => {
 
     try {
       if (requestUrl.pathname.startsWith('/api/identity/')) {
-        const { statusCode, result } = await dispatchSourceIdentity({ service: await identityService(), method: request.method, url: requestUrl, body })
-        sendJson(response, statusCode, result)
+        try {
+          if (requestUrl.pathname === '/api/identity/preview' && body && typeof body === 'object' && typeof body.path === 'string') {
+            const source = inspectSourcePath(repoRoot, body.path)
+            if (!source.error) {
+              const inventory = inspectCurrentRepository(repoRoot)
+              const page = inventory.pages.find(candidate => candidate.source === body.path && candidate.state === 'mapped' && candidate.route?.startsWith('/'))
+              const shared = inventory.components.some(candidate => candidate.source === body.path)
+                && /^src\/components\/(?:layout|navigation|shell)\//.test(body.path)
+              const sharedRoute = shared && inventory.pages.some(candidate => candidate.state === 'mapped' && candidate.route === body.route)
+              if (body.route !== undefined && (page ? body.route !== page.route : !sharedRoute)) {
+                sendJson(response, 409, { code: 'IDENTITY_ROUTE_UNVERIFIED', error: 'The requested route does not match the reviewed source inventory.' })
+                return
+              }
+              if (page) body.route = page.route
+            }
+          }
+          if (requestUrl.pathname === '/api/identity/reopen' && typeof body?.document?.map?.sourcePath === 'string') {
+            const declared = body.document.map
+            const source = inspectSourcePath(repoRoot, declared.sourcePath)
+            if (!source.error) {
+              const inventory = inspectCurrentRepository(repoRoot)
+              const page = inventory.pages.find(candidate => candidate.source === declared.sourcePath && candidate.state === 'mapped' && candidate.route?.startsWith('/'))
+              const shared = inventory.components.some(candidate => candidate.source === declared.sourcePath)
+                && /^src\/components\/(?:layout|navigation|shell)\//.test(declared.sourcePath)
+              if (page && page.route !== declared.route || shared && !inventory.pages.some(candidate => candidate.state === 'mapped' && candidate.route === declared.route)) {
+                sendJson(response, 409, { code: 'IDENTITY_ROUTE_UNVERIFIED', error: 'The document route does not match the reviewed source inventory.' })
+                return
+              }
+            }
+          }
+          const { statusCode, result } = await dispatchSourceIdentity({ service: await identityService(), method: request.method, url: requestUrl, body })
+          sendJson(response, statusCode, result)
+        } catch {
+          sendJson(response, 503, { code: 'IDENTITY_UNAVAILABLE', error: 'The local identity service is unavailable; source and previous accepted maps are kept.' })
+        }
         return
       }
 

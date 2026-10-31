@@ -141,13 +141,27 @@ test('actual isolated LAN identity routes enforce protected metadata-only import
       })
       return { status: response.status, contentType: response.headers.get('content-type'), body: parseBody(await response.text()) }
     }
-    const get = (path, headers) => request(path, { headers })
+    const get = (path, headers = {}) => request(path, { headers: { 'x-systemx-session': token, ...headers } })
     const post = (path, body, headers = {}) => request(path, {
       method: 'POST',
       body,
       headers: { 'content-type': 'application/json', 'x-systemx-session': token, ...headers },
     })
 
+    assert.equal((await request('/api/identity/status')).status, 403, 'Identity observation requires its current LAN session authority')
+    const cold = await Promise.all([
+      post('/api/identity/preview', { path: homePath }),
+      ...Array.from({ length: 9 }, () => get('/api/identity/status')),
+    ])
+    assert.equal(cold[0].status, 200, JSON.stringify(cold[0]))
+    for (const observation of cold.slice(1)) {
+      assert.equal(observation.status, 200)
+      assert.deepEqual(observation.body.documents, [])
+    }
+    const coldAcceptance = await post('/api/identity/accept', {
+      digest: proposalOf(cold[0].body).digest, confirmation: 'ACCEPT IDENTITY MAP',
+    })
+    assert.equal(coldAcceptance.status, 200, 'Concurrent cold-start observations must retain the same service and proposal')
     const status = await get('/api/identity/status')
     if (status.status === 404) {
       throw new Error('IDENTITY_HTTP_ROUTES_PENDING: Agent 0 must wire /api/identity/* into the actual server before this test can pass')
@@ -155,7 +169,7 @@ test('actual isolated LAN identity routes enforce protected metadata-only import
     assert.equal(status.status, 200, JSON.stringify(status))
     assert.match(status.body.workspaceId, /^[a-f0-9]{64}$/)
     assert.equal(status.body.ruleVersion, 'identity-v1')
-    assert.deepEqual(status.body.documents, [])
+    assert.equal(status.body.documents.length, 1)
     const before = effects(fixture)
     safeBody(status.body, fixture, token)
     assert.ok([404, 405].includes((await get('/api/identity/accept')).status), 'GET must not invoke the accept route')
@@ -170,7 +184,8 @@ test('actual isolated LAN identity routes enforce protected metadata-only import
 
     const invalidPath = await post('/api/identity/preview', { path: '../src/pages/HomePage.tsx' })
     refusal(invalidPath, fixture, token)
-    const preview = await post('/api/identity/preview', { path: homePath, route: '/home', label: 'Private label' })
+    assert.equal((await post('/api/identity/preview', { path: homePath, route: '/home' })).status, 409, 'Caller route cannot replace the reviewed Home route')
+    const preview = await post('/api/identity/preview', { path: homePath, route: '/', label: 'Private label' })
     assert.equal(preview.status, 200, JSON.stringify(preview))
     const proposal = proposalOf(preview.body)
     assert.equal(preview.body.workspaceId, status.body.workspaceId)
@@ -180,7 +195,7 @@ test('actual isolated LAN identity routes enforce protected metadata-only import
     assert.equal(proposal.requiresReview, true)
     assert.match(proposal.digest, /^[a-f0-9]{64}$/)
     safeBody(preview.body, fixture, token)
-    assert.deepEqual((await get('/api/identity/status')).body.documents, [], 'Preview silently accepted a document')
+    assert.deepEqual((await get('/api/identity/status')).body.documents, status.body.documents, 'Preview changed accepted document metadata')
     assert.deepEqual(effects(fixture), before)
 
     const wrongConfirmation = await post('/api/identity/accept', { digest: proposal.digest, confirmation: 'wrong' })
@@ -235,7 +250,7 @@ test('actual isolated LAN identity routes enforce protected metadata-only import
       adapterId: 'tsx-static-v1',
       fields: { text: { owner: 'source', supported: true } },
       source: headline.source,
-      provenance: 'Reviewed HTTP fixture',
+      provenance: { documentId: map.documentId },
     }]
     const ownershipPreview = await post('/api/identity/ownership/preview', { documentId: map.documentId, changes })
     assert.equal(ownershipPreview.status, 200, JSON.stringify(ownershipPreview))

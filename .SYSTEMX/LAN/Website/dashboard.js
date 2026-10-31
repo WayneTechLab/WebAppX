@@ -6,6 +6,7 @@ import { attachSourceIdentityInspector } from './source-identities.js'
 
 const apiBase = window.location.pathname.startsWith('/__systemx') ? '/__systemx' : ''
 const sessionToken = document.querySelector('meta[name="systemx-session"]')?.content ?? ''
+let identityInspector
 const layoutStorageKey = 'systemx.lan.builder.layout.v4'
 const inspectorGroups = {
   design: ['style', 'settings'],
@@ -519,6 +520,7 @@ async function request(path, options = {}) {
     const error = new Error(result.error ?? `HTTP ${response.status}`)
     error.status = response.status
     error.code = result.code
+    if (Array.isArray(result.diagnostics) && result.diagnostics.length <= 1000) error.diagnostics = result.diagnostics
     if (validSourceRevision(result.currentRevision)) error.currentRevision = result.currentRevision.toLowerCase()
     throw error
   }
@@ -1025,6 +1027,7 @@ function schedulePreviewInspector(attempt = 0) {
 }
 
 function clearPreviewSelection() {
+  identityInspector?.observePreviewSelection({})
   state.previewSelectedElement?.removeAttribute('data-systemx-inspector-selected')
   state.previewSelectedElement = null
   state.previewHoveredElement = null
@@ -1339,6 +1342,12 @@ function selectPreviewElement(element, options = {}) {
   state.previewSelectionAnchor = makePreviewSelectionAnchor(state.previewSelection)
   state.previewContextTarget = element
   const location = state.previewSelection
+  identityInspector?.observePreviewSelection({
+    tag: element.tagName.toLowerCase(), id: element.id?.slice(0, 120) ?? '',
+    route: location.route.split('#')[0], sourcePath: location.sourcePath ?? '',
+    workspaceId: state.sourceRecoveryWorkspaceId,
+    anchor: element.getAttribute('data-systemx-id') ?? '',
+  })
   const page = mappedPageForRoute(location.route.split('#')[0])
   text('#canvas-breadcrumb-page', page?.name ?? location.route)
   text('#selected-element-state', location.label)
@@ -3853,9 +3862,18 @@ async function boot() {
   restoreLayout()
   applyInspectorTabs(state.layout.activeRight || 'style')
   bind()
-  attachSourceIdentityInspector({
+  identityInspector = attachSourceIdentityInspector({
     container: document.querySelector('#panel-source'),
-    api: request,
+    api: (path, options = {}) => {
+      if (path === '/api/identity/preview' && typeof options.body === 'string') {
+        const body = JSON.parse(options.body)
+        if (/^src\/components\/(?:layout|navigation|shell)\//.test(body.path)) {
+          const route = currentPreviewRoute().split('#')[0]
+          if (mappedPageForRoute(route)) options = { ...options, body: JSON.stringify({ ...body, route }) }
+        }
+      }
+      return request(path, options)
+    },
     selectedPath: () => document.querySelector('#source-file-select')?.value ?? '',
     onStageLiteral: stageIdentityLiteral,
   })

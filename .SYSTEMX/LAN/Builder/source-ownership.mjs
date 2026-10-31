@@ -25,10 +25,16 @@ function fail(code) {
 function plain(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
     && (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null)
+    && Object.values(Object.getOwnPropertyDescriptors(value)).every(descriptor => Object.hasOwn(descriptor, 'value'))
 }
 
 function assert(condition, code) { if (!condition) fail(code) }
 function own(value, key) { return Object.hasOwn(value, key) ? value[key] : undefined }
+function keys(value, allowed, code) { assert(plain(value) && Object.keys(value).every(key => allowed.includes(key)), code) }
+function dataArray(value, limit, code) {
+  assert(Array.isArray(value) && value.length <= limit && Object.keys(value).length === value.length, code)
+  for (let index = 0; index < value.length; index += 1) assert(Object.hasOwn(Object.getOwnPropertyDescriptor(value, String(index)) ?? {}, 'value'), code)
+}
 function hex(value) { return typeof value === 'string' && HEX.test(value) }
 function path(value) { return isCanonicalSourcePath(value) }
 function eligiblePath(value) {
@@ -37,6 +43,10 @@ function eligiblePath(value) {
     || value === 'src/router.tsx')
 }
 function bounded(value, limit = 120) { return typeof value === 'string' && value.length <= limit }
+function metadataIdentifier(value, limit = 80) {
+  return bounded(value, limit) && value.length > 0 && /^[A-Za-z0-9][A-Za-z0-9._+-]*$/.test(value)
+    && !/(?:sk_(?:live|test)_|sk-proj-|gh[pousr]_|AIza|-----BEGIN)/i.test(value)
+}
 function span(value) {
   return plain(value) && Number.isSafeInteger(value.start) && Number.isSafeInteger(value.end)
     && value.start >= 0 && value.end > value.start && value.end <= 500_000
@@ -54,6 +64,7 @@ function copy(value) { return JSON.parse(JSON.stringify(value)) }
 function bytes(value) { return Buffer.byteLength(JSON.stringify(value), 'utf8') }
 
 function validateSource(value, code = 'OWNERSHIP_INVALID_SOURCE') {
+  keys(value, ['path', 'start', 'end', 'sourceRevision', 'fingerprint'], code)
   assert(plain(value) && path(value.path) && span(value) && hex(value.sourceRevision) && hex(value.fingerprint), code)
   return { path: value.path, start: value.start, end: value.end, sourceRevision: value.sourceRevision, fingerprint: value.fingerprint }
 }
@@ -62,7 +73,7 @@ function validateMap(map) {
   assert(plain(map) && map.schemaVersion === 1 && bounded(map.ruleVersion, 80), 'OWNERSHIP_INVALID_MAP')
   assert(hex(map.workspaceId) && DOCUMENT_ID.test(map.documentId) && PAGE_ID.test(map.pageId), 'OWNERSHIP_INVALID_MAP')
   assert(eligiblePath(map.sourcePath) && hex(map.sourceRevision) && bounded(map.route, 256) && map.route.startsWith('/'), 'OWNERSHIP_INVALID_MAP')
-  assert(Array.isArray(map.nodes) && map.nodes.length <= MAX_NODES, 'OWNERSHIP_INVALID_MAP')
+  dataArray(map.nodes, MAX_NODES, 'OWNERSHIP_INVALID_MAP')
   const ids = new Set()
   for (const node of map.nodes) {
     assert(plain(node) && NODE_ID.test(node.id) && !ids.has(node.id), 'OWNERSHIP_INVALID_NODE')
@@ -93,7 +104,7 @@ function validateMap(map) {
       cursor = map.nodes.find(item => item.id === cursor.parentId)
     }
   }
-  assert(Array.isArray(map.aliases) && map.aliases.length <= 256, 'OWNERSHIP_INVALID_ALIASES')
+  dataArray(map.aliases, 256, 'OWNERSHIP_INVALID_ALIASES')
   const aliasIds = new Set()
   for (const alias of map.aliases) {
     assert(plain(alias) && NODE_ID.test(alias.from) && NODE_ID.test(alias.to) && alias.from !== alias.to
@@ -134,14 +145,16 @@ function resolve(map, reference) {
 
 function provenance(value, map) {
   if (value === undefined) return undefined
-  assert(plain(value), 'OWNERSHIP_INVALID_PROVENANCE')
+  keys(value, ['documentId', 'generatorVersion', 'outputPath', 'outputRevision', 'generatedBoundary', 'boundary'], 'OWNERSHIP_INVALID_PROVENANCE')
   const result = {}
   if (value.documentId !== undefined) { assert(value.documentId === map.documentId, 'OWNERSHIP_INVALID_PROVENANCE'); result.documentId = value.documentId }
-  if (value.generatorVersion !== undefined) { assert(bounded(value.generatorVersion, 80) && value.generatorVersion.length > 0, 'OWNERSHIP_INVALID_PROVENANCE'); result.generatorVersion = value.generatorVersion }
+  if (value.generatorVersion !== undefined) { assert(metadataIdentifier(value.generatorVersion), 'OWNERSHIP_INVALID_PROVENANCE'); result.generatorVersion = value.generatorVersion }
   if (value.outputPath !== undefined) { assert(path(value.outputPath), 'OWNERSHIP_INVALID_PROVENANCE'); result.outputPath = value.outputPath }
   if (value.outputRevision !== undefined) { assert(hex(value.outputRevision), 'OWNERSHIP_INVALID_PROVENANCE'); result.outputRevision = value.outputRevision }
   const boundary = own(value, 'generatedBoundary') ?? own(value, 'boundary')
+  assert(!(Object.hasOwn(value, 'generatedBoundary') && Object.hasOwn(value, 'boundary')), 'OWNERSHIP_INVALID_PROVENANCE')
   if (boundary !== undefined) {
+    keys(boundary, ['path', 'start', 'end'], 'OWNERSHIP_INVALID_PROVENANCE')
     assert(plain(boundary) && path(boundary.path), 'OWNERSHIP_INVALID_PROVENANCE')
     if (boundary.start !== undefined || boundary.end !== undefined) assert(span(boundary), 'OWNERSHIP_INVALID_PROVENANCE')
     result.generatedBoundary = boundary.start === undefined ? { path: boundary.path } : { path: boundary.path, start: boundary.start, end: boundary.end }
@@ -156,15 +169,24 @@ function hasGeneratedBoundary(value, map) {
 }
 
 function normalizeClaim(claim, map, index) {
+  // index/conflicts are bounded derived annotations on this module's own
+  // reports. They may round-trip, but are always recomputed from the claims.
+  keys(claim, ['nodeId', 'mode', 'adapterId', 'fields', 'source', 'provenance', 'index', 'conflicts'], 'OWNERSHIP_INVALID_CLAIM')
+  if (Object.hasOwn(claim, 'index')) assert(Number.isInteger(claim.index) && claim.index >= 0 && claim.index < MAX_CLAIMS, 'OWNERSHIP_INVALID_CLAIM')
+  if (Object.hasOwn(claim, 'conflicts')) {
+    dataArray(claim.conflicts, MAX_CLAIMS, 'OWNERSHIP_INVALID_CLAIM')
+    assert(claim.conflicts.every(value => Number.isInteger(value) && value >= 0 && value < MAX_CLAIMS), 'OWNERSHIP_INVALID_CLAIM')
+  }
   assert(plain(claim) && typeof claim.nodeId === 'string' && map.nodes.some(node => node.id === claim.nodeId), 'OWNERSHIP_UNKNOWN_NODE')
-  assert(MODES.has(claim.mode) && claim.mode !== 'unmapped' && bounded(claim.adapterId, 80) && claim.adapterId.length > 0, 'OWNERSHIP_INVALID_CLAIM')
+  assert(MODES.has(claim.mode) && claim.mode !== 'unmapped' && metadataIdentifier(claim.adapterId), 'OWNERSHIP_INVALID_CLAIM')
   const node = map.nodes.find(item => item.id === claim.nodeId)
   const fields = {}
   const inputFields = own(claim, 'fields')
   assert(inputFields === undefined || (plain(inputFields) && Object.keys(inputFields).length <= 16), 'OWNERSHIP_INVALID_CLAIM')
   if (inputFields !== undefined) for (const key of Object.keys(inputFields)) {
-    assert(/^[a-z][a-z0-9_-]{0,39}$/.test(key), 'OWNERSHIP_INVALID_CLAIM')
+    assert(/^[a-z][a-z0-9_-]{0,39}$/.test(key) && !['constructor', 'prototype'].includes(key), 'OWNERSHIP_INVALID_CLAIM')
     const field = inputFields[key]
+    if (typeof field !== 'string') keys(field, ['owner', 'supported'], 'OWNERSHIP_INVALID_CLAIM')
     const owner = typeof field === 'string' ? field : plain(field) ? field.owner : undefined
     assert(owner === 'source' || owner === 'document', 'OWNERSHIP_INVALID_CLAIM')
     const supported = plain(field) && field.supported !== undefined ? field.supported : owner === 'source' && key === 'text'
@@ -178,11 +200,12 @@ function normalizeClaim(claim, map, index) {
   if (source) normalized.source = source
   const origin = provenance(claim.provenance, map)
   if (origin) normalized.provenance = origin
+  if (claim.mode === 'document-owned') assert(hasGeneratedBoundary(origin, map), 'OWNERSHIP_GENERATED_BOUNDARY_REQUIRED')
   return normalized
 }
 
 function readClaims(map, claims) {
-  assert(Array.isArray(claims) && claims.length <= MAX_CLAIMS, 'OWNERSHIP_INVALID_CLAIMS')
+  dataArray(claims, MAX_CLAIMS, 'OWNERSHIP_INVALID_CLAIMS')
   return claims.map((claim, index) => normalizeClaim(claim, map, index))
 }
 
@@ -336,20 +359,25 @@ export function planLiteralOperation(map, report, operation = {}) {
   const { reference, expectedRevision, text, currentSource } = operation
   assert(hex(expectedRevision) && typeof text === 'string' && Buffer.byteLength(text, 'utf8') <= MAX_PROPOSAL_BYTES,
     'OWNERSHIP_INVALID_OPERATION')
+  assert(Buffer.from(text, 'utf8').toString('utf8') === text, 'OWNERSHIP_INVALID_OPERATION')
   assert((typeof currentSource === 'string' || Buffer.isBuffer(currentSource)) && Buffer.byteLength(currentSource) <= MAX_SOURCE_BYTES,
     'OWNERSHIP_INVALID_OPERATION')
   const found = resolve(map, reference)
   if (found.status !== 'resolved') return refusal(`OWNERSHIP_${found.status.toUpperCase().replaceAll('-', '_')}`)
   const node = found.node
   const object = report.objects.find(item => item.nodeId === node.id)
-  const source = Buffer.isBuffer(currentSource) ? currentSource.toString('utf8') : currentSource
+  const currentRawRevision = hashSourceRevision(currentSource)
   const impact = node.source ? [{ sourcePath: node.source.path, documentId: map.documentId, nodeId: node.id,
     scope: shared(node.source.path) ? 'shared' : 'route', route: shared(node.source.path) ? 'all-routes' : map.route }] : []
   if (!node.source || !node.fields.text || object.status === 'unmapped') return refusal('OWNERSHIP_LITERAL_UNMAPPED', impact)
   if (object.status === 'conflict') return refusal('OWNERSHIP_CLAIM_CONFLICT', impact)
   if (object.status === 'stale' || report.sourceRevision !== map.sourceRevision) return refusal('OWNERSHIP_MAPPING_STALE', impact)
   if (!object.supportedOperations.includes('literal')) return refusal('OWNERSHIP_LITERAL_UNSUPPORTED', impact)
-  if (expectedRevision !== map.sourceRevision || hashSourceRevision(source) !== expectedRevision) return refusal('OWNERSHIP_REVISION_CONFLICT', impact)
+  if (expectedRevision !== map.sourceRevision || currentRawRevision !== expectedRevision) return refusal('OWNERSHIP_REVISION_CONFLICT', impact)
+  let source
+  try { source = Buffer.isBuffer(currentSource) ? new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(currentSource) : currentSource }
+  catch { return refusal('OWNERSHIP_ENCODING_UNSUPPORTED', impact) }
+  if (source.includes('\0') || Buffer.from(source, 'utf8').toString('utf8') !== source) return refusal('OWNERSHIP_ENCODING_UNSUPPORTED', impact)
   if (node.source.end > source.length || node.fields.text.end > source.length
     || hashSourceRevision(source.slice(node.source.start, node.source.end)) !== node.source.fingerprint
     || hashSourceRevision(source.slice(node.fields.text.start, node.fields.text.end)) !== node.fields.text.fingerprint) {
@@ -364,8 +392,20 @@ export function planLiteralOperation(map, report, operation = {}) {
   if (/[<>{}\u0000]/.test(text)) return refusal('OWNERSHIP_LITERAL_SYNTAX', impact)
   const original = source.slice(node.fields.text.start, node.fields.text.end)
   if (original.length === 0) return refusal('OWNERSHIP_LITERAL_UNSUPPORTED', impact)
-  const first = source.indexOf(original)
-  if (first !== node.fields.text.start || source.indexOf(original, first + original.length) !== -1) return refusal('OWNERSHIP_LITERAL_AMBIGUOUS', impact)
+  // Ambiguity concerns supported imported JSX literal occurrences, not the same
+  // bytes inside an unrelated comment, attribute or JavaScript string token.
+  const occurrences = new Set()
+  for (const candidate of map.nodes) {
+    const field = candidate.fields.text, region = candidate.source
+    if (!field || !region || region.path !== map.sourcePath || region.sourceRevision !== map.sourceRevision
+      || candidate.opaque || candidate.external || candidate.confidence === 'unresolved'
+      || region.end > source.length || field.end > source.length
+      || hashSourceRevision(source.slice(region.start, region.end)) !== region.fingerprint
+      || hashSourceRevision(source.slice(field.start, field.end)) !== field.fingerprint
+      || source.slice(field.start, field.end) !== original) continue
+    occurrences.add(`${field.start}:${field.end}`)
+  }
+  if (occurrences.size !== 1 || !occurrences.has(`${node.fields.text.start}:${node.fields.text.end}`)) return refusal('OWNERSHIP_LITERAL_AMBIGUOUS', impact)
   if (Buffer.byteLength(source, 'utf8') - Buffer.byteLength(original, 'utf8') + Buffer.byteLength(text, 'utf8') > MAX_SOURCE_BYTES) {
     return refusal('OWNERSHIP_SOURCE_LIMIT', impact)
   }

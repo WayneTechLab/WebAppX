@@ -40,8 +40,15 @@ export async function dispatchSourceIdentity({ service, method, url, body }) {
     return { statusCode: 200, result: await service[operation](body) }
   } catch (error) {
     const code = typeof error.code === 'string' && /^[A-Z][A-Z0-9_]{1,79}$/.test(error.code) ? error.code : 'IDENTITY_REFUSED'
-    const statusCode = /(?:STALE|DRIFT|CONFLICT|MISMATCH)/.test(code) ? 409 : /ENCODING/.test(code) ? 415 : 400
+    const statusCode = Number.isInteger(error.statusCode) && error.statusCode >= 400 && error.statusCode <= 499 ? error.statusCode
+      : /(?:STALE|DRIFT|CONFLICT|MISMATCH)/.test(code) ? 409 : /ENCODING/.test(code) ? 415 : 400
     // Service exceptions never expose source content, session state or host paths.
-    return invalid(code, 'Identity operation refused. Keep the previous accepted map and review the selected source, revision and proposal.', statusCode)
+    const response = invalid(code, 'Identity operation refused. Keep the previous accepted map and review the selected source, revision and proposal.', statusCode)
+    if (Array.isArray(error.diagnostics) && error.diagnostics.length <= 1000) {
+      response.result.diagnostics = error.diagnostics.filter(item => item && /^[A-Z][A-Z0-9_]{1,63}$/.test(item.code)
+        && /^[a-f0-9]{64}$/.test(item.identityDigest) && Number.isInteger(item.count) && item.count >= 2 && item.count <= 1000)
+        .map(({ code: diagnosticCode, identityDigest, count }) => ({ code: diagnosticCode, identityDigest, count }))
+    }
+    return response
   }
 }

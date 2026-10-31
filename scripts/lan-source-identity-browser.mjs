@@ -14,7 +14,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sha = (value) => createHash('sha256').update(value).digest('hex')
-const git = (args) => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim()
+const git = (args) => execFileSync('git', [...args], { cwd: root, encoding: 'utf8' }).trim()
 const commonDir = resolve(root, git(['rev-parse', '--git-common-dir']))
 const dependencyRoot = existsSync(join(root, 'node_modules')) ? root : dirname(commonDir)
 const requireDependencies = createRequire(join(dependencyRoot, 'package.json'))
@@ -46,16 +46,12 @@ for (const family of ['F003', 'F004']) {
 }
 const check = async (family, index, evidenceScope, action) => {
   const record = report.checks[(family === 'F003' ? 0 : 20) + index]
-  if (typeof action !== 'function') {
-    record.status = 'not-evidenced'
-    record.evidence = evidenceScope
-    return
-  }
+  assert.equal(typeof action, 'function', `${family}/${record.key} requires actual functional evidence`)
   record.startedAt = new Date().toISOString()
   try {
     const result = await action()
-    record.status = result?.partial ? 'partial' : 'passed'
-    if (result?.partial) record.limitation = result.partial
+    assert.ok(!result?.partial, `${family}/${record.key} has incomplete evidence`)
+    record.status = 'passed'
     record.evidence = evidenceScope
     record.finishedAt = new Date().toISOString()
   } catch (error) {
@@ -110,6 +106,13 @@ const assertMetadataOnly = (value, label = 'metadata') => {
   assert.ok(!serialized.includes(fixture), `${label} leaked the fixture root`)
   assert.ok(!serialized.includes(temporary), `${label} leaked the temporary root`)
 }
+const assertNoReadableLabels = (value) => {
+  if (!value || typeof value !== 'object') return
+  for (const [key, entry] of Object.entries(value)) {
+    if (key === 'label') assert.equal(entry, '', 'Versioned identity schema may retain blank label slots, never readable source labels')
+    else assertNoReadableLabels(entry)
+  }
+}
 const nodeByAnchor = (map, anchor) => {
   const node = map.nodes.find((entry) => entry.anchor === anchor)
   assert.ok(node, `Anchor ${anchor} absent from imported map`)
@@ -131,7 +134,7 @@ const assertMap = (map, path, workspaceId) => {
 }
 
 let bridge, bridgePort, lanPort, lan, otherLan, otherPort, browserServer, browser, context, page, failure
-let lanOutput = '', otherOutput = '', baselineEffects, inputSnapshot, lanBaseline
+let lanOutput = '', otherOutput = '', baselineEffects, inputSnapshot, lanBaseline, authorizedWriteEffects, authorizedLan
 const assetPromises = []
 const stopOwned = async (child) => {
   if (!child || child.exitCode !== null) return
@@ -189,6 +192,7 @@ try {
     algorithm: 'sha256', revision: report.revision, nodeVersion: process.version,
     implementationInputs: Object.fromEntries(Object.entries(inputSnapshot).filter(([path]) => /\.(?:mjs|js|css|html)$/.test(path)).map(([path, digest]) => [`.SYSTEMX/LAN/${path}`, digest])),
     protectedTrackedFiles: protectedBefore,
+    dependencies: { typescript: requireDependencies('typescript/package.json').version, playwright: requireDependencies('@playwright/test/package.json').version },
     harness: { path: 'scripts/lan-source-identity-browser.mjs', sha256: sha(readFileSync(fileURLToPath(import.meta.url))) },
   }
   writeFileSync(join(evidence, 'input-manifest.json'), `${JSON.stringify(report.inputManifest, null, 2)}\n`)
@@ -236,7 +240,7 @@ try {
   const ok = async (promise) => { const result = await promise; assert.equal(result.status, 200, JSON.stringify(result.body)); assert.ok(result.body && typeof result.body === 'object'); return result.body }
   const refused = async (promise) => {
     const result = await promise
-    assert.ok([400, 403, 404, 409, 413, 415].includes(result.status), `Expected refusal; got ${result.status}: ${JSON.stringify(result.body)}`)
+    assert.ok([400, 403, 404, 409, 413, 415].includes(result.status), `Expected refusal; got HTTP ${result.status} (${typeof result.body?.code === 'string' ? result.body.code : 'no refusal code'})`)
     assert.match(result.body?.code, /^[A-Z][A-Z0-9_]+$/)
     assert.equal(typeof result.body?.error, 'string')
     assertMetadataOnly(result.body, 'refusal')
@@ -247,7 +251,20 @@ try {
   assert.deepEqual(status.documents, [])
   assert.equal(status.ruleVersion, 'identity-v1')
   report.workspaceId = status.workspaceId
-  const preview = (path, options = {}) => ok(post('/api/identity/preview', { path, route: '/', ...options }))
+  const normalizePreview = (envelope) => {
+    assert.ok(envelope && typeof envelope === 'object' && !Array.isArray(envelope))
+    assert.ok(envelope.proposal && typeof envelope.proposal === 'object' && !Array.isArray(envelope.proposal))
+    const proposal = envelope.proposal
+    assert.equal(proposal.map?.workspaceId, envelope.workspaceId)
+    assert.equal(envelope.ownership?.workspaceId, envelope.workspaceId)
+    assert.equal(envelope.ownership?.documentId, proposal.map?.documentId)
+    validDigest(proposal.digest)
+    assert.equal(proposal.requiresReview, true)
+    return { ...proposal, ownership: envelope.ownership, workspaceId: envelope.workspaceId,
+      adapter: envelope.adapter, diagnostics: envelope.diagnostics, shared: envelope.shared,
+      ownershipRetirements: envelope.ownershipRetirements }
+  }
+  const preview = async (path, options = {}) => normalizePreview(await ok(post('/api/identity/preview', { path, ...options })))
   const accept = (proposal) => ok(post('/api/identity/accept', { digest: proposal.digest, confirmation: 'ACCEPT IDENTITY MAP' }))
   const read = (documentId) => ok(get(`/api/identity/document?documentId=${encodeURIComponent(documentId)}`))
   const lookup = (reference) => ok(post('/api/identity/lookup', reference))
@@ -273,7 +290,7 @@ try {
   await context.route('**/*', async (route) => {
     const request = route.request(), url = new URL(request.url())
     if (request.method() === 'GET' && url.protocol === 'https:' && url.hostname === 'fonts.googleapis.com' && url.pathname === '/css2') return route.fulfill({ status: 200, contentType: 'text/css; charset=utf-8', headers: { 'Access-Control-Allow-Origin': '*' }, body: '/* Synthetic font response. */' })
-    if (url.origin !== origin || !(['GET', 'HEAD'].includes(request.method()) || (request.method() === 'POST' && url.pathname.startsWith('/__systemx/api/identity/')))) {
+    if (url.origin !== origin || !(['GET', 'HEAD'].includes(request.method()) || (request.method() === 'POST' && (url.pathname.startsWith('/__systemx/api/identity/') || url.pathname === '/__systemx/api/builder/source')))) {
       report.unexpectedRequests.push({ method: request.method(), origin: url.origin, path: url.pathname })
       return route.abort('blockedbyclient')
     }
@@ -297,11 +314,12 @@ try {
   const selectPath = async (path) => { await page.locator('#source-file-select').selectOption(path); await expect(page.locator('#source-file-select')).toHaveValue(path) }
   const clickIdentity = async (selector, suffix, expectedStatus = 200) => {
     const responsePending = page.waitForResponse((response) => new URL(response.url()).pathname === `/__systemx/api/identity/${suffix}` && response.request().method() === 'POST')
+    void responsePending.catch(() => {})
     await page.locator(selector).click()
     const response = await responsePending
     const body = await response.json().catch(() => null)
     if (expectedStatus === 200) assert.equal(response.status(), 200, JSON.stringify(body))
-    return { status: response.status(), body }
+    return { status: response.status(), body: suffix === 'preview' && response.status() === 200 ? normalizePreview(body) : body }
   }
   await selectPath(homePath)
   let home, about, shared, rename, originalHero, replacementHero, replacementProposal, exported
@@ -324,7 +342,8 @@ try {
     assert.equal(repeated.map.documentId, home.documentId)
     assert.equal(repeated.map.pageId, home.pageId)
     assert.deepEqual(fixtureEffects(), baselineEffects)
-    await page.locator('#panel-source').screenshot({ path: join(evidence, '01-accepted-identity-inspector.png') })
+    await page.locator('#identity-summary').scrollIntoViewIfNeeded()
+    await page.screenshot({ path: join(evidence, '01-accepted-identity-inspector.png') })
   })
   await check('F003', 1, 'Label-only preview preserves reviewed page and document IDs.', async () => {
     const labeled = await preview(homePath, { label: 'A revised display label' })
@@ -403,7 +422,7 @@ try {
     assert.notEqual(twins[0].id, twins[1].id)
     assert.ok(proposed.ambiguous.length || proposed.map.warnings.length)
   })
-  await check('F003', 9, 'Reviewed retired-to-existing alias preserves provenance and rejects loops.', async () => {
+  await check('F003', 10, 'Reviewed retired-to-existing alias preserves provenance and rejects loops.', async () => {
     const proposed = await preview(homePath, { aliases: [{ from: originalHero.id, to: replacementHero.id, provenance: 'Reviewed fixture replacement' }] })
     assert.ok(proposed.map.aliases.some((alias) => alias.from === originalHero.id && alias.to === replacementHero.id && alias.provenance))
     home = (await accept(proposed)).map
@@ -411,15 +430,15 @@ try {
     assert.equal(old.status, 'resolved')
     assert.equal(old.node?.id, replacementHero.id)
     const bad = await post('/api/identity/preview', { path: homePath, aliases: [{ from: replacementHero.id, to: originalHero.id, provenance: 'invalid loop' }] })
-    assert.ok(bad.status !== 200 || !bad.body?.map?.aliases?.some((alias) => alias.from === replacementHero.id), 'Alias loop cannot be accepted')
+    await refused(Promise.resolve(bad))
   })
-  await check('F003', 10, 'Document-qualified lookup refuses cross-document node reference.', async () => {
+  await check('F003', 11, 'Document-qualified lookup refuses cross-document node reference.', async () => {
     about = (await accept(await preview(aboutPath, { route: '/about' }))).map
     const wrong = await lookup({ workspaceId: home.workspaceId, documentId: about.documentId, nodeId: replacementHero.id })
     assert.notEqual(wrong.status, 'resolved')
     assert.notEqual(wrong.node?.id, replacementHero.id)
   })
-  await check('F003', 11, 'Second owned workspace has a different workspaceId and refuses foreign references.', async () => {
+  await check('F003', 12, 'Second owned workspace has a different workspaceId and refuses foreign references.', async () => {
     const second = join(temporary, 'other-fixture')
     cpSync(fixture, second, { recursive: true, filter: (path) => path !== join(fixture, 'node_modules') })
     symlinkSync(join(dependencyRoot, 'node_modules'), join(second, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir')
@@ -428,48 +447,51 @@ try {
     otherLan = await startLan(second, otherPort, unused, (part) => { otherOutput += part })
     report.ownedProcesses.otherLan = otherLan.pid
     const otherOrigin = `http://127.0.0.1:${otherPort}`
-    const otherStatusResponse = await fetch(`${otherOrigin}/api/identity/status`)
+    const otherHtml = await (await fetch(otherOrigin)).text()
+    const otherToken = otherHtml.match(/meta name="systemx-session" content="([^"]+)"/)?.[1]
+    assert.ok(otherToken)
+    const otherStatusResponse = await fetch(`${otherOrigin}/api/identity/status`, { headers: { 'x-systemx-session': otherToken } })
     assert.equal(otherStatusResponse.status, 200)
     const otherStatus = await otherStatusResponse.json()
     validDigest(otherStatus.workspaceId)
     assert.notEqual(otherStatus.workspaceId, home.workspaceId)
-    const otherHtml = await (await fetch(otherOrigin)).text()
-    const otherToken = otherHtml.match(/meta name="systemx-session" content="([^"]+)"/)?.[1]
-    assert.ok(otherToken)
     const otherLookupResponse = await fetch(`${otherOrigin}/api/identity/lookup`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-systemx-session': otherToken }, body: JSON.stringify(qualified(home, replacementHero)) })
     assert.equal(otherLookupResponse.status, 200)
     const otherLookup = await otherLookupResponse.json()
     assert.equal(otherLookup.status, 'workspace-mismatch')
   })
-  await check('F003', 12, 'Current qualified lookup resolves exact node; missing node returns explicit missing.', async () => {
+  await check('F003', 13, 'Current qualified lookup resolves exact node; missing node returns explicit missing.', async () => {
     const found = await lookup(qualified(home, replacementHero))
     assert.equal(found.status, 'resolved')
     assert.equal(found.node?.id, replacementHero.id)
     const missing = await lookup({ ...qualified(home, replacementHero), nodeId: `node_${'f'.repeat(64)}` })
     assert.equal(missing.status, 'missing')
   })
-  await check('F003', 13, 'Retired reference is orphaned with original provenance, not rebound to sibling.', async () => {
+  await check('F003', 14, 'Retired reference is orphaned with original provenance, not rebound to sibling.', async () => {
     assert.ok(Array.isArray(replacementProposal.orphans))
     assert.ok(replacementProposal.orphans.some((entry) => JSON.stringify(entry).includes(originalHero.id)), 'Replacement preview lost retired reference')
     assert.ok(home.aliases.some((alias) => alias.from === originalHero.id), 'Accepted alias must retain reviewed provenance')
   })
-  await check('F003', 14, 'Preview exposes stable counts and the UI summary remains source-bound.', async () => {
+  await check('F003', 15, 'Preview exposes stable counts and the UI summary remains source-bound.', async () => {
     const proposed = await preview(homePath)
     for (const name of ['preserved', 'added', 'retired', 'ambiguous']) assert.ok(Number.isInteger(proposed.counts[name]) && proposed.counts[name] >= 0)
     assert.equal(proposed.requiresReview, true)
     await expect(page.locator('#identity-summary')).toContainText(home.documentId)
   })
-  await check('F003', 15, 'Rule change is explicit migration or coded refusal, never a silent v1 reinterpretation.', async () => {
+  await check('F003', 16, 'Rule change is explicit migration or coded refusal, never a silent v1 reinterpretation.', async () => {
     const result = await post('/api/identity/preview', { path: homePath, ruleVersion: 'identity-v2' })
-    if (result.status === 200) {
-      assert.ok(result.body.migration, 'Changed rule version requires explicit migration object')
-      assert.equal(result.body.requiresReview, true)
-      assert.equal((await read(home.documentId)).map.ruleVersion, 'identity-v1')
-    } else await refused(Promise.resolve(result))
+    await refused(Promise.resolve(result))
+    assert.equal((await read(home.documentId)).map.ruleVersion, 'identity-v1')
+    assert.equal((await ok(get('/api/identity/status'))).ruleVersion, 'identity-v1')
   })
-  await check('F003', 16, 'UI export/download and explicit reopen keep IDs while excluding source bodies.', async () => {
+  await check('F003', 17, 'UI export/download and explicit reopen keep IDs while excluding source bodies.', async () => {
     const pending = page.waitForEvent('download')
+    void pending.catch(() => {})
+    const exportedResponse = page.waitForResponse((response) => new URL(response.url()).pathname === '/__systemx/api/identity/export' && response.request().method() === 'POST')
+    void exportedResponse.catch(() => {})
     await page.locator('#identity-export').click()
+    const response = await exportedResponse
+    assert.equal(response.status(), 200, JSON.stringify(await response.json()))
     const download = await pending
     assert.match(download.suggestedFilename(), /\.json$/)
     const path = join(evidence, 'identity-document-export.json')
@@ -480,7 +502,7 @@ try {
     assert.equal(exported.map.documentId, home.documentId)
     assert.equal(exported.map.pageId, home.pageId)
     assertMetadataOnly(exported, 'document export')
-    assert.ok(!JSON.stringify(exported).includes('"label":'), 'Metadata export must omit labels')
+    assertNoReadableLabels(exported)
     await page.locator('#identity-reopen-json').fill(JSON.stringify(exported))
     await page.locator('#identity-reopen-confirmation').fill('REOPEN IDENTITY DOCUMENT')
     const { body: reopened } = await clickIdentity('#identity-reopen', 'reopen')
@@ -488,9 +510,10 @@ try {
     assert.equal(nodeByAnchor(reopened.map, 'newHero').id, replacementHero.id)
     home = reopened.map
     report.export = { file: 'identity-document-export.json', bytes: readFileSync(path).length, sha256: sha(readFileSync(path)) }
-    await page.locator('#panel-source').screenshot({ path: join(evidence, '02-export-reopen-identity.png') })
+    await page.locator('#identity-node-select').scrollIntoViewIfNeeded()
+    await page.screenshot({ path: join(evidence, '02-export-reopen-identity.png') })
   })
-  await check('F003', 17, 'Same relative path in second repository cannot reopen or authorize first workspace document.', async () => {
+  await check('F003', 18, 'Same relative path in second repository cannot reopen or authorize first workspace document.', async () => {
     const second = join(temporary, 'other-fixture')
     const otherHtml = await (await fetch(`http://127.0.0.1:${otherPort}/`)).text()
     const otherToken = otherHtml.match(/meta name="systemx-session" content="([^"]+)"/)?.[1]
@@ -500,7 +523,7 @@ try {
     assert.match(body.code, /^[A-Z][A-Z0-9_]+$/)
     assert.equal(readFileSync(join(second, homePath), 'utf8'), homeReplaced)
   })
-  await check('F003', 18, 'Inspector shows confidence, qualified reference and source provenance.', async () => {
+  await check('F003', 9, 'Inspector shows confidence, qualified reference and source provenance.', async () => {
     await page.locator('#identity-node-select').selectOption(replacementHero.id)
     const detail = await page.locator('#identity-node-detail').textContent()
     assert.ok(detail.includes('explicit') && detail.includes(home.documentId) && detail.includes(replacementHero.id))
@@ -512,13 +535,49 @@ try {
     assert.ok(proposed.map.nodes.some((node) => node.confidence === 'unresolved'))
     assert.ok(proposed.map.warnings.length || proposed.ambiguous.length)
     assert.notEqual(proposed.map.nodes.find((node) => node.confidence === 'unresolved')?.id, replacementHero.id)
-    return { partial: 'API ambiguity is checked; no separate live DOM representation exists for these nodes.' }
+    // Unresolved candidates deliberately do not preserve arbitrary identities
+    // across imports. Inspect the current accepted map's candidate, not a new
+    // unaccepted preview candidate that the UI correctly does not expose.
+    const unresolved = home.nodes.find((node) => node.confidence === 'unresolved')
+    assert.ok(unresolved)
+    await page.locator('#identity-node-select').selectOption(unresolved.id)
+    await expect(page.locator('#identity-node-detail')).toContainText('unresolved')
+    await expect(page.locator('#identity-node-detail')).toContainText('IDENTITY_UNRESOLVED')
+    const heuristic = home.nodes.find((node) => node.confidence === 'heuristic' && node.fields?.text)
+    assert.ok(heuristic)
+    await page.locator('#identity-node-select').selectOption(heuristic.id)
+    await expect(page.locator('#identity-node-detail')).toContainText('heuristic')
   })
 
   const ownershipModule = await import(pathToFileURL(join(fixture, '.SYSTEMX/LAN/Builder/source-ownership.mjs')).href)
   let owner = (await read(home.documentId)).ownership
   const summaryNode = findTextNode(home)
   assert.ok(summaryNode, 'Fixture literal text span is required by F004 tests')
+  const generatedPath = 'src/pages/GeneratedPage.tsx'
+  const generatedClaim = { nodeId: replacementHero.id, mode: 'document-owned', adapterId: 'generator-v1',
+    fields: { text: 'document' }, provenance: { documentId: home.documentId, generatorVersion: 'fixture-generator-1.0.0',
+      outputPath: generatedPath, outputRevision: sha(readFileSync(join(fixture, generatedPath))), generatedBoundary: { path: generatedPath } } }
+  const hybridClaim = { nodeId: summaryNode.id, mode: 'hybrid-controlled', adapterId: 'tsx-static-v1',
+    fields: { text: 'source', metadata: 'document' } }
+  const previewOwnership = async (changes) => {
+    await page.locator('#identity-ownership-json').fill(JSON.stringify(changes))
+    const { body } = await clickIdentity('#identity-ownership-preview', 'ownership/preview')
+    assert.equal(body.workspaceId, home.workspaceId)
+    const proposal = body.proposal
+    validDigest(proposal?.digest)
+    assert.equal(proposal.requiresReview, true)
+    assert.equal(proposal.report.documentId, home.documentId)
+    return proposal
+  }
+  const acceptOwnership = async (proposal) => {
+    await page.locator('#identity-ownership-confirmation').fill('ACCEPT OWNERSHIP CHANGE')
+    const { body } = await clickIdentity('#identity-ownership-accept', 'ownership/accept')
+    assert.equal(body.accepted, true)
+    assert.equal(body.report.documentId, home.documentId)
+    assert.deepEqual(body.report, proposal.report)
+    owner = (await read(home.documentId)).ownership
+    return owner
+  }
   await check('F004', 0, 'Source-owned node names authored source and supported semantic operations.', async () => {
     const object = owner.objects.find((entry) => entry.nodeId === summaryNode.id)
     assert.equal(object.mode, 'source-owned')
@@ -527,9 +586,52 @@ try {
     assert.ok(object.supportedOperations.includes('literal'))
     assert.equal(object.source.path, homePath)
   })
-  await check('F004', 1, 'Document-owned generation boundary is outside this source-import adapter; no positive generation claim.', null)
-  await check('F004', 2, 'Hybrid authority requires a reviewed field claim; this fixture has no generated field boundary.', null)
-  await check('F004', 3, 'Live unmapped preview element selection is not wired by the F003/F004 read-model contract.', null)
+  await check('F004', 1, 'Reviewed document-owned claim identifies its owning document and exact generated output boundary without source writes.', async () => {
+    const before = fixtureEffects(), prior = structuredClone(owner)
+    const proposed = await previewOwnership([generatedClaim])
+    assert.equal(proposed.affected[0].after.mode, 'document-owned')
+    assert.deepEqual((await read(home.documentId)).ownership, prior)
+    await expect(page.locator('#identity-ownership-detail')).toContainText(generatedPath)
+    const accepted = await acceptOwnership(proposed)
+    const object = accepted.objects.find((entry) => entry.nodeId === replacementHero.id)
+    assert.equal(object.mode, 'document-owned')
+    assert.equal(object.provenance.documentId, home.documentId)
+    assert.equal(object.provenance.generatedBoundary.path, generatedPath)
+    assert.deepEqual(object.supportedOperations, [])
+    assert.deepEqual(fixtureEffects(), before)
+  })
+  await check('F004', 2, 'Reviewed hybrid claim separates source literal authority from document metadata and refuses incomplete boundaries.', async () => {
+    const before = fixtureEffects(), proposed = await previewOwnership([hybridClaim])
+    assert.equal(proposed.affected[0].after.mode, 'hybrid-controlled')
+    const accepted = await acceptOwnership(proposed), object = accepted.objects.find((entry) => entry.nodeId === summaryNode.id)
+    assert.equal(object.mode, 'hybrid-controlled')
+    assert.deepEqual(object.fields.text, { owner: 'source', supported: true })
+    const claim = accepted.claims.find((entry) => entry.nodeId === summaryNode.id)
+    assert.deepEqual(claim.fields.metadata, { owner: 'document', supported: false })
+    await refused(post('/api/identity/ownership/preview', { documentId: home.documentId, changes: [{ ...hybridClaim, fields: { text: 'source' } }] }))
+    assert.deepEqual((await read(home.documentId)).ownership, accepted)
+    assert.deepEqual(fixtureEffects(), before)
+  })
+  await check('F004', 3, 'Actual iframe inspection publishes an unmapped runtime location and never invents durable source-write authority.', async () => {
+    const before = fixtureEffects()
+    const frame = await (await page.locator('#app-preview-frame').elementHandle()).contentFrame()
+    assert.ok(frame)
+    await expect(frame.locator('html')).toHaveAttribute('data-systemx-inspector-bound', '')
+    const inspect = page.locator('#preview-inspect-toggle')
+    if (await inspect.getAttribute('aria-pressed') !== 'true') await inspect.click()
+    await frame.getByRole('heading', { name: 'Synthetic browser preview', exact: true }).click()
+    await page.locator('[data-inspector-group-tab="build"]').click()
+    await page.locator('[data-inspector-tab="source"]').click()
+    await expect(page.locator('#identity-preview-selection')).toContainText('PREVIEW_DURABLE_REFERENCE_UNAVAILABLE')
+    const detail = JSON.parse(await page.locator('#identity-preview-selection').textContent())
+    assert.equal(detail.status, 'unmapped')
+    assert.equal(detail.runtime.tag, 'h1')
+    assert.equal(detail.runtime.route, '/')
+    assert.equal(detail.reference, null)
+    assert.match(detail.sourceWrite, /unavailable/)
+    await expect(page.locator('#identity-stage-operation')).toBeDisabled()
+    assert.deepEqual(fixtureEffects(), before)
+  })
   await check('F004', 4, 'Exact bounded UTF-16 text span and fingerprint match source bytes.', async () => {
     const source = readFileSync(join(fixture, homePath), 'utf8')
     assert.equal(summaryNode.source.sourceRevision, sha(source))
@@ -539,15 +641,19 @@ try {
     assert.ok(field.end > field.start)
   })
   await check('F004', 5, 'Installed adapter declares literal-only capability; style/structure/generated unsupported.', async () => {
-    const imported = await preview(sharedPath)
+    const imported = await preview(sharedPath, { route: '/' })
     shared = (await accept(imported)).map
-    assert.deepEqual(imported.ownership.objects.find((entry) => entry.nodeId === nodeByAnchor(shared, 'sharedHeader').id)?.unsupportedOperations?.sort(), ['generated', 'structure', 'style'].sort())
+    assert.deepEqual(imported.adapter.supportedOperations, ['literal'])
+    assert.deepEqual(imported.adapter.unsupportedOperations.toSorted(), ['generated', 'structure', 'style'].sort())
+    const sharedLiteral = shared.nodes.find((entry) => entry.fields?.text)
+    assert.ok(sharedLiteral)
+    assert.deepEqual(imported.ownership.objects.find((entry) => entry.nodeId === sharedLiteral.id)?.unsupportedOperations?.toSorted(), ['generated', 'structure', 'style'].sort())
     const detail = await ok(post('/api/identity/inspect', qualified(home, summaryNode)))
     assertMetadataOnly(detail, 'ownership inspect')
     await expect(page.locator('#identity-ownership-detail')).toBeVisible()
   })
   await check('F004', 6, 'Ambiguous twin source literals are not arbitrarily writable; operation refuses or disallows.', async () => {
-    const twin = home.nodes.find((node) => node.label === 'Ambiguous twin')
+    const twin = home.nodes.find((node) => node.confidence === 'unresolved' && node.fields?.text)
     assert.ok(twin)
     const result = await post('/api/identity/operation', { documentId: home.documentId, reference: qualified(home, twin), expectedRevision: home.sourceRevision, text: 'Changed twin' })
     if (result.status === 200) assert.equal(result.body.allowed, false)
@@ -577,16 +683,20 @@ try {
         await expect(page.locator('#identity-status')).toContainText(/stale|revision|reload|reconcile/i)
       }
       await expect(page.locator('#identity-operation-text')).toHaveValue('Safe draft preserved')
-      await page.locator('#panel-source').screenshot({ path: join(evidence, '03-stale-operation-refusal.png') })
+      await page.locator('#identity-status').scrollIntoViewIfNeeded()
+      await page.screenshot({ path: join(evidence, '03-stale-operation-refusal.png') })
     } finally { put(homePath, before) }
   })
   await check('F004', 8, 'Shared layout source owner remains distinct and displays shared impact.', async () => {
-    const node = nodeByAnchor(shared, 'sharedHeader')
+    const node = shared.nodes.find((entry) => entry.fields?.text)
+    assert.ok(node)
     const reportObject = (await read(shared.documentId)).ownership.objects.find((entry) => entry.nodeId === node.id)
     assert.equal(reportObject.source.path, sharedPath)
-    assert.ok(reportObject.definition || reportObject.provenance || sharedPath.includes('/layout/'))
+    assert.equal(reportObject.provenance.shared, true)
     assert.notEqual(shared.documentId, home.documentId)
-    return { partial: 'Shared source owner is checked; live multi-route impact visualization is outside this source-import read model.' }
+    const planned = await operation(shared, node, 'Reviewed shared fixture replacement')
+    assert.equal(planned.allowed, true)
+    assert.ok(planned.impact.some((entry) => entry.sourcePath === sharedPath && entry.scope === 'shared' && entry.route === 'all-routes'))
   })
   await check('F004', 9, 'Same visible label on separate route resolves to different source owner and document.', async () => {
     const aboutHero = nodeByAnchor(about, 'aboutHero')
@@ -596,18 +706,40 @@ try {
     assert.notEqual(about.documentId, home.documentId)
     assert.notEqual(aboutHero.id, replacementHero.id)
   })
-  await check('F004', 10, 'Generated-output provenance requires a generator contract beyond the TSX source-import adapter.', null)
+  await check('F004', 10, 'Selecting a reviewed document-owned object displays exact generator and output provenance without regeneration authority.', async () => {
+    await page.locator('#identity-node-select').selectOption(replacementHero.id)
+    await expect(page.locator('#identity-node-detail')).toContainText(generatedClaim.provenance.generatorVersion)
+    await expect(page.locator('#identity-node-detail')).toContainText(generatedPath)
+    await expect(page.locator('#identity-node-detail')).toContainText(generatedClaim.provenance.outputRevision)
+    const inspected = await ok(post('/api/identity/inspect', qualified(home, replacementHero)))
+    assert.equal(inspected.object.mode, 'document-owned')
+    assert.equal(inspected.object.provenance.outputRevision, sha(readFileSync(join(fixture, generatedPath))))
+    assert.ok(!inspected.object.supportedOperations.includes('generated'))
+    const planned = await operation(home, replacementHero, 'Refused generated fixture replacement')
+    assert.equal(planned.allowed, false)
+    assert.equal(planned.code, 'OWNERSHIP_LITERAL_UNSUPPORTED')
+  })
   await check('F004', 11, 'Ownership proposal API needs qualified, reviewed changes and separate confirmation.', async () => {
     const invalid = await post('/api/identity/ownership/preview', { documentId: home.documentId, changes: [{ nodeId: 'foreign', mode: 'source-owned' }] })
     await refused(Promise.resolve(invalid))
     const noProposal = await post('/api/identity/ownership/accept', { digest: '0'.repeat(64), confirmation: 'ACCEPT OWNERSHIP CHANGE' })
     await refused(Promise.resolve(noProposal))
     assert.equal((await read(home.documentId)).ownership.coverage.total, owner.coverage.total)
-    return { partial: 'Invalid proposal and premature acceptance are refused; positive ownership migration is not proven by this fixture.' }
+    const before = fixtureEffects(), prior = structuredClone(owner)
+    const changes = [{ nodeId: summaryNode.id, mode: 'source-owned', adapterId: 'tsx-static-v1', fields: { text: 'source' } }]
+    const proposed = await previewOwnership(changes)
+    assert.equal(proposed.affected[0].before.mode, 'hybrid-controlled')
+    assert.equal(proposed.affected[0].after.mode, 'source-owned')
+    assert.deepEqual((await read(home.documentId)).ownership, prior)
+    await page.locator('#identity-ownership-confirmation').fill('wrong')
+    await expect(page.locator('#identity-ownership-accept')).toBeDisabled()
+    await acceptOwnership(proposed)
+    assert.equal(owner.objects.find((entry) => entry.nodeId === summaryNode.id).mode, 'source-owned')
+    assert.deepEqual(fixtureEffects(), before)
   })
   await check('F004', 12, 'Overlapping authored claims retain conflict visibility and disable writes.', async () => {
-    const claim = { nodeId: summaryNode.id, mode: 'source-owned', adapterId: 'tsx-static-v1', source: summaryNode.source, fields: { text: { owner: 'source', supported: true } }, provenance: 'fixture claim A' }
-    const conflicted = ownershipModule.buildOwnership(home, { claims: [claim, { ...claim, provenance: 'fixture claim B' }] })
+    const claim = { nodeId: summaryNode.id, mode: 'source-owned', adapterId: 'tsx-static-v1', source: summaryNode.source, fields: { text: { owner: 'source', supported: true } }, provenance: { documentId: home.documentId } }
+    const conflicted = ownershipModule.buildOwnership(home, { claims: [claim, { ...claim, adapterId: 'tsx-review-v1' }] })
     assert.ok(conflicted.coverage.conflict > 0)
     const object = conflicted.objects.find((entry) => entry.nodeId === summaryNode.id)
     assert.equal(object.status, 'conflict')
@@ -616,15 +748,15 @@ try {
     assert.equal(planned.allowed, false)
   })
   await check('F004', 13, 'Component instance and definition metadata are inspectable without shared definition edits.', async () => {
-    const external = home.nodes.find((node) => node.external || node.definition)
+    const external = home.nodes.find((node) => node.external)
     assert.ok(external)
     assert.equal(external.external, true)
     const object = owner.objects.find((entry) => entry.nodeId === external.id)
     assert.ok(object)
     assert.ok(object.definition || external.definition)
-    assert.ok(Array.isArray(object.instanceFields ?? []))
-    assert.ok(Array.isArray(object.definitionFields ?? []))
-    return { partial: 'Source metadata distinguishes instance and definition; no shared definition mutation is exercised.' }
+    assert.ok(Array.isArray(object.instanceFields))
+    assert.deepEqual(object.definitionFields, ['structure'])
+    assert.ok(!object.supportedOperations.includes('structure'))
   })
   await check('F004', 14, 'Opaque JSX expression retains source metadata and no supported literal write.', async () => {
     const opaque = home.nodes.find((node) => node.opaque && !node.external)
@@ -644,7 +776,24 @@ try {
     if (result.status === 200) assert.equal(result.body.allowed, false)
     else await refused(Promise.resolve(result))
     await refused(post('/api/identity/preview', { path: 'src/pages/LinkedPage.tsx' }))
-    await refused(post('/api/identity/preview', { path: 'src/pages/GeneratedPage.tsx' }))
+    const before = fixtureEffects()
+    const generated = await preview(generatedPath)
+    assert.ok(generated.ownership.objects.length > 0)
+    for (const object of generated.ownership.objects) {
+      assert.deepEqual(object.supportedOperations, [])
+      if (object.fields.text) assert.equal(object.fields.text.supported, false)
+      assert.ok(object.reasons.includes('SOURCE_GENERATED_READ_ONLY'))
+    }
+    const generatedMap = (await accept(generated)).map
+    const generatedNode = generatedMap.nodes.find((node) => node.fields?.text)
+    assert.ok(generatedNode)
+    const generatedOperation = await refused(post('/api/identity/operation', { documentId: generatedMap.documentId,
+      reference: qualified(generatedMap, generatedNode), expectedRevision: generatedMap.sourceRevision, text: 'Never write generated source' }))
+    assert.equal(generatedOperation.code, 'SOURCE_GENERATED_READ_ONLY')
+    const generatedAuthority = await refused(post('/api/identity/ownership/preview', { documentId: generatedMap.documentId,
+      changes: [{ nodeId: generatedNode.id, mode: 'source-owned', adapterId: 'tsx-static-v1', fields: { text: 'source' } }] }))
+    assert.equal(generatedAuthority.code, 'SOURCE_GENERATED_READ_ONLY')
+    assert.deepEqual(fixtureEffects(), before)
   })
   await check('F004', 16, 'Coverage counts include partial/unmapped/stale/conflict scope and sum to total.', async () => {
     const coverage = owner.coverage
@@ -669,24 +818,71 @@ try {
     await expect(page.locator('#identity-operation-detail')).toContainText('Browser proposal only')
     assert.deepEqual(fixtureEffects(), before)
   })
-  await check('F004', 18, 'Fresh reimport after synthetic source promotion updates revision; no automatic unrelated repair.', async () => {
+  await check('F004', 18, 'A staged literal uses the controlled editor confirmation and exact backup, then reimport revalidates the promoted revision without unrelated repair.', async () => {
     const before = readFileSync(join(fixture, homePath), 'utf8')
     const changed = before.replace('Summary literal fixture', 'Promoted fixture summary')
-    put(homePath, changed)
-    try {
-      const stale = await read(home.documentId)
-      assert.ok(stale.ownership.objects.some((entry) => entry.status === 'stale'))
-      const proposed = await preview(homePath)
-      assert.equal(proposed.map.sourceRevision, sha(changed))
-      assert.equal((await read(about.documentId)).map.sourceRevision, about.sourceRevision)
-      home = (await accept(proposed)).map
-      assert.equal((await read(home.documentId)).map.sourceRevision, sha(changed))
-    } finally {
-      put(homePath, before)
-      const restored = await preview(homePath)
-      home = (await accept(restored)).map
-    }
-    return { partial: 'Source bytes are changed only in the owned fixture; controlled source-editor promotion is not exercised.' }
+    assert.notEqual(before, changed)
+    const beforeEffects = fixtureEffects()
+    const rawRead = page.waitForResponse((response) => new URL(response.url()).pathname.endsWith('/api/builder/source') && response.request().method() === 'GET')
+    void rawRead.catch(() => {})
+    await page.locator('#load-source').click()
+    assert.equal((await rawRead).status(), 200)
+    await expect(page.locator('#source-editor')).toHaveValue(before)
+    // The earlier drift exercise deliberately left the inspector stale. A
+    // restored file and a fresh raw editor do not silently revive map authority.
+    const refreshedMap = page.waitForResponse((response) => new URL(response.url()).pathname === '/__systemx/api/identity/document' && response.request().method() === 'GET')
+    void refreshedMap.catch(() => {})
+    await page.locator('#identity-refresh-status').click()
+    assert.equal((await refreshedMap).status(), 200)
+    await expect(page.locator('#identity-summary')).toContainText('current source read')
+    await page.locator('#identity-node-select').selectOption(summaryNode.id)
+    await page.locator('#identity-operation-text').fill('Promoted fixture summary')
+    const proposedOperation = await clickIdentity('#identity-operation-preview', 'operation')
+    assert.equal(proposedOperation.body.allowed, true)
+    await page.locator('#identity-stage-operation').click()
+    await expect(page.locator('#source-output')).toContainText('Literal proposal staged')
+    await expect(page.locator('#source-editor')).toHaveValue(changed)
+    await expect(page.locator('#source-confirmation')).toHaveValue('')
+    assert.deepEqual(fixtureEffects(), beforeEffects, 'Staging must not write source or backups')
+    await page.locator('#source-confirmation').fill('SAVE LOCAL CHANGE')
+    const savedResponse = page.waitForResponse((response) => new URL(response.url()).pathname.endsWith('/api/builder/source') && response.request().method() === 'POST')
+    void savedResponse.catch(() => {})
+    await page.locator('#save-source').click()
+    const response = await savedResponse
+    assert.equal(response.status(), 200)
+    const saved = await response.json()
+    assert.equal(saved.status, 'saved')
+    assert.equal(saved.revision, sha(changed))
+    assert.equal(readFileSync(join(fixture, homePath), 'utf8'), changed)
+    assert.equal(readFileSync(join(fixture, saved.backup), 'utf8'), before)
+    await expect(page.locator('#source-revision')).toHaveAttribute('data-revision', sha(changed))
+    await expect(page.locator('#source-confirmation')).toHaveValue('')
+    authorizedWriteEffects = fixtureEffects()
+    authorizedLan = snapshot(join(fixture, '.SYSTEMX/LAN'))
+    assert.equal(Object.keys(authorizedWriteEffects['.SYSTEMX/LAN/Backup']).length, Object.keys(beforeEffects['.SYSTEMX/LAN/Backup']).length + 1)
+    const log = readFileSync(join(fixture, '.SYSTEMX/LAN/Temp/operations.jsonl'), 'utf8')
+    const recorded = log.trim().split('\n').map((line) => JSON.parse(line)).find((entry) => entry.event === 'source_saved' && entry.revision === saved.revision)
+    assert.ok(recorded)
+    assert.equal(recorded.previousRevision, sha(before))
+    assert.equal(recorded.path, homePath)
+    report.authorizedPromotion = { path: homePath, predecessorRevision: sha(before), revision: saved.revision,
+      backup: saved.backup, backupSha256: sha(readFileSync(join(fixture, saved.backup))), sourceWriteConfirmation: 'SAVE LOCAL CHANGE',
+      stagedWithoutEffects: true, savedViaControlledEditor: true, operationsLogContainsExactRevision: true }
+    const stale = await read(home.documentId)
+    assert.ok(stale.ownership.objects.some((entry) => entry.status === 'stale'))
+    const proposed = await preview(homePath)
+    assert.equal(proposed.map.sourceRevision, sha(changed))
+    assert.equal((await read(about.documentId)).map.sourceRevision, about.sourceRevision)
+    home = (await accept(proposed)).map
+    const promoted = await read(home.documentId)
+    assert.equal(promoted.map.sourceRevision, sha(changed))
+    assert.equal(nodeByAnchor(promoted.map, 'summary').id, summaryNode.id)
+    const promotedOwner = promoted.ownership.objects.find((entry) => entry.nodeId === summaryNode.id)
+    assert.ok(['partial', 'stale'].includes(promotedOwner.status), 'Old ownership span authority must be revalidated, never silently repaired to the promoted source')
+    assert.ok(!promotedOwner.supportedOperations.includes('literal'))
+    report.authorizedPromotion.mappingRevalidated = true
+    report.authorizedPromotion.priorOwnershipClaimState = promotedOwner.status
+    assert.deepEqual(fixtureEffects(), authorizedWriteEffects, 'Reimport must not add source effects or repair unrelated files')
   })
   await check('F004', 19, 'Exported ownership diagnostics are bounded qualified metadata only.', async () => {
     const document = await ok(post('/api/identity/export', { documentId: home.documentId }))
@@ -694,13 +890,36 @@ try {
     assert.equal(document.map.documentId, home.documentId)
     assert.ok(document.ownership)
     assertMetadataOnly(document, 'ownership diagnostics')
-    assert.ok(!JSON.stringify(document).includes('"label":'), 'Ownership export must omit labels')
+    assertNoReadableLabels(document)
     const diagnostics = ownershipModule.exportOwnershipDiagnostics(home, (await read(home.documentId)).ownership)
     assertMetadataOnly(diagnostics, 'ownership module diagnostics')
     assert.ok(JSON.stringify(diagnostics).length <= 400_000)
   })
 
+  // The controlled source-save workflow may return focus to the canvas. Open
+  // Code before using its picker for the final metadata readback.
+  if (await page.locator('#right-panel-toggle').getAttribute('aria-expanded') !== 'true') await page.locator('#right-panel-toggle').click()
+  await page.locator('[data-inspector-group-tab="build"]').click()
+  await page.locator('[data-inspector-tab="source"]').click()
+  if (await page.locator('#right-panel-visibility').getAttribute('aria-pressed') !== 'true') await page.locator('#right-panel-visibility').click()
+  await selectPath(homePath)
+  const promotedRead = page.waitForResponse((response) => new URL(response.url()).pathname === '/__systemx/api/identity/document' && response.request().method() === 'GET')
+  void promotedRead.catch(() => {})
+  await page.locator('#identity-refresh-status').click()
+  assert.equal((await promotedRead).status(), 200)
+  await expect(page.locator('#identity-summary')).toContainText(home.sourceRevision)
+  await page.locator('#identity-node-select').selectOption(summaryNode.id)
+  await expect(page.locator('#identity-node-detail')).toContainText('SOURCE_REVISION_STALE')
+  await expect(page.locator('#identity-stage-operation')).toBeDisabled()
   await page.setViewportSize({ width: 900, height: 900 })
+  // Responsive layout may close the inspector. Reopen it using the same visible
+  // controls an operator uses, rather than measuring a deliberately hidden dock.
+  if (await page.locator('#right-panel-toggle').getAttribute('aria-expanded') !== 'true') await page.locator('#right-panel-toggle').click()
+  await page.locator('[data-inspector-group-tab="build"]').click()
+  await page.locator('[data-inspector-tab="source"]').click()
+  if (await page.locator('#right-panel-visibility').getAttribute('aria-pressed') !== 'true') await page.locator('#right-panel-visibility').click()
+  if (!await identityPanel.evaluate((element) => element.open)) await identityPanel.locator('summary').click()
+  await expect(identityPanel).toBeVisible()
   await page.locator('#right-panel-visibility').scrollIntoViewIfNeeded()
   const geometry = await identityPanel.evaluate((panel) => {
     const box = panel.getBoundingClientRect()
@@ -714,13 +933,15 @@ try {
   assert.deepEqual(unlabelled, [], 'Interactive identity fields need labels')
   await page.locator('#identity-node-select').focus()
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'identity-node-select')
-  await page.locator('#panel-source').screenshot({ path: join(evidence, '04-narrow-keyboard-inspector.png') })
+  await page.screenshot({ path: join(evidence, '04-narrow-keyboard-inspector.png') })
   report.geometry = geometry
   report.keyboard = { focusedNodeSelect: true, unlabelledFields: unlabelled }
 
   for (const [path, content] of fixtures) put(path, content)
   rmSync(join(fixture, renamedPath), { force: true })
-  assert.deepEqual(fixtureEffects(), baselineEffects, 'Metadata and operation previews must not change source, backups, Temp or Research')
+  const expectedEffects = { ...baselineEffects,
+    ...(authorizedWriteEffects ? { '.SYSTEMX/LAN/Backup': authorizedWriteEffects['.SYSTEMX/LAN/Backup'], '.SYSTEMX/LAN/Temp': authorizedWriteEffects['.SYSTEMX/LAN/Temp'] } : {}) }
+  assert.deepEqual(fixtureEffects(), expectedEffects, 'Only the separately confirmed owned-fixture promotion may change backup/log effects; fixture source restoration is harness cleanup')
   await Promise.all(assetPromises)
   assert.equal(report.pageErrors.length, 0, `Browser page errors: ${report.pageErrors.join('; ')}`)
   assert.equal(report.unexpectedRequests.length, 0)
@@ -729,8 +950,8 @@ try {
   assert.ok(report.assetCaptures.some((asset) => asset.path.endsWith('/source-identities.js')), 'Actual source identity UI module did not load')
   assert.ok(report.assetCaptures.some((asset) => asset.path.endsWith('/identity-inspector.css')), 'Actual source identity stylesheet did not load')
   assert.equal(report.checks.length, 40)
-  assert.ok(report.checks.every((entry) => ['passed', 'partial', 'not-evidenced'].includes(entry.status)))
-  report.status = report.checks.some((entry) => entry.status !== 'passed') ? 'passed-with-explicit-gaps' : 'passed'
+  assert.ok(report.checks.every((entry) => entry.status === 'passed'), 'All40 authored capabilities require positive complete evidence')
+  report.status = 'passed'
 } catch (error) {
   failure = error
   report.status = 'failed'
@@ -756,8 +977,14 @@ try {
       return (lstatSync(current).isSymbolicLink() ? `link:${sha(readlinkSync(current))}` : sha(readFileSync(current))) === digest
     } catch { return false }
   }) : null
-  report.fixtureLanPreserved = lanBaseline ? JSON.stringify(snapshot(join(fixture, '.SYSTEMX/LAN'))) === JSON.stringify(lanBaseline) : null
-  report.fixturePreserved = baselineEffects ? JSON.stringify(fixtureEffects()) === JSON.stringify(baselineEffects) : null
+  report.rootImplementationInputChanges = report.inputManifest ? Object.entries(report.inputManifest.implementationInputs).filter(([path, digest]) => {
+    try { return sha(readFileSync(join(root, path))) !== digest } catch { return true }
+  }).map(([path]) => path) : null
+  report.fixtureLanPreserved = lanBaseline ? JSON.stringify(snapshot(join(fixture, '.SYSTEMX/LAN'))) === JSON.stringify(authorizedLan ?? lanBaseline) : null
+  const expectedEffects = baselineEffects ? { ...baselineEffects,
+    ...(authorizedWriteEffects ? { '.SYSTEMX/LAN/Backup': authorizedWriteEffects['.SYSTEMX/LAN/Backup'], '.SYSTEMX/LAN/Temp': authorizedWriteEffects['.SYSTEMX/LAN/Temp'] } : {}) } : null
+  report.fixturePreserved = expectedEffects ? JSON.stringify(fixtureEffects()) === JSON.stringify(expectedEffects) : null
+  report.fixtureEffectsBoundary = 'Reconciliation, ownership and operation previews have no source/Backup/Temp/Research effects. Explicit exports may initialize an ignored fixture-state signing key. One explicitly staged/confirmed controlled-editor save is allowed in the owned fixture, with exact predecessor backup/log proof; source fixtures are restored by harness cleanup.'
   report.ownedProcessesExited = (!lan || lan.exitCode !== null) && (!otherLan || otherLan.exitCode !== null)
   report.harnessPreserved = report.inputManifest ? sha(readFileSync(fileURLToPath(import.meta.url))) === report.inputManifest.harness.sha256 : null
   if (report.status !== 'failed' && (!report.protectedTrackedFilesPreserved || !report.implementationInputsPreserved || !report.fixtureLanPreserved || !report.fixturePreserved || !report.ownedProcessesExited || !report.harnessPreserved)) {

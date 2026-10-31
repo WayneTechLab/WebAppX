@@ -4,14 +4,14 @@ This guide describes the F003/F004 local source-import workflow selected for
 the LAN builder. The authored [F003](backlog/lan-10000/F003.md) and
 [F004](backlog/lan-10000/F004.md) checklists own the exact requirements; the
 [bounded iteration plan](LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) owns the
-proposed sequence. The accepted baseline remains **200/10,000 requirements and
+execution sequence. The accepted baseline remains **200/10,000 requirements and
 40/2,000 capabilities** (F001 and F002). The target after separate Agent 0
 acceptance of both families is **400/10,000 and 80/2,000**. These pages do not
 record acceptance or qualify an untested integration.
 
 The import is a narrow `schemaVersion: 1` source identity read model for
 eligible static TSX, alongside the future full
-[Designer document schema](../.SYSTEMX/LAN/Research/LAN-Builder/Package-Schemas/designer-document.schema.json).
+[Designer document schema](../.SYSTEMX/LAN/Builder/contracts/designer-document.schema.json).
 It does not make the canvas DOM, generated artifacts, JSX expressions or
 component internals into editable source. The existing
 [F002 source policy](LAN-SOURCE-POLICY.md) decides which source path can be read;
@@ -21,7 +21,7 @@ deliberate guarded source save.
 
 ## Use the inspector
 
-When integrated, open **Build → Code → Source identities** in the local LAN
+Open **Build → Code → Source identities** in the local LAN
 builder. Select a canonical eligible TSX path through the source picker. The
 inspector is read-only until an explicit import preview has been reviewed and
 accepted. A refresh reports accepted maps and current status; it does not import
@@ -58,7 +58,7 @@ downloads a bounded, versioned metadata object. **Reopen** requires a compatible
 export from the same workspace and `REOPEN IDENTITY DOCUMENT`, then rechecks
 path eligibility and current source revision. A failed reopen preserves accepted
 maps. An export is not a backup of source content, an executable project, or
-permission to import into another checkout. Source bodies, labels, credentials,
+permission to import into another checkout. Source bodies, readable labels, credentials,
 absolute roots, private runtime paths, DOM handles and session tokens are
 excluded. An ownership diagnostics export likewise contains qualified IDs,
 modes, reason codes, counts and bounded span metadata only.
@@ -86,8 +86,9 @@ representation. Its object handle, coordinates and current presence cannot
 authorize an import or save. A supported mapping may identify a corresponding
 preview object; absence or ambiguity stays visible. Retired IDs and orphaned
 references keep provenance for review and do not attach to replacements by
-proximity. Rule-version changes require an explicit reviewed migration rather
-than silently applying a new matching rule to an old map.
+proximity. The current implemented rule is `identity-v1`; unknown versions are explicitly
+refused and require a separately implemented, reviewed migration. No v2 upgrade
+is silently inferred from a version string.
 
 ## Ownership and source authority
 
@@ -132,7 +133,7 @@ unrelated source and mappings are not repaired automatically.
 ## Limits and trust boundary
 
 The service accepts only F002-eligible selected source. It keeps at most **50
-accepted documents**, **1,000 nodes per document**, **256 aliases** and
+accepted documents**, **1,000 nodes per document** (also subject to the transport byte cap), **256 aliases** and
 **120-character labels**. Source input is capped at **1 MB**; proposals and
 exports at **400 KB**; diagnostics at **1,000 records**. Invalid graphs,
 duplicate anchors, cycles, bad references and over-limit input fail with stable
@@ -148,12 +149,46 @@ snapshots, research package checksums, brand/production kits, Firebase data or
 the installation/import boundary described in
 [SYSTEMX integration](SYSTEMX-INTEGRATION.md).
 
-## What still requires evidence
+## Export integrity and recovery
+
+The first explicit identity export creates an owner-private local integrity key
+in ignored `.SYSTEMX/state/source-identity/`. The export includes an integrity
+tag, and excludes the key. Compatible documents move between browsers connected
+to the same workspace/backend and can reopen after a service restart while that
+private runtime key remains available. A modified document is refused. Keep the
+runtime key private and outside Git; a different checkout or lost key requires a
+new export. An export is metadata, so source content still belongs to Git or the
+operator's separate source backup.
+
+Reopen validates the current eligible TSX syntax, exact node/field spans,
+qualified allocation and revision. It cannot redirect an already accepted ID or
+alias through a different metadata file; use a reviewed reconciliation for an
+identity change. A failed import preserves the accepted map. No key is created
+by preview, inspection or a refused import. Source, predecessor backups and
+operation logs remain unchanged by metadata operations; explicit export has the
+private runtime-key effect described above.
+
+Generated source can be imported as explicitly read-only metadata. Its inspector
+and export advertise no supported source operation, and source-policy refusal
+still blocks operation and ownership changes. A separately reviewed declaration
+can describe a document-owned public generated output, including its generator
+version and output revision; it does not install a generator or authorize output
+reads/regeneration outside the active source policy.
+
+When a source change retires a claimed node, the import preview displays every
+proposed ownership retirement. Acceptance preserves qualified source provenance
+and the prior claim digest as read-only history. Claims bound to an earlier span
+remain unavailable after promotion until reviewed; reimport does not silently
+repair that authority. Duplicate groups are all reported within the bounded
+scope using opaque identity digests and exact occurrence counts.
+
+## Verification and delivery gates
 
 The [plan](LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) lists the fixture, API,
 rendered GUI, preservation and terminal gate evidence Agent 0 must collect for
 each exact revision. This document describes the contract and operator steps;
-it does not claim that the pending cross-branch service/UI/server integration,
-native Windows behavior, authenticated provider lifecycle or production
-deployment has passed. A successful local preview or HTTP response alone does
+the integrated implementation has development unit/API/GUI evidence, while
+exact-candidate CI, independent review, acceptance and publication remain separate
+gates. Ten authenticated CLI executions are observed separately from live PR
+merges, native Windows/IDE qualification and production deployment. A successful local preview or HTTP response alone does
 not accept F003/F004 or authorize a source write.

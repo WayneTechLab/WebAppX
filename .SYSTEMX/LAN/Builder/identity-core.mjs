@@ -12,10 +12,21 @@ const MAX_DIAGNOSTICS = 1000
 // proposal/export transport cap. The transport layer enforces that cap.
 const MAX_DIGEST_BYTES = 2_000_000
 
-function refuse(code) {
+function refuse(code, diagnostics) {
   const error = new Error(code)
   error.code = code
+  if (diagnostics) error.diagnostics = diagnostics
   throw error
+}
+
+function rejectDuplicates(values, code) {
+  const counts = new Map()
+  for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1)
+  const diagnostics = []
+  for (const [value, count] of counts) if (count > 1) diagnostics.push({ code, identityDigest: identityDigest(value), count })
+  if (diagnostics.length > MAX_DIAGNOSTICS) refuse('IDENTITY_DIAGNOSTIC_LIMIT')
+  diagnostics.sort((left, right) => left.identityDigest < right.identityDigest ? -1 : left.identityDigest > right.identityDigest ? 1 : 0)
+  if (diagnostics.length) refuse(code, diagnostics)
 }
 
 function object(value, code = 'IDENTITY_INVALID') {
@@ -98,8 +109,16 @@ function canonical(value, active, depth) {
   active.add(value)
   let result
   if (Array.isArray(value)) {
-    if (value.length > 10_000 || Object.keys(value).length !== value.length) refuse('IDENTITY_DIGEST_INVALID')
-    result = `[${value.map(item => canonical(item, active, depth + 1)).join(',')}]`
+    if (Object.getPrototypeOf(value) !== Array.prototype || value.length > 10_000) refuse('IDENTITY_DIGEST_INVALID')
+    const descriptors = Object.getOwnPropertyDescriptors(value)
+    if (Reflect.ownKeys(descriptors).length !== value.length + 1) refuse('IDENTITY_DIGEST_INVALID')
+    const entries = []
+    for (let index = 0; index < value.length; index += 1) {
+      const descriptor = descriptors[String(index)]
+      if (!descriptor || !Object.hasOwn(descriptor, 'value')) refuse('IDENTITY_DIGEST_INVALID')
+      entries.push(canonical(descriptor.value, active, depth + 1))
+    }
+    result = `[${entries.join(',')}]`
   } else {
     object(value, 'IDENTITY_DIGEST_INVALID')
     const sorted = Object.keys(value).sort()
@@ -121,7 +140,7 @@ function safeMetadata(value, depth = 0) {
   if (value === null || typeof value === 'boolean' || (typeof value === 'number' && Number.isFinite(value))) return
   if (typeof value === 'string') {
     string(value, 512, 'IDENTITY_METADATA_INVALID', { empty: true })
-    if (/^(?:\/(?:Users|Volumes|private|home|tmp|var)\/|[A-Za-z]:[\\/])/.test(value)) refuse('IDENTITY_METADATA_INVALID')
+    if (/\/(?:Users|Volumes|private|home|tmp|var)\/|[A-Za-z]:[\\/]|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|AIza[0-9A-Za-z_-]{20,}|(?:sk_(?:live|test)_|rk_live_|sk-proj-|gh[pousr]_|github_pat_|xox[baprs]-)|(?:password|secret|token|privateKey)\s*[:=]\s*['"]?[^\s'"]{8,}/i.test(value)) refuse('IDENTITY_METADATA_INVALID')
     return
   }
   if (Array.isArray(value)) {
@@ -132,7 +151,7 @@ function safeMetadata(value, depth = 0) {
   object(value, 'IDENTITY_METADATA_INVALID')
   for (const key of Object.keys(value)) {
     if (!/^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(key)
-      || /(?:body|content|html|dom|token|secret|password|session|absolute|private|timestamp|createdAt|updatedAt|constructor|prototype)/i.test(key)) refuse('IDENTITY_METADATA_INVALID')
+      || /(?:body|content|html|dom|token|secret|password|session|absolute|private|credential|api[_-]?key|access[_-]?key|authorization|cookie|timestamp|createdAt|updatedAt|constructor|prototype)/i.test(key)) refuse('IDENTITY_METADATA_INVALID')
     safeMetadata(value[key], depth + 1)
   }
 }
@@ -188,6 +207,9 @@ export function validateIdentityMap(map, options = {}) {
   const { workspaceId, sourcePath: expectedPath } = options
   const required = ['schemaVersion', 'ruleVersion', 'workspaceId', 'documentId', 'pageId', 'sourcePath', 'sourceRevision', 'route', 'nodes', 'aliases', 'orphaned', 'warnings']
   keys(map, [...required, 'label'], required, 'IDENTITY_MAP_INVALID')
+  // Validate every nested container before graph walks can read array indices
+  // or invoke an overridden iterator. Imported metadata must be plain JSON.
+  identityDigest(map)
   if (map.schemaVersion !== 1 || map.ruleVersion !== 'identity-v1') refuse('IDENTITY_VERSION_UNSUPPORTED')
   hash(map.workspaceId, 'IDENTITY_WORKSPACE_INVALID')
   identifier(map.documentId, 'doc', 'IDENTITY_DOCUMENT_INVALID')
@@ -201,16 +223,10 @@ export function validateIdentityMap(map, options = {}) {
     || /^\/(?:Users|Volumes|private|home|tmp|var)\//.test(map.route)) refuse('IDENTITY_ROUTE_INVALID')
   if (Object.hasOwn(map, 'label')) label(map.label)
   if (!Array.isArray(map.nodes) || map.nodes.length > MAX_NODES) refuse('IDENTITY_NODE_LIMIT')
-  const nodes = new Map(), anchors = new Set()
-  for (const node of map.nodes) {
-    mapNode(node, map.sourcePath, map.sourceRevision)
-    if (nodes.has(node.id)) refuse('IDENTITY_DUPLICATE_NODE')
-    nodes.set(node.id, node)
-    if (node.anchor !== null) {
-      if (anchors.has(node.anchor)) refuse('IDENTITY_DUPLICATE_ANCHOR')
-      anchors.add(node.anchor)
-    }
-  }
+  for (const node of map.nodes) mapNode(node, map.sourcePath, map.sourceRevision)
+  rejectDuplicates(map.nodes.map(node => node.id), 'IDENTITY_DUPLICATE_NODE')
+  rejectDuplicates(map.nodes.filter(node => node.anchor !== null).map(node => node.anchor), 'IDENTITY_DUPLICATE_ANCHOR')
+  const nodes = new Map(map.nodes.map(node => [node.id, node]))
   for (const node of nodes.values()) {
     if (node.parentId !== null && !nodes.has(node.parentId)) refuse('IDENTITY_PARENT_INVALID')
     const seen = new Set()
@@ -236,7 +252,6 @@ export function validateIdentityMap(map, options = {}) {
   if (!Array.isArray(map.orphaned) || map.orphaned.length > MAX_DIAGNOSTICS
     || !Array.isArray(map.warnings) || map.warnings.length > MAX_DIAGNOSTICS) refuse('IDENTITY_DIAGNOSTIC_LIMIT')
   for (const item of [...map.orphaned, ...map.warnings]) safeMetadata(item)
-  identityDigest(map) // enforces bounded JSON-only metadata without mutating it
   return map
 }
 
@@ -262,6 +277,7 @@ function rawNode(value, path, revision) {
 export function createIdentityMap(input) {
   keys(input, ['workspaceId', 'sourcePath', 'sourceRevision', 'route', 'label', 'nodes', 'ruleVersion'],
     ['workspaceId', 'sourcePath', 'sourceRevision', 'nodes'], 'IDENTITY_INPUT_INVALID')
+  identityDigest(input)
   const { workspaceId, sourcePath: path, sourceRevision, route = '/', label: documentLabel = '', nodes, ruleVersion = 'identity-v1' } = input
   hash(workspaceId, 'IDENTITY_WORKSPACE_INVALID')
   sourcePath(path)
@@ -273,15 +289,12 @@ export function createIdentityMap(input) {
   if (!Array.isArray(nodes) || nodes.length > MAX_NODES) refuse('IDENTITY_NODE_LIMIT')
   const documentId = `doc_${identityDigest(['document', workspaceId, path])}`
   const pageId = `page_${identityDigest(['page', documentId])}`
-  const raw = new Map(), anchors = new Set(), siblingSignatures = new Map()
-  for (const input of nodes) {
-    const node = rawNode(input, path, sourceRevision)
-    if (raw.has(node.key)) refuse('IDENTITY_DUPLICATE_KEY')
+  const candidates = nodes.map(node => rawNode(node, path, sourceRevision))
+  rejectDuplicates(candidates.map(node => node.key), 'IDENTITY_DUPLICATE_KEY')
+  rejectDuplicates(candidates.filter(node => node.anchor !== null).map(node => node.anchor), 'IDENTITY_DUPLICATE_ANCHOR')
+  const raw = new Map(), siblingSignatures = new Map()
+  for (const node of candidates) {
     raw.set(node.key, node)
-    if (node.anchor !== null) {
-      if (anchors.has(node.anchor)) refuse('IDENTITY_DUPLICATE_ANCHOR')
-      anchors.add(node.anchor)
-    }
     if (node.anchor === null) {
       const siblingKey = JSON.stringify([node.parentKey, node.tag, node.signature])
       siblingSignatures.set(siblingKey, (siblingSignatures.get(siblingKey) ?? 0) + 1)

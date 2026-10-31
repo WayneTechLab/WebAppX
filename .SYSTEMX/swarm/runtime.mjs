@@ -233,7 +233,7 @@ export function createController({ repo, manifest, stateDir }) {
         const point = makeSync(state, slot), currentDigest = digest({ ...point, observedAt: undefined, stateRevision: undefined })
         if (!syncDigest || syncDigest !== currentDigest) fail('SYNC_STALE', 'Supply the fresh IDE/Codex sync digest for this exact generation.');
         ensureHead(slot); verifyExecutable(slot.provider)
-        const task = taskById(slot.taskId), packet = { schemaVersion: 1, role: 'agent.y', coordinator: 'agent.0', alpha: 'integration-assurance', task, feedback: slot.feedback ?? null, syncPoint: point, instructions: 'Work only in this worktree and assigned paths. Commit completed changes. Do not merge, accept tasks, change remote settings, deploy or message other chats. Return original verification evidence to Agent 0.' }
+        const task = taskById(slot.taskId), packet = { schemaVersion: 1, role: 'agent.y', coordinator: 'agent.0', alpha: 'integration-assurance', task, feedback: slot.feedback ?? null, syncPoint: point, instructions: 'Work only in this worktree and assigned paths. Commit completed changes only when the CLI permits Git metadata writes. If refused, preserve scoped files and report to Agent 0; do not reroute the Git index or widen the sandbox. Do not merge, accept tasks, change remote settings, deploy or message other chats. Return original verification evidence to Agent 0.' }
         const input = `${JSON.stringify(packet)}\n`
         if (Buffer.byteLength(input) > swarmLimits.packetBytes) fail('PACKET_LIMIT', 'The bounded handoff packet is too large.');
         slot.phase = 'running'; slot.lease = randomUUID(); observe(state, 'provider-launch-requested', number, { headRevision: slot.headRevision, lease: slot.lease })

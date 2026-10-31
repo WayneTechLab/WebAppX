@@ -1,9 +1,10 @@
 import { createHash } from 'node:crypto'
 import { isCanonicalSourcePath } from './source-policy.mjs'
+import { identityDigest, validateIdentityMap } from './identity-core.mjs'
 
 const HASH = /^[a-f0-9]{64}$/
 const ANCHOR = /^[A-Za-z][A-Za-z0-9_-]{0,79}$/
-const RULE = /^identity-[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/
+const RULE_VERSION = 'identity-v1'
 const CONFIDENCE = new Set(['explicit', 'heuristic', 'unresolved', 'reviewed-migration'])
 const MAX_BYTES = 400_000
 const has = (object, key) => Object.hasOwn(object, key)
@@ -34,8 +35,15 @@ function copy(value, depth = 0, seen = new Set()) {
   let result
   if (Array.isArray(value)) {
     if (value.length > 1000) refuse('IDENTITY_LIMIT')
-    for (let index = 0; index < value.length; index += 1) if (!has(value, index)) refuse('IDENTITY_INVALID')
-    result = value.map((entry) => copy(entry, depth + 1, seen))
+    if (Object.getPrototypeOf(value) !== Array.prototype) refuse('IDENTITY_INVALID')
+    const descriptors = Object.getOwnPropertyDescriptors(value)
+    if (Reflect.ownKeys(descriptors).length !== value.length + 1) refuse('IDENTITY_INVALID')
+    result = []
+    for (let index = 0; index < value.length; index += 1) {
+      const descriptor = descriptors[String(index)]
+      if (!descriptor || !has(descriptor, 'value')) refuse('IDENTITY_INVALID')
+      result.push(copy(descriptor.value, depth + 1, seen))
+    }
   } else if (record(value)) {
     result = {}
     for (const key of Object.keys(value)) {
@@ -77,7 +85,8 @@ function span(value, sourcePath, sourceRevision) {
 function validateMap(input) {
   const map = copy(input)
   onlyKeys(map, MAP_KEYS)
-  if (!record(map) || map.schemaVersion !== 1 || !RULE.test(map.ruleVersion)
+  if (map.ruleVersion !== RULE_VERSION) refuse('IDENTITY_VERSION_UNSUPPORTED')
+  if (!record(map) || map.schemaVersion !== 1
     || !HASH.test(map.workspaceId) || !HASH.test(map.sourceRevision)
     || !isCanonicalSourcePath(map.sourcePath)
     || typeof map.documentId !== 'string' || !/^doc_[a-f0-9]{16,64}$/.test(map.documentId)
@@ -147,6 +156,7 @@ function validateMap(input) {
     if (has(orphan, 'anchor') && orphan.anchor !== null && !ANCHOR.test(orphan.anchor)) refuse('IDENTITY_INVALID')
     if (has(orphan, 'signature') && !HASH.test(orphan.signature)) refuse('IDENTITY_INVALID')
   }
+  validateIdentityMap(map)
   return bounded(map)
 }
 
@@ -157,7 +167,17 @@ function validProvenance(value) {
 }
 
 function unsafeMetadata(value) {
-  return /(?:^|\s)(?:\/Users\/|\/Volumes\/|\/private\/|[A-Za-z]:\\)|sk_(?:live|test)_|-----BEGIN/i.test(value)
+  return /\/(?:Users|Volumes|private|home|tmp|var)\/|[A-Za-z]:[\\/]|(?:sk_(?:live|test)_|rk_live_|sk-proj-|gh[pousr]_|github_pat_|xox[baprs]-)|AIza[0-9A-Za-z_-]{20,}|-----BEGIN|(?:password|secret|token|privateKey)\s*[:=]\s*['"]?[^\s'"]{8,}/i.test(value)
+}
+
+function screenExportStrings(value) {
+  if (typeof value === 'string') {
+    if (unsafeMetadata(value)) refuse('IDENTITY_EXPORT_UNSAFE_METADATA')
+  } else if (Array.isArray(value)) {
+    for (const item of value) screenExportStrings(item)
+  } else if (record(value)) {
+    for (const item of Object.values(value)) screenExportStrings(item)
+  }
 }
 
 function metadataSafe(value, depth = 0) {
@@ -166,7 +186,7 @@ function metadataSafe(value, depth = 0) {
   if (typeof value === 'string') return value.length <= 500 && !unsafeMetadata(value)
   if (Array.isArray(value)) return value.length <= 20 && value.every((entry) => metadataSafe(entry, depth + 1))
   if (!record(value) || Object.keys(value).length > 20) return false
-  return Object.entries(value).every(([key, entry]) => !/^(?:label|text|body|content|html|token|secret|credential|runtime|handle|session|root|absolutePath|privatePath)$/i.test(key)
+  return Object.entries(value).every(([key, entry]) => !/(?:label|text|body|content|html|token|secret|password|credential|api[_-]?key|access[_-]?key|authorization|cookie|runtime|handle|session|root|absolutePath|privatePath)/i.test(key)
     && metadataSafe(entry, depth + 1))
 }
 
@@ -199,23 +219,54 @@ function orphanFor(node, map) {
 export function previewReconciliation(previous, incoming, options = {}) {
   if (!record(options)) refuse('IDENTITY_INVALID')
   options = copy(options)
-  const next = validateMap(incoming)
-  const prior = previous === null ? null : validateMap(previous)
+  const previousInput = previous === null ? null : copy(previous)
+  const incomingInput = copy(incoming)
+  // A later rule needs an implemented, explicitly reviewed migration. Naming
+  // an unknown version must never reinterpret existing anchors automatically.
+  if (record(previousInput) && record(incomingInput) && previousInput.ruleVersion !== incomingInput.ruleVersion) refuse('IDENTITY_RULE_MIGRATION_REQUIRED')
+  const next = validateMap(incomingInput)
+  const prior = previousInput === null ? null : validateMap(previousInput)
   const { renameFrom = null, aliases = [], ruleVersion = 'identity-v1' } = options
-  if (!RULE.test(ruleVersion) || !Array.isArray(aliases) || aliases.length > 256) refuse('IDENTITY_INVALID')
-  if (prior && prior.ruleVersion !== next.ruleVersion && !has(options, 'ruleVersion')) refuse('IDENTITY_RULE_MIGRATION_REQUIRED')
-  if (ruleVersion !== next.ruleVersion) refuse('IDENTITY_INVALID')
+  if (ruleVersion !== RULE_VERSION) refuse('IDENTITY_VERSION_UNSUPPORTED')
+  if (!Array.isArray(aliases) || aliases.length > 256) refuse('IDENTITY_INVALID')
 
-  let rename = null, migration = null
+  let rename = null
+  const migration = null
   if (prior) {
     if (prior.workspaceId !== next.workspaceId) refuse('IDENTITY_WORKSPACE_MISMATCH')
     if (prior.sourcePath !== next.sourcePath) {
       if (renameFrom !== prior.sourcePath) refuse('IDENTITY_RENAME_REQUIRED')
     } else if (renameFrom !== null) refuse('IDENTITY_RENAME_INVALID')
-    if (prior.ruleVersion !== next.ruleVersion) {
-      migration = { from: prior.ruleVersion, to: next.ruleVersion, evidence: 'explicit-rule-version', requiresReview: true }
-    }
   } else if (renameFrom !== null) refuse('IDENTITY_RENAME_INVALID')
+
+  const allocationChanged = Boolean(prior && (prior.documentId !== next.documentId || prior.pageId !== next.pageId))
+  if (allocationChanged) {
+    // Fresh parsing uses the new path's default allocation. Once the operator
+    // has selected a prior accepted allocation (including an explicit rename),
+    // new nodes must be allocated inside that declared document as well.
+    const incoming = new Map(next.nodes.map(node => [node.id, node]))
+    const rekeyed = new Map()
+    function rekey(node) {
+      if (rekeyed.has(node.id)) return rekeyed.get(node.id)
+      const parentId = node.parentId === null ? null : rekey(incoming.get(node.parentId))
+      const id = node.confidence === 'unresolved'
+        ? `candidate_${identityDigest(['candidate-reallocation', prior.documentId, next.sourceRevision, node.id, node.source.start, node.source.end])}`
+        : node.anchor !== null
+          ? `node_${identityDigest(['explicit', prior.documentId, node.tag, node.anchor])}`
+          : `node_${identityDigest(['heuristic', prior.documentId, parentId, node.tag, node.signature])}`
+      rekeyed.set(node.id, id)
+      return id
+    }
+    for (const node of next.nodes) rekey(node)
+    for (const node of next.nodes) {
+      node.id = rekeyed.get(node.id)
+      if (node.parentId !== null) node.parentId = rekeyed.get(node.parentId)
+    }
+    next.warnings = next.warnings.map(warning => record(warning) && has(warning, 'nodeId') && rekeyed.has(warning.nodeId)
+      ? { ...warning, nodeId: rekeyed.get(warning.nodeId) } : warning)
+    next.documentId = prior.documentId
+    next.pageId = prior.pageId
+  }
 
   const preserved = [], added = [], retired = [], ambiguous = []
   const oldToNew = new Map(), newToOld = new Map(), evidence = new Map()
@@ -266,24 +317,58 @@ export function previewReconciliation(previous, incoming, options = {}) {
     }
   }
 
+  // A newly unique candidate can still be ambiguous against the prior map.
+  // Its unanchored descendants inherit that uncertainty, regardless of array
+  // ordering. Explicit unique authored anchors remain independently qualified.
+  const incomingById = new Map(next.nodes.map(node => [node.id, node]))
+  const unresolved = new Set(ambiguous.map(entry => entry.id))
+  for (const node of next.nodes) if (node.confidence === 'unresolved') unresolved.add(node.id)
+  const checkedParents = new Set()
+  function qualifyParent(node) {
+    if (checkedParents.has(node.id)) return
+    const parent = node.parentId === null ? null : incomingById.get(node.parentId)
+    if (parent) qualifyParent(parent)
+    if (node.anchor === null && parent && unresolved.has(parent.id)) {
+      unresolved.add(node.id)
+      if (!ambiguous.some(entry => entry.id === node.id)) ambiguous.push({ id: node.id, candidates: [], reason: 'unresolved-parent' })
+    }
+    if (unresolved.has(node.id) && newToOld.has(node.id)) {
+      oldToNew.delete(newToOld.get(node.id))
+      newToOld.delete(node.id)
+      evidence.delete(node.id)
+    }
+    checkedParents.add(node.id)
+  }
+  for (const node of next.nodes) qualifyParent(node)
+
   const priorIds = new Set(prior ? [
     ...prior.nodes.map((node) => node.id), ...prior.aliases.map((alias) => alias.from),
     ...prior.orphaned.map((orphan) => orphan.reference.nodeId),
   ] : [])
   const remapped = new Map()
   const allocated = new Set()
-  for (const node of next.nodes) {
+  function allocate(node) {
+    if (remapped.has(node.id)) return remapped.get(node.id)
+    const parentId = node.parentId === null ? null : allocate(incomingById.get(node.parentId))
     let id = newToOld.get(node.id) ?? node.id
-    if (!newToOld.has(node.id) && priorIds.has(id)) {
+    const candidate = unresolved.has(node.id)
+    if (prior && !newToOld.has(node.id) && !candidate && (allocationChanged || (node.anchor === null && parentId !== node.parentId))) {
+      id = node.anchor !== null
+        ? `node_${identityDigest(['explicit', prior.documentId, node.tag, node.anchor])}`
+        : `node_${identityDigest(['heuristic', prior.documentId, parentId, node.tag, node.signature])}`
+    }
+    if (!newToOld.has(node.id) && (priorIds.has(id) || (candidate && !id.startsWith('candidate_')))) {
       let salt = 0
       do {
-        id = `node_${digest({ kind: 'reviewed-replacement', documentId: prior.documentId, incomingId: node.id,
+        id = `${candidate ? 'candidate' : 'node'}_${digest({ kind: candidate ? 'unresolved-import' : 'reviewed-replacement', documentId: prior?.documentId ?? next.documentId, incomingId: node.id,
           tag: node.tag, anchor: node.anchor, signature: node.signature, sourceRevision: next.sourceRevision, salt: salt++ })}`
       } while (priorIds.has(id) || allocated.has(id))
     }
     remapped.set(node.id, id)
     allocated.add(id)
+    return id
   }
+  for (const node of next.nodes) allocate(node)
   const finalIds = new Set(remapped.values())
   if (finalIds.size !== next.nodes.length) refuse('IDENTITY_COLLISION')
   for (const node of next.nodes) {
@@ -301,6 +386,8 @@ export function previewReconciliation(previous, incoming, options = {}) {
     } else added.push({ id: node.id, confidence: node.confidence })
   }
   for (const entry of ambiguous) entry.id = remapped.get(entry.id)
+  next.warnings = next.warnings.map(warning => record(warning) && has(warning, 'nodeId') && remapped.has(warning.nodeId)
+    ? { ...warning, nodeId: remapped.get(warning.nodeId) } : warning)
   const retiredNodes = prior ? prior.nodes.filter((node) => !oldToNew.has(node.id)) : []
   for (const node of retiredNodes) retired.push({ id: node.id, confidence: node.confidence, reason: 'identity-evidence-changed' })
 
@@ -316,10 +403,12 @@ export function previewReconciliation(previous, incoming, options = {}) {
     next.documentId = prior.documentId
     next.pageId = prior.pageId
   } else if (prior) {
-    if (prior.documentId !== next.documentId || prior.pageId !== next.pageId) {
-      if (!migration) refuse('IDENTITY_DOCUMENT_MISMATCH')
-      migration.documentIds = { from: prior.documentId, incoming: next.documentId, preserved: prior.documentId }
-      migration.pageIds = { from: prior.pageId, incoming: next.pageId, preserved: prior.pageId }
+    if (allocationChanged) {
+      // The selected prior map already owns this current path. Its allocation
+      // may have been transferred by an earlier explicit, accepted rename;
+      // reimporting the same path must retain those reviewed references.
+      next.warnings.push({ code: 'REVIEWED_ALLOCATION_PRESERVED', documentId: prior.documentId, pageId: prior.pageId,
+        sourcePath: prior.sourcePath, evidence: 'prior-accepted-map-for-current-source' })
       next.documentId = prior.documentId
       next.pageId = prior.pageId
     }
@@ -400,5 +489,8 @@ export function exportIdentityMap(map) {
     })),
     aliases: copy(source.aliases), orphaned: copy(source.orphaned), warnings: [],
   }
+  // Labels are deliberately removed before screening retained metadata. Authored
+  // text remains readable, but a token-shaped anchor/name/path is not exported.
+  screenExportStrings(exported)
   return validateMap(bounded(exported))
 }

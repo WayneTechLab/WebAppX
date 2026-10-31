@@ -139,9 +139,8 @@ test('generated provenance is required for document ownership; hybrid fields hav
   assert.deepEqual(report.objects[0].supportedOperations, [])
   assert.equal(planLiteralOperation(map, report, { reference, expectedRevision: map.sourceRevision, text: 'Hi', currentSource: content }).code,
     'OWNERSHIP_LITERAL_UNSUPPORTED')
-  const missing = buildOwnership(map, { claims: [{ ...generated, provenance: undefined }] })
-  assert.equal(missing.objects[0].status, 'partial')
-  assert.ok(missing.objects[0].reasons.includes('GENERATED_BOUNDARY_REQUIRED'))
+  assert.throws(() => buildOwnership(map, { claims: [{ ...generated, provenance: undefined }] }),
+    code('OWNERSHIP_GENERATED_BOUNDARY_REQUIRED'))
   assert.throws(() => previewOwnershipChange(map, buildOwnership(map), [{ ...generated, provenance: undefined }]),
     code('OWNERSHIP_GENERATED_BOUNDARY_REQUIRED'))
   const hybrid = { nodeId: map.nodes[0].id, mode: 'hybrid-controlled', adapterId: 'tsx-static-v1',

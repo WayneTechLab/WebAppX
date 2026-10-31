@@ -86,3 +86,14 @@ PID/group/controller/generation/lease facts before packet delivery. A controller
 crash needs manual ownership audit; stale records grant no automatic kill or
 retry authority. Local fixture results do not establish authenticated provider
 concurrency, real publication, merge, deletion or IDE acceptance.
+
+## F003/F004 execution observation
+
+Agent 0 observed ten authenticated CLI worker processes simultaneously in
+separate generation branches/worktrees, retained terminal execution/cleanup
+records and reviewed local integration. Child Git metadata refusals were handed
+back to Agent 0 for scoped commits and fresh feedback/sync observations. This
+changes the observed provider-execution boundary only. Catalog acceptance,
+canonical delivery, real PR approval/automatic merge, branch retirement, native
+IDE/Windows operation and production retain their separate gates. No role label,
+process receipt or local integrity tag grants those permissions.

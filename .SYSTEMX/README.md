@@ -32,7 +32,19 @@ This is a host extension above managed SYSTEMX 1.9.0-alpha.6. It preserves relea
 snapshots and blank reusable seeds. Its operating support does not inflate LAN
 acceptance counts or authorize production deployment.
 
-## Source access and host swarm — locally accepted 2026-10-30
+## F003/F004 identity and ownership — final gates pending
+
+The next 200 authored requirements are implemented as a narrow source-import
+read model with protected APIs and GUI controls. Current acceptance is still
+200/40; target 400/80 requires final qualification and F003-before-F004 acceptance.
+Read the [operator guide](../docs/LAN-IDENTITY-OWNERSHIP.md),
+[execution plan](../docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) and
+[active iteration](../docs/LAN-ACTIVE-ITERATION.md). Exports use an ignored
+private runtime integrity key; source files/backups/logs stay untouched by
+metadata operations. Ten real CLI executions and reviewed local branch integration
+are observed; PR/IDE/native/production qualification remains separate.
+
+## Historical source-access milestone — locally accepted 2026-10-30
 
 Agent 0 accepted exactly **LAN-00101–LAN-00200** at functional candidate
 `e1588c4ebe94b1ef5f1557641334d95aee9b8290`. The program is now

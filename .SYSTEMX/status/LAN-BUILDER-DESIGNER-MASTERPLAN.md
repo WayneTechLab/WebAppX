@@ -1,5 +1,15 @@
 # LAN Builder Designer Master Plan Status
 
+## Active F003/F004 delivery gate
+
+The bounded next200 identity/ownership implementation is integrated; accepted
+progress remains200/40 while target400/80 awaits exact-candidate qualification.
+Read [the active iteration](../../docs/LAN-ACTIVE-ITERATION.md) and
+[identity/ownership plan](../../docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md).
+Ten authenticated CLI branches and local integration are observed separately
+from terminal acceptance, provider PR lifecycle, native IDE/Windows and production.
+
+
 ## Global goal
 
 Build a repository-native visual Designer for the WebAppX template using a canonical document/command architecture while preserving all current SYSTEMX local safety controls.

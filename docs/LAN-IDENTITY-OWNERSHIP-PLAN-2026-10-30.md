@@ -1,4 +1,4 @@
-# LAN F003/F004 identity and ownership iteration plan — proposed
+# LAN F003/F004 identity and ownership iteration plan — integrated, final gates pending
 
 This bounded plan selects the authored [F003](backlog/lan-10000/F003.md)
 **LAN-00201–LAN-00300** and [F004](backlog/lan-10000/F004.md)
@@ -186,3 +186,32 @@ catalog dependencies or production authorization. A clean Git diff, local HTTP
 200, CI pass or preflight alone does not establish the next gate. Production
 deployment requires explicit operator authorization; no such deployment is in
 this plan.
+
+## Integration delta before final qualification
+
+Ten authenticated Codex CLI workers completed in isolated generation worktrees;
+Agent 0 retained scoped branches, committed outputs where the child sandbox
+refused Git metadata and merged the ten branches locally. Provider execution,
+local integration, GitHub delivery and catalog acceptance are distinct gates.
+The first dispatch was correctly refused after the launcher changed after
+pinning; no provider started in that attempt, and the guard was retained.
+
+The actual source-identity inspector is integrated with protected API routes,
+qualified live-preview observations and the existing controlled editor. New
+unit/API, independent review and owned-browser development runs exposed and
+repaired namespace, rename/allocation, descriptor validation, export integrity,
+source-span authority, ownership proposal, route, generated-readonly and UI
+staleness issues. Earlier failed attempts remain evidence rather than passes.
+
+Current accepted progress is still 200/40 pending terminal final gates. The CI
+runner now has 72 stages, retaining all previous 70 in order and adding the
+identity unit/API suite and identity browser suite. The original WebAppX catalog
+remains 179/821. The narrow source read model does not complete the full Designer
+kernel, structural/style editing, provider PR approval, native IDE/Windows
+qualification or deployment.
+
+Exports initialize an ignored private runtime integrity key when needed; they
+exclude source bodies/readable labels/credentials and preserve same-backend
+round trips. Metadata operations do not write source, predecessor backups or
+operation logs. Owned-fixture browser promotion separately tests an explicit
+stage, confirmed save, exact backup and post-save mapping revalidation.

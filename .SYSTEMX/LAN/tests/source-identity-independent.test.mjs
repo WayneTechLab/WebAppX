@@ -196,8 +196,7 @@ test('service preview and acceptance are explicit; read, lookup, inspect and lit
   const wrongWorkspace = { ...ref, workspaceId: sha('other-workspace') }
   assert.equal((await service.lookup(wrongWorkspace)).status, 'workspace-mismatch')
   assert.ok(['missing', 'document-mismatch'].includes((await service.lookup({ ...ref, documentId: 'doc_' + '0'.repeat(64) })).status))
-  const rejected = await service.operation({ documentId: map.documentId, reference: wrongWorkspace, expectedRevision: sha(page), text: 'Forbidden' })
-  assert.equal(rejected.allowed, false)
+  await assert.rejects(async () => service.operation({ documentId: map.documentId, reference: wrongWorkspace, expectedRevision: sha(page), text: 'Forbidden' }), { code: 'SOURCE_IDENTITY_REFERENCE_INVALID' })
   const otherMap = (await acceptPreview(service, { path: otherPath })).accepted.map
   const crossDocument = await service.lookup({
     workspaceId: map.workspaceId, documentId: otherMap.documentId, nodeId: headline.id,
@@ -329,8 +328,7 @@ test('workspace qualification and injected readSource do not transfer authority 
   assert.notEqual(mapA.workspaceId, mapB.workspaceId)
   assert.notEqual(mapA.documentId, mapB.documentId)
   assert.equal((await serviceB.lookup(reference(mapA, anchored(mapA, 'headline')))).status, 'workspace-mismatch')
-  const blocked = await serviceB.operation({ documentId: mapB.documentId, reference: reference(mapA, anchored(mapA, 'headline')), expectedRevision: sha(page), text: 'Forbidden' })
-  assert.equal(blocked.allowed, false)
+  await assert.rejects(async () => serviceB.operation({ documentId: mapB.documentId, reference: reference(mapA, anchored(mapA, 'headline')), expectedRevision: sha(page), text: 'Forbidden' }), { code: 'SOURCE_IDENTITY_REFERENCE_INVALID' })
   const injected = page.replace('Fixture headline', 'Injected fixture')
   const reads = []
   const injection = createSourceIdentityService(first.root, {
@@ -382,7 +380,7 @@ test('ownership proposals require review and cannot change source through metada
     adapterId: 'tsx-static-v1',
     fields: { text: { owner: 'source', supported: true } },
     source: node.source,
-    provenance: 'Reviewed independent fixture',
+    provenance: { documentId: accepted.map.documentId },
   }]
   const result = await service.ownershipPreview({ documentId: accepted.map.documentId, changes })
   const proposal = proposalOf(result)

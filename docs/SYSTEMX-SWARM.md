@@ -278,3 +278,19 @@ root and no-link behavior. Ten synthetic CLI processes overlapped in distinct
 worktrees; local Git and fake REST responses exercised the full qualified lifecycle.
 This is not native Windows, authenticated AI-provider, real GitHub merge, running
 IDE or production qualification. Read the [candidate-bound QA receipt](LAN-SOURCE-POLICY-QA-2026-10-30.md).
+
+## Observed authenticated worker wave and coordinator commit handoff
+
+The F003/F004 iteration observed ten authenticated Codex CLI processes
+simultaneously, each in its owned generation worktree and branch. Provider
+availability, PID/CWD/branch observations, terminal execution and cleanup are
+retained separately from source acceptance. The ten branches were integrated
+locally by Agent 0; that observation does not qualify real provider PR approval,
+automatic merge, native IDE control or production.
+
+If a CLI sandbox refuses a worktree's Git metadata write, return the scoped
+uncommitted files and original verification evidence to Agent 0. Preserve that
+boundary; do not reroute the Git index or widen the sandbox. Agent 0 can review
+and commit only those owned files, then use `feedback` to observe the committed
+head and invalidate old checks before a new `sync` or verification. A provider
+exit with uncommitted files is not a completed branch or accepted task.

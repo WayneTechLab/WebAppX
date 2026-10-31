@@ -1,5 +1,16 @@
 # Update Log
 
+## F003/F004 development integration — final gates pending
+
+The next200 source-identity/ownership requirements are implemented and locally
+integrated from ten authenticated CLI branch assignments. New unit/API and
+browser gates bring required CI to72 stages without removing prior gates.
+Current accepted200/40 remains; target400/80 requires final exact-revision proof,
+serial F003/F004 acceptance and separate GitHub source/wiki readback. Local
+metadata exports initialize an ignored private integrity key; source content,
+backup and operation changes still require the existing explicit save flow.
+
+
 ## F002 source policy and ten-worker host swarm — 2026-10-30
 
 Accepted exactly **LAN-00101–LAN-00200** at `e1588c4ebe94b1ef5f1557641334d95aee9b8290`: **200/10,000

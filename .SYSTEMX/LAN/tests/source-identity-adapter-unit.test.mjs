@@ -16,13 +16,16 @@ mkdirSync(join(temporary, 'node_modules'))
 symlinkSync(typescriptPackage, join(temporary, 'node_modules', 'typescript'), 'dir')
 writeFileSync(join(temporary, 'package.json'), '{"type":"module"}\n')
 copyFileSync(join(builder, 'source-identity-adapter.mjs'), join(temporary, 'source-identity-adapter.mjs'))
-writeFileSync(join(temporary, 'identity-core.mjs'), `
+const stubCore = `
+import { createHash } from 'node:crypto'
+export const identityDigest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex')
 export function createIdentityMap(input) {
   return { schemaVersion: 1, workspaceId: input.workspaceId, sourcePath: input.sourcePath,
     sourceRevision: input.sourceRevision, route: input.route, label: input.label,
     nodes: input.nodes.map(node => ({ ...node, id: node.key })) }
 }
-`)
+`
+writeFileSync(join(temporary, 'identity-core.mjs'), stubCore)
 after(() => rmSync(temporary, { recursive: true, force: true }))
 const { parseSourceIdentity } = await import(pathToFileURL(join(temporary, 'source-identity-adapter.mjs')).href)
 
@@ -66,6 +69,8 @@ test('Home fixture preserves authored anchor and exact UTF-16 source and literal
   assert.equal(external.external, true)
   assert.equal(external.opaque, true)
   assert.deepEqual(external.fields, {})
+  assert.deepEqual(external.definition, { name: 'Widget' })
+  assert.equal(external.source.path, 'src/pages/HomePage.tsx', 'the instance retains its exact authored source span')
   assert.ok(result.diagnostics.some(row => row.code === 'SOURCE_COMPONENT_EXTERNAL'))
   assert.ok(result.diagnostics.some(row => row.code === 'SOURCE_EXPRESSION_OPAQUE'))
 })
@@ -121,6 +126,85 @@ test('invalid, duplicate, dynamic, and hidden duplicate authored anchors refuse 
   assert.throws(() => parse('export const Home = () => <><p data-systemx-id="same"/><p data-systemx-id="same"/></>'), codeIs('SOURCE_IDENTITY_ANCHOR_DUPLICATE'))
   assert.throws(() => parse('export const Home = ({ id }) => <p data-systemx-id={id}>Text</p>'), codeIs('SOURCE_IDENTITY_ANCHOR_INVALID'))
   assert.throws(() => parse('export const Home = () => <><p data-systemx-id="same"/>{[1].map(() => <p data-systemx-id="same"/>)}</>'), codeIs('SOURCE_IDENTITY_ANCHOR_DUPLICATE'))
+})
+
+test('all distinct duplicate annotation groups are reported by digest/count without raw identifiers or source', () => {
+  const content = 'export const Home = () => <><p data-systemx-id="PRIVATE_first"/><p data-systemx-id="PRIVATE_second"/><p data-systemx-id="PRIVATE_first"/><p data-systemx-id="PRIVATE_second"/><p data-systemx-id="PRIVATE_second"/></>'
+  let refused
+  try { parse(content) } catch (error) { refused = error }
+  assert.equal(refused?.code, 'SOURCE_IDENTITY_ANCHOR_DUPLICATE')
+  const expected = [
+    { code: 'IDENTITY_DUPLICATE_ANCHOR', identityDigest: sha(JSON.stringify('PRIVATE_first')), count: 2 },
+    { code: 'IDENTITY_DUPLICATE_ANCHOR', identityDigest: sha(JSON.stringify('PRIVATE_second')), count: 3 },
+  ].sort((left, right) => left.identityDigest < right.identityDigest ? -1 : 1)
+  assert.deepEqual(refused.diagnostics, expected)
+  assert.doesNotMatch(JSON.stringify({ message: refused.message, diagnostics: refused.diagnostics }), /PRIVATE_first|PRIVATE_second|export const|data-systemx-id|\/Users\//)
+})
+
+test('external component definitions remain unknown while their instance source spans remain exact', () => {
+  const content = 'export function HomePage(){return <main><Widget title="One"/><Vendor.Card>Hidden internals</Vendor.Card></main>}'
+  const result = parse(content)
+  for (const tag of ['Widget', 'Vendor.Card']) {
+    const node = byTag(result, tag)[0]
+    assert.deepEqual(node.definition, { name: tag })
+    assert.equal(node.external, true)
+    assert.equal(node.opaque, true)
+    assert.deepEqual(node.fields, {})
+    assert.equal(node.source.path, 'src/pages/HomePage.tsx')
+    assert.equal(node.source.fingerprint, sha(content.slice(node.source.start, node.source.end)))
+    assert.equal(Object.hasOwn(node.definition, 'sourcePath'), false)
+  }
+})
+
+test('callback, call and conditional JSX remain inspectable opaque source rather than writable runtime instances', async () => {
+  const actual = await import(pathToFileURL(join(builder, 'source-identity-adapter.mjs')).href)
+  const { buildOwnership, planLiteralOperation } = await import(pathToFileURL(join(builder, 'source-ownership.mjs')).href)
+  const cases = [
+    'const repeated=[1,2].map(()=> <p data-systemx-id="loop">Hello</p>);export default function Page(){return <main>{repeated}</main>}',
+    'export const Page=({ok})=>ok?<p data-systemx-id="loop">Hello</p>:<span>Other</span>',
+    'export const Page=({ok})=>ok&&<p data-systemx-id="loop">Hello</p>',
+    'export const Page=()=>render(<p data-systemx-id="loop">Hello</p>)',
+  ]
+  for (const content of cases) {
+    const result = actual.parseSourceIdentity({ path: 'src/pages/HomePage.tsx', content, sourceRevision: sha(content), workspaceId })
+    const node = result.map.nodes.find(item => item.anchor === 'loop')
+    assert.ok(node)
+    assert.equal(node.opaque, true)
+    assert.deepEqual(node.fields, {})
+    assert.equal(node.source.fingerprint, sha(content.slice(node.source.start, node.source.end)))
+    assert.ok(result.diagnostics.some(item => item.code === 'SOURCE_RUNTIME_CONTEXT_OPAQUE'))
+    const report = buildOwnership(result.map)
+    const object = report.objects.find(item => item.nodeId === node.id)
+    assert.deepEqual(object.supportedOperations, [])
+    const plan = planLiteralOperation(result.map, report, { reference: { workspaceId, documentId: result.map.documentId, nodeId: node.id },
+      expectedRevision: sha(content), currentSource: content, text: 'Forbidden instance rewrite' })
+    assert.equal(plan.allowed, false)
+    assert.equal(plan.patch, undefined)
+  }
+  const content = 'export const Page=()=> <p data-systemx-id="static">Hello</p>'
+  const result = actual.parseSourceIdentity({ path: 'src/pages/HomePage.tsx', content, sourceRevision: sha(content), workspaceId })
+  const node = result.map.nodes.find(item => item.anchor === 'static')
+  assert.equal(node.opaque, false)
+  const plan = planLiteralOperation(result.map, buildOwnership(result.map), { reference: { workspaceId, documentId: result.map.documentId, nodeId: node.id },
+    expectedRevision: sha(content), currentSource: content, text: 'Static definition rewrite' })
+  assert.equal(plan.allowed, true)
+})
+
+test('loading the adapter does not evaluate TypeScript until a valid parse is requested', async (t) => {
+  const directory = mkdtempSync(join(tmpdir(), 'systemx-adapter-lazy-'))
+  t.after(() => rmSync(directory, { recursive: true, force: true }))
+  writeFileSync(join(directory, 'package.json'), '{"type":"module"}\n')
+  copyFileSync(join(builder, 'source-identity-adapter.mjs'), join(directory, 'source-identity-adapter.mjs'))
+  writeFileSync(join(directory, 'identity-core.mjs'), stubCore)
+  mkdirSync(join(directory, 'node_modules/typescript'), { recursive: true })
+  writeFileSync(join(directory, 'node_modules/typescript/package.json'), '{"main":"index.cjs"}\n')
+  writeFileSync(join(directory, 'node_modules/typescript/index.cjs'), 'throw new Error("PRIVATE_COMPILER_FIXTURE_EVALUATED")\n')
+  const loaded = await import(pathToFileURL(join(directory, 'source-identity-adapter.mjs')).href)
+  assert.equal(typeof loaded.parseSourceIdentity, 'function')
+  const content = '<main>Safe</main>'
+  assert.throws(() => loaded.parseSourceIdentity({ path: 'src/pages/HomePage.tsx', content,
+    sourceRevision: sha(content), workspaceId }), error => error.code === 'SOURCE_IDENTITY_COMPILER_UNAVAILABLE'
+      && !String(error.message).includes('PRIVATE_COMPILER_FIXTURE_EVALUATED') && !String(error.message).includes(directory))
 })
 
 test('syntax, path, source size, revision, and workspace bounds fail with stable codes', () => {

@@ -41,6 +41,7 @@
 - [SYSTEMX Setup and Deployment](SYSTEMX-Setup-and-Deployment.md)
 - [SYSTEMX Webportal](SYSTEMX-WEBPORTAL.md)
 - [SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md)
+- [LAN Identity and Ownership](SYSTEMX-LAN-Identity-and-Ownership.md)
 - [SYSTEMX LAN Operations Manual](SYSTEMX-LAN-Operations-Manual.md)
 - [SYSTEMX LAN API Reference](SYSTEMX-LAN-API-Reference.md)
 - [Unified Login and Admin Operations](Unified-Login-and-Admin-Operations.md)

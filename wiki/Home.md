@@ -1,6 +1,23 @@
 # WebAppX Wiki
 
-## Current LAN and swarm milestone — 2026-10-30
+## F003/F004 identity and ownership — final verification pending
+
+Accepted progress remains **200/10,000 requirements and 40/2,000 capabilities**.
+The next 200 select F003 (LAN-00201–LAN-00300) and dependent F004
+(LAN-00301–LAN-00400); target **400 / 80** follows terminal checks and separate
+Agent 0 family acceptance. The source-import inspector and protected API are
+implemented with durable qualified references, reviewed reconciliation,
+revision-bound ownership, local-integrity metadata export/reopen and separate
+controlled-editor promotion. Read [Identity and Ownership](SYSTEMX-LAN-Identity-and-Ownership.md)
+and the [active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md).
+
+Ten authenticated CLI workers completed in separate branches/worktrees; Agent 0
+reviewed scoped commits and merged them locally. Exact-candidate CI/browser,
+GitHub delivery and acceptance remain pending here. This does not qualify live
+swarm PR approval/automatic merge, native IDE/Windows or production.
+
+
+## Historical F002 LAN and swarm milestone — 2026-10-30
 
 The LAN program has **200 accepted requirements / 40 capabilities**, with F001
 and F002 complete and 9,800 requirements remaining. The next hundred was accepted

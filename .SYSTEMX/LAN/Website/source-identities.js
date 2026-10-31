@@ -55,7 +55,7 @@ function requestBody(value) {
 
 function workspaceOf(value) {
   return value?.workspaceId ?? value?.map?.workspaceId ?? value?.proposal?.map?.workspaceId
-    ?? value?.report?.workspaceId ?? value?.document?.workspaceId ?? null
+    ?? value?.report?.workspaceId ?? value?.document?.workspaceId ?? value?.reference?.workspaceId ?? null
 }
 
 function documentOf(value) {
@@ -75,6 +75,81 @@ function parseArray(controlNode, label) {
   catch { throw new Error(`${label} must be valid JSON.`) }
   if (!Array.isArray(value)) throw new Error(`${label} must be a JSON array.`)
   return value
+}
+
+function diagnosticGroups(value) {
+  if (!Array.isArray(value)) return { groups: [], omitted: 0 }
+  const groups = []
+  const bounded = value.slice(0, 1000)
+  for (const item of bounded) {
+    if (!item || typeof item.code !== 'string' || item.code.length > 80 || /[\p{Cc}\p{Cs}]/u.test(item.code) || !/^[A-Z][A-Z0-9_]+$/.test(item.code)) continue
+    const group = { code: item.code }
+    if (item.identityDigest !== undefined) {
+      if (typeof item.identityDigest !== 'string' || item.identityDigest.length !== 64 || !/^[a-f0-9]{64}$/.test(item.identityDigest)) continue
+      group.identityDigest = item.identityDigest
+    }
+    if (item.count !== undefined) {
+      if (!Number.isSafeInteger(item.count) || item.count < 1 || item.count > 1000) continue
+      group.count = item.count
+    }
+    if (['info', 'warning', 'error'].includes(item.severity)) group.severity = item.severity
+    groups.push(group)
+  }
+  return { groups, omitted: value.length - groups.length }
+}
+
+// A retired claim can describe a public generated output outside the source
+// picker. This display-only path check grants neither read nor write eligibility.
+function publicRetirementPath(value) {
+  if (typeof value !== 'string' || !value || value.length > 512 || /[%\\:\p{Cc}\p{Cs}]/u.test(value) || value.startsWith('/')) return false
+  const parts = value.split('/')
+  return parts.every(part => /^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(part)
+    && part.toLowerCase() !== 'node_modules')
+}
+
+function ownershipRetirements(value, map) {
+  if (value === undefined) return []
+  if (!Array.isArray(value) || value.length > 1000) throw new Error('Ownership retirement history exceeds its bounded metadata limit.')
+  return value.map(item => {
+    if (!item || item.workspaceId !== map.workspaceId || item.documentId !== map.documentId
+      || typeof item.nodeId !== 'string' || item.nodeId.length !== 69 || !/^node_[a-f0-9]{64}$/.test(item.nodeId)
+      || !publicRetirementPath(item.sourcePath)
+      || !validWorkspace(item.sourceRevision) || !validWorkspace(item.claimDigest)
+      || item.reason !== 'OWNERSHIP_TARGET_RETIRED') throw new Error('Ownership retirement history lacks qualified public metadata.')
+    return { workspaceId: item.workspaceId, documentId: item.documentId, nodeId: item.nodeId,
+      sourcePath: item.sourcePath, sourceRevision: item.sourceRevision, claimDigest: item.claimDigest, reason: item.reason }
+  })
+}
+
+function validWorkspace(value) {
+  return typeof value === 'string' && value.length === 64 && /^[0-9a-f]{64}$/.test(value)
+}
+
+function currentReadState(value) {
+  return ['current source read', 'accepted at checked source revision', 'reopened at checked source revision'].includes(value)
+}
+
+function qualifiedMap(map, workspaceId, path) {
+  return map && validWorkspace(workspaceId) && map.workspaceId === workspaceId && map.sourcePath === path
+    && typeof map.documentId === 'string' && map.documentId.length === 68 && /^doc_[a-f0-9]{64}$/.test(map.documentId)
+    && typeof map.sourceRevision === 'string' && map.sourceRevision.length === 64 && /^[a-f0-9]{64}$/.test(map.sourceRevision)
+    && Array.isArray(map.nodes) && map.nodes.length <= 1000
+}
+
+function matchingOwnership(ownership, map) {
+  return ownership && ownership.workspaceId === map.workspaceId && ownership.documentId === map.documentId
+    && ownership.sourceRevision === map.sourceRevision && Array.isArray(ownership.objects)
+}
+
+function runtimeSelection(detail) {
+  const string = (value, limit) => typeof value === 'string' ? value.replace(/[\p{Cc}\p{Cs}]/gu, '').slice(0, limit) : ''
+  return {
+    tag: string(detail?.tag, 40), id: string(detail?.id, 120), route: string(detail?.route, 512),
+    // Runtime location is display-only. These exact raw values are separately
+    // checked before a qualified reference can be inspected.
+    anchor: string(detail?.anchor, 80), sourcePath: string(detail?.sourcePath, 512),
+    workspaceId: validWorkspace(detail?.workspaceId) ? detail.workspaceId : null,
+  }
 }
 
 function validPatch(patch) {
@@ -128,6 +203,9 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
   summary.setAttribute('aria-label', 'Identity map and reconciliation summary')
 
   const inspectSection = section(body, 'Inspect an accepted node', 'References include workspace, document and node IDs. Preview DOM elements without a declared mapping remain unmapped.')
+  const runtimeDetail = view(inspectSection, 'identity-preview-selection', 'No runtime preview selection observed. DOM IDs, visible text and source positions do not establish a durable reference.')
+  runtimeDetail.setAttribute('aria-label', 'Runtime preview selection and durable mapping state')
+  runtimeDetail.setAttribute('aria-live', 'polite')
   const nodeSelect = control(inspectSection, 'identity-node-select', 'Durable node', 'select')
   const nodeDetail = view(inspectSection, 'identity-node-detail', 'Accept or reopen a document, then select a node.')
   nodeDetail.setAttribute('aria-label', 'Qualified node identity and source ownership')
@@ -167,9 +245,13 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     message: 'No identity status read yet.',
     preview: null,
     previewOwnership: null,
+    previewOwnershipRetirements: [],
+    retiredOwnershipClaims: [],
+    refusalDiagnostics: { groups: [], omitted: 0 },
     ownershipProposal: null,
     operation: null,
     inspection: null,
+    runtimeSelection: null,
     nodeId: '',
     epoch: 0,
     workspaceVersion: 0,
@@ -188,9 +270,13 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     state.readState = 'not checked'
     state.preview = null
     state.previewOwnership = null
+    state.previewOwnershipRetirements = []
+    state.retiredOwnershipClaims = []
+    state.refusalDiagnostics = { groups: [], omitted: 0 }
     state.ownershipProposal = null
     state.operation = null
     state.inspection = null
+    state.runtimeSelection = null
     state.nodeId = ''
     state.busy.clear()
   }
@@ -206,7 +292,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
   }
 
   function setWorkspace(workspaceId) {
-    if (typeof workspaceId !== 'string' || !/^[0-9a-f]{64}$/.test(workspaceId)) return false
+    if (!validWorkspace(workspaceId)) return false
     if (state.workspaceId && state.workspaceId !== workspaceId) {
       state.epoch += 1
       state.workspaceVersion += 1
@@ -263,10 +349,12 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
         sourcePath: map.sourcePath, sourceRevision: map.sourceRevision, ruleVersion: map.ruleVersion,
         nodeCount: Array.isArray(map.nodes) ? map.nodes.length : 0,
         orphaned: map.orphaned ?? [], warnings: map.warnings ?? [],
+        retiredOwnershipClaimCount: state.retiredOwnershipClaims.length, retiredOwnershipClaims: state.retiredOwnershipClaims,
       } : null,
       readState: state.readState,
       coverage,
       proposalCoverage: state.previewOwnership?.coverage ?? null,
+      refusalDiagnostics: state.refusalDiagnostics,
       preview: preview ? {
         workspaceId: workspaceOf(preview), digest: preview.digest, sourcePath: preview.map?.sourcePath,
         documentId: preview.map?.documentId, pageId: preview.map?.pageId,
@@ -275,9 +363,15 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
         retired: preview.retired, ambiguous: preview.ambiguous, orphans: preview.orphans,
         rename: preview.rename, migration: preview.migration,
         warnings: preview.map?.warnings, requiresReview: preview.requiresReview,
+        ownershipRetirementCount: state.previewOwnershipRetirements.length, ownershipRetirements: state.previewOwnershipRetirements,
+        ownershipRetirementEffect: 'Read-only history of prior claims whose target nodes retire; no replacement owner or source-write authority is inferred.',
       } : null,
     })
     renderNodes()
+    const observed = state.runtimeSelection
+    runtimeDetail.textContent = observed ? json({ runtime: observed.runtime, status: observed.status, code: observed.code,
+      reference: observed.reference ?? null, sourceWrite: 'unavailable from runtime selection; only a separately qualified current mapped operation may be proposed' })
+      : 'No runtime preview selection observed. DOM IDs, visible text and source positions do not establish a durable reference.'
     const ref = selectedReference()
     const node = map?.nodes?.find(item => item.id === state.nodeId)
     const owner = state.ownership?.objects?.find(item => item.nodeId === state.nodeId)
@@ -294,6 +388,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
       readState: state.readState,
       coverage,
       claims: state.ownership?.claims ?? [],
+      retiredOwnershipClaims: state.retiredOwnershipClaims,
       selectedObject: owner ?? null,
       proposal: state.ownershipProposal,
     })
@@ -313,7 +408,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     ownershipAccept.disabled = !state.ownershipProposal || ownershipConfirmation.value !== OWNERSHIP_CONFIRMATION || pending
     operationPreview.disabled = !map || !state.nodeId || !operationText.value || pending
     stageOperation.disabled = typeof onStageLiteral !== 'function' || !state.operation?.allowed || !validPatch(state.operation?.patch)
-      || !map || !['current source read', 'accepted at checked source revision', 'reopened at checked source revision'].includes(state.readState) || pending
+      || !map || !currentReadState(state.readState) || pending
   }
 
   function begin(kind) {
@@ -340,14 +435,21 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
       const result = await request()
       if (!current(capture) || !versionIsCurrent()) return
       const workspaceId = workspaceOf(result)
-      if (setWorkspace(workspaceId)) return
+      if (workspaceId !== null) {
+        if (!validWorkspace(workspaceId)) throw new Error('Identity response lacks a valid workspace qualification.')
+        if (state.workspaceId && workspaceId !== state.workspaceId) throw new Error('Identity response belongs to another workspace; the previous accepted map is kept. Refresh accepted identity status to observe a workspace change.')
+        setWorkspace(workspaceId)
+      }
       // The first valid response may establish the workspace for this action.
       // Keep its own validation/error path current without reviving older calls.
       capture.workspaceVersion = state.workspaceVersion
       capture.workspaceId = state.workspaceId
       receive(result)
     } catch (error) {
-      if (current(capture) && versionIsCurrent()) state.message = errorText(error)
+      if (current(capture) && versionIsCurrent()) {
+        state.message = errorText(error)
+        state.refusalDiagnostics = diagnosticGroups(error?.diagnostics)
+      }
     } finally {
       if (state.busy.get(kind) === capture.serial) state.busy.delete(kind)
       render()
@@ -355,6 +457,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
   }
 
   async function refresh() {
+    if (state.destroyed) return
     const capture = begin('refresh')
     let observedEpoch = capture.epoch
     let observedWorkspaceVersion = capture.workspaceVersion
@@ -362,7 +465,8 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     try {
       const result = await api('/api/identity/status')
       if (!current(capture) || state.authorityVersion !== authorityVersion) return
-      setWorkspace(result?.workspaceId)
+      if (!validWorkspace(result?.workspaceId)) throw new Error('Identity status lacks a valid workspace qualification.')
+      setWorkspace(result.workspaceId)
       // A workspace switch invalidates the original capture. Continue only with
       // this new, explicit status result and the same selected path.
       const epoch = state.epoch
@@ -374,6 +478,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
       if (!selected) {
         state.map = null
         state.ownership = null
+        state.retiredOwnershipClaims = []
         state.inspection = null
         state.nodeId = ''
         state.readState = 'no accepted document for selected path'
@@ -389,9 +494,11 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
         return
       }
       const { map, ownership } = documentOf(read)
-      if (!map || map.sourcePath !== path || map.workspaceId !== state.workspaceId) throw new Error('Selected identity document did not match the current workspace and path.')
+      if (!qualifiedMap(map, state.workspaceId, path) || !ownership || ownership.workspaceId !== state.workspaceId || ownership.documentId !== map.documentId) throw new Error('Selected identity document did not match the current workspace and path.')
+      const retirements = ownershipRetirements(read.retiredOwnershipClaims, map)
       state.map = map
       state.ownership = ownership
+      state.retiredOwnershipClaims = retirements
       const staleCount = Number(ownership?.coverage?.stale ?? 0)
       state.readState = read?.stale || staleCount > 0 ? 'stale' : 'current source read'
       state.message = `Accepted document ${map.documentId} read. ${state.readState}.`
@@ -417,8 +524,14 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     const path = state.path
     const rename = renameFrom.value.trim() || null
     void run('preview', () => api('/api/identity/preview', requestBody({ path, renameFrom: rename, aliases: aliasChanges })), result => {
-      const proposal = result?.proposal ?? result
-      if (!proposal?.digest || !proposal?.map || proposal.map.sourcePath !== state.path) throw new Error('Identity preview response lacks the selected document proposal.')
+      const proposal = result?.proposal
+      if (!proposal || typeof proposal.digest !== 'string' || proposal.digest.length !== 64 || !/^[a-f0-9]{64}$/.test(proposal.digest)
+        || proposal.requiresReview !== true || !qualifiedMap(proposal.map, state.workspaceId, state.path)
+        || !matchingOwnership(result.ownership, proposal.map)) throw new Error('Identity preview response lacks the qualified selected document proposal and ownership report.')
+      const retirements = ownershipRetirements(result.ownershipRetirements, proposal.map)
+      identityConfirmation.value = ''
+      state.refusalDiagnostics = { groups: [], omitted: 0 }
+      state.previewOwnershipRetirements = retirements
       state.preview = proposal
       state.previewOwnership = result?.ownership ?? proposal?.ownership ?? null
       state.ownershipProposal = null
@@ -433,7 +546,11 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     const version = state.previewEdit
     void run('accept', () => api('/api/identity/accept', requestBody({ digest: proposal.digest, confirmation: IDENTITY_CONFIRMATION })), result => {
       const { map, ownership } = documentOf(result)
-      if (!map || map.sourcePath !== state.path || map.workspaceId !== state.workspaceId) throw new Error('Accepted identity map did not match the selected workspace and path.')
+      if (result?.accepted !== true || !qualifiedMap(map, state.workspaceId, state.path) || !matchingOwnership(ownership, map)) throw new Error('Accepted identity map did not match the selected workspace and path.')
+      const retirements = ownershipRetirements(result.retiredOwnershipClaims, map)
+      identityConfirmation.value = ''
+      state.retiredOwnershipClaims = retirements
+      state.previewOwnershipRetirements = []
       state.map = map
       state.ownership = ownership
       state.authorityVersion += 1
@@ -455,10 +572,17 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     const version = state.nodeEdit
     state.inspection = null
     render()
-    void run('inspect', () => api('/api/identity/inspect', requestBody(reference)), result => {
+    return run('inspect', () => api('/api/identity/inspect', requestBody(reference)), result => {
+      const found = result?.reference
+      if (!found || found.workspaceId !== reference.workspaceId || found.documentId !== reference.documentId || found.nodeId !== reference.nodeId) {
+        state.readState = 'inspection unresolved; mapping unverified'
+        throw new Error('Node inspection did not return the exact qualified reference; staging remains unavailable.')
+      }
       state.inspection = result
+      if (result.status === 'stale' || result.object?.status === 'stale') state.readState = 'stale'
+      else if (['missing', 'ambiguous', 'workspace-mismatch', 'document-mismatch', 'unmapped'].includes(result.status)) state.readState = 'inspection unresolved; mapping unverified'
       state.message = `Inspected qualified node ${reference.nodeId}.`
-    }, () => version === state.nodeEdit)
+    }, () => version === state.nodeEdit && reference.nodeId === state.nodeId)
   }
 
   function exportDocument() {
@@ -490,12 +614,15 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     } catch (error) { state.message = errorText(error); render(); return }
     void run('reopen', () => api('/api/identity/reopen', requestBody({ document: documentData, confirmation: REOPEN_CONFIRMATION })), result => {
       const { map, ownership } = documentOf(result)
-      if (!map) throw new Error('Reopen response lacks an accepted identity map.')
+      if (result?.accepted !== true || !map || !matchingOwnership(ownership, map)) throw new Error('Reopen response lacks an accepted identity map and ownership report.')
       if (map.sourcePath !== state.path) {
         state.message = `Reopened ${map.documentId}; select ${map.sourcePath} in the source picker to inspect it.`
         return
       }
-      if (map.workspaceId !== state.workspaceId) throw new Error('Reopened identity map belongs to a different workspace.')
+      if (!qualifiedMap(map, state.workspaceId, state.path)) throw new Error('Reopened identity map belongs to a different workspace or path.')
+      const retirements = ownershipRetirements(result.retiredOwnershipClaims, map)
+      state.retiredOwnershipClaims = retirements
+      state.previewOwnershipRetirements = []
       state.map = map
       state.ownership = ownership
       state.authorityVersion += 1
@@ -519,8 +646,9 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     const version = state.ownerEdit
     const documentId = state.map.documentId
     void run('ownershipPreview', () => api('/api/identity/ownership/preview', requestBody({ documentId, changes })), result => {
-      const proposal = result?.proposal ?? result
-      if (!proposal?.digest || !proposal?.report) throw new Error('Ownership preview response lacks a reviewable report.')
+      const proposal = result?.proposal
+      if (!proposal?.digest || !matchingOwnership(proposal.report, state.map)) throw new Error('Ownership preview response lacks a qualified reviewable report.')
+      ownershipConfirmation.value = ''
       state.ownershipProposal = proposal
       state.operation = null
       state.message = `Ownership proposal ${proposal.digest} is ready. Review affected objects and coverage before acceptance.`
@@ -532,8 +660,9 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     if (!proposal || ownershipConfirmation.value !== OWNERSHIP_CONFIRMATION) return
     const version = state.ownerEdit
     void run('ownershipAccept', () => api('/api/identity/ownership/accept', requestBody({ digest: proposal.digest, confirmation: OWNERSHIP_CONFIRMATION })), result => {
-      const report = result?.report ?? result
-      if (!report || report.workspaceId !== state.workspaceId || report.documentId !== state.map?.documentId) throw new Error('Accepted ownership report did not match the current document.')
+      const report = result?.report
+      if (result?.accepted !== true || !matchingOwnership(report, state.map)) throw new Error('Accepted ownership report did not match the current document.')
+      ownershipConfirmation.value = ''
       state.ownership = report
       state.authorityVersion += 1
       state.ownershipProposal = null
@@ -548,6 +677,8 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     const reference = selectedReference()
     if (!acceptedForPath() || !reference || !operationText.value) return
     const version = state.operationEdit
+    const nodeVersion = state.nodeEdit
+    const authorityVersion = state.authorityVersion
     const text = operationText.value
     const documentId = state.map.documentId
     const expectedRevision = state.map.sourceRevision
@@ -556,20 +687,54 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
       state.operation = result
       if (!result.allowed && /STALE|REVISION/i.test(String(result.code ?? ''))) state.readState = 'stale'
       state.message = result.allowed ? 'Literal patch preview is ready. Review impact before staging in the controlled editor.' : `Literal operation refused: ${result.code ?? 'UNAVAILABLE'}. Your text draft is retained.`
-    }, () => version === state.operationEdit)
+    }, () => version === state.operationEdit && nodeVersion === state.nodeEdit && state.nodeId === reference.nodeId && state.authorityVersion === authorityVersion)
   }
 
   function stageLiteral() {
     syncPath()
     const proposal = state.operation
     if (typeof onStageLiteral !== 'function' || !acceptedForPath() || !proposal?.allowed || !validPatch(proposal.patch)
-      || !['current source read', 'accepted at checked source revision', 'reopened at checked source revision'].includes(state.readState)) return
+      || !currentReadState(state.readState)) return
     const path = state.map.sourcePath
     const sourceRevision = state.map.sourceRevision
     void run('stage', () => Promise.resolve(onStageLiteral({ path, sourceRevision, patch: proposal.patch })), () => {
       state.message = 'Literal patch sent to the controlled editor for its separate review and confirmation.'
       state.operation = null
     })
+  }
+
+  function observePreviewSelection(detail) {
+    if (state.destroyed) return { status: 'unmapped', code: 'PREVIEW_INSPECTOR_DESTROYED' }
+    syncPath()
+    state.nodeEdit += 1
+    state.operationEdit += 1
+    state.nodeId = ''
+    state.operation = null
+    state.inspection = null
+    const runtime = runtimeSelection(detail)
+    const observation = { runtime, status: 'unmapped', code: 'PREVIEW_DURABLE_REFERENCE_UNAVAILABLE' }
+    state.runtimeSelection = observation
+    const map = acceptedForPath() && currentReadState(state.readState) ? state.map : null
+    const anchor = detail?.anchor
+    const matches = map && typeof anchor === 'string' && anchor.length <= 80 && /^[A-Za-z][A-Za-z0-9_-]*$/.test(anchor)
+      ? map.nodes.filter(node => node.anchor === anchor && node.confidence === 'explicit') : []
+    const qualified = map && matchingOwnership(state.ownership, map) && matches.length === 1
+      && detail?.workspaceId === map.workspaceId && detail?.sourcePath === map.sourcePath
+      && detail?.route === map.route && detail?.tag === matches[0].tag
+    if (!qualified) {
+      state.message = 'Runtime preview selection is unmapped to a current durable reference. Its location is shown; source-write authority is unavailable.'
+      render()
+      return { status: observation.status, code: observation.code }
+    }
+    state.nodeId = matches[0].id
+    const reference = selectedReference()
+    observation.status = 'qualified explicit anchor'
+    observation.code = 'PREVIEW_REFERENCE_INSPECTION_ONLY'
+    observation.reference = reference
+    state.message = 'Explicit preview anchor matched one current accepted document node. Inspecting its qualified reference; no operation was authorized.'
+    render()
+    void inspectNode()
+    return { status: observation.status, reference }
   }
 
   const picker = container.querySelector('#source-file-select')
@@ -581,6 +746,8 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
   nodeSelect.addEventListener('change', () => {
     state.nodeId = nodeSelect.value
     state.nodeEdit += 1
+    state.operationEdit += 1
+    state.runtimeSelection = null
     state.operation = null
     state.inspection = null
     render()
@@ -596,6 +763,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     state.previewEdit += 1
     state.preview = null
     state.previewOwnership = null
+    state.previewOwnershipRetirements = []
     state.message = 'Identity inputs changed. Preview again before acceptance.'
     render()
   })
@@ -615,6 +783,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
 
   const handle = {
     refresh,
+    observePreviewSelection,
     destroy() {
       state.destroyed = true
       state.epoch += 1

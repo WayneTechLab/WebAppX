@@ -194,8 +194,8 @@ test('overlapping explicit owner claims remain visible and disable source writes
     fields: { text: { owner: 'source', supported: true } }, source: node.source,
   }
   const report = buildOwnership(map, { claims: [
-    { ...claim, provenance: 'tsx owner' },
-    { ...claim, adapterId: 'alternate-static-v1', provenance: 'alternate owner' },
+    { ...claim, provenance: { documentId: map.documentId } },
+    { ...claim, adapterId: 'alternate-static-v1', provenance: { documentId: map.documentId } },
   ] })
   assert.equal(report.claims.length, 2)
   assert.equal(report.objects[0].status, 'conflict')
@@ -224,7 +224,7 @@ test('ownership preview and acceptance bind exact digest, explicit confirmation 
   const claim = {
     nodeId: map.nodes[0].id, mode: 'source-owned', adapterId: 'tsx-static-v1',
     fields: { text: { owner: 'source', supported: true } }, source: map.nodes[0].source,
-    provenance: 'reviewed literal ownership',
+    provenance: { documentId: map.documentId },
   }
   const snapshot = structuredClone(report)
   const proposal = previewOwnershipChange(map, report, [claim])
@@ -247,7 +247,7 @@ test('ownership preview refuses cross-document changes and unsupported operation
   const change = {
     nodeId: map.nodes[0].id, mode: 'source-owned', adapterId: 'tsx-static-v1',
     fields: { text: { owner: 'source', supported: true } }, source: map.nodes[0].source,
-    provenance: 'reviewed literal ownership',
+    provenance: { documentId: map.documentId },
   }
   assertCodedRefusal(() => previewOwnershipChange(map, report, [{ ...change, reference: { ...reference(map), workspaceId: foreignWorkspaceId } }]))
   assertCodedRefusal(() => previewOwnershipChange(map, report, [{ ...change, supportedOperations: ['structure'] }]))

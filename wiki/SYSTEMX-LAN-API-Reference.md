@@ -715,3 +715,14 @@ An API change is ready for the template only when:
 The source-policy endpoints and inventory/preferences controls are qualified by
 the [F002 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY-QA-2026-10-30.md)
 at the recorded functional revision; publication and production remain separate.
+
+## Source identity and ownership APIs
+
+The [Identity and Ownership API map](SYSTEMX-LAN-Identity-and-Ownership.md#api-map)
+adds protected `/api/identity/*` observations and explicit import, acceptance,
+qualified lookup/inspection, ownership, literal-proposal, export and reopen
+operations. Both GET and POST require the served LAN session authority. The
+service never saves source through these metadata routes; staged literal changes
+use the existing revision/backup/diff/confirmation pipeline. Previews return the
+qualified `{proposal, ownership, workspaceId}` envelope. Current accepted200/40
+and target400/80 remain separate until final F003/F004 evidence and acceptance.

@@ -12,7 +12,7 @@ const nodeId = (value) => `node_${sha(value)}`
 function node(key, { path = PATH, revision = REVISION, parentId = null, tag = 'div', anchor = null,
   signature = sha(key), label = key, confidence = anchor ? 'explicit' : 'heuristic' } = {}) {
   return {
-    id: nodeId(`${path}:${key}`), parentId, tag, anchor, signature, label, confidence,
+    id: confidence === 'unresolved' ? `candidate_${sha(`${path}:${key}`)}` : nodeId(`${path}:${key}`), parentId, tag, anchor, signature, label, confidence,
     source: { path, start: 0, end: 20, sourceRevision: revision, fingerprint: sha(`${key}:source`) },
     fields: { text: { start: 1, end: 5, fingerprint: sha(`${key}:text`) } },
     opaque: false, external: false,
@@ -85,8 +85,8 @@ test('a replacement remains distinct even when an adapter reuses its incoming an
 
 test('indistinguishable unanchored siblings remain unresolved and are never assigned previous IDs', () => {
   const signature = sha('same structural evidence')
-  const previous = map([node('old-1', { signature }), node('old-2', { signature })])
-  const incoming = map([node('new-1', { signature }), node('new-2', { signature })])
+  const previous = map([node('old-1', { signature, confidence: 'unresolved' }), node('old-2', { signature, confidence: 'unresolved' })])
+  const incoming = map([node('new-1', { signature, confidence: 'unresolved' }), node('new-2', { signature, confidence: 'unresolved' })])
   const proposal = previewReconciliation(previous, incoming)
 
   assert.deepEqual(proposal.counts, { preserved: 0, added: 0, retired: 2, ambiguous: 2 })
@@ -97,7 +97,7 @@ test('indistinguishable unanchored siblings remain unresolved and are never assi
 
 test('a first import also leaves repeated unanchored siblings unresolved', () => {
   const signature = sha('same structural evidence')
-  const incoming = map([node('first', { signature }), node('second', { signature })])
+  const incoming = map([node('first', { signature, confidence: 'unresolved' }), node('second', { signature, confidence: 'unresolved' })])
   const proposal = previewReconciliation(null, incoming)
   assert.deepEqual(proposal.counts, { preserved: 0, added: 0, retired: 0, ambiguous: 2 })
   assert.ok(proposal.map.nodes.every((item) => item.confidence === 'unresolved'))
@@ -130,9 +130,9 @@ test('a rename needs explicit exact review, explains evidence, and accepts only 
 
 test('ambiguous rename refuses to transfer reviewed document references', () => {
   const signature = sha('duplicate')
-  const previous = map([node('old-1', { signature }), node('old-2', { signature })])
+  const previous = map([node('old-1', { signature, confidence: 'unresolved' }), node('old-2', { signature, confidence: 'unresolved' })])
   const newPath = 'src/pages/New.tsx'
-  const incoming = map([node('new-1', { path: newPath, signature }), node('new-2', { path: newPath, signature })], { path: newPath })
+  const incoming = map([node('new-1', { path: newPath, signature, confidence: 'unresolved' }), node('new-2', { path: newPath, signature, confidence: 'unresolved' })], { path: newPath })
   assertCode(() => previewReconciliation(previous, incoming, { renameFrom: PATH }), 'IDENTITY_RENAME_AMBIGUOUS')
   const noMatch = map([node('unrelated', { path: newPath, anchor: 'new' })], { path: newPath })
   assertCode(() => previewReconciliation(map([node('original', { anchor: 'old' })]), noMatch, { renameFrom: PATH }), 'IDENTITY_RENAME_AMBIGUOUS')
@@ -161,28 +161,19 @@ test('reviewed aliases resolve only retired IDs within the selected document; or
   ] }), 'IDENTITY_ALIAS_INVALID')
 })
 
-test('rule changes require an explicit reviewed migration and mark preserved confidence', () => {
+test('rule versions are declared and an unavailable migration cannot silently reinterpret existing maps', () => {
   const old = node('root', { anchor: 'root' })
   const previous = map([old], { ruleVersion: 'identity-v1' })
   const incoming = map([node('new-root', { anchor: 'root' })], { ruleVersion: 'identity-v2' })
   assertCode(() => previewReconciliation(previous, incoming), 'IDENTITY_RULE_MIGRATION_REQUIRED')
-  const proposal = previewReconciliation(previous, incoming, { ruleVersion: 'identity-v2' })
-  assert.deepEqual(proposal.migration, {
-    from: 'identity-v1', to: 'identity-v2', evidence: 'explicit-rule-version', requiresReview: true,
-  })
+  assertCode(() => previewReconciliation(previous, incoming, { ruleVersion: 'identity-v2' }), 'IDENTITY_RULE_MIGRATION_REQUIRED')
+  assertCode(() => previewReconciliation(null, incoming, { ruleVersion: 'identity-v2' }), 'IDENTITY_VERSION_UNSUPPORTED')
+  assertCode(() => exportIdentityMap(incoming), 'IDENTITY_VERSION_UNSUPPORTED')
+  const proposal = previewReconciliation(previous, map([node('new-root', { anchor: 'root' })]))
+  assert.equal(proposal.map.ruleVersion, 'identity-v1')
+  assert.equal(proposal.migration, null)
   assert.equal(proposal.map.nodes[0].id, old.id)
-  assert.equal(proposal.map.nodes[0].confidence, 'reviewed-migration')
-  const accepted = acceptReconciliation(proposal, { digest: proposal.digest, confirmation: 'ACCEPT IDENTITY MAP' })
-  assert.equal(accepted.ruleVersion, 'identity-v2')
-  const reimport = previewReconciliation(accepted, incoming, { ruleVersion: 'identity-v2' })
-  assert.equal(reimport.map.nodes[0].confidence, 'reviewed-migration')
-
-  const changedIds = map([node('new-root', { anchor: 'root' })], {
-    ruleVersion: 'identity-v2', documentId: `doc_${sha('new allocation')}`, pageId: `page_${sha('new allocation')}`,
-  })
-  const reviewedAllocation = previewReconciliation(previous, changedIds, { ruleVersion: 'identity-v2' })
-  assert.equal(reviewedAllocation.map.documentId, previous.documentId)
-  assert.equal(reviewedAllocation.migration.documentIds.incoming, changedIds.documentId)
+  assert.equal(previous.ruleVersion, 'identity-v1')
 })
 
 test('metadata export removes original labels and validates for a same-workspace reopen', () => {

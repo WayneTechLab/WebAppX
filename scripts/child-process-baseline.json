@@ -44,6 +44,13 @@
       "fingerprint": "8400fa4a77787dd580ed3985560bf2f048823588909466bb6c9f025021eb9abb",
       "count": 1,
       "reason": "Reviewed isolated Python code worker uses owned process groups and fixed in-source code templates; explicit interpreter channel requires this exact count."
+    },
+    {
+      "path": "scripts/lan-source-identity-browser.mjs",
+      "kind": "javascript:spawn",
+      "fingerprint": "dd45caf34a5d9447e600eb04b3e5a6c27ee90d261c615b35f9c1d5b834180f29",
+      "count": 1,
+      "reason": "Agent 0 reviewed F003/F004 owned-fixture spawn: current Node process.execPath, explicit single server-path argv array, bounded loopback environment and owned child cleanup. The static parser does not infer this fixed runtime executable; no shell or caller executable is accepted."
     }
   ]
 }

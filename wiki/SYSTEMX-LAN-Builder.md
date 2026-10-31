@@ -1,5 +1,22 @@
 # SYSTEMX LAN Builder
 
+## F003/F004 identity and ownership — final verification pending
+
+Accepted progress remains **200/10,000 requirements and 40/2,000 capabilities**.
+The next 200 select F003 (LAN-00201–LAN-00300) and dependent F004
+(LAN-00301–LAN-00400); target **400 / 80** follows terminal checks and separate
+Agent 0 family acceptance. The source-import inspector and protected API are
+implemented with durable qualified references, reviewed reconciliation,
+revision-bound ownership, local-integrity metadata export/reopen and separate
+controlled-editor promotion. Read [Identity and Ownership](SYSTEMX-LAN-Identity-and-Ownership.md)
+and the [active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md).
+
+Ten authenticated CLI workers completed in separate branches/worktrees; Agent 0
+reviewed scoped commits and merged them locally. Exact-candidate CI/browser,
+GitHub delivery and acceptance remain pending here. This does not qualify live
+swarm PR approval/automatic merge, native IDE/Windows or production.
+
+
 The SYSTEMX LAN Builder is the local management surface for the WTL WebApp Stack G1
 template. It reuses the strongest general ideas from the public
 [WTL-Instatic](https://github.com/WayneTechLab/WTL-Instatic) reference—visual
@@ -23,7 +40,7 @@ no-op behavior accounts for textarea normalization. Read the
 [API reference](SYSTEMX-LAN-API-Reference.md) and
 [source QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
 
-**Current acceptance: 200/10,000 requirements and 40/2,000 capabilities.**
+**Historical F002 acceptance: 200/10,000 requirements and 40/2,000 capabilities.**
 F001 and F002 are complete; 9,800 requirements remain TODO. Exactly
 LAN-00101–LAN-00200 are newly accepted at `e1588c4ebe94b1ef5f1557641334d95aee9b8290`; the previous 100 records
 remain unchanged. The source browser adds eligible metadata/filtering, canonical
