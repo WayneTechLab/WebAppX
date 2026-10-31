@@ -106,25 +106,25 @@
       "id": "lan.source-policy-inventory",
       "label": "Bounded eligible source metadata with extension/search filters, generated origin, size and write kinds",
       "surface": "GET /api/builder/source/inventory; Code source browser",
-      "evidence": "source-policy.test.mjs, source-policy-api.test.mjs, source-navigation.test.mjs and source-policy-browser.mjs; F002 acceptance remains pending final integration gates."
+      "evidence": "docs/LAN-SOURCE-POLICY-QA-2026-10-30.md; 20 source-policy browser groups, 114 core tests and preserved source/seed evidence at e1588c4ebe94b1ef5f1557641334d95aee9b8290."
     },
     {
       "id": "lan.source-path-policy",
       "label": "Canonical exact-case and no-link source paths, strict encoding and bounded read/write decisions",
       "surface": "GET/POST /api/builder/source; source/font guards",
-      "evidence": "source-policy.test.mjs, source-policy-api.test.mjs, source-navigation.test.mjs and source-policy-browser.mjs; F002 acceptance remains pending final integration gates."
+      "evidence": "docs/LAN-SOURCE-POLICY-QA-2026-10-30.md; 20 source-policy browser groups, 114 core tests and preserved source/seed evidence at e1588c4ebe94b1ef5f1557641334d95aee9b8290."
     },
     {
       "id": "lan.source-policy-review",
       "label": "Read-only reviewed path policy proposal and comparison without opening source content",
       "surface": "GET /api/builder/source/policy",
-      "evidence": "source-policy.test.mjs, source-policy-api.test.mjs, source-navigation.test.mjs and source-policy-browser.mjs; F002 acceptance remains pending final integration gates."
+      "evidence": "docs/LAN-SOURCE-POLICY-QA-2026-10-30.md; 20 source-policy browser groups, 114 core tests and preserved source/seed evidence at e1588c4ebe94b1ef5f1557641334d95aee9b8290."
     },
     {
       "id": "lan.source-navigation-inventory-export",
       "label": "Revalidated optional source navigation metadata and explicit eligible inventory JSON download",
       "surface": "Code source browser preferences / Download inventory",
-      "evidence": "source-policy.test.mjs, source-policy-api.test.mjs, source-navigation.test.mjs and source-policy-browser.mjs; F002 acceptance remains pending final integration gates."
+      "evidence": "docs/LAN-SOURCE-POLICY-QA-2026-10-30.md; 20 source-policy browser groups, 114 core tests and preserved source/seed evidence at e1588c4ebe94b1ef5f1557641334d95aee9b8290."
     }
   ],
   "guarded": [

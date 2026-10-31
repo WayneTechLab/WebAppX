@@ -109,3 +109,13 @@ requirements. Read the [active iteration](https://github.com/WayneTechLab/WebApp
 and [source-policy plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md)
 for those original requirements and acceptance counts. For ordinary new-app
 single-job setup, use [Agent Y setup](Agent-Y-New-App-Setup.md).
+
+## Local qualification — 2026-10-30
+
+Functional candidate `e1588c4ebe94b1ef5f1557641334d95aee9b8290` passed all 70 required CI stages and separate
+Hosting preflight, including **32 swarm tests**. The previous 27 local orchestration
+regressions remain and five tests cover drive/UNC/POSIX syntax plus actual macOS
+root and no-link behavior. Ten synthetic CLI processes overlapped in distinct
+worktrees; local Git and fake REST responses exercised the full qualified lifecycle.
+This is not native Windows, authenticated AI-provider, real GitHub merge, running
+IDE or production qualification. Read the [candidate-bound QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY-QA-2026-10-30.md).

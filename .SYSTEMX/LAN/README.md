@@ -57,6 +57,48 @@ require a backup, the per-session token, secret-marker checks, and the exact
 `SAVE LOCAL CHANGE` confirmation. Cloud writes remain a separate authenticated
 and preflight-gated capability.
 
+## Source access and host swarm — locally accepted 2026-10-30
+
+Agent 0 accepted exactly **LAN-00101–LAN-00200** at functional candidate
+`e1588c4ebe94b1ef5f1557641334d95aee9b8290`. The program is now
+**200/10,000 requirements and 40/2,000 capabilities**; **F001 and F002 are
+complete, with 9,800 requirements remaining TODO**. Previous one hundred
+completion objects and their order remain exact. The separate original WebAppX
+catalog remains **179 done / 821 remaining** and its historical foundation
+bundle remains unapplied.
+
+The source browser delivers bounded eligible metadata, canonical exact-case
+no-link paths, strict encoding/size decisions, generated-file protection,
+metadata filtering/search, read-only policy comparison, optional navigation
+preferences and explicit inventory export. Loaded drafts and original bases
+survive filtering/refusal; metadata operations do not grant write authority.
+Read the [source-browser guide](../../docs/LAN-SOURCE-POLICY.md),
+[completed plan](../../docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md),
+[active iteration](../../docs/LAN-ACTIVE-ITERATION.md) and
+[candidate-bound QA receipt](../../docs/LAN-SOURCE-POLICY-QA-2026-10-30.md).
+
+The same candidate passed all **70 CI stages**, **114 core unit/API tests**,
+**20 F002 browser capability groups**, **55 source regression groups plus seven
+geometry checks**, **16 Navigator groups**, and separate Hosting preflight.
+CI and preflight each preserved **2,078 tracked input fingerprints**. Actual
+Home source-browser filtering, refusal, policy review and metadata export were
+read back without new Home source changes. Historical F001 Home edits and their
+original proofs remain preserved.
+
+The additive [host swarm](../../docs/SYSTEMX-SWARM.md) has **20 stepwise commands**
+and at most **10 isolated CLI slots**, with **32 local synthetic tests**.
+Read its [operational map](../../docs/SYSTEMX-SWARM-MAP.md),
+[access matrix](../../docs/SYSTEMX-SWARM-ACCESS-MATRIX.md) and
+[manifest schema](../swarm/manifest.schema.json). Those tests do not establish authenticated AI-provider
+sessions, live GitHub PR merges, permissions changes, native Windows operation,
+IDE acceptance or production deployment. Swarm support adds no extra F002
+acceptances. Managed SYSTEMX 1.9.0-alpha.6 and reusable seeds remain unchanged.
+
+Source/wiki publication SHAs and fresh remote readback belong to the separate
+final delivery handoff. This section records local acceptance rather than a
+claim that publication already occurred. Hosting preflight skipped deployment;
+app 3.4.0 and deployment count 0 remain unchanged.
+
 ## Operating contract
 
 ```text
@@ -549,12 +591,12 @@ file's bytes, separate from Git cleanliness, provider publication and locking.
 See the [API contract](../../wiki/SYSTEMX-LAN-API-Reference.md) and
 [dated QA receipt](../../docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
 
-The [accepted iteration](../../docs/LAN-ACTIVE-ITERATION.md) adds source comparison, missing-file draft
+The [historical conflict-review milestone](../../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison, missing-file draft
 protection and explicitly reviewed replacement. The [QA receipt](../../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) records
 the exact candidate, repairs, acceptance and limits.
 
-**Accepted total: 75 requirements / 15 capabilities; 9,925 requirements remain
-TODO.** The source-conflict batch adds 15 completions. Functional candidate
+**Historical conflict-review total: 75 requirements / 15 capabilities; 9,925
+requirements remained TODO at that milestone.** The source-conflict batch adds 15 completions. Functional candidate
 `d9bd9e7` passed all 68 CI stages, 21 source-flow browser groups, 16 Navigator
 groups, three actual-app read-only observations and separate Hosting preflight.
 Production deployment was skipped.
@@ -587,18 +629,18 @@ for actual verification and the [active iteration](../../docs/LAN-ACTIVE-ITERATI
 for the current selected batch. The Work sources board keeps the separate
 original WebAppX catalog and reusable project records distinct from LAN progress.
 
-The font/preview milestone is accepted at `781b624bc322c4d851fa3dfc91a165a087dea5d7`:
+The historical font/preview milestone was accepted at `781b624bc322c4d851fa3dfc91a165a087dea5d7`:
 **85/10,000 requirements and 17/2,000 capabilities**, with 9,915 requirements TODO.
 The final checks passed all 68 CI stages, 49 npm tests, 37 isolated browser groups
 with four normal-dock geometry checkpoints, 16 actual Navigator groups and
 separate Hosting preflight. The [dated receipt](../../docs/LAN-FONT-PREVIEW-QA-2026-10-28.md)
 keeps the prior inventory, visual and reload failures separate from final passes.
 
-## Revision-bound recovery and GUI proof — accepted 2026-10-30
+## Historical F001 recovery and GUI proof — accepted 2026-10-30
 
-LAN-00076–LAN-00090 are accepted at `04813b380cda7656650db752049a8e0661c55bc5`. The program is now 100/10,000
-requirements and 20/2,000 capabilities; F001 is complete and 9,900 requirements
-remain. Explicit browser-local Store/Review/Restore preserves the original
+LAN-00076–LAN-00090 were accepted at `04813b380cda7656650db752049a8e0661c55bc5`.
+At that historical milestone the program reached 100/10,000 requirements and
+20/2,000 capabilities, completing F001 with 9,900 requirements then remaining. Explicit browser-local Store/Review/Restore preserves the original
 checkout/path/baseline. Comparison downloads require reviewed inclusion scope
 and EXPORT COMPARISON. History reads bounded metadata and qualifies legacy and
 unattributed observations. No source authority comes from storing, restoring,
@@ -619,5 +661,8 @@ The host Code inspector provides bounded eligible source metadata, canonical
 exact-case/no-link paths, strict UTF-8 and size decisions, generated read-only
 labels, policy proposal comparison, optional navigation preferences and explicit
 metadata-only export. Read the [source-policy guide](../../docs/LAN-SOURCE-POLICY.md)
-and [next-100 plan](../../docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md). These host
-extensions preserve the selected managed release and reusable work records.
+and [completed F002 plan](../../docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md).
+Agent 0 accepted the exact one hundred F002 requirements at `e1588c4`; the
+[candidate-bound QA receipt](../../docs/LAN-SOURCE-POLICY-QA-2026-10-30.md)
+records terminal qualification. These host extensions preserve the selected
+managed release and reusable work records.

@@ -1,5 +1,35 @@
 # Update Log
 
+## F002 source policy and ten-worker host swarm — 2026-10-30
+
+Accepted exactly **LAN-00101–LAN-00200** at `e1588c4ebe94b1ef5f1557641334d95aee9b8290`: **200/10,000
+requirements and 40/2,000 capabilities**. F001/F002 are complete; 9,800 requirements
+remain. The original 100 completion objects are preserved; the separate WebAppX
+catalog stays 179 done / 821 remaining.
+
+LAN now exposes bounded eligible metadata/filtering, canonical exact-case/no-link
+paths, generated read-only and strict encoding/size decisions, read-only policy
+comparison, revalidated optional navigation and finite inventory export. The real
+Home was loaded through LAN; the deliberate 24-file / 10,444-byte metadata export
+and policy/filter/refusal actions preserved all 153 source/backup/temp fingerprints.
+
+The additional host swarm has 20 stepwise commands for ten isolated CLI slots,
+Agent 0/X/Y/Z/Alpha authority, generation branches, IDE/Codex synchronization,
+review/integration feedback, immediate expected-head REST merge, uncertain-result
+observation, verified bundle retirement and fresh next-wave assignment. Thirty-two
+local synthetic tests include ten truly concurrent CLI processes and five portable
+path checks. Live provider/GitHub/IDE activation remains a separate qualification.
+
+Terminal final-candidate gates passed: **70 CI stages, 114 core tests, 32 swarm
+tests, 20 F002 browser groups, 55 source regressions plus seven geometry checks,
+16 Navigator groups and separate Hosting preflight**. Failed and interrupted
+attempts remain retained. The selected upstream release, reusable seeds and
+research packages are preserved. No production deployment was performed.
+
+Read the [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY-QA-2026-10-30.md)
+and [swarm setup](SYSTEMX-Swarm.md).
+
+
 ## Revision-bound recovery, comparison export and source history — 2026-10-30
 
 Accepted LAN-00076–LAN-00090 at `04813b380cda7656650db752049a8e0661c55bc5`: **100/10,000 requirements and

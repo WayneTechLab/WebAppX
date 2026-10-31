@@ -1,5 +1,17 @@
 # WebAppX Wiki
 
+## Current LAN and swarm milestone — 2026-10-30
+
+The LAN program has **200 accepted requirements / 40 capabilities**, with F001
+and F002 complete and 9,800 requirements remaining. The next hundred was accepted
+at `e1588c4ebe94b1ef5f1557641334d95aee9b8290` after all 70 CI stages, the dedicated browser/regression gates
+and Hosting preflight passed. See the [LAN builder](SYSTEMX-LAN-Builder.md),
+[host swarm setup](SYSTEMX-Swarm.md),
+[QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY-QA-2026-10-30.md)
+and the [WebAppX Space](https://chatgpt.com/space/page_6ae57560ffc081918ce0df5347f4d5a3)
+with its setup, portal, map/access, LAN, swarm and verification subpages.
+
+
 ## SYSTEMX host swarm
 
 The [host swarm guide](SYSTEMX-Swarm.md) adds the Agent 0/X/Y/Z/Alpha operating
@@ -10,8 +22,8 @@ provider qualification.
 
 ## LAN 10,000-requirement execution program — 2026-10-30
 
-**Accepted total: 100 requirements / 20 capabilities; 9,900 requirements remain
-TODO.** The recovery/export/history batch adds fifteen exact completions and
+**Previous F001 milestone: 100 requirements / 20 capabilities; 9,900 requirements remained
+TODO at that revision.** The recovery/export/history batch adds fifteen exact completions and
 finishes F001's 100 requirements. Fonts and source-bound previews retain their
 earlier acceptance; they are regression-tested without being counted again.
 

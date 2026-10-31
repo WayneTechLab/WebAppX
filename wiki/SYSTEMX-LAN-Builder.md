@@ -23,15 +23,24 @@ no-op behavior accounts for textarea normalization. Read the
 [API reference](SYSTEMX-LAN-API-Reference.md) and
 [source QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
 
-The next F002 source-policy iteration adds a bounded source browser, metadata
-filters and export, canonical paths, generated read-only protection, policy
-comparison and optional navigation preferences. Read the
-[source-policy guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY.md).
-Its next 100 acceptance records remain pending final integration gates.
+**Current acceptance: 200/10,000 requirements and 40/2,000 capabilities.**
+F001 and F002 are complete; 9,800 requirements remain TODO. Exactly
+LAN-00101–LAN-00200 are newly accepted at `e1588c4ebe94b1ef5f1557641334d95aee9b8290`; the previous 100 records
+remain unchanged. The source browser adds eligible metadata/filtering, canonical
+path rules, size/encoding/generated-source decisions, read-only policy review,
+optional revalidated navigation and explicit metadata-only export.
+
+Read the [source-policy guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY.md)
+and [final QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY-QA-2026-10-30.md).
+Terminal qualification: 70 CI stages, 114 core tests, 32 local swarm tests, 20 new
+browser groups, 55 source regressions plus seven geometry checks, 16 Navigator
+groups and separate Hosting preflight. The [swarm](SYSTEMX-Swarm.md) remains a
+separate host feature; no live AI-provider/GitHub merge or production activation
+is inferred.
 
 The prior [conflict-review milestone](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
 missing-file draft protection and explicitly reviewed replacement. The
-[current iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) completes source-family acceptance with draft recovery, comparison export and revision history.
+[previous F001 receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) completed source-family acceptance with draft recovery, comparison export and revision history.
 
 Use **Build → Code → Compare latest** to inspect the retained proposal beside
 the latest source and changed line excerpts. Comparison leaves the draft and its
@@ -46,8 +55,8 @@ and blocks saving; restore the file externally or select an existing file and
 reload. It offers no recreation or force-save action.
 
 
-**Accepted total: 100 requirements / 20 capabilities; 9,900 requirements remain
-TODO.** The recovery/export/history batch adds fifteen exact completions and
+**Previous F001 milestone: 100 requirements / 20 capabilities; 9,900 requirements remained
+TODO at that revision.** The recovery/export/history batch adds fifteen exact completions and
 finishes F001's 100 requirements. Fonts and source-bound previews retain their
 earlier acceptance; they are regression-tested without being counted again.
 
@@ -66,7 +75,7 @@ The previous font/preview milestone pinned re2js 2.8.7; this batch changes no
 dependency versions or audit thresholds. Historical audit observations retain
 their original scope. Read the new QA receipt for this candidate's validation.
 
-Read the [current QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
+Read the [previous F001 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
 [LAN GUI walkthrough](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-TEMPLATE-GUI-WORKFLOW.md).
 
 ## Font revisions and source draft previews

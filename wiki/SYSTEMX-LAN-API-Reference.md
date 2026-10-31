@@ -711,3 +711,7 @@ An API change is ready for the template only when:
 - supported, guarded, and planned claims are synchronized in the capability
   manifest, README, .SYSTEMX docs, and Wiki;
 - the current Wiki source is published separately only after local review.
+
+The source-policy endpoints and inventory/preferences controls are qualified by
+the [F002 QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY-QA-2026-10-30.md)
+at the recorded functional revision; publication and production remain separate.

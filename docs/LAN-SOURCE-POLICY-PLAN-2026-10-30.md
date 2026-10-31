@@ -1,6 +1,10 @@
-# LAN F002 source-policy execution plan — 2026-10-30
+# LAN F002 source-policy execution plan — locally accepted 2026-10-30
 
-This is the selected next-hundred execution plan for **LAN-00101–LAN-00200**.
+The selected next-hundred execution plan for **LAN-00101–LAN-00200** is locally
+complete. Agent 0 accepted its exact one hundred requirement bindings at
+functional candidate `e1588c4ebe94b1ef5f1557641334d95aee9b8290` after terminal
+verification. Read the [current QA receipt](LAN-SOURCE-POLICY-QA-2026-10-30.md)
+and [source-browser guide](LAN-SOURCE-POLICY.md).
 It supplements the generated [LAN execution plan](LAN-10000-EXECUTION-PLAN.md)
 and [F002 checklist](backlog/lan-10000/F002.md), whose authored acceptance
 criteria and dependency graph remain authoritative. The current work pointer is
@@ -29,11 +33,12 @@ terminal evidence requirement. Its boundaries, recovery and feedback lanes
 depend on behavior; its evidence lane depends on all four preceding lanes.
 Selecting the complete family does not bypass those acceptance dependencies.
 
-Current acceptance is **100/10,000 requirements and 20/2,000 capabilities**.
-All selected F002 requirements remain **TODO** pending integrated verification
-and Agent 0 acceptance. The target is **200/10,000 requirements and 40/2,000
-capabilities**. The separate original WebAppX checklist stays 179 done / 821
-remaining; its historical foundation bundle is outside this selection.
+Current acceptance is **200/10,000 requirements and 40/2,000 capabilities**.
+**F001 and F002 are complete; 9,800 requirements remain TODO.** This batch added
+exactly one hundred F002 requirement objects while preserving the previous one
+hundred and their order. The starting 100/20 count belongs to the historical
+F001 baseline above. The separate original WebAppX checklist stays 179 done /
+821 remaining; its historical foundation bundle is outside this selection.
 
 Each five-ID range has the same ordered lanes: observable behavior, boundaries
 and refusal, recovery and reversibility, operator feedback, verification evidence.
@@ -63,7 +68,7 @@ requirements in [F002](backlog/lan-10000/F002.md).
 | LAN-00191–LAN-00195 | Remember nonsecret source navigation | Opt-in preferences retain only eligible path/filter metadata, revalidated before content or operations. |
 | LAN-00196–LAN-00200 | Export an eligible source inventory | Explicit export contains public eligible metadata and policy decisions, without bodies or private/runtime values. |
 
-## Five execution waves
+## Completed local execution waves
 
 | Wave | Implementation and review scope | Exit evidence |
 | --- | --- | --- |
@@ -71,12 +76,13 @@ requirements in [F002](backlog/lan-10000/F002.md).
 | 2 — Picker and editor continuity | Add extension/search filters, metadata and workspace feedback, explicit inventory refresh, canonical manual selection and opt-in navigation. Preserve loaded path, draft, original base and outstanding authority across omissions and superseded reads. | UI helper tests and browser readbacks cover valid selection retention, invalid picker clearing, filter omissions, missing/refused targets and cross-workspace responses. |
 | 3 — Read-only review and export | Expose active rules and a bounded reviewed proposal/comparison. Add explicit metadata-only inventory download with clear scope. No apply or policy-authority endpoint is introduced. | Exact rule/affected-path assertions, bounded/truncated results and downloaded artifact checks; unchanged protected fingerprints across review/search/export. |
 | 4 — Integrated qualification | Independently review the frozen functional candidate and exercise affected source flows and actual LAN controls. Retain earlier F001 regression coverage and every failed/development attempt with its terminal rerun. | Revision-bound test receipts, browser trace/screenshots, asset/input hashes, preservation manifests and owned-process cleanup evidence. |
-| 5 — Acceptance and delivery | Run required aggregate gates, accept exact F002 tuples, regenerate deterministic views, reconcile README/wiki and host documentation, then publish and read back source/wiki. | Terminal full CI, Hosting preflight, template/host/documentation/catalog checks; exact one-hundred new acceptances with previous one hundred preserved; remote publication and resume records. |
+| 5 — Acceptance and delivery handoff | Required aggregate gates reached terminal success; Agent 0 accepted exact F002 tuples and regenerated/validated deterministic views. README/wiki and host metadata reconcile the accepted scope. | Candidate-bound CI/preflight and exact one-hundred new acceptances preserve the prior one hundred. Source/wiki publication revisions and remote readback belong to the separate final delivery handoff rather than an unchecked implementation task. |
 
-Implementation can proceed in disjoint file scopes under Agent 0 while tests
-and documentation are prepared. Worker results are review inputs. Only Agent 0
-integrates shared files, qualifies real GUI behavior, changes progress and
-publishes. Readiness reports and this plan create no new provider authority.
+Implementation used disjoint file scopes under Agent 0 while tests and
+documentation were prepared. Worker results were review inputs; Agent 0 owned
+integration, real GUI qualification and exact acceptance. Publication remains
+its separate delivery gate. Readiness reports and this plan create no new
+provider authority.
 
 ## Qualification matrix
 
@@ -95,11 +101,19 @@ workspace changes. Explicit exports must be inspected for contents, bounds and
 omissions. Filtering, comparison and export must not write source, backups or
 operation logs.
 
-The final candidate must pass `npm run ci:all` and separate
-`npm run deploy -- hosting --preflight`. Run `npm run sync:system:check` for host
-drift and `npm run template:check` before copying into a template mirror. Retain
-the first failure and terminal repair rerun separately. Tests that passed on a
-different functional revision do not silently qualify changed code.
+The final candidate passed `npm run ci:all` with all **70 ordered stages** and
+separate `npm run deploy -- hosting --preflight`; both preserved **2,078 tracked
+input fingerprints**. It also passed **114 core unit/API tests**, **32 local
+synthetic swarm tests**, **20 F002 browser capability groups**, **55 source
+regression groups plus seven geometry checks**, and **16 Navigator groups**.
+The [QA receipt](LAN-SOURCE-POLICY-QA-2026-10-30.md) records exact scope,
+independent reviews, negative/refusal evidence, retained failures and artifacts.
+Metadata checks are separate from this functional qualification.
+
+Host drift and template consistency remain publication/mirror checks through
+`npm run sync:system:check` and `npm run template:check`. Retain first failures
+and terminal reruns separately; a different functional revision is not silently
+qualified by these historical results.
 
 ## Additional operating scope
 
@@ -109,20 +123,24 @@ integration and revision-bound IDE/Codex handoffs. Its
 [operational map](SYSTEMX-SWARM-MAP.md) and
 [access matrix](SYSTEMX-SWARM-ACCESS-MATRIX.md) are host-owned documents beside
 the blank reusable seeds. This operating work is tracked and qualified
-separately: it neither changes F002's authored definitions nor satisfies or
-increments any of its one hundred requirements automatically.
+separately: it neither changes F002's authored definitions nor supplies extra
+catalog acceptances. Its twenty stepwise commands and ten-slot ceiling passed
+32 local synthetic tests; no authenticated-provider session, live swarm PR
+merge, permissions change, IDE acceptance or production deployment is inferred.
+The [manifest schema](../.SYSTEMX/swarm/manifest.schema.json) records configured
+inputs. Blank map/access seeds and immutable installed releases remain intact.
 
 ## Completion and delivery delta
 
-| Boundary | Required conclusion before calling this batch complete |
+| Boundary | Accepted local result and separate delivery scope |
 | --- | --- |
-| Planned | Exactly F002's original one hundred requirements are selected; unchanged definitions and dependencies are identified. |
-| Coded | A reviewed integrated candidate implements every capability and preserves existing revision/confirmation, Host/Origin, token and path guards. |
-| Functional | Positive, refusal, recovery and feedback cases have meaningful passing tests with terminal receipts. |
-| Working locally | Affected GUI flows render and function on the tested candidate, with protected files preserved and runtime ownership rechecked. |
-| Accepted | Public receipts bind each exact ID, definition digest and full tested source revision; Agent 0 acceptance preserves previous completion objects. |
-| Published | README/wiki and plan reflect accepted scope; GitHub source and wiki SHAs are verified after push. |
-| Production | No deployment is implied. Hosting preflight remains a verification gate and deployment requires a separate operator instruction. |
+| Planned | Exactly F002's original one hundred requirements were selected; definitions and dependencies remain unchanged. |
+| Coded | Frozen candidate `e1588c4` passed independent review while retaining source-revision/confirmation, Host/Origin, token and path guards. |
+| Functional | Terminal core/API, F002 browser, source/Navigator and synthetic swarm results support their stated positive/refusal/recovery/feedback scope. |
+| Working locally | Actual Home source-browser filtering, traversal refusal, read-only policy review/export and preserved fingerprints were read back without new Home source writes. |
+| Accepted | Public receipt tuples bind exact IDs, definition digests and full candidate revision. Counts are 200/10,000 and 40/2,000 with previous acceptance objects exact. |
+| GitHub delivery | README/wiki and host metadata describe local acceptance; exact publication SHAs and fresh remote readback are recorded in the separate final handoff. No push is asserted by the local plan. |
+| Production | Hosting preflight passed with app 3.4.0/deployment count 0 unchanged. No production deployment or authenticated live swarm lifecycle was performed. |
 
 Keep the reusable context, plan, task and memory seeds blank. The active work
 belongs in host-owned execution records, not in immutable release snapshots.

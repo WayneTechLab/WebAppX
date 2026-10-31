@@ -92,20 +92,31 @@ one hundred LAN requirements or authorize production deployment.
 
 ## LAN 10,000-item delivery program — 2026-10-30
 
-The next source-policy iteration implements a bounded eligible-file browser,
-metadata filters, canonical path decisions, generated-file protection, read-only
-policy proposals, remembered navigation and metadata export. Read the
-[source-policy guide](docs/LAN-SOURCE-POLICY.md) and
-[selected next-100 plan](docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md).
-F002 acceptance remains pending the final integrated checks; the existing
-100 accepted requirements are preserved.
+**Current LAN acceptance: 200/10,000 requirements and 40/2,000 capabilities.**
+F001 and F002 are complete; **9,800 requirements remain TODO**. Agent 0 accepted
+exactly LAN-00101–LAN-00200 at `e1588c4ebe94b1ef5f1557641334d95aee9b8290` after all required gates passed,
+preserving the previous 100 completion records and their order.
+
+The source browser now provides bounded eligible metadata, extension/tag filters,
+canonical exact-case/no-link path decisions, generated-file protection, strict
+encoding/size checks, read-only policy proposals, optional navigation preferences
+and metadata-only export. Read the [source-policy guide](docs/LAN-SOURCE-POLICY.md),
+[completed next-100 plan](docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md) and
+[candidate-bound QA receipt](docs/LAN-SOURCE-POLICY-QA-2026-10-30.md).
+
+The final candidate passed **70 CI stages**, **114 core tests**, **32 local swarm
+tests**, **20 F002 browser groups**, **55 source-regression groups plus seven
+geometry checks**, **16 Navigator groups** and separate Hosting preflight.
+The original WebAppX checklist remains **179 done / 821 remaining**. The swarm is
+an additional host extension; it adds no invented LAN catalog completions.
+Production remains undeployed.
 
 The prior [conflict-review milestone](docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
 missing-file draft protection and explicitly reviewed replacement. The
 [previous accepted iteration](docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) completed F001 with draft recovery, comparison export and revision history.
 
-**Accepted total: 100 requirements / 20 capabilities; 9,900 requirements remain
-TODO.** The recovery/export/history batch adds fifteen exact completions and
+**Previous F001 milestone: 100 requirements / 20 capabilities; 9,900 requirements remained
+TODO at that revision.** The recovery/export/history batch adds fifteen exact completions and
 finishes F001's 100 requirements. Fonts and source-bound previews retain their
 earlier acceptance; they are regression-tested without being counted again.
 
@@ -124,7 +135,7 @@ The previous font/preview milestone pinned re2js 2.8.7; this batch changes no
 dependency versions or audit thresholds. Historical audit observations retain
 their original scope. Read the new QA receipt for this candidate's validation.
 
-Read the [current QA receipt](docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
+Read the [previous F001 QA receipt](docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
 [LAN GUI walkthrough](docs/LAN-TEMPLATE-GUI-WORKFLOW.md).
 
 The LAN expansion now has **100 authored families, 2,000 proposed functional
@@ -1752,4 +1763,4 @@ Code also provides explicit checkout-scoped recovery, confirmed comparison JSON
 downloads and read-only source history. These preserve original baselines and
 keep source, browser-local records, portal simulations and production delivery
 separate. Follow the [GUI walkthrough](docs/LAN-TEMPLATE-GUI-WORKFLOW.md) and
-[current QA receipt](docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md).
+[previous F001 QA receipt](docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md).

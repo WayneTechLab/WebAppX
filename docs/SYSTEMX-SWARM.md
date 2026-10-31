@@ -268,3 +268,13 @@ the next one hundred LAN source-policy requirements by itself. The
 [active iteration](LAN-ACTIVE-ITERATION.md) and
 [F002 plan](LAN-SOURCE-POLICY-PLAN-2026-10-30.md) retain that separate goal,
 original definitions and revision-bound acceptance gates.
+
+## Local qualification — 2026-10-30
+
+Functional candidate `e1588c4ebe94b1ef5f1557641334d95aee9b8290` passed all 70 required CI stages and separate
+Hosting preflight, including **32 swarm tests**. The previous 27 local orchestration
+regressions remain and five tests cover drive/UNC/POSIX syntax plus actual macOS
+root and no-link behavior. Ten synthetic CLI processes overlapped in distinct
+worktrees; local Git and fake REST responses exercised the full qualified lifecycle.
+This is not native Windows, authenticated AI-provider, real GitHub merge, running
+IDE or production qualification. Read the [candidate-bound QA receipt](LAN-SOURCE-POLICY-QA-2026-10-30.md).

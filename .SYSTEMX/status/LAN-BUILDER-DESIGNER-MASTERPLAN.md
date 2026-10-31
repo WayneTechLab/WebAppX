@@ -2,7 +2,7 @@
 
 ## Global goal
 
-Build a repository-native visual Designer for the SFWA-WTL template using a canonical document/command architecture while preserving all current SYSTEMX local safety controls.
+Build a repository-native visual Designer for the WebAppX template using a canonical document/command architecture while preserving all current SYSTEMX local safety controls.
 
 ## Current state
 
@@ -13,7 +13,50 @@ Build a repository-native visual Designer for the SFWA-WTL template using a cano
   capability and schema decisions now recorded in the repository.
 - Wave 0 implementation: COMPLETE — documentation, safety, characterization,
   link validation, capability manifest, and evidence packet pass.
-- Wave 1 preparation: source-revision contract and stale-edit client workflow are implemented for local verification. Full transport/domain modularization, the typed Designer kernel and structural round-trip work remain future milestones.
+- Source families F001/F002: locally accepted at 200/10,000 requirements and 40/2,000 capabilities; exact source editing/recovery/history and source access/path policy have candidate-bound proof.
+- Wave 1 preparation: source-revision and source-policy modules are locally verified. Full transport/domain modularization, the typed Designer kernel and structural round-trip work remain future milestones.
+
+## Source access and host swarm — locally accepted 2026-10-30
+
+Agent 0 accepted exactly **LAN-00101–LAN-00200** at functional candidate
+`e1588c4ebe94b1ef5f1557641334d95aee9b8290`. The program is now
+**200/10,000 requirements and 40/2,000 capabilities**; **F001 and F002 are
+complete, with 9,800 requirements remaining TODO**. Previous one hundred
+completion objects and their order remain exact. The separate original WebAppX
+catalog remains **179 done / 821 remaining** and its historical foundation
+bundle remains unapplied.
+
+The source browser delivers bounded eligible metadata, canonical exact-case
+no-link paths, strict encoding/size decisions, generated-file protection,
+metadata filtering/search, read-only policy comparison, optional navigation
+preferences and explicit inventory export. Loaded drafts and original bases
+survive filtering/refusal; metadata operations do not grant write authority.
+Read the [source-browser guide](../../docs/LAN-SOURCE-POLICY.md),
+[completed plan](../../docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md),
+[active iteration](../../docs/LAN-ACTIVE-ITERATION.md) and
+[candidate-bound QA receipt](../../docs/LAN-SOURCE-POLICY-QA-2026-10-30.md).
+
+The same candidate passed all **70 CI stages**, **114 core unit/API tests**,
+**20 F002 browser capability groups**, **55 source regression groups plus seven
+geometry checks**, **16 Navigator groups**, and separate Hosting preflight.
+CI and preflight each preserved **2,078 tracked input fingerprints**. Actual
+Home source-browser filtering, refusal, policy review and metadata export were
+read back without new Home source changes. Historical F001 Home edits and their
+original proofs remain preserved.
+
+The additive [host swarm](../../docs/SYSTEMX-SWARM.md) has **20 stepwise commands**
+and at most **10 isolated CLI slots**, with **32 local synthetic tests**.
+Read its [operational map](../../docs/SYSTEMX-SWARM-MAP.md),
+[access matrix](../../docs/SYSTEMX-SWARM-ACCESS-MATRIX.md) and
+[manifest schema](../swarm/manifest.schema.json). Those tests do not establish authenticated AI-provider
+sessions, live GitHub PR merges, permissions changes, native Windows operation,
+IDE acceptance or production deployment. Swarm support adds no extra F002
+acceptances. Managed SYSTEMX 1.9.0-alpha.6 and reusable seeds remain unchanged.
+
+Source/wiki publication SHAs and fresh remote readback belong to the separate
+final delivery handoff. This section records local acceptance rather than a
+claim that publication already occurred. Hosting preflight skipped deployment;
+app 3.4.0 and deployment count 0 remain unchanged.
 
 ## Bounded LAN orientation delta — 2026-10-25
 
@@ -42,14 +85,14 @@ all 68 CI stages and separate Hosting preflight. Compatible root/starter/backend
 dependency audit repairs passed with zero reported vulnerabilities. App 3.4.0
 retains deployment count 0. Later kernel waves remain planned.
 
-## LAN execution program — 2026-10-30
+## Historical F001 execution milestone — 2026-10-30
 
 The prior [conflict-review milestone](../../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
 missing-file draft protection and explicitly reviewed replacement. The
-[current iteration](../../docs/LAN-ACTIVE-ITERATION.md) completes source-family acceptance with draft recovery, comparison export and revision history.
+[historical F001 receipt](../../docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) completed source-family acceptance with draft recovery, comparison export and revision history.
 
-**Accepted total: 100 requirements / 20 capabilities; 9,900 requirements remain
-TODO.** The recovery/export/history batch adds fifteen exact completions and
+**Historical F001 total: 100 requirements / 20 capabilities; 9,900 requirements
+remained TODO at that milestone.** The recovery/export/history batch adds fifteen exact completions and
 finishes F001's 100 requirements. Fonts and source-bound previews retain their
 earlier acceptance; they are regression-tested without being counted again.
 
@@ -68,7 +111,7 @@ The previous font/preview milestone pinned re2js 2.8.7; this batch changes no
 dependency versions or audit thresholds. Historical audit observations retain
 their original scope. Read the new QA receipt for this candidate's validation.
 
-Read the [current QA receipt](../../docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
+Read the [historical F001 QA receipt](../../docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) and
 [LAN GUI walkthrough](../../docs/LAN-TEMPLATE-GUI-WORKFLOW.md).
 
 The [LAN execution plan](../../docs/LAN-10000-EXECUTION-PLAN.md) and
@@ -128,14 +171,15 @@ The normal 336 px inspector now contains full hashes and receipts. Integration
 verification also repaired the missing CSS inventory entry and an inherited
 full-reload selection race while preserving explicit page-picker context. Read
 [the dated receipt](../../docs/LAN-FONT-PREVIEW-QA-2026-10-28.md) for final proof,
-retained failures and limits. The next ready work is local draft recovery,
-comparison export and source history; the typed Designer kernel remains planned.
+retained failures and limits. The then-selected recovery, comparison export
+and source history work was subsequently accepted in F001; the typed Designer
+kernel remains planned.
 
-## Revision-bound recovery and GUI proof — accepted 2026-10-30
+## Historical F001 recovery and GUI proof — accepted 2026-10-30
 
-LAN-00076–LAN-00090 are accepted at `04813b380cda7656650db752049a8e0661c55bc5`. The program is now 100/10,000
-requirements and 20/2,000 capabilities; F001 is complete and 9,900 requirements
-remain. Explicit browser-local Store/Review/Restore preserves the original
+LAN-00076–LAN-00090 were accepted at `04813b380cda7656650db752049a8e0661c55bc5`.
+At that historical milestone the program reached 100/10,000 requirements and
+20/2,000 capabilities, completing F001 with 9,900 requirements then remaining. Explicit browser-local Store/Review/Restore preserves the original
 checkout/path/baseline. Comparison downloads require reviewed inclusion scope
 and EXPORT COMPARISON. History reads bounded metadata and qualifies legacy and
 unattributed observations. No source authority comes from storing, restoring,
