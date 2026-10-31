@@ -1,0 +1,153 @@
+#source-identity-panel,
+#source-identity-panel * {
+  box-sizing: border-box;
+}
+
+#source-identity-panel {
+  min-width: 0;
+  max-width: 100%;
+  margin-block: 1rem;
+  border: 1px solid #b8c5d4;
+  border-radius: 0.65rem;
+  background: #f8fafc;
+  color: #172536;
+  overflow: hidden;
+}
+
+#source-identity-panel > summary {
+  padding: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+#source-identity-panel > summary:focus-visible,
+#source-identity-panel :is(button, input, select, textarea, pre):focus-visible {
+  outline: 3px solid #0b57d0;
+  outline-offset: 2px;
+}
+
+#source-identity-panel .identity-body,
+#source-identity-panel .identity-section {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+#source-identity-panel .identity-body {
+  padding: 0.75rem;
+}
+
+#source-identity-panel .identity-section {
+  padding: 0.75rem;
+  border: 1px solid #d5dee8;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+#source-identity-panel :is(h3, p) {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+#source-identity-panel h3 {
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+#source-identity-panel .identity-help {
+  color: #42566d;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+#source-identity-panel .identity-field {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+  font-size: 0.83rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+#source-identity-panel :is(input, select, textarea, button) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  font: inherit;
+}
+
+#source-identity-panel :is(input, select, textarea) {
+  padding: 0.5rem;
+  border: 1px solid #8b9caf;
+  border-radius: 0.35rem;
+  background: #fff;
+  color: #172536;
+}
+
+#source-identity-panel textarea {
+  min-height: 5rem;
+  resize: vertical;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+#source-identity-panel .identity-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+#source-identity-panel button {
+  flex: 1 1 9rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #476688;
+  border-radius: 0.4rem;
+  background: #e9f1fb;
+  color: #123356;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+#source-identity-panel button:hover:not(:disabled) {
+  background: #d8e8fb;
+}
+
+#source-identity-panel button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#source-identity-panel [hidden] {
+  display: none !important;
+}
+
+#source-identity-panel :is(output, pre) {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.6rem;
+  border-radius: 0.35rem;
+  background: #edf3f8;
+  color: #172536;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+#source-identity-panel pre {
+  margin: 0;
+  max-height: 20rem;
+  overflow: auto;
+}
+
+@media (max-width: 360px) {
+  #source-identity-panel .identity-body,
+  #source-identity-panel .identity-section {
+    padding: 0.55rem;
+  }
+}
