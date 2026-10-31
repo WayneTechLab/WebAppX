@@ -1,51 +1,48 @@
-# LAN active iteration — F003/F004 next 200 in progress
+# LAN active iteration — F003/F004 next 200 accepted
 
-Updated 2026-10-30. Agent 0 is executing the next **200 requirements**, exactly
-**LAN-00201–LAN-00400**: F003 durable document/node identity (100) followed by
-F004 source ownership/mapping (100). Current acceptance remains **200/10,000
-requirements / 40/2,000 capabilities**; the target is **400 / 80**. F003 must be
-accepted before dependent F004. Implementation or a worker exit accepts nothing.
+Updated 2026-10-31. Agent 0 accepted exactly **LAN-00201–LAN-00400** after terminal
+qualification, with F003 accepted before dependent F004. The program now has
+**400/10,000 requirements and 80/2,000 capabilities** accepted; **9,600 remain
+TODO**. The original definitions and prior 200 completion objects remain exact.
+Read the [candidate-bound QA receipt](LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md),
+[completed plan](LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) and
+[operating guide](LAN-IDENTITY-OWNERSHIP.md).
 
-Ten authenticated Codex CLI workers are assigned separate generation branches
-and worktrees through the host controller, with nonoverlapping source, tests,
-browser and documentation scopes. Agent 0 owns the common DTO/API, shared server
-and dashboard integration, independent review, browser evidence, catalog
-acceptance and publication. The first dispatch was refused after the provider
-launcher changed after pinning; no provider ran, and the guard was preserved.
-The fresh run pins the final launcher. These are execution observations, not
-proof of ten completed tasks or a live PR merge.
+Functional candidate: `aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`. Documentation/completion publication is a
+separate metadata step; it does not alter the tested runtime source. Source/wiki
+publication and full Page-tree reconciliation are final delivery observations,
+with exact revisions and readback retained by the final handoff.
 
-New maps will qualify documents, pages, nodes and references by workspace;
-reviewed reimport, rename, alias and export/reopen operations must preserve
-prior maps on refusal. Ownership and exact source spans remain revision-bound;
-opaque/external/unmapped selections cannot acquire source-write authority from
-labels. Literal operation proposals use the existing controlled editor gates.
-Blank reusable records, managed snapshots, research and the previous 200
-acceptances remain protected. Production deployment is outside this goal.
+## Completed acceptance checklist
 
-Read the [identity/ownership plan](LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) and
-[operating guide](LAN-IDENTITY-OWNERSHIP.md) as they land from the documentation
-branch. Required completion includes exact-candidate unit/API/browser checks,
-independent review, full CI, separate Hosting preflight, accepted evidence,
-README/wiki/Page reconciliation, merge/publication and remote readback.
+- [x] Ten authenticated Codex CLI assignments observed concurrently on independent generation branches/worktrees; all returned terminal results and Agent 0 integrated scoped commits.
+- [x] Durable qualified identity/reconciliation and revision-bound ownership implemented without changing existing source-save authority.
+- [x] Independent focused reviews completed; original findings and failed attempts retained.
+- [x] All 73 CI stages, 140 identity unit/API tests, 40 identity browser capabilities and 25 responsive groups passed on the final candidate.
+- [x] Existing source 55 groups plus seven geometry checks and actual-stack Navigator 16 groups passed; separate Hosting preflight passed.
+- [x] F003 accepted at 300/60, then F004 at 400/80; catalog regenerated and checked after each family.
+- [x] Actual GUI import/export/reopen preserved Home's source revision; selection/navigation retained viewport geometry and Fit readouts tracked actual width.
+- [x] The separate Code-OSS fork plan and 32 unchecked additive tasks were recorded without claiming an editor build.
 
-## Added dashboard and editor-fork scope — 2026-10-31
+The sidebar grid/forms, native Help disclosures, header/menu alignment, compact
+focus/pin preferences and exact device-width behavior are documented in the
+[UX report](LAN-DASHBOARD-UX-2026-10-31.md). At the actual 1,164px operator view,
+manual resizing produced actual/readout 777/777 then 765/765; fixed 393/393
+returned to Fit 765/765. The first metadata export creates an ignored private
+integrity key; it does not export that key or grant cross-workspace authority.
 
-The current Components view exposed intrinsic sidebar overflow and unstyled
-compact forms. Agent 0 is adding fluid panel tracks, wrapped navigation and
-metadata, accessible symbols, and complete native form sizing. Small screens
-present one focused sidebar while retaining Keep open preferences. Responsive
-browser development checks now pass all 25 groups across five sizes, with the
-source-editor and Navigator regressions passing. A replacement candidate will
-receive the full 73-stage CI and separate preflight before acceptance.
-Candidate `5352cd787c4976d81c252599d5b03939e112c024` predates this layout work
-and is provisional; its development results are not final layout acceptance.
+Ten real CLI runs are separate from live PR/automatic-merge approval, IDE/native
+execution or production. The earlier provider-pin refusal, C2 CI interruption,
+C3 legacy selector failure and all original browser attempts remain in evidence.
+Only the final candidate's terminal qualification is counted. Blank reusable
+records, managed snapshots, research/checksums, production/brand kits and app
+3.4.0/deployment count 0 remain preserved. The original WebAppX catalog remains
+179 done / 821 remaining; its historical foundation bundle remains unapplied.
 
-The requested custom VS Code fork is a separate planned workstream. Its
-[architecture and upstream boundaries](LAN-VSCODE-FORK-PLAN.md) and
-[additive task list](backlog/LAN-VSCODE-FORK-TODO.md) do not alter the original
-1,000-item WebAppX catalog, 10,000 LAN definitions or accepted counts.
-No custom editor build or installation is claimed.
+The [Code-OSS fork plan](LAN-VSCODE-FORK-PLAN.md) and
+[32-item additive backlog](backlog/LAN-VSCODE-FORK-TODO.md) remain planned with
+zero accepted items. They do not rewrite either fixed catalog. No native editor
+build, installation, production deployment or provider activation is established.
 
 ## Previous completed F002 milestone
 

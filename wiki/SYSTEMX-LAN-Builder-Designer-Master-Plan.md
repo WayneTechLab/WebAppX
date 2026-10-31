@@ -1,5 +1,15 @@
 # SYSTEMX LAN Builder Designer Master Plan
 
+## Accepted delivery milestone — 2026-10-31
+
+F001–F004 now have **400/10,000 accepted requirements and 80/2,000 capabilities**;
+9,600 requirements remain. Durable identity, bounded source ownership and the
+responsive dashboard passed the [candidate-bound QA](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md)
+on `aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`. The broader Designer program
+below remains proposed beyond those accepted slices. The
+[Code-OSS fork backlog](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/LAN-VSCODE-FORK-TODO.md)
+adds 32 unchecked proposals; no custom editor build is claimed.
+
 The LAN Builder is being designed as a repository-native visual development control plane. The target is not a visual copy of a mature visual builder. It is a LAN Builder Designer set of authoring capabilities combined with SYSTEMX local-first safety, source ownership, evidence, and controlled provider operations.
 
 ## Target capabilities

@@ -1,29 +1,27 @@
 # SYSTEMX LAN Builder
 
-## F003/F004 identity and ownership — final verification pending
+## F003/F004 identity and ownership — accepted 2026-10-31
 
-Accepted progress remains **200/10,000 requirements and 40/2,000 capabilities**.
-The next 200 select F003 (LAN-00201–LAN-00300) and dependent F004
-(LAN-00301–LAN-00400); target **400 / 80** follows terminal checks and separate
-Agent 0 family acceptance. The source-import inspector and protected API are
-implemented with durable qualified references, reviewed reconciliation,
-revision-bound ownership, local-integrity metadata export/reopen and separate
-controlled-editor promotion. Read [Identity and Ownership](SYSTEMX-LAN-Identity-and-Ownership.md)
-and the [active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md).
+Agent 0 accepted **LAN-00201–LAN-00400**, F003 before F004, at candidate
+`aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`. The program now has
+**400/10,000 requirements and 80/2,000 capabilities** accepted, with **9,600
+requirements remaining TODO**. All 73 CI stages, 140 identity unit/API tests,
+40 identity browser capabilities, 25 responsive groups, source 55+7, Navigator
+16 and separate Hosting preflight passed. Read the [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md),
+[Identity and Ownership](SYSTEMX-LAN-Identity-and-Ownership.md) and
+[active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md).
 
-Ten authenticated CLI workers completed in separate branches/worktrees; Agent 0
-reviewed scoped commits and merged them locally. Exact-candidate CI/browser,
-GitHub delivery and acceptance remain pending here. This does not qualify live
-swarm PR approval/automatic merge, native IDE/Windows or production.
-
+Ten authenticated CLI worker branches were integrated locally under Agent 0.
+This does not qualify live PR/automatic merge, native IDE/Windows or production.
+Source/wiki publication is verified separately by final remote readback. The
+Code-OSS editor fork remains 32 planned/unchecked tasks with no editor built.
 
 ## Responsive workspace and planned editor fork
 
 Sidebar tracks, tabs, component metadata and native forms now flex within the
 available width. Decorative symbols retain accessible labels. Compact screens
 focus one sidebar while keeping pin preferences; device/footer controls wrap.
-The new browser layout gate covers desktop through mobile controls before final
-qualification. The user-requested [Code-OSS fork plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-VSCODE-FORK-PLAN.md)
+The browser layout gate passed all 25 groups from desktop through mobile. The user-requested [Code-OSS fork plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-VSCODE-FORK-PLAN.md)
 and [32-item additive backlog](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/LAN-VSCODE-FORK-TODO.md)
 are proposed, with zero accepted items. They do not replace the two fixed catalogs
 or imply a custom editor has been built.

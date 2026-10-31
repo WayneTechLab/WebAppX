@@ -57,50 +57,68 @@ require a backup, the per-session token, secret-marker checks, and the exact
 `SAVE LOCAL CHANGE` confirmation. Cloud writes remain a separate authenticated
 and preflight-gated capability.
 
-## F003/F004 identity and ownership — final gates pending
+## F003/F004 identity and ownership — locally accepted 2026-10-31
 
-The next 200 authored requirements are implemented as a narrow source-import
-read model with protected APIs and GUI controls. Current acceptance is still
-200/40; target 400/80 requires final qualification and F003-before-F004 acceptance.
-Read the [operator guide](../../docs/LAN-IDENTITY-OWNERSHIP.md),
-[execution plan](../../docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) and
-[active iteration](../../docs/LAN-ACTIVE-ITERATION.md). Exports use an ignored
-private runtime integrity key; source files/backups/logs stay untouched by
-metadata operations. Ten real CLI executions and reviewed local branch integration
-are observed; PR/IDE/native/production qualification remains separate.
+Agent 0 accepted exactly **LAN-00201–LAN-00400** at functional candidate
+`aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`, accepting F003 before dependent
+F004. The LAN program is now **400/10,000 requirements and 80/2,000
+capabilities**; **F001–F004 are complete and 9,600 requirements remain TODO**.
+Previous two hundred completion objects retain their exact order and evidence.
+The separate original WebAppX catalog remains **179 done / 821 remaining**.
 
-### Current dashboard layout and interaction candidate — 2026-10-31
+The narrow static-TSX read model provides workspace-qualified durable identities,
+reviewed reconciliation, source ownership/span inspection, integrity-checked
+metadata export/reopen and controlled literal proposals. Metadata acceptance
+cannot widen source eligibility or bypass the separate revision-bound editor
+save. Read the [operator guide](../../docs/LAN-IDENTITY-OWNERSHIP.md),
+[completed iteration plan](../../docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md),
+[active iteration](../../docs/LAN-ACTIVE-ITERATION.md) and
+[candidate-bound QA receipt](../../docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md).
 
-The candidate also repairs the reported menu/component clipping and preview
-viewport shifts. Shrinkable sidebar tracks, bounded fields and wrapped metadata
-keep component forms and nested controls within the chosen panel width.
-Compact pane focus preserves pin preferences; hidden panes leave keyboard focus
-order. The workspace menu stays at its own header trigger's right edge, and long
-menus scroll within the available height. Frequent controls use concise labels;
-longer explanations are available through **Help / More info**. Workspace/route
-metadata is disclosed separately so selection text does not grow the main
-canvas header.
+The final candidate passed all **73 ordered CI stages**, **140 identity unit/API
+tests**, **40 identity/ownership browser capability groups**, **25 responsive
+layout groups**, **114 core tests**, **32 local synthetic swarm tests**, the
+existing **55 source groups plus seven geometry checks**, **16 Navigator groups**
+and separate Hosting preflight. Earlier failures are retained separately; only
+terminal C4 qualification is counted. Source/wiki publication revisions and
+remote readback belong to the separate final delivery handoff.
 
-Selecting an element or refreshing metadata preserves the chosen preview device
-and width rather than silently changing the canvas viewport. **Inspect** selects
-preview content; **Interact** passes ordinary links and controls to the app, with
-SPA navigation retaining the selected device. Explicit reveal/navigation still
-has its own intended target behavior. Read the
-[dashboard UX research and implementation review](../../docs/LAN-DASHBOARD-UX-2026-10-31.md)
-for observed causes, Webflow/W3C source distinctions and the remaining proof.
+Ten real authenticated Codex CLI workers ran in isolated generation worktrees
+from source base `6d6c7d21132a37d31b328fc7ab3ec1000f837072`; Agent 0 reviewed
+and integrated the ten scoped branches locally. CLI execution, local integration,
+GitHub PR delivery, installed IDE/native behavior and production are separate
+observations. No actual swarm PR merge, native IDE acceptance or production
+deployment is established by this milestone.
 
-The aggregate CI plan now registers **73 stages**, retaining the previous 70 in
-order and adding identity unit/API, identity browser and responsive-layout
-browser stages. Final exact-candidate browser/CI/preflight, review, family
-acceptance and publication are still pending; registration or a provisional
-browser run is not a passing final receipt. Acceptance remains **200/10,000
-requirements / 40/2,000 capabilities**; the F003/F004 target remains **400 / 80**.
+### Dashboard layout and interaction — locally verified 2026-10-31
 
-The separate [tailored Code-OSS fork plan](../../docs/LAN-VSCODE-FORK-PLAN.md) and
-[32-item additive backlog](../../docs/backlog/LAN-VSCODE-FORK-TODO.md) are planned,
-unchecked work. No custom native editor, registry, installer or update channel
-is delivered by this dashboard change, and neither catalog's authored
-requirements are rewritten.
+Shrinkable sidebar tracks, bounded fields and wrapped metadata keep component
+forms and nested controls within the chosen panel width. Compact pane focus
+preserves pin preferences; hidden panes leave keyboard focus order. The workspace
+menu stays at its own header trigger's right edge and long menus scroll within
+available height. Frequent controls use concise labels; native **Help / More
+info** disclosures retain longer explanations. Workspace/route details no longer
+grow the primary canvas header when selection changes.
+
+Inspect selection, metadata refresh and ordinary Interact SPA navigation retain
+the chosen preview device and width. Explicit reveal/route actions keep their
+intended navigation behavior. Fixed **393 px** gives **393 px** of iframe content. At a **1164 px**
+operator width, panel resizing produced actual/readout **777/777** then
+**765/765**; returning from the fixed preset to Fit reported **765/765**. Read the
+[dashboard UX report](../../docs/LAN-DASHBOARD-UX-2026-10-31.md) and current QA for
+research sources, geometry, real readbacks and preserved failures.
+
+The earlier C2 CI attempt exited 130 after stage 51 for the Fit-readout repair.
+C3 then exited 1 at stage 65 when the legacy F002 selector matched four
+summary elements. C4 changes only that test to select the direct child; its
+runtime/UI bytes match C3. Failed attempts are not relabeled as passes.
+
+The [tailored Code-OSS fork plan](../../docs/LAN-VSCODE-FORK-PLAN.md) and
+[32-item additive backlog](../../docs/backlog/LAN-VSCODE-FORK-TODO.md) remain
+**planned, unchecked and unaccepted**. No custom editor was forked, built or
+installed. Managed SYSTEMX snapshots, blank seeds, research packages, kits,
+app 3.4.0 and deployment count 0 remain preserved. Hosting preflight does not
+deploy the product.
 
 ## Historical source-access milestone — locally accepted 2026-10-30
 

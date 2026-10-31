@@ -724,5 +724,5 @@ qualified lookup/inspection, ownership, literal-proposal, export and reopen
 operations. Both GET and POST require the served LAN session authority. The
 service never saves source through these metadata routes; staged literal changes
 use the existing revision/backup/diff/confirmation pipeline. Previews return the
-qualified `{proposal, ownership, workspaceId}` envelope. Current accepted200/40
-and target400/80 remain separate until final F003/F004 evidence and acceptance.
+qualified `{proposal, ownership, workspaceId}` envelope. F003/F004 are accepted at **400/10,000 requirements / 80/2,000 capabilities**
+after final protected API/browser evidence. Read the [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md).

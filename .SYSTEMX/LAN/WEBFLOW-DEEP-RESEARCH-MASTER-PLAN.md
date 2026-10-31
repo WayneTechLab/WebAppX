@@ -1,5 +1,16 @@
 # SYSTEMX LAN — Webflow-Class Designer Master Plan
 
+## Accepted host delivery — 2026-10-31
+
+The independent LAN delivery catalog now records **400/10,000 requirements and
+80/2,000 capabilities** accepted through F004, with 9,600 TODO. Read the
+[candidate-bound QA](../../docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md) and
+[active iteration](../../docs/LAN-ACTIVE-ITERATION.md). The broader research
+program below remains proposed beyond these verified source/identity/ownership
+and responsive UI slices. The [Code-OSS plan](../../docs/LAN-VSCODE-FORK-PLAN.md)
+and [32 unchecked tasks](../../docs/backlog/LAN-VSCODE-FORK-TODO.md) are additive
+proposals, with no native editor built. Research package bytes remain unchanged.
+
 **Status:** proposed research-backed implementation program  
 **Research package:** `SFWA-WTL-WEBFLOW-RESEARCH-MASTER-PLAN-v1.0.0`  
 **Research cut:** 2026-08-05  

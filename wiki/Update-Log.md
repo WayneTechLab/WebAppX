@@ -1,15 +1,20 @@
 # Update Log
 
-## F003/F004 development integration — final gates pending
+## F003/F004 acceptance and responsive dashboard — 2026-10-31
 
-The next200 source-identity/ownership requirements are implemented and locally
-integrated from ten authenticated CLI branch assignments. New unit/API and
-browser gates bring required CI to72 stages without removing prior gates.
-Current accepted200/40 remains; target400/80 requires final exact-revision proof,
-serial F003/F004 acceptance and separate GitHub source/wiki readback. Local
-metadata exports initialize an ignored private integrity key; source content,
-backup and operation changes still require the existing explicit save flow.
+Accepted exactly **LAN-00201–LAN-00400** at
+`aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`: **400/10,000 requirements and
+80/2,000 capabilities**, with 9,600 remaining. F003 acceptance preceded F004.
+All 73 CI stages, 140 identity tests, 40 identity browser capabilities, 25 layout
+groups, source 55+7, Navigator 16 and separate Hosting preflight passed, with
+2,111 tracked input fingerprints preserved per aggregate/preflight gate.
 
+Menus/forms shrink and wrap; the header dropdown aligns correctly; Help/details
+reduce clutter; selection keeps the viewport stable; Interact supports real app
+navigation; fixed 393px is exact and Fit readouts follow the measured width.
+The Code-OSS fork plan adds 32 unchecked tasks. No editor build, provider
+activation or production deployment is claimed. Earlier interrupted/failed
+runs remain separate from the final pass. Read the [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md).
 
 ## F002 source policy and ten-worker host swarm — 2026-10-30
 

@@ -1,14 +1,15 @@
 # LAN Builder Designer Master Plan Status
 
-## Active F003/F004 delivery gate
+## Accepted F003/F004 delivery — 2026-10-31
 
-The bounded next200 identity/ownership implementation is integrated; accepted
-progress remains200/40 while target400/80 awaits exact-candidate qualification.
-Read [the active iteration](../../docs/LAN-ACTIVE-ITERATION.md) and
-[identity/ownership plan](../../docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md).
-Ten authenticated CLI branches and local integration are observed separately
-from terminal acceptance, provider PR lifecycle, native IDE/Windows and production.
-
+Agent 0 accepted 200 original requirements, F003 before F004. Current progress
+is **400/10,000 requirements and 80/2,000 capabilities**, with 9,600 TODO.
+All 73 CI stages, 40 identity browser capabilities, 25 layout groups, source
+55+7, Navigator 16 and Hosting preflight passed on candidate
+`aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`.
+Read the [QA receipt](../../docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md) and
+[active iteration](../../docs/LAN-ACTIVE-ITERATION.md). Ten actual CLI runs are
+separate from live PR/native IDE/production qualification.
 
 ## Global goal
 
@@ -23,13 +24,13 @@ Build a repository-native visual Designer for the WebAppX template using a canon
   capability and schema decisions now recorded in the repository.
 - Wave 0 implementation: COMPLETE — documentation, safety, characterization,
   link validation, capability manifest, and evidence packet pass.
-- Source families F001/F002: locally accepted at 200/10,000 requirements and 40/2,000 capabilities; exact source editing/recovery/history and source access/path policy have candidate-bound proof.
+- Source families F001–F004: locally accepted at 400/10,000 requirements and 80/2,000 capabilities; source editing/recovery/policy, identity/ownership and responsive dashboard behavior have candidate-bound proof.
 - Wave 1 preparation: source-revision and source-policy modules are locally verified. Full transport/domain modularization, the typed Designer kernel and structural round-trip work remain future milestones.
 
 ## Source access and host swarm — locally accepted 2026-10-30
 
 Agent 0 accepted exactly **LAN-00101–LAN-00200** at functional candidate
-`e1588c4ebe94b1ef5f1557641334d95aee9b8290`. The program is now
+`e1588c4ebe94b1ef5f1557641334d95aee9b8290`. That milestone reached
 **200/10,000 requirements and 40/2,000 capabilities**; **F001 and F002 are
 complete, with 9,800 requirements remaining TODO**. Previous one hundred
 completion objects and their order remain exact. The separate original WebAppX

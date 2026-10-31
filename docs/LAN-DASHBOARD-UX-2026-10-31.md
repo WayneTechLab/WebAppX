@@ -2,8 +2,8 @@
 
 The user reported clipped menus/components, excessive submenu descriptions, a
 misplaced header menu and preview viewport shifts during selection/navigation.
-This host UI work is part of the active F003/F004 candidate; final browser and
-publication qualification remains pending. The separate Code-OSS fork is
+This host UI work is part of the active F003/F004 candidate; final browser qualification has passed; publication is qualified separately
+by remote readback. The separate Code-OSS fork is
 [planned work](LAN-VSCODE-FORK-PLAN.md), not a delivered editor.
 
 ## Research and design decisions
@@ -53,20 +53,24 @@ passes normal app clicks; Inspect selects, and double-click explicitly edits.
 Fixed device width now describes iframe content width with borders outside it;
 removing the width animation avoids intermediate responsive sizes.
 
-## Development qualification
+## Final candidate qualification
 
-The final provisional responsive run passed **25/25 groups** across 1440, 1163,
+The exact final candidate responsive run passed **25/25 groups** across 1440, 1163,
 900, 768 and 390-pixel viewports, with preserved source/fixtures/inputs. Stable
 393-pixel iframe content was measured inside a 395-pixel bordered viewport.
-The existing source-editor and Navigator development regressions passed after
-retaining and repairing their earlier failures. The final committed-candidate
-aggregate CI and Hosting preflight remain separate pending gates.
+The existing source-editor and Navigator regressions passed after retaining
+and repairing earlier failures. Candidate `aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`
+passed all 73 CI stages and separate Hosting preflight with 2,111 tracked inputs
+unchanged. In the real 1,164px browser, Fit readouts matched actual frame widths
+after panel resizing (777/777 then 765/765) and fixed393 → Fit (393/393 → 765/765).
+Read the [candidate-bound QA receipt](LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md).
 
 ## Acceptance and remaining delta
 
 The responsive browser harness exercises desktop and compact viewports against
 real copied assets with synthetic fixtures, retaining failures and exact hashes.
-The actual WebAppX browser view must be reloaded/read back separately, preserving
-saved mock workspaces, open source drafts, source and emulator data. Aggregate
-CI, Hosting preflight and original requirement acceptance are separate gates.
+The actual WebAppX browser view was reloaded and read back separately, preserving
+source drafts and the same mock-workspace origin; owned emulator data was exported
+and reimported before restart. F003/F004 acceptance is 400 requirements / 80
+capabilities. GitHub source/wiki and Page delivery use separate final readbacks.
 No production deployment or custom native editor build is established here.

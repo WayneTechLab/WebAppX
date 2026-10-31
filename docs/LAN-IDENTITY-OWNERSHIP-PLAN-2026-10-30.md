@@ -1,4 +1,4 @@
-# LAN F003/F004 identity and ownership iteration plan — integrated, final gates pending
+# LAN F003/F004 identity and ownership iteration plan — locally accepted 2026-10-31
 
 This bounded plan selects the authored [F003](backlog/lan-10000/F003.md)
 **LAN-00201–LAN-00300** and [F004](backlog/lan-10000/F004.md)
@@ -12,12 +12,15 @@ capability outcomes, dependencies and five requirement lanes is the
 this table is a review map,
 not a replacement definition.
 
-**Starting accepted state:** 200/10,000 requirements and 40/2,000 capabilities
-(F001 and F002). **Target after two separate reviews and acceptances:**
-400/10,000 and 80/2,000. F003 depends on accepted F002; F004 depends on both
-F002 and accepted F003. Agent 0 must accept F003 before F004. These targets are
-not progress edits, completion receipts or evidence that a pending branch has
-passed. The original WebAppX 179/821 checklist is a separate historical scope.
+Agent 0 accepted exactly **LAN-00201–LAN-00400** at final functional candidate
+`aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`, serially accepting F003 before
+F004 after terminal integrated qualification. Read the
+[current QA receipt](LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md).
+**Current accepted state is 400/10,000 requirements and 80/2,000 capabilities**;
+**F001–F004 are complete, with 9,600 requirements remaining TODO**. The starting
+200/40 baseline belonged to completed F001/F002; previous completion objects and
+the original authored definitions remain unchanged. The original WebAppX
+179/821 checklist is a separate historical scope.
 
 Each five-ID group below retains the authored lane order: observable behavior,
 boundaries/refusal, recovery/reversibility, operator feedback, verification
@@ -25,7 +28,7 @@ evidence. Completion requires all five lanes and their exact prerequisite
 closure. Worker commits, source reviews and a passing subset of tests are inputs
 to Agent 0, not acceptance.
 
-## Dashboard UX addition — implemented candidate, proof pending
+## Dashboard UX addition — locally verified
 
 The active candidate also addresses the user's clipped menu/component forms,
 long submenu descriptions, misplaced header dropdown and preview viewport shifts.
@@ -45,9 +48,13 @@ preset/width. Interact delivers normal app clicks and SPA navigation without
 changing the selected device. Explicit reveal/route actions retain their own
 intended navigation behavior. The responsive browser stage checks panel/form,
 header/menu, keyboard and footer geometry plus viewport/device continuity;
-its current development run is not yet a final accepted candidate receipt.
+its final C4 run supports 25 locally verified layout groups. The actual
+fixed 393 px preset renders exactly 393 px of iframe content. At a 1164 px
+operator width, panel resizing produced actual/readout 777/777 then 765/765;
+returning from the fixed preset to Fit reported 765/765. Native Help disclosures and right-aligned header/menu geometry retain
+keyboard access and bounded content.
 
-This adds no authored requirement or automatic acceptance. The
+This UX support adds no authored requirement or extra catalog acceptance. The
 [Code-OSS fork plan](LAN-VSCODE-FORK-PLAN.md) and
 [32 unchecked additive TODOs](backlog/LAN-VSCODE-FORK-TODO.md) remain a separately
 planned custom editor program; no fork/build/native install is implied.
@@ -169,52 +176,40 @@ terminal outcomes, artifact hashes, protected-path fingerprints, failing attempt
 and their terminal reruns. Mac-local synthetic results do not prove native
 Windows x64/ARM64, authenticated provider execution or production delivery.
 
-## Agent 0: ten-step CLI branch workflow
+## Completed Agent 0 integration and acceptance workflow
 
-These are **planned commands for Agent 0 on the integration branch**, after
-worker branches exist and their exact heads are known. They are not commands
-run by this documentation worker. Substitute reviewed branch/commit IDs; verify
-the branch and path list before each integration. Keep F003 and F004 acceptance
-serial. The currently absent cross-branch modules/tests are integration inputs,
-not a reason to claim a pass in this branch.
+1. Observed the selected repository, clean source base and required preservation
+   boundaries; worker source base was `6d6c7d21132a37d31b328fc7ab3ec1000f837072`.
+2. Prepared bounded packets and pinned the installed provider. The first dispatch
+   refused launcher drift before running a provider; the fresh run retained that
+   guard rather than weakening it.
+3. Ran ten authenticated Codex CLI workers in independent generation worktrees.
+   Agent 0 retained their source/evidence and committed scoped outputs where the
+   child sandbox refused Git metadata.
+4. Reviewed and merged the ten owned branches locally. Preparing or integrating
+   F004 implementation did not grant its acceptance before F003.
+5. Integrated the protected identity/ownership APIs, explicit metadata proposals,
+   controlled editor bridge and responsive GUI under Agent 0 ownership.
+6. Repaired independently demonstrated ambiguity, span/ownership, export/reopen,
+   generated-source, route, UI staleness and layout issues; preserved each failed
+   attempt and its scope.
+7. Froze C4, awaited terminal unit/API/browser, aggregate 73-stage CI and separate
+   Hosting preflight, and retained exact source/asset/preservation evidence.
+8. Kept C2's interrupted CI and C3's failing legacy F002 selector separate from
+   C4's terminal pass; C4's single test-only direct-child selector repair changed
+   no C3 runtime/UI source.
+9. Accepted all original F003 lanes first, then dependent F004 lanes with exact
+   definition/source/evidence tuples. Regenerated/validated 400 accepted
+   requirements and 80 capabilities, preserving the previous two hundred.
+10. Reconciled plan/README/wiki and kept publication/readback as a separate final
+    delivery handoff. Source publication does not establish native device state,
+    live swarm PR operation or production deployment.
 
-1. Confirm the branch and preserve existing state: `git status --short --branch`.
-2. Record the exact integration base: `git rev-parse HEAD`.
-3. Inspect each assigned worker head: `git log -1 --format='%H %s' <worker-branch>`.
-4. Review each branch's paths against its allowed scope:
-   `git diff --name-only <integration-base>..<worker-branch>`.
-5. Integrate only reviewed F003 commits first into the Agent 0 branch:
-   `git cherry-pick <reviewed-worker-commit>`; stop on any conflict and review
-   the resulting candidate before continuing. Integrate F004 commits only after
-   F003 acceptance.
-6. Check the integrated commit and working diff:
-   `git show --check --oneline HEAD` and `git diff --check`.
-7. Run the LAN test suite and the identity browser harness after integration:
-   `node --test .SYSTEMX/LAN/tests/*.test.mjs` and
-   `node .SYSTEMX/LAN/tests/source-identity-browser.mjs`. The latter harness is
-   a pending cross-branch input, not a current pass claim.
-8. Run the full candidate gates: `npm run ci:all` and
-   `npm run deploy -- hosting --preflight`.
-9. Check host drift with `npm run sync:system:check`; before any template mirror
-   copy, run `npm run template:check`. Review exact original definitions with
-   `node scripts/lan-backlog.mjs --item LAN-00201 --json` and, after F003 is
-   accepted, `--item LAN-00301 --json`.
-10. Only after each family's terminal evidence and Agent 0 review, add exact
-    completion receipts/progress bindings, then run
-    `node scripts/lan-backlog.mjs --write` and
-    `node scripts/lan-backlog.mjs --check`. Confirm the new counts with
-    `node scripts/lan-backlog.mjs --summary --json`; verify the resulting
-    candidate revision and `git status --short --branch`. Repeat the gates for
-    F004 after F003 acceptance; root reconciles README, wiki, Pages and final
-    publication readback separately.
+Worker output, local integration, terminal qualification, catalog acceptance and
+provider publication remain separate facts. No phase bypassed stale source,
+conflicting claims, failed tests, catalog dependencies or deployment authority.
 
-No branch command bypasses stale source, conflicting claims, failing tests,
-catalog dependencies or production authorization. A clean Git diff, local HTTP
-200, CI pass or preflight alone does not establish the next gate. Production
-deployment requires explicit operator authorization; no such deployment is in
-this plan.
-
-## Integration delta before final qualification
+## Integration delta after local acceptance
 
 Ten authenticated Codex CLI workers completed in isolated generation worktrees;
 Agent 0 retained scoped branches, committed outputs where the child sandbox
@@ -230,13 +225,26 @@ repaired namespace, rename/allocation, descriptor validation, export integrity,
 source-span authority, ownership proposal, route, generated-readonly and UI
 staleness issues. Earlier failed attempts remain evidence rather than passes.
 
-Current accepted progress is still 200/40 pending terminal final gates. The CI
-runner now registers 73 stages, retaining all previous 70 in order and adding
-the identity unit/API, identity browser and responsive-layout browser suites.
-Registration and provisional development results are not a final full-CI pass. The original WebAppX catalog
-remains 179/821. The narrow source read model does not complete the full Designer
-kernel, structural/style editing, provider PR approval, native IDE/Windows
-qualification or deployment.
+Final C4 passed **73 ordered CI stages**, retaining the previous 70 and adding
+identity unit/API, identity browser and responsive-layout browser stages. Its
+terminal coverage includes **140 identity unit/API tests**, **40 identity and
+ownership browser capability groups**, **25 layout groups**, **114 core tests**,
+**32 local synthetic swarm tests**, **55 source groups plus seven geometry
+checks**, **16 Navigator groups** and separate Hosting preflight. The
+[candidate-bound QA receipt](LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md) owns exact
+commands, artifacts, preservation counts, reviews and retained failures.
+
+C2 CI exited 130 after stage 51 for the Fit-readout repair. C3 CI exited 1 at
+stage 65 because the old F002 selector matched four summary elements; C4 uses its
+direct child and changes no runtime/UI code from C3. Only the final C4 terminal
+results support this acceptance. Current progress is **400/80**, with **9,600
+requirements TODO**. The original WebAppX catalog remains 179/821.
+
+The narrow read model does not complete the full Designer kernel, structural/
+style editing, actual swarm PR approval, native IDE/Windows qualification or
+deployment. The fork's 32 additive TODOs remain planned/unaccepted and no custom
+editor has been built. Final source/wiki revisions and provider readback are
+recorded in the separate delivery handoff, not asserted by this local plan.
 
 Exports initialize an ignored private runtime integrity key when needed; they
 exclude source bodies/readable labels/credentials and preserve same-backend

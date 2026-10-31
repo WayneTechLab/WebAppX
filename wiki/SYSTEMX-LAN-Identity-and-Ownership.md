@@ -4,10 +4,14 @@ This guide describes the F003/F004 local source-import workflow selected for
 the LAN builder. The authored [F003](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/lan-10000/F003.md) and
 [F004](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/lan-10000/F004.md) checklists own the exact requirements; the
 [bounded iteration plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) owns the
-execution sequence. The accepted baseline remains **200/10,000 requirements and
-40/2,000 capabilities** (F001 and F002). The target after separate Agent 0
-acceptance of both families is **400/10,000 and 80/2,000**. These pages do not
-record acceptance or qualify an untested integration.
+execution sequence. Agent 0 accepted **LAN-00201–LAN-00400** at functional
+candidate `aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`, accepting F003 before
+dependent F004 after terminal qualification. The program is **400/10,000
+requirements and 80/2,000 capabilities**, with **F001–F004 complete and 9,600
+requirements TODO**. Previous two hundred completion objects remain exact.
+Read the [candidate-bound QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md).
+Publication/readback is a separate final delivery gate; this page records local
+acceptance rather than an already-pushed or production claim.
 
 The import is a narrow `schemaVersion: 1` source identity read model for
 eligible static TSX, alongside the future full
@@ -19,7 +23,7 @@ identity metadata cannot widen that policy. The existing
 [GUI source workflow](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-TEMPLATE-GUI-WORKFLOW.md) remains the path for a
 deliberate guarded source save.
 
-## Dashboard layout and preview interaction — candidate changes
+## Dashboard layout and preview interaction — locally verified
 
 The current candidate repairs clipped component/menu content with shrinkable
 sidebar tracks, bounded fields and wrapped metadata. Compact panel focus keeps
@@ -36,16 +40,25 @@ navigation behavior. Read the
 [dashboard UX research and implementation review](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-DASHBOARD-UX-2026-10-31.md)
 for observed causes, official Webflow/W3C sources and the separate proof gates.
 
-The CI plan now registers **73 stages**: all previous 70 retain their order,
-with identity unit/API, identity browser and responsive-layout browser added.
-Final exact-candidate browser/CI/preflight, independent review, F003-before-F004
-acceptance and push/readback remain pending. A registered stage or provisional
-browser run is not a final pass. Current accepted totals remain **200 / 40**;
-the selected target remains **400 / 80**.
+The final C4 candidate passed **73 ordered CI stages**, **140 identity unit/API
+tests**, **40 identity/ownership browser capability groups**, **25 layout
+groups**, **114 core tests**, **32 local synthetic swarm tests**, **55 source
+groups plus seven geometry checks**, **16 Navigator groups**, and separate
+Hosting preflight. The fixed **393 px** preset renders **393 px** of iframe content.
+At a **1164 px** operator width, panel resizing produced actual/readout
+**777/777** then **765/765**; returning to Fit reported **765/765**. Native Help disclosures and bounded
+header/menu alignment retain keyboard access.
+
+C2's CI exit 130 after stage 51 and C3's exit 1 at stage 65 remain failed/
+interrupted attempts. C4 changes only the legacy F002 selector to its direct
+child after four summary elements matched; runtime/UI source is identical to C3.
+Only final C4 terminal evidence is counted. Exact artifacts and limitations
+belong to the QA receipt; no failed attempt is relabeled as a pass.
 
 The separate [tailored Code-OSS fork plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-VSCODE-FORK-PLAN.md)
 and [32 unchecked fork TODOs](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/LAN-VSCODE-FORK-TODO.md)
-are planned work. This dashboard increment creates no custom native editor,
+remain 32 planned, unchecked, unaccepted tasks; no fork was built. This
+dashboard increment creates no custom native editor,
 extension registry, installation, update service or catalog acceptance.
 
 ## Use the inspector
@@ -213,14 +226,21 @@ scope using opaque identity digests and exact occurrence counts.
 
 ## Verification and delivery gates
 
-The [plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) lists the fixture, API,
-rendered GUI, preservation and terminal gate evidence Agent 0 must collect for
-each exact revision. This document describes the contract and operator steps;
-the integrated implementation has development unit/API/GUI evidence, while
-exact-candidate CI, independent review, acceptance and publication remain separate
-gates. Ten authenticated CLI executions are observed separately from live PR
-merges, native Windows/IDE qualification and production deployment. A successful local preview or HTTP response alone does
-not accept F003/F004 or authorize a source write.
+The [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md)
+binds final C4 qualification and serial F003/F004 acceptance to exact revisions,
+original requirements and retained evidence. Source implementation, independent
+review, actual UI readback, local acceptance and provider publication remain
+separate. The source-import model does not complete structural/style authoring
+or the full Designer kernel.
+
+Ten authenticated Codex CLI workers ran from recorded source base
+`6d6c7d21132a37d31b328fc7ab3ec1000f837072` in independent generation worktrees;
+Agent 0 reviewed and integrated their ten branches locally. These observations
+do not establish actual GitHub swarm PR merges, native Windows/IDE acceptance,
+permissions changes or production deployment. App 3.4.0 and deployment count 0
+remain unchanged; Hosting preflight is not a deployment. Exact source/wiki push
+revisions and fresh remote readback belong to the final delivery handoff.
+
 
 ## API map
 

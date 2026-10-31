@@ -69,36 +69,38 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
-## LAN durable identity and source ownership — final verification pending
+## LAN durable identity and source ownership — accepted
 
-Current acceptance remains **200/10,000 requirements and 40/2,000 capabilities**.
-The next batch selects exactly **LAN-00201–LAN-00400**: F003 durable document/node
-identity (100) and dependent F004 source ownership/mapping (100), with a target
-of **400 / 80** after serial Agent 0 acceptance.
+Agent 0 accepted exactly **LAN-00201–LAN-00400**, F003 before dependent F004.
+The program now has **400/10,000 accepted requirements and 80/2,000 capabilities**;
+**F001–F004 are complete and 9,600 requirements remain TODO**. Original definitions
+and the prior 200 completion objects remain exact. The separate original WebAppX
+catalog remains **179 done / 821 remaining**.
 
-The implemented inspector provides explicit TSX import/reimport previews,
-workspace-qualified document/page/node references, reviewed rename/alias
-handling, ambiguity and orphan diagnostics, ownership modes/coverage, exact
-source-span revision checks and metadata export/reopen with local integrity
-verification. Literal proposals stage into the existing controlled editor;
-reviewed diff, confirmation and source save remain separate. Generated,
-opaque, external and unmapped targets advertise their read-only boundaries.
+The inspector provides explicit TSX import/reimport previews, workspace-qualified
+document/page/node references, reviewed rename/aliases, duplicate/orphan/confidence
+diagnostics, revision-bound ownership and spans, coverage and integrity-checked
+metadata export/reopen. Literal proposals stage into the controlled editor;
+a reviewed diff, confirmation and source save remain separate. Generated,
+opaque, external and unmapped targets retain read-only boundaries.
 
-Read the [identity and ownership guide](docs/LAN-IDENTITY-OWNERSHIP.md),
-[200-requirement execution plan](docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md)
-and [active iteration](docs/LAN-ACTIVE-ITERATION.md). The new unit/API and browser
-stages join the previous 70 CI gates, for **73 required stages**. Development
-proof and final exact-revision acceptance/publication remain distinct.
+Functional candidate `aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0` passed all **73 CI stages**, **140 identity
+unit/API tests**, **40 identity/ownership browser capabilities**, **25 responsive
+browser groups**, the **55 source groups plus seven geometry checks**, **16
+Navigator groups**, and separate Hosting preflight. CI and preflight each preserved
+**2,111 tracked input fingerprints**. Read the [candidate-bound QA receipt](docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md),
+[operating guide](docs/LAN-IDENTITY-OWNERSHIP.md),
+[completed execution plan](docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) and
+[active iteration](docs/LAN-ACTIVE-ITERATION.md).
 
 Agent 0 observed **ten authenticated CLI workers running concurrently** in
-separate branches/worktrees and integrated their scoped results locally.
-Where the CLI sandbox refused Git metadata writes, Agent 0 performed the
-reviewed branch commit and refreshed the handoff. This does not qualify live
-swarm PR approval/automatic merge, native IDE/Windows execution or production.
-The [WebAppX Pages](https://chatgpt.com/space/page_6ae57560ffc081918ce0df5347f4d5a3)
+separate branches/worktrees and integrated their scoped results. Where the child
+sandbox refused Git metadata writes, Agent 0 made the reviewed branch commit.
+This does not establish live swarm PR approval/automatic merge, native IDE/Windows
+execution or production deployment. The [WebAppX Pages](https://chatgpt.com/space/page_6ae57560ffc081918ce0df5347f4d5a3)
 include the [F003/F004 delivery board](https://chatgpt.com/space/page_73f53c0c41408191b639721a67bf18a7)
-and its durable-identity and source-ownership subpages. Their current 200/40
-acceptance and pending 400/80 target remain separate until final evidence.
+and durable-identity/source-ownership subpages; final publication readbacks are
+recorded separately from local functional acceptance.
 
 ## Responsive LAN dashboard and tailored editor roadmap
 
@@ -108,7 +110,10 @@ accessible text labels. On compact screens, the focused sidebar is shown while
 Keep open preferences are retained; the footer wraps its device and evidence
 controls rather than cutting them off. Quick find remains reachable when the
 header search is collapsed. The responsive browser gate is
-`npm run browser:lan-layout`; final candidate results remain pending.
+`npm run browser:lan-layout`; all 25 groups passed on the final candidate.
+The header menu aligns with its trigger, selection leaves the viewport stable,
+fixed 393px means 393px of iframe content, and Fit reports its measured width.
+Read the [UX research and browser results](docs/LAN-DASHBOARD-UX-2026-10-31.md).
 
 A custom VS Code–based LAN builder is now a separate proposed workstream:
 [Code-OSS fork plan](docs/LAN-VSCODE-FORK-PLAN.md) and
