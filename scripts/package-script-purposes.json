@@ -132,6 +132,11 @@
       "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
     },
     {
+      "name": "browser:graph-contracts",
+      "purpose": "SYSTEMX",
+      "description": "Exercise canonical graph and versioned API contract workflows through the real local dashboard in isolated owned browser fixtures."
+    },
+    {
       "name": "browser:install",
       "purpose": "setup",
       "description": "Inspect or prepare developer prerequisites, public configuration or setup inputs."
@@ -430,6 +435,11 @@
       "name": "lan",
       "purpose": "SYSTEMX",
       "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "lan:graph:test",
+      "purpose": "SYSTEMX",
+      "description": "Verify canonical graph invariants, revision and migration recovery, and exact versioned graph API request/response contracts in owned fixtures."
     },
     {
       "name": "lan:identity:test",

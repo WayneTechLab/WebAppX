@@ -120,3 +120,16 @@ Stop the active wave and repair the foundation when:
 - command model: `14-EDITOR-KERNEL-AND-COMMAND-MODEL.md`
 - schemas: `INJECT/.SYSTEMX/LAN/Builder/contracts/`
 - backlog/roadmap/risks: `planning/`
+
+
+## Authorized F005 and F006 execution
+
+The next bounded wave selects LAN-00401–LAN-00600, canonical document graph
+followed by versioned API contracts. Current acceptance remains 400 requirements
+and 80 capabilities while ten authenticated CLI assignments implement and verify
+the wave. Agent 0 owns integration and accepts F005 before dependent F006 only
+after exact-candidate review, browser proof and terminal checks. Read the
+[execution plan](../../docs/LAN-GRAPH-API-PLAN-2026-10-31.md) and the
+[separate local AI research](../../docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md).
+The scratch model's 2/10 exploratory quality is not accepted chatbot quality;
+model adoption supplies no completion in this LAN wave.

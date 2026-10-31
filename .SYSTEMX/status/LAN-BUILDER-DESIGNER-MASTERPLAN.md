@@ -215,3 +215,16 @@ The separately requested custom editor fork has an additive
 [32 unchecked tasks](../../docs/backlog/LAN-VSCODE-FORK-TODO.md).
 No original catalog definitions, accepted counts or reusable seed records are
 changed by this proposal; no native editor build or distribution is claimed.
+
+
+## Authorized F005 and F006 execution
+
+The next bounded wave selects LAN-00401–LAN-00600, canonical document graph
+followed by versioned API contracts. Current acceptance remains 400 requirements
+and 80 capabilities while ten authenticated CLI assignments implement and verify
+the wave. Agent 0 owns integration and accepts F005 before dependent F006 only
+after exact-candidate review, browser proof and terminal checks. Read the
+[execution plan](../../docs/LAN-GRAPH-API-PLAN-2026-10-31.md) and the
+[separate local AI research](../../docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md).
+The scratch model's 2/10 exploratory quality is not accepted chatbot quality;
+model adoption supplies no completion in this LAN wave.

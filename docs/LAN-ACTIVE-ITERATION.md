@@ -1,4 +1,19 @@
-# LAN active iteration — F003/F004 next 200 accepted
+# LAN active iteration — F005/F006 next 200
+
+Updated 2026-10-31. Agent 0 is implementing exactly **LAN-00401–LAN-00600**:
+F005 Canonical document graph, then F006 Versioned API contracts. Ten authenticated
+CLI workers have been observed on distinct generation branches/worktrees. The
+accepted baseline remains **400/10,000 requirements and 80/2,000 capabilities**;
+this wave remains TODO pending independent review, browser proof and terminal
+integrated checks. The target 600/120 is not current acceptance.
+
+Follow the [current execution plan](LAN-GRAPH-API-PLAN-2026-10-31.md). The
+[separate scratch AI research](LAN-LOCAL-AI-RESEARCH-2026-10-31.md) preserves its
+20.85 MB own-weight pilot and weak 2/10 exploratory quality result without
+claiming app adoption or changing LAN acceptance. Agent 0 owns shared integration,
+serial F005/F006 acceptance, documentation and the authorized GitHub publication.
+
+## Completed F003/F004 baseline
 
 Updated 2026-10-31. Agent 0 accepted exactly **LAN-00201–LAN-00400** after terminal
 qualification, with F003 accepted before dependent F004. The program now has

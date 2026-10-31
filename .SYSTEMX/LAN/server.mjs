@@ -34,6 +34,7 @@ const repoRoot = resolve(lanRoot, '..', '..')
 const workspaceId = hashSourceRevision(`systemx-workspace\0${realpathSync(repoRoot)}`)
 const sourceHistory = createSourceHistory()
 let sourceIdentityPromise
+let graphServicePromise
 async function identityService() {
   if (!sourceIdentityPromise) {
     sourceIdentityPromise = import('./Builder/source-identity-service.mjs')
@@ -41,6 +42,35 @@ async function identityService() {
       .catch(error => { sourceIdentityPromise = null; throw error })
   }
   return sourceIdentityPromise
+}
+async function graphService() {
+  if (!graphServicePromise) {
+    graphServicePromise = import('./Builder/graph-service.mjs')
+      .then(({ createGraphService }) => createGraphService({
+        workspaceId,
+        readIdentityDocument: async input => (await identityService()).read(input),
+        readIdentityStatus: async () => (await identityService()).status(),
+      }))
+      .catch(error => { graphServicePromise = null; throw error })
+  }
+  return graphServicePromise
+}
+
+async function dispatchGraphRequest(request, response, requestUrl, body) {
+  try {
+    const { dispatchGraphContract } = await import('./Builder/graph-http.mjs')
+    const { statusCode, result } = await dispatchGraphContract({
+      service: await graphService(), method: request.method, url: requestUrl, body,
+    })
+    sendJson(response, statusCode, result)
+  } catch {
+    sendJson(response, 503, {
+      apiVersion: '1.1', requestId: null, ok: false,
+      error: { category: 'internal', code: 'GRAPH_SERVICE_UNAVAILABLE',
+        message: 'The local graph service is unavailable. Previous graphs and source drafts are kept.',
+        findings: [], omittedCount: 0 },
+    })
+  }
 }
 const websiteRoot = join(lanRoot, 'Website')
 const dashboardFile = join(lanRoot, 'Website_Dashboard.html')
@@ -78,6 +108,7 @@ const allowedExtensions = new Set([
   '.html',
   '.css',
   '.js',
+  '.mjs',
   '.json',
   '.svg',
   '.png',
@@ -91,6 +122,7 @@ const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  '.mjs': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
@@ -1223,6 +1255,12 @@ const server = createServer(async (request, response) => {
 
   const requestUrl = new URL(request.url ?? '/', `http://${host}:${port}`)
 
+  if (requestUrl.pathname.startsWith('/api/contracts/') && request.method !== 'POST') {
+    if (!requireSessionToken(request, response)) return
+    await dispatchGraphRequest(request, response, requestUrl)
+    return
+  }
+
   if (requestUrl.pathname.startsWith('/api/identity/') && request.method !== 'POST') {
     if (!requireSessionToken(request, response)) return
     try {
@@ -1405,11 +1443,24 @@ const server = createServer(async (request, response) => {
     try {
       body = await readRequestBody(request)
     } catch (error) {
+      if (requestUrl.pathname.startsWith('/api/contracts/')) {
+        sendJson(response, 400, {
+          apiVersion: '1.1', requestId: null, ok: false,
+          error: { category: 'validation', code: 'API_BODY_INVALID',
+            message: 'Use a bounded valid JSON contract envelope.', findings: [], omittedCount: 0 },
+        })
+        return
+      }
       sendJson(response, 400, { error: error.message })
       return
     }
 
     try {
+      if (requestUrl.pathname.startsWith('/api/contracts/')) {
+        await dispatchGraphRequest(request, response, requestUrl, body)
+        return
+      }
+
       if (requestUrl.pathname.startsWith('/api/identity/')) {
         try {
           if (requestUrl.pathname === '/api/identity/preview' && body && typeof body === 'object' && typeof body.path === 'string') {
