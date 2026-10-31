@@ -301,10 +301,12 @@ function applyPreviewPreset(presetId = state.layout.previewPreset, options = {})
   const fit = presetId === 'fit' || options.fit === true
   const custom = presetId === 'custom'
   const preset = previewPresets[presetId]
+  // Measure after entering Fit: the former fixed width is not the available
+  // workspace width. Fixed/custom presets keep their explicit bounded width.
+  viewport.dataset.previewMode = fit ? 'fit' : 'fixed'
   const availableWidth = viewport.clientWidth || viewport.parentElement?.clientWidth || state.layout.previewWidth
-  const width = clampPreviewWidth(fit
-    ? availableWidth
-    : options.width ?? preset?.width ?? state.layout.previewWidth)
+  const width = fit ? Math.max(1, Math.round(availableWidth))
+    : clampPreviewWidth(options.width ?? preset?.width ?? state.layout.previewWidth)
   const label = fit ? 'Fit workspace' : custom ? 'Custom canvas' : preset?.label ?? 'Custom canvas'
   const platform = fit ? 'Responsive' : custom ? 'Custom' : preset?.platform ?? 'Custom'
 
@@ -312,7 +314,6 @@ function applyPreviewPreset(presetId = state.layout.previewPreset, options = {})
   state.layout.previewWidth = width
   state.layout.previewFit = fit
 
-  viewport.dataset.previewMode = fit ? 'fit' : 'fixed'
   setRuntimeStyleRule(
     'preview-width',
     `#canvas-preview-viewport { --canvas-preview-width: ${width}px; }`,
@@ -3772,6 +3773,13 @@ function bind() {
     observer.observe(footer)
   }
   if (typeof ResizeObserver === 'function') {
+    const viewport = document.querySelector('#canvas-preview-viewport')
+    if (viewport) {
+      const observer = new ResizeObserver(() => {
+        if (state.layout.previewFit && viewport.clientWidth > 0) applyPreviewPreset('fit', { fit: true, persist: false })
+      })
+      observer.observe(viewport)
+    }
     const rules = new Map()
     for (const side of ['left', 'right']) {
       const navigation = document.querySelector(`.${side}-panel .panel-navigation`)

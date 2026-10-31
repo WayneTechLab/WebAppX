@@ -301,21 +301,63 @@ try {
         }, { intervals: [16, 32, 64, 100], message: 'Wait for actual iframe and chrome geometry to settle after explicit operator layout changes' }).toBeGreaterThanOrEqual(3)
         return observed
       }
+      const assertFitReadout = async () => {
+        await expect.poll(async () => {
+          const actual = await frame.evaluate(() => innerWidth)
+          return actual > 0 && Number(await page.locator('#canvas-width-input').inputValue()) === actual
+        }, { message: 'Fit readout must equal the actual visible iframe content viewport, including after ResizeObserver updates' }).toBe(true)
+        const observed = await settledPreview()
+        assert.equal(observed.device, 'fit')
+        assert.equal(Number(observed.width), observed.inner.width)
+        return observed
+      }
       for (const preset of ['ios-393', 'fit']) {
         await page.locator('#canvas-device-select').selectOption(preset)
         if (await page.locator('#preview-inspect-toggle').getAttribute('aria-pressed') !== 'true') await page.locator('#preview-inspect-toggle').click()
         const span = frame.locator('#layout-click-span')
         await span.scrollIntoViewIfNeeded()
         if (preset === 'ios-393') await expect.poll(() => frame.evaluate(() => innerWidth)).toBe(393)
-        const before = await settledPreview()
+        const before = preset === 'fit' ? await assertFitReadout() : await settledPreview()
         if (preset === 'ios-393') {
           assert.equal(before.inner.width, 393, 'Stable browser content width must match the requested device width, not its bordered outer box')
           assert.equal(before.frame.width, 393)
         }
         await span.click(); await expect(span).toHaveAttribute('data-systemx-inspector-selected', '')
         assert.deepEqual(await settledPreview(), before, `${viewport.width}/${preset}: selection must preserve real iframe dimensions, typography, chrome and scroll`)
+        if (preset === 'fit') await assertFitReadout()
         report.geometry.push({ viewport: viewport.width, checkpoint: `selection-preserves-${preset}`, snapshot: before })
       }
+      // Exercise real panel-resizer keys in Fit, after a fixed-width preset.
+      // Compact focus panes intentionally omit resize handles; rotate that
+      // operator surface to 900px for the resize, then qualify its 390px return.
+      const beforePanelResize = await assertFitReadout()
+      if (viewport.width <= 700) {
+        await page.setViewportSize({ width: 900, height: viewport.height })
+        await assertFitReadout()
+      }
+      await openLeft('components'); await resize('left')
+      const left220 = await assertFitReadout()
+      const handle = page.locator('#left-panel-resizer')
+      await handle.focus()
+      for (let step = 0; step < 5; step += 1) await handle.press('ArrowRight')
+      await expect(handle).toHaveAttribute('aria-valuenow', '280')
+      const left280 = await assertFitReadout()
+      assert.ok(left280.inner.width < left220.inner.width, 'Widening a visible left panel must reduce the real Fit viewport and update its readout')
+      for (let step = 0; step < 5; step += 1) await handle.press('ArrowLeft')
+      await expect(handle).toHaveAttribute('aria-valuenow', '220')
+      await assertFitReadout()
+      await page.locator('#left-panel-toggle').click()
+      if (viewport.width <= 700) await page.setViewportSize(viewport)
+      const returned = await assertFitReadout()
+      assert.deepEqual(returned, beforePanelResize, 'Returning to the same visible Fit layout restores its accurate readout and viewport')
+      if (viewport.width <= 700) {
+        await openLeft('components')
+        assert.ok(Number(await page.locator('#canvas-width-input').inputValue()) > 0, 'A hidden compact canvas must not overwrite Fit with zero')
+        await page.locator('#left-panel-toggle').click()
+        await assertFitReadout()
+      }
+      report.geometry.push({ viewport: viewport.width, checkpoint: 'fit-readout-panel-resize', handleViewport: viewport.width <= 700 ? 900 : viewport.width,
+        left220: left220.inner.width, left220Readout: Number(left220.width), left280: left280.inner.width, left280Readout: Number(left280.width), returned: returned.inner.width, returnedReadout: Number(returned.width) })
       await page.locator('#canvas-preview').click()
       await expect(page.locator('#preview-inspect-toggle')).toHaveAttribute('aria-pressed', 'false')
       const beforeNavigation = await settledPreview()
