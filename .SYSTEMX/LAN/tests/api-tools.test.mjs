@@ -3,7 +3,7 @@ import { test } from 'node:test'
 import {
   API_VERSION, SUPPORTED_API_VERSIONS, getContractRegistry, getOperationDescriptor,
 } from '../Builder/api-contracts.mjs'
-import { validateApiRequest } from '../Builder/api-validation.mjs'
+import { validateApiRequest, validateApiResponse } from '../Builder/api-validation.mjs'
 import {
   ApiToolError, compareApiContracts, contractExamples, dispatchContractTool,
   exportPublicContracts, negotiateApiVersion,
@@ -116,4 +116,39 @@ test('contract tools dispatch only explicit local queries and refuse malformed o
   assert.throws(() => dispatchContractTool('contracts.describe', accessor), ApiToolError)
   assert.equal(invoked, false, 'No accessor may run during inspection')
   assert.deepEqual(exportPublicContracts('1.0'), beforeRefusals, 'Refusals preserve the last valid public state')
+})
+
+test('every implemented contract tool result satisfies its exact published response schema', () => {
+  for (const version of ['1.0', '1.1']) {
+    const registry = getContractRegistry(version)
+    for (const descriptor of registry.operations.filter(item => item.id.startsWith('contracts.'))) {
+      const { type, ...payload } = contractExamples({ operation: descriptor.id, version }).validRequest.payload
+      assert.equal(type, descriptor.id)
+      const result = dispatchContractTool(descriptor.id, payload, version)
+      assert.equal(JSON.stringify(validateApiResponse(descriptor, result)), JSON.stringify(result), descriptor.id)
+    }
+  }
+  const exportDescriptor = getContractRegistry('1.1').operations.find(item => item.id === 'contracts.export')
+  const badExport = exportPublicContracts('1.1')
+  badExport.capabilities[0].id = '/private/path'
+  assert.throws(() => validateApiResponse(exportDescriptor, badExport), error => error.code === 'RESPONSE_CONTRACT_INVALID')
+  const examplesDescriptor = getContractRegistry('1.1').operations.find(item => item.id === 'contracts.examples')
+  const badExamples = contractExamples({ operation: 'graph.status' })
+  delete badExamples.validRequest
+  assert.throws(() => validateApiResponse(examplesDescriptor, badExamples), error => error.code === 'RESPONSE_CONTRACT_INVALID')
+  for (const mutate of [
+    value => { value.validRequest = { foo: 'bar' } },
+    value => { value.invalidRequest = structuredClone(value.validRequest) },
+    value => { value.operation = 'graph.document' },
+    value => { value.schemaRevision = 'a'.repeat(64) },
+  ]) {
+    const malformed = contractExamples({ operation: 'graph.status' })
+    mutate(malformed)
+    assert.throws(() => validateApiResponse(examplesDescriptor, malformed), error => error.code === 'RESPONSE_CONTRACT_INVALID')
+  }
+  for (const operation of ['contracts.list', 'contracts.export']) {
+    const older = getContractRegistry('1.0').operations.find(item => item.id === operation)
+    const wrongVersionResult = dispatchContractTool(operation, {}, '1.1')
+    assert.throws(() => validateApiResponse(older, wrongVersionResult), error => error.code === 'RESPONSE_CONTRACT_INVALID')
+  }
 })

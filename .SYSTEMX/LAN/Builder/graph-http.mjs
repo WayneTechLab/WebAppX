@@ -1,4 +1,5 @@
 import { GraphError } from './graph-core.mjs'
+import { types } from 'node:util'
 import { API_VERSION, SUPPORTED_API_VERSIONS, discoveryForClient } from './api-contracts.mjs'
 import { validateApiRequest, validateApiResponse, apiErrorResult } from './api-validation.mjs'
 import { dispatchContractTool } from './api-tools.mjs'
@@ -13,13 +14,13 @@ const COMMAND_OPERATIONS = new Set([
 const CONTRACT_TOOLS = new Set([
   'contracts.list', 'contracts.describe', 'contracts.examples', 'contracts.compatibility', 'contracts.export',
 ])
-const REQUEST_ID = /^[A-Za-z][A-Za-z0-9_-]{0,63}$/
+const REQUEST_ID = /^[A-Za-z0-9_-]{1,64}$/
 
 function refuse(code, message, category = 'validation', statusCode = 400) {
   throw new GraphError(code, message, { category, statusCode })
 }
 function safeField(body, key) {
-  if (!body || typeof body !== 'object' || Array.isArray(body)) return null
+  if (!body || typeof body !== 'object' || types.isProxy(body) || Array.isArray(body)) return null
   const descriptor = Object.getOwnPropertyDescriptor(body, key)
   return descriptor && Object.hasOwn(descriptor, 'value') ? descriptor.value : null
 }

@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict'
+import { spawn } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
-import { capabilityKeys, graphFixture, legacyGraphFixture, outputDirectory, requirementsFromSpec } from '../../scripts/lan-graph-contract-browser.mjs'
+import { bindCatalogRequirements, capabilityKeys, graphFixture, legacyGraphFixture, outputDirectory, requirementsFromSpec, stopOwned } from '../../scripts/lan-graph-contract-browser.mjs'
 
 const root = resolve(fileURLToPath(new URL('../..', import.meta.url)))
 const foundation = JSON.parse(readFileSync(join(root, '.SYSTEMX/LAN/Backlog/specs/01-foundation.json'), 'utf8'))
@@ -44,4 +45,30 @@ test('evidence output option is explicit and rejects ambiguous arguments', () =>
   assert.throws(() => outputDirectory(['--output-dir'], '/tmp/default-evidence'))
   assert.throws(() => outputDirectory(['--output-dir', '/tmp/a', '--output-dir', '/tmp/b'], '/tmp/default-evidence'))
   assert.throws(() => outputDirectory(['--unknown', '/tmp/a'], '/tmp/default-evidence'))
+})
+
+test('browser evidence binds every original requirement ID, lane and definition digest', () => {
+  const catalog = JSON.parse(readFileSync(join(root, 'docs/backlog/lan-10000.json'), 'utf8'))
+  const records = bindCatalogRequirements(requirementsFromSpec(foundation), catalog)
+  assert.equal(records.flatMap((item) => item.definitions).length, 200)
+  assert.equal(new Set(records.flatMap((item) => item.definitions.map((definition) => definition.id))).size, 200)
+  const changed = structuredClone(catalog)
+  changed.items.find((item) => item.id === 'LAN-00401').capabilityKey = 'another-capability'
+  assert.throws(() => bindCatalogRequirements(requirementsFromSpec(foundation), changed), /binding changed/)
+  const absent = structuredClone(catalog)
+  absent.items = absent.items.filter((item) => item.id !== 'LAN-00600')
+  assert.throws(() => bindCatalogRequirements(requirementsFromSpec(foundation), absent), /binding changed/)
+})
+
+test('owned process cleanup treats signal termination as terminal and is safe to repeat', { timeout: 8000 }, async () => {
+  const child = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { stdio: 'ignore' })
+  await new Promise((done, reject) => { child.once('spawn', done); child.once('error', reject) })
+  try {
+    await stopOwned(child)
+    assert.equal(child.signalCode, 'SIGTERM')
+    assert.equal(child.exitCode, null, 'Signal exits must not be confused with a still-running child')
+    await stopOwned(child)
+  } finally {
+    if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL')
+  }
 })

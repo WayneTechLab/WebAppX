@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { types } from 'node:util'
 import { GraphError, canonicalJson } from './graph-core.mjs'
 import { validateGraph } from './graph-validation.mjs'
 
@@ -65,6 +66,7 @@ function boundedJsonCopy(input, maxBytes = MAX_ENVELOPE_BYTES) {
       return value
     }
     if (typeof value !== 'object') refuse('GRAPH_INPUT_INVALID', 'Graph input must contain only JSON values.')
+    if (types.isProxy(value)) refuse('GRAPH_INPUT_INVALID', 'Graph input must contain only plain JSON data.')
     if (ancestors.has(value)) refuse('GRAPH_INPUT_CYCLE', 'Graph input contains a cycle.')
     ancestors.add(value)
     count(2)
@@ -187,7 +189,11 @@ function listChanges(before, after) {
       const sameMembership = oldSorted.length === newSorted.length &&
         oldSorted.every((child, index) => child === newSorted[index])
       if (canonicalJson(oldRest) !== canonicalJson(newRest) || !sameMembership) result.changed.push({ kind, id })
-      if (sameMembership && canonicalJson(oldChildren) !== canonicalJson(newChildren)) result.reordered.push({ kind, id })
+      const oldSet = new Set(oldChildren)
+      const newSet = new Set(newChildren)
+      const oldSurvivors = oldChildren.filter(id => newSet.has(id))
+      const newSurvivors = newChildren.filter(id => oldSet.has(id))
+      if (canonicalJson(oldSurvivors) !== canonicalJson(newSurvivors)) result.reordered.push({ kind, id })
     }
     for (const id of newItems.keys()) if (!oldItems.has(id)) result.added.push({ kind, id })
   }

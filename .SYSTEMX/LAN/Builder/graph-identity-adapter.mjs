@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { types } from 'node:util'
 import { validateIdentityMap } from './identity-core.mjs'
 import { GraphError } from './graph-core.mjs'
 import { validateGraph } from './graph-validation.mjs'
@@ -16,13 +17,34 @@ function field(record, key) {
   return descriptor?.value
 }
 
+function identityData(value, depth = 0, seen = new Set(), budget = { entries: 0 }) {
+  if (value === null || ['string', 'number', 'boolean', 'undefined'].includes(typeof value)) return
+  if (typeof value !== 'object' || types.isProxy(value) || depth > 64 || seen.has(value)
+    || ![Object.prototype, Array.prototype, null].includes(Object.getPrototypeOf(value))) {
+    refuse('GRAPH_IDENTITY_INVALID', 'The selected identity document must be bounded plain data.')
+  }
+  seen.add(value)
+  const descriptors = Object.getOwnPropertyDescriptors(value)
+  const keys = Reflect.ownKeys(descriptors)
+  budget.entries += keys.length
+  if (budget.entries > 50_000) refuse('GRAPH_IDENTITY_LIMIT', 'The identity metadata exceeds the graph import budget.', { statusCode: 413 })
+  for (const key of keys) {
+    const descriptor = descriptors[key]
+    if (typeof key !== 'string' || !Object.hasOwn(descriptor, 'value')) {
+      refuse('GRAPH_IDENTITY_INVALID', 'The selected identity document must use data properties.')
+    }
+    identityData(descriptor.value, depth + 1, seen, budget)
+  }
+  seen.delete(value)
+}
+
 /**
  * Adapt an accepted F003 identity read result to a descriptive graph. The
  * identity map remains the only authority for its source spans and ownership;
  * this graph never grants an edit or source-save capability.
  */
 export function graphFromIdentity(record) {
-  if (!record || typeof record !== 'object' || Array.isArray(record)
+  if (!record || typeof record !== 'object' || types.isProxy(record) || Array.isArray(record)
     || ![Object.prototype, null].includes(Object.getPrototypeOf(record))) {
     refuse('GRAPH_IDENTITY_MISSING', 'Select an accepted identity document.', { category: 'missing-target', statusCode: 404 })
   }
@@ -30,9 +52,16 @@ export function graphFromIdentity(record) {
   if (field(record, 'missing') === true || !imported) {
     refuse('GRAPH_IDENTITY_MISSING', 'Select an accepted identity document.', { category: 'missing-target', statusCode: 404 })
   }
+  if (field(record, 'stale') === true || field(record, 'sourceErrorCode')) {
+    refuse('GRAPH_IDENTITY_STALE', 'Reconcile the current source identity before importing a graph.',
+      { category: 'conflict', statusCode: 409 })
+  }
   let map
-  try { map = validateIdentityMap(imported) }
-  catch { refuse('GRAPH_IDENTITY_INVALID', 'The selected identity document is invalid. Keep the previous accepted graph.') }
+  try { identityData(imported); map = validateIdentityMap(imported) }
+  catch (error) {
+    if (error instanceof GraphError) throw error
+    refuse('GRAPH_IDENTITY_INVALID', 'The selected identity document is invalid. Keep the previous accepted graph.')
+  }
 
   // F003's node array is in source order. Use that order for every child list.
   const children = new Map(map.nodes.map(node => [node.id, []]))

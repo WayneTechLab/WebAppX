@@ -8,6 +8,7 @@ import {
   validatePublicSchema,
 } from '../Builder/api-validation.mjs';
 import { getOperationDescriptor } from '../Builder/api-contracts.mjs';
+import { GraphError } from '../Builder/graph-core.mjs';
 
 const query = (operation = 'graph.status', apiVersion = '1.1') => ({
   apiVersion, requestId: 'request_1', kind: 'query', operation,
@@ -161,6 +162,9 @@ test('malformed success is an internal typed error; returned success is copied',
     assert.equal(error.statusCode, 500);
     assert.equal(error.endpoint, '/api/contracts/query');
     assert.ok(error.findings.some(item => item.path === '$.count'));
+    assert.match(apiErrorResult(error).result.error.message, /\/api\/contracts\/query/);
+    error.endpoint = '/private/path secret';
+    assert.doesNotMatch(JSON.stringify(apiErrorResult(error)), /private\/path|secret/);
     return true;
   });
 });
@@ -195,4 +199,88 @@ test('non-JSON accessors and prototype keys refuse without invoking handlers', (
   const poisoned = JSON.parse('{"type":"graph.status","__proto__":{"polluted":true}}');
   rejectRequest({ ...query(), payload: poisoned }, { kind: 'query' });
   assert.equal({}.polluted, undefined);
+});
+
+test('published envelope schemas and runtime request IDs accept the same bounded forms', () => {
+  const descriptor = getOperationDescriptor('graph.status');
+  for (const requestId of ['request_1', '_request', 'x'.repeat(64)]) {
+    const request = { ...query(), requestId };
+    assert.equal(validatePublicSchema(descriptor.inputSchema, request).valid, true);
+    assert.equal(validateApiRequest(request).envelope.requestId, requestId);
+  }
+  for (const requestId of ['request.with.dot', 'request:colon', '', 'x'.repeat(65)]) {
+    const request = { ...query(), requestId };
+    assert.equal(validatePublicSchema(descriptor.inputSchema, request).valid, false);
+    rejectRequest(request);
+  }
+});
+
+test('payload and discriminator failures stay validation errors when confirmation also fails', () => {
+  const request = command('graph.accept');
+  request.payload = { type: 'graph.preview', identityDocumentId: 'Document1' };
+  request.confirmation = 'wrong';
+  rejectRequest(request, { kind: 'command' }, 'validation');
+  const onlyConfirmation = command('graph.accept');
+  onlyConfirmation.payload = { type: 'graph.accept', digest: 'a'.repeat(64) };
+  onlyConfirmation.confirmation = 'wrong';
+  rejectRequest(onlyConfirmation, { kind: 'command' }, 'confirmation');
+});
+
+test('oneOf closest-variant diagnostics retain the exact omitted count', () => {
+  const schema = { oneOf: [{ type: 'object', properties: {}, additionalProperties: false }] };
+  const value = Object.fromEntries(Array.from({ length: 91 }, (_, index) => [`unknown_${index}`, true]));
+  const result = validatePublicSchema(schema, value);
+  assert.equal(result.valid, false);
+  assert.equal(result.findings.length, 9);
+  assert.equal(result.omittedCount, 83);
+  assert.equal(result.findings.length + result.omittedCount, 92);
+  assert.doesNotMatch(JSON.stringify(result), /unknown_0/);
+});
+
+test('response validation uses its declared larger byte budget without enlarging request limits', () => {
+  const descriptor = { resultSchema: {
+    type: 'object', required: ['data'], additionalProperties: false,
+    properties: { data: { type: 'string', maxLength: 550000 } },
+  } };
+  const result = { data: 'x'.repeat(500000) };
+  assert.equal(validateApiResponse(descriptor, result).data.length, 500000);
+  assert.equal(validatePublicSchema(descriptor.resultSchema, result).valid, false);
+  assert.throws(() => validateApiResponse(descriptor, { data: 'x'.repeat(800001) }), error => {
+    assert.equal(error.code, 'RESPONSE_CONTRACT_INVALID');
+    return true;
+  });
+});
+
+test('JSON byte budgets count exactly the serialized object and array delimiters', () => {
+  const object = { data: 'x'.repeat(399989) };
+  assert.equal(Buffer.byteLength(JSON.stringify(object)), 400000);
+  assert.equal(validatePublicSchema({ type: 'object' }, object).valid, true);
+  object.data += 'x';
+  assert.equal(validatePublicSchema({ type: 'object' }, object).valid, false);
+  const array = ['x'.repeat(399996)];
+  assert.equal(Buffer.byteLength(JSON.stringify(array)), 400000);
+  assert.equal(validatePublicSchema({ type: 'array' }, array).valid, true);
+  array[0] += 'x';
+  assert.equal(validatePublicSchema({ type: 'array' }, array).valid, false);
+});
+
+test('only trusted graph findings retain qualified metadata and a reviewed source revision message', () => {
+  const sourceRevision = 'd'.repeat(64);
+  const error = new GraphError('GRAPH_IMPORT_REFUSED', '/private/path secret-canary', { findings: [
+    { id: 'graph_source', code: 'GRAPH_SOURCE_REVISION_REFUSED', severity: 'error', objectId: 'Node1', referenceType: 'node',
+      message: `Source revision ${sourceRevision} could not be imported; the previous accepted graph remains available.` },
+    { id: 'graph_wrong', code: 'GRAPH_NODE_INVALID', severity: 'error', objectId: 'Node2', referenceType: 'node', message: '/private/path secret-canary' },
+  ] });
+  const response = apiErrorResult(error);
+  assert.equal(response.result.error.findings[0].objectId, 'Node1');
+  assert.equal(response.result.error.findings[0].referenceType, 'node');
+  assert.match(response.result.error.findings[0].message, new RegExp(sourceRevision));
+  assert.doesNotMatch(JSON.stringify(response), /private\/path|secret-canary/);
+  const foreign = Object.assign(new Error('secret-canary'), {
+    category: 'validation', code: 'GRAPH_IMPORT_REFUSED', findings: error.findings,
+  });
+  const foreignResponse = apiErrorResult(foreign);
+  assert.equal(foreignResponse.result.error.category, 'internal');
+  assert.equal(foreignResponse.result.error.code, 'INTERNAL_ERROR');
+  assert.deepEqual(foreignResponse.result.error.findings, []);
 });

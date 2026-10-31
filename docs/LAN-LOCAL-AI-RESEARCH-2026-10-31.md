@@ -1,6 +1,6 @@
-# WebAppX local scratch AI research and adoption plan
+# WebAppXai scratch AI research and adoption plan
 
-Updated 2026-10-31. **WebAppX Scratch AI Pilot** is a separate local research
+Updated 2026-10-31. **WebAppXai**, originally trained as WebAppX Scratch AI Pilot, is a separate research
 checkpoint trained from random weights and a newly trained tokenizer using
 selected WebAppX source and documentation. Its model is below the requested
 160 MB limit and its isolated desktop offline pipeline works. Answer quality is
@@ -72,6 +72,21 @@ validation phrasings of the same facts. Validation loss was observed during
 training. This is not a blind or unseen-knowledge benchmark. The two successful
 demo answers do not replace the weak full quality result. Pretraining and chat
 losses measure different tasks and must not be compared as one score.
+
+## Private research publication
+
+The owner selected the model name **WebAppXai** and the profile display name
+**Wayne Tech Lab LLC**. A seven-file package was uploaded to a private research
+repository, including the ONNX model, tokenizer, manifest, model card, full weak
+quality result and a sanitized experiment receipt. The remote model SHA-256
+matches the local export. Eleven local evidence path keys in the uploaded receipt
+were converted to relative paths; the original receipt remains preserved.
+
+The private destination and upload revision belong to the operator handoff. The
+model is not a public release, no public distribution license was selected, and
+this publication does not integrate inference into WebAppX or satisfy an app
+installation gate. Raw corpus, checkpoints and training environments were not
+uploaded.
 
 ## Adoption checklist outside LAN acceptance
 

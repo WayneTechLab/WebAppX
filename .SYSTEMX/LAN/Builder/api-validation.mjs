@@ -1,8 +1,11 @@
 import { Buffer } from 'node:buffer';
+import { GraphError } from './graph-core.mjs';
+import { ApiToolError } from './api-tools.mjs';
 import {
   API_VERSION,
   SUPPORTED_API_VERSIONS,
   contractLimits,
+  getContractRegistry,
   getOperationDescriptor,
 } from './api-contracts.mjs';
 
@@ -14,6 +17,8 @@ const BYTE_LIMIT = [
   contractLimits?.requestBytes,
   contractLimits?.maxPayloadBytes,
 ].find(value => Number.isSafeInteger(value) && value > 0) ?? 400_000;
+const RESPONSE_BYTE_LIMIT = Number.isSafeInteger(contractLimits.responseBytes)
+  ? contractLimits.responseBytes : BYTE_LIMIT;
 const MAX_DEPTH = 64;
 const MAX_ENTRIES = 100_000;
 const ID_64 = /^[A-Za-z0-9_-]{1,64}$/;
@@ -77,6 +82,7 @@ const PUBLIC_MESSAGES = Object.freeze({
   REQUEST_TOO_LARGE: 'Request exceeds the contract byte limit.',
   REQUEST_TOO_COMPLEX: 'Request exceeds the contract complexity limit.',
   UNSUPPORTED_API_VERSION: `The requested API version is unsupported. Supported versions: ${SUPPORTED_API_VERSIONS.join(', ')}.`,
+  API_VERSION_UNSUPPORTED: `The requested API version is unsupported. Supported versions: ${SUPPORTED_API_VERSIONS.join(', ')}.`,
   OPERATION_UNAVAILABLE: 'Operation is unavailable in the selected API version.',
   RESPONSE_CONTRACT_INVALID: 'The handler result does not match its public contract.',
 });
@@ -150,12 +156,12 @@ export class ApiContractError extends Error {
   }
 }
 
-function boundedCopy(value) {
+function boundedCopy(value, byteLimit = BYTE_LIMIT) {
   const active = new WeakSet();
   const budget = { bytes: 0, entries: 0 };
   const addBytes = bytes => {
     budget.bytes += bytes;
-    if (budget.bytes > BYTE_LIMIT) {
+    if (budget.bytes > byteLimit) {
       throw new ApiContractError('REQUEST_TOO_LARGE', 'JSON value exceeds the contract byte limit.', {
         findings: [finding('$', 'MAX_BYTES', 'JSON value exceeds the contract byte limit.')],
       });
@@ -201,7 +207,7 @@ function boundedCopy(value) {
         result.push(copy(descriptor.value, depth + 1));
       }
       active.delete(item);
-      addBytes(item.length + 2);
+      addBytes(Math.max(0, item.length - 1) + 2);
       return result;
     }
     if (prototype !== Object.prototype && prototype !== null) {
@@ -223,12 +229,15 @@ function boundedCopy(value) {
       result[key] = copy(descriptor.value, depth + 1);
     }
     active.delete(item);
-    addBytes(keys.length + 2);
+    addBytes(Math.max(0, keys.length - 1) + 2);
     return result;
   };
   try { return copy(value, 0); }
   catch (error) {
-    if (error instanceof ApiContractError) throw error;
+    if (error instanceof ApiContractError) {
+      if (!error.findings.length) error.findings = [finding('$', 'INVALID_JSON', FINDING_MESSAGES.INVALID_JSON)];
+      throw error;
+    }
     throw new ApiContractError('INVALID_JSON', 'The contract value cannot be read as plain JSON.');
   }
 }
@@ -272,6 +281,7 @@ function inspectSchema(schema, value, path, output, depth = 0) {
       output.add(path, 'ONE_OF', 'Value must match exactly one reviewed schema variant.');
       if (matches === 0 && closest) {
         for (const item of closest.findings.slice(0, 8)) output.add(item.path, item.code, item.message);
+        output.addOmitted(closest.omittedCount + Math.max(0, closest.findings.length - 8));
       }
     }
   }
@@ -320,7 +330,7 @@ function inspectSchema(schema, value, path, output, depth = 0) {
 }
 
 /** Validate the reviewed, bounded public JSON Schema subset without echoing values. */
-export function validatePublicSchema(schema, value) {
+export function validatePublicSchema(schema, value, { maxBytes = BYTE_LIMIT } = {}) {
   const output = collector();
   let reviewedSchema;
   try { reviewedSchema = boundedCopy(schema); }
@@ -329,7 +339,9 @@ export function validatePublicSchema(schema, value) {
     return { valid: false, findings: output.findings, omittedCount: output.omittedCount };
   }
   let copy;
-  try { copy = boundedCopy(value); }
+  const selectedLimit = Number.isSafeInteger(maxBytes) && maxBytes > 0 && maxBytes <= RESPONSE_BYTE_LIMIT
+    ? maxBytes : BYTE_LIMIT;
+  try { copy = boundedCopy(value, selectedLimit); }
   catch (error) {
     if (error instanceof ApiContractError && error.findings.length) {
       for (const item of error.findings) output.add(item.path, item.code, item.message);
@@ -414,14 +426,17 @@ export function validateApiRequest(envelope, { kind } = {}) {
       issues.add('$.expectedRevision', 'REVISION', 'Expected revision must be null or a 64-character lowercase digest.');
     }
   }
-  const schemaPayload = Object.create(null);
-  for (const key of Object.keys(input.payload)) if (allowedPayloadFields.has(key)) schemaPayload[key] = input.payload[key];
-  const schemaResult = validatePublicSchema(descriptor.inputSchema, schemaPayload);
-  for (const item of schemaResult.findings) issues.add(item.path.replace(/^\$/, '$.payload'), item.code, item.message);
+  // Public inputSchema describes the entire discriminated envelope. Validating
+  // a payload against that schema rejects every otherwise valid request.
+  const schemaResult = validatePublicSchema(descriptor.inputSchema, input);
+  for (const item of schemaResult.findings) issues.add(item.path, item.code, item.message);
   issues.addOmitted(schemaResult.omittedCount);
   if (!issues.valid) {
-    const category = command && issues.findings.some(item => item.code === 'CONFIRMATION') ? 'confirmation'
-      : command && issues.findings.some(item => item.code === 'CAPABILITY') ? 'capability'
+    const payloadOrEnvelopeInvalid = issues.findings.some(item =>
+      item.path !== '$.confirmation' && item.path !== '$.capabilityId');
+    const category = payloadOrEnvelopeInvalid ? 'validation'
+      : command && issues.findings.some(item => item.path === '$.confirmation') ? 'confirmation'
+        : command && issues.findings.some(item => item.path === '$.capabilityId') ? 'capability'
         : 'validation';
     throwFindings('INVALID_REQUEST', 'Request does not match the selected contract.', issues, category);
   }
@@ -456,13 +471,31 @@ export function validateApiResponse(descriptor, result, { endpoint } = {}) {
     throw mismatch();
   }
   let copy;
-  try { copy = boundedCopy(result); }
+  try { copy = boundedCopy(result, RESPONSE_BYTE_LIMIT); }
   catch {
     throw mismatch();
   }
-  const report = validatePublicSchema(descriptor.resultSchema, copy);
+  const report = validatePublicSchema(descriptor.resultSchema, copy, { maxBytes: RESPONSE_BYTE_LIMIT });
   if (!report.valid) {
     throw mismatch(report.findings, report.omittedCount);
+  }
+  if (descriptor.id === 'contracts.examples') {
+    // The advertised valid example is an executable request contract, not an
+    // arbitrary object. Checking it here never resolves a target or dispatches.
+    try {
+      const valid = validateApiRequest(copy.validRequest);
+      if (valid.envelope.apiVersion !== copy.apiVersion || valid.envelope.operation !== copy.operation
+        || getContractRegistry(copy.apiVersion).schemaRevision !== copy.schemaRevision) throw mismatch();
+      let invalidRefused = false;
+      try { validateApiRequest(copy.invalidRequest); }
+      catch (error) {
+        if (!(error instanceof ApiContractError)) throw error;
+        invalidRefused = true;
+      }
+      if (!invalidRefused) throw mismatch();
+    } catch {
+      throw mismatch([finding('$.validRequest', 'TYPE', 'The example response does not contain matching valid and invalid request contracts.')]);
+    }
   }
   return copy;
 }
@@ -470,31 +503,57 @@ export function validateApiResponse(descriptor, result, { endpoint } = {}) {
 /** Convert only reviewed typed failures into the public error envelope. */
 export function apiErrorResult(error, { apiVersion = API_VERSION, requestId = null } = {}) {
   const typed = error instanceof ApiContractError;
-  const foreignCategory = CATEGORIES.has(error?.category) ? error.category : 'internal';
+  const graphTyped = error instanceof GraphError;
+  const toolTyped = error instanceof ApiToolError;
+  const versionTyped = error?.name === 'ApiVersionError' && error?.code === 'API_VERSION_UNSUPPORTED';
+  const known = typed || graphTyped || toolTyped || versionTyped;
+  const foreignCategory = known && CATEGORIES.has(error?.category) ? error.category : 'internal';
   const category = typed && CATEGORIES.has(error.category) ? error.category : foreignCategory;
   const safeCode = typeof error?.code === 'string' && SAFE_CODE.test(error.code) ? error.code : 'INTERNAL_ERROR';
   const statusCode = category === 'internal' ? 500
     : Number.isInteger(error?.statusCode) && error.statusCode >= 400 && error.statusCode < 500
       ? error.statusCode
       : category === 'missing-target' ? 404 : category === 'conflict' ? 409 : 400;
-  const message = has(PUBLIC_MESSAGES, safeCode) ? PUBLIC_MESSAGES[safeCode]
+  const responseEndpoint = typed && safeCode === 'RESPONSE_CONTRACT_INVALID'
+    && ['/api/contracts/discovery', '/api/contracts/query', '/api/contracts/command'].includes(error.endpoint)
+    ? error.endpoint : null;
+  const message = responseEndpoint ? `The handler result for ${responseEndpoint} does not match its public contract.`
+    : has(PUBLIC_MESSAGES, safeCode) ? PUBLIC_MESSAGES[safeCode]
     : category === 'internal' ? 'The contract request could not be completed.'
       : 'The requested contract operation could not be completed.';
-  const rawFindings = typed && Array.isArray(error.findings) ? error.findings : [];
-  const findings = rawFindings.slice(0, FINDING_LIMIT).map(item => ({
+  const rawFindings = (typed || graphTyped) && Array.isArray(error.findings) ? error.findings : [];
+  const findings = graphTyped ? rawFindings.slice(0, FINDING_LIMIT).map((item, index) => {
+    const code = typeof item?.code === 'string' && /^GRAPH_[A-Z0-9_]{1,57}$/.test(item.code)
+      ? item.code : 'GRAPH_DIAGNOSTIC_INVALID';
+    const sourceRevisionMessage = code === 'GRAPH_SOURCE_REVISION_REFUSED' && typeof item?.message === 'string'
+      && /^Source revision [a-f0-9]{64} could not be imported; the previous accepted graph remains available\.$/.test(item.message)
+      ? item.message : null;
+    return {
+      id: typeof item?.id === 'string' && /^[A-Za-z][A-Za-z0-9_-]{0,95}$/.test(item.id)
+        ? item.id : `graph_diagnostic_${index}`,
+      code,
+      severity: ['error', 'warning', 'info'].includes(item?.severity) ? item.severity : 'error',
+      objectId: typeof item?.objectId === 'string' && /^[A-Za-z][A-Za-z0-9_-]{0,95}$/.test(item.objectId)
+        ? item.objectId : null,
+      referenceType: ['node', 'component', 'collection', 'page'].includes(item?.referenceType)
+        ? item.referenceType : null,
+      message: sourceRevisionMessage ?? 'Graph validation requires review of the affected metadata.',
+    };
+  }) : rawFindings.slice(0, FINDING_LIMIT).map(item => ({
     path: typeof item?.path === 'string' && SAFE_PATH.test(item.path) ? item.path : '$',
     code: typeof item?.code === 'string' && has(FINDING_MESSAGES, item.code) ? item.code : 'INVALID_JSON',
     message: typeof item?.code === 'string' && has(FINDING_MESSAGES, item.code)
       ? FINDING_MESSAGES[item.code] : FINDING_MESSAGES.INVALID_JSON,
   }));
-  const omittedCount = typed && Number.isSafeInteger(error.omittedCount) && error.omittedCount >= 0 ? error.omittedCount : 0;
+  const omittedCount = (typed || graphTyped) && Number.isSafeInteger(error.omittedCount) && error.omittedCount >= 0
+    ? error.omittedCount + Math.max(0, rawFindings.length - FINDING_LIMIT) : 0;
   return {
     statusCode,
     result: {
       apiVersion: typeof apiVersion === 'string' && /^[0-9]+(?:\.[0-9]+){1,2}$/.test(apiVersion) && apiVersion.length <= 32 ? apiVersion : API_VERSION,
       requestId: typeof requestId === 'string' && ID_64.test(requestId) ? requestId : null,
       ok: false,
-      error: { category, code: category === 'internal' && !typed ? 'INTERNAL_ERROR' : safeCode, message, findings, omittedCount },
+      error: { category, code: category === 'internal' && !known ? 'INTERNAL_ERROR' : safeCode, message, findings, omittedCount },
     },
   };
 }

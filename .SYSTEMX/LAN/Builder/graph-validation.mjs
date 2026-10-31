@@ -4,6 +4,7 @@
  * This module never reads source files or grants source editing authority.
  */
 import { createHash } from 'node:crypto'
+import { types } from 'node:util'
 import { GraphError, graphLimits, graphRevision, normalizeGraph } from './graph-core.mjs'
 
 const IDENTIFIER = /^[A-Za-z][A-Za-z0-9_-]{0,95}$/
@@ -20,6 +21,7 @@ function fail(code, message, category = 'validation', statusCode = 400) {
 
 function plain(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
+    && !types.isProxy(value)
     && (Object.getPrototypeOf(value) === Object.prototype || Object.getPrototypeOf(value) === null)
 }
 
@@ -306,7 +308,7 @@ export function resolveGraphReference(graph, reference) {
 
 /** Filter bounded findings without coercing filter types or mutating the input. */
 export function filterGraphFindings(findings, options = {}) {
-  if (!Array.isArray(findings) || Object.getPrototypeOf(findings) !== Array.prototype
+  if (!Array.isArray(findings) || types.isProxy(findings) || Object.getPrototypeOf(findings) !== Array.prototype
     || findings.length > MAX_FINDINGS) {
     fail('GRAPH_FINDINGS_INVALID', 'Findings must be a bounded array.')
   }

@@ -176,9 +176,18 @@ function sourceRef(value) {
   return { ...value }
 }
 
-function rejectPrivate(value, depth = 0) {
+function rejectPrivate(value, path = []) {
   if (typeof value === 'string') {
-    if (/(?:^|[\s='"(])\/(?:Users|home|private|Volumes|var|tmp|etc|root|mnt|opt)(?:\/|\b)/i.test(value)
+    // `/home` and other single-segment app routes are URL paths, not host
+    // locations. Exempt only the actual page route field; filesystem paths in
+    // labels/extensions and deeper host locations still use the private guard.
+    const pageRouteField = path.length === 3 && path[0] === 'pages' && Number.isInteger(path[1]) && path[2] === 'route'
+    const pageRoute = pageRouteField && /^\/[A-Za-z][A-Za-z0-9_-]*\/?$/.test(value)
+    const hostPath = /(?:^|[\s='"(])\/(?:Users|home|private|Volumes|var|tmp|etc|root|mnt|opt)(?:\/|\b)/i.test(value)
+    if (pageRouteField && !pageRoute && hostPath) {
+      refuse('GRAPH_ROUTE_PRIVATE_PREFIX', 'Route uses a reserved host-path prefix. Choose another route or use a separately reviewed route codec.')
+    }
+    if (!pageRoute && hostPath
       || /(?:^|[\s='"(])[A-Za-z]:[\\/]/.test(value) || /\\\\[^\\\s]+\\/.test(value)
       || /file:\/\//i.test(value) || /\bBearer\s+\S+/i.test(value)
       || /\bsk-[A-Za-z0-9_-]{8,}\b/.test(value)
@@ -192,15 +201,15 @@ function rejectPrivate(value, depth = 0) {
     return
   }
   if (value === null || typeof value !== 'object') return
-  if (depth > graphLimits.depth) refuse('GRAPH_DEPTH_LIMIT', 'JSON nesting exceeds the depth limit.', { statusCode: 413 })
-  if (Array.isArray(value)) { for (const item of value) rejectPrivate(item, depth + 1); return }
+  if (path.length > graphLimits.depth) refuse('GRAPH_DEPTH_LIMIT', 'JSON nesting exceeds the depth limit.', { statusCode: 413 })
+  if (Array.isArray(value)) { value.forEach((item, index) => rejectPrivate(item, [...path, index])); return }
   for (const [key, item] of Object.entries(value)) {
     const normalized = key.replace(/[^A-Za-z0-9]/g, '').toLowerCase()
     if (RUNTIME_NAMES.has(normalized) || /^(?:runtime|dom|process|session|token|secret|credential|preview|temporary|ephemeral)/.test(normalized)
       || /^on[A-Z]/.test(key)) {
       refuse('GRAPH_RUNTIME_FIELD', 'Graph contains a runtime or executable field.')
     }
-    rejectPrivate(item, depth + 1)
+    rejectPrivate(item, [...path, key])
   }
 }
 
@@ -209,6 +218,9 @@ function extensionValue(value, depth = 0) {
     refuse('GRAPH_EXTENSION_DEPTH', 'Reviewed extension metadata exceeds depth 5.', { statusCode: 413 })
   }
   if (value && typeof value === 'object') {
+    if ((Array.isArray(value) ? value.length : Object.keys(value).length) > 1000) {
+      refuse('GRAPH_EXTENSION_ENTRY_LIMIT', 'Reviewed extension arrays and objects exceed the 1000-entry limit.', { statusCode: 413 })
+    }
     for (const item of Array.isArray(value) ? value : Object.values(value)) extensionValue(item, depth + 1)
   }
 }

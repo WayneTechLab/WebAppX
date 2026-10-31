@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { types } from 'node:util'
 import { GraphError } from './graph-core.mjs'
 import { validateGraph, resolveGraphReference, filterGraphFindings } from './graph-validation.mjs'
 import { compareGraphs, previewGraphMigration, applyGraphMigration,
@@ -16,7 +17,7 @@ function copy(value) { return JSON.parse(JSON.stringify(value)) }
 function digest(value) { return createHash('sha256').update(value).digest('hex') }
 function options(value, keys) {
   if (value === undefined) return {}
-  if (!value || typeof value !== 'object' || Array.isArray(value)
+  if (!value || typeof value !== 'object' || types.isProxy(value) || Array.isArray(value)
     || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) {
     refuse('GRAPH_ARGUMENT_INVALID', 'Use an object with the declared graph fields.')
   }
@@ -41,12 +42,12 @@ function expectedRevision(value, exists, current) {
   }
 }
 function attemptedRevision(value) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  if (!value || typeof value !== 'object' || types.isProxy(value) || Array.isArray(value)) return null
   const d = Object.getOwnPropertyDescriptor(value, 'sourceRevision')
   return d && Object.hasOwn(d, 'value') && typeof d.value === 'string' && HASH.test(d.value) ? d.value : null
 }
 function recordField(record, key) {
-  if (!record || typeof record !== 'object' || Array.isArray(record)
+  if (!record || typeof record !== 'object' || types.isProxy(record) || Array.isArray(record)
     || ![Object.prototype, null].includes(Object.getPrototypeOf(record))) return undefined
   const descriptor = Object.getOwnPropertyDescriptor(record, key)
   if (descriptor && !Object.hasOwn(descriptor, 'value')) {
@@ -78,7 +79,42 @@ export function createGraphService({ workspaceId, readIdentityDocument, readIden
   }
   const accepted = new Map()
   const pending = new Map()
+  const previewRequests = new Map()
+  let activePreviews = 0
   let sequence = 0
+
+  // Request generations fence asynchronous identity reads. A later preview or
+  // accepted store cannot be replaced by an earlier read finishing late.
+  // Entries exist only while requests are in flight, so refused document IDs
+  // cannot grow an unbounded long-lived generation map.
+  function beginPreview(id) {
+    if (activePreviews >= LIMITS.pendingProposals) {
+      refuse('GRAPH_PREVIEW_LIMIT', 'The concurrent graph preview limit is reached.', { statusCode: 413 })
+    }
+    const record = previewRequests.get(id) ?? { latest: 0, active: 0 }
+    const generation = ++sequence
+    record.latest = generation
+    record.active += 1
+    activePreviews += 1
+    previewRequests.set(id, record)
+    return { id, generation }
+  }
+  function finishPreview(ticket) {
+    const record = previewRequests.get(ticket.id)
+    record.active -= 1
+    activePreviews -= 1
+    if (record.active === 0) previewRequests.delete(ticket.id)
+  }
+  function checkPreview(ticket) {
+    if (previewRequests.get(ticket.id)?.latest !== ticket.generation) {
+      refuse('GRAPH_PREVIEW_SUPERSEDED', 'A newer graph request superseded this preview. Review the latest request.',
+        { category: 'conflict', statusCode: 409 })
+    }
+  }
+  function fencePreview(id) {
+    const record = previewRequests.get(id)
+    if (record) record.latest = ++sequence
+  }
 
   function current(id) {
     const record = accepted.get(documentId(id))
@@ -122,6 +158,7 @@ export function createGraphService({ workspaceId, readIdentityDocument, readIden
     record.history.set(validated.revision, snapshot)
     while (record.history.size > LIMITS.revisionsPerDocument) record.history.delete(record.history.keys().next().value)
     record.current = validated.revision
+    fencePreview(id)
     discardPending(id)
     return publicSnapshot(snapshot)
   }
@@ -140,6 +177,8 @@ export function createGraphService({ workspaceId, readIdentityDocument, readIden
       const hasDocument = Object.hasOwn(args, 'document')
       const hasIdentity = Object.hasOwn(args, 'identityDocumentId')
       if (hasDocument === hasIdentity) refuse('GRAPH_PREVIEW_INPUT_INVALID', 'Select exactly one graph document or identity document.')
+      const selectedId = documentId(hasIdentity ? args.identityDocumentId : recordField(args.document, 'documentId'))
+      const ticket = beginPreview(selectedId)
       let sourceRevision = hasDocument ? attemptedRevision(args.document) : null
       let graph
       try {
@@ -173,12 +212,15 @@ export function createGraphService({ workspaceId, readIdentityDocument, readIden
         if (validated.graph.workspaceId !== workspaceId) refuse('GRAPH_WORKSPACE_MISMATCH',
           'The graph document belongs to another workspace.', { category: 'conflict', statusCode: 409 })
         const id = documentId(validated.graph.documentId)
+        if (id !== ticket.id) refuse('GRAPH_DOCUMENT_ID_INVALID', 'The preview document identity changed while it was read.')
+        checkPreview(ticket)
         const proposalDigest = digest(JSON.stringify(['graph-preview', workspaceId, id, validated.revision, ++sequence]))
         hold(id, 'graph', validated, proposalDigest)
         return copy({ digest: proposalDigest, documentId: id, revision: validated.revision,
           sourceRevision: validated.graph.sourceRevision, stats: validated.stats,
           findings: validated.findings, omittedCount: validated.omittedCount, document: validated.graph })
       } catch (error) { throw previewFailure(error, sourceRevision) }
+      finally { finishPreview(ticket) }
     },
 
     accept(input) {
@@ -204,7 +246,10 @@ export function createGraphService({ workspaceId, readIdentityDocument, readIden
       const args = options(input, ['documentId', 'severity', 'objectId', 'referenceType', 'offset', 'limit'])
       const snapshot = snapshotAt(args.documentId)
       const { documentId: _documentId, ...filters } = args
-      return copy(filterGraphFindings(snapshot.findings, filters))
+      const filtered = filterGraphFindings(snapshot.findings, filters)
+      return copy({ ...filtered, revision: snapshot.revision, totalScope: 'retained-findings',
+        upstreamOmittedCount: snapshot.omittedCount,
+        omittedCount: filtered.omittedCount + snapshot.omittedCount })
     },
 
     lookup(input) {
@@ -245,6 +290,7 @@ export function createGraphService({ workspaceId, readIdentityDocument, readIden
       if (preview.document.workspaceId !== workspaceId) refuse('GRAPH_WORKSPACE_MISMATCH',
         'The migrated graph belongs to another workspace.', { category: 'conflict', statusCode: 409 })
       const id = documentId(preview.document.documentId)
+      fencePreview(id)
       const proposalDigest = digest(JSON.stringify(['graph-migration-preview', workspaceId, id, preview.digest, ++sequence]))
       hold(id, 'migration', preview, proposalDigest)
       return copy({ ...preview, digest: proposalDigest })

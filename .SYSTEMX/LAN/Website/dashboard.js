@@ -551,9 +551,11 @@ async function request(path, options = {}) {
   })
   const result = await response.json().catch(() => ({}))
   if (!response.ok) {
-    const error = new Error(result.error ?? `HTTP ${response.status}`)
+    const error = new Error(typeof result.error === 'string' ? result.error : result.error?.message ?? `HTTP ${response.status}`)
     error.status = response.status
-    error.code = result.code
+    error.code = result.code ?? result.error?.code
+    if (path.startsWith('/api/contracts/') && result.ok === false && typeof result.apiVersion === 'string'
+      && result.error && typeof result.error === 'object' && typeof result.error.code === 'string') error.contractEnvelope = result
     if (Array.isArray(result.diagnostics) && result.diagnostics.length <= 1000) error.diagnostics = result.diagnostics
     if (validSourceRevision(result.currentRevision)) error.currentRevision = result.currentRevision.toLowerCase()
     throw error
@@ -3979,6 +3981,28 @@ async function boot() {
     selectedPath: () => document.querySelector('#source-file-select')?.value ?? '',
     onStageLiteral: stageIdentityLiteral,
   })
+  const graphContainer = create('div', 'graph-contract-container')
+  graphContainer.id = 'graph-contract-container'
+  document.querySelector('#panel-source').append(graphContainer)
+  try {
+    const { attachGraphContractInspector } = await import('./graph-contracts-ui.mjs')
+    attachGraphContractInspector({
+      container: graphContainer,
+      api: async (path, body) => {
+        try {
+          return await request(path, body === undefined ? {} : { method: 'POST', body: JSON.stringify(body) })
+        } catch (error) {
+          if (error.contractEnvelope) return error.contractEnvelope
+          throw error
+        }
+      },
+      getIdentityDocumentId: () => identityInspector?.currentDocumentReference()?.documentId ?? null,
+      getWorkspaceId: () => state.sourceRecoveryWorkspaceId,
+    })
+  } catch {
+    graphContainer.textContent = 'The graph inspector is unavailable. Existing source controls remain usable; reload after the local LAN service is ready.'
+    graphContainer.setAttribute('role', 'status')
+  }
   document.querySelector('#work-scope-select')?.addEventListener('change', (event) => {
     const value = event.target.value
     state.workSelection = value === 'root' ? { kind: 'root' } : value.startsWith('child:') ? { kind: 'child', name: value.slice(6) } : null

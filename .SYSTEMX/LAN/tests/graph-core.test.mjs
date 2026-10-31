@@ -189,3 +189,33 @@ test('GraphError bounds supplied diagnostics and carries the omitted count', () 
   assert.equal(error.category, 'validation')
   assert.equal(error.statusCode, 400)
 })
+
+test('a single-segment app route stays valid while filesystem values remain refused elsewhere', () => {
+  const input = fixture()
+  for (const route of ['/home', '/about', '/hr/demo/admin/payroll', '/cms/demo', '/crm/demo']) {
+    input.pages[0].route = route
+    assert.equal(normalizeGraph(input).pages[0].route, route)
+  }
+  input.nodes[0].label = '/home'
+  fails(() => normalizeGraph(input), 'GRAPH_PRIVATE_FIELD')
+  input.nodes[0].label = 'region'
+  for (const route of ['/Users/owner/private-project', '/Volumes/drive/private-project', '/home/settings']) {
+    input.pages[0].route = route
+    fails(() => normalizeGraph(input), 'GRAPH_ROUTE_PRIVATE_PREFIX')
+  }
+  input.pages[0].route = '/home'
+  input.extensions['org.webappx.readonly'] = { route: '/home/owner/private-project' }
+  fails(() => normalizeGraph(input), 'GRAPH_PRIVATE_FIELD')
+})
+
+test('reviewed extension arrays and objects enforce the published thousand-entry bound', () => {
+  const input = fixture()
+  input.extensions['org.webappx.readonly'] = Array(1000).fill(0)
+  assert.equal(normalizeGraph(input).extensions['org.webappx.readonly'].length, 1000)
+  input.extensions['org.webappx.readonly'].push(0)
+  fails(() => normalizeGraph(input), 'GRAPH_EXTENSION_ENTRY_LIMIT')
+  input.extensions['org.webappx.readonly'] = Object.fromEntries(Array.from({ length: 1000 }, (_, i) => [`n${i}`, 0]))
+  assert.equal(Object.keys(normalizeGraph(input).extensions['org.webappx.readonly']).length, 1000)
+  input.extensions['org.webappx.readonly'].extra = 0
+  fails(() => normalizeGraph(input), 'GRAPH_EXTENSION_ENTRY_LIMIT')
+})

@@ -114,15 +114,19 @@ export type GraphCommandPayload =
   | { type: 'graph.migrationPreview'; document: Record<string, unknown>; targetVersion: 1 }
   | { type: 'graph.migrationApply'; digest: GraphHash }
 
+export type OlderQueryOperation = 'graph.status' | 'graph.document' | 'graph.export'
+  | 'contracts.list' | 'contracts.describe' | 'contracts.examples' | 'contracts.export'
+export type OlderCommandOperation = 'graph.preview' | 'graph.accept'
+type VersionFor<O extends string> = O extends OlderQueryOperation | OlderCommandOperation ? ApiVersion : '1.1'
 export type QueryEnvelope = GraphQueryPayload extends infer P
   ? P extends GraphQueryPayload
-    ? { apiVersion: ApiVersion; requestId: string; kind: 'query'; operation: P['type']; payload: P }
+    ? { apiVersion: VersionFor<P['type']>; requestId: string; kind: 'query'; operation: P['type']; payload: P }
     : never
   : never
 export type CommandEnvelope = GraphCommandPayload extends infer P
   ? P extends GraphCommandPayload
     ? {
-      apiVersion: ApiVersion
+      apiVersion: VersionFor<P['type']>
       requestId: string
       kind: 'command'
       operation: P['type']
@@ -236,8 +240,11 @@ export interface GraphFindingsResult {
   offset: number
   limit: number
   omittedCount: number
+  upstreamOmittedCount: number
+  totalScope: 'retained-findings'
+  revision: GraphHash
 }
-export interface GraphDifference { kind: 'page' | 'node' | 'reference' | 'component' | 'collection'; id: GraphIdentifier }
+export interface GraphDifference { kind: 'document' | 'page' | 'node' | 'reference' | 'component' | 'collection'; id: GraphIdentifier }
 export interface GraphCompareResult {
   beforeRevision: GraphHash
   afterRevision: GraphHash
@@ -245,19 +252,32 @@ export interface GraphCompareResult {
   removed: GraphDifference[]
   changed: GraphDifference[]
   reordered: GraphDifference[]
+  /** Untruncated counts; each corresponding result array contains at most 50 entries. */
+  totals: { added: number; removed: number; changed: number; reordered: number }
   omittedCount: number
 }
 export interface GraphMigrationPreviewResult {
   digest: GraphHash
   fromVersion: 0
   toVersion: 1
-  steps: string[]
+  steps: GraphMigrationStep[]
   unsupportedFields: string[]
   document: GraphDocument
 }
+export interface GraphMigrationStep {
+  order: number
+  operation: 'page-list-conversion' | 'child-order-derivation' | 'schema-version-0-to-1' | 'graph-validation'
+  description: string
+}
 export interface GraphMigrationApplyResult { document: GraphDocument; revision: GraphHash; isolatedCopy: true }
-export interface ContractExamplesResult { operation: string; version: ApiVersion; valid: Record<string, unknown>; invalid: Record<string, unknown> }
-export interface ContractCompatibilityChange { operation: string; detail: string }
+export interface ContractExamplesResult {
+  apiVersion: ApiVersion
+  schemaRevision: GraphHash
+  operation: string
+  validRequest: GraphApiRequest
+  invalidRequest: Record<string, unknown>
+}
+export interface ContractCompatibilityChange { operation: string; path: string; change: string }
 export interface ContractCompatibilityResult {
   beforeVersion: ApiVersion
   afterVersion: ApiVersion
@@ -265,18 +285,20 @@ export interface ContractCompatibilityResult {
   afterSchemaRevision: GraphHash
   additions: ContractCompatibilityChange[]
   breakingChanges: ContractCompatibilityChange[]
+  additionCount: number
+  breakingCount: number
   omittedCount: number
 }
 export interface PublicContractExport {
-  format?: 'webappx-public-contracts'
-  formatVersion?: 1
+  format: 'webappx-api-contracts'
+  formatVersion: 1
   apiVersion: ApiVersion
-  supportedVersions?: ApiVersion[]
+  supportedVersions: ApiVersion[]
   schemaRevision: GraphHash
-  scope?: ContractScope
-  limits?: ContractLimits
+  scope: ContractScope
+  limits: ContractLimits
   operations: OperationDescriptor[]
-  capabilities?: string[]
+  capabilities: { id: string; operation: string; kind: 'query' | 'command'; implemented: boolean }[]
 }
 export interface GraphResultByOperation {
   'graph.status': GraphStatusResult
@@ -300,7 +322,8 @@ export type GraphApiOperation = keyof GraphResultByOperation
 export type GraphApiResult<O extends GraphApiOperation> = GraphResultByOperation[O]
 
 export interface ApiFailure {
-  apiVersion: ApiVersion
+  /** May echo a refused, bounded requested version not in the supported union. */
+  apiVersion: string
   requestId: string | null
   ok: false
   error: {

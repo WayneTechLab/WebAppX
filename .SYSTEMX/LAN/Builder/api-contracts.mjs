@@ -14,7 +14,7 @@ export const contractLimits = Object.freeze({
 })
 
 const IDENTIFIER = '^[A-Za-z][A-Za-z0-9_-]{0,95}$'
-const REQUEST_ID = '^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$'
+const REQUEST_ID = '^[A-Za-z0-9_-]{1,64}$'
 const HASH = '^[a-f0-9]{64}$'
 const OPERATION = '^(graph|contracts)\\.[A-Za-z][A-Za-z0-9]*$'
 const S = (maxLength, minLength = 0, pattern) => ({ type: 'string', minLength, maxLength, ...(pattern ? { pattern } : {}) })
@@ -110,7 +110,7 @@ const pagination = Object.freeze({
   defaultLimit: 20,
   maximumOffset: contractLimits.paginationOffset,
   maximumLimit: contractLimits.pageSize,
-  totalScope: 'findings in the accepted document',
+  totalScope: 'matching retained findings; upstream omissions are separately counted',
 })
 
 const payloads = {
@@ -145,7 +145,12 @@ const payloads = {
   'contracts.export': O({ type: { const: 'contracts.export' } }),
 }
 
-const difference = O({ kind: { type: 'string', enum: ['page', 'node', 'reference', 'component', 'collection'] }, id })
+const difference = O({ kind: { type: 'string', enum: ['document', 'page', 'node', 'reference', 'component', 'collection'] }, id })
+const migrationStep = O({
+  order: N(4, 1),
+  operation: { type: 'string', enum: ['page-list-conversion', 'child-order-derivation', 'schema-version-0-to-1', 'graph-validation'] },
+  description: S(240, 1),
+})
 const contractSchema = { type: 'object', additionalProperties: true }
 const deprecation = O({
   since: { const: '1.1' },
@@ -177,7 +182,7 @@ const registrySchema = O({
   operations: A(descriptorSchema, 20),
 })
 const exportSchema = O({
-  format: { const: 'webappx-public-contracts' },
+  format: { const: 'webappx-api-contracts' },
   formatVersion: { const: 1 },
   apiVersion: versionField,
   supportedVersions: A(versionField, 2),
@@ -185,9 +190,13 @@ const exportSchema = O({
   scope: contractSchema,
   limits: contractSchema,
   operations: A(descriptorSchema, 20),
-  capabilities: A(S(96, 1), 20),
-}, ['apiVersion', 'schemaRevision', 'operations'])
-const change = O({ operation: S(64, 1, OPERATION), detail: S(240, 1) })
+  capabilities: A(O({
+    id: S(96, 1, '^lan\\.(graph|contracts)\\.[A-Za-z][A-Za-z0-9]*@1$'),
+    operation: S(64, 1, OPERATION), kind: { type: 'string', enum: ['query', 'command'] },
+    implemented: { type: 'boolean' },
+  }), 20),
+})
+const change = O({ operation: S(64, 1, OPERATION), path: S(512, 1), change: S(240, 1) })
 
 const results = {
   'graph.status': O({
@@ -196,12 +205,17 @@ const results = {
     limits: contractSchema,
   }),
   'graph.document': acceptedDocument,
-  'graph.findings': O({ items: findings, total: count, offset, limit, omittedCount: count }),
+  'graph.findings': O({
+    items: findings, total: count, offset, limit, omittedCount: count,
+    upstreamOmittedCount: count, totalScope: { const: 'retained-findings' }, revision: hash,
+  }),
   'graph.lookup': { oneOf: [page, node, reference, component, collection] },
   'graph.compare': O({
     beforeRevision: hash, afterRevision: hash,
-    added: A(difference, 4000), removed: A(difference, 4000), changed: A(difference, 4000),
-    reordered: A(difference, 4000), omittedCount: count,
+    added: A(difference, 50), removed: A(difference, 50), changed: A(difference, 50),
+    reordered: A(difference, 50),
+    totals: O({ added: N(4000), removed: N(4000), changed: N(4000), reordered: N(4000) }),
+    omittedCount: count,
   }),
   'graph.export': exportedDocument,
   'graph.preview': preview,
@@ -209,20 +223,20 @@ const results = {
   'graph.reopen': acceptedDocument,
   'graph.migrationPreview': O({
     digest: hash, fromVersion: { const: 0 }, toVersion: { const: 1 },
-    steps: A(S(240, 1), 20, 1), unsupportedFields: A(S(240, 1), 50), document: graphDocument,
+    steps: A(migrationStep, 4, 4), unsupportedFields: A(S(240, 1), 50), document: graphDocument,
   }),
   'graph.migrationApply': O({ document: graphDocument, revision: hash, isolatedCopy: { const: true } }),
   'contracts.list': registrySchema,
   'contracts.describe': { oneOf: [descriptorSchema, { type: 'null' }] },
   'contracts.examples': O({
-    operation: S(64, 1, OPERATION), version: versionField,
-    valid: contractSchema, invalid: contractSchema,
+    apiVersion: versionField, schemaRevision: hash, operation: S(64, 1, OPERATION),
+    validRequest: contractSchema, invalidRequest: contractSchema,
   }),
   'contracts.compatibility': O({
     beforeVersion: versionField, afterVersion: versionField,
     beforeSchemaRevision: hash, afterSchemaRevision: hash,
-    additions: A(change, 20), breakingChanges: A(change, 20),
-    omittedCount: count,
+    additions: A(change, 50), breakingChanges: A(change, 50),
+    additionCount: count, breakingCount: count, omittedCount: count,
   }),
   'contracts.export': exportSchema,
 }
@@ -278,6 +292,9 @@ function makeDescriptor(operation, version) {
   const effect = kind === 'query' ? 'read-local-memory'
     : operation === 'graph.preview' || operation === 'graph.migrationPreview' ? 'preview-local-memory'
       : operation === 'graph.migrationApply' ? 'isolated-copy-local-memory' : 'accept-local-memory'
+  const resultSchema = operation === 'contracts.list' || operation === 'contracts.export'
+    ? { ...results[operation], properties: { ...results[operation].properties, apiVersion: { const: version } } }
+    : results[operation]
   return {
     id: operation,
     version,
@@ -285,7 +302,7 @@ function makeDescriptor(operation, version) {
     implemented: true,
     capabilityId: 'lan.' + operation + '@1',
     inputSchema: envelopeSchema(operation, version, kind),
-    resultSchema: results[operation],
+    resultSchema,
     effect,
     confirmation,
     revisionPrecondition,

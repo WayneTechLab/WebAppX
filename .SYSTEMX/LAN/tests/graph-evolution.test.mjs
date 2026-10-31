@@ -209,3 +209,28 @@ test('migration rejects cycles and oversized or unsafe inputs before producing a
   circular.extensions['org.webappx.readonly'] = circular
   assert.throws(() => previewGraphMigration(circular), { code: 'GRAPH_INPUT_CYCLE' })
 })
+
+test('comparison reports surviving sibling reorders alongside additions and removals', () => {
+  const before = graph()
+  const after = clone(before)
+  after.nodes[0].childIds = ['Second', 'Third', 'First']
+  after.nodes.push(node('Third', 'Root'))
+  const compared = compareGraphs(before, after)
+  assert.deepEqual(compared.added, [{ kind: 'node', id: 'Third' }])
+  assert.deepEqual(compared.changed, [{ kind: 'node', id: 'Root' }])
+  assert.deepEqual(compared.reordered, [{ kind: 'node', id: 'Root' }])
+  const restored = compareGraphs(after, before)
+  assert.deepEqual(restored.removed, [{ kind: 'node', id: 'Third' }])
+  assert.deepEqual(restored.reordered, [{ kind: 'node', id: 'Root' }])
+  const inserted = clone(before)
+  inserted.nodes[0].childIds = ['Third', 'First', 'Second']
+  inserted.nodes.push(node('Third', 'Root'))
+  assert.deepEqual(compareGraphs(before, inserted).reordered, [])
+})
+
+test('migration refuses proxy object behavior before invoking its traps', () => {
+  let calls = 0
+  const input = new Proxy(legacyGraph(), { ownKeys(target) { calls++; return Reflect.ownKeys(target) } })
+  assert.throws(() => previewGraphMigration(input), { code: 'GRAPH_INPUT_INVALID' })
+  assert.equal(calls, 0)
+})

@@ -784,6 +784,11 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
   const handle = {
     refresh,
     observePreviewSelection,
+    currentDocumentReference() {
+      if (!acceptedForPath()) return null
+      return { workspaceId: state.map.workspaceId, documentId: state.map.documentId,
+        sourcePath: state.map.sourcePath, sourceRevision: state.map.sourceRevision }
+    },
     destroy() {
       state.destroyed = true
       state.epoch += 1

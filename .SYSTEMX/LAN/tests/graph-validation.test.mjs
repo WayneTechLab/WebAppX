@@ -188,3 +188,12 @@ test('findings are deterministic, bounded, filterable and reject coercion or uns
   }
   assert.throws(() => filterGraphFindings([{ ...first.findings[0], privateToken: 'secret' }]), GraphError)
 })
+
+test('lookup and finding filters refuse proxy behavior without invoking traps', () => {
+  let calls = 0
+  const guarded = target => new Proxy(target, { getPrototypeOf(value) { calls++; return Reflect.getPrototypeOf(value) } })
+  assert.throws(() => resolveGraphReference(graph(), guarded({ workspaceId: WORKSPACE, documentId: 'Doc', id: 'Source', kind: 'node' })), GraphError)
+  assert.throws(() => filterGraphFindings([], guarded({})), GraphError)
+  assert.throws(() => filterGraphFindings(guarded([])), GraphError)
+  assert.equal(calls, 0)
+})

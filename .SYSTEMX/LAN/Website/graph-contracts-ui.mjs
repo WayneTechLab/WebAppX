@@ -43,7 +43,11 @@ function section(parent, id, title, help) {
   const details = node('details', parent, { id, className: 'graph-contract-card' })
   node('summary', details, { text: title })
   const body = node('div', details, { className: 'graph-contract-card-body' })
-  if (help) node('p', body, { className: 'graph-contract-help', text: help })
+  if (help) {
+    const disclosure = node('details', body, { className: 'graph-contract-guidance' })
+    node('summary', disclosure, { text: 'Help' })
+    node('p', disclosure, { className: 'graph-contract-help', text: help })
+  }
   return { details, body }
 }
 
@@ -124,10 +128,10 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
   styles()
 
   const root = node('details', container, { id: 'graph-contract-inspector', className: 'graph-contract-inspector' })
-  root.open = true
+  root.open = false
   node('summary', root, { text: 'Graph and API contracts' })
   const body = node('div', root, { className: 'graph-contract-body' })
-  node('p', body, { className: 'graph-contract-help', text: 'Canonical graph inspection is local metadata. Source references describe provenance and do not authorize a source edit. Preview, acceptance, migration and downloads are separate actions.' })
+  node('p', body, { className: 'graph-contract-help', text: 'Graph metadata only. Preview, acceptance and source saves stay separate.' })
   const status = node('output', body, { id: 'graph-contract-status', text: 'No contract request sent.' })
   status.setAttribute('role', 'status')
   status.setAttribute('aria-live', 'polite')
@@ -199,8 +203,12 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
   const migrationView = view(migrationSection.body, 'graph-migration-result', 'No migration previewed.')
   const migrationConfirmation = field(migrationSection.body, 'graph-migration-confirmation', 'Type MIGRATE GRAPH COPY to apply isolated copy', 'input', { maxLength: 64 })
   const migrationApply = button(migrationSection.body, 'graph-migration-apply', 'Apply reviewed migration to isolated copy')
+  const migrationCopy = field(migrationSection.body, 'graph-migration-copy-json', 'Retained isolated graph copy (read only)', 'textarea', { maxLength: MAX_JSON })
+  migrationCopy.readOnly = true
+  const migrationUseCopy = button(migrationSection.body, 'graph-migration-use-copy', 'Use retained copy as graph draft')
+  migrationUseCopy.disabled = true
 
-  const state = { destroyed: false, busy: false, serial: 0, importEdit: 0, migrationEdit: 0, version: VERSION, descriptors: new Map(), schemaRevision: null, workspaceId: null, documents: new Map(), selected: '', accepted: null, proposal: null, migration: null, lastStatus: 'idle', lastEffect: null, lastError: null, lastRequestId: null }
+  const state = { destroyed: false, busy: false, serial: 0, importEdit: 0, migrationEdit: 0, reopenEdit: 0, version: VERSION, verifiedVersion: null, descriptors: new Map(), schemaRevision: null, workspaceId: null, documents: new Map(), selected: '', accepted: null, proposal: null, migration: null, migrationCopy: null, lastStatus: 'idle', lastEffect: null, lastError: null, lastRequestId: null }
   const actions = [...root.querySelectorAll('button')]
   const selects = [...root.querySelectorAll('select')]
   const say = (message, details = null) => {
@@ -234,11 +242,19 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
       state.busy = false
       if (!state.destroyed) for (const action of actions) action.disabled = false
       if (!state.destroyed) for (const select of selects) select.disabled = false
+      if (!state.destroyed) migrationUseCopy.disabled = !state.migrationCopy || !sameWorkspace(state.migrationCopy.workspaceId)
     }
   }
   function renderEvidence(effect) {
     if (effect !== undefined) state.lastEffect = effect
-    evidence.textContent = display({ apiVersion: state.version, schemaRevision: state.schemaRevision, effect: state.lastEffect, requestId: state.lastRequestId, status: state.lastStatus, error: state.lastError, selectedDocumentId: state.selected || null, acceptedRevision: state.accepted?.revision ?? null })
+    evidence.textContent = display({ apiVersion: state.verifiedVersion, requestedApiVersion: state.version, verifiedApiVersion: state.verifiedVersion, schemaRevision: state.schemaRevision, effect: state.lastEffect, requestId: state.lastRequestId, status: state.lastStatus, error: state.lastError, selectedDocumentId: state.selected || null, acceptedRevision: state.accepted?.revision ?? null })
+  }
+  function currentWorkspace() {
+    const live = typeof getWorkspaceId === 'function' ? getWorkspaceId() : null
+    return revision(live) ? live : state.workspaceId
+  }
+  function sameWorkspace(workspaceId) {
+    return revision(workspaceId) && currentWorkspace() === workspaceId && (!state.workspaceId || state.workspaceId === workspaceId)
   }
   async function call(path, bodyValue, { requestId, apiVersion = state.version, allowError = false } = {}) {
     state.lastRequestId = requestId ?? null
@@ -248,9 +264,13 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
   }
   function nextId() { return `graph-ui-${++state.serial}` }
   async function query(operation, fields = {}) {
+    const workspaceId = operation.startsWith('graph.') && operation !== 'graph.status' ? state.workspaceId : null
+    if (workspaceId) assert(sameWorkspace(workspaceId), 'The workspace changed. Previous graph views and drafts were kept; remount the inspector for the selected workspace.')
     const requestId = nextId()
     const envelope = { apiVersion: state.version, requestId, kind: 'query', operation, payload: { type: operation, ...fields } }
-    return (await call('/api/contracts/query', envelope, { requestId })).result
+    const result = (await call('/api/contracts/query', envelope, { requestId })).result
+    if (workspaceId) assert(sameWorkspace(workspaceId), 'The workspace changed while reading. Previous graph views and drafts were kept.')
+    return result
   }
   function descriptorsFrom(result) {
     const values = result?.operations ?? result?.registry?.operations ?? result?.contracts?.operations
@@ -271,15 +291,19 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
     }
   }
   async function discover() {
-    const result = (await call(`/api/contracts/discovery?clientVersion=${encodeURIComponent(state.version)}`, undefined, { apiVersion: state.version })).result
-    assert(object(result), 'Discovery did not return public contract metadata.')
-    state.schemaRevision = result.schemaRevision ?? result.registry?.schemaRevision ?? null
+    const requestedVersion = state.version
+    // Discovery describes the current server while negotiating the selected
+    // client. Query/command envelopes still use their exact client version.
+    const result = (await call(`/api/contracts/discovery?clientVersion=${encodeURIComponent(requestedVersion)}`, undefined, { apiVersion: VERSION })).result
+    assert(object(result) && result.apiVersion === VERSION && result.clientVersion === requestedVersion
+      && result.compatibleVersion === requestedVersion && Array.isArray(result.supportedVersions)
+      && result.supportedVersions.length <= 8 && result.supportedVersions.includes(requestedVersion)
+      && revision(result.schemaRevision) && Array.isArray(result.operations) && result.operations.length > 0,
+    'Discovery did not verify the selected client contract; previous verified metadata was kept.')
+    assert(state.version === requestedVersion, 'Client selection changed during discovery; previous verified metadata was kept.')
     loadDescriptors(result)
-    if (!state.descriptors.get(state.version)?.size) {
-      const listing = await query('contracts.list')
-      loadDescriptors(listing)
-      state.schemaRevision ??= listing?.schemaRevision ?? listing?.registry?.schemaRevision ?? null
-    }
+    state.schemaRevision = result.schemaRevision
+    state.verifiedVersion = requestedVersion
     contractInfo.textContent = display(result)
     renderEvidence('read-only discovery')
     return result
@@ -298,11 +322,15 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
     return found
   }
   async function command(operation, fields, confirmation = '', expectedRevision = null) {
+    const workspaceId = state.workspaceId
+    if (workspaceId) assert(sameWorkspace(workspaceId), 'The workspace changed. Previous graph views and drafts were kept; preview again in the selected workspace.')
     const selected = await descriptor(operation)
     assert(selected.implemented !== false && selected.kind === 'command' && typeof selected.capabilityId === 'string', `Command ${operation} is unavailable in API ${state.version}.`)
+    if (workspaceId) assert(sameWorkspace(workspaceId), 'The workspace changed before dispatch. Previous graph views and drafts were kept.')
     const requestId = nextId()
     const envelope = { apiVersion: state.version, requestId, kind: 'command', operation, capabilityId: selected.capabilityId, payload: { type: operation, ...fields }, confirmation, expectedRevision }
     const result = (await call('/api/contracts/command', envelope, { requestId })).result
+    if (workspaceId) assert(sameWorkspace(workspaceId), 'The workspace changed while the command was pending. Previous graph views and drafts were kept; refresh the selected workspace before relying on its result.')
     renderEvidence(selected.effect ?? null)
     return result
   }
@@ -353,10 +381,9 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
     state.version = versionInput.value
     state.proposal = null
     state.migration = null
-    state.schemaRevision = null
     previewView.textContent = 'Version changed. Preview again under the selected contract.'
     migrationView.textContent = 'Version changed. Preview migration again.'
-    contractInfo.textContent = 'Discover this version to inspect its supported operations.'
+    if (!state.verifiedVersion) contractInfo.textContent = 'Discover this version to inspect its supported operations.'
     renderEvidence()
   })
   discoverButton.onclick = () => { void run('API discovery', discover) }
@@ -468,14 +495,17 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
   }) }
   reopenButton.onclick = () => { void run('Graph reopen', async () => {
     assert(reopenConfirmation.value === CONFIRM['graph.reopen'], 'Type REOPEN GRAPH exactly before reopening.')
+    const edit = state.reopenEdit
     const exported = parseJson(reopenJson, 'Exported graph document')
     assert(object(exported) && object(exported.document) && publicId(exported.document.documentId), 'Provide a graph export containing a document ID.')
+    await readStatus()
+    assert(edit === state.reopenEdit, 'Export input changed while status was loading. Review it before reopening.')
     const expectedRevision = state.documents.get(exported.document.documentId)?.revision ?? null
     const result = await command('graph.reopen', { document: exported }, reopenConfirmation.value, expectedRevision)
     assert(object(result) && object(result.document) && result.document.documentId === exported.document.documentId && result.document.workspaceId === state.workspaceId && revision(result.revision), 'Reopen response was invalid; refresh status before relying on it.')
     if (expectedRevision) beforeRevision.value = expectedRevision
     afterRevision.value = result.revision
-    reopenConfirmation.value = ''
+    if (edit === state.reopenEdit) reopenConfirmation.value = ''
     state.selected = result.document.documentId
     state.accepted = result
     acceptedView.textContent = display({ schemaVersion: result.document.schemaVersion, documentId: state.selected, revision: result.revision, sourceRevision: result.document.sourceRevision, stats: result.stats, findings: result.findings, omittedCount: result.omittedCount })
@@ -483,26 +513,52 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
     await readSelected()
     historyView.textContent = display({ documentId: state.selected, revision: result.revision, reopened: true })
   }) }
+  reopenJson.addEventListener('input', () => { state.reopenEdit += 1 })
   migrationJson.addEventListener('input', () => { state.migrationEdit += 1; state.migration = null; migrationView.textContent = 'Input changed. Preview migration again.' })
   migrationPreview.onclick = () => { void run('Schema migration preview', async () => {
     state.migration = null
     const edit = state.migrationEdit
+    await readStatus()
     const result = await command('graph.migrationPreview', { document: parseJson(migrationJson, 'Legacy graph'), targetVersion: 1 })
-    assert(object(result) && typeof result.digest === 'string' && result.fromVersion === 0 && result.toVersion === 1, 'Migration preview did not return a reviewed 0 to 1 transition.')
+    assert(object(result) && typeof result.digest === 'string' && result.fromVersion === 0 && result.toVersion === 1
+      && object(result.document) && sameWorkspace(result.document.workspaceId), 'Migration preview did not return a reviewed transition in the current workspace.')
     assert(edit === state.migrationEdit, 'Legacy graph input changed while preview was running. Preview migration again.')
     state.migration = result
     migrationView.textContent = display({ digest: result.digest, fromVersion: result.fromVersion, toVersion: result.toVersion, steps: result.steps, unsupportedFields: result.unsupportedFields })
   }) }
   migrationApply.onclick = () => { void run('Isolated schema migration', async () => {
     assert(state.migration && migrationConfirmation.value === CONFIRM['graph.migrationApply'], 'Preview migration and type MIGRATE GRAPH COPY exactly.')
-    const result = await command('graph.migrationApply', { digest: state.migration.digest }, migrationConfirmation.value)
+    const reviewed = state.migration
+    const edit = state.importEdit, migrationEdit = state.migrationEdit, workspaceId = currentWorkspace()
+    assert(sameWorkspace(workspaceId), 'The current workspace must match the reviewed migration.')
+    const result = await command('graph.migrationApply', { digest: reviewed.digest }, migrationConfirmation.value)
     assert(object(result) && object(result.document) && result.isolatedCopy === true && revision(result.revision), 'Migration apply did not return an isolated graph copy.')
-    importJson.value = JSON.stringify(result.document, null, 2)
+    assert(sameWorkspace(workspaceId) && result.document.workspaceId === workspaceId, 'The workspace changed while migrating. Existing drafts were kept; preview again in the selected workspace.')
+    const json = JSON.stringify(result.document, null, 2)
+    assert(json.length <= MAX_JSON, 'The isolated copy exceeds the draft review limit. Existing drafts were kept.')
+    state.migrationCopy = { json, workspaceId, revision: result.revision }
+    migrationCopy.value = json
+    const unchanged = edit === state.importEdit && migrationEdit === state.migrationEdit && state.migration === reviewed
+    if (unchanged) {
+      stageMigrationCopy()
+      state.migration = null
+      migrationConfirmation.value = ''
+    }
+    migrationView.textContent = display({ isolatedCopy: true, revision: result.revision, draftStaged: unchanged,
+      nextAction: unchanged ? 'Review the graph draft, then preview and accept it explicitly.' : 'Newer input drafts were kept. Review the retained copy and use it explicitly when ready.' })
+  }) }
+  function stageMigrationCopy() {
+    assert(state.migrationCopy && sameWorkspace(state.migrationCopy.workspaceId), 'A retained isolated copy from the current workspace is required.')
+    importJson.value = state.migrationCopy.json
     identityId.value = ''
+    state.importEdit += 1
     state.proposal = null
-    state.migration = null
-    migrationConfirmation.value = ''
-    migrationView.textContent = display({ isolatedCopy: true, revision: result.revision, nextAction: 'Review the graph JSON field, then click Preview graph import and accept its new proposal explicitly.' })
+    acceptConfirmation.value = ''
+    previewView.textContent = 'Isolated copy staged as a draft. Preview and accept it explicitly.'
+  }
+  migrationUseCopy.onclick = () => { void run('Isolated copy staging', () => {
+    stageMigrationCopy()
+    migrationView.textContent = display({ isolatedCopy: true, revision: state.migrationCopy.revision, draftStaged: true, nextAction: 'Preview and accept the staged graph explicitly.' })
   }) }
 
   const controller = {

@@ -64,8 +64,11 @@ async function dispatchGraphRequest(request, response, requestUrl, body) {
     })
     sendJson(response, statusCode, result)
   } catch {
+    const apiVersion = body?.apiVersion === '1.0' ? '1.0' : '1.1'
+    const requestId = typeof body?.requestId === 'string' && /^[A-Za-z0-9_-]{1,64}$/.test(body.requestId)
+      ? body.requestId : null
     sendJson(response, 503, {
-      apiVersion: '1.1', requestId: null, ok: false,
+      apiVersion, requestId, ok: false,
       error: { category: 'internal', code: 'GRAPH_SERVICE_UNAVAILABLE',
         message: 'The local graph service is unavailable. Previous graphs and source drafts are kept.',
         findings: [], omittedCount: 0 },

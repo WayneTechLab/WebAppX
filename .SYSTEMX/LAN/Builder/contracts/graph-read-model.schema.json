@@ -57,7 +57,7 @@
       "properties": {
         "id": { "$ref": "#/$defs/id" },
         "rootId": { "$ref": "#/$defs/id" },
-        "route": { "type": ["string", "null"], "maxLength": 512, "pattern": "^[^\\u0000-\\u001f\\u007f]*$" }
+        "route": { "type": ["string", "null"], "maxLength": 512, "pattern": "^[^\\u0000-\\u001f\\u007f]*$", "description": "Descriptive app route, never source-write authority. graph-core allows single-segment routes such as /home and ordinary nested app routes, but conservatively refuses nested paths under reserved host prefixes such as /Users/, /Volumes/ and /home/ with GRAPH_ROUTE_PRIVATE_PREFIX until a separately reviewed route codec handles that ambiguity." }
       }
     },
     "node": {
