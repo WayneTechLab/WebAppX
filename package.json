@@ -141,7 +141,9 @@
     "setup:contracts:test": "node --test tests/setup/package-script-discovery.test.mjs tests/setup/doc-commands.test.mjs tests/setup/fixture-inventory.test.mjs tests/setup/child-processes.test.mjs",
     "browser:source-policy": "node .SYSTEMX/LAN/tests/source-policy-browser.mjs",
     "swarm": "node .SYSTEMX/swarm/cli.mjs",
-    "swarm:test": "node --test tests/swarm/*.test.mjs"
+    "swarm:test": "node --test tests/swarm/*.test.mjs",
+    "lan:identity:test": "node --test .SYSTEMX/LAN/tests/identity-*.test.mjs .SYSTEMX/LAN/tests/ownership-independent.test.mjs .SYSTEMX/LAN/tests/source-identity-*.test.mjs .SYSTEMX/LAN/tests/source-ownership-unit.test.mjs",
+    "browser:source-identity": "node scripts/lan-source-identity-browser.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

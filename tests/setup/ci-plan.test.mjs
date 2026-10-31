@@ -12,7 +12,7 @@ function plan(scripts, names = Object.keys(scripts).filter(name => name !== 'ci:
 }
 
 // Literal published 63-stage order protects every prior stage during setup insertion.
-const addedSetupGates = ['swarm:test', 'browser:source-policy', 'scripts:check', 'docs:commands:check', 'fixtures:check', 'source:shell:check', 'setup:contracts:test']
+const addedSetupGates = ['lan:identity:test', 'browser:source-identity', 'swarm:test', 'browser:source-policy', 'scripts:check', 'docs:commands:check', 'fixtures:check', 'source:shell:check', 'setup:contracts:test']
 const previousGateOrder = [
   'development:check',
   'development:test',
@@ -88,7 +88,7 @@ test('reads all current required gates in the existing shell order', async () =>
   ])
   const report = buildCiPlan({ shellSource, packageJson: JSON.parse(packageText), gustoPackageJson: JSON.parse(gustoText), installation: JSON.parse(installationText) })
   assert.deepEqual(report.stages.map(stage => stage.name), parseGateOrder(shellSource))
-  assert.equal(report.stages.length, 70)
+  assert.equal(report.stages.length, 72)
   assert.deepEqual(report.stages.filter(stage => !addedSetupGates.includes(stage.name)).map(stage => stage.name), previousGateOrder, 'all prior 63 stages retain their exact relative order')
   for (const name of addedSetupGates) assert.equal(report.stages.filter(stage => stage.name === name).length, 1, name)
   assert.deepEqual(report.stages.map(stage => stage.number), Array.from({ length: report.stages.length }, (_, index) => index + 1))

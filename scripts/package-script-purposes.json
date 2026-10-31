@@ -202,6 +202,11 @@
       "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
     },
     {
+      "name": "browser:source-identity",
+      "purpose": "SYSTEMX",
+      "description": "Exercise bounded source identity, ownership, reconciliation and their local browser evidence."
+    },
+    {
       "name": "browser:source-policy",
       "purpose": "SYSTEMX",
       "description": "Exercise bounded source policy, navigation and export through an owned disposable browser workspace."
@@ -420,6 +425,11 @@
       "name": "lan",
       "purpose": "SYSTEMX",
       "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
+    },
+    {
+      "name": "lan:identity:test",
+      "purpose": "SYSTEMX",
+      "description": "Exercise bounded source identity, ownership, reconciliation and their local browser evidence."
     },
     {
       "name": "lint",
