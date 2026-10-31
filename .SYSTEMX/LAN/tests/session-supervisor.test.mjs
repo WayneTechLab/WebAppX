@@ -378,7 +378,7 @@ test('Windows Firebase command uses Node and npm argument arrays without a comma
 
 test('combined LAN child cannot overwrite or clear supervisor record; standalone retains ownership', { timeout: 15_000 }, async () => {
   const root = await fixtureRoot()
-  const files = ['server.mjs', 'work-status.mjs', 'session-restart-preview.mjs', 'Builder/importer/current-repo.mjs', 'Builder/source-revision.mjs', 'Builder/source-history.mjs', 'Builder/source-policy.mjs', 'Builder/runtime/port-utils.mjs', 'Builder/runtime/file-boundary.mjs']
+  const files = ['server.mjs', 'work-status.mjs', 'session-restart-preview.mjs', 'Builder/importer/current-repo.mjs', 'Builder/source-revision.mjs', 'Builder/source-history.mjs', 'Builder/source-policy.mjs', 'Builder/source-identity-http.mjs', 'Builder/runtime/port-utils.mjs', 'Builder/runtime/file-boundary.mjs']
   for (const file of files) {
     const target = join(root, '.SYSTEMX/LAN', file)
     await mkdir(dirname(target), { recursive: true })

@@ -1,6 +1,37 @@
-# LAN active iteration — F002 source policy locally accepted
+# LAN active iteration — F003/F004 next 200 in progress
 
-Updated 2026-10-30. Functional candidate:
+Updated 2026-10-30. Agent 0 is executing the next **200 requirements**, exactly
+**LAN-00201–LAN-00400**: F003 durable document/node identity (100) followed by
+F004 source ownership/mapping (100). Current acceptance remains **200/10,000
+requirements / 40/2,000 capabilities**; the target is **400 / 80**. F003 must be
+accepted before dependent F004. Implementation or a worker exit accepts nothing.
+
+Ten authenticated Codex CLI workers are assigned separate generation branches
+and worktrees through the host controller, with nonoverlapping source, tests,
+browser and documentation scopes. Agent 0 owns the common DTO/API, shared server
+and dashboard integration, independent review, browser evidence, catalog
+acceptance and publication. The first dispatch was refused after the provider
+launcher changed after pinning; no provider ran, and the guard was preserved.
+The fresh run pins the final launcher. These are execution observations, not
+proof of ten completed tasks or a live PR merge.
+
+New maps will qualify documents, pages, nodes and references by workspace;
+reviewed reimport, rename, alias and export/reopen operations must preserve
+prior maps on refusal. Ownership and exact source spans remain revision-bound;
+opaque/external/unmapped selections cannot acquire source-write authority from
+labels. Literal operation proposals use the existing controlled editor gates.
+Blank reusable records, managed snapshots, research and the previous 200
+acceptances remain protected. Production deployment is outside this goal.
+
+Read the [identity/ownership plan](LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) and
+[operating guide](LAN-IDENTITY-OWNERSHIP.md) as they land from the documentation
+branch. Required completion includes exact-candidate unit/API/browser checks,
+independent review, full CI, separate Hosting preflight, accepted evidence,
+README/wiki/Page reconciliation, merge/publication and remote readback.
+
+## Previous completed F002 milestone
+
+Previous functional candidate:
 `e1588c4ebe94b1ef5f1557641334d95aee9b8290`.
 Starting publication: `d0cfb5c9f378e08f557fd6089af70385f0acd475`.
 

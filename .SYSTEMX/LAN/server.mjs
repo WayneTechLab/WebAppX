@@ -23,6 +23,7 @@ import { inspectCurrentRepository, inspectExternalProject } from './Builder/impo
 import { hashSourceRevision, checkSourceRevision } from './Builder/source-revision.mjs'
 import { inspectSourcePath, enumerateSourceInventory, sourcePolicyCatalog, compareSourcePolicies, sourcePolicyLimits } from './Builder/source-policy.mjs'
 import { createSourceHistory, readSourceOperationHistory, sourceHistoryLimits } from './Builder/source-history.mjs'
+import { dispatchSourceIdentity } from './Builder/source-identity-http.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
 import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
@@ -32,6 +33,14 @@ const lanRoot = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(lanRoot, '..', '..')
 const workspaceId = hashSourceRevision(`systemx-workspace\0${realpathSync(repoRoot)}`)
 const sourceHistory = createSourceHistory()
+let sourceIdentity
+async function identityService() {
+  if (!sourceIdentity) {
+    const { createSourceIdentityService } = await import('./Builder/source-identity-service.mjs')
+    sourceIdentity = createSourceIdentityService(repoRoot, { workspaceId })
+  }
+  return sourceIdentity
+}
 const websiteRoot = join(lanRoot, 'Website')
 const dashboardFile = join(lanRoot, 'Website_Dashboard.html')
 const providerRegistryFile = join(lanRoot, 'Builder', 'contracts', 'provider-registry.json')
@@ -1213,6 +1222,17 @@ const server = createServer(async (request, response) => {
 
   const requestUrl = new URL(request.url ?? '/', `http://${host}:${port}`)
 
+  if (requestUrl.pathname.startsWith('/api/identity/') && request.method !== 'POST') {
+    if (!requireSessionToken(request, response)) return
+    try {
+      const { statusCode, result } = await dispatchSourceIdentity({ service: await identityService(), method: request.method, url: requestUrl })
+      sendJson(response, statusCode, result)
+    } catch {
+      sendJson(response, 503, { code: 'IDENTITY_UNAVAILABLE', error: 'The local identity service is unavailable; the previous source and accepted maps are kept.' })
+    }
+    return
+  }
+
   if (requestUrl.pathname === '/api/health') {
     sendJson(response, 200, {
       status: 'online',
@@ -1389,6 +1409,12 @@ const server = createServer(async (request, response) => {
     }
 
     try {
+      if (requestUrl.pathname.startsWith('/api/identity/')) {
+        const { statusCode, result } = await dispatchSourceIdentity({ service: await identityService(), method: request.method, url: requestUrl, body })
+        sendJson(response, statusCode, result)
+        return
+      }
+
       if (requestUrl.pathname === '/api/builder/font') {
         const { statusCode = 200, ...result } = await saveProjectFont(body)
         sendJson(response, statusCode, result)

@@ -2,6 +2,7 @@ import { previewNavigatorLimits, collectPreviewHierarchy, projectPreviewRows, an
 import { sourceComparisonLimits, compareSourceText } from './source-comparison.js'
 import { sourceRecordLimits, createRecoveryRecord, parseRecoveryRecord, normalizeSourceDisplay, createComparisonExport } from './source-draft-records.js'
 import { canonicalSourcePath, sourceNavigationKey, createSourceNavigation, parseSourceNavigation, parseSourceInventory, filterSourceMetadata, sourcePickerSelection } from './source-navigation.js'
+import { attachSourceIdentityInspector } from './source-identities.js'
 
 const apiBase = window.location.pathname.startsWith('/__systemx') ? '/__systemx' : ''
 const sessionToken = document.querySelector('meta[name="systemx-session"]')?.content ?? ''
@@ -526,6 +527,27 @@ async function request(path, options = {}) {
 
 async function post(path, body) {
   return request(path, { method: 'POST', body: JSON.stringify(body) })
+}
+
+function stageIdentityLiteral({ path, sourceRevision, patch }) {
+  const editor = document.querySelector('#source-editor')
+  if (!editor || !sourceLoadedForWorkspace() || state.sourceLoading || state.sourceSaving || state.sourceWritable === false
+    || path !== state.sourcePath || document.querySelector('#source-file-select')?.value !== path
+    || sourceRevision !== state.sourceRevision || editor.value !== state.sourceDisplayBaseline
+    || typeof state.sourceLoadedContent !== 'string') {
+    throw new Error('Load the same source revision with a clean editor before staging this reviewed literal proposal. The current draft is kept.')
+  }
+  if (!patch || !Number.isInteger(patch.start) || !Number.isInteger(patch.end) || patch.start < 0
+    || patch.end < patch.start || patch.end > state.sourceLoadedContent.length || typeof patch.replacement !== 'string'
+    || patch.replacement.length > 10_000) throw new Error('Literal proposal is outside its bounded source span.')
+  const content = state.sourceLoadedContent.slice(0, patch.start) + patch.replacement + state.sourceLoadedContent.slice(patch.end)
+  if (content.length > sourceComparisonLimits.characters) throw new Error('Staged source exceeds the existing editor limit.')
+  invalidateSourceComparison('A reviewed literal proposal was staged; compare and confirm the source change separately.', true)
+  editor.value = normalizeSourceDisplay(content)
+  const confirmation = document.querySelector('#source-confirmation')
+  if (confirmation) confirmation.value = ''
+  editor.dispatchEvent(new Event('input', { bubbles: true }))
+  output('#source-output', 'Literal proposal staged in the controlled editor. Review the diff and use the existing confirmation to save. No source was written.')
 }
 
 function fontStack(family) {
@@ -3831,6 +3853,12 @@ async function boot() {
   restoreLayout()
   applyInspectorTabs(state.layout.activeRight || 'style')
   bind()
+  attachSourceIdentityInspector({
+    container: document.querySelector('#panel-source'),
+    api: request,
+    selectedPath: () => document.querySelector('#source-file-select')?.value ?? '',
+    onStageLiteral: stageIdentityLiteral,
+  })
   document.querySelector('#work-scope-select')?.addEventListener('change', (event) => {
     const value = event.target.value
     state.workSelection = value === 'root' ? { kind: 'root' } : value.startsWith('child:') ? { kind: 'child', name: value.slice(6) } : null
