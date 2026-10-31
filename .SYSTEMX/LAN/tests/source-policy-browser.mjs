@@ -177,7 +177,7 @@ try {
     if (await page.locator('#right-panel-visibility').getAttribute('aria-pressed') !== 'true') await page.locator('#right-panel-visibility').click()
     await expect(page.locator('#right-panel-visibility')).toHaveAttribute('aria-pressed', 'true')
     if (!await page.locator('#source-browser').getAttribute('open')) {
-      if (!await page.locator('#source-browser').evaluate((node) => node.open)) await page.locator('#source-browser summary').click()
+      if (!await page.locator('#source-browser').evaluate((node) => node.open)) await page.locator('#source-browser > summary').click()
     }
     await expect(page.locator('#source-workspace-boundary')).toContainText(workspaceId)
   }
