@@ -25,6 +25,33 @@ evidence. Completion requires all five lanes and their exact prerequisite
 closure. Worker commits, source reviews and a passing subset of tests are inputs
 to Agent 0, not acceptance.
 
+## Dashboard UX addition — implemented candidate, proof pending
+
+The active candidate also addresses the user's clipped menu/component forms,
+long submenu descriptions, misplaced header dropdown and preview viewport shifts.
+Read the [dated dashboard UX review](LAN-DASHBOARD-UX-2026-10-31.md) for the
+observed geometry, official research sources and implementation decisions.
+
+Shrinkable sidebar grids, bounded native fields, wrapped metadata and correct
+responsive cascade priority keep controls inside the selected panel width.
+Compact focus keeps pin preferences and removes hidden panes from keyboard
+focus. The workspace menu aligns with its right-edge header trigger and scrolls
+within available height. Short action labels retain visible constraints/status;
+long explanations move behind Help/More info and workspace metadata disclosures.
+Selection details no longer enlarge the primary canvas header.
+
+Ordinary Inspect selection and metadata refresh preserve the chosen preview
+preset/width. Interact delivers normal app clicks and SPA navigation without
+changing the selected device. Explicit reveal/route actions retain their own
+intended navigation behavior. The responsive browser stage checks panel/form,
+header/menu, keyboard and footer geometry plus viewport/device continuity;
+its current development run is not yet a final accepted candidate receipt.
+
+This adds no authored requirement or automatic acceptance. The
+[Code-OSS fork plan](LAN-VSCODE-FORK-PLAN.md) and
+[32 unchecked additive TODOs](backlog/LAN-VSCODE-FORK-TODO.md) remain a separately
+planned custom editor program; no fork/build/native install is implied.
+
 ## F003 — durable document and node identity
 
 | IDs | Authored capability | Bounded evidence target |
@@ -204,8 +231,9 @@ source-span authority, ownership proposal, route, generated-readonly and UI
 staleness issues. Earlier failed attempts remain evidence rather than passes.
 
 Current accepted progress is still 200/40 pending terminal final gates. The CI
-runner now has 72 stages, retaining all previous 70 in order and adding the
-identity unit/API suite and identity browser suite. The original WebAppX catalog
+runner now registers 73 stages, retaining all previous 70 in order and adding
+the identity unit/API, identity browser and responsive-layout browser suites.
+Registration and provisional development results are not a final full-CI pass. The original WebAppX catalog
 remains 179/821. The narrow source read model does not complete the full Designer
 kernel, structural/style editing, provider PR approval, native IDE/Windows
 qualification or deployment.

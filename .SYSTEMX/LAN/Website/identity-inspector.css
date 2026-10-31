@@ -11,7 +11,7 @@
   border-radius: 0.65rem;
   background: #f8fafc;
   color: #172536;
-  overflow: hidden;
+  overflow: visible;
 }
 
 #source-identity-panel > summary {
@@ -30,6 +30,7 @@
 #source-identity-panel .identity-body,
 #source-identity-panel .identity-section {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.65rem;
   min-width: 0;
 }
@@ -64,6 +65,7 @@
 
 #source-identity-panel .identity-field {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.3rem;
   min-width: 0;
   font-size: 0.83rem;

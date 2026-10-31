@@ -17,7 +17,6 @@
           <span class="brand-mark">SX</span>
           <span>
             <strong>SYSTEMX LAN Builder</strong>
-            <small>S.F.W.A. Template Builder G1</small>
           </span>
         </a>
 
@@ -30,18 +29,15 @@
 
         <div class="command-palette" role="search">
           <span aria-hidden="true">⌘K</span>
-          <input id="builder-command-input" type="search" placeholder="Route SYSTEMX menu, AGI, MCP, Firebase, GCloud, Stripe, Playwright…" autocomplete="off" />
+          <input id="builder-command-input" type="search" aria-label="Find a workspace or command" placeholder="Route SYSTEMX menu, AGI, MCP, Firebase, GCloud, Stripe, Playwright…" autocomplete="off" />
         </div>
 
         <div class="toolbar-actions" aria-live="polite">
-          <span class="runtime-chip"><b id="controller-state">Loading</b><small id="controller-detail">Controller</small></span>
-          <span class="runtime-chip"><b id="vite-state">Loading</b><small id="vite-detail">Vite</small></span>
           <a id="open-app-link" class="button button-dark" href="http://127.0.0.1:5173/" rel="noreferrer">Open app</a>
           <button id="workspace-menu-toggle" class="hamburger-button" type="button" aria-controls="workspace-menu" aria-expanded="false" aria-label="Open SYSTEMX workspace menu">
             <span></span><span></span><span></span>
           </button>
         </div>
-      </header>
 
       <aside id="workspace-menu" class="workspace-menu-panel" aria-label="SYSTEMX workspace menu" hidden>
         <header>
@@ -63,27 +59,33 @@
           <a href="#mcp">MCP and browser tooling</a>
           <a href="#sync">Evidence and gates</a>
         </nav>
+        <div class="workspace-menu-runtime" aria-label="Local runtime status">          <span class="runtime-chip"><b id="controller-state">Loading</b><small id="controller-detail">Controller</small></span>
+          <span class="runtime-chip"><b id="vite-state">Loading</b><small id="vite-detail">Vite</small></span>
+</div>
         <div class="workspace-menu-note">
           <strong>Local builder only.</strong>
-          <span>Design, data, cloud, and agent tooling remain gated through SYSTEMX logs, backups, diffs, and preflight checks.</span>
+          <span>Local only · source writes require review.</span>
         </div>
       </aside>
+
+      </header>
 
       <div class="builder-shell">
         <aside class="workspace-rail" aria-label="SYSTEMX builder rail">
           <button id="left-panel-toggle" class="rail-toggle" type="button" aria-label="Hide left panel" aria-expanded="true">‹</button>
-          <a class="rail-home" href="#command" data-panel-target="command" title="SYSTEMX menu · ⌘K"><span class="rail-icon">SX</span><b>Menu</b></a>
-          <a class="active" href="#canvas" data-panel-target="canvas" title="Add elements · A"><span class="rail-icon">＋</span><b>Add</b></a>
-          <a href="#pages" data-panel-target="pages" title="Pages and routes · P"><span class="rail-icon">▱</span><b>Pages</b></a>
-          <a href="#navigator" data-panel-target="navigator" title="Navigator hierarchy · Z"><span class="rail-icon">☷</span><b>Navigator</b></a>
-          <a href="#components" data-panel-target="components" title="Reusable components · ⇧A"><span class="rail-icon">◇</span><b>Components</b></a>
-          <a href="#assets" data-panel-target="assets" title="Assets library · J"><span class="rail-icon">▧</span><b>Assets</b></a>
-          <a href="#content" data-panel-target="content" title="CMS and CRM data"><span class="rail-icon">DB</span><b>CMS</b></a>
-          <a href="#providers" data-panel-target="providers" title="Firebase, GCloud, Stripe, and SDKs"><span class="rail-icon">CL</span><b>Cloud</b></a>
-          <a href="#sync" data-panel-target="sync" title="Evidence and quality gates"><span class="rail-icon">✓</span><b>Audit</b></a>
+          <a class="rail-home" href="#command" data-panel-target="command" title="SYSTEMX menu · ⌘K" aria-label="SYSTEMX menu"><span class="rail-icon" aria-hidden="true">SX</span><b>Menu</b></a>
+          <a class="active" href="#canvas" data-panel-target="canvas" title="Add elements · A" aria-label="Add elements"><span class="rail-icon" aria-hidden="true">＋</span><b>Add</b></a>
+          <a href="#pages" data-panel-target="pages" title="Pages and routes · P" aria-label="Pages and routes"><span class="rail-icon" aria-hidden="true">▱</span><b>Pages</b></a>
+          <a href="#navigator" data-panel-target="navigator" title="Navigator hierarchy · Z" aria-label="Navigator hierarchy"><span class="rail-icon" aria-hidden="true">☷</span><b>Navigator</b></a>
+          <a href="#components" data-panel-target="components" title="Reusable components · ⇧A" aria-label="Reusable components"><span class="rail-icon" aria-hidden="true">◇</span><b>Components</b></a>
+          <a href="#assets" data-panel-target="assets" title="Assets library · J" aria-label="Assets library"><span class="rail-icon" aria-hidden="true">▧</span><b>Assets</b></a>
+          <a href="#content" data-panel-target="content" title="CMS and CRM data" aria-label="CMS and CRM data"><span class="rail-icon" aria-hidden="true">DB</span><b>CMS</b></a>
+          <a href="#providers" data-panel-target="providers" title="Firebase, GCloud, Stripe, and SDKs" aria-label="Cloud providers"><span class="rail-icon" aria-hidden="true">CL</span><b>Cloud</b></a>
+          <a href="#sync" data-panel-target="sync" title="Evidence and quality gates" aria-label="Evidence and quality gates"><span class="rail-icon" aria-hidden="true">✓</span><b>Audit</b></a>
         </aside>
 
         <aside class="left-panel" aria-label="Site structure panel">
+          <div class="panel-navigation">
           <div class="panel-context-header">
             <div>
               <p class="eyebrow">Workspace</p>
@@ -97,11 +99,14 @@
             </div>
           </div>
           <nav class="panel-switcher" aria-label="Site structure tools">
-            <a href="#canvas" data-panel-target="canvas">Add</a>
-            <a href="#pages" data-panel-target="pages">Pages</a>
-            <a href="#navigator" data-panel-target="navigator">Navigator</a>
-            <a href="#assets" data-panel-target="assets">Assets</a>
+            <a href="#canvas" data-panel-target="canvas" title="Add elements"><span class="panel-tab-symbol" aria-hidden="true">＋</span><span>Add</span></a>
+            <a href="#pages" data-panel-target="pages" title="Pages and routes"><span class="panel-tab-symbol" aria-hidden="true">▱</span><span>Pages</span></a>
+            <a href="#navigator" data-panel-target="navigator" title="Navigator hierarchy"><span class="panel-tab-symbol" aria-hidden="true">☷</span><span>Navigator</span></a>
+            <a href="#assets" data-panel-target="assets" title="Assets library"><span class="panel-tab-symbol" aria-hidden="true">▧</span><span>Assets</span></a>
+                      <a href="#components" data-panel-target="components" title="Reusable components"><span class="panel-tab-symbol" aria-hidden="true">◇</span><span>Components</span></a>
           </nav>
+
+          </div>
 
           <section id="panel-command" class="panel-block" data-left-panel="command">
             <div class="panel-heading">
@@ -157,13 +162,13 @@
               <span id="canvas-page-label" class="count-label">No page selected</span>
             </div>
             <div class="module-palette" aria-label="Module palette">
-              <button class="module-button" data-node-type="container" type="button">Container</button>
-              <button class="module-button" data-node-type="text" type="button">Text</button>
-              <button class="module-button" data-node-type="image" type="button">Image</button>
-              <button class="module-button" data-node-type="button" type="button">Button</button>
-              <button class="module-button" data-node-type="form" type="button">Form</button>
-              <button class="module-button" data-node-type="list" type="button">Collection list</button>
-              <button class="module-button" data-node-type="component" type="button">Reusable module</button>
+              <button class="module-button" data-node-type="container" type="button"><span class="module-symbol" aria-hidden="true">▣</span><span>Container</span></button>
+              <button class="module-button" data-node-type="text" type="button"><span class="module-symbol" aria-hidden="true">T</span><span>Text</span></button>
+              <button class="module-button" data-node-type="image" type="button"><span class="module-symbol" aria-hidden="true">▧</span><span>Image</span></button>
+              <button class="module-button" data-node-type="button" type="button"><span class="module-symbol" aria-hidden="true">▰</span><span>Button</span></button>
+              <button class="module-button" data-node-type="form" type="button"><span class="module-symbol" aria-hidden="true">☷</span><span>Form</span></button>
+              <button class="module-button" data-node-type="list" type="button"><span class="module-symbol" aria-hidden="true">≡</span><span>Collection list</span></button>
+              <button class="module-button" data-node-type="component" type="button"><span class="module-symbol" aria-hidden="true">◇</span><span>Reusable module</span></button>
             </div>
           </section>
 
@@ -173,7 +178,7 @@
               <h2>Navigator</h2>
               <span class="count-label">current page</span>
             </div>
-            <p class="panel-help">Inspect the live preview hierarchy. Search element names, tags, IDs, or classes; source structure and editing remain separate.</p>
+            <details class="panel-guidance"><summary>Help</summary><p class="panel-help">Inspect the live preview hierarchy. Search element names, tags, IDs, or classes; source structure and editing remain separate.</p></details>
             <label class="navigator-search-label" for="preview-navigator-search">Search live hierarchy</label>
             <input id="preview-navigator-search" class="navigator-search" type="search" maxlength="160" placeholder="header, #hero, .card…" autocomplete="off" />
             <div class="navigator-actions"><button id="preview-navigator-clear" class="button" type="button">Clear search</button><button id="preview-navigator-reveal" class="button" type="button">Reveal selection</button></div>
@@ -189,7 +194,7 @@
               <h2>Components</h2>
               <span id="component-count" class="count-label">0 components</span>
             </div>
-            <p class="panel-help">Select a canvas node, name it, and save it as a responsive module. Headers, footers, containers, and sections can be tagged for reuse across the template.</p>
+            <details class="panel-guidance"><summary>Help</summary><p class="panel-help">Select a canvas node, name it, and save it as a responsive module. Headers, footers, containers, and sections can be tagged for reuse across the template.</p></details>
             <div id="component-selection-card" class="selected-element-card">
               <span>Selected preview target</span>
               <strong id="component-selection-name">Nothing selected</strong>
@@ -213,7 +218,7 @@
               <h3>Inventory before install</h3>
               <span class="count-label">read-only</span>
             </div>
-            <p class="panel-help">Scan a local project for routes, components, styles, providers, and tooling. Secrets are not opened; no bridge files are installed.</p>
+            <details class="panel-guidance"><summary>Help</summary><p class="panel-help">Scan a local project for routes, components, styles, providers, and tooling. Secrets are not opened; no bridge files are installed.</p></details>
             <form id="ingest-form" class="compact-form">
               <label>Project root<input id="ingest-root" name="projectRoot" placeholder="path/to/project" required /></label>
               <label>Confirmation<input id="ingest-confirmation" name="confirmation" placeholder="SCAN EXISTING PROJECT" autocomplete="off" required /></label>
@@ -228,7 +233,7 @@
               <h2>Assets</h2>
               <span id="asset-count" class="count-label">local files</span>
             </div>
-            <p class="panel-help">Assets stay in the template’s controlled source paths. Nothing is uploaded by this local panel.</p>
+            <p class="panel-help">Local assets only. Nothing is uploaded.</p><details class="panel-guidance"><summary>More info</summary><p class="panel-help">Assets stay in the template’s controlled source paths. Nothing is uploaded by this local panel.</p></details>
             <div id="asset-list" class="asset-list"><span class="file-chip">.SYSTEMX/KIT/Brand</span><span class="file-chip">public/</span><span class="file-chip">src/assets/</span></div>
             <a class="button panel-action" href="#source">Review allowlisted files</a>
           </section>
@@ -248,17 +253,11 @@
 
         <main class="canvas-workspace" aria-label="Current site canvas">
           <section class="canvas-header">
-            <div class="canvas-title-row">
-              <p class="eyebrow">Current template</p>
-              <h2>S.F.W.A. visual workspace</h2>
-              <span class="canvas-save-state"><i></i> Local changes backed up</span>
-            </div>
+
             <div class="canvas-actions">
-              <button class="icon-button canvas-action" type="button" aria-label="Undo last local change">↶</button>
-              <button class="icon-button canvas-action" type="button" aria-label="Redo last local change">↷</button>
               <button class="button" id="canvas-dock-toggle" type="button" aria-expanded="false" aria-controls="canvas-model-dock">Layers</button>
-              <button class="button" id="canvas-preview" type="button">Preview</button>
-              <button class="button button-dark" id="canvas-save" type="button">Save</button>
+              <button class="button" id="canvas-preview" type="button" aria-pressed="false" title="Use page links, menus and forms">Interact</button>
+              <button class="button button-dark" id="canvas-save" type="button">Code</button>
             </div>
               <div class="canvas-context-row">
               <label class="canvas-page-control" for="canvas-page-select">
@@ -267,6 +266,16 @@
                   <option value="">Loading pages…</option>
                 </select>
               </label>
+              <details class="canvas-workspace-details">
+                <summary>Workspace details</summary>
+                <div class="canvas-workspace-details-body">
+            <div class="canvas-title-row">
+
+              <h2>Live preview</h2>
+              <span class="canvas-save-state">Local workspace</span>
+            </div>
+          <code id="preview-selection-location" title="Selected element stack location">Select an element</code>
+          <code id="endpoint-vite" title="Active Vite preview endpoint">discovering</code>
               <nav class="breadcrumbs" aria-label="Selected element path"><a href="#pages">Pages</a><span>›</span><strong id="canvas-breadcrumb-page">Home</strong><span>›</span><span id="canvas-element-breadcrumbs"><strong id="canvas-breadcrumb-element">Body</strong></span></nav>
               <div class="target-mode-strip" aria-label="Builder target mode">
                 <span class="mode-chip active">Template edit</span>
@@ -274,6 +283,8 @@
                 <span class="mode-chip locked">Production locked</span>
               </div>
               <div class="route-strip" id="route-list" aria-label="Detected routes"></div>
+                </div>
+              </details>
             </div>
           </section>
 
@@ -339,6 +350,7 @@
         </aside>
 
         <aside class="right-panel" aria-label="Inspector and backend panel">
+          <div class="panel-navigation">
           <div class="inspector-tabs" aria-label="Inspector context">
             <span class="inspector-context">Inspector</span>
             <button id="right-panel-back" class="inspector-back" type="button" aria-label="Back to canvas">← Canvas</button>
@@ -363,6 +375,8 @@
             <a href="#mcp" data-inspector-tab="mcp" data-inspector-group="ops">MCP</a>
             <a href="#sync" data-inspector-tab="sync" data-inspector-group="ops">Gates</a>
           </nav>
+
+          </div>
 
           <section id="panel-settings" class="panel-block" data-right-panel="settings">
             <div class="panel-heading compact">
@@ -435,7 +449,7 @@
                 <h3 id="font-tool-title">Font browser</h3>
                 <span id="font-catalog-state" class="count-label">Loading catalog…</span>
               </div>
-              <p class="panel-help">Browse the checked-in Google Fonts fallback catalog or an optional server-side Google Fonts metadata connection. Preview changes stay in the local Vite frame until you explicitly save them to <code>src/index.css</code>.</p>
+              <details class="panel-guidance"><summary>Help</summary><p class="panel-help">Browse the checked-in Google Fonts fallback catalog or an optional server-side Google Fonts metadata connection. Preview changes stay in the local Vite frame until you explicitly save them to <code>src/index.css</code>.</p></details>
               <div class="font-tool-filters">
                 <label>Search<input id="font-search" type="search" placeholder="Inter, serif, mono…" autocomplete="off" /></label>
                 <label>Category<select id="font-category"><option value="">All categories</option><option value="sans-serif">Sans serif</option><option value="serif">Serif</option><option value="monospace">Monospace</option><option value="display">Display</option><option value="handwriting">Handwriting</option></select></label>
@@ -469,7 +483,7 @@
             <details id="source-browser" class="source-comparison source-browser">
               <summary>Source browser and policy</summary>
               <output id="source-workspace-boundary" class="source-revision-row" aria-live="polite">Waiting for the selected checkout identity.</output>
-              <p class="panel-help">This picker reads one repository's eligible metadata. Search matches filenames and declared tags only. Structural edits remain unavailable.</p>
+              <details class="panel-guidance"><summary>Help</summary><p class="panel-help">This picker reads one repository's eligible metadata. Search matches filenames and declared tags only. Structural edits remain unavailable.</p></details>
               <div class="source-browser-filters">
                 <div><label for="source-extension-filter">Extension</label><select id="source-extension-filter"><option value="">All supported</option><option value=".tsx">.tsx</option><option value=".ts">.ts</option><option value=".css">.css</option></select></div>
                 <div><label for="source-metadata-search">Search metadata</label><input id="source-metadata-search" type="search" maxlength="120" autocomplete="off" placeholder="Filename or declared tag" /></div>
@@ -478,11 +492,11 @@
               <output id="source-inventory-status" class="command-output" aria-live="polite">Eligible inventory has not been read.</output>
               <label>Repository-relative path<input id="source-canonical-path" maxlength="512" autocomplete="off" placeholder="src/pages/HomePage.tsx" /></label>
               <button id="select-source-path" class="button" type="button">Select path</button>
-              <p class="panel-help">Select path validates canonical spelling before a file request. Load reads content explicitly. A refused path keeps the previous selection and draft.</p>
+              <p class="panel-help">Select a path, then Load. Refused paths keep your draft.</p><details class="panel-guidance"><summary>More info</summary><p class="panel-help">Select path validates canonical spelling before a file request. Load reads content explicitly. A refused path keeps the previous selection and draft.</p></details>
               <label class="source-consent"><input id="source-navigation-opt-in" type="checkbox" />Remember eligible path and metadata filters in this browser</label>
               <output id="source-navigation-status" class="panel-help" aria-live="polite">Navigation storage is off. No source text, revision or save authority is stored here.</output>
               <button id="review-source-policy" class="button" type="button">Review source policy proposal</button>
-              <p class="panel-help">Compare the active policy with the reviewed pages-only proposal. Review does not apply a policy or open source files.</p>
+              <p class="panel-help">Policy review only. No policy is applied.</p><details class="panel-guidance"><summary>More info</summary><p class="panel-help">Compare the active policy with the reviewed pages-only proposal. Review does not apply a policy or open source files.</p></details>
               <pre id="source-policy-review" tabindex="0" aria-label="Read-only source policy comparison">No policy proposal reviewed.</pre>
             </details>
             <output id="source-file-metadata" class="source-revision-row" aria-live="polite">Select a file to inspect its eligible metadata.</output>
@@ -501,7 +515,7 @@
             <section id="source-recovery" class="source-comparison" aria-label="Local source draft recovery" data-state="empty">
               <h3>Local draft recovery</h3>
               <label class="source-consent"><input id="source-recovery-opt-in" type="checkbox" />Allow one recovery draft for this checkout in this browser</label>
-              <p class="panel-help">Store recovery draft explicitly records the path, raw baseline text and revision, displayed draft and digest. Typing never stores it. Turning this off removes the saved slot. Storage is local to this browser; do not store sensitive source.</p>
+              <p class="panel-help">Store drafts explicitly in this browser. Avoid sensitive source; switching recovery off removes the saved slot.</p><details class="panel-guidance"><summary>More info</summary><p class="panel-help">Store recovery draft explicitly records the path, raw baseline text and revision, displayed draft and digest. Typing never stores it. Turning this off removes the saved slot. Storage is local to this browser; do not store sensitive source.</p></details>
               <dl class="source-comparison-revisions">
                 <dt>Saved path</dt><dd id="source-recovery-path">No saved draft</dd>
                 <dt>Saved raw baseline revision</dt><dd id="source-recovery-base-revision">Not available</dd>
@@ -520,7 +534,7 @@
             </section>
             <section id="source-draft-preview" class="source-comparison source-draft-preview" aria-label="Literal source draft preview" hidden>
               <div class="panel-heading compact"><h3>Literal draft snapshot</h3><button id="close-source-draft-preview" class="button" type="button">Close preview</button></div>
-              <p class="panel-help">This text snapshot is not compiled or executed. Preview and Check source only read source; they do not prepare a replacement or save a file. A source check observes one point in time.</p>
+              <p class="panel-help">Source preview only; nothing is compiled or saved.</p><details class="panel-guidance"><summary>More info</summary><p class="panel-help">This text snapshot is not compiled or executed. Preview and Check source only read source; they do not prepare a replacement or save a file. A source check observes one point in time.</p></details>
               <dl class="source-comparison-revisions">
                 <dt>Captured path</dt><dd id="source-draft-preview-path"></dd>
                 <dt>Captured loaded baseline · raw file SHA-256</dt><dd id="source-draft-preview-loaded-revision"></dd>
@@ -547,13 +561,13 @@
               </div>
               <output id="source-review-summary" class="panel-help" aria-live="polite"></output>
               <div id="source-review-lines" class="source-comparison-lines" aria-label="Changed source line excerpts"></div>
-              <p class="panel-help">Comparison keeps the draft and loaded base. Review replacement prepares this exact draft against the displayed latest revision. A new SAVE LOCAL CHANGE confirmation is still required before saving.</p>
+              <p class="panel-help">Review keeps your draft. Type SAVE LOCAL CHANGE again before saving.</p><details class="panel-guidance"><summary>More info</summary><p class="panel-help">Comparison keeps the draft and loaded base. Review replacement prepares this exact draft against the displayed latest revision. A new SAVE LOCAL CHANGE confirmation is still required before saving.</p></details>
               <button id="review-source-export" class="button" type="button" disabled>Review export scope</button>
               <button id="prepare-source-replacement" class="button" type="button" disabled>Review replacement</button>
             </section>
             <section id="source-export" class="source-comparison" aria-label="Comparison download scope" hidden>
               <div class="panel-heading compact"><h3>Comparison export scope</h3><button id="cancel-source-export" class="button" type="button">Cancel export</button></div>
-              <p class="panel-help">The JSON includes complete proposed draft and latest source text, their revisions, and bounded changed-line metadata. Truncation flags describe the line comparison; no omitted line rows are invented. The displayed scope describes this exact download.</p>
+              <p class="panel-help">Download includes full draft and latest source. Review the scope before exporting.</p><details class="panel-guidance"><summary>More info</summary><p class="panel-help">The JSON includes complete proposed draft and latest source text, their revisions, and bounded changed-line metadata. Truncation flags describe the line comparison; no omitted line rows are invented. The displayed scope describes this exact download.</p></details>
               <pre id="source-export-scope" tabindex="0" aria-label="Exact comparison export scope"></pre>
               <label class="source-export-consent">Inclusion confirmation<input id="source-export-confirmation" placeholder="EXPORT COMPARISON" autocomplete="off" disabled /></label>
               <button id="download-source-export" class="button" type="button" disabled>Download comparison JSON</button>
@@ -561,7 +575,7 @@
             </section>
             <section id="source-history" class="source-comparison" aria-label="Read-only source revision history">
               <div class="panel-heading compact"><h3>Source revision history</h3><button id="refresh-source-history" class="button" type="button" disabled>Refresh history</button></div>
-              <p class="panel-help">History reads local operation metadata and current source. Observed changes identify no external author; legacy records may have no revision. This view does not restore a backup or write source.</p>
+              <p class="panel-help">Read-only local history. No backup is restored.</p><details class="panel-guidance"><summary>More info</summary><p class="panel-help">History reads local operation metadata and current source. Observed changes identify no external author; legacy records may have no revision. This view does not restore a backup or write source.</p></details>
               <dl class="source-comparison-revisions"><dt>History path</dt><dd id="source-history-path">No history read</dd><dt>Observed current revision</dt><dd id="source-history-current-revision">Not observed</dd></dl>
               <div id="source-history-list" aria-label="Source history entries"></div>
               <output id="source-history-status" class="command-output" aria-live="polite">Refresh history for the loaded source.</output>
@@ -635,7 +649,7 @@
               <strong>Managed SYSTEMX</strong>
               <small id="systemx-version-state">Loading selected operating tools.</small>
               <small id="systemx-record-state">Loading project records.</small>
-              <p class="panel-help">Tasks and registered roles are recorded context. They do not establish running workers or project completion.</p>
+              <p class="panel-help">Recorded roles and tasks; running workers are verified separately.</p><details class="panel-guidance"><summary>More info</summary><p class="panel-help">Tasks and registered roles are recorded context. They do not establish running workers or project completion.</p></details>
               <code>npm run systemx -- menu</code>
             </article>
             <section class="work-status-section" aria-labelledby="work-status-heading">
@@ -771,8 +785,8 @@
             <span aria-hidden="true">◎</span>
             <b>Inspect</b>
           </button>
-          <code id="preview-selection-location" title="Selected element stack location">Select an element</code>
-          <code id="endpoint-vite" title="Active Vite preview endpoint">discovering</code>
+
+
         </div>
       </footer>
 

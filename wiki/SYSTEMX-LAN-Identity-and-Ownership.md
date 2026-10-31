@@ -19,6 +19,35 @@ identity metadata cannot widen that policy. The existing
 [GUI source workflow](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-TEMPLATE-GUI-WORKFLOW.md) remains the path for a
 deliberate guarded source save.
 
+## Dashboard layout and preview interaction — candidate changes
+
+The current candidate repairs clipped component/menu content with shrinkable
+sidebar tracks, bounded fields and wrapped metadata. Compact panel focus keeps
+pin preferences while hidden panes leave keyboard focus order. The workspace
+menu aligns to its header trigger's right edge and long menus remain scrollable.
+Concise controls keep action constraints/status visible; Help/More info and
+workspace-detail disclosures hold longer explanations without growing the
+primary canvas header when selection changes.
+
+Inspect selection and metadata refresh retain the chosen preview device/width.
+Interact passes ordinary links and controls to the app and keeps the selected
+device during SPA navigation. Explicit Reveal/route actions keep their intended
+navigation behavior. Read the
+[dashboard UX research and implementation review](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-DASHBOARD-UX-2026-10-31.md)
+for observed causes, official Webflow/W3C sources and the separate proof gates.
+
+The CI plan now registers **73 stages**: all previous 70 retain their order,
+with identity unit/API, identity browser and responsive-layout browser added.
+Final exact-candidate browser/CI/preflight, independent review, F003-before-F004
+acceptance and push/readback remain pending. A registered stage or provisional
+browser run is not a final pass. Current accepted totals remain **200 / 40**;
+the selected target remains **400 / 80**.
+
+The separate [tailored Code-OSS fork plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-VSCODE-FORK-PLAN.md)
+and [32 unchecked fork TODOs](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/LAN-VSCODE-FORK-TODO.md)
+are planned work. This dashboard increment creates no custom native editor,
+extension registry, installation, update service or catalog acceptance.
+
 ## Use the inspector
 
 Open **Build → Code → Source identities** in the local LAN

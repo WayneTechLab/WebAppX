@@ -29,6 +29,24 @@ branch. Required completion includes exact-candidate unit/API/browser checks,
 independent review, full CI, separate Hosting preflight, accepted evidence,
 README/wiki/Page reconciliation, merge/publication and remote readback.
 
+## Added dashboard and editor-fork scope — 2026-10-31
+
+The current Components view exposed intrinsic sidebar overflow and unstyled
+compact forms. Agent 0 is adding fluid panel tracks, wrapped navigation and
+metadata, accessible symbols, and complete native form sizing. Small screens
+present one focused sidebar while retaining Keep open preferences. Responsive
+browser development checks now pass all 25 groups across five sizes, with the
+source-editor and Navigator regressions passing. A replacement candidate will
+receive the full 73-stage CI and separate preflight before acceptance.
+Candidate `5352cd787c4976d81c252599d5b03939e112c024` predates this layout work
+and is provisional; its development results are not final layout acceptance.
+
+The requested custom VS Code fork is a separate planned workstream. Its
+[architecture and upstream boundaries](LAN-VSCODE-FORK-PLAN.md) and
+[additive task list](backlog/LAN-VSCODE-FORK-TODO.md) do not alter the original
+1,000-item WebAppX catalog, 10,000 LAN definitions or accepted counts.
+No custom editor build or installation is claimed.
+
 ## Previous completed F002 milestone
 
 Previous functional candidate:

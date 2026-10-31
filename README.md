@@ -87,7 +87,7 @@ opaque, external and unmapped targets advertise their read-only boundaries.
 Read the [identity and ownership guide](docs/LAN-IDENTITY-OWNERSHIP.md),
 [200-requirement execution plan](docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md)
 and [active iteration](docs/LAN-ACTIVE-ITERATION.md). The new unit/API and browser
-stages join the previous 70 CI gates, for **72 required stages**. Development
+stages join the previous 70 CI gates, for **73 required stages**. Development
 proof and final exact-revision acceptance/publication remain distinct.
 
 Agent 0 observed **ten authenticated CLI workers running concurrently** in
@@ -99,6 +99,23 @@ The [WebAppX Pages](https://chatgpt.com/space/page_6ae57560ffc081918ce0df5347f4d
 include the [F003/F004 delivery board](https://chatgpt.com/space/page_73f53c0c41408191b639721a67bf18a7)
 and its durable-identity and source-ownership subpages. Their current 200/40
 acceptance and pending 400/80 target remain separate until final evidence.
+
+## Responsive LAN dashboard and tailored editor roadmap
+
+LAN menus, sidebars and nested component controls now use fluid tracks, wrapped
+navigation, readable paths and consistent stacked form fields. Symbols accompany
+accessible text labels. On compact screens, the focused sidebar is shown while
+Keep open preferences are retained; the footer wraps its device and evidence
+controls rather than cutting them off. Quick find remains reachable when the
+header search is collapsed. The responsive browser gate is
+`npm run browser:lan-layout`; final candidate results remain pending.
+
+A custom VS Code–based LAN builder is now a separate proposed workstream:
+[Code-OSS fork plan](docs/LAN-VSCODE-FORK-PLAN.md) and
+[32 unchecked editor tasks](docs/backlog/LAN-VSCODE-FORK-TODO.md). It covers an
+owned product identity, LAN bridge, editor/preview/diff workflow, extensions,
+platform packaging, updates and upstream maintenance. No editor fork build is
+claimed; original WebAppX and LAN catalog acceptance remains separate.
 
 ## SYSTEMX host swarm — Agent 0, X/Y/Z and Alpha
 

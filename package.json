@@ -143,7 +143,8 @@
     "swarm": "node .SYSTEMX/swarm/cli.mjs",
     "swarm:test": "node --test tests/swarm/*.test.mjs",
     "lan:identity:test": "node --test .SYSTEMX/LAN/tests/identity-*.test.mjs .SYSTEMX/LAN/tests/ownership-*.test.mjs .SYSTEMX/LAN/tests/source-identity-*.test.mjs .SYSTEMX/LAN/tests/source-ownership-unit.test.mjs",
-    "browser:source-identity": "node scripts/lan-source-identity-browser.mjs"
+    "browser:source-identity": "node scripts/lan-source-identity-browser.mjs",
+    "browser:lan-layout": "node scripts/lan-layout-browser.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

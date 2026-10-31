@@ -69,6 +69,39 @@ private runtime integrity key; source files/backups/logs stay untouched by
 metadata operations. Ten real CLI executions and reviewed local branch integration
 are observed; PR/IDE/native/production qualification remains separate.
 
+### Current dashboard layout and interaction candidate — 2026-10-31
+
+The candidate also repairs the reported menu/component clipping and preview
+viewport shifts. Shrinkable sidebar tracks, bounded fields and wrapped metadata
+keep component forms and nested controls within the chosen panel width.
+Compact pane focus preserves pin preferences; hidden panes leave keyboard focus
+order. The workspace menu stays at its own header trigger's right edge, and long
+menus scroll within the available height. Frequent controls use concise labels;
+longer explanations are available through **Help / More info**. Workspace/route
+metadata is disclosed separately so selection text does not grow the main
+canvas header.
+
+Selecting an element or refreshing metadata preserves the chosen preview device
+and width rather than silently changing the canvas viewport. **Inspect** selects
+preview content; **Interact** passes ordinary links and controls to the app, with
+SPA navigation retaining the selected device. Explicit reveal/navigation still
+has its own intended target behavior. Read the
+[dashboard UX research and implementation review](../../docs/LAN-DASHBOARD-UX-2026-10-31.md)
+for observed causes, Webflow/W3C source distinctions and the remaining proof.
+
+The aggregate CI plan now registers **73 stages**, retaining the previous 70 in
+order and adding identity unit/API, identity browser and responsive-layout
+browser stages. Final exact-candidate browser/CI/preflight, review, family
+acceptance and publication are still pending; registration or a provisional
+browser run is not a passing final receipt. Acceptance remains **200/10,000
+requirements / 40/2,000 capabilities**; the F003/F004 target remains **400 / 80**.
+
+The separate [tailored Code-OSS fork plan](../../docs/LAN-VSCODE-FORK-PLAN.md) and
+[32-item additive backlog](../../docs/backlog/LAN-VSCODE-FORK-TODO.md) are planned,
+unchecked work. No custom native editor, registry, installer or update channel
+is delivered by this dashboard change, and neither catalog's authored
+requirements are rewritten.
+
 ## Historical source-access milestone — locally accepted 2026-10-30
 
 Agent 0 accepted exactly **LAN-00101–LAN-00200** at functional candidate

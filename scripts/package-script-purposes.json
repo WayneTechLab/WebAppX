@@ -147,6 +147,11 @@
       "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
     },
     {
+      "name": "browser:lan-layout",
+      "purpose": "SYSTEMX",
+      "description": "Exercise responsive LAN menus, component forms, keyboard navigation and preview viewport stability in owned browser fixtures."
+    },
+    {
       "name": "browser:lifecycles",
       "purpose": "portal",
       "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."

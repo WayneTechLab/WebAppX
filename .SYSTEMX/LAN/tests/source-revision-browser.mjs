@@ -493,6 +493,8 @@ try {
   const frameHandle = await page.locator('#app-preview-frame').elementHandle(), frame = await frameHandle.contentFrame()
   await expect(frame.locator('html')).toHaveAttribute('data-systemx-inspector-bound', '')
   await frame.getByRole('heading', { name: 'Fixture original', exact: true }).click()
+  // Selection preserves the canvas; double-click is the explicit edit gesture.
+  await frame.getByRole('heading', { name: 'Fixture original', exact: true }).dblclick()
   const textEditor = page.locator('#settings-text-editor'), textSave = page.locator('#settings-text-save'), textApproval = page.locator('#settings-text-confirmation')
   await expect(textSave).toBeEnabled()
   await textEditor.fill('Selected text draft')
@@ -2162,7 +2164,7 @@ try {
   await refreshWorkspaceInUi()
   // External restoration does not expand the independently observed eligible
   // inventory. Refresh it through its normal control before selecting the file.
-  if (!await page.locator('#source-browser').evaluate((node) => node.open)) await page.locator('#source-browser summary').click()
+  if (!await page.locator('#source-browser').evaluate((node) => node.open)) await page.locator('#source-browser > summary').click()
   const restoredLeafInventory = waitForResponse((item) => item.request().method() === 'GET' && new URL(item.url()).pathname.endsWith('/api/builder/source/inventory'))
   await page.locator('#refresh-source-inventory').click()
   assert.equal((await restoredLeafInventory).status(), 200)

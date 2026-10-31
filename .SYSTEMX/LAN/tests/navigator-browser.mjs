@@ -312,7 +312,9 @@ try {
   await selectFixture('sx-navqa-private-container')
   await clear.click()
   await selectFixture('sx-navqa-private-child')
+  await page.locator('.canvas-workspace-details > summary').click()
   await page.locator('#canvas-element-breadcrumbs [data-preview-breadcrumb-index]').filter({ hasText: '#sx-navqa-private-container' }).click()
+  await page.locator('.canvas-workspace-details > summary').click()
   await expect(frame.locator('#sx-navqa-private-container')).toHaveAttribute('data-systemx-inspector-selected', '')
   assert.equal(await frame.evaluate(() => window.__SX_NAVQA_CONTAINER_TEXT_READS__), 0,
     'Navigator/tree and breadcrumb container selection must not aggregate container textContent.')
@@ -323,7 +325,9 @@ try {
 
   await selectFixture('sx-navqa-item-34')
   await clear.click()
+  await page.locator('.canvas-workspace-details > summary').click()
   await page.locator('#canvas-element-breadcrumbs [data-preview-breadcrumb-index]').filter({ hasText: '#sx-navqa-list' }).click()
+  await page.locator('.canvas-workspace-details > summary').click()
   await expect(frame.locator('#sx-navqa-list')).toHaveAttribute('data-systemx-inspector-selected', '')
   await expect(page.locator('#canvas-breadcrumb-element')).toContainText('#sx-navqa-list')
   await selectFixture('sx-navqa-item-36')

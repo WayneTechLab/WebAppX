@@ -203,3 +203,14 @@ Read the [GUI workflow](../../docs/LAN-TEMPLATE-GUI-WORKFLOW.md),
 the supported Keep open inspector setting and checks seven 336 px states;
 Navigator separately passes 16 groups. Full 68-stage CI and Hosting preflight
 pass. Production deployment and provider activation remain unperformed.
+
+
+## Additive dashboard and Code-OSS scope — 2026-10-31
+
+The active F003/F004 iteration now includes responsive sidebar/component/form
+qualification. See the [active iteration](../../docs/LAN-ACTIVE-ITERATION.md).
+The separately requested custom editor fork has an additive
+[proposed plan](../../docs/LAN-VSCODE-FORK-PLAN.md) and
+[32 unchecked tasks](../../docs/backlog/LAN-VSCODE-FORK-TODO.md).
+No original catalog definitions, accepted counts or reusable seed records are
+changed by this proposal; no native editor build or distribution is claimed.

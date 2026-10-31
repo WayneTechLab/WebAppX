@@ -121,6 +121,7 @@ const state = {
   sourceHistoryLoading: false,
   components: [],
   previewSelectedElement: null,
+  previewWorkspaceBinding: null,
   previewHoveredElement: null,
   previewSelection: null,
   previewSelectionAnchor: null,
@@ -170,13 +171,22 @@ function setRuntimeStyleRule(name, css) {
 
 if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual'
 
-function setWorkspaceMenu(open) {
+function setWorkspaceMenu(open, { restoreFocus = false } = {}) {
   const panel = document.querySelector('#workspace-menu')
   const toggle = document.querySelector('#workspace-menu-toggle')
   if (!panel || !toggle) return
   panel.hidden = !open
   toggle.setAttribute('aria-expanded', String(open))
   toggle.setAttribute('aria-label', open ? 'Close SYSTEMX workspace menu' : 'Open SYSTEMX workspace menu')
+  if (!open && restoreFocus) toggle.focus({ preventScroll: true })
+}
+
+function focusQuickFind() {
+  const input = document.querySelector('#builder-command-input')
+  if (!input) return
+  setWorkspaceMenu(false)
+  if (!input.getBoundingClientRect().height) document.querySelector('.builder-app')?.classList.add('command-search-open')
+  input.focus()
 }
 
 function updatePanelVisibilityControls() {
@@ -229,10 +239,31 @@ function reconcilePanelVisibilityState() {
 
 function saveLayout() {
   reconcilePanelVisibilityState()
+  syncCompactPanel()
   try {
     window.localStorage.setItem(layoutStorageKey, JSON.stringify(state.layout))
   } catch {
     // Layout persistence is optional; the builder remains usable without storage.
+  }
+}
+
+// A compact workspace presents one focused pane without changing either
+// Keep open preference. Hidden panes must also leave the keyboard focus order.
+function syncCompactPanel(preferredSide) {
+  const shell = document.querySelector('.builder-shell')
+  if (!shell) return
+  if (preferredSide) shell.dataset.compactPanel = preferredSide
+  let focused = shell.dataset.compactPanel || 'left'
+  if (state.layout[`${focused}Collapsed`]) focused = focused === 'left' ? 'right' : 'left'
+  shell.dataset.compactPanel = focused
+  const compact = window.innerWidth <= 700
+  for (const side of ['left', 'right']) {
+    const visible = !state.layout[`${side}Collapsed`] && (!compact || side === focused)
+    const panel = shell.querySelector(`.${side}-panel`)
+    if (panel) panel.inert = !visible
+    const toggle = document.querySelector(`#${side}-panel-toggle`)
+    toggle?.setAttribute('aria-expanded', String(visible))
+    toggle?.setAttribute('aria-label', `${visible ? 'Hide' : 'Show'} ${side} panel`)
   }
 }
 
@@ -450,6 +481,7 @@ function activateLeftPanel(panelId, updateHash = true) {
   setLeftPanelCollapsed(false)
   if (window.innerWidth < 1180) autoCollapsePanel('right')
   else protectCanvasWidth('left')
+  syncCompactPanel('left')
   setCanvasDockOpen(panelId === 'navigator')
   document.querySelectorAll('[data-left-panel]').forEach((panel) => panel.classList.toggle('is-active', panel.dataset.leftPanel === panelId))
   document.querySelectorAll('[data-panel-target]').forEach((link) => link.classList.toggle('active', link.dataset.panelTarget === panelId))
@@ -463,6 +495,7 @@ function activateRightPanel(panelId, updateHash = true) {
   setRightPanelCollapsed(false)
   if (window.innerWidth < 1180) autoCollapsePanel('left')
   else protectCanvasWidth('right')
+  syncCompactPanel('right')
   setCanvasDockOpen(false)
   document.querySelectorAll('[data-right-panel]').forEach((panel) => {
     if (panel.closest('.right-panel')) panel.classList.toggle('is-active', panel.dataset.rightPanel === panelId)
@@ -820,6 +853,7 @@ function setPreviewInspectMode(active, persist = true) {
   state.layout.previewInspect = Boolean(active)
   toggle?.classList.toggle('active', state.layout.previewInspect)
   toggle?.setAttribute('aria-pressed', String(state.layout.previewInspect))
+  document.querySelector('#canvas-preview')?.setAttribute('aria-pressed', String(!state.layout.previewInspect))
   toggle?.setAttribute('title', state.layout.previewInspect
     ? 'Inspect mode is active. Click or right-click elements in the preview.'
     : 'Interaction mode is active. The preview app receives normal clicks.')
@@ -925,7 +959,9 @@ function navigatePreviewToPage(page) {
   const frame = document.querySelector('#app-preview-frame')
   const targetUrl = previewUrlForPage(page)
   if (!frame || frame.hidden || !targetUrl) return
-  if (frame.src !== targetUrl) frame.src = targetUrl
+  let currentUrl = frame.src
+  try { currentUrl = frame.contentWindow?.location.href ?? currentUrl } catch { /* Origin changes are handled by the next explicit navigation. */ }
+  if (currentUrl !== targetUrl) frame.src = targetUrl
 }
 
 function editableTextInfo(element) {
@@ -1073,7 +1109,7 @@ function restorePreviewSelection() {
     output('#preview-selection-location', `Selection target is not available after reload: ${anchor.domPath}`)
     return
   }
-  selectPreviewElement(element, { openEditor: true, restoring: true })
+  selectPreviewElement(element, { restoring: true })
 }
 
 function renderPreviewParentList(element) {
@@ -1222,6 +1258,10 @@ function rebuildPreviewNavigator() {
   if (state.previewSelectedElement && (!isCurrentPreviewElement(state.previewSelectedElement, root)
     || state.previewNavigatorRoute && state.previewNavigatorRoute !== route)) clearPreviewSelection()
   state.previewNavigatorRoute = route
+  const page = state.data?.pages?.find((item) => (item.route === '/' ? '/' : String(item.route ?? '').replace(/\/+$/, '')) === route)
+  if (page && page.id !== state.selectedPageId) {
+    observePreviewPage(page)
+  }
   renderPreviewNavigator()
   renderPreviewBreadcrumbs()
 }
@@ -1425,7 +1465,7 @@ function installPreviewInspector() {
       event.preventDefault()
       event.stopImmediatePropagation()
       hidePreviewContextMenu()
-      selectPreviewElement(event.target, { openEditor: true })
+      selectPreviewElement(event.target)
     }, true)
     frameDocument.addEventListener('dblclick', (event) => {
       if (!state.layout.previewInspect || !isElement(event.target)) return
@@ -1771,7 +1811,12 @@ function renderStatus(status) {
     const sameOriginPreview = window.location.origin === viteOrigin
     appPreview.hidden = !sameOriginPreview
     previewNotice.hidden = sameOriginPreview
-    if (sameOriginPreview && appPreview.src !== status.vite.url) appPreview.src = status.vite.url
+    const binding = `${status.repository?.workspaceId ?? ''}\0${viteOrigin}`
+    if (sameOriginPreview && state.previewWorkspaceBinding !== binding) {
+      if (state.previewWorkspaceBinding) clearPreviewSelection()
+      state.previewWorkspaceBinding = binding
+      appPreview.src = status.vite.url
+    }
   }
   renderProviders(status.providers ?? [])
   renderAuth(status.auth)
@@ -2112,6 +2157,14 @@ function selectedPage() {
   return state.data?.pages?.find((page) => page.id === state.selectedPageId) ?? null
 }
 
+function observePreviewPage(page) {
+  state.selectedPageId = page.id
+  selectPage(page.id)
+  const label = state.previewSelection?.label ?? 'Page canvas'
+  text('#selected-element-state', label)
+  text('#settings-element-state', label)
+}
+
 function selectPage(pageId) {
   const previousPageId = state.selectedPageId
   state.selectedPageId = pageId
@@ -2195,6 +2248,9 @@ function renderComponents(components) {
   for (const component of components) {
     const card = create('article', 'component-card')
     const header = create('header')
+    const symbol = create('span', 'module-symbol', { header: '▰', footer: '▱', section: '▣', overlay: '▧' }[component.role] ?? '◇')
+    symbol.setAttribute('aria-hidden', 'true')
+    header.append(symbol)
     header.append(create('strong', '', component.name ?? component.id), create('span', 'badge ok', component.status ?? 'detected'))
     card.append(header)
     card.append(create('small', '', `${component.role ?? 'component'} · ${component.responsive?.width ?? 'fluid'} · ${(component.tags ?? []).join(', ')}`))
@@ -2323,8 +2379,12 @@ async function refresh() {
     const pageRoute = item.route === '/' ? '/' : String(item.route ?? '').replace(/\/+$/, '')
     return pageRoute === previewRoute
   })
-  const currentPage = data.pages.find((item) => item.id === state.selectedPageId) ?? previewPage ?? data.pages[0]
-  if (currentPage) selectPage(currentPage.id)
+  const currentPage = previewPage ?? data.pages.find((item) => item.id === state.selectedPageId) ?? data.pages[0]
+  if (currentPage) {
+    // A status refresh observes the route. Only the explicit page picker
+    // navigates; synchronization must not reload the iframe or move its scroll.
+    observePreviewPage(currentPage)
+  }
   output('#command-output', 'Workspace refreshed. Local changes remain under SYSTEMX control.')
 }
 
@@ -3407,8 +3467,7 @@ function bind() {
       ? state.layout.activeRight
       : inspectorGroups[group]?.[0]
     if (!currentPanel) return
-    const shell = document.querySelector('.builder-shell')
-    if (button.dataset.inspectorGroupButton && !shell?.classList.contains('right-panel-collapsed') && state.layout.activeInspectorGroup === group) {
+    if (button.dataset.inspectorGroupButton && document.querySelector('#right-panel-toggle')?.getAttribute('aria-expanded') === 'true' && state.layout.activeInspectorGroup === group) {
       setRightPanelCollapsed(true)
       return
     }
@@ -3416,13 +3475,11 @@ function bind() {
   }))
   window.addEventListener('hashchange', activateWorkspaceFromHash)
   document.querySelector('#left-panel-quick-find')?.addEventListener('click', () => {
-    const input = document.querySelector('#builder-command-input')
-    input?.focus()
+    focusQuickFind()
     output('#command-output', 'Quick find ready. Search a panel, route, tool, or SYSTEMX action.')
   })
   document.querySelector('#left-panel-toggle')?.addEventListener('click', () => {
-    const shell = document.querySelector('.builder-shell')
-    if (shell?.classList.contains('left-panel-collapsed')) activateLeftPanel(state.layout.activeLeft || 'canvas', false)
+    if (document.querySelector('#left-panel-toggle')?.getAttribute('aria-expanded') !== 'true') activateLeftPanel(state.layout.activeLeft || 'canvas', false)
     else setLeftPanelCollapsed(true)
   })
   document.querySelector('.left-panel .panel-collapse')?.addEventListener('click', () => setLeftPanelCollapsed(true))
@@ -3430,8 +3487,7 @@ function bind() {
     setPanelPinned('left', !state.layout.leftPinned)
   })
   document.querySelector('#right-panel-toggle')?.addEventListener('click', () => {
-    const shell = document.querySelector('.builder-shell')
-    if (shell?.classList.contains('right-panel-collapsed')) activateRightPanel(state.layout.activeRight || 'style', false)
+    if (document.querySelector('#right-panel-toggle')?.getAttribute('aria-expanded') !== 'true') activateRightPanel(state.layout.activeRight || 'style', false)
     else setRightPanelCollapsed(true)
   })
   document.querySelector('#right-panel-visibility')?.addEventListener('click', () => {
@@ -3444,16 +3500,16 @@ function bind() {
     setCanvasDockOpen(workspace?.classList.contains('model-dock-collapsed'))
   })
   document.querySelector('.canvas-workspace')?.addEventListener('click', (event) => {
-    if (event.target.closest('button, a, input, select, textarea, label, .canvas-layers, .canvas-preview-stage')) return
+    if (event.target.closest('button, a, input, select, textarea, label, details, summary, .canvas-layers, .canvas-preview-stage')) return
     collapseInspectorToCanvas()
   })
   document.querySelector('#workspace-menu-toggle')?.addEventListener('click', () => {
     const panel = document.querySelector('#workspace-menu')
     setWorkspaceMenu(Boolean(panel?.hidden))
   })
-  document.querySelector('#workspace-menu-close')?.addEventListener('click', () => setWorkspaceMenu(false))
+  document.querySelector('#workspace-menu-close')?.addEventListener('click', () => setWorkspaceMenu(false, { restoreFocus: true }))
   document.querySelector('#workspace-menu')?.addEventListener('click', (event) => {
-    if (event.target.closest('a')) setWorkspaceMenu(false)
+    if (event.target.closest('a')) setWorkspaceMenu(false, { restoreFocus: true })
   })
   document.addEventListener('mousedown', (event) => {
     const panel = document.querySelector('#workspace-menu')
@@ -3634,10 +3690,22 @@ function bind() {
     const key = event.key.toLowerCase()
     if ((event.metaKey || event.ctrlKey) && key === 'k') {
       event.preventDefault()
-      document.querySelector('#builder-command-input')?.focus()
+      focusQuickFind()
       return
     }
     if (event.key === 'Escape') {
+      const app = document.querySelector('.builder-app')
+      if (app?.classList.contains('command-search-open')) {
+        app.classList.remove('command-search-open')
+        const quickFind = document.querySelector('#left-panel-quick-find')
+        if (quickFind?.getBoundingClientRect().height && !quickFind.closest('[inert]')) quickFind.focus()
+        else document.querySelector('#workspace-menu-toggle')?.focus()
+        return
+      }
+      if (document.querySelector('#workspace-menu')?.hidden === false) {
+        setWorkspaceMenu(false, { restoreFocus: true })
+        return
+      }
       setWorkspaceMenu(false)
       if (!state.layout.rightCollapsed) collapseInspectorToCanvas()
       if (state.layout.evidenceOpen) setEvidenceDrawer(false)
@@ -3690,8 +3758,31 @@ function bind() {
   window.addEventListener('resize', () => {
     applyPanelWidths()
     protectCanvasWidth('canvas')
+    syncCompactPanel()
     if (state.layout.previewFit) applyPreviewPreset('fit', { fit: true })
   })
+  // Footer controls wrap at narrow widths. Keep the evidence drawer above the
+  // measured dock rather than assuming a fixed one-line height.
+  const footer = document.querySelector('.canvas-application-bar')
+  if (footer && typeof ResizeObserver === 'function') {
+    const observer = new ResizeObserver(() => {
+      const height = Math.ceil(footer.getBoundingClientRect().height)
+      setRuntimeStyleRule('application-bar-height', `:root { --lan-application-bar-height: ${height}px; }`)
+    })
+    observer.observe(footer)
+  }
+  if (typeof ResizeObserver === 'function') {
+    const rules = new Map()
+    for (const side of ['left', 'right']) {
+      const navigation = document.querySelector(`.${side}-panel .panel-navigation`)
+      if (!navigation) continue
+      const observer = new ResizeObserver(() => {
+        rules.set(side, `.${side}-panel { --lan-panel-navigation-height: ${Math.ceil(navigation.getBoundingClientRect().height)}px; }`)
+        setRuntimeStyleRule('panel-navigation-heights', [...rules.values()].join('\n'))
+      })
+      observer.observe(navigation)
+    }
+  }
   document.querySelector('#builder-command-input')?.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter') return
     event.preventDefault()
@@ -3703,12 +3794,15 @@ function bind() {
         : 'Command router ready. Try: setup check, open Firebase lane, run sync gate, or inspect Agent 0 mission.',
     )
   })
+  document.querySelector('#builder-command-input')?.addEventListener('blur', () => {
+    document.querySelector('.builder-app')?.classList.remove('command-search-open')
+  })
   document.querySelector('#refresh-status')?.addEventListener('click', () => void refresh().catch((error) => output('#command-output', error.message)))
   document.querySelector('#refresh-sync')?.addEventListener('click', () => void refresh().catch((error) => output('#command-output', error.message)))
   document.querySelector('#inspector-refresh-sync')?.addEventListener('click', () => void refresh().catch((error) => output('#inspector-sync-summary', error.message)))
   document.querySelector('#preview-app')?.addEventListener('click', () => { collapseInspectorToCanvas(); if (state.status?.vite?.url) window.open(state.status.vite.url, '_blank', 'noopener,noreferrer') })
-  document.querySelector('#canvas-preview')?.addEventListener('click', () => { collapseInspectorToCanvas(); if (state.status?.vite?.url) window.open(state.status.vite.url, '_blank', 'noopener,noreferrer') })
-  document.querySelector('#canvas-save')?.addEventListener('click', () => output('#command-output', 'Canvas save staged. Use an explicit source or page-model save to write through the SYSTEMX backup/diff gate.'))
+  document.querySelector('#canvas-preview')?.addEventListener('click', () => setPreviewInspectMode(false))
+  document.querySelector('#canvas-save')?.addEventListener('click', () => activateRightPanel('source'))
   document.querySelectorAll('[data-preview-preset]').forEach((button) => button.addEventListener('click', () => {
     const presetId = button.dataset.previewPreset
     applyPreviewPreset(presetId)
