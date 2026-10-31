@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waynetechlab.com/schemas/systemx/lan/graph-read-model.schema.json",
+  "title": "SYSTEMX LAN canonical graph read model",
+  "description": "Schema 1, metadata only. graph-core additionally enforces UTF-8 byte, JSON depth, extension depth and byte, private field, path, and source span checks. graph-validation enforces graph relationships and reachability.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "workspaceId", "documentId", "sourceRevision", "pages", "nodes", "references", "components", "collections", "extensions"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "workspaceId": { "$ref": "#/$defs/hash" },
+    "documentId": { "$ref": "#/$defs/id" },
+    "sourceRevision": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "pages": { "type": "array", "maxItems": 50, "items": { "$ref": "#/$defs/page" } },
+    "nodes": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/node" } },
+    "references": { "type": "array", "maxItems": 2000, "items": { "$ref": "#/$defs/reference" } },
+    "components": { "type": "array", "maxItems": 200, "items": { "$ref": "#/$defs/component" } },
+    "collections": { "type": "array", "maxItems": 200, "items": { "$ref": "#/$defs/collection" } },
+    "extensions": {
+      "type": "object",
+      "maxProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "org.webappx.readonly": { "$ref": "#/$defs/extensionValue" }
+      },
+      "description": "Only the reviewed read-only namespace is preserved. Nested metadata is constrained by graph-core to depth 5 and 16384 UTF-8 JSON bytes; no execution semantics are granted."
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,95}$" },
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "plainString": { "type": "string", "minLength": 1, "maxLength": 120, "pattern": "^[^\\u0000-\\u001f\\u007f]+$" },
+    "sourcePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?:[A-Za-z0-9][A-Za-z0-9._-]*/)*[A-Za-z0-9][A-Za-z0-9._-]*$",
+      "not": { "pattern": "(?:^|/)\\.\\.?(?:/|$)" }
+    },
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sourceRevision", "start", "end", "fingerprint"],
+      "properties": {
+        "path": { "$ref": "#/$defs/sourcePath" },
+        "sourceRevision": { "$ref": "#/$defs/hash" },
+        "start": { "type": "integer", "minimum": 0 },
+        "end": { "type": "integer", "minimum": 0 },
+        "fingerprint": { "$ref": "#/$defs/hash" }
+      },
+      "description": "Start and exclusive end are UTF-16 offsets. graph-core requires safe integers and end at or after start. A source reference grants no editing authority."
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "rootId", "route"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "rootId": { "$ref": "#/$defs/id" },
+        "route": { "type": ["string", "null"], "maxLength": 512, "pattern": "^[^\\u0000-\\u001f\\u007f]*$" }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "parentId", "childIds", "label", "ownership", "source", "opaqueReason"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["element", "opaque", "component-instance", "document-root"] },
+        "parentId": { "type": ["string", "null"], "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,95}$" },
+        "childIds": { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/id" }, "description": "Explicit sibling order; this array is never sorted by canonical serialization." },
+        "label": { "type": "string", "maxLength": 120, "pattern": "^[^\\u0000-\\u001f\\u007f]*$" },
+        "ownership": { "enum": ["source-owned", "read-only"] },
+        "source": { "oneOf": [{ "$ref": "#/$defs/sourceRef" }, { "type": "null" }] },
+        "opaqueReason": { "type": ["string", "null"], "maxLength": 512, "pattern": "^[^\\u0000-\\u001f\\u007f]*$" }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "documentId", "targetId", "expectedVersion", "expectedSchemaId", "required"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["node", "component", "collection"] },
+        "documentId": { "$ref": "#/$defs/id" },
+        "targetId": { "$ref": "#/$defs/id" },
+        "expectedVersion": { "type": ["string", "null"], "minLength": 1, "maxLength": 120, "pattern": "^[^\\u0000-\\u001f\\u007f]+$" },
+        "expectedSchemaId": { "type": ["string", "null"], "minLength": 1, "maxLength": 512, "pattern": "^[^\\u0000-\\u001f\\u007f]+$" },
+        "required": { "type": "boolean" }
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "rootId"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "version": { "$ref": "#/$defs/plainString" },
+        "rootId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "collection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "schemaId", "version"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "schemaId": { "type": "string", "minLength": 1, "maxLength": 512, "pattern": "^[^\\u0000-\\u001f\\u007f]+$" },
+        "version": { "$ref": "#/$defs/plainString" }
+      }
+    },
+    "extensionValue": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        { "type": "number" },
+        { "type": "string", "maxLength": 16384 },
+        { "type": "array", "maxItems": 1000, "items": { "$ref": "#/$defs/extensionValue" } },
+        { "type": "object", "maxProperties": 1000, "additionalProperties": { "$ref": "#/$defs/extensionValue" } }
+      ]
+    }
+  }
+}
