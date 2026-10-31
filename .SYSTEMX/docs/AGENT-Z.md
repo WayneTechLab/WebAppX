@@ -1,5 +1,7 @@
 # Agent Z: repeatable evidence review
 
+> WebAppX host extension: [Agent Z in the host swarm](../../docs/SYSTEMX-SWARM.md) independently reviews exact source/evidence revisions before Alpha and Agent 0 integration gates. A score remains advisory; the selected release and fixed review policy are not rewritten by this extension.
+
 Agent Z is the standard **review** role (`agent.z`). It is a structured peer
 review of a prompt, task, change, or project. Agent 0 coordinates work; Agent X
 tracks time and events; optional Agent Y returns scoped external CLI work; Agent Z
@@ -182,3 +184,20 @@ that an unsaved chat review is persistent project memory.
 [Agent Y](AGENT-Y.md) may supply a scoped CLI result and owned draft PR evidence.
 [Evidence and acceptance](EVIDENCE.md) defines verification scope.
 [SYSTEMX PROJECTS](PROJECTS.md) defines project selection and preservation.
+
+## Independent review in the host swarm
+
+A WebAppX swarm author cannot approve its own result. Agent Z's review identifies
+the exact task generation, source head/base, original acceptance, evidence
+snapshot and unresolved findings. A worker's summary, successful exit, open PR
+or collection of passing checks does not replace that independent assessment.
+Retain known-bad/refusal cases where relevant and preserve failed attempts.
+
+Alpha separately checks the current bounded lease and aggregate integration
+conditions; Agent 0 owns acceptance and canonical integration. Neither Alpha
+nor a high Agent Z score can bypass required checks, GitHub protection or
+production authorization. Source, base, evidence or scope changes invalidate a
+review's applicability and require a fresh decision on the changed candidate.
+The [host swarm guide](../../docs/SYSTEMX-SWARM.md) defines the automatic PR gate,
+[map](../../docs/SYSTEMX-SWARM-MAP.md) and
+[access matrix](../../docs/SYSTEMX-SWARM-ACCESS-MATRIX.md).

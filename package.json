@@ -20,7 +20,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "node --test .SYSTEMX/LAN/tests/characterization.test.mjs tests/security/controls.test.mjs .SYSTEMX/LAN/tests/preview-navigator.test.mjs .SYSTEMX/LAN/tests/source-revision.test.mjs .SYSTEMX/LAN/tests/source-comparison.test.mjs .SYSTEMX/LAN/tests/source-draft-records.test.mjs .SYSTEMX/LAN/tests/source-history.test.mjs",
+    "test": "node --test .SYSTEMX/LAN/tests/characterization.test.mjs tests/security/controls.test.mjs .SYSTEMX/LAN/tests/preview-navigator.test.mjs .SYSTEMX/LAN/tests/source-revision.test.mjs .SYSTEMX/LAN/tests/source-comparison.test.mjs .SYSTEMX/LAN/tests/source-draft-records.test.mjs .SYSTEMX/LAN/tests/source-history.test.mjs .SYSTEMX/LAN/tests/source-policy.test.mjs .SYSTEMX/LAN/tests/source-policy-api.test.mjs .SYSTEMX/LAN/tests/source-navigation.test.mjs",
     "emulators": "npx --yes firebase-tools emulators:start",
     "emulators:export": "npx --yes firebase-tools emulators:start --export-on-exit=.emulator-data --import=.emulator-data",
     "deploy": "bash .SYSTEMX/scripts/deploy.sh",
@@ -138,7 +138,10 @@
     "fixtures:list": "node scripts/fixture-inventory.mjs",
     "fixtures:check": "node scripts/fixture-inventory.mjs --check",
     "source:shell:check": "node scripts/check-child-processes.mjs",
-    "setup:contracts:test": "node --test tests/setup/package-script-discovery.test.mjs tests/setup/doc-commands.test.mjs tests/setup/fixture-inventory.test.mjs tests/setup/child-processes.test.mjs"
+    "setup:contracts:test": "node --test tests/setup/package-script-discovery.test.mjs tests/setup/doc-commands.test.mjs tests/setup/fixture-inventory.test.mjs tests/setup/child-processes.test.mjs",
+    "browser:source-policy": "node .SYSTEMX/LAN/tests/source-policy-browser.mjs",
+    "swarm": "node .SYSTEMX/swarm/cli.mjs",
+    "swarm:test": "node --test tests/swarm/*.test.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

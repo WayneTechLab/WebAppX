@@ -3617,3 +3617,14 @@ code,
 .source-history-entry { display: grid; grid-template-columns: minmax(0, 1fr); gap: 5px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 11px; }
 .source-history-entry small { color: var(--muted); }
 .source-history-entry code { white-space: normal; overflow-wrap: anywhere; }
+
+/* Source inventory remains readable at the normal 336px inspector width. */
+.source-browser { min-width: 0; }
+.source-browser summary { cursor: pointer; font-weight: 600; }
+.source-browser > * + * { margin-top: 10px; }
+.source-browser-filters { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.source-browser-filters > div { display: grid; gap: 5px; min-width: 0; }
+.source-browser label { min-width: 0; }
+.source-browser input:not([type="checkbox"]), .source-browser select { width: 100%; min-width: 0; box-sizing: border-box; }
+#source-policy-review { max-height: 280px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
+#source-workspace-boundary, #source-file-metadata, #source-navigation-status, #source-inventory-status { display: block; min-width: 0; overflow-wrap: anywhere; white-space: pre-wrap; }

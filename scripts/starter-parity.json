@@ -33,9 +33,10 @@
       "paths": [
         ".SYSTEMX/LAN",
         ".SYSTEMX/KIT",
-        ".SYSTEMX/Unified-Setup-Process"
+        ".SYSTEMX/Unified-Setup-Process",
+        ".SYSTEMX/swarm"
       ],
-      "reason": "Host LAN builder, production/brand kits and unified setup assets remain separately validated root features, never starter-file ignore rules."
+      "reason": "Host LAN builder and swarm controls, production/brand kits and unified setup assets remain separately validated root features, never starter-file ignore rules."
     },
     {
       "paths": [
@@ -114,8 +115,8 @@
       "root": "README.md",
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
-      "reason": "Root documents the complete template, native portals and host operations; the starter has a separate standalone scaffold introduction.",
-      "rootSha256": "4fcd748dad7cd930b551bc73221c3fbc90b16817e14e746e9168a4e9148b009c",
+      "reason": "Root documents the complete template, native portals, source policy and host swarm operations; the starter retains its standalone scaffold introduction.",
+      "rootSha256": "d17d02476d31cc25d86d21ba0f37ec2710d1a06649328e7c7cc936d88c53ce9a",
       "starterSha256": "baf20c16fecb6fd11e47a5d60a2d5f70b208f21db55e06ae8d9415e721ca5c21"
     },
     {
@@ -175,8 +176,8 @@
       "root": "package.json",
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
-      "reason": "Root adds native SDK/query/browser dependencies and host setup, test, CI and release scripts; shared package identity/runtime/dependencies remain checked.",
-      "rootSha256": "789986ef3a4943320993282accf639a196998d74abcf3c6da827f52c98bcd787",
+      "reason": "Root adds native SDK/query/browser dependencies and host setup, source-policy, swarm, test, CI and release scripts; shared package identity/runtime/dependencies remain checked.",
+      "rootSha256": "5ff18c8f82200ea54f2ff420e7c609d41bb3d526ff7e90a504f8802448ad3c54",
       "starterSha256": "2c4dcbe51214ae866e8e3e8fa2264ec0a37ab3f3880fea0b3e0107f914500ce4"
     },
     {

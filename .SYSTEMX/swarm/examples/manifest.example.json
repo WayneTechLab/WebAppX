@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "runId": "synthetic-example",
+  "repository": "example/synthetic-app",
+  "baseBranch": "main",
+  "baseRevision": "0000000000000000000000000000000000000000",
+  "maxWorkers": 10,
+  "externalWorkers": 0,
+  "reservedPaths": ["coordinator-only/"],
+  "requiredChecks": ["CI"],
+  "autoMerge": false,
+  "tasks": [
+    {
+      "id": "EXAMPLE-001",
+      "title": "Synthetic example: replace with an authorized adopted task",
+      "acceptance": ["The adopted application's actual test demonstrates its scoped change."],
+      "allowedPaths": ["src/example-only/"],
+      "checks": [{ "executable": "node", "args": ["--test", "tests/example-only.test.mjs"] }],
+      "dependsOn": []
+    }
+  ]
+}

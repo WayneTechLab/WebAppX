@@ -110,3 +110,29 @@ recorded cancellation; deleting its branch needs preserved evidence and a fresh
 head check. Automated cleanup follows only accepted completion, verified
 remote merge, and a retained bundle; a closed unmerged PR keeps its branch.
 Merge itself requires separate authority.
+
+## WebAppX host swarm and Alpha
+
+WebAppX's separate [host swarm](../../docs/SYSTEMX-SWARM.md) supports Agent 0,
+Agent X, Agent Y, Agent Z and Alpha above the immutable selected alpha.6 release.
+Agent 0 is the sole canonical integration writer and acceptance authority.
+Agent X records observed events; Agent Y owns up to ten explicitly authorized
+CLI slots with independent task-generation branches/worktrees; Agent Z reviews
+independently. Alpha is an independent integration-assurance and policy-lease
+role under Agent 0, with no unrestricted supervisor, self-granted permissions,
+canonical write ownership or production authority.
+
+The host auto-integration lane needs a matching repository/PR/head/base,
+terminal passing required checks, accepted independent review, a current Alpha
+lease/gate and conflict-free provider protection state. It performs no bypass
+or self-approval. Read back merge/closure, preserve evidence, then qualify safe
+owned branch/worktree cleanup. A review requiring changes keeps the task PR
+open; a new task reuses a free worker slot through a fresh generation branch.
+The default managed `agent-y` commands retain their original lifecycle.
+
+Use the [operational map](../../docs/SYSTEMX-SWARM-MAP.md) and
+[access matrix](../../docs/SYSTEMX-SWARM-ACCESS-MATRIX.md) for this host policy.
+The blank project map/access seeds and all reusable context/task/plan/memory
+records remain blank. Mac IDE/Codex handoffs are pinned to repository, branch,
+revision, generation and observed dirty state; invalidate stale handoffs before
+action. A role record is still distinct from an active process or provider grant.

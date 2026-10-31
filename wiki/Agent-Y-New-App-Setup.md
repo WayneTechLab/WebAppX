@@ -5,6 +5,11 @@ Agent Y takes one Agent 0 task into a separately installed CLI provider, works
 on a task branch in a separate Git worktree, and returns a local commit for
 review. Draft PR publication is an optional choice made when preparing that task.
 
+The separate [host swarm](SYSTEMX-Swarm.md) adds at most ten independent CLI slots
+and Agent 0/X/Y/Z/Alpha integration gates when explicitly configured. The
+managed commands in this guide retain their single-job behavior; they do not
+inherit automatic merge authority from the host extension.
+
 Run these steps in **your new adopted app**, where you own the project records.
 The reusable WebAppX repository keeps its registry, tasks and memory blank.
 Examples below create records only when you run them in that adopted app.
@@ -17,7 +22,7 @@ Examples below create records only when you run them in that adopted app.
 | Agent Z | Review the same versioned evidence questions at the acceptance boundary. A score does not accept or merge work. |
 
 The [selected Agent Y manual](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/.systemx/releases/1.9.0-alpha.6/docs/AGENT-Y.md)
-defines the exact alpha.5 commands. The
+defines the exact alpha.6 commands. The
 [CLI/tools guide](https://github.com/WayneTechLab/WebAppX/blob/main/.SYSTEMX/.systemx/releases/1.9.0-alpha.6/docs/CLI-TOOLS.md)
 covers installed CLI routing and working directories. Read
 [Standalone SYSTEMX Integration](SYSTEMX-Standalone-Integration.md) for update ownership.

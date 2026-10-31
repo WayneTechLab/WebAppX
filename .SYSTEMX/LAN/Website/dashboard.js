@@ -1,6 +1,7 @@
 import { previewNavigatorLimits, collectPreviewHierarchy, projectPreviewRows, ancestorPreviewEntries, isCurrentPreviewElement } from './preview-navigator.js'
 import { sourceComparisonLimits, compareSourceText } from './source-comparison.js'
 import { sourceRecordLimits, createRecoveryRecord, parseRecoveryRecord, normalizeSourceDisplay, createComparisonExport } from './source-draft-records.js'
+import { canonicalSourcePath, sourceNavigationKey, createSourceNavigation, parseSourceNavigation, parseSourceInventory, filterSourceMetadata, sourcePickerSelection } from './source-navigation.js'
 
 const apiBase = window.location.pathname.startsWith('/__systemx') ? '/__systemx' : ''
 const sessionToken = document.querySelector('meta[name="systemx-session"]')?.content ?? ''
@@ -73,6 +74,15 @@ const state = {
   selectedNodeId: null,
   selectedCollectionId: null,
   sourcePath: null,
+  sourceWritable: true,
+  sourceInventory: null,
+  sourceInventoryWorkspaceId: null,
+  sourceInventoryGeneration: 0,
+  sourceInventoryController: null,
+  sourceInventoryLoading: false,
+  sourcePolicyGeneration: 0,
+  sourceNavigationEnabled: false,
+  sourceNavigationPending: null,
   sourceRevision: null,
   sourceLoadedContent: null,
   sourceDisplayBaseline: null,
@@ -1271,7 +1281,7 @@ function renderSelectedElementEditors(element, location) {
   setControlDisabled('#settings-text-source', !location.sourcePath)
   setControlDisabled('#settings-text-confirmation', !editable)
   const loadedSource = state.previewTextSource
-  const sourceReady = loadedSource?.element === element && loadedSource.path === location.sourcePath
+  const sourceReady = loadedSource?.element === element && loadedSource.writable !== false && loadedSource.path === location.sourcePath
   setControlDisabled('#settings-text-save', !editable || !sourceReady || state.previewTextSourcePending === element || state.previewTextSaving === element)
   setControlDisabled('#settings-text-reload', !editable)
   renderSelectedTextRevision()
@@ -1554,7 +1564,7 @@ async function saveSelectedText() {
     return
   }
   const source = state.previewTextSource
-  if (source?.element !== element || source.path !== location.sourcePath || source.workspaceId !== state.sourceRecoveryWorkspaceId || !validSourceRevision(source.revision)) {
+  if (source?.element !== element || source.writable === false || source.path !== location.sourcePath || source.workspaceId !== state.sourceRecoveryWorkspaceId || !validSourceRevision(source.revision)) {
     output('#settings-text-output', 'Load the latest source revision before saving this text draft.')
     return
   }
@@ -1596,7 +1606,7 @@ async function saveSelectedText() {
     return
   } finally {
     if (state.previewTextSaving === element) state.previewTextSaving = null
-    if (state.previewSelectedElement === element) setControlDisabled('#settings-text-save', state.previewTextSourcePending === element || source.workspaceId !== state.sourceRecoveryWorkspaceId)
+    if (state.previewSelectedElement === element) setControlDisabled('#settings-text-save', state.previewTextSourcePending === element || source.writable === false || source.workspaceId !== state.sourceRecoveryWorkspaceId)
   }
   const superseded = sourceObservationSuperseded(location.sourcePath, observation, result.revision)
   if (state.previewTextSource === source) state.previewTextSource = { ...source, content: nextContent, revision: result.revision, currentRevision: superseded ? sourceObservedRevisions.get(location.sourcePath) : null }
@@ -1696,6 +1706,7 @@ function renderWorkStatus(work) {
 function renderStatus(status) {
   state.status = status
   initializeSourceRecovery(status.repository?.workspaceId)
+  initializeSourceNavigation(status.repository?.workspaceId)
   const operating = status.operating
   text('#systemx-version-state', operating?.installed
     ? `SYSTEMX ${operating.selectedVersion} · ${operating.updatePolicy} updates · pinned ${operating.pinnedVersion}`
@@ -1766,13 +1777,258 @@ function renderFiles(files) {
   for (const file of files.slice(0, 220)) list.append(create('span', 'file-chip', file))
 }
 
+function sourceNavigationStorageKey() {
+  try { return sourceNavigationKey(state.sourceRecoveryWorkspaceId) } catch { return null }
+}
+
+function initializeSourceNavigation(workspaceId) {
+  const nextId = validSourceRevision(workspaceId) ? workspaceId.toLowerCase() : null
+  if (state.sourceInventoryWorkspaceId === nextId) return
+  state.sourceInventoryWorkspaceId = nextId
+  state.sourceInventoryGeneration += 1
+  state.sourceInventoryController?.abort()
+  state.sourceInventoryController = null
+  state.sourceInventoryLoading = false
+  state.sourceInventory = null
+  state.sourcePolicyGeneration += 1
+  state.sourceNavigationEnabled = false
+  state.sourceNavigationPending = null
+  setControlValue('#source-extension-filter', '')
+  setControlValue('#source-metadata-search', '')
+  setControlValue('#source-canonical-path', '')
+  const checkbox = document.querySelector('#source-navigation-opt-in')
+  if (checkbox) { checkbox.checked = false; checkbox.disabled = !nextId }
+  text('#source-workspace-boundary', nextId ? `Current repository checkout · ${nextId}. Files from another checkout are never combined into this picker.` : 'Checkout identity unavailable. Source inventory and remembered navigation are disabled.')
+  text('#source-policy-review', 'No policy proposal reviewed.')
+  setControlDisabled('#export-source-inventory', true)
+  if (!nextId) return
+  try {
+    const serialized = window.localStorage.getItem(sourceNavigationStorageKey())
+    if (serialized !== null) {
+      state.sourceNavigationPending = parseSourceNavigation(serialized, nextId)
+      state.sourceNavigationEnabled = true
+      if (checkbox) checkbox.checked = true
+      text('#source-navigation-status', 'Saved navigation metadata found. Current eligible inventory will be checked before restoring only its path and filters; source content will not open automatically.')
+    } else text('#source-navigation-status', 'Navigation storage is off. No source text, revision or save authority is stored here.')
+  } catch {
+    text('#source-navigation-status', 'Saved navigation is invalid or storage is unavailable. No preferences or source were restored; the editor is kept.')
+  }
+  void refreshSourceInventory()
+}
+
+function sourceFileMetadata(path = document.querySelector('#source-file-select')?.value) {
+  return state.sourceInventory?.files.find(file => file.path === path) ?? null
+}
+
+function sourceCurrentlyWritable() {
+  const metadata = state.sourceLoadedWorkspaceId === state.sourceInventoryWorkspaceId ? sourceFileMetadata(state.sourcePath) : null
+  return state.sourceWritable && metadata?.writable !== false && metadata?.readable !== false
+}
+
+function renderSourceFileMetadata() {
+  const selected = document.querySelector('#source-file-select')?.value
+  const metadata = sourceFileMetadata(selected)
+  const editor = document.querySelector('#source-editor')
+  if (editor && state.sourcePath) editor.readOnly = !sourceCurrentlyWritable()
+  text('#source-file-metadata', metadata
+    ? `${metadata.path}\n${metadata.sizeBytes.toLocaleString('en-US')} bytes · ${metadata.origin} · ${metadata.readable ? 'read eligible' : `read refused (${metadata.reasonCode ?? 'SOURCE_TOO_LARGE'})`}\nRule: ${metadata.ruleId} · policy ${state.sourceInventory.policyRevision}\nWrite kinds: ${metadata.writeKinds.length ? metadata.writeKinds.join(', ') : 'none (read-only)'}. Structural editing unavailable. Generated-origin classification checks recognized filenames and comment markers in the first 4096 bytes only.`
+    : selected ? `${selected} · metadata not in this bounded inventory. The loaded draft is kept; refresh eligible files or explicitly reload source to recheck its current eligibility.` : 'No source selected. Select an eligible path explicitly; no neighboring row is activated.')
+  updateSourceSaveAvailability()
+}
+
+function sourceNavigationFilters() {
+  return { extension: document.querySelector('#source-extension-filter')?.value ?? '', search: document.querySelector('#source-metadata-search')?.value ?? '' }
+}
+
+function persistSourceNavigation() {
+  if (!state.sourceNavigationEnabled || !sourceNavigationStorageKey()) return
+  const path = document.querySelector('#source-file-select')?.value ?? ''
+  if (path && !sourceFileMetadata(path)) {
+    text('#source-navigation-status', 'Navigation was not stored: the selected path has not been revalidated in the eligible inventory. The previous saved metadata and editor are kept.')
+    return
+  }
+  try {
+    const value = createSourceNavigation({ workspaceId: state.sourceInventoryWorkspaceId, path, ...sourceNavigationFilters() })
+    window.localStorage.setItem(sourceNavigationStorageKey(), JSON.stringify(value))
+    text('#source-navigation-status', 'Remembering only an eligible path, extension and metadata search for this checkout. Reopening revalidates the inventory; Load is still explicit. No source text, revision or operation authority is stored.')
+  } catch {
+    text('#source-navigation-status', 'Navigation metadata could not be stored. Invalid or sensitive filter text and browser storage refusal leave the previous saved metadata and open editor unchanged.')
+  }
+}
+
+function renderSourceInventory() {
+  const inventory = state.sourceInventory
+  const select = document.querySelector('#source-file-select')
+  if (!inventory || !select) return
+  let visible
+  try { visible = filterSourceMetadata(inventory.files, sourceNavigationFilters()) } catch {
+    text('#source-inventory-status', 'SOURCE_QUERY_INVALID: choose a supported extension and bounded metadata search. The previous selection and draft are kept.')
+    return
+  }
+  const previous = select.value
+  const selection = sourcePickerSelection(previous, state.sourcePath, inventory, visible)
+  select.replaceChildren()
+  const placeholder = create('option', '', 'Select an eligible source file')
+  placeholder.value = ''
+  select.append(placeholder)
+  for (const file of visible) {
+    const option = create('option', '', file.path)
+    option.value = file.path
+    select.append(option)
+  }
+  if (selection.retained) {
+    const retained = create('option', '', `${selection.path} (${sourceFileMetadata(selection.path) ? 'selected, outside filter' : 'loaded, not in bounded inventory'})`)
+    retained.value = selection.path
+    retained.dataset.sourceInventory = 'not-listed'
+    select.append(retained)
+  }
+  select.value = selection.path
+  if (selection.absent) {
+    state.sourceTargetGeneration += 1
+    invalidateSourceRecoveryReview('Complete inventory no longer includes the selected path. The picker is cleared; the loaded draft and baseline are kept.')
+    invalidateSourceHistory()
+    stopSourceDraftPreviewRead('The selected path is no longer eligible. The captured preview and draft are kept.')
+    invalidateSourceComparison('Complete inventory no longer includes the selected path. No replacement or neighboring selection was activated.')
+  }
+  const omissions = Object.entries(inventory.omissions).map(([name, count]) => `${name}: ${count}`).join(', ') || 'none'
+  text('#source-inventory-status', `${visible.length} shown of ${inventory.files.length} eligible metadata rows in this response. ${inventory.complete ? 'Complete inventory within declared scope.' : inventory.truncated ? 'Inventory truncated; absence does not establish deletion.' : 'Inventory incomplete because some metadata was unavailable; absence does not establish deletion.'}\nLimits: ${inventory.limits.maxBytes} bytes / ${inventory.limits.maxTextUnits} text units per read; depth ${inventory.limits.maxDepth}, ${inventory.limits.maxEntries} directory entries, ${inventory.limits.maxResults} results. Omissions: ${omissions}.${selection.absent ? '\nThe previous selection is no longer eligible; the picker was cleared and loaded draft retained.' : ''}`)
+  setControlDisabled('#export-source-inventory', false)
+  renderSourceFileMetadata()
+}
+
+async function refreshSourceInventory() {
+  const workspaceId = state.sourceInventoryWorkspaceId
+  if (!workspaceId) return
+  const generation = ++state.sourceInventoryGeneration
+  const targetGeneration = state.sourceTargetGeneration
+  const loadGeneration = state.sourceLoadGeneration
+  const loadedPath = state.sourcePath
+  const observation = loadedPath ? sourceObservationVersions.get(loadedPath) || 0 : null
+  state.sourceInventoryController?.abort()
+  const controller = new AbortController()
+  state.sourceInventoryController = controller
+  state.sourceInventoryLoading = true
+  setControlDisabled('#refresh-source-inventory', true)
+  text('#source-inventory-status', 'Reading bounded eligible file metadata. Source content and the open draft are unchanged.')
+  try {
+    const result = await request('/api/builder/source/inventory?limit=500', { signal: controller.signal })
+    if (generation !== state.sourceInventoryGeneration || workspaceId !== state.sourceRecoveryWorkspaceId) return
+    if (targetGeneration !== state.sourceTargetGeneration || loadGeneration !== state.sourceLoadGeneration || loadedPath !== state.sourcePath || (loadedPath && observation !== (sourceObservationVersions.get(loadedPath) || 0))) {
+      text('#source-inventory-status', 'SOURCE_INVENTORY_SUPERSEDED: the selected target, source load or loaded-source observation changed during this inventory read. The previous inventory, selection, draft and baseline are kept. Refresh eligible files for a new observation.')
+      return
+    }
+    const inventory = parseSourceInventory(result, workspaceId)
+    state.sourceInventory = inventory
+    const saved = state.sourceNavigationPending
+    state.sourceNavigationPending = null
+    if (saved && targetGeneration === state.sourceTargetGeneration && !state.sourcePath) {
+      setControlValue('#source-file-select', '')
+      setControlValue('#source-extension-filter', saved.extension)
+      setControlValue('#source-metadata-search', saved.search)
+      const eligible = inventory.files.some(file => file.path === saved.path)
+      if (eligible && saved.path) {
+        const option = create('option', '', saved.path)
+        option.value = saved.path
+        document.querySelector('#source-file-select')?.append(option)
+        setControlValue('#source-file-select', saved.path)
+      }
+      text('#source-navigation-status', eligible || !saved.path ? 'Remembered navigation was revalidated against this checkout. Only selection and filters were restored; source content remains unopened until Load.' : 'Remembered path was not in the current eligible inventory. Filters were restored, no source opened, and no replacement row was selected.')
+    }
+    renderSourceInventory()
+  } catch (error) {
+    if (generation !== state.sourceInventoryGeneration) return
+    text('#source-inventory-status', `${error.code ? `${error.code}: ` : ''}Inventory read failed or returned invalid workspace metadata. The previous picker, loaded draft and baseline are kept. Refresh eligible files to retry.`)
+  } finally {
+    if (generation === state.sourceInventoryGeneration) {
+      state.sourceInventoryLoading = false
+      state.sourceInventoryController = null
+      setControlDisabled('#refresh-source-inventory', false)
+    }
+  }
+}
+
+function selectCanonicalSourcePath() {
+  const path = document.querySelector('#source-canonical-path')?.value ?? ''
+  if (!canonicalSourcePath(path)) {
+    output('#source-output', 'SOURCE_PATH_INVALID: use one canonical allowlisted repository-relative path. Absolute paths, traversal, backslashes and encoded aliases are refused before a file request. The previous selection and draft are kept.')
+    return
+  }
+  const file = sourceFileMetadata(path)
+  if (!file) {
+    const aliases = state.sourceInventory?.files.filter(item => item.path.toLowerCase() === path.toLowerCase()) ?? []
+    output('#source-output', `${aliases.length > 1 ? 'SOURCE_CASE_AMBIGUOUS' : aliases.length ? 'SOURCE_CASE_MISMATCH' : 'SOURCE_POLICY_REFUSED'}: that exact path is not in the current eligible inventory. Choose the exact listed spelling or refresh the bounded inventory. The previous selection and draft are kept.`)
+    return
+  }
+  const select = document.querySelector('#source-file-select')
+  if (![...select.options].some(option => option.value === path)) {
+    const option = create('option', '', `${path} (selected, outside filter)`)
+    option.value = path
+    select.append(option)
+  }
+  select.value = path
+  select.dispatchEvent(new Event('change'))
+  output('#source-output', `${path} selected from current eligible metadata. Choose Load to read its contents explicitly.`)
+}
+
+async function reviewSourcePolicy() {
+  const workspaceId = state.sourceInventoryWorkspaceId
+  if (!workspaceId) return
+  const generation = ++state.sourcePolicyGeneration
+  const selected = document.querySelector('#source-file-select')?.value
+  const selection = canonicalSourcePath(selected) ? `&selection=${encodeURIComponent(selected)}` : ''
+  setControlDisabled('#review-source-policy', true)
+  text('#source-policy-review', 'Reading reviewed policy comparison; no policy is applied and no source contents are read.')
+  try {
+    const result = await request(`/api/builder/source/policy?compare=source-pages-only-v1${selection}`)
+    if (generation !== state.sourcePolicyGeneration || workspaceId !== state.sourceRecoveryWorkspaceId) return
+    if (result.workspaceId !== workspaceId) throw new Error('Policy response belongs to another checkout.')
+    const view = { activeRevision: result.activeRevision ?? result.policyRevision, rules: result.rules ?? result.policies,
+      reviewedPolicies: result.reviewedPolicies, generatedDetection: result.generatedDetection, structuralEdits: result.structuralEdits,
+      comparison: result.comparison ?? { comparedRevision: result.comparedRevision, addedRules: result.addedRules, removedRules: result.removedRules,
+        affectedPaths: result.affectedPaths, selectionLosesEligibility: result.selectionLosesEligibility },
+      selectedPath: selected || null, mode: 'read-only proposal; active policy remains unchanged' }
+    text('#source-policy-review', JSON.stringify(view, null, 2))
+  } catch (error) {
+    if (generation === state.sourcePolicyGeneration) text('#source-policy-review', `${error.code ?? 'SOURCE_POLICY_UNAVAILABLE'}: policy review did not complete. Active policy, source contents and the open draft are unchanged.`)
+  } finally {
+    if (generation === state.sourcePolicyGeneration) setControlDisabled('#review-source-policy', false)
+  }
+}
+
+function exportSourceInventory() {
+  if (!state.sourceInventory || state.sourceInventory.workspaceId !== state.sourceRecoveryWorkspaceId) return
+  let anchor, url
+  try {
+    // Revalidate and choose finite public metadata; never dump state/status.
+    const payload = parseSourceInventory(state.sourceInventory, state.sourceRecoveryWorkspaceId)
+    const json = `${JSON.stringify(payload, null, 2)}\n`
+    url = URL.createObjectURL(new Blob([json], { type: 'application/json;charset=utf-8' }))
+    anchor = create('a')
+    anchor.href = url
+    anchor.download = 'systemx-eligible-source-inventory.json'
+    anchor.hidden = true
+    document.body.append(anchor)
+    anchor.click()
+    text('#source-inventory-status', 'Eligible inventory JSON download requested. It contains only bounded eligible path metadata, policy decisions and omission counts; no file bodies, runtime values or credentials. The source and open draft are unchanged.')
+  } catch {
+    text('#source-inventory-status', 'Inventory download was refused or metadata was invalid. No source or browser record was changed; refresh inventory before retrying.')
+  } finally {
+    anchor?.remove()
+    if (url) window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+}
+
 function renderPageFiles(files) {
+  if (state.sourceInventory) { renderSourceInventory(); return }
   const select = document.querySelector('#source-file-select')
   if (!select) return
   const previousValue = select.value
   const editable = files.filter((file) => /^(src\/pages\/[^/]+\.tsx|src\/components\/(layout|navigation|shell)\/[^/]+\.tsx|src\/config\/siteControls\.ts|src\/index\.css|src\/router\.tsx)$/.test(file))
   const loadedNotListed = Boolean(state.sourcePath && !editable.includes(state.sourcePath))
   select.replaceChildren()
+  const placeholder = create('option', '', 'Select an eligible source file')
+  placeholder.value = ''
+  select.append(placeholder)
   for (const file of editable) {
     const option = create('option', '', file)
     option.value = file
@@ -2407,7 +2663,7 @@ async function reviewSourceRecovery() {
     if (generation !== state.sourceRecoveryGeneration) return
     if (!sourceSnapshotForWorkspace(current, record.workspaceId) || sourceObservationSuperseded(record.path, observation, current.revision) || current.path !== record.path || !validSourceRevision(current.revision)) throw new Error('A current source revision was not confirmed.')
     observeSourceRevision(record.path, current.revision, 'Recovery source check', true, null, null, false)
-    state.sourceRecoveryReview = { ...saved, generation, currentRevision: current.revision, observation: sourceObservationVersions.get(record.path) || 0 }
+    state.sourceRecoveryReview = { ...saved, generation, writable: current.writable !== false, currentRevision: current.revision, observation: sourceObservationVersions.get(record.path) || 0 }
     state.sourceRecoveryState = current.revision === record.baseRevision.toLowerCase() ? 'matching' : 'stale'
     state.sourceRecoveryMessage = state.sourceRecoveryState === 'matching'
       ? 'Saved baseline matches the observed current revision. Restore saved draft explicitly replaces the open editor and keeps the saved baseline; no source is saved.'
@@ -2445,6 +2701,8 @@ function restoreSourceRecovery() {
   state.sourceTargetGeneration += 1
   state.sourceLoadGeneration += 1
   state.sourcePath = record.path
+  state.sourceWritable = review.writable !== false
+  editor.readOnly = !state.sourceWritable
   state.sourceRevision = record.baseRevision.toLowerCase()
   state.sourceLoadedContent = record.baselineContent
   state.sourceDisplayBaseline = normalizeSourceDisplay(record.baselineContent)
@@ -2623,7 +2881,7 @@ async function refreshSourceHistory() {
 function sourceReviewMatches(review = state.sourceComparison) {
   const editor = document.querySelector('#source-editor')
   return Boolean(review && sourceLoadedForWorkspace() && !review.pending && !review.stale && !state.sourceUnavailable
-    && review.comparison?.complete && !review.comparison.truncated && review.currentTextMatchesRevision
+    && sourceCurrentlyWritable() && review.writable !== false && review.comparison?.complete && !review.comparison.truncated && review.currentTextMatchesRevision
     && review.generation === state.sourceComparisonGeneration
     && review.path === state.sourcePath && document.querySelector('#source-file-select')?.value === review.path
     && review.loadedRevision === state.sourceRevision && validSourceRevision(review.currentRevision)
@@ -2734,7 +2992,7 @@ async function compareLatestSource() {
     if (generation !== state.sourceComparisonGeneration) return
     if (sourceObservationSuperseded(path, observation, result.revision)) throw new Error('A newer source observation arrived while comparing. Compare latest again.')
     clearSourceUnavailable()
-    Object.assign(review, { currentContent: result.content, currentRevision: result.revision, draftRevision, currentTextMatchesRevision: currentTextRevision === result.revision, comparison: compareSourceText(draftContent, result.content), pending: false })
+    Object.assign(review, { writable: result.writable !== false, currentContent: result.content, currentRevision: result.revision, draftRevision, currentTextMatchesRevision: currentTextRevision === result.revision, comparison: compareSourceText(draftContent, result.content), pending: false })
     state.sourceReviewMessage = ''
     observeSourceRevision(path, result.revision, 'Source comparison', false)
     renderSourceRevision()
@@ -2827,7 +3085,7 @@ async function loadSelectedTextSource(element = state.previewSelectedElement, pa
     if (sourceObservationSuperseded(path, observation, result.revision)) throw new Error('A newer source observation arrived while reading. Reload latest source before saving.')
     if (!sourceSnapshotForWorkspace(result, workspaceId) || result.path !== path || !validSourceRevision(result.revision)) throw new Error('Source revision unavailable. Choose Reload latest source before saving.')
     observeSourceRevision(path, result.revision, 'Selected-text source read')
-    state.previewTextSource = { element, path, content: result.content, revision: result.revision, workspaceId }
+    state.previewTextSource = { element, path, content: result.content, revision: result.revision, writable: result.writable !== false, workspaceId }
     renderSelectedTextRevision()
   } catch (error) {
     if (generation === state.previewTextSourceGeneration) output('#settings-source-revision', `${error.message} The text draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
@@ -2835,14 +3093,14 @@ async function loadSelectedTextSource(element = state.previewSelectedElement, pa
     if (generation === state.previewTextSourceGeneration) {
       state.previewTextSourcePending = null
       const loaded = state.previewTextSource
-      setControlDisabled('#settings-text-save', loaded?.element !== element || loaded.path !== path || loaded.workspaceId !== state.sourceRecoveryWorkspaceId || state.previewTextSaving === element)
+      setControlDisabled('#settings-text-save', loaded?.element !== element || loaded.writable === false || loaded.path !== path || loaded.workspaceId !== state.sourceRecoveryWorkspaceId || state.previewTextSaving === element)
     }
   }
 }
 
 function updateSourceSaveAvailability() {
-  setControlDisabled('#save-source', !sourceLoadedForWorkspace() || state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable || !validSourceRevision(state.sourceRevision))
-  setControlDisabled('#load-source', state.sourceSaving)
+  setControlDisabled('#save-source', !sourceCurrentlyWritable() || document.querySelector('#source-file-select')?.value !== state.sourcePath || !sourceLoadedForWorkspace() || state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable || !validSourceRevision(state.sourceRevision))
+  setControlDisabled('#load-source', state.sourceSaving || sourceFileMetadata()?.readable === false)
   setControlDisabled('#reload-source', state.sourceSaving)
   setControlDisabled('#compare-source', !sourceLoadedForWorkspace() || state.sourceLoading || state.sourceSaving || state.sourceComparing || !validSourceRevision(state.sourceRevision) || document.querySelector('#source-file-select')?.value !== state.sourcePath)
   setControlDisabled('#prepare-source-replacement', state.sourceLoading || state.sourceSaving || state.sourceComparing || !sourceReviewMatches())
@@ -2865,6 +3123,7 @@ async function loadSource({ path } = {}) {
   const editor = document.querySelector('#source-editor')
   const wantedPath = path || select?.value
   if (!select || !editor || !wantedPath || state.sourceSaving) return
+  if (!canonicalSourcePath(wantedPath)) { output('#source-output', 'SOURCE_PATH_INVALID: choose a canonical repository-relative source path. The draft and loaded revision are kept; no file request was made.'); return }
   invalidateSourceRecoveryReview('Source load requested. Review saved draft again before restoring.')
   invalidateSourceHistory()
   stopSourceDraftPreviewRead('Source load requested. The preview keeps its captured text and baseline.')
@@ -2888,6 +3147,7 @@ async function loadSource({ path } = {}) {
     if (sourceObservationSuperseded(wantedPath, observation, result.revision)) throw new Error('A newer source observation arrived while reading. Reload source again.')
     if (!sourceSnapshotForWorkspace(result, workspaceId) || result.path !== wantedPath || !validSourceRevision(result.revision) || typeof result.content !== 'string') throw new Error('Source revision unavailable. Reload source before saving.')
     state.sourcePath = result.path
+    state.sourceWritable = result.writable !== false
     state.sourceRevision = result.revision
     state.sourceLoadedContent = result.content
     state.sourceLoadedWorkspaceId = workspaceId
@@ -2897,7 +3157,9 @@ async function loadSource({ path } = {}) {
     state.sourceDisplayBaseline = editor.value
     clearSourceUnavailable()
     observeSourceRevision(result.path, result.revision, 'Explicit source load')
-    text('#source-policy', result.policy)
+    text('#source-policy', result.writable === false ? 'read-only generated source' : result.policy)
+    renderSourceFileMetadata()
+    persistSourceNavigation()
     renderSourceRevision()
     setControlValue('#source-confirmation', '')
     output('#source-output', `${result.path} loaded · ${result.content.split(/\r?\n/).length} lines`)
@@ -2905,9 +3167,18 @@ async function loadSource({ path } = {}) {
     if (generation === state.sourceLoadGeneration) {
       const superseded = targetGeneration !== state.sourceTargetGeneration || observation !== (sourceObservationVersions.get(wantedPath) || 0)
       if (sourceUnavailable(error) && !superseded) setSourceUnavailable(wantedPath)
+      if (!superseded && sourceLoadedForWorkspace() && state.sourcePath && state.sourcePath !== wantedPath) {
+        if (![...select.options].some(option => option.value === state.sourcePath)) {
+          const retained = create('option', '', `${state.sourcePath} (loaded source retained)`)
+          retained.value = state.sourcePath
+          select.append(retained)
+        }
+        select.value = state.sourcePath
+        renderSourceFileMetadata()
+      }
       output('#source-output', superseded ? 'Source read was superseded by a selected target or newer source observation. The draft and loaded base are kept. Load the intended source explicitly.' : sourceUnavailable(error)
         ? 'Source is unavailable. The source draft and loaded revision are kept; no file will be recreated. Select an existing file or restore it externally, then reload.'
-        : `${error.message} The source draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
+        : `${error.code ? `${error.code}: ` : ''}${error.message} The source draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
     }
   } finally {
     if (generation === state.sourceLoadGeneration) {
@@ -2923,7 +3194,7 @@ async function saveSource() {
   const editor = document.querySelector('#source-editor')
   const confirmation = document.querySelector('#source-confirmation')
   if (!select || !editor || !confirmation) return
-  if (!state.sourcePath || !sourceLoadedForWorkspace() || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable) {
+  if (!state.sourcePath || !sourceCurrentlyWritable() || !sourceLoadedForWorkspace() || !validSourceRevision(state.sourceRevision) || state.sourceLoading || state.sourceSaving || state.sourceComparing || state.sourceUnavailable) {
     output('#source-output', 'Load a source file before saving.')
     return
   }
@@ -3454,6 +3725,22 @@ function bind() {
   document.querySelector('#collection-list')?.addEventListener('click', (event) => { const button = event.target.closest('[data-collection-id]'); if (!button) return; state.selectedCollectionId = button.dataset.collectionId; renderCollections(state.data.collections); renderRecords(state.data.collections.find((item) => item.id === state.selectedCollectionId)) })
   document.querySelector('#record-form')?.addEventListener('submit', (event) => void addRecord(event).catch((error) => output('#command-output', error.message)))
   document.querySelector('#user-form')?.addEventListener('submit', (event) => void addUser(event).catch((error) => output('#command-output', error.message)))
+  document.querySelector('#refresh-source-inventory')?.addEventListener('click', () => void refreshSourceInventory())
+  document.querySelector('#source-extension-filter')?.addEventListener('change', () => { renderSourceInventory(); persistSourceNavigation() })
+  document.querySelector('#source-metadata-search')?.addEventListener('input', () => { renderSourceInventory(); persistSourceNavigation() })
+  document.querySelector('#select-source-path')?.addEventListener('click', selectCanonicalSourcePath)
+  document.querySelector('#source-canonical-path')?.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); selectCanonicalSourcePath() } })
+  document.querySelector('#review-source-policy')?.addEventListener('click', () => void reviewSourcePolicy())
+  document.querySelector('#export-source-inventory')?.addEventListener('click', exportSourceInventory)
+  document.querySelector('#source-navigation-opt-in')?.addEventListener('change', event => {
+    state.sourceNavigationEnabled = event.target.checked
+    state.sourceNavigationPending = null
+    if (state.sourceNavigationEnabled) persistSourceNavigation()
+    else {
+      try { const key = sourceNavigationStorageKey(); if (key) window.localStorage.removeItem(key); text('#source-navigation-status', 'Remembered navigation removed for this checkout. The source editor, recovery slot and other checkout preferences are unchanged.') }
+      catch { text('#source-navigation-status', 'Browser storage refused removal. Navigation is off for this page; the saved metadata may remain. The editor and recovery slot are kept.') }
+    }
+  })
   document.querySelector('#load-source')?.addEventListener('click', () => void loadSource().catch((error) => output('#source-output', error.message)))
   document.querySelector('#source-editor')?.addEventListener('input', () => {
     renderSourceRevision()
@@ -3463,6 +3750,9 @@ function bind() {
   })
   document.querySelector('#source-file-select')?.addEventListener('change', () => {
     state.sourceTargetGeneration += 1
+    state.sourceNavigationPending = null
+    renderSourceFileMetadata()
+    persistSourceNavigation()
     invalidateSourceRecoveryReview('Selected source changed. Review saved draft again before restoring.')
     invalidateSourceHistory()
     stopSourceDraftPreviewRead('Selected source changed. The preview retains its captured path, text and baseline.')

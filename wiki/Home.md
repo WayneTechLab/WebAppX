@@ -1,5 +1,13 @@
 # WebAppX Wiki
 
+## SYSTEMX host swarm
+
+The [host swarm guide](SYSTEMX-Swarm.md) adds the Agent 0/X/Y/Z/Alpha operating
+contract, at most ten independent CLI slots, exact-candidate PR gates and
+revision-bound Mac IDE/Codex handoffs. Managed alpha.6 and reusable seeds remain
+unchanged. Swarm support is separate from LAN requirement acceptance and live
+provider qualification.
+
 ## LAN 10,000-requirement execution program — 2026-10-30
 
 **Accepted total: 100 requirements / 20 capabilities; 9,900 requirements remain

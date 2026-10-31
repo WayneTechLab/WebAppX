@@ -69,11 +69,40 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
+## SYSTEMX host swarm — Agent 0, X/Y/Z and Alpha
+
+The [host swarm guide](docs/SYSTEMX-SWARM.md) defines one canonical Agent 0
+integration owner, Agent X event observations, up to ten authorized Agent Y CLI
+slots with independent task-generation branches/worktrees, Agent Z independent
+review and Alpha integration assurance under a bounded policy lease. Read the
+[operational map](docs/SYSTEMX-SWARM-MAP.md) and
+[access matrix](docs/SYSTEMX-SWARM-ACCESS-MATRIX.md) together.
+
+Automatic PR integration requires the exact repository, PR, head/base, accepted
+independent review, passing required checks, a current lease and conflict-free
+provider protection state. Keep review work on its open task PR; after accepted
+work and verified merge, preserve and verify owned cleanup before reusing a slot
+with a fresh generation branch. Mac IDE/Codex handoffs invalidate on revision,
+branch, dirty-state or generation drift. Local tests do not establish live CLI,
+GitHub merge, branch deletion or IDE acceptance.
+
+This is a host extension above managed SYSTEMX 1.9.0-alpha.6. It preserves release
+snapshots and blank reusable seeds, and does not itself accept any of the next
+one hundred LAN requirements or authorize production deployment.
+
 ## LAN 10,000-item delivery program — 2026-10-30
+
+The next source-policy iteration implements a bounded eligible-file browser,
+metadata filters, canonical path decisions, generated-file protection, read-only
+policy proposals, remembered navigation and metadata export. Read the
+[source-policy guide](docs/LAN-SOURCE-POLICY.md) and
+[selected next-100 plan](docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md).
+F002 acceptance remains pending the final integrated checks; the existing
+100 accepted requirements are preserved.
 
 The prior [conflict-review milestone](docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
 missing-file draft protection and explicitly reviewed replacement. The
-[current iteration](docs/LAN-ACTIVE-ITERATION.md) completes source-family acceptance with draft recovery, comparison export and revision history.
+[previous accepted iteration](docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md) completed F001 with draft recovery, comparison export and revision history.
 
 **Accepted total: 100 requirements / 20 capabilities; 9,900 requirements remain
 TODO.** The recovery/export/history batch adds fifteen exact completions and

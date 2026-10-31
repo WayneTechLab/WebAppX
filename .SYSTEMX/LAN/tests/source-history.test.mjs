@@ -291,7 +291,7 @@ test('isolated history HTTP scopes operations, binds workspace/current bytes and
         throw error
       }
       const linkedSourceEffects = effects(fixture, lan)
-      assert.deepEqual(await history(), { status: 400, body: { error: 'Source path is outside the editable allowlist' } })
+      assert.deepEqual(await history(), { status: 400, body: { code: 'SOURCE_LINK_REFUSED', error: 'Linked source files or linked parent directories are refused.' } })
       assert.deepEqual(effects(fixture, lan), linkedSourceEffects)
       assert.equal(readFileSync(outsideSource, 'utf8'), 'PRIVATE_OUTSIDE_SOURCE')
       rmSync(home); writeFileSync(home, original)

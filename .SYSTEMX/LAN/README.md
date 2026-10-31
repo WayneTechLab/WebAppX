@@ -612,3 +612,12 @@ Read the [GUI workflow](../../docs/LAN-TEMPLATE-GUI-WORKFLOW.md),
 the supported Keep open inspector setting and checks seven 336 px states;
 Navigator separately passes 16 groups. Full 68-stage CI and Hosting preflight
 pass. Production deployment and provider activation remain unperformed.
+
+## Source policy browser
+
+The host Code inspector provides bounded eligible source metadata, canonical
+exact-case/no-link paths, strict UTF-8 and size decisions, generated read-only
+labels, policy proposal comparison, optional navigation preferences and explicit
+metadata-only export. Read the [source-policy guide](../../docs/LAN-SOURCE-POLICY.md)
+and [next-100 plan](../../docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md). These host
+extensions preserve the selected managed release and reusable work records.

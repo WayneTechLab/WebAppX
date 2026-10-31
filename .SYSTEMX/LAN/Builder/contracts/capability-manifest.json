@@ -101,6 +101,30 @@
       "label": "Bounded read-only recorded and unattributed source revision history",
       "surface": "GET /api/builder/source/history; Code inspector Refresh history",
       "evidence": "docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md; source-draft-records/source-history unit tests and 55-group browser proof"
+    },
+    {
+      "id": "lan.source-policy-inventory",
+      "label": "Bounded eligible source metadata with extension/search filters, generated origin, size and write kinds",
+      "surface": "GET /api/builder/source/inventory; Code source browser",
+      "evidence": "source-policy.test.mjs, source-policy-api.test.mjs, source-navigation.test.mjs and source-policy-browser.mjs; F002 acceptance remains pending final integration gates."
+    },
+    {
+      "id": "lan.source-path-policy",
+      "label": "Canonical exact-case and no-link source paths, strict encoding and bounded read/write decisions",
+      "surface": "GET/POST /api/builder/source; source/font guards",
+      "evidence": "source-policy.test.mjs, source-policy-api.test.mjs, source-navigation.test.mjs and source-policy-browser.mjs; F002 acceptance remains pending final integration gates."
+    },
+    {
+      "id": "lan.source-policy-review",
+      "label": "Read-only reviewed path policy proposal and comparison without opening source content",
+      "surface": "GET /api/builder/source/policy",
+      "evidence": "source-policy.test.mjs, source-policy-api.test.mjs, source-navigation.test.mjs and source-policy-browser.mjs; F002 acceptance remains pending final integration gates."
+    },
+    {
+      "id": "lan.source-navigation-inventory-export",
+      "label": "Revalidated optional source navigation metadata and explicit eligible inventory JSON download",
+      "surface": "Code source browser preferences / Download inventory",
+      "evidence": "source-policy.test.mjs, source-policy-api.test.mjs, source-navigation.test.mjs and source-policy-browser.mjs; F002 acceptance remains pending final integration gates."
     }
   ],
   "guarded": [

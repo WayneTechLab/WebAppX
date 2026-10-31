@@ -465,6 +465,26 @@
               <p class="eyebrow">Code editor</p>
               <h2>Controlled source</h2>
             </div>
+            <details id="source-browser" class="source-comparison source-browser">
+              <summary>Source browser and policy</summary>
+              <output id="source-workspace-boundary" class="source-revision-row" aria-live="polite">Waiting for the selected checkout identity.</output>
+              <p class="panel-help">This picker reads one repository's eligible metadata. Search matches filenames and declared tags only. Structural edits remain unavailable.</p>
+              <div class="source-browser-filters">
+                <div><label for="source-extension-filter">Extension</label><select id="source-extension-filter"><option value="">All supported</option><option value=".tsx">.tsx</option><option value=".ts">.ts</option><option value=".css">.css</option></select></div>
+                <div><label for="source-metadata-search">Search metadata</label><input id="source-metadata-search" type="search" maxlength="120" autocomplete="off" placeholder="Filename or declared tag" /></div>
+              </div>
+              <div class="source-toolbar"><button id="refresh-source-inventory" class="button" type="button">Refresh eligible files</button><button id="export-source-inventory" class="button" type="button" disabled>Export eligible inventory</button></div>
+              <output id="source-inventory-status" class="command-output" aria-live="polite">Eligible inventory has not been read.</output>
+              <label>Repository-relative path<input id="source-canonical-path" maxlength="512" autocomplete="off" placeholder="src/pages/HomePage.tsx" /></label>
+              <button id="select-source-path" class="button" type="button">Select path</button>
+              <p class="panel-help">Select path validates canonical spelling before a file request. Load reads content explicitly. A refused path keeps the previous selection and draft.</p>
+              <label class="source-consent"><input id="source-navigation-opt-in" type="checkbox" />Remember eligible path and metadata filters in this browser</label>
+              <output id="source-navigation-status" class="panel-help" aria-live="polite">Navigation storage is off. No source text, revision or save authority is stored here.</output>
+              <button id="review-source-policy" class="button" type="button">Review source policy proposal</button>
+              <p class="panel-help">Compare the active policy with the reviewed pages-only proposal. Review does not apply a policy or open source files.</p>
+              <pre id="source-policy-review" tabindex="0" aria-label="Read-only source policy comparison">No policy proposal reviewed.</pre>
+            </details>
+            <output id="source-file-metadata" class="source-revision-row" aria-live="polite">Select a file to inspect its eligible metadata.</output>
             <div class="source-toolbar">
               <label>File<select id="source-file-select"></select></label>
               <button class="button" id="load-source" type="button">Load</button>

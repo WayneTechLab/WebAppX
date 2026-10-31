@@ -55,6 +55,7 @@
 
 **Agents and tooling**
 
+- [SYSTEMX Host Swarm](SYSTEMX-Swarm.md)
 - [Agent Y Setup for a New App](Agent-Y-New-App-Setup.md)
 - [Agent Mesh & Tooling Standard](Agent-Mesh-and-Tooling-Standard.md)
 - [MCP and Agents](MCP-and-Agents.md)

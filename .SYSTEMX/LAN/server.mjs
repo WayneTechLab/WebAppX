@@ -5,7 +5,6 @@ import {
   copyFileSync,
   createReadStream,
   existsSync,
-  lstatSync,
   mkdirSync,
   readFileSync,
   realpathSync,
@@ -16,12 +15,13 @@ import {
 import { createServer } from 'node:http'
 import { execFileSync } from 'node:child_process'
 import { randomBytes, randomUUID } from 'node:crypto'
-import { dirname, extname, join, posix, relative, resolve, sep } from 'node:path'
+import { dirname, extname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { StringDecoder } from 'node:string_decoder'
 import net from 'node:net'
 import { inspectCurrentRepository, inspectExternalProject } from './Builder/importer/current-repo.mjs'
 import { hashSourceRevision, checkSourceRevision } from './Builder/source-revision.mjs'
+import { inspectSourcePath, enumerateSourceInventory, sourcePolicyCatalog, compareSourcePolicies, sourcePolicyLimits } from './Builder/source-policy.mjs'
 import { createSourceHistory, readSourceOperationHistory, sourceHistoryLimits } from './Builder/source-history.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
@@ -152,14 +152,6 @@ function sendText(response, statusCode, value) {
   response.setHeader('Content-Type', 'text/plain; charset=utf-8')
   response.end(`${value}\n`)
 }
-
-const editableSourceRules = [
-  /^src\/pages\/[A-Za-z0-9._-]+\.tsx$/,
-  /^src\/components\/(layout|navigation|shell)\/[A-Za-z0-9._-]+\.tsx$/,
-  /^src\/config\/siteControls\.ts$/,
-  /^src\/index\.css$/,
-  /^src\/router\.tsx$/,
-]
 
 const secretMarkers = [
   /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/i,
@@ -356,7 +348,7 @@ function projectFontLayout(content) {
 
 function projectFontState(target = projectCssPath) {
   if (target !== projectCssPath) return fontSourceFailure('SOURCE_TARGET_UNSUPPORTED', 'Project font changes only support src/index.css.')
-  const source = readEditableSource(projectCssPath)
+  const source = readProjectFontSource()
   if (source.error) return source
   const decoded = decodeProjectFontSource(source.bytes)
   if (decoded.error) return decoded
@@ -414,7 +406,7 @@ async function saveProjectFont(body) {
   const locallyAvailable = cached ? fontCatalogCache.items : readCuratedFontCatalog()
   const completeLocalCatalog = cached || !process.env.SYSTEMX_GOOGLE_FONTS_API_KEY?.trim() || typeof globalThis.fetch !== 'function'
   if (((completeLocalCatalog || body.baseRevision === undefined) && !findFontFamily(locallyAvailable, body.family)) || typeof body.family !== 'string' || !body.family.trim()) throw new Error('Choose a font from the verified local or Google Fonts catalog')
-  const initial = readEditableSource(projectCssPath)
+  const initial = readProjectFontSource({ forWrite: true })
   if (initial.error) return initial
   const initialPrecondition = checkSourceRevision(body.baseRevision, initial.bytes)
   if (initialPrecondition.statusCode !== 200) return initialPrecondition
@@ -426,7 +418,7 @@ async function saveProjectFont(body) {
   const font = findFontFamily(catalog.items, body.family)
   if (!font) throw new Error('Choose a font from the verified local or Google Fonts catalog')
   // Metadata may await a response while another editor changes or removes CSS.
-  const source = readEditableSource(projectCssPath)
+  const source = readProjectFontSource({ forWrite: true })
   if (source.error) return source
   const precondition = checkSourceRevision(body.baseRevision, source.bytes)
   if (precondition.statusCode !== 200) return precondition
@@ -664,47 +656,15 @@ function recordOperation(event, detail = {}) {
   })}\n`)
 }
 
-function editableSourceCandidate(value) {
-  if (typeof value !== 'string') return null
-  const normalized = posix.normalize(value.replaceAll('\\', '/')).replace(/^\.\//, '')
-  if (normalized.startsWith('../') || normalized.includes('/../') || !editableSourceRules.some((rule) => rule.test(normalized))) return null
-  const target = resolve(repoRoot, normalized)
-  const relativeTarget = relative(repoRoot, target).replaceAll('\\', '/')
-  if (relativeTarget !== normalized) return null
-  return { normalized, target }
+function readEditableSource(value, { forWrite = false } = {}) {
+  return inspectSourcePath(repoRoot, value, { read: true, forWrite })
 }
 
-// Missing descendants are unavailable only after every existing ancestor passes
-// the same no-link/directory boundary. A dangling link is still a refused path.
-function missingConfinedSource(sourcePath) {
-  const parts = relative(repoRoot, sourcePath.target).split(sep)
-  let current = repoRoot
-  for (let index = 0; index < parts.length; index += 1) {
-    current = join(current, parts[index])
-    let entry
-    try { entry = lstatSync(current) } catch (error) { return error.code === 'ENOENT' }
-    if (entry.isSymbolicLink() || (index < parts.length - 1 && !entry.isDirectory())) return false
-  }
-  return false
-}
-
-function readEditableSource(value) {
-  const refused = { statusCode: 400, error: 'Source path is outside the editable allowlist' }
-  const unavailable = {
-    statusCode: 404,
-    code: 'SOURCE_UNAVAILABLE',
-    error: 'Source is unavailable. Select an existing allowlisted source file, then reload before saving.',
-  }
-  const sourcePath = editableSourceCandidate(value)
-  if (!sourcePath) return refused
-  if (!confinedFile(repoRoot, sourcePath.target)) return missingConfinedSource(sourcePath) ? unavailable : refused
-  try {
-    return { sourcePath, bytes: readFileSync(sourcePath.target) }
-  } catch (error) {
-    // Deletion can occur after the boundary check. Do not expose filesystem paths
-    // or let a missing read escape the request handler as an unhandled error.
-    return error.code === 'ENOENT' && missingConfinedSource(sourcePath) ? unavailable : refused
-  }
+function readProjectFontSource(options) {
+  const source = readEditableSource(projectCssPath, options)
+  // Retain the existing font endpoint's encoding status while sharing the same
+  // exact-path, bounded UTF-8 and generated-file decisions as the Code editor.
+  return source.code === 'SOURCE_ENCODING_UNSUPPORTED' ? { ...source, statusCode: 400 } : source
 }
 
 function containsSecretMarker(value) {
@@ -802,14 +762,15 @@ function readRequestBody(request) {
 function sourceRead(value) {
   const source = readEditableSource(value)
   if (source.error) return source
-  const { sourcePath, bytes } = source
+  const { sourcePath, bytes, content, metadata } = source
   return {
     path: sourcePath.normalized,
     workspaceId,
-    content: bytes.toString('utf8'),
+    content,
     revision: hashSourceRevision(bytes),
-    writable: true,
-    policy: 'backup-diff-confirm',
+    metadata,
+    writable: metadata.writable,
+    policy: metadata.writable ? 'backup-diff-confirm' : 'read-only-generated',
   }
 }
 
@@ -1343,7 +1304,45 @@ const server = createServer(async (request, response) => {
     return
   }
 
+  if (requestUrl.pathname === '/api/builder/source/inventory' && request.method === 'GET') {
+    const query = requestUrl.searchParams
+    const limitValue = query.get('limit')
+    if ([...query.keys()].some(key => !['extension', 'search', 'limit'].includes(key) || query.getAll(key).length !== 1)
+      || (limitValue !== null && !/^[1-9]\d{0,2}$/.test(limitValue))) {
+      sendJson(response, 400, { code: 'SOURCE_QUERY_INVALID', error: 'Use unique supported source inventory filters and a limit from 1 through 500.' })
+      return
+    }
+    const { statusCode = 200, ...result } = enumerateSourceInventory(repoRoot, {
+      workspaceId, extension: query.get('extension') ?? '', search: query.get('search') ?? '', limit: limitValue === null ? 200 : Number(limitValue),
+    })
+    sendJson(response, statusCode, result)
+    return
+  }
+
+  if (requestUrl.pathname === '/api/builder/source/policy' && request.method === 'GET') {
+    const query = requestUrl.searchParams
+    if ([...query.keys()].some(key => !['compare', 'selection'].includes(key) || query.getAll(key).length !== 1)
+      || (query.has('selection') && !query.has('compare'))) {
+      sendJson(response, 400, { code: 'SOURCE_QUERY_INVALID', error: 'Choose one reviewed policy comparison and an optional repository-relative selection.' })
+      return
+    }
+    const result = { ...sourcePolicyCatalog(), workspaceId }
+    if (query.has('compare')) {
+      const { statusCode = 200, ...comparison } = compareSourcePolicies(repoRoot, {
+        workspaceId, fromRevision: result.activeRevision, toRevision: query.get('compare'), selection: query.get('selection') ?? '',
+      })
+      if (statusCode !== 200) { sendJson(response, statusCode, comparison); return }
+      result.comparison = comparison
+    }
+    sendJson(response, 200, result)
+    return
+  }
+
   if (requestUrl.pathname === '/api/builder/source' && request.method === 'GET') {
+    if (requestUrl.searchParams.getAll('path').length !== 1 || [...requestUrl.searchParams.keys()].some(key => key !== 'path')) {
+      sendJson(response, 400, { code: 'SOURCE_QUERY_INVALID', error: 'Choose one canonical repository-relative source path.' })
+      return
+    }
     const { statusCode = 200, ...result } = sourceRead(requestUrl.searchParams.get('path'))
     sendJson(response, statusCode, result)
     return
@@ -1359,7 +1358,10 @@ const server = createServer(async (request, response) => {
       sendJson(response, 400, { code: 'SOURCE_HISTORY_QUERY_INVALID', error: 'Choose one allowlisted source path and an optional history limit from 1 through 100.' })
       return
     }
-    const source = readEditableSource(query.get('path'))
+    // History publishes only the raw revision, not decoded source. Preserve
+    // bounded metadata observations of unsupported encodings without allowing
+    // those bytes into the editor or any write path.
+    const source = inspectSourcePath(repoRoot, query.get('path'), { read: true, decodeText: false })
     if (source.error) {
       const { statusCode, ...failure } = source
       sendJson(response, statusCode, failure)
@@ -1396,8 +1398,16 @@ const server = createServer(async (request, response) => {
       if (requestUrl.pathname === '/api/builder/source') {
         if (body.confirmation !== 'SAVE LOCAL CHANGE') throw new Error('Type SAVE LOCAL CHANGE to approve this local write')
         if (typeof body.content !== 'string' || body.content.length > 500_000) throw new Error('Source content is missing or exceeds the local limit')
+        if (Buffer.byteLength(body.content, 'utf8') > sourcePolicyLimits.maxBytes) {
+          sendJson(response, 413, { code: 'SOURCE_TOO_LARGE', error: 'Proposed source exceeds the 1000000-byte write limit.' })
+          return
+        }
+        if (body.content.includes('\0') || Buffer.from(body.content, 'utf8').toString('utf8') !== body.content) {
+          sendJson(response, 415, { code: 'SOURCE_ENCODING_UNSUPPORTED', error: 'Proposed source must be lossless UTF-8 text without NUL bytes.' })
+          return
+        }
         if (containsSecretMarker(body.content)) throw new Error('Secret-shaped content is rejected by SYSTEMX')
-        const source = readEditableSource(body.path)
+        const source = readEditableSource(body.path, { forWrite: true })
         if (source.error) {
           const { statusCode, ...failure } = source
           sendJson(response, statusCode, failure)

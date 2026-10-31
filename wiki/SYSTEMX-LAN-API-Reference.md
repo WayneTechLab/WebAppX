@@ -270,6 +270,27 @@ Purpose: return a reviewable export of the local component registry.
 Use this for handoff and evidence. It is not a production package publisher and
 does not install a component into another repository.
 
+### GET /api/builder/source/inventory
+
+Read one checkout's bounded eligible metadata. Optional unique `extension`,
+`search` (at most 120 characters) and `limit` (1–500, default 200) filters cannot
+expand access. Responses include opaque workspace identity, active policy,
+file sizes/origin/rule/tags/write kinds, declared limits, counts, omissions,
+`complete` and `truncated`. Search never indexes file bodies; generated
+classification inspects only recognized filenames and up to 4,096 header bytes.
+Incomplete metadata does not establish source deletion. No content is returned.
+
+### GET /api/builder/source/policy
+
+Read public rule provenance and reviewed policy revisions. With
+`compare=source-pages-only-v1` and an optional canonical `selection`, return a
+read-only comparison from `source-access-v1`, including named added/removed rules,
+affected eligible paths and selection eligibility. The comparison opens no
+source files, applies no changes, and marks affected paths partial when necessary.
+Unknown, duplicate or unsupported query fields are refused. No policy-apply
+endpoint exists. Browser inventory export is an explicit client download of
+finite public metadata from the inventory response.
+
 ### GET /api/builder/source?path=<allowlisted-path>
 
 Purpose: read an allowlisted source file and its current byte revision for inspection.
@@ -291,7 +312,7 @@ allowlist. The endpoint does not provide arbitrary repository browsing. It must
 not read environment files, secrets, private keys, runtime directories, or
 unbounded paths.
 
-Successful source reads include `path`, opaque `workspaceId`, UTF-8 `content`, `writable`, the existing
+Successful source reads include `path`, opaque `workspaceId`, lossless UTF-8 `content`, public `metadata`, `writable`, the existing
 `policy` label, and `revision`: lowercase SHA-256 over the exact on-disk bytes,
 including line endings and BOM. The revision is an optimistic save precondition
 for this file. It is separate from Git state, publication and exclusive locking.
@@ -299,7 +320,13 @@ for this file. It is separate from Git state, publication and exclusive locking.
 A missing allowlisted target beneath ordinary contained directories returns
 **404 / SOURCE_UNAVAILABLE**, with fixed recovery guidance and no path, source
 content or revision. A disallowed path, directory or symbolic link retains its
-400 refusal. Reads never recreate missing source.
+400 refusal with stable reason codes. Reads never recreate missing source.
+Unsupported encoding/NUL returns 415 / SOURCE_ENCODING_UNSUPPORTED; oversized
+reads return 413 / SOURCE_TOO_LARGE. Limits are 1,000,000 bytes and 500,000 text
+units. Generated files are readable but `writable:false`; both raw source and
+font writes refuse SOURCE_GENERATED_READ_ONLY. The legacy font encoding endpoint
+retains its HTTP 400 contract. History can hash bounded raw bytes without
+presenting unsupported text as decoded content.
 
 ### GET /api/builder/source/history?path=<allowlisted-path>&limit=1..100
 

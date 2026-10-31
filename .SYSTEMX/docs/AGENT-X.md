@@ -1,5 +1,7 @@
 # Agent X: events, time, and schedule tracking
 
+> WebAppX host extension: the separate [swarm operating contract](../../docs/SYSTEMX-SWARM.md) adds Agent 0, X/Y/Z and Alpha integration gates. The selected managed release remains immutable; event records still report observations rather than execution authority.
+
 Agent X is the standard **event-time** role (`agent.x`). It connects observed
 human, agent, bot, and automation activity to the selected project's work without
 becoming another task coordinator. Agent 0 still routes work and accepts results.
@@ -155,3 +157,19 @@ has stopped before manually removing a stale lock; the CLI never guesses or
 removes one automatically. This is not a distributed lock or protection against
 manual editors. Event and schedule facts are private project data when appropriate.
 Updates preserve these records; whole-installation backup/restore includes them.
+
+## Host swarm event boundary
+
+For the WebAppX [host swarm](../../docs/SYSTEMX-SWARM.md), record task generation,
+worker slot, exact base/head, actual process phase, check/review evidence, lease
+decision, PR observation, verified merge and cleanup as distinct events. Keep
+occurrence time separate from recording time and retain the original failed
+attempt when a later run succeeds. Planned or requested operations remain
+planned/requested until a fresh observation establishes what occurred.
+
+Agent X does not launch ten CLI workers from an event, accept work from a PR,
+create an integration lease, or infer branch deletion from a successful merge
+command. Agent 0 serializes canonical decisions; Agent Y owns bounded worker
+execution; Agent Z reviews independently; Alpha checks the current aggregate
+integration conditions. See the [operational map](../../docs/SYSTEMX-SWARM-MAP.md)
+and [access matrix](../../docs/SYSTEMX-SWARM-ACCESS-MATRIX.md).

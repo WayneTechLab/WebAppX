@@ -23,6 +23,12 @@ no-op behavior accounts for textarea normalization. Read the
 [API reference](SYSTEMX-LAN-API-Reference.md) and
 [source QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-REVISION-QA-2026-10-26.md).
 
+The next F002 source-policy iteration adds a bounded source browser, metadata
+filters and export, canonical paths, generated read-only protection, policy
+comparison and optional navigation preferences. Read the
+[source-policy guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY.md).
+Its next 100 acceptance records remain pending final integration gates.
+
 The prior [conflict-review milestone](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,
 missing-file draft protection and explicitly reviewed replacement. The
 [current iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) completes source-family acceptance with draft recovery, comparison export and revision history.

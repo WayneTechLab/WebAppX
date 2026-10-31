@@ -1,5 +1,7 @@
 # Agent Y: delegated CLI work and pull request handoffs
 
+> WebAppX host extension: the [swarm contract](../../docs/SYSTEMX-SWARM.md) supports an explicitly selected multi-worker policy and Agent 0 integration gate. The managed `agent-y` commands documented below retain their single-job lifecycle and do not perform automatic merges. Host swarm behavior is a separate command surface; it does not modify selected alpha.6 snapshots.
+
 Agent Y is the optional **CLI delegation** role (`agent.y`). Agent 0 remains the
 coordinator for the selected root or `.SYSTEMXP` project. Agent Y carries one
 bounded task into a separately installed command-line AI provider, such as Codex
@@ -511,3 +513,31 @@ such a permission error rather than retry with expanded access.
 See [Agent 0 coordination](../AGENTS/README.md), [Agent X](AGENT-X.md),
 [Agent Z](AGENT-Z.md), [operations](OPERATIONS.md), and
 [security](SECURITY.md).
+
+## Host swarm workers and integration
+
+The separate WebAppX [host swarm](../../docs/SYSTEMX-SWARM.md) can reserve at most
+ten authorized CLI slots under one project budget. Each slot receives one
+bounded task, exact observed base, allowed paths, provider invocation and stop
+conditions. Each task generation owns a separate branch and worktree. Workers
+cannot write the canonical integration checkout, approve themselves, accept
+catalog work or infer merge permission from their role. Reusing a worker slot
+creates a fresh generation branch rather than appending another task to merged
+history.
+
+Keep a task PR open when checks or review require changes and the assignment
+remains valid. Agent Z reviews the exact source/evidence revision independently;
+Alpha evaluates the current policy lease and aggregate gate. Only Agent 0's
+explicitly configured host integration lane may request automatic merge, after
+exact repository/PR/head/base binding, required passing checks, accepted review,
+no conflict and provider protection gates. A changed head, base, scope, lease or
+evidence requires fresh qualification. The selected managed `agent-y` command
+path remains unchanged and grants no new merge operation.
+
+After acceptance and verified remote merge, cleanup separately preserves the
+owned result and rechecks exact branch/worktree state before deletion. Verify
+remote branch absence and local cleanup rather than assuming them. Unmerged,
+dirty, unpushed or unowned work remains preserved. Review the
+[swarm access matrix](../../docs/SYSTEMX-SWARM-ACCESS-MATRIX.md) before operating
+this host lane, and qualify installed providers and supported host behavior
+separately from local fixture tests.

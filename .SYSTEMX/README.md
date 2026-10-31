@@ -11,6 +11,27 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+## SYSTEMX host swarm — Agent 0, X/Y/Z and Alpha
+
+The [host swarm guide](../docs/SYSTEMX-SWARM.md) defines one canonical Agent 0
+integration owner, Agent X event observations, up to ten authorized Agent Y CLI
+slots with independent task-generation branches/worktrees, Agent Z independent
+review and Alpha integration assurance under a bounded policy lease. Read the
+[operational map](../docs/SYSTEMX-SWARM-MAP.md) and
+[access matrix](../docs/SYSTEMX-SWARM-ACCESS-MATRIX.md) together.
+
+Automatic PR integration requires the exact repository, PR, head/base, accepted
+independent review, passing required checks, a current lease and conflict-free
+provider protection state. Keep review work on its open task PR; after accepted
+work and verified merge, preserve and verify owned cleanup before reusing a slot
+with a fresh generation branch. Mac IDE/Codex handoffs invalidate on revision,
+branch, dirty-state or generation drift. Local tests do not establish live CLI,
+GitHub merge, branch deletion or IDE acceptance.
+
+This is a host extension above managed SYSTEMX 1.9.0-alpha.6. It preserves release
+snapshots and blank reusable seeds, and does not itself accept any of the next
+one hundred LAN requirements or authorize production deployment.
+
 ## LAN 10,000-item delivery program — 2026-10-30
 
 The prior [conflict-review milestone](../docs/LAN-CONFLICT-REVIEW-QA-2026-10-26.md) added source comparison,

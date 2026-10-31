@@ -14,6 +14,15 @@ import { checkSourceRevision, hashSourceRevision } from '../Builder/source-revis
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex')
 
+function assertContainedSourceFailure(result, code, status = 400) {
+  assert.equal(result.status, status)
+  assert.equal(result.body.code, code)
+  assert.deepEqual(Object.keys(result.body).sort(), ['code', 'error'])
+  assert.equal(typeof result.body.error, 'string')
+  assert.ok(result.body.error.length > 0 && result.body.error.length <= 300)
+  assert.doesNotMatch(JSON.stringify(result.body), /HomePage|LinkTarget|synthetic|Reviewed edit|Initial|currentRevision|baseRevision|[A-Za-z]:|\/private\/|\/Users\//)
+}
+
 test('source revisions identify exact bytes, including line endings and Unicode', () => {
   assert.equal(hashSourceRevision('abc'), 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad')
   assert.equal(hashSourceRevision(Buffer.from('café\r\n')), sha256(Buffer.from('café\r\n')))
@@ -247,9 +256,9 @@ test('isolated source API rejects stale writes before backup/log/write and accep
       assert.match((await post({ confirmation: 'not approved' })).body.error, /Type SAVE LOCAL CHANGE/)
       assert.match((await post({ content: null })).body.error, /content is missing/)
       assert.match((await post({ content: 'const key = "sk_live_fixture-only"' })).body.error, /Secret-shaped/)
-      for (const path of ['../HomePage.tsx', 'package.json', 'src/pages/HomePage.tsx/child']) {
-        assert.deepEqual(await requestRead(path), { status: 400, body: { error: 'Source path is outside the editable allowlist' } })
-        assert.deepEqual(await post({ path }), { status: 400, body: { error: 'Source path is outside the editable allowlist' } })
+      for (const [path, code] of [['../HomePage.tsx', 'SOURCE_PATH_INVALID'], ['package.json', 'SOURCE_POLICY_REFUSED'], ['src/pages/HomePage.tsx/child', 'SOURCE_POLICY_REFUSED']]) {
+        assertContainedSourceFailure(await requestRead(path), code)
+        assertContainedSourceFailure(await post({ path }), code)
       }
       assert.deepEqual(artifactSnapshot(fixtureLan, sourceFile), removedArtifacts)
       assert.equal(existsSync(sourceFile), false)
@@ -278,16 +287,15 @@ test('isolated source API rejects stale writes before backup/log/write and accep
     })
 
     await t.test('regular-file boundary refuses directories and linked files or ancestors rather than reporting them missing', async (boundaryTest) => {
-      const refused = { status: 400, body: { error: 'Source path is outside the editable allowlist' } }
-      const assertRefusedWithoutEffects = async () => {
+      const assertRefusedWithoutEffects = async (code = 'SOURCE_LINK_REFUSED') => {
         const before = artifactSnapshot(fixtureLan, sourceFile)
-        assert.deepEqual(await requestRead(), refused)
-        assert.deepEqual(await post({ baseRevision: afterSaveRead.revision }), refused)
+        assertContainedSourceFailure(await requestRead(), code)
+        assertContainedSourceFailure(await post({ baseRevision: afterSaveRead.revision }), code)
         assert.deepEqual(artifactSnapshot(fixtureLan, sourceFile), before)
       }
       rmSync(sourceFile)
       mkdirSync(sourceFile)
-      await assertRefusedWithoutEffects()
+      await assertRefusedWithoutEffects('SOURCE_NOT_REGULAR')
       rmSync(sourceFile, { recursive: true })
 
       const inRootTarget = join(fixture, 'src/pages/LinkTarget.tsx')
@@ -508,7 +516,7 @@ test('isolated source API rejects stale writes before backup/log/write and accep
               throw error
             }
             const linked = artifactSnapshot(fixtureLan, cssFile)
-            for (const result of [await readFont(), await postFont({ baseRevision: sha256(Buffer.from(initial)) })]) assert.deepEqual(result, { status: 400, body: { error: 'Source path is outside the editable allowlist' } })
+            for (const result of [await readFont(), await postFont({ baseRevision: sha256(Buffer.from(initial)) })]) assertContainedSourceFailure(result, 'SOURCE_LINK_REFUSED')
             assert.deepEqual(artifactSnapshot(fixtureLan, cssFile), linked)
             rmSync(cssFile)
           }

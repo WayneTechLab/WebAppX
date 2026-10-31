@@ -202,6 +202,11 @@
       "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
     },
     {
+      "name": "browser:source-policy",
+      "purpose": "SYSTEMX",
+      "description": "Exercise bounded source policy, navigation and export through an owned disposable browser workspace."
+    },
+    {
       "name": "browser:state-contract",
       "purpose": "portal",
       "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
@@ -530,6 +535,16 @@
       "name": "source:shell:check",
       "purpose": "setup",
       "description": "Inspect developer setup source contracts without executing the listed examples."
+    },
+    {
+      "name": "swarm",
+      "purpose": "SYSTEMX",
+      "description": "Plan and control explicitly configured host-owned CLI worker generations and revision-bound handoffs."
+    },
+    {
+      "name": "swarm:test",
+      "purpose": "SYSTEMX",
+      "description": "Verify swarm planning, worker isolation and branch lifecycle with temporary repositories and fake providers."
     },
     {
       "name": "sync:system",

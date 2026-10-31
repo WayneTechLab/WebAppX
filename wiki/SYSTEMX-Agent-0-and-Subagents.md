@@ -4,6 +4,7 @@ This page is the hub for the SYSTEMX coordination model.
 
 Use these pages together:
 
+- [Host Swarm: Agent 0, X/Y/Z and Alpha](SYSTEMX-Swarm.md)
 - [Agent 0 Operating Model](SYSTEMX-Agent-0-Operating-Model.md)
 - [How Subagents Work](SYSTEMX-How-Subagents-Work.md)
 - [Starter Prompts and Smart Routing](SYSTEMX-Starter-Prompts-and-Smart-Routing.md)
@@ -24,9 +25,18 @@ report back in compact packets.
 
 ## Working order
 
-1. Read the mission and lane state in `.SYSTEMX/status/`.
+1. Read selected managed instructions and the explicitly selected project records. Adopted task state belongs in `WORK/TASKS.json`; the reusable template keeps blank seeds and tracks its host execution plan separately.
 2. Let Agent 0 assign a bounded wave and lane.
 3. Use subagents only when a narrow lane benefits from parallel work.
 4. Route work to the cheapest effective tool first: scripts, CLI, local files,
    SDKs, APIs, MCP, then broader LLM reasoning only when needed.
 5. Archive old coordination traffic so token drag stays low over time.
+
+## Host swarm extension
+
+The [host swarm](SYSTEMX-Swarm.md) keeps Agent 0 as the only canonical integration
+writer. X observes, Y owns bounded independent CLI worktrees, Z reviews and Alpha
+checks aggregate conditions and a current bounded lease. Automatic merge still
+requires exact repository/head/base, accepted independent review, passing required
+checks and provider protection. A merged PR does not establish task acceptance,
+cleanup or production operation.
