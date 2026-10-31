@@ -4,6 +4,7 @@ import { spawn, spawnSync } from 'node:child_process'
 import { constants, chmodSync, closeSync, existsSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
+import { absolutePathSegments, isCanonicalRepositoryRoot } from './path-boundary.mjs'
 
 export const swarmLimits = Object.freeze({ workers: 10, tasks: 500, packetBytes: 128_000, outputBytes: 1_000_000, timeoutMs: 900_000, bundleBytes: 128 * 1024 * 1024 })
 const phases = ['ready', 'running', 'verifying', 'review', 'checks', 'merge-eligible', 'publication-pending', 'merge-pending', 'merged', 'accepted', 'closed', 'failed']
@@ -61,7 +62,7 @@ function git(root, args, { allowFailure = false } = {}) {
 }
 export function inspectRepository(input) {
   const root = realpathSync(resolve(input))
-  if (git(root, ['rev-parse', '--show-toplevel']) !== root) fail('REPOSITORY_ROOT_REQUIRED', 'Select the exact Git worktree root.');
+  if (!isCanonicalRepositoryRoot(root, git(root, ['rev-parse', '--show-toplevel']))) fail('REPOSITORY_ROOT_REQUIRED', 'Select the exact Git worktree root.');
   const common = realpathSync(resolve(root, git(root, ['rev-parse', '--git-common-dir']))), entry = statSync(common)
   return { root, workspaceId: digest(`systemx-swarm\0${root}\0${common}\0${entry.dev}\0${entry.ino}`), head: git(root, ['rev-parse', 'HEAD']), branch: git(root, ['branch', '--show-current']), clean: git(root, ['status', '--porcelain=v1', '--untracked-files=all']) === '' }
 }
@@ -71,9 +72,9 @@ function remoteRepository(root) {
   return match?.[1] ?? null
 }
 function safeDirectory(path, create = true) {
-  const absolute = resolve(path)
-  const parts = absolute.split(sep); let current = parts.shift() || sep
-  for (const part of parts.filter(Boolean)) {
+  const { absolute, root, parts } = absolutePathSegments(resolve(path))
+  let current = root
+  for (const part of parts) {
     current = join(current, part)
     if (!existsSync(current)) { if (!create) return absolute; mkdirSync(current, { mode: 0o700 }) }
     const entry = lstatSync(current)
