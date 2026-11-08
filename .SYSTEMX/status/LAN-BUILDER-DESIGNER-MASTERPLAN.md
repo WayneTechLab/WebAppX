@@ -221,10 +221,17 @@ changed by this proposal; no native editor build or distribution is claimed.
 
 The next bounded wave selects LAN-00401–LAN-00600, canonical document graph
 followed by versioned API contracts. Current acceptance remains 400 requirements
-and 80 capabilities while ten authenticated CLI assignments implement and verify
-the wave. Agent 0 owns integration and accepts F005 before dependent F006 only
+and 80 capabilities. The ten CLI results are integrated; the experimental
+implementation passed 75 CI stages, 147 graph/API tests, 40 graph browser groups
+and separate Hosting preflight. Source/wiki publication does not accept these
+200 requirements. Agent 0 owns integration and accepts F005 before dependent F006 only
 after exact-candidate review, browser proof and terminal checks. Read the
 [execution plan](../../docs/LAN-GRAPH-API-PLAN-2026-10-31.md) and the
 [separate local AI research](../../docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md).
 The scratch model's 2/10 exploratory quality is not accepted chatbot quality;
 model adoption supplies no completion in this LAN wave.
+
+The [2026-11-08 synchronization QA](../../docs/LAN-GRAPH-API-SYNC-QA-2026-11-08.md)
+records terminal results and retained failures. Original requirement acceptance,
+full Page-tree reconciliation and an observed operator-session graph workflow
+remain pending; new feature development stays paused after synchronization.

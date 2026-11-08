@@ -1,17 +1,24 @@
-# LAN active iteration — F005/F006 next 200
+# LAN active iteration — F005/F006 experimental source
 
-Updated 2026-10-31. Agent 0 is implementing exactly **LAN-00401–LAN-00600**:
-F005 Canonical document graph, then F006 Versioned API contracts. Ten authenticated
-CLI workers have been observed on distinct generation branches/worktrees. The
-accepted baseline remains **400/10,000 requirements and 80/2,000 capabilities**;
-this wave remains TODO pending independent review, browser proof and terminal
-integrated checks. The target 600/120 is not current acceptance.
+Updated 2026-11-08. The implementation for **LAN-00401–LAN-00600** is integrated
+from ten authenticated CLI branches and qualified for experimental GitHub
+source/wiki synchronization. All 75 CI stages, 147 graph/API tests, 40 graph
+browser groups and separate Hosting preflight passed. Existing source browser
+regression passed 55 groups plus seven geometry checks. Read the
+[synchronization QA](LAN-GRAPH-API-SYNC-QA-2026-11-08.md) for exact candidates,
+retained failures, preservation evidence and limits.
 
-Follow the [current execution plan](LAN-GRAPH-API-PLAN-2026-10-31.md). The
-[separate scratch AI research](LAN-LOCAL-AI-RESEARCH-2026-10-31.md) preserves its
-20.85 MB own-weight pilot and weak 2/10 exploratory quality result without
-claiming app adoption or changing LAN acceptance. Agent 0 owns shared integration,
-serial F005/F006 acceptance, documentation and the authorized GitHub publication.
+Acceptance remains **400/10,000 requirements and 80/2,000 capabilities**.
+**LAN-00401–LAN-00600 remain TODO** pending original F005 then F006 acceptance;
+600/120 is only the target. Full WebAppX Pages reconciliation and an observed
+operator-session graph workflow remain pending. The operator runtime was not
+restarted. Feature development remains paused after this source/wiki sync.
+
+Follow the [execution plan](LAN-GRAPH-API-PLAN-2026-10-31.md). The
+[separate scratch AI research](LAN-LOCAL-AI-RESEARCH-2026-10-31.md) retains its
+20.85 MB own-weight pilot and weak 2/10 exploratory result; it supplies no app
+adoption or LAN completion. Reusable records and managed snapshots stay blank
+or immutable as applicable.
 
 ## Completed F003/F004 baseline
 

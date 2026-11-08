@@ -16,6 +16,12 @@ acceptance and publication retain their separate gates. Original evidence and
 remaining gates belong to the
 [F005/F006 plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-PLAN-2026-10-31.md).
 
+Terminal synchronization checks passed: all 75 CI stages, 147 graph/API tests,
+40 graph browser groups and separate Hosting preflight. Existing source browser
+regression passed 55 groups plus seven geometry checks. Exact candidates,
+retained failures and the acceptance boundary are recorded in the
+[synchronization QA](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-SYNC-QA-2026-11-08.md).
+
 ## F003/F004 acceptance and responsive dashboard — 2026-10-31
 
 Accepted exactly **LAN-00201–LAN-00400** at

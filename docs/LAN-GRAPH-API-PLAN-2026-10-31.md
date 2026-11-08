@@ -1,6 +1,6 @@
 # LAN canonical graph and versioned API execution plan
 
-Updated 2026-10-31. Agent 0 has selected exactly **LAN-00401–LAN-00600**:
+Updated 2026-11-08. Agent 0 has selected exactly **LAN-00401–LAN-00600**:
 F005 Canonical document graph, followed by F006 Versioned API contracts. The
 starting accepted baseline is **400/10,000 requirements and 80/2,000
 capabilities**. These two hundred requirements remain TODO until their original
@@ -65,11 +65,11 @@ not authorize an alternate index or a wider sandbox.
 - [x] Reverify the clean checkout, exact GitHub base, original definitions and previous 400 completion records.
 - [x] Freeze nonoverlapping worker interfaces and prepare ten distinct branches/worktrees.
 - [x] Observe ten real authenticated CLI worker processes and retain their original execution evidence.
-- [ ] Integrate bounded results and resolve independent review findings.
-- [ ] Verify literal invalid graphs, qualified references, source preservation, deterministic round trips, reviewed migration and previous-graph recovery.
-- [ ] Verify actual older/current contract execution, strict validation before handler effects, malformed response refusal and public metadata privacy.
-- [ ] Test all forty capabilities through the browser, including the existing dashboard layout and source workflows.
-- [ ] Freeze the functional candidate and pass aggregate CI, separate Hosting preflight and required host/template checks.
+- [x] Integrate bounded results and resolve independent review findings.
+- [x] Verify literal invalid graphs, qualified references, source preservation, deterministic round trips, reviewed migration and previous-graph recovery.
+- [x] Verify actual older/current contract execution, strict validation before handler effects, malformed response refusal and public metadata privacy.
+- [x] Test all forty capabilities through the browser, including the existing dashboard layout and source workflows.
+- [x] Freeze the functional candidate and pass aggregate CI, separate Hosting preflight and required host/template checks.
 - [ ] Accept F005, regenerate and validate progress, then accept dependent F006 and validate again.
 - [ ] Reconcile README, host SYSTEMX, wiki and the full WebAppX Page hierarchy with the verified result.
 - [ ] Publish the reviewed delivery to GitHub main and wiki, read it back and retain a resumable local handoff.
@@ -78,6 +78,20 @@ Retain failed/interrupted attempts with their actual dispositions. Bind each
 accepted requirement to its unchanged definition, exact source revision and
 existing public QA receipt. A generated type, rendered label, CLI exit or merged
 branch alone does not establish runtime acceptance.
+
+## Source synchronization checkpoint — 2026-11-08
+
+The ten results are integrated, independent findings are repaired, all 75 CI
+stages and separate Hosting preflight passed, and the graph browser completed
+40/40 groups plus its actual dashboard journey. The source regression passed
+55 groups and seven geometry checks. Read the
+[candidate-bound synchronization QA](LAN-GRAPH-API-SYNC-QA-2026-11-08.md).
+
+This checkpoint delivers experimental source, README, host plan and wiki
+updates to GitHub. It does not complete the remaining accepted-delivery gates:
+serial F005/F006 requirement acceptance and the full WebAppX Page-tree
+reconciliation remain pending. New feature work stays paused after this scoped
+synchronization; retain the operator handoff for a later explicit resume.
 
 ## Separate scratch-model research
 
