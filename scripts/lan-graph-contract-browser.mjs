@@ -35,7 +35,7 @@ export const capabilityKeys = Object.freeze({
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex')
 const hex64 = /^[a-f0-9]{64}$/
-const git = (args) => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim()
+const git = (args) => execFileSync('git', [...args], { cwd: root, encoding: 'utf8' }).trim()
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value)
 const copy = (value) => JSON.parse(JSON.stringify(value))
 const privateCanary = /PRIVATE_GRAPH_CANARY|SESSION_GRAPH_CANARY|\/private\/graph-canary/

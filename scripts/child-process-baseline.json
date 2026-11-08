@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "fingerprintFormat": "typescript-structure-v1+python-ast-v1",
-  "sourceRevision": "49a9efe345c815c2bead1cbbeb83204d31e64290",
+  "sourceRevision": "45dd0ad2fa4df0daaeeaa01eb37b2361c06735c8",
   "exceptions": [
     {
       "path": "scripts/browser-preview-process.mjs",
@@ -44,6 +44,13 @@
       "fingerprint": "8400fa4a77787dd580ed3985560bf2f048823588909466bb6c9f025021eb9abb",
       "count": 1,
       "reason": "Reviewed isolated Python code worker uses owned process groups and fixed in-source code templates; explicit interpreter channel requires this exact count."
+    },
+    {
+      "path": "scripts/lan-graph-contract-browser.mjs",
+      "kind": "javascript:spawn",
+      "fingerprint": "2d92cd6e6217765e9e6b0f2e027fa88802fee41016338d13da42d8ee3a539e70",
+      "count": 1,
+      "reason": "Agent 0 reviewed the F005/F006 fixture spawn: current Node process.execPath, one owned server-path argument, fixed loopback environment, no shell, and exact child cleanup. No caller executable is accepted; the parser cannot resolve this runtime executable."
     },
     {
       "path": "scripts/lan-source-identity-browser.mjs",

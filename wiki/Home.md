@@ -1,5 +1,21 @@
 # WebAppX Wiki
 
+## Experimental graph and versioned API workspace
+
+The F005/F006 implementation adds **Build → Code → Graph and API contracts**
+for explicit graph import/acceptance, lookup, findings, revision comparison,
+metadata export/reopen and isolated migration copies. API 1.1 and supported
+1.0 expose their own executable schemas and operation sets. Start with the
+[graph workflow](SYSTEMX-LAN-Canonical-Graph.md) and
+[versioned API workflow](SYSTEMX-LAN-Versioned-API-Contracts.md).
+
+**LAN-00401–LAN-00600 remain TODO** awaiting original requirement acceptance.
+The accepted baseline remains **400/10,000 requirements and 80/2,000
+capabilities**. Graph metadata cannot write template source; publication is
+separate from acceptance and production. The
+[current plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-PLAN-2026-10-31.md)
+records the remaining gates.
+
 ## F003/F004 identity and ownership — accepted 2026-10-31
 
 Agent 0 accepted **LAN-00201–LAN-00400**, F003 before F004, at candidate

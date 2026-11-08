@@ -67,8 +67,8 @@ TypeScript AST and Python with stdlib `ast`. It does not import or execute scann
 modules. Its fixed Python parser child uses an argument array, isolated mode and
 time/output bounds. Diagnostics print locations, fixed rules and this guidance
 link rather than command payloads or source bodies. Unresolved recognized child
-construction is review-required. The current reviewed inventory is **45 scripts**
-with **six exact baseline occurrences** in
+construction is review-required. The current reviewed inventory is **49 scripts**
+with **eight exact baseline occurrences** in
 [child-process-baseline.json](../scripts/child-process-baseline.json).
 
 Each exception binds a relative path, call kind, normalized AST fingerprint,

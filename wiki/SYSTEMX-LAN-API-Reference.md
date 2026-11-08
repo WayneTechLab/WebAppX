@@ -10,6 +10,19 @@ the operator workflow, port lifecycle, editor behavior, evidence policy, and
 stop conditions. Read [SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md) for the
 architecture and roadmap.
 
+## Experimental versioned graph surface
+
+The new graph/contract routes use explicit versioned envelopes and strict input
+and result schemas. API 1.1 and the supported executable 1.0 contract are
+separate from the legacy routes documented below. Both retain current session,
+loopback Host and Origin checks; descriptors do not grant a capability or
+source-write authority. See [Versioned API Contracts](SYSTEMX-LAN-Versioned-API-Contracts.md)
+for discovery, the exact route map, operation sets and explicit request runner.
+
+This F005/F006 implementation is experimental. **LAN-00401–LAN-00600 remain
+TODO**; current accepted progress stays **400/10,000 requirements and 80/2,000
+capabilities** pending the original acceptance gates.
+
 ## Contract status
 
 The current API is a local control contract, not a public API.

@@ -1,5 +1,21 @@
 # Update Log
 
+## Graph and versioned API documentation — 2026-11-08
+
+Documented the saved experimental F005/F006 graph/API implementation and its
+local operator setup: bounded graph import, qualified lookup, findings,
+comparison, explicit export/reopen, reviewed isolated migration copies, API
+1.1 and executable 1.0 contracts, typed refusals and public contract metadata.
+The inspector starts closed; examples execute only after the explicit send
+action. Read [Canonical Graph](SYSTEMX-LAN-Canonical-Graph.md) and
+[Versioned API Contracts](SYSTEMX-LAN-Versioned-API-Contracts.md).
+
+**LAN-00401–LAN-00600 remain TODO**, with **400/10,000 requirements and
+80/2,000 capabilities** accepted. Candidate-bound verification, requirement
+acceptance and publication retain their separate gates. Original evidence and
+remaining gates belong to the
+[F005/F006 plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-PLAN-2026-10-31.md).
+
 ## F003/F004 acceptance and responsive dashboard — 2026-10-31
 
 Accepted exactly **LAN-00201–LAN-00400** at

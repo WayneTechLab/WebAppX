@@ -69,6 +69,31 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
+## Experimental LAN graph and versioned API workspace
+
+The saved F005/F006 implementation adds **Build → Code → Graph and API
+contracts** beside the existing source-identity inspector. Start a local session
+with `npm run dev:systemx`, open its printed `/__systemx/` bridge, then expand
+that disclosure. It starts closed and sends no graph command until an explicit
+action. No provider account is required for this local metadata workflow.
+
+The graph inspector supports bounded import previews, qualified lookup,
+filtered findings, deterministic revisions, comparison, export/reopen and a
+reviewed schema migration into an isolated copy. API **1.1** and the supported
+**1.0** contract provide discovery, strict request/response validation, examples
+and compatibility inspection. Graph acceptance changes local metadata; editing
+Home or another source file still uses the separate confirmed source-save flow.
+Graph history is in memory; export before a service restart to retain a selected
+snapshot for same-workspace reopen.
+
+Read the [graph operator guide](docs/LAN-CANONICAL-GRAPH.md),
+[versioned API guide](docs/LAN-VERSIONED-API-CONTRACTS.md) and
+[F005/F006 execution plan](docs/LAN-GRAPH-API-PLAN-2026-10-31.md).
+This is experimental implementation awaiting original requirement acceptance.
+**LAN-00401–LAN-00600 remain TODO**; accepted progress stays **400/10,000
+requirements and 80/2,000 capabilities**. A source or wiki publication does not
+accept this next two hundred or establish production readiness.
+
 ## LAN durable identity and source ownership — accepted
 
 Agent 0 accepted exactly **LAN-00201–LAN-00400**, F003 before dependent F004.

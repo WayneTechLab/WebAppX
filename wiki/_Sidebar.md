@@ -41,6 +41,8 @@
 - [SYSTEMX Setup and Deployment](SYSTEMX-Setup-and-Deployment.md)
 - [SYSTEMX Webportal](SYSTEMX-WEBPORTAL.md)
 - [SYSTEMX LAN Builder](SYSTEMX-LAN-Builder.md)
+- [LAN Canonical Graph — experimental](SYSTEMX-LAN-Canonical-Graph.md)
+- [LAN Versioned API Contracts — experimental](SYSTEMX-LAN-Versioned-API-Contracts.md)
 - [LAN Identity and Ownership — 400 accepted requirements](SYSTEMX-LAN-Identity-and-Ownership.md)
 - [Tailored Code-OSS Fork — 32 planned tasks](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/LAN-VSCODE-FORK-TODO.md)
 - [SYSTEMX LAN Operations Manual](SYSTEMX-LAN-Operations-Manual.md)
