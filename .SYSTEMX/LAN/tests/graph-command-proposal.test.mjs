@@ -207,3 +207,59 @@ test('creation, inspection, discard and refusal preserve source, accepted graph 
   assert.throws(() => inspectCommandProposal({ ...input, proposal, baseline: service.export({ documentId }) }), { code: 'COMMAND_BASELINE_STALE' })
   assert.deepEqual(await readFile(path), sourceBefore)
 })
+
+test('a new end child includes its unchanged anchor owner and omits unaffected sibling owners', () => {
+  const graph = original()
+  for (const id of ['alpha', 'opaque', 'instance']) {
+    node(graph, id).source = { ...node(graph, 'alpha').source, path: 'src/' + id + '.tsx' }
+  }
+  const baseline = exportGraphDocument(graph)
+  const candidate = structuredClone(graph)
+  node(candidate, 'root').childIds.push('privateNewChild')
+  candidate.nodes.push({ ...node(candidate, 'alpha'), id: 'privateNewChild', source: null, ownership: 'read-only' })
+  const review = createCommandProposal({ baseline, candidate, expectedRevision: baseline.revision })
+  const root = review.effects.changed.find(row => row.id === 'root')
+  assert.deepEqual(root.childOrder.neighborChanges, ['instance'])
+  assert.deepEqual(root.childOrder.moved, [])
+  assert.deepEqual(root.ownersBefore.map(id => review.owners.find(owner => owner.id === id).path), ['src/instance.tsx'])
+  assert.deepEqual(root.ownersAfter.map(id => review.owners.find(owner => owner.id === id).path), ['src/instance.tsx'])
+  assert.match(root.childOrder.after.at(-1), /^redacted:[a-f0-9]{64}$/)
+  assert.doesNotMatch(JSON.stringify(review), /privateNewChild/)
+})
+
+test('the complete sibling order report is refused if it cannot fit in the portable byte budget', () => {
+  const graph = original()
+  for (let i = 0; i < 340; i++) {
+    const id = 'child' + String(i).padStart(3, '0') + 'x'.repeat(78)
+    graph.nodes.push({ ...node(graph, 'alpha'), id, source: null })
+    node(graph, 'root').childIds.push(id)
+  }
+  const baseline = exportGraphDocument(graph)
+  const candidate = structuredClone(graph)
+  node(candidate, 'root').childIds.reverse()
+  const snapshot = JSON.stringify([baseline, candidate])
+  assert.throws(() => createCommandProposal({ baseline, candidate, expectedRevision: baseline.revision }),
+    error => error.code === 'COMMAND_EFFECT_LIMIT' && error.statusCode === 413 && /smaller edits/.test(error.message))
+  assert.equal(JSON.stringify([baseline, candidate]), snapshot)
+})
+
+test('a stationary sibling with unchanged adjacent neighbors still owns its crossed order relations', () => {
+  const graph = original()
+  const root = node(graph, 'root')
+  for (const id of ['fourth', 'fifth']) {
+    graph.nodes.push({ ...node(graph, 'alpha'), id })
+    root.childIds.push(id)
+  }
+  for (const id of root.childIds) node(graph, id).source = { ...node(graph, 'alpha').source, path: 'src/' + id + '.tsx' }
+  const baseline = exportGraphDocument(graph)
+  const candidate = structuredClone(graph)
+  node(candidate, 'root').childIds = ['fifth', 'opaque', 'instance', 'fourth', 'alpha']
+  const review = createCommandProposal({ baseline, candidate, expectedRevision: baseline.revision })
+  const change = review.effects.reordered[0]
+  assert.ok(!change.childOrder.neighborChanges.includes('instance'))
+  assert.deepEqual(change.childOrder.moved.find(item => item.id === 'instance'),
+    { id: 'instance', from: 2, to: 2, relativeOrderChanged: true })
+  for (const ids of [change.ownersBefore, change.ownersAfter]) {
+    assert.ok(ids.some(id => review.owners.find(owner => owner.id === id).path === 'src/instance.tsx'))
+  }
+})

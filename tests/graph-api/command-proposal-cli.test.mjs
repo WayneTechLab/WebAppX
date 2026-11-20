@@ -236,3 +236,76 @@ test('direct LAN dashboard and selected graph yield the same portable review as 
   assert.deepEqual(await call('query', 'graph.export', { documentId: document.documentId }), exported)
   assert.equal(await readFile(sourcePath, 'utf8'), source)
 })
+
+test('CLI distinguishes first and last insertion, removal, reparenting and every owner in a three-way reversal', async t => {
+  const f = await fixture(t)
+  const graph = structuredClone(f.exported.document)
+  const find = (doc, id) => doc.nodes.find(item => item.id === id)
+  for (const [id, name] of [['alpha', 'First'], ['opaque', 'Middle'], ['instance', 'Last']]) {
+    find(graph, id).source = { ...find(graph, 'alpha').source, path: 'src/' + name + '.tsx' }
+  }
+  const preview = await f.service.preview({ document: graph })
+  f.service.accept({ digest: preview.digest, expectedRevision: f.exported.revision, confirmation: 'ACCEPT GRAPH' })
+  f.exported = f.service.export({ documentId: f.documentId })
+  await writeFile(f.baseline, JSON.stringify(f.exported))
+  async function review(doc) {
+    await writeFile(f.draft, JSON.stringify(doc))
+    const result = await execute(createArgs(f))
+    assert.equal(result.code, 0, result.err)
+    return JSON.parse(result.out)
+  }
+  const insertion = async index => {
+    const doc = structuredClone(graph)
+    doc.nodes.push({ ...find(doc, 'alpha'), id: 'extra', source: null })
+    find(doc, 'root').childIds.splice(index, 0, 'extra')
+    return review(doc)
+  }
+  const first = await insertion(0), last = await insertion(3)
+  assert.notDeepEqual(first.effects, last.effects)
+  for (const [result, at] of [[first, 0], [last, 3]]) {
+    const order = result.effects.changed.find(row => row.id === 'root').childOrder
+    assert.deepEqual(order.before, ['alpha', 'opaque', 'instance'])
+    assert.equal(order.after[at], 'extra')
+    assert.deepEqual(order.inserted, [{ id: 'extra', from: null, to: at }])
+    assert.deepEqual(result.effects.added.find(row => row.id === 'extra').placement, { before: null, after: { parentId: 'root', index: at } })
+  }
+  const reversed = structuredClone(graph)
+  find(reversed, 'root').childIds.reverse()
+  const result = await review(reversed)
+  const change = result.effects.reordered.find(row => row.id === 'root')
+  for (const ownerIds of [change.ownersBefore, change.ownersAfter]) {
+    const paths = ownerIds.map(id => result.owners.find(owner => owner.id === id).path)
+    assert.deepEqual(paths.sort(), ['src/First.tsx', 'src/Last.tsx', 'src/Middle.tsx'])
+  }
+  assert.deepEqual(change.childOrder.moved.map(row => [row.id, row.from, row.to]),
+    [['instance', 2, 0], ['opaque', 1, 1], ['alpha', 0, 2]])
+  const moved = structuredClone(graph)
+  find(moved, 'root').childIds.splice(1, 1)
+  find(moved, 'componentRoot').childIds.push('opaque')
+  find(moved, 'opaque').parentId = 'componentRoot'
+  const transfer = await review(moved)
+  assert.deepEqual(transfer.effects.changed.find(row => row.id === 'root').childOrder.removed, [{ id: 'opaque', from: 1, to: null }])
+  assert.deepEqual(transfer.effects.changed.find(row => row.id === 'opaque').placement,
+    { before: { parentId: 'root', index: 1 }, after: { parentId: 'componentRoot', index: 0 } })
+  assert.deepEqual(transfer.effects.changed.find(row => row.id === 'componentRoot').childOrder.inserted, [{ id: 'opaque', from: null, to: 0 }])
+  assert.deepEqual(JSON.parse(await readFile(f.baseline, 'utf8')), f.exported)
+})
+
+test('invalid relationships identify distinct repairable preconditions without echoing graph input', async t => {
+  const f = await fixture(t)
+  for (const [code, corrupt, guidance] of [
+    ['GRAPH_ROOT_MISSING', doc => { doc.pages[0].rootId = 'privateMissingNode' }, /root/i],
+    ['NODE_CHILD_DUPLICATE', doc => { const root = doc.nodes.find(node => node.id === 'root'); root.childIds.push(root.childIds[0]) }, /duplicat|once/i],
+  ]) {
+    const doc = structuredClone(f.candidate)
+    corrupt(doc)
+    await writeFile(f.draft, JSON.stringify(doc))
+    const rejected = await execute(createArgs(f))
+    assert.equal(rejected.code, 1)
+    assert.equal(rejected.out, '')
+    assert.ok(rejected.err.includes(code), rejected.err)
+    assert.match(rejected.err, guidance)
+    assert.doesNotMatch(rejected.err, /privateMissingNode|Private draft label|GraphFixture\.tsx/)
+    assert.ok(rejected.err.length < 1200)
+  }
+})
