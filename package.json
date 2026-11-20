@@ -147,8 +147,9 @@
     "browser:lan-layout": "node scripts/lan-layout-browser.mjs",
     "lan:graph:test": "node --test .SYSTEMX/LAN/tests/graph-*.test.mjs .SYSTEMX/LAN/tests/api-*.test.mjs tests/graph-api/*.test.mjs",
     "browser:graph-contracts": "node scripts/lan-graph-contract-browser.mjs",
-    "lan:transport:test": "node --test .SYSTEMX/LAN/tests/request-*.test.mjs .SYSTEMX/LAN/tests/transport-*.test.mjs .SYSTEMX/LAN/tests/record-*.test.mjs .SYSTEMX/LAN/tests/representation-http.test.mjs tests/transport/*.test.mjs",
-    "browser:transport": "node scripts/lan-transport-browser.mjs"
+    "lan:transport:test": "node --test .SYSTEMX/LAN/tests/request-*.test.mjs .SYSTEMX/LAN/tests/transport-*.test.mjs .SYSTEMX/LAN/tests/record-*.test.mjs .SYSTEMX/LAN/tests/representation-http.test.mjs .SYSTEMX/LAN/tests/inspection-windows.test.mjs tests/transport/*.test.mjs",
+    "browser:transport": "node scripts/lan-transport-browser.mjs",
+    "lan:inventory:test": "node --test tests/inventory/*.test.mjs"
   },
   "dependencies": {
     "@gusto/embedded-react-sdk": "0.56.6",

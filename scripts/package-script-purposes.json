@@ -452,6 +452,11 @@
       "description": "Exercise bounded source identity, ownership, reconciliation and their local browser evidence."
     },
     {
+      "name": "lan:inventory:test",
+      "purpose": "SYSTEMX",
+      "description": "Verify tracked entry points, route declarations, private exclusions and last-good recovery in disposable Git repositories."
+    },
+    {
       "name": "lan:transport:test",
       "purpose": "SYSTEMX",
       "description": "Exercise the LAN request lifecycle with temporary workspace data and owned loopback servers."

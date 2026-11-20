@@ -48,6 +48,17 @@ opt into exactly one stored record by supplying the same UUIDv4
 Use `X-SystemX-Retry` and the current response to decide whether a fresh read,
 reconciliation or a new confirmed proposal is needed.
 
+## Repository inventory (F011)
+
+Run `node scripts/lan-repository-inventory.mjs scan` to inspect the selected
+checkout's tracked entry points and declared routes. For another checkout, add
+`--root DIR`. The output distinguishes file-backed declarations, inferred paths
+and unresolved runtime routing. A partial scan exits 1 and preserves the last
+complete observation, which `last-good` reads from the selected worktree's private
+Git metadata. The WebAppX scan found 29 static route declarations and identified
+the dynamic portal dispatcher separately. Run `npm run lan:inventory:test` to
+exercise renamed, linked and unsupported inputs in disposable repositories.
+
 ## Completed F005/F006 baseline
 
 On 2026-11-19 Agent 0 accepted the canonical document graph (F005) and then
