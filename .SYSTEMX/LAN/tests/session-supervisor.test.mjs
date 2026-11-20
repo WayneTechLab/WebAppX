@@ -380,7 +380,7 @@ test('combined child preserves the supervisor, a competing standalone refuses, a
   const root = await fixtureRoot()
   const lan = join(root, '.SYSTEMX', 'LAN')
   await cp(join(repository, '.SYSTEMX/LAN/Builder'), join(lan, 'Builder'), { recursive: true })
-  const files = ['server.mjs', 'work-status.mjs', 'session-restart-preview.mjs']
+  const files = ['server.mjs', 'work-status.mjs', 'session-claim.mjs', 'session-restart-preview.mjs']
   for (const file of files) {
     const target = join(root, '.SYSTEMX/LAN', file)
     await mkdir(dirname(target), { recursive: true })
@@ -423,7 +423,7 @@ test('combined child preserves the supervisor, a competing standalone refuses, a
     assert.equal(await readFile(recordPath, 'utf8'), original)
     await stop()
     assert.equal(await readFile(recordPath, 'utf8'), original)
-    await assert.rejects(launch({}), /another generation or writer/)
+    await assert.rejects(launch({}), /existing local session record.*generation synthetic-combined/)
     assert.deepEqual(await exited, [1, null])
     assert.equal(await readFile(recordPath, 'utf8'), original)
     child = null
