@@ -153,3 +153,28 @@ test('operator CLI previews a fresh fixture with a read-only listener inventory 
   assert.match(orphan.nextAction, /stop.*clear.*preview/)
   assert.deepEqual(readdirSync(state), ['local-session.json'])
 })
+
+test('a fixed-origin conflict reports selected-workspace ownership only for an exact live origin and unique PID', async () => {
+  const options = parseSessionOptions(['--port', '48200'])
+  const origin = 'http://127.0.0.1:48200'
+  const verified = { ownership: 'owned', activeOrigin: origin, listener: { state: 'owned', pid: 441 } }
+  for (const [row, listeners, expected] of [
+    [verified, [{ port: 48200, pid: 441 }], 'verified-workspace-listener'],
+    [{ ...verified, activeOrigin: 'http://localhost:48200' }, [{ port: 48200, pid: 441 }], 'unverified-listener'],
+    [verified, [{ port: 48200, pid: 442 }], 'unverified-listener'],
+    [verified, [{ port: 48200, pid: 441 }, { port: 48200, pid: 442 }], 'unverified-listener'],
+    [{ ownership: 'absent', listener: { state: 'unverified', pid: null } }, [{ port: 48200, pid: 441 }], 'outside-verified-workspace-session'],
+  ]) {
+    const snapshot = { complete: true, listeners }
+    const result = await createSessionStartPreview({ repoRoot: '/not-output', options, inspectOwnership: () => absent,
+      inspectListeners: () => snapshot, inspectWorkspace: (_root, deps) => { assert.equal(deps.inspectListeners(), snapshot); return row } })
+    assert.equal(result.canStart, false)
+    assert.equal(result.proposedLaunch, null)
+    assert.equal(result.origin, origin)
+    assert.equal(result.ports, null)
+    assert.equal(result.recovery.ownership, expected)
+    assert.equal(result.recovery.choices[0].action, expected === 'verified-workspace-listener' ? 'inspect-current-session' : 'inspect-listener')
+    assert.deepEqual(result.recovery.choices.slice(1).map(choice => choice.action), ['retry-same-origin', 'choose-different-origin'])
+    assert.ok(!JSON.stringify(result.recovery).includes('/not-output'))
+  }
+})

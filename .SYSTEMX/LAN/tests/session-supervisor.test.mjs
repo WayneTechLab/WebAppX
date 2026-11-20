@@ -255,7 +255,16 @@ test('busy fixed origin starts no process and writes no runtime state', async ()
   const port = await listening(sentinel)
   const fixture = runtimeFixtures(root, { available: undefined })
   try {
-    await assert.rejects(startDevSession(parseSessionOptions(['--port', String(port)]), fixture.deps), /Fixed app origin.*unavailable/)
+    await assert.rejects(startDevSession(parseSessionOptions(['--port', String(port)]), fixture.deps), error => {
+      assert.equal(error.code, 'EADDRINUSE')
+      assert.match(error.message, /Fixed app origin.*unavailable/)
+      assert.equal(error.recovery.origin, 'http://127.0.0.1:' + port)
+      // A platform without a usable listener inventory still preserves this socket.
+      if (error.recovery.listenerPids.length) assert.ok(error.recovery.listenerPids.includes(process.pid))
+      assert.ok(['outside-verified-workspace-session', 'unverified-listener', 'unobserved-listener'].includes(error.recovery.ownership))
+      assert.deepEqual(error.recovery.choices.map(choice => choice.action), ['inspect-listener', 'retry-same-origin', 'choose-different-origin'])
+      return true
+    })
     assert.equal(fixture.spawned.length, 0)
     assert.equal(existsSync(join(root, '.SYSTEMX/state')), false)
     assert.equal(sentinel.listening, true)
@@ -438,4 +447,17 @@ test('combined child preserves the supervisor, a competing standalone refuses, a
     if (child) { child.kill('SIGKILL'); await exited }
     await rm(root, { recursive: true, force: true })
   }
+})
+
+test('a manual-termination platform preserves even an operating supervisor’s own record and emulator config', async t => {
+  const root = await fixtureRoot()
+  t.after(() => rm(root, { recursive: true, force: true }))
+  const fixture = runtimeFixtures(root, { platform: 'win32' })
+  const run = await startDevSession(parseSessionOptions([]), fixture.deps)
+  const record = join(root, '.SYSTEMX/state/local-session.json')
+  const before = await Promise.all([readFile(record), readFile(run.session.runtime.firebaseConfig)])
+  run.close()
+  assert.deepEqual(await Promise.all([readFile(record), readFile(run.session.runtime.firebaseConfig)]), before)
+  assert.ok(fixture.spawned.every(({ child }) => child.signals.length === 0))
+  assert.match(fixture.stderr(), /Ctrl\+C/)
 })

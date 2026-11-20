@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { once } from 'node:events'
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -38,6 +39,7 @@ function fixture() {
   observations.set(104, { pid: 104, exists: true, parentPid: 101, command: 'java emulator.jar', startedAt: 'start-104', cwd: fixtureRoot })
   const options = {
     repoRoot: fixtureRoot, session, platform: 'darwin',
+    guardOwner: (_root, record, act) => act(record),
     inspectProcess: (pid) => observations.get(pid) ?? { pid, exists: false },
     inspectListeners: () => ({ complete: true, listeners }),
   }
@@ -72,6 +74,7 @@ test('PID reuse, a repository path in an unrelated command, or a mismatched CWD 
     const preview = createSessionRestartPreview(data.options)
     assert.equal(preview.canRestart, false)
     assert.ok(preview.reasons.includes('vite-ownership-unverified'))
+    assert.equal(preview.proposedLaunch, undefined)
   }
 })
 
@@ -86,12 +89,12 @@ test('a recorded owner PID and relative launcher cannot establish ownership with
   assert.ok(preview.processes.every(({ state }) => state !== 'owned'))
 })
 
-test('legacy records require live command, CWD, and supervisor relationship evidence', () => {
+test('legacy records retain live observations and cannot authorize a restart without the recorded process birth', () => {
   const { session, options } = fixture()
   delete session.processIdentities
   const preview = createSessionRestartPreview(options)
-  assert.equal(preview.canRestart, true)
-  assert.ok(preview.processes.every(({ identity }) => identity === 'legacy-no-start-fingerprint'))
+  assert.equal(preview.canRestart, false)
+  assert.ok(preview.processes.every(({ identity, reasons }) => identity === 'legacy-no-start-fingerprint' && reasons.includes('process-start-fingerprint-missing')))
 })
 
 test('unrelated listeners remain visible and block the proposal without exposing their command', () => {
@@ -173,7 +176,10 @@ test('Windows preview requires a matching captured identity when CWD cannot be q
       : `node C:\\repo\\${role === 'session' ? '.SYSTEMX\\LAN\\dev-session.mjs' : role === 'lan' ? '.SYSTEMX\\LAN\\server.mjs' : 'node_modules\\vite\\bin\\vite.js'}`
     data.session.processIdentities[role].commandHash = hash(observed.command)
   }
-  assert.equal(createSessionRestartPreview(data.options).canRestart, true)
+  const verified = createSessionRestartPreview(data.options)
+  assert.ok(verified.processes.every(entry => entry.state === 'owned'))
+  assert.equal(verified.termination, 'owning-terminal')
+  assert.equal(verified.canRestart, false)
   delete data.session.processIdentities
   assert.equal(createSessionRestartPreview(data.options).canRestart, false)
 })
@@ -194,7 +200,8 @@ test('Windows npm relative launcher uses recorded startup CWD only with its matc
     })
   }
   const preview = createSessionRestartPreview(data.options)
-  assert.equal(preview.canRestart, true)
+  assert.equal(preview.canRestart, false)
+  assert.deepEqual(preview.reasons, ['windows-combined-stop-requires-owning-terminal'])
   assert.equal(preview.processes[0].workingDirectory, 'recorded-startup-repository')
   data.session.processIdentities.session.workingDirectory = 'C:\\different-repo'
   assert.equal(createSessionRestartPreview(data.options).canRestart, false)
@@ -276,7 +283,7 @@ test('standalone LAN stop requires its own server command, repository CWD, and s
   session.processes = { lan: 102 }
   assert.deepEqual(createSessionStopPlan(options).targets, [{ role: 'lan', pid: 102 }])
   delete session.processIdentities
-  assert.equal(createSessionStopPlan(options).canStop, true)
+  assert.equal(createSessionStopPlan(options).canStop, false)
   observations.get(102).cwd = '/another-project'
   assert.equal(createSessionStopPlan(options).canStop, false)
   observations.get(102).cwd = fixtureRoot
@@ -355,6 +362,7 @@ test('CLI preview preserves a live fixture process, bound listener, session, tok
   for (const name of ['session-control.mjs', 'session-restart-preview.mjs', 'Builder/runtime/port-utils.mjs']) copyFileSync(join(repoRoot, '.SYSTEMX/LAN', name), join(lanRoot, name))
   writeFileSync(join(lanRoot, 'dev-session.mjs'), "import net from 'node:net'; const server=net.createServer(); server.listen(0,'127.0.0.1',()=>console.log(JSON.stringify({port:server.address().port})));\n")
   const child = spawn(process.execPath, [join(lanRoot, 'dev-session.mjs')], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] })
+  const closed = once(child, 'close')
   try {
     const port = await new Promise((resolvePort, rejectPort) => {
       const timer = setTimeout(() => rejectPort(new Error('fixture startup timed out')), 3000)
@@ -369,7 +377,7 @@ test('CLI preview preserves a live fixture process, bound listener, session, tok
     }
     assert.equal(absentPids.length, 3, 'fixture needs three confirmed absent PIDs')
     const session = {
-      ownerPid: child.pid, processes: { session: child.pid, firebase: absentPids[0], lan: absentPids[1], vite: absentPids[2] },
+      sessionId: 'owned-runtime-fixture', ownerPid: child.pid, processes: { session: child.pid, firebase: absentPids[0], lan: absentPids[1], vite: absentPids[2] },
       processIdentities: { session: identity }, host: '127.0.0.1',
       ports: { app: port, lan: 63541, firebase: { auth: 63542, firestore: 63543, storage: 63544 } },
       runtime: { firebaseConfig: join(stateRoot, 'firebase-fixture.json') }, token: 'PRIVATE_TOKEN_SENTINEL',
@@ -388,7 +396,7 @@ test('CLI preview preserves a live fixture process, bound listener, session, tok
     assert.deepEqual(snapshot(), before)
     assert.equal(inspectSessionProcess(child.pid).exists, true)
     assert.ok(inspectSessionListeners().listeners.some((entry) => entry.pid === child.pid && entry.port === port))
-    session.processIdentities.session.commandHash = 'not-the-live-command-fingerprint'
+    session.processIdentities.session = { ...identity, commandHash: 'not-the-live-command-fingerprint' }
     writeFileSync(join(stateRoot, 'local-session.json'), JSON.stringify(session))
     const beforeRefusedStop = snapshot()
     try {
@@ -406,9 +414,63 @@ test('CLI preview preserves a live fixture process, bound listener, session, tok
       assert.fail('a restart without --preview must fail')
     } catch (error) { assert.equal(error.status, 2) }
     assert.deepEqual(snapshot(), beforeRefusedStop)
+    session.processIdentities.session = identity
+    writeFileSync(join(stateRoot, 'local-session.json'), JSON.stringify(session))
+    const beforeStop = snapshot()
+    const stopOutput = execFileSync(process.execPath, [join(lanRoot, 'session-control.mjs'), 'stop'], { cwd: root, encoding: 'utf8' })
+    assert.match(stopOutput, /Requested owned session process/)
+    const [, signal] = await closed
+    assert.equal(signal, 'SIGTERM')
+    assert.deepEqual(snapshot(), beforeStop, 'requesting a stop must retain receipts for the real owner or verified cleanup')
   } finally {
-    child.kill('SIGTERM')
-    await new Promise((resolveExit) => child.exitCode !== null ? resolveExit() : child.once('exit', resolveExit))
+    if (child.exitCode === null && child.signalCode === null) child.kill('SIGTERM')
+    await closed
     rmSync(root, { recursive: true, force: true })
   }
+})
+
+
+test('stop rechecks the recipient after the other processes, refusing a replaced command, birth, PID or CWD', () => {
+  for (const replaced of [{ startedAt: 'reused' }, { command: 'node elsewhere.mjs' }, { pid: 7401 }, { cwd: '/elsewhere' }]) {
+    const { options, observations } = fixture()
+    const order = []
+    const inspectProcess = pid => {
+      const previouslySeen = order.includes(pid)
+      order.push(pid)
+      const original = observations.get(pid)
+      return pid === 100 && previouslySeen ? { ...original, ...replaced } : original
+    }
+    const stop = executeSessionStopPlan({ ...options, inspectProcess,
+      signalProcess: () => assert.fail('a replaced target must not receive SIGTERM'), cleanupSession: () => assert.fail() })
+    assert.equal(stop.canStop, false)
+    assert.deepEqual(stop.reasons, ['signal-target-identity-changed'])
+    assert.deepEqual(order, [100, 101, 102, 103, 100])
+  }
+})
+
+test('session replacement after plan inspection cannot authorize a signal from the old generation', t => {
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'webappx-generation-guard-')))
+  t.after(() => rmSync(root, { recursive: true, force: true }))
+  const state = join(root, '.SYSTEMX', 'state')
+  mkdirSync(state, { recursive: true })
+  const { options, observations, session } = fixture()
+  for (const [role, pid] of Object.entries(session.processes)) {
+    const process = observations.get(pid)
+    process.command = process.command.replaceAll(fixtureRoot, root)
+    process.cwd = root
+    session.processIdentities[role].commandHash = hash(process.command)
+  }
+  session.runtime.firebaseConfig = session.runtime.firebaseConfig.replace(fixtureRoot, root)
+  const record = join(state, 'local-session.json')
+  const replacement = { ...session, sessionId: 'new-generation' }
+  writeFileSync(record, JSON.stringify(session))
+  const stop = executeSessionStopPlan({ ...options, repoRoot: root, guardOwner: undefined,
+    inspectProcess(pid) {
+      if (pid === session.processes.vite) writeFileSync(record, JSON.stringify(replacement))
+      return observations.get(pid)
+    }, signalProcess: () => assert.fail('new generation must be preserved'), cleanupSession: () => assert.fail() })
+  assert.equal(stop.canStop, false)
+  assert.deepEqual(stop.reasons, ['session-generation-changed'])
+  assert.equal(readFileSync(record, 'utf8'), JSON.stringify(replacement))
+  assert.deepEqual(readdirSync(state), ['local-session.json'])
 })

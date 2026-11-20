@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { confinedDirectory } from './Builder/runtime/file-boundary.mjs'
 import { claimSession, cleanStalePidFiles, clearSession, readSession, removePidFile, writePidFile, writeSession } from './Builder/runtime/port-utils.mjs'
 import { readSessionClaim, sessionClaimError } from './session-claim.mjs'
-import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
+import { captureSessionProcessIdentity, inspectSessionListeners, manualSessionTermination } from './session-restart-preview.mjs'
 import { createReadinessTracker, formatSessionSummary, parseSessionOptions, readinessComponents, resolveSessionPorts, sessionUrls, validSessionGeneration } from './session-supervisor.mjs'
 
 const scriptFile = fileURLToPath(import.meta.url)
@@ -112,6 +112,8 @@ export function validateEmulatorImport(directory) {
 /** Dependencies let tests exercise supervision without running Firebase or Vite. */
 export async function startDevSession(options, {
   repoRoot = repository,
+  platform = process.platform,
+  inspectListeners = inspectSessionListeners,
   environment = process.env,
   spawnChild = spawn,
   available,
@@ -137,15 +139,27 @@ export async function startDevSession(options, {
     await delay(10)
     existing = observeClaim()
   }
-  if (existing.status !== 'absent') throw sessionClaimError(existing)
+  const explainRefusal = async error => {
+    if (options.fixedOrigin) {
+      const { fixedOriginRecovery } = await import('./session-origin-recovery.mjs')
+      const recovery = await fixedOriginRecovery({ repoRoot, options, inspectListeners, inspectProcess, platform, bindFailed: error.code === 'EADDRINUSE' })
+      if (recovery) {
+        error.recovery = recovery
+        error.message += ' Fixed origin ' + recovery.origin + ' (' + recovery.ownership + '). ' +
+          recovery.choices.map(choice => choice.guidance).join(' ')
+      }
+    }
+    return error
+  }
+  if (existing.status !== 'absent') throw await explainRefusal(sessionClaimError(existing))
 
   // Plan every listener before spawning children or writing runtime state.
   let ports
   try { ports = await resolveSessionPorts(options, { available }) }
   catch (error) {
     const concurrent = observeClaim()
-    if (concurrent.status !== 'absent') throw sessionClaimError(concurrent)
-    throw error
+    if (concurrent.status !== 'absent') throw await explainRefusal(sessionClaimError(concurrent))
+    throw await explainRefusal(error)
   }
   const sessionId = options.generation ?? `systemx-${randomUUID()}`
   const stateRoot = join(repoRoot, '.SYSTEMX', 'state')
@@ -216,6 +230,11 @@ export async function startDevSession(options, {
     tracker.stop()
     clearInterval(interval)
     if (!published) return
+    const manual = manualSessionTermination(platform, session.mode)
+    if (manual) {
+      errors.write('[SYSTEMX] ' + manual.guidance + '\n')
+      return
+    }
     for (const { child } of children) {
       if (!child.killed && child.exitCode === null && child.signalCode === null) child.kill('SIGTERM')
     }
@@ -287,7 +306,7 @@ export async function startDevSession(options, {
     confinedDirectory(repoRoot, stateRoot)
     try { claimSession(repoRoot, session) }
     catch (error) {
-      if (error.code === 'EEXIST') throw sessionClaimError(observeClaim())
+      if (error.code === 'EEXIST') throw await explainRefusal(sessionClaimError(observeClaim()))
       throw error
     }
     published = true
