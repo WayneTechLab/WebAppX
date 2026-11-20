@@ -16,7 +16,7 @@ const safePost = new Set([
   '/api/identity/inspect', '/api/identity/export', '/api/identity/operation',
 ])
 const proposalPost = new Set([
-  '/api/contracts/command', '/api/identity/preview', '/api/identity/accept',
+  '/api/graph/commands', '/api/contracts/command', '/api/identity/preview', '/api/identity/accept',
   '/api/identity/reopen', '/api/identity/ownership/preview', '/api/identity/ownership/accept',
   '/api/builder/source', '/api/builder/font',
 ])
