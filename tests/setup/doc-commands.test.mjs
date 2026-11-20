@@ -5,7 +5,7 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import test from 'node:test'
-import { buildDocCommandReport, scanMarkdownCommands, checkDocumentationCommands, runDocCommandsCli } from '../../scripts/check-doc-commands.mjs'
+import { buildDocCommandReport, scanMarkdownCommands, checkDocumentationCommands, docCommandLimits, runDocCommandsCli } from '../../scripts/check-doc-commands.mjs'
 
 const manifest = { root: { scripts: { dev: 'vite', test: 'node --test', 'doctor:test': 'node --test doctor' } }, starter: { scripts: { dev: 'vite', build: 'vite build' } }, functions: { scripts: { check: 'node --check index.mjs', test: 'node --test' } } }
 const doc = text => ({ path: 'docs/example.md', text, defaultContext: 'root' })
@@ -127,6 +127,24 @@ test('shape, traversal, duplicate paths and accessors fail before data execution
   let reads = 0; const input = doc('')
   Object.defineProperty(input, 'text', { enumerable: true, get() { reads++; return '' } })
   assert.throws(() => buildDocCommandReport({ documents: [input], manifests: manifest }), /Invalid/); assert.equal(reads, 0)
+  const withIterator = [doc('')]
+  Object.defineProperty(withIterator, Symbol.iterator, { get() { reads++; return null } })
+  const indexedGetter = []
+  Object.defineProperty(indexedGetter, 0, { enumerable: true, get() { reads++; return doc('') } })
+  for (const documents of [withIterator, indexedGetter, new Array(1), [{ ...doc(''), extra: true }]]) {
+    assert.throws(() => buildDocCommandReport({ documents, manifests: manifest }), /Invalid/)
+  }
+  assert.equal(reads, 0)
+})
+
+test('the corpus budget counts Markdown characters across documents regardless of JSON escaping', () => {
+  const text = '"'.repeat(docCommandLimits.characters / 5)
+  const documents = Array.from({ length: 5 }, (_, index) => ({ ...doc(text), path: `docs/chapter-${index}.md` }))
+  const actual = buildDocCommandReport({ documents, manifests: manifest })
+  assert.equal(actual.ok, true)
+  assert.equal(actual.documentCount, 5)
+  assert.throws(() => buildDocCommandReport({ documents: [...documents, doc('x')], manifests: manifest }), /Invalid/)
+  assert.throws(() => buildDocCommandReport({ documents: [doc(text + 'x')], manifests: manifest }), /Invalid/)
 })
 
 async function fixture(t) {

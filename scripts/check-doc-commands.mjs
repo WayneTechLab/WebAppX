@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto'
 import { lstat, readdir } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { types } from 'node:util'
 import { assertPublicData, parsePublicJson, readPublicText } from './package-script-discovery.mjs'
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -147,9 +148,33 @@ export function scanMarkdownCommands({ path, text, defaultContext = 'root' }) {
   return references
 }
 
+function dataValue(object, key) {
+  const property = Object.getOwnPropertyDescriptor(object, key)
+  if (!property?.enumerable || !Object.hasOwn(property, 'value')) invalid()
+  return property.value
+}
+
+// This budget measures Markdown characters. JSON escaping and record metadata
+// must not consume it. Inspect the fixed three-string schema without serializing
+// the corpus or evaluating getters or iterators on caller-supplied records.
+function validateDocuments(documents) {
+  if (types.isProxy(documents) || !Array.isArray(documents) || Object.getPrototypeOf(documents) !== Array.prototype || documents.length > docCommandLimits.documents || Reflect.ownKeys(documents).length !== documents.length + 1) invalid()
+  let characters = 0
+  for (let index = 0; index < documents.length; index++) {
+    const document = dataValue(documents, index)
+    if (types.isProxy(document) || !plain(document) || ![Object.prototype, null].includes(Object.getPrototypeOf(document)) || Reflect.ownKeys(document).length !== 3) invalid()
+    if (!safePath(dataValue(document, 'path')) || !contextsAllowed.includes(dataValue(document, 'defaultContext'))) invalid()
+    const text = dataValue(document, 'text')
+    if (typeof text !== 'string') invalid()
+    characters += text.length
+    if (characters > docCommandLimits.characters) invalid()
+  }
+}
+
 export function buildDocCommandReport({ documents, manifests, contexts = [] }) {
-  assertPublicData(documents, docCommandLimits.characters); assertPublicData(manifests); assertPublicData(contexts)
-  if (!Array.isArray(documents) || documents.length > docCommandLimits.documents || documents.reduce((sum, document) => sum + (document.text?.length ?? 0), 0) > docCommandLimits.characters || !Array.isArray(contexts) || contexts.length > docCommandLimits.contexts || !plain(manifests) || !contextsAllowed.every(context => plain(manifests[context]?.scripts))) invalid()
+  validateDocuments(documents)
+  assertPublicData(manifests); assertPublicData(contexts)
+  if (!Array.isArray(contexts) || contexts.length > docCommandLimits.contexts || !plain(manifests) || !contextsAllowed.every(context => plain(manifests[context]?.scripts))) invalid()
   for (const context of contextsAllowed) {
     const entries = Object.entries(manifests[context].scripts)
     if (entries.length > 500 || entries.some(([name, value]) => !scriptName.test(name) || typeof value !== 'string' || !value.trim() || value.length > 50_000 || hasControl(value))) invalid()
@@ -164,7 +189,7 @@ export function buildDocCommandReport({ documents, manifests, contexts = [] }) {
   }
   const references = [], errors = []
   for (const document of documents) {
-    if (!exact(document, ['path', 'text', 'defaultContext']) || typeof document.path !== 'string' || documentPaths.has(document.path.toLowerCase())) invalid()
+    if (documentPaths.has(document.path.toLowerCase())) invalid()
     documentPaths.add(document.path.toLowerCase())
     for (const reference of scanMarkdownCommands(document)) {
       const override = overrides.get(identity(reference))
