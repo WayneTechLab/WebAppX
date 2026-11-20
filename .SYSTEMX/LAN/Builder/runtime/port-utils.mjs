@@ -1,5 +1,7 @@
-import { existsSync, readdirSync, readFileSync, unlinkSync, writeFileSync, renameSync } from 'node:fs'
-import { join } from 'node:path'
+import { randomUUID } from 'node:crypto'
+import { closeSync, existsSync, fstatSync, lstatSync, openSync, readdirSync, readFileSync, realpathSync, renameSync, unlinkSync, writeFileSync } from 'node:fs'
+import { performance } from 'node:perf_hooks'
+import { dirname, join } from 'node:path'
 import net from 'node:net'
 
 export const LOOPBACK_HOST = '127.0.0.1'
@@ -53,11 +55,82 @@ export function sessionPath(repoRoot) {
   return join(repoRoot, '.SYSTEMX', 'state', 'local-session.json')
 }
 
+// All cooperating launch, update and recovery paths serialize their
+// read-check-replace/remove steps. A crashed writer's guard is preserved.
+const sessionOwners = new Map()
+const guardSleep = new Int32Array(new SharedArrayBuffer(4))
+
+function withRecordGuard(repoRoot, operation) {
+  const target = join(realpathSync(repoRoot), '.SYSTEMX', 'state', 'local-session.json')
+  if (realpathSync(dirname(target)) !== dirname(target)) throw new Error('Unverified session state directory')
+  const lock = target + '.lock'
+  const deadline = performance.now() + 1500
+  let fd
+  while (fd === undefined) {
+    try { fd = openSync(lock, 'wx', 0o600) }
+    catch (error) {
+      if (error.code !== 'EEXIST') throw error
+      if (performance.now() >= deadline) {
+        throw Object.assign(new Error('Session record update is busy or interrupted. Preserve local-session.json.lock and inspect its writer before recovery.'), { code: 'SESSION_RECORD_BUSY' })
+      }
+      Atomics.wait(guardSleep, 0, 0, 10)
+    }
+  }
+  const identity = fstatSync(fd)
+  try {
+    writeFileSync(fd, `${process.pid}\n`)
+    return operation(target)
+  } finally {
+    closeSync(fd)
+    const current = lstatSync(lock, { throwIfNoEntry: false })
+    if (current?.dev === identity.dev && current.ino === identity.ino) unlinkSync(lock)
+  }
+}
+
+function replaceRecord(target, session) {
+  const temporary = `${target}.${randomUUID()}.tmp`
+  let created = false
+  try {
+    const fd = openSync(temporary, 'wx', 0o600)
+    created = true
+    try { writeFileSync(fd, `${JSON.stringify(session, null, 2)}\n`) } finally { closeSync(fd) }
+    renameSync(temporary, target)
+    created = false
+  } finally {
+    if (created) unlinkSync(temporary)
+  }
+}
+
+function requireWriter(session) {
+  if (session.ownerPid !== process.pid || typeof session.sessionId !== 'string' || !session.sessionId) {
+    throw new Error('The workspace session belongs to another generation or writer. Inspect session status before starting.')
+  }
+}
+
+function newClaim(target, session) {
+  requireWriter(session)
+  if (lstatSync(target, { throwIfNoEntry: false })) {
+    throw Object.assign(new Error('The workspace session record is already claimed.'), { code: 'EEXIST' })
+  }
+  replaceRecord(target, session)
+  sessionOwners.set(target, session.sessionId)
+}
+
+export function claimSession(repoRoot, session) {
+  return withRecordGuard(repoRoot, target => newClaim(target, session))
+}
+
 export function writeSession(repoRoot, session) {
-  const target = sessionPath(repoRoot)
-  const temporary = `${target}.${process.pid}.tmp`
-  writeFileSync(temporary, `${JSON.stringify(session, null, 2)}\n`, { mode: 0o600 })
-  renameSync(temporary, target)
+  requireWriter(session)
+  return withRecordGuard(repoRoot, target => {
+    const entry = lstatSync(target, { throwIfNoEntry: false })
+    if (!entry && !sessionOwners.has(target)) return newClaim(target, session)
+    const previous = entry?.isFile() ? readSession(repoRoot) : null
+    if (sessionOwners.get(target) !== session.sessionId || previous?.sessionId !== session.sessionId || previous.ownerPid !== process.pid) {
+      throw new Error('The workspace session is claimed by another generation. Inspect session status before starting.')
+    }
+    replaceRecord(target, session)
+  })
 }
 
 export function readSession(repoRoot) {
@@ -71,29 +144,50 @@ export function readSession(repoRoot) {
 }
 
 export function clearSession(repoRoot, sessionId) {
-  const current = readSession(repoRoot)
-  if (!current || (sessionId && current.sessionId !== sessionId)) return false
-  unlinkSync(sessionPath(repoRoot))
-  return true
+  if (!sessionId || !existsSync(sessionPath(repoRoot))) return false
+  return withRecordGuard(repoRoot, target => {
+    const current = lstatSync(target, { throwIfNoEntry: false })?.isFile() ? readSession(repoRoot) : null
+    if (sessionOwners.get(target) !== sessionId || current?.sessionId !== sessionId || current.ownerPid !== process.pid) return false
+    unlinkSync(target)
+    sessionOwners.delete(target)
+    return true
+  })
 }
 
-export function cleanStalePidFiles(repoRoot) {
+// The caller verifies every recorded process has exited. Recheck the exact
+// snapshot under the writer guard before touching its config or record.
+export function clearExitedSession(repoRoot, expectedRecord, beforeClear = () => {}) {
+  if (!expectedRecord?.sessionId || !existsSync(sessionPath(repoRoot))) return false
+  if (beforeClear.constructor.name === 'AsyncFunction') throw new TypeError('Session cleanup must finish synchronously.')
+  return withRecordGuard(repoRoot, target => {
+    if (!lstatSync(target, { throwIfNoEntry: false })?.isFile()) return false
+    const current = readSession(repoRoot)
+    if (!current || JSON.stringify(current) !== JSON.stringify(expectedRecord)) return false
+    if (beforeClear()?.then) throw new TypeError('Session cleanup must finish synchronously.')
+    unlinkSync(target)
+    sessionOwners.delete(target)
+    return true
+  })
+}
+
+export function cleanStalePidFiles(repoRoot, probe = pid => process.kill(pid, 0)) {
   const stateRoot = join(repoRoot, '.SYSTEMX', 'state')
   if (!existsSync(stateRoot)) return []
   const removed = []
   for (const name of readdirSync(stateRoot)) {
-    if (!name.endsWith('.pid')) continue
+    const matched = /^local-(?:lan|vite)-([1-9]\d{3,4})\.pid$/.exec(name)
+    if (!matched || Number(matched[1]) < 1024 || Number(matched[1]) > 65535) continue
     const target = join(stateRoot, name)
-    let pid = 0
-    try {
-      pid = Number.parseInt(readFileSync(target, 'utf8').trim(), 10)
-    } catch {
-      pid = 0
-    }
-    if (!pid || pid === process.pid) continue
-    try {
-      process.kill(pid, 0)
-    } catch {
+    const entry = lstatSync(target, { throwIfNoEntry: false })
+    if (!entry?.isFile() || entry.size > 16) continue
+    const bytes = readFileSync(target, 'utf8')
+    if (!/^[1-9]\d{0,9}(?:\r?\n)?$/.test(bytes)) continue
+    const pid = Number(bytes)
+    if (pid === process.pid || pid > 0x7fffffff) continue
+    try { probe(pid) } catch (error) {
+      if (error.code !== 'ESRCH') continue
+      const current = lstatSync(target, { throwIfNoEntry: false })
+      if (!current?.isFile() || current.dev !== entry.dev || current.ino !== entry.ino || readFileSync(target, 'utf8') !== bytes) continue
       unlinkSync(target)
       removed.push(name)
     }

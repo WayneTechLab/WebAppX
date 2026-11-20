@@ -376,7 +376,7 @@ test('Windows Firebase command uses Node and npm argument arrays without a comma
   assert.deepEqual(firebaseCommand({ platform: 'darwin', environment: {} }), { executable: 'npx', args: ['--no-install', 'firebase-tools'] })
 })
 
-test('combined LAN child cannot overwrite or clear supervisor record; standalone retains ownership', { timeout: 15_000 }, async () => {
+test('combined child preserves the supervisor, a competing standalone refuses, and an offline standalone owns its lifecycle', { timeout: 15_000 }, async () => {
   const root = await fixtureRoot()
   const lan = join(root, '.SYSTEMX', 'LAN')
   await cp(join(repository, '.SYSTEMX/LAN/Builder'), join(lan, 'Builder'), { recursive: true })
@@ -396,7 +396,10 @@ test('combined LAN child cannot overwrite or clear supervisor record; standalone
     const allocator = createTcpServer()
     const port = await listening(allocator)
     await closeServer(allocator)
-    child = spawn(process.execPath, [join(root, '.SYSTEMX/LAN/server.mjs')], { cwd: root, env: { ...process.env, SYSTEMX_LAN_TEST_MODE: 'false', SYSTEMX_STRICT_PORT: 'true', SYSTEMX_LAN_PORT: String(port), SYSTEMX_SESSION_ID: 'synthetic-combined', SYSTEMX_SESSION_OWNER_PID: '', ...extraEnvironment }, stdio: ['ignore', 'pipe', 'pipe'] })
+    const env = { ...process.env, SYSTEMX_LAN_TEST_MODE: 'false', SYSTEMX_STRICT_PORT: 'true', SYSTEMX_LAN_PORT: String(port), SYSTEMX_SESSION_ID: 'synthetic-combined', SYSTEMX_SESSION_OWNER_PID: '', ...extraEnvironment }
+    if (env.SYSTEMX_SESSION_ID === undefined) delete env.SYSTEMX_SESSION_ID
+    if (!env.SYSTEMX_SESSION_OWNER_PID) delete env.SYSTEMX_SESSION_OWNER_PID
+    child = spawn(process.execPath, [join(root, '.SYSTEMX/LAN/server.mjs')], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'] })
     exited = once(child, 'exit')
     let output = ''
     child.stderr.on('data', chunk => { output += chunk.toString() })
@@ -420,8 +423,15 @@ test('combined LAN child cannot overwrite or clear supervisor record; standalone
     assert.equal(await readFile(recordPath, 'utf8'), original)
     await stop()
     assert.equal(await readFile(recordPath, 'utf8'), original)
-    await launch({})
-    assert.equal(JSON.parse(await readFile(recordPath, 'utf8')).processes.lan, child.pid)
+    await assert.rejects(launch({}), /another generation or writer/)
+    assert.deepEqual(await exited, [1, null])
+    assert.equal(await readFile(recordPath, 'utf8'), original)
+    child = null
+    await rm(recordPath) // The fixture owner takes its synthetic session offline.
+    await launch({ SYSTEMX_SESSION_ID: undefined })
+    const standalone = JSON.parse(await readFile(recordPath, 'utf8'))
+    assert.equal(standalone.ownerPid, child.pid)
+    assert.equal(standalone.processes.lan, child.pid)
     await stop()
     assert.equal(existsSync(recordPath), false)
   } finally {
