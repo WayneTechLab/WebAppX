@@ -4,7 +4,7 @@ const configName = /^vite\.config\.(?:js|cjs|mjs|ts|cts|mts)$/
 const loopbackHosts = ['127.0.0.1', 'localhost', '::1']
 const defaults = { 'build.outDir': 'dist', 'build.assetsDir': 'assets', publicDir: 'public' }
 const directoryWords = new Set('app asset assets build bundle client compiled deploy dist distribution frontend generated html media out output public release resources site static web website www wwwroot'.split(' '))
-function publicDirectory(value) {
+export function publicDirectory(value) {
   return typeof value === 'string' && value.length <= 100 && value.split('/').length <= 4
     && value.split('/').every(part => part.split('-').every(word => directoryWords.has(word)))
 }
