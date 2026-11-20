@@ -6,7 +6,7 @@ const usage = 'Usage: node scripts/lan-repository-inventory.mjs [scan|last-good]
 if (action === '--help' && flag === undefined) {
   console.log(`${usage}
 
-scan       Inspect tracked Vite modules and supported route declarations in the selected checkout.
+scan       Inspect Vite entries, routes, component exports, shared shells, and declared package, runtime, build, bridge and Firebase configuration.
 last-good  Show the most recent complete inventory from this checkout’s private Git metadata.
 
 Output is JSON. A partial or refused scan exits 1 and retains the last good revision.
