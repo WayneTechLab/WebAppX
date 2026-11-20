@@ -86,38 +86,72 @@ function viteCapability(code) {
   return 'static-configuration-resolution'
 }
 
-export function missingInventoryCapabilities(codes) {
-  const missing = new Set()
-  for (const code of codes) {
-    const vite = viteCapability(code)
-    if (vite) {
-      missing.add('static-configuration-resolution')
-      missing.add(vite)
-      continue
-    }
-    if (/config|proxy|pin|dependency|manifest|firebase|emulator|build-target/.test(code)) missing.add('static-configuration-resolution')
-    if (/route|routing|entry|module-script/.test(code)) missing.add('complete-entry-and-route-resolution')
-    if (/component|shell/.test(code)) missing.add('complete-component-attribution')
-    if (/working-source/.test(code)) missing.add('exact-working-source')
-  }
-  return [...missing].sort()
+// Config findings and their missing capabilities share one registry. Several
+// input formats use the same bounded JSON/byte reader; those codes use the
+// inspected filename to identify the adapter whose declaration is unavailable.
+const configDomains = {
+  pin: { adapter:'runtime-pin', capability:'runtime-pin-resolution', codes:[
+    'unsupported-runtime-declaration','invalid-runtime-section','unresolved-runtime-inheritance',
+    'unsupported-package-manager-pin','runtime-pin-outside-engine','conflicting-runtime-pins','runtime-selector-comparison-unresolved',
+  ] },
+  package: { adapter:'package-declaration', capability:'package-manifest-resolution', codes:[
+    'invalid-package-manifest','invalid-dependency-section','dependency-declaration-limit','unsupported-dependency-declaration',
+  ] },
+  firebase: { adapter:'firebase-manifest', capability:'firebase-manifest-resolution', codes:[
+    'unsupported-firebase-declaration','unsupported-hosting-public-root','invalid-emulator-declarations','invalid-emulator-declaration',
+    'invalid-emulator-port','invalid-emulator-enabled','invalid-emulator-host','unreviewed-emulator-kind',
+  ] },
+  typescript: { adapter:'typescript-config', capability:'typescript-config-resolution', codes:['invalid-typescript-config'] },
+  configuration: { adapter:'static-project-configuration', capability:'static-configuration-resolution', codes:[] },
+}
+const domainForCode = new Map(Object.entries(configDomains).flatMap(([name,domain]) => domain.codes.map(code => [code,name])))
+const sharedConfigCodes = new Set(['configuration-byte-limit','unverified-configuration-source','config-json-node-limit','duplicate-config-field','invalid-configuration-json'])
+function configDomain(code,path) {
+  const fixed = domainForCode.get(code)
+  if (fixed || !sharedConfigCodes.has(code)) return fixed
+  if (path === '.nvmrc' || path === '.node-version') return 'pin'
+  if (path === 'package.json') return 'package'
+  if (path === 'firebase.json') return 'firebase'
+  if (/^vite\.config\.(?:[cm]?[jt]s)$/.test(path)) return 'vite'
+  return 'configuration'
 }
 
-function findingRule(code) {
+export function collectMissingCapabilities(missing,code,path) {
+  const vite = viteCapability(code)
+  const domain = configDomain(code,path)
+  if (vite || domain) {
+    missing.add('static-configuration-resolution')
+    if (vite) missing.add(vite)
+    else if (domain !== 'vite') missing.add(configDomains[domain].capability)
+    return
+  }
+  if (/route|routing|entry|module-script/.test(code)) missing.add('complete-entry-and-route-resolution')
+  if (/component|shell/.test(code)) missing.add('complete-component-attribution')
+  if (/working-source/.test(code)) missing.add('exact-working-source')
+}
+
+function findingRule(code,path) {
   if (viteCapability(code)) return 'vite-unresolved'
+  const domain = configDomain(code,path)
+  if (domain) return domain + '-unresolved'
   if (/^inventory-(?:route|page|component)-conflict$/.test(code)) return 'conflict'
   if (/component|shell/.test(code)) return 'component'
   if (/route/.test(code)) return 'route'
   if (/entry|html/.test(code)) return 'vite-input'
-  if (/firebase/.test(code)) return 'firebase'
-  if (/package|dependency/.test(code)) return 'package'
-  if (/runtime/.test(code)) return 'pin'
   if (/build|bridge|target|proxy/.test(code)) return 'vite-unresolved'
   if (/config/.test(code)) return 'configuration'
   return 'scan'
 }
 function provenance(entries, findings, directory) {
-  return { ruleVersion: 1, rules: Object.fromEntries(Object.entries(rules).map(([key, [adapter, basis]]) => [key, { adapter, basis }])),
+  const findingsByRule = findings.map(row => findingRule(row.code,row.path))
+  const descriptors = Object.fromEntries(Object.entries(rules).map(([key, [adapter,basis]]) => [key,{adapter,basis}]))
+  // Preserve the exact v4 dictionary of accepted inventories. Additional
+  // descriptors are used only for unresolved findings in partial scans.
+  for (const [name,domain] of Object.entries(configDomains)) {
+    const id = name + '-unresolved'
+    if (findingsByRule.includes(id)) descriptors[id] = {adapter:domain.adapter,basis:'unresolved'}
+  }
+  return { ruleVersion: 1, rules:descriptors,
     entryPoints: entries.map(row => row.state === 'inferred' ? 'vite-convention' : 'vite-input'),
     routes: 'route', componentExports: 'component', sharedShells: 'shell', configuration: 'configuration',
     configurationFields: { dependencies: 'package', runtimePins: 'pin', firebase: 'firebase',
@@ -127,7 +161,7 @@ function provenance(entries, findings, directory) {
     ownership: 'ownership', conflicts: 'conflict',
     revisionBasis: { source: 'sha256-working-source-bytes', metadataOnly: 'git-index-oid-and-working-size-and-file-times' },
     ownershipBoundaries: { repository: 'review-before-effect', 'host-extension': 'host-owner-review', 'managed-release': 'immutable-upstream-snapshot' },
-    findings: findings.map(row => findingRule(row.code)) }
+    findings: findingsByRule }
 }
 
 function sourceResource(row) {

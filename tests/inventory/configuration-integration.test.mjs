@@ -204,3 +204,71 @@ default:return <Page/>} }`)
   assert.deepEqual(capped.capabilities.missing,capabilities.missing)
   assert.deepEqual(readFileSync(f.cache),accepted)
 })
+
+test('runtime, package and Firebase findings retain their producing adapter, unresolved basis and missing capability', t => {
+  const f = fixture(t)
+  f.put('.nvmrc','22.3.0\n')
+  f.put('firebase.json','{"emulators":{"auth":{"port":9099}}}')
+  f.git('add','-f','.nvmrc','firebase.json')
+  const good = cli(f.root,'scan')
+  const accepted = readFileSync(f.cache)
+  // Accepted schema-4 caches keep their original rule dictionary.
+  const oldRules = good.inventory.metadata.provenance.rules
+  assert.equal(oldRules.pin.basis,'literal')
+  assert.equal(oldRules.firebase.basis,'literal')
+  assert.equal(oldRules['pin-unresolved'],undefined)
+  function check(expectations,capabilities) {
+    const result = cli(f.root,'scan',1)
+    assert.equal(result.status,'incomplete')
+    assert.deepEqual(result.capabilities.missing,[...capabilities,'static-configuration-resolution'].sort())
+    const {findings,metadata} = result.inventory
+    const provenance = metadata.provenance
+    for (const [code,path,adapter] of expectations) {
+      const index = findings.findIndex(row => row.code===code && row.path===path)
+      assert.ok(index >= 0,code+' at '+path)
+      assert.deepEqual(provenance.rules[provenance.findings[index]],{adapter,basis:'unresolved'},code)
+    }
+    assert.equal(result.lastGoodRevision,good.inventory.revision)
+    assert.deepEqual(readFileSync(f.cache),accepted)
+    assert.doesNotMatch(JSON.stringify(result),/PRIVATE_FIXTURE_CONTENT/)
+  }
+  f.put('.nvmrc','lts/*\n')
+  check([['unsupported-runtime-declaration','.nvmrc','runtime-pin']],['runtime-pin-resolution'])
+  f.put('.nvmrc','22.3.0\n')
+  f.put('firebase.json','{"emulators":{"auth":{"port":"auto"}}}')
+  check([['invalid-emulator-port','firebase.json','firebase-manifest']],['firebase-manifest-resolution'])
+  f.put('firebase.json',JSON.stringify({hosting:{public:'PRIVATE_FIXTURE_CONTENT'},firestore:[],
+    emulators:{auth:{port:'auto',enabled:'auto',host:false},storage:false,custom:{}}}))
+  f.put('package.json',JSON.stringify({devDependencies:{vite:'6'},optionalDependencies:{foo:'file:PRIVATE_FIXTURE_CONTENT'},
+    dependencies:[],engines:false,volta:{extends:'PRIVATE_FIXTURE_CONTENT'},packageManager:'pnpm@latest'}))
+  check([
+    ...['invalid-emulator-port','invalid-emulator-enabled','invalid-emulator-host','invalid-emulator-declaration',
+        'unreviewed-emulator-kind','unsupported-hosting-public-root','unsupported-firebase-declaration']
+      .map(code => [code,'firebase.json','firebase-manifest']),
+    ...['invalid-runtime-section','unresolved-runtime-inheritance','unsupported-package-manager-pin']
+      .map(code => [code,'package.json','runtime-pin']),
+    ...['invalid-dependency-section','unsupported-dependency-declaration']
+      .map(code => [code,'package.json','package-declaration']),
+  ],['firebase-manifest-resolution','runtime-pin-resolution','package-manifest-resolution'])
+
+  // Shared JSON diagnostics have the same code, but different manifest owners.
+  f.put('package.json','{"dependencies":{"vite":"6","vite":"6"}}')
+  f.put('firebase.json','{"emulators":{},"emulators":{}}')
+  check([['duplicate-config-field','package.json','package-declaration'],['duplicate-config-field','firebase.json','firebase-manifest']],
+    ['package-manifest-resolution','firebase-manifest-resolution'])
+  f.put('package.json','{"dependencies":{"vite":"6"}}')
+  f.put('firebase.json','PRIVATE_FIXTURE_CONTENT')
+  check([['invalid-configuration-json','firebase.json','firebase-manifest']],['firebase-manifest-resolution'])
+  f.put('firebase.json','{}')
+  f.put('tsconfig.json','{not valid: }')
+  f.git('add','tsconfig.json')
+  check([['invalid-typescript-config','tsconfig.json','typescript-config']],['typescript-config-resolution'])
+  f.put('package.json','PRIVATE_FIXTURE_CONTENT')
+  const refused = cli(f.root,'scan',1)
+  assert.equal(refused.code,'invalid-package-manifest')
+  assert.deepEqual(refused.capabilities.missing,['package-manifest-resolution','static-configuration-resolution'])
+  assert.ok(refused.capabilities.evidence.some(row=>row.path==='package.json' && row.sha256===sha('PRIVATE_FIXTURE_CONTENT')))
+  assert.doesNotMatch(JSON.stringify(refused),/PRIVATE_FIXTURE_CONTENT/)
+  assert.deepEqual(readFileSync(f.cache),accepted)
+  assert.deepEqual(cli(f.root,'last-good').lastGood,good.inventory)
+})
