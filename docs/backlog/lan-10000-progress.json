@@ -5600,6 +5600,166 @@
       "verifiedOn": "2026-11-20",
       "evidence": "docs/LAN-F007-ACCEPTANCE-2026-11-20.md",
       "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01001",
+      "definitionSha256": "8af6e3db52d70593c60c6d1bd8481565ed8bfbabf5278fdf88198dfa00661c4e",
+      "sourceRevision": "0fecb4c3d5b1d8b588e08ac553eb4117a90de6a2",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01002",
+      "definitionSha256": "15e0854bc98cd706e48c9f9d4357c4c2e41df9241afb5d23c6655891d4b45464",
+      "sourceRevision": "0fecb4c3d5b1d8b588e08ac553eb4117a90de6a2",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01003",
+      "definitionSha256": "f7cd68594639b12e8137d42ae007985ce940785b7d4a5d76cd7a52001f1f52c9",
+      "sourceRevision": "0fecb4c3d5b1d8b588e08ac553eb4117a90de6a2",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01004",
+      "definitionSha256": "0c88330c73404d79929b1d757d8a901c770bedcc84428cc93b708420bc89b0be",
+      "sourceRevision": "0fecb4c3d5b1d8b588e08ac553eb4117a90de6a2",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01005",
+      "definitionSha256": "f5a4d00fb17fce1453d16de51fe09a004e476bd661e15d434a258d362b024048",
+      "sourceRevision": "0fecb4c3d5b1d8b588e08ac553eb4117a90de6a2",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01201",
+      "definitionSha256": "1633ef03e48ab13966f4b9a3d2ddb37d5e7d3781f585e38f1fe4b9d36283667a",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01202",
+      "definitionSha256": "50297585dadc80471e81c58fb60dc71d66134514a084a175a5d666059e9ee908",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01203",
+      "definitionSha256": "4968d27c381f41a4f457f59c6b666c45d400c702bd0d7391761ea17c6a1c78f8",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01204",
+      "definitionSha256": "2061273644bce934fe00d07b0bf2c6493eaa18bc23d6f7eee9ab14cd6b27e1bb",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01205",
+      "definitionSha256": "23a611ef566be56bf9ecd9d215b7bcd8423b072a7dc76066e9dde016471d7aa9",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01206",
+      "definitionSha256": "bbb14b06cc6ec73fc8986ee5bbeff172487fd17e1325163cc4f6c9a29418de67",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01207",
+      "definitionSha256": "84ab8a97422f9b5c1b359e768b29bc8d2baa451c951972ce45def4c8f05cd194",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01208",
+      "definitionSha256": "4b4a358b9f097b18b03deefd4fbbc2229979e1fd986bbc10772e08bb15146d6f",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01209",
+      "definitionSha256": "1910fc51899ebdbe0303258f927df98928cb8963acbea0bfbea8854d87409fbd",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01210",
+      "definitionSha256": "561a321170623fdca94a8bd60bda9274a5f35c5251c10c35086dda3fe8e3669b",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01401",
+      "definitionSha256": "76051e7d21794c1f27f02f850d00f29f206f63853b0727c714b3cf0813dc8700",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01402",
+      "definitionSha256": "e21ea031f35bef639e6e9a44eaa5b8e76b2fd5abac1ead0ace578ad34a4d5677",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01403",
+      "definitionSha256": "82e2d1c4575a2f9380d7163df7e6c6496c5ebee1f8e062be108263bb8c858376",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01404",
+      "definitionSha256": "a185e5be4b2a8311313563b4b5fa303fb267fdcc7d736a854e235c855212b339",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-01405",
+      "definitionSha256": "cc3331a23b641c5620b615293f1baeb8435e39da399a92f43ea796aa0e9f5cd0",
+      "sourceRevision": "3bb3b1dbe05eaedd08b41451dadbe7d595cb3b84",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
     }
   ]
 }
