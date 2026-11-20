@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { execFileSync, spawnSync } from 'node:child_process'
+import { execFileSync, spawn, spawnSync } from 'node:child_process'
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
@@ -187,4 +187,19 @@ test('only acceptance of every original definition completes the catalog goal', 
     assert.deepEqual(complete.ready[gate], { count: 0, items: [] })
     assert.deepEqual(complete.readyFamilies[gate], [])
   }
+})
+
+
+test('a reader can close the goal report early without failing the CLI', async t => {
+  const { repo } = fixture(t)
+  const child = spawn(process.execPath, [cli, 'goal', '--repo', repo], { stdio: ['ignore', 'pipe', 'pipe'] })
+  child.stdout.destroy()
+  let stderr = ''
+  child.stderr.setEncoding('utf8').on('data', chunk => { stderr += chunk })
+  const result = await new Promise((resolveExit, reject) => {
+    child.once('error', reject)
+    child.once('close', (code, signal) => resolveExit({ code, signal }))
+  })
+  assert.deepEqual(result, { code: 0, signal: null })
+  assert.equal(stderr, '')
 })

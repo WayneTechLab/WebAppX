@@ -66,8 +66,17 @@ function parse(argv) {
   return { command, options }
 }
 
+let applying = false
+process.stdout.on('error', error => {
+  if (error.code === 'EPIPE' && !applying) return
+  process.exitCode = 1
+  const message = applying ? 'Could not deliver the operation receipt. Inspect status before retrying.' : 'Could not write the swarm report.'
+  process.stderr.write(message + '\n')
+})
+
 try {
   const parsed = parse(process.argv.slice(2))
+  applying = parsed.options?.['--apply'] === true
   if (parsed.help) process.stdout.write(`${usage}\n`)
   else {
     const options = parsed.options
