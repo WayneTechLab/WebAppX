@@ -68,7 +68,25 @@ node .SYSTEMX/swarm/cli.mjs prepare-wave --manifest "$SWARM_MANIFEST" --wave-dig
 
 Each successfully prepared generation has its own state receipt. If a later
 slot fails, read `prepared`, `unprepared` and `failure`, inspect that slot, then
-generate a fresh wave. Run `sync` before an explicit `run` for each worker.
+generate a fresh wave. Use `sync` and `run` to start an individual worker,
+or preview the group of prepared workers and review its separate run digest.
+
+```sh
+node .SYSTEMX/swarm/cli.mjs run-wave --manifest "$SWARM_MANIFEST"
+node .SYSTEMX/swarm/cli.mjs run-wave --manifest "$SWARM_MANIFEST" --run-digest "$RUN_DIGEST" --apply
+```
+
+The preview lists each eligible ready slot, generation, branch, HEAD, provider
+digest and sync digest. `skipped` identifies ready workers needing attention.
+Applying reserves the reviewed generations together, then runs their pinned
+providers concurrently within the manifest's shared worker budget. A changed
+receipt requires a fresh preview. The command waits for each worker and returns
+a per-slot result. `review` is ready for ordinary inspection and verification.
+A `partial` result exits nonzero. Use `status` to inspect failed or uncertain
+generations, including their execution and completion records. Subsequent batch
+previews skip running, failed and reviewed generations. An interrupted launch
+can leave a reserved generation marked running even if its child never started.
+Inspect its lease and receipts before any manual recovery.
 
 ## Run a generation
 
