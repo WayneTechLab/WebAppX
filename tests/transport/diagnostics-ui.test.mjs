@@ -86,9 +86,15 @@ test('only the latest explicit read owns the status and rows, even if cancelled 
 test('unrecognized fields, identifiers, private error messages and over-budget results never replace the last verified view', async () => {
   const ui = inspector()
   ui.toggle(true)
-  ui.requests[0].resolve(snapshot({ ...entry(), privatePath: '/private/draft' }))
+  ui.requests[0].resolve(snapshot(entry()))
   await settle()
   for (const invalid of [
+    snapshot({ ...entry(), privatePath: '/private/draft' }),
+    { ...snapshot(entry()), privateMetadata: '/private/draft' },
+    snapshot({ ...entry(), outcome: 'cancelled' }),
+    snapshot({ ...entry(), status: null }),
+    snapshot({ ...entry(), status: null, outcome: '/private/value' }),
+    snapshot({ ...entry(), status: null, outcome: 'cancelled', reason: '/private/draft' }),
     snapshot({ ...entry(), category: '/private/source' }),
     snapshot({ ...entry(), transportId: 'private-token' }),
     snapshot({ ...entry(), status: 'private-status' }),
@@ -118,4 +124,16 @@ test('unrecognized fields, identifiers, private error messages and over-budget r
   assert.ok(ui.status.textContent.includes(nextId))
   assert.doesNotMatch(ui.status.textContent, /private/)
   assert.equal(ui.entries.childElementCount, 1)
+})
+
+test('a cancelled transport row renders its correlation ID and duration alongside completed requests', async () => {
+  const ui = inspector()
+  ui.toggle(true)
+  ui.requests[0].resolve(snapshot({ ...entry(nextId), outcome: 'cancelled', status: null }, entry(firstId)))
+  await settle()
+  assert.equal(ui.status.dataset.state, 'completed')
+  assert.equal(ui.entries.childElementCount, 2)
+  assert.equal(ui.entries.children[0].children[0], 'GET · builder · Cancelled · 7 ms')
+  assert.equal(ui.entries.children[0].children[1].textContent, nextId)
+  assert.equal(ui.entries.children[1].children[0], 'GET · builder · HTTP 200 · 7 ms')
 })

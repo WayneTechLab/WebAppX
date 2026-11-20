@@ -22,11 +22,19 @@ export function createTransportDiagnostics() {
       const started = performance.now()
       let category = 'other'
       response.setHeader('x-systemx-request-id', transportId)
-      response.once('finish', () => {
+      function record(cancelled) {
+        response.off('finish', onFinish)
+        response.off('close', onClose)
         const durationMs = Math.round(performance.now() - started)
-        entries.push(Object.freeze({ transportId, method, category, status: response.statusCode, durationMs }))
+        const entry = { transportId, method, category, status: cancelled ? null : response.statusCode, durationMs }
+        if (cancelled) entry.outcome = 'cancelled'
+        entries.push(Object.freeze(entry))
         if (entries.length > limit) entries.shift()
-      })
+      }
+      function onFinish() { record(false) }
+      function onClose() { record(!response.writableFinished) }
+      response.once('finish', onFinish)
+      response.once('close', onClose)
       // Only the allowlisted category survives routing; no request object, URL,
       // header values or caller-supplied correlation IDs enter the history.
       return pathname => {
