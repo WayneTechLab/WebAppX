@@ -45,7 +45,7 @@ test('the operator scan reads only reviewed tracked config and binds each declar
   const result = f.scan()
   assert.equal(result.status,'accepted',JSON.stringify(result))
   const { configuration, evidence } = result.inventory
-  assert.equal(result.inventory.schemaVersion,3)
+  assert.equal(result.inventory.schemaVersion,4)
   assert.ok(configuration.runtimePins.some(row => row.evidence.path === '.node-version' && row.evidence.sha256 === sha(pin)))
   assert.ok(configuration.firebase.some(row => row.service === 'firestore' && row.port === 8180 && row.observation === 'not-observed'))
   assert.ok(!evidence.some(item => ['.env','.npmrc'].includes(item.path)))
@@ -62,14 +62,14 @@ test('the operator scan reads only reviewed tracked config and binds each declar
 
 test('v2 readback reports its missing configuration coverage; unresolved new declarations preserve it byte for byte', t => {
   const f = fixture(t)
-  const { configuration, revision, ...legacy } = f.scan().inventory
+  const { configuration, metadata, revision, ...legacy } = f.scan().inventory
   assert.ok(configuration.dependencies.length)
   legacy.schemaVersion = 2
   legacy.revision = sha(JSON.stringify(legacy))
   assert.notEqual(legacy.revision,revision)
   f.put('.git/systemx-repository-inventory/last-good.json',JSON.stringify(legacy))
   assert.deepEqual(f.last().lastGood,legacy)
-  assert.deepEqual(f.last().missingCoverage,['configuration'])
+  assert.deepEqual(f.last().missingCoverage,['configuration','resource-metadata'])
   const kept = readFileSync(f.cache)
   f.put('package.json','{"devDependencies":{"vite":"6","foo":"file:/private/PACKAGE_SOURCE_CANARY"}}')
   const partial = f.scan()

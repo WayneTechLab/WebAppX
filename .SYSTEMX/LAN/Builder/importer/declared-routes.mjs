@@ -14,7 +14,7 @@ export function publicPattern(value) {
         && !/^(?:gh[pousr]_|github_pat_|sk-|AKIA[A-Z0-9])/i.test(part))
 }
 
-export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, route, unresolved }) {
+export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, route, declaration, unresolved }) {
   const unsupported = (code, line = 1) => unresolved({ code, line })
   let file
   try {
@@ -199,6 +199,7 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
   const counts = new Map()
   for (const { pattern } of candidates) counts.set(pattern, (counts.get(pattern) ?? 0) + 1)
   for (const item of candidates) {
+    declaration?.(item)
     if (counts.get(item.pattern) === 1) route(item)
     else unsupported('ambiguous-route-pattern', item.line)
   }

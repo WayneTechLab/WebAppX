@@ -5,7 +5,7 @@ const safeName = value => typeof value === 'string' && /^[A-Za-z_$][A-Za-z0-9_$]
 const componentName = value => value === 'default' || value === 'renderPage' || safeName(value) && /^[A-Z]/.test(value)
 const roleByTag = new Map([['header', 'header'], ['footer', 'footer'], ['nav', 'navigation']])
 
-export function inspectComponentModule({ ts, path, source }) {
+export function inspectComponentModule({ ts, path, source, ambiguousBinding }) {
   const result = { imports: [], exports: [], components: [], roots: [], findings: [] }
   let file, count = 0, visits = 0
   const limit = {}
@@ -21,11 +21,19 @@ export function inspectComponentModule({ ts, path, source }) {
     return node
   }
   const imports = new Map(), definitions = new Map(), aliases = new Map(), variables = new Map(), pendingExports = []
-  const bound = new Set(), duplicates = new Set()
+  const bound = new Map(), duplicates = new Set()
   function bind(name, node) {
     if (!safeName(name)) return false
-    if (bound.has(name)) { duplicates.add(name); report('ambiguous-component-binding', node); return false }
-    bound.add(name)
+    if (bound.has(name)) {
+      if (componentName(name)) {
+        if (!duplicates.has(name)) ambiguousBinding?.(name, bound.get(name))
+        ambiguousBinding?.(name, line(node))
+      }
+      duplicates.add(name)
+      report('ambiguous-component-binding', node)
+      return false
+    }
+    bound.set(name, line(node))
     return true
   }
   function addImport(local, imported, specifier, node) {
