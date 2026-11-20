@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 import { createController, loadManifest } from './runtime.mjs'
 
-const commands = ['plan', 'next', 'status', 'prepare', 'sync', 'run', 'verify', 'review', 'alpha', 'feedback', 'integrate', 'publish-plan', 'publish', 'ready', 'merge-plan', 'merge', 'observe-merge', 'accept', 'close', 'advance']
+const commands = ['plan', 'wave', 'next', 'status', 'prepare', 'sync', 'run', 'verify', 'review', 'alpha', 'feedback', 'integrate', 'publish-plan', 'publish', 'ready', 'merge-plan', 'merge', 'observe-merge', 'accept', 'close', 'advance']
 const usage = `SYSTEMX host swarm (selected upstream release is unchanged)
 Usage: node .SYSTEMX/swarm/cli.mjs COMMAND --manifest FILE [--repo PATH] [options]
 Commands: ${commands.join(', ')}
 Common: --state-dir PATH --slot 1..10 --apply
+wave:                                        Read-only assignments across available slots
 prepare: --task ID --executable ABSOLUTE_PATH [--arg VALUE ...]
 sync: [--sync-digest SHA256]                 Read-only IDE/Codex handoff check
 run: --sync-digest SHA256                   Requires fresh slot sync observation
@@ -35,6 +36,9 @@ function parse(argv) {
     else { if (options[flag] !== undefined) throw new Error('Duplicate option.'); options[flag] = value }
   }
   if (!options['--manifest']) throw new Error('An explicit --manifest FILE is required.')
+  if (command === 'wave' && (options.args.length || Object.keys(options).some(key => !['args', '--manifest', '--repo', '--state-dir'].includes(key)))) {
+    throw Object.assign(new Error('Wave accepts only --manifest, --repo and --state-dir.'), { code: 'OPTION_INVALID' })
+  }
   return { command, options }
 }
 
@@ -46,7 +50,7 @@ try {
     const controller = createController({ repo: options['--repo'] ?? process.cwd(), manifest: loadManifest(options['--manifest']), stateDir: options['--state-dir'] })
     const common = { slot: options['--slot'] === undefined ? undefined : Number(options['--slot']), apply: options['--apply'] === true, ghExecutable: options['--gh-executable'] ?? 'gh' }
     const requests = {
-      plan: () => controller.plan(), next: () => controller.next(common.slot), status: () => controller.status(),
+      plan: () => controller.plan(), wave: () => controller.wave(), next: () => controller.next(common.slot), status: () => controller.status(),
       prepare: () => controller.prepare({ ...common, taskId: options['--task'], executable: options['--executable'], args: options.args }),
       sync: () => controller.sync(common.slot, options['--sync-digest']),
       run: () => controller.run({ ...common, syncDigest: options['--sync-digest'] }),
