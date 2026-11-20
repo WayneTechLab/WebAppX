@@ -1,4 +1,5 @@
 import { previewNavigatorLimits, collectPreviewHierarchy, projectPreviewRows, ancestorPreviewEntries, isCurrentPreviewElement } from './preview-navigator.js'
+import { mountNavigatorContexts } from './preview-navigator-context.js'
 import { sourceComparisonLimits, compareSourceText } from './source-comparison.js'
 import { sourceRecordLimits, createRecoveryRecord, parseRecoveryRecord, normalizeSourceDisplay, createComparisonExport } from './source-draft-records.js'
 import { canonicalSourcePath, sourceNavigationKey, createSourceNavigation, parseSourceNavigation, parseSourceInventory, filterSourceMetadata, sourcePickerSelection } from './source-navigation.js'
@@ -1212,9 +1213,12 @@ function renderPreviewBreadcrumbs() {
   }
 }
 
+let navigatorContexts
 function renderPreviewNavigator({ focus = false, reveal = false } = {}) {
   const tree = document.querySelector('#preview-layer-tree')
   if (!tree) return
+  navigatorContexts ??= mountNavigatorContexts(tree)
+  navigatorContexts.update(state.previewNavigatorSnapshot)
   const hadFocus = tree.contains(document.activeElement)
   tree.replaceChildren()
   state.previewLayerElements = []
