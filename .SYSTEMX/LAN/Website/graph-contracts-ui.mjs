@@ -208,7 +208,7 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
   const migrationUseCopy = button(migrationSection.body, 'graph-migration-use-copy', 'Use retained copy as graph draft')
   migrationUseCopy.disabled = true
 
-  const state = { destroyed: false, busy: false, serial: 0, importEdit: 0, migrationEdit: 0, reopenEdit: 0, version: VERSION, verifiedVersion: null, descriptors: new Map(), schemaRevision: null, workspaceId: null, documents: new Map(), selected: '', accepted: null, proposal: null, migration: null, migrationCopy: null, lastStatus: 'idle', lastEffect: null, lastError: null, lastRequestId: null }
+  const state = { destroyed: false, pending: null, serial: 0, importEdit: 0, migrationEdit: 0, reopenEdit: 0, version: VERSION, verifiedVersion: null, descriptors: new Map(), schemaRevision: null, workspaceId: null, documents: new Map(), selected: '', accepted: null, proposal: null, migration: null, migrationCopy: null, lastStatus: 'idle', lastEffect: null, lastError: null, lastRequestId: null }
   const actions = [...root.querySelectorAll('button')]
   const selects = [...root.querySelectorAll('select')]
   const say = (message, details = null) => {
@@ -228,21 +228,34 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
     state.lastError = contract ? { requestId: contract.requestId, category: contract.error.category, code: contract.error.code } : { message }
     renderEvidence()
   }
-  async function run(label, work) {
-    if (state.destroyed || state.busy) return
-    state.busy = true
+  async function run(label, work, { selectingDocument = false } = {}) {
+    const previous = state.pending
+    if (state.destroyed || (previous && !(selectingDocument && previous.controller))) return
+    const owner = { controller: selectingDocument ? new AbortController() : null }
+    state.pending = owner
+    previous?.controller?.abort()
     for (const action of actions) action.disabled = true
-    for (const select of selects) select.disabled = true
+    for (const select of selects) select.disabled = !selectingDocument || select !== documentInput
+    if (selectingDocument) say('Reading selected graph document…')
     try {
-      const result = await work()
-      if (!state.destroyed) { state.lastStatus = 'success'; state.lastError = null; say(`${label} complete.`, { message: 'No refusal.' }); renderEvidence() }
+      const result = await work(owner.controller?.signal)
+      if (!state.destroyed && state.pending === owner) {
+        state.lastStatus = 'success'; state.lastError = null
+        say(`${label} complete.`, { message: 'No refusal.' }); renderEvidence()
+      }
       return result
-    } catch (error) { fail(error); return undefined }
-    finally {
-      state.busy = false
-      if (!state.destroyed) for (const action of actions) action.disabled = false
-      if (!state.destroyed) for (const select of selects) select.disabled = false
-      if (!state.destroyed) migrationUseCopy.disabled = !state.migrationCopy || !sameWorkspace(state.migrationCopy.workspaceId)
+    } catch (error) {
+      if (!state.destroyed && state.pending === owner) {
+        if (selectingDocument) documentInput.value = state.selected
+        fail(error)
+      }
+    } finally {
+      if (!state.destroyed && state.pending === owner) {
+        state.pending = null
+        for (const action of actions) action.disabled = false
+        for (const select of selects) select.disabled = false
+        migrationUseCopy.disabled = !state.migrationCopy || !sameWorkspace(state.migrationCopy.workspaceId)
+      }
     }
   }
   function renderEvidence(effect) {
@@ -256,19 +269,19 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
   function sameWorkspace(workspaceId) {
     return revision(workspaceId) && currentWorkspace() === workspaceId && (!state.workspaceId || state.workspaceId === workspaceId)
   }
-  async function call(path, bodyValue, { requestId, apiVersion = state.version, allowError = false } = {}) {
+  async function call(path, bodyValue, { requestId, apiVersion = state.version, allowError = false, signal } = {}) {
     state.lastRequestId = requestId ?? null
-    const result = response(await api(path, bodyValue), requestId, apiVersion)
+    const result = response(await api(path, bodyValue, { signal }), requestId, apiVersion)
     if (!result.ok && !allowError) throw refusal(result)
     return result
   }
   function nextId() { return `graph-ui-${++state.serial}` }
-  async function query(operation, fields = {}) {
+  async function query(operation, fields = {}, signal) {
     const workspaceId = operation.startsWith('graph.') && operation !== 'graph.status' ? state.workspaceId : null
     if (workspaceId) assert(sameWorkspace(workspaceId), 'The workspace changed. Previous graph views and drafts were kept; remount the inspector for the selected workspace.')
     const requestId = nextId()
     const envelope = { apiVersion: state.version, requestId, kind: 'query', operation, payload: { type: operation, ...fields } }
-    const result = (await call('/api/contracts/query', envelope, { requestId })).result
+    const result = (await call('/api/contracts/query', envelope, { requestId, signal })).result
     if (workspaceId) assert(sameWorkspace(workspaceId), 'The workspace changed while reading. Previous graph views and drafts were kept.')
     return result
   }
@@ -364,9 +377,10 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
     assert(publicId(state.selected) && state.documents.has(state.selected), 'Select an accepted graph document first.')
     return state.selected
   }
-  async function readSelected(documentId = selectedId()) {
+  async function readSelected(documentId = selectedId(), signal) {
     assert(publicId(documentId) && state.documents.has(documentId), 'Choose an accepted graph document first.')
-    const result = await query('graph.document', { documentId })
+    const result = await query('graph.document', { documentId }, signal)
+    if (state.destroyed || signal?.aborted) return
     assert(object(result) && object(result.document) && result.document.documentId === documentId && result.document.workspaceId === state.workspaceId && revision(result.revision), 'The selected accepted graph response was invalid; the previous view was kept.')
     state.selected = documentId
     documentInput.value = documentId
@@ -461,10 +475,8 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
   }) }
   documentInput.addEventListener('change', () => {
     const selected = documentInput.value
-    if (!selected) { documentInput.value = state.selected; fail(new Error('Choose an accepted document to inspect.')); return }
-    void run('Accepted graph read', () => readSelected(selected)).then(result => {
-      if (!result && !state.destroyed) documentInput.value = state.selected
-    })
+    if (state.pending && !state.pending.controller) { documentInput.value = state.selected; return }
+    void run('Accepted graph read', signal => readSelected(selected, signal), { selectingDocument: true })
   })
   findingsButton.onclick = () => { void run('Accepted finding filter', async () => {
     const offset = Number(findingOffset.value)
@@ -563,7 +575,7 @@ export function attachGraphContractInspector({ container, api, getIdentityDocume
 
   const controller = {
     refresh: () => run('Graph and API refresh', async () => { await discover(); await readStatus(); if (state.selected) await readSelected() }),
-    destroy: () => { if (state.destroyed) return; state.destroyed = true; root.remove(); if (instances.get(container) === controller) instances.delete(container) },
+    destroy: () => { if (state.destroyed) return; state.destroyed = true; state.pending?.controller?.abort(); root.remove(); if (instances.get(container) === controller) instances.delete(container) },
   }
   instances.set(container, controller)
   renderEvidence()

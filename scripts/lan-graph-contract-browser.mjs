@@ -142,6 +142,7 @@ async function main() {
     revision: git(['rev-parse', 'HEAD']), scope: 'Copied local LAN assets, synthetic source and graph, owned loopback server and fresh Chromium context. Runtime evidence only after integration; no LAN backlog acceptance, provider, production or user session claim.',
     checks, browserRequests: [], unexpectedRequests: [], pageErrors: [], assetCaptures: [], dialogs: [], pendingIssues: [] }
   let lan, bridge, browserServer, browserChild, browser, context, page, baseline, inputSnapshot, protectedBefore, fixtureEffects, failure, lanOutput = ''
+  let selectionDelay = null
   let malformedResponseRequestId = null
   let migrationResponseDelay = null
   let releaseMigrationResponse = null
@@ -236,6 +237,11 @@ async function main() {
             method: request.method, headers, ...(['GET', 'HEAD'].includes(request.method) ? {} : { body: bodyBytes }), signal: AbortSignal.timeout(15000),
           })
           const upstreamBytes = Buffer.from(await upstream.arrayBuffer())
+          if (selectionDelay && parsed?.operation === 'graph.document' && parsed.payload.documentId === selectionDelay.documentId) {
+            selectionDelay.seen = true
+            await selectionDelay.release
+            if (response.destroyed) return
+          }
           if (migrationResponseDelay && parsed?.operation === 'graph.migrationApply') {
             const held = migrationResponseDelay
             migrationResponseDelay = null
@@ -857,6 +863,35 @@ async function main() {
     assert.equal(renderedAccepted.sourceRevision, sourceRevision)
     assert.equal(renderedAccepted.stats.nodes, uiGraph.nodes.length)
     assert.equal(renderedAccepted.stats.opaqueNodes, 1)
+    // Hold a real accepted response at the loopback HTTP boundary. The picker
+    // remains usable during this read and the newer selection owns all feedback.
+    const picker = page.locator('#graph-document-select')
+    const previousAccepted = await page.locator('#graph-accepted-result').innerText()
+    const previousDraft = await importText.inputValue()
+    const heldId = acceptedDocumentId
+    assert.notEqual(heldId, uiInitial.document.documentId)
+    let resumeSelection
+    selectionDelay = { documentId: heldId, seen: false, release: new Promise(done => { resumeSelection = done }) }
+    selectionDelay.resume = resumeSelection
+    await picker.selectOption(heldId)
+    await expect.poll(() => selectionDelay.seen).toBe(true)
+    await expect(picker).toBeEnabled()
+    await expect(page.locator('#graph-accept')).toBeDisabled()
+    assert.equal(await page.locator('#graph-accepted-result').innerText(), previousAccepted)
+    assert.equal(await importText.inputValue(), previousDraft)
+    const superseded = page.waitForEvent('requestfailed', { predicate: req =>
+      req.url().endsWith('/api/contracts/query') && req.postDataJSON()?.payload?.documentId === heldId })
+    const [aborted] = await Promise.all([superseded, picker.selectOption(uiInitial.document.documentId)])
+    assert.match(aborted.failure().errorText, /abort|cancel/i)
+    await expect(page.locator('#graph-contract-status')).toContainText('Accepted graph read complete')
+    await expect(page.locator('#graph-accept')).toBeEnabled()
+    selectionDelay.resume()
+    selectionDelay = null
+    assert.equal(await picker.inputValue(), uiInitial.document.documentId)
+    assert.equal(await importText.inputValue(), previousDraft)
+    assert.equal(await page.locator('#graph-accepted-result').innerText(), previousAccepted)
+    report.supersededDocumentRead = { cancelled: heldId, selected: uiInitial.document.documentId, revision: uiInitial.revision,
+      browserAbort: aborted.failure().errorText, acceptedAndDraftPreserved: true }
     await page.locator('#graph-finding-severity').selectOption('warning')
     await page.locator('#graph-finding-object').fill('uiOptional')
     await page.locator('#graph-finding-reference-type').selectOption('component')
@@ -1093,6 +1128,7 @@ async function main() {
     report.pendingIssues.push(error.message)
     if (page && !page.isClosed()) await page.screenshot({ path: join(evidence, 'failure.png'), fullPage: true }).catch(() => {})
   } finally {
+    selectionDelay?.resume()
     if (releaseMigrationResponse) releaseMigrationResponse()
     report.cleanupObservations = []
     const cleanup = async (label, action) => {

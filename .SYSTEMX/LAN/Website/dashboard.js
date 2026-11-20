@@ -4064,9 +4064,9 @@ async function boot() {
     const { attachGraphContractInspector } = await import('./graph-contracts-ui.mjs')
     attachGraphContractInspector({
       container: graphContainer,
-      api: async (path, body) => {
+      api: async (path, body, { signal } = {}) => {
         try {
-          return await request(path, body === undefined ? {} : { method: 'POST', body: JSON.stringify(body) })
+          return await request(path, body === undefined ? { signal } : { method: 'POST', body: JSON.stringify(body), signal })
         } catch (error) {
           if (error.contractEnvelope) return error.contractEnvelope
           throw error
