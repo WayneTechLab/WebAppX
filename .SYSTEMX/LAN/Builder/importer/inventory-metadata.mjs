@@ -54,7 +54,35 @@ const rules = Object.freeze({
   ownership: ['systemx-directory-ownership', 'inferred'], conflict: ['declaration-conflicts', 'unresolved'],
   scan: ['tracked-repository-inventory', 'unresolved'],
 })
+// A proxy route is part of Vite's bridge configuration. Keep the emitting
+// adapter ahead of shared words such as "route" when summarizing findings.
+function viteCapability(code) {
+  if (!code.startsWith('vite-') && !code.includes('-vite-')) return null
+  if (/vite-(?:bridge|preview|proxy|server)-/.test(code)) return 'vite-bridge-resolution'
+  if (/vite-(?:directory|build)-/.test(code) || code === 'unsupported-vite-root') return 'vite-build-directory-resolution'
+  if (code.includes('vite-input')) return 'complete-entry-and-route-resolution'
+  return 'static-configuration-resolution'
+}
+
+export function missingInventoryCapabilities(findings) {
+  const missing = new Set()
+  for (const {code} of findings) {
+    const vite = viteCapability(code)
+    if (vite) {
+      missing.add('static-configuration-resolution')
+      missing.add(vite)
+      continue
+    }
+    if (/config|proxy|pin|dependency|manifest|firebase|emulator|build-target/.test(code)) missing.add('static-configuration-resolution')
+    if (/route|routing|entry|module-script/.test(code)) missing.add('complete-entry-and-route-resolution')
+    if (/component|shell/.test(code)) missing.add('complete-component-attribution')
+    if (/working-source/.test(code)) missing.add('exact-working-source')
+  }
+  return [...missing].sort()
+}
+
 function findingRule(code) {
+  if (viteCapability(code)) return 'vite-unresolved'
   if (/^inventory-(?:route|page|component)-conflict$/.test(code)) return 'conflict'
   if (/component|shell/.test(code)) return 'component'
   if (/route/.test(code)) return 'route'
@@ -62,7 +90,7 @@ function findingRule(code) {
   if (/firebase/.test(code)) return 'firebase'
   if (/package|dependency/.test(code)) return 'package'
   if (/runtime/.test(code)) return 'pin'
-  if (/vite|build|bridge|target|proxy/.test(code)) return 'vite-unresolved'
+  if (/build|bridge|target|proxy/.test(code)) return 'vite-unresolved'
   if (/config/.test(code)) return 'configuration'
   return 'scan'
 }

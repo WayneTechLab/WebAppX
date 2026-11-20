@@ -153,3 +153,44 @@ test('a scan needs a shared version across all runtime declarations before repla
   }
   assert.deepEqual(cli(f.root, 'last-good').lastGood, good.inventory)
 })
+
+test('unresolved Vite directories and bridge routes identify the missing adapter and the source of each finding', t => {
+  const f = fixture(t)
+  const config = 'vite.config.ts'
+  f.put(config, 'export default {}')
+  f.git('add',config)
+  const good = cli(f.root,'scan')
+  const accepted = readFileSync(f.cache)
+  for (const [source, code, missingCapability] of [
+    ['build: {outDir: chooseDirectory()}', 'unsupported-vite-directory-declaration', 'vite-build-directory-resolution'],
+    ['publicDir: chooseDirectory()', 'unsupported-vite-directory-declaration', 'vite-build-directory-resolution'],
+    ["server: {proxy:{'/__systemx':{target:'http://localhost',rewrite:path=>change(path)}}}", 'unsupported-vite-bridge-declaration', 'vite-bridge-resolution'],
+    ["server: {proxy:{'/elsewhere':'http://localhost'}}", 'unsupported-vite-proxy-route', 'vite-bridge-resolution'],
+  ]) {
+    f.put(config,`export default {
+  ${source}
+}`)
+    const report = cli(f.root,'scan',1)
+    assert.equal(report.status,'incomplete')
+    assert.deepEqual(report.capabilities.missing,['static-configuration-resolution',missingCapability])
+    const {findings,metadata} = report.inventory
+    const index = findings.findIndex(row => row.code === code)
+    assert.ok(index >= 0,JSON.stringify(findings))
+    assert.equal(findings[index].path,config)
+    assert.equal(findings[index].line,2)
+    const rule = metadata.provenance.findings[index]
+    assert.deepEqual(metadata.provenance.rules[rule],{adapter:'vite-static-config',basis:'unresolved'})
+    assert.equal(report.lastGoodRevision,good.inventory.revision)
+    assert.deepEqual(readFileSync(f.cache),accepted)
+  }
+
+  // Both emitter domains can produce a finding involving the word "route".
+  f.put('src/router.tsx',`import Page from './Page'
+export function renderPage(pathname) { switch(pathname){case dynamicPath():return <Page/>;default:return <Page/>} }`)
+  const {inventory,capabilities} = cli(f.root,'compare',1)
+  assert.deepEqual(capabilities.missing,['complete-entry-and-route-resolution','static-configuration-resolution','vite-bridge-resolution'])
+  const provenance = inventory.metadata.provenance
+  const adapters = Object.fromEntries(inventory.findings.map((row,i) => [row.code,provenance.rules[provenance.findings[i]].adapter]))
+  assert.equal(adapters['unsupported-vite-proxy-route'],'vite-static-config')
+  assert.equal(adapters['dynamic-route-pattern'],'react-route-declaration')
+})

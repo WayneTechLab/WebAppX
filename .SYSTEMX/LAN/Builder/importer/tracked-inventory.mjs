@@ -10,7 +10,7 @@ import { readViteInputs } from './inventory-vite.mjs'
 import { inspectDeclaredRoutes, publicPattern } from './declared-routes.mjs'
 import { inspectComponents, validComponentInventory } from './component-inventory.mjs'
 import { configurationInputPaths, inspectInventoryConfig, validInventoryConfig } from './inventory-config.mjs'
-import { inspectInventoryMetadata, inventoryResourceStatsMatch, isInventoryMetadataPath, validInventoryMetadata } from './inventory-metadata.mjs'
+import { inspectInventoryMetadata, inventoryResourceStatsMatch, isInventoryMetadataPath, missingInventoryCapabilities, validInventoryMetadata } from './inventory-metadata.mjs'
 import { compareInventories } from './inventory-comparison.mjs'
 import { prunedNames, stagedSources, untrackedSources, workBudget } from './inventory-working-state.mjs'
 
@@ -420,16 +420,9 @@ function inspect(repo, ts, budget, observation) {
   const metadata = inspectInventoryMetadata({index, statFor, evidence, entryPoints:entries,
     routes:declaredRoutes, components, findings, routeDeclarations, componentDeclarations, issue:unresolved})
   if (findings.length) {
-    const missing = new Set()
-    for (const {code} of findings) {
-      if (/config|proxy|pin|dependency|manifest|firebase|emulator|build-target/.test(code)) missing.add('static-configuration-resolution')
-      if (/route|routing|entry|module-script|vite-input/.test(code)) missing.add('complete-entry-and-route-resolution')
-      if (/component|shell/.test(code)) missing.add('complete-component-attribution')
-      if (/working-source/.test(code)) missing.add('exact-working-source')
-    }
     observation.capabilities = { stack:'vite', commit:head, indexRevision, eligibleTrackedCount:index.size,
       available:['tracked-index','verified-source-digests','partial-declarations','last-good-readback'],
-      missing:[...missing].sort() }
+      missing:missingInventoryCapabilities(findings) }
   }
   names.clear()
   for (const item of evidence.values()) {
