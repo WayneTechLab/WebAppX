@@ -28,6 +28,7 @@ const routes = new Map([
   ['/api/builder/ingest', write],
   ['/api/builder/record', write],
   ['/api/builder/preview', write],
+  ['/api/graph/commands', write],
   ['/api/contracts/discovery', read],
   ['/api/contracts/query', write],
   ['/api/contracts/command', write],

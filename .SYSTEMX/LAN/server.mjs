@@ -44,6 +44,7 @@ const repoRoot = resolve(lanRoot, '..', '..')
 const workspaceId = hashSourceRevision(`systemx-workspace\0${realpathSync(repoRoot)}`)
 const sourceHistory = createSourceHistory()
 let sourceIdentityPromise
+let scopedGraphCommands
 let graphServicePromise
 async function identityService() {
   if (!sourceIdentityPromise) {
@@ -1583,6 +1584,18 @@ async function handleRequest(request, response, recordRoute) {
 
   if (request.method === 'POST' && requestUrl.pathname.startsWith('/api/')) {
     try {
+      if (requestUrl.pathname === '/api/graph/commands') {
+        const { createScopedGraphCommands, ScopedGraphCommandError } = await import('./Builder/scoped-graph-commands.mjs')
+        const graph = await graphService()
+        scopedGraphCommands ??= createScopedGraphCommands(graph, { capabilitySetting: process.env.SYSTEMX_LAN_GRAPH_EDIT_CAPABILITIES })
+        try {
+          sendJson(response, 200, { ok: true, result: scopedGraphCommands.run(body) })
+        } catch (error) {
+          if (!(error instanceof ScopedGraphCommandError)) throw error
+          sendJson(response, error.status, { ok: false, error: { code: error.code, message: error.message } })
+        }
+        return
+      }
       if (requestUrl.pathname.startsWith('/api/contracts/')) {
         await dispatchGraphRequest(request, response, requestUrl, body)
         return

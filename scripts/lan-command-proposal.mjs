@@ -1,15 +1,12 @@
 #!/usr/bin/env node
-import { randomUUID } from 'node:crypto'
 import { constants } from 'node:fs'
 import { lstat, open, realpath } from 'node:fs/promises'
-import { request } from 'node:http'
 import { relative, resolve } from 'node:path'
-import { API_VERSION, getContractRegistry } from '../.SYSTEMX/LAN/Builder/api-contracts.mjs'
-import { validateApiResponse } from '../.SYSTEMX/LAN/Builder/api-validation.mjs'
 import { GraphError } from '../.SYSTEMX/LAN/Builder/graph-core.mjs'
 import { isRelationalFinding } from '../.SYSTEMX/LAN/Builder/graph-validation.mjs'
 import { exportGraphDocument } from '../.SYSTEMX/LAN/Builder/graph-evolution.mjs'
 import { createCommandProposal, inspectCommandProposal } from '../.SYSTEMX/LAN/Builder/command-proposal.mjs'
+import { GraphConnectionError, isGraphOrigin, openGraphConnection } from './lan-graph-connection.mjs'
 import { parsePublicJson } from './package-script-discovery.mjs'
 
 const help = `Read-only LAN graph command proposals
@@ -59,7 +56,7 @@ function argumentsFor(args) {
   if (!candidate || (!!baseline === !!origin) || (!!origin !== !!documentId)) usage()
   if ([baseline, candidate, proposal].filter(value => value === '-').length > 1) usage()
   if (mode === 'create' ? !/^[a-f0-9]{64}$/.test(expectedRevision ?? '') : !proposal) usage()
-  if (origin && (!/^http:\/\/127\.0\.0\.1:[1-9]\d{0,4}$/.test(origin) || Number(origin.split(':').at(-1)) > 65535
+  if (origin && (!isGraphOrigin(origin)
     || !/^[A-Za-z][A-Za-z0-9_-]{0,95}$/.test(documentId))) usage()
   return { mode, baseline, origin, documentId, candidate, expectedRevision, proposal }
 }
@@ -115,38 +112,8 @@ async function readJson(filename) {
   } finally { await handle?.close() }
 }
 
-// Use a direct IP socket with a fixed path. Neither redirects, DNS, proxy
-// settings nor arbitrary URLs can send the dashboard credential elsewhere.
-async function localRead(origin, path, headers, body) {
-  const response = await new Promise((done, reject) => {
-    const req = request(origin + path, { method: body ? 'POST' : 'GET', agent: false, headers, signal: AbortSignal.timeout(5000) }, done)
-    req.on('error', reject)
-    req.end(body)
-  })
-  try {
-    const mime = String(response.headers['content-type'] ?? '').split(';')[0].trim().toLowerCase()
-    if (response.statusCode !== 200 || mime !== (body ? 'application/json' : 'text/html')) invalid('The local LAN service refused the read or returned an unexpected response.')
-    return await limitedStream(response)
-  } finally { response.destroy() }
-}
-
 async function liveBaseline(origin, documentId) {
-  const html = await localRead(origin, '/', { Accept: 'text/html' })
-  const sessions = [...html.matchAll(/<meta name="systemx-session" content="([0-9a-f]{48})"\s*\/>/g)]
-  const statuses = [...html.matchAll(/<script type="application\/json" id="systemx-status-data">([^<]*)<\/script>/g)]
-  if (sessions.length !== 1 || statuses.length !== 1) invalid('Expected one valid session and workspace in the local LAN dashboard.')
-  const workspace = parse(statuses[0][1])?.repository?.workspaceId
-  if (!/^[a-f0-9]{64}$/.test(workspace ?? '')) invalid('The local dashboard did not identify its workspace.')
-  const operations = getContractRegistry(API_VERSION).operations
-  async function query(operation, fields) {
-    const requestId = randomUUID()
-    const body = JSON.stringify({ apiVersion: API_VERSION, requestId, kind: 'query', operation, payload: { type: operation, ...fields } })
-    const response = parse(await localRead(origin, '/api/contracts/query',
-      { 'Content-Type': 'application/json', Accept: 'application/json', 'x-systemx-session': sessions[0][1] }, body))
-    if (response?.apiVersion !== API_VERSION || response.requestId !== requestId || response.ok !== true) invalid('The local graph response did not match the requested read.')
-    try { return validateApiResponse(operations.find(row => row.id === operation), response.result, { endpoint: '/api/contracts/query' }) }
-    catch { invalid('The local graph result failed its public response contract.') }
-  }
+  const { workspace, query } = await openGraphConnection(origin)
   async function current() {
     const status = await query('graph.status', {})
     const matches = status.documents.filter(row => row.documentId === documentId)
@@ -201,7 +168,7 @@ catch (error) {
     process.exitCode = 2
   } else {
     let detail = 'Cannot read the requested input or local service.'
-    if (error instanceof InputError) detail = error.message
+    if (error instanceof InputError || error instanceof GraphConnectionError) detail = error.message
     if (error instanceof GraphError && /^[A-Z][A-Z0-9_]{1,63}$/.test(error.code)) {
       detail = error.code + '. ' + graphRepair(error)
     }
