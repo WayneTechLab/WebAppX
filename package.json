@@ -14,7 +14,7 @@
     "systemx:session:status": "node .SYSTEMX/LAN/session-control.mjs status",
     "systemx:session:stop": "node .SYSTEMX/LAN/session-control.mjs stop",
     "systemx:session:restart:preview": "node .SYSTEMX/LAN/session-control.mjs restart --preview",
-    "systemx:session:test": "node --test .SYSTEMX/LAN/tests/session-supervisor.test.mjs .SYSTEMX/LAN/tests/session-restart-preview.test.mjs .SYSTEMX/LAN/tests/session-import.test.mjs .SYSTEMX/LAN/tests/session-control-output.test.mjs",
+    "systemx:session:test": "node --test .SYSTEMX/LAN/tests/session-*.test.mjs",
     "build": "tsc -b --noCheck && vite build && node .SYSTEMX/scripts/assert-lan-isolation.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.json",

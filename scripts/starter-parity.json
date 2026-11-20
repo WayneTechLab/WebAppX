@@ -177,7 +177,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root adds native SDK/query/browser dependencies and host setup, source policy, identity/ownership, canonical graph/API, swarm, test, CI and release scripts; shared package identity/runtime/dependencies remain checked.",
-      "rootSha256": "5dffb08c0d8e57e411b176a960361e10c2ef709327249af6cff2cdb6b46ac4ab",
+      "rootSha256": "0a32870ebb4ba2ca226f8c1e799cb680cec33487bbee145d9a35618cce2f1fc4",
       "starterSha256": "2c4dcbe51214ae866e8e3e8fa2264ec0a37ab3f3880fea0b3e0107f914500ce4"
     },
     {

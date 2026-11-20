@@ -59,6 +59,18 @@ Git metadata. The WebAppX scan found 29 static route declarations and identified
 the dynamic portal dispatcher separately. Run `npm run lan:inventory:test` to
 exercise renamed, linked and unsupported inputs in disposable repositories.
 
+## Navigator and session ownership (F013 and F015)
+
+In Navigator, expand **Shadow roots and frames** to inspect an available open
+shadow root or accessible same-origin frame. Returning to a parent restores
+its expansion and filter. A remounted host or replaced frame returns the
+operator to the last valid scope. Selections in this view are read-only.
+
+Run `node .SYSTEMX/LAN/session-control.mjs start --preview` to inspect launch
+ownership before starting a local workspace. Simultaneous launchers coordinate
+on the same session record. Run `npm run systemx:session:test` to exercise the
+claim and recovery paths with temporary workspaces and owned processes.
+
 ## Completed F005/F006 baseline
 
 On 2026-11-19 Agent 0 accepted the canonical document graph (F005) and then

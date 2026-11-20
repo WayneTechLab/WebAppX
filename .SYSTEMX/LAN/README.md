@@ -268,6 +268,15 @@ after verifying identity and recorded startup directory. It retains the record
 until exit is confirmed. Wait for the process to exit, then rerun stop to clear
 the verified exited LAN record if forced termination bypassed its cleanup handler.
 
+### Preview a local launch
+
+Run `node .SYSTEMX/LAN/session-control.mjs start --preview` from the selected
+checkout. Inspect the proposed generation, observed owner, port selection and
+blockers before starting a combined session. Competing launchers claim a single
+session record. A losing launcher reports the observed ownership and leaves the
+winner's processes and files in place. A stale or uncertain claim requires
+inspection before another launch.
+
 ### Read-only restart preview
 
 The preview command is also available directly:
