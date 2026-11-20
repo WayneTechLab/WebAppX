@@ -6720,6 +6720,166 @@
       "verifiedOn": "2026-11-20",
       "evidence": "docs/LAN-PUBLIC-ASSET-ACCEPTANCE-2026-11-20.md",
       "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00711",
+      "definitionSha256": "fd69ee481e78f94a119a538e425e417d5f2b9ee2c9a3a22200a3c11f97011e18",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00712",
+      "definitionSha256": "9e2b1443541dbe464dfb875ff9a51112b272a5990e8fefa874241811160c240d",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00713",
+      "definitionSha256": "60b1f3db03a77e168fb96bdb0f0a216ba6dd2f89b7c014e344533e56a4467e5c",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00714",
+      "definitionSha256": "a78f8d6494de2f375d6100ce912b663281088b2f10ca78ae9a50c78827ed3bf7",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00715",
+      "definitionSha256": "f595682ce99f6fdfd0e9b1f3ec0d0a52318c266b97951d36119eee491a084d9e",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00716",
+      "definitionSha256": "760a67786fd78be21f3ef7bea6bbcffe21dc50231d290e702d95d62c40f3bb7c",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00717",
+      "definitionSha256": "0c9f9dd53d96023e0cd319bd4156e758be342d49475ffbd1ea93d7db7960fbe2",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00718",
+      "definitionSha256": "81b9d08b763d353f72de516ff82daac680d8c9ba0872893cc9bad45a1e8bca2e",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00719",
+      "definitionSha256": "aed0efe254bbec9252d6555f2f411d0f6ba23a12eb4317046b99e1d3b744b6d7",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00720",
+      "definitionSha256": "de92a59a5e04dfa8bcdeb5b332f833c8f646674095144213934f97c0baaa357a",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00721",
+      "definitionSha256": "49183fd6f73cbd3dc8a17b3af76f5525fbf6b696b400c550b967f53e97c9e4ab",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00722",
+      "definitionSha256": "d6bf87da911063e9a8ee35a2fdc004e9d67b9059ad58c69514895049de9126ac",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00723",
+      "definitionSha256": "f86a99e0d3612f62bfc4ca7336aa3510abc3016b3d7b3c5e1b18e0637cb410b2",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00724",
+      "definitionSha256": "4c69f3435662d4be965855da50fc8271f33a2c0a2ff326aa79e4cc3dd8c81b9e",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00725",
+      "definitionSha256": "640c73b901fe3bc97cbed44974c7b72b2c25759ffc71f8c277f291a3eb1e5fc1",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00726",
+      "definitionSha256": "7247693ac524ddda870538fd7ecb5ae501e232cd66c9aeca4edb2761f0f075a6",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00727",
+      "definitionSha256": "411fc6b7bea6458a0a9d7cb6b65500fd855f47118ea48b843950977c6f968fc6",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00728",
+      "definitionSha256": "6846d985627fa7e29666293a71864c88b37a9a45890b1fdb6916011ddc455106",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00729",
+      "definitionSha256": "951d4c2623db6ae36d4af3e2f2d52c8903e98e5bbeba3c4b2c602918ccfbddff",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
+    },
+    {
+      "id": "LAN-00730",
+      "definitionSha256": "24c8c230053f519e98727bf2648c464669b9451e760eb43ef85c36e455a6d77a",
+      "sourceRevision": "11cd3b4531798e95ae3aa81e4505b99fdfbb6a34",
+      "verifiedOn": "2026-11-20",
+      "evidence": "docs/LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md",
+      "reviewedBy": "agent.0"
     }
   ]
 }
