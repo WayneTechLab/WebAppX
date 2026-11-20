@@ -1,8 +1,17 @@
 # SYSTEMX LAN — Webflow-Class Designer Master Plan
 
+## Accepted graph and API delivery — 2026-11-19
+
+F005 added the canonical document graph and F006 added versioned API contracts.
+Agent 0 accepted the two families in dependency order. The catalog now records
+**600/10,000 requirements and 120/2,000 capabilities**. Read the
+[acceptance receipt](../../docs/LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md), the
+[execution plan](../../docs/LAN-GRAPH-API-PLAN-2026-10-31.md) and the earlier
+[synchronization QA](../../docs/LAN-GRAPH-API-SYNC-QA-2026-11-08.md).
+
 ## Accepted host delivery — 2026-10-31
 
-The independent LAN delivery catalog now records **400/10,000 requirements and
+At the F004 milestone, the LAN catalog recorded **400/10,000 requirements and
 80/2,000 capabilities** accepted through F004, with 9,600 TODO. Read the
 [candidate-bound QA](../../docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md) and
 [active iteration](../../docs/LAN-ACTIVE-ITERATION.md). The broader research
@@ -120,23 +129,3 @@ Stop the active wave and repair the foundation when:
 - command model: `14-EDITOR-KERNEL-AND-COMMAND-MODEL.md`
 - schemas: `INJECT/.SYSTEMX/LAN/Builder/contracts/`
 - backlog/roadmap/risks: `planning/`
-
-
-## Authorized F005 and F006 execution
-
-The next bounded wave selects LAN-00401–LAN-00600, canonical document graph
-followed by versioned API contracts. Current acceptance remains 400 requirements
-and 80 capabilities. The ten CLI results are integrated; the experimental
-implementation passed 75 CI stages, 147 graph/API tests, 40 graph browser groups
-and separate Hosting preflight. Source/wiki publication does not accept these
-200 requirements. Agent 0 owns integration and accepts F005 before dependent F006 only
-after exact-candidate review, browser proof and terminal checks. Read the
-[execution plan](../../docs/LAN-GRAPH-API-PLAN-2026-10-31.md) and the
-[separate local AI research](../../docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md).
-The scratch model's 2/10 exploratory quality is not accepted chatbot quality;
-model adoption supplies no completion in this LAN wave.
-
-The [2026-11-08 synchronization QA](../../docs/LAN-GRAPH-API-SYNC-QA-2026-11-08.md)
-records terminal results and retained failures. Original requirement acceptance,
-full Page-tree reconciliation and an observed operator-session graph workflow
-remain pending; new feature development stays paused after synchronization.

@@ -82,5 +82,5 @@ executed checks. Browser proof must exercise the actual dashboard controls,
 including older/current execution, strict refusal and client recovery.
 
 The [F006 checklist](backlog/lan-10000/F006.md) retains the original hundred
-requirements. F005 must be accepted before F006; schema availability, a rendered
-label, a worker exit or a published branch accepts neither family automatically.
+requirements and their F005 prerequisites. See the [acceptance receipt](LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md)
+for the revision and results bound to each requirement.

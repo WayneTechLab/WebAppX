@@ -32,12 +32,20 @@ This is a host extension above managed SYSTEMX 1.9.0-alpha.6. It preserves relea
 snapshots and blank reusable seeds. Its operating support does not inflate LAN
 acceptance counts or authorize production deployment.
 
+## Canonical graph and versioned API
+
+Open **Build → Code → Graph and API contracts** to preview imports and inspect
+graph revisions. F005 and F006 bring the catalog to **600/10,000 accepted
+requirements and 120/2,000 capabilities**. See the [graph guide](../docs/LAN-CANONICAL-GRAPH.md),
+[versioned API guide](../docs/LAN-VERSIONED-API-CONTRACTS.md) and
+[acceptance receipt](../docs/LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md).
+
 ## F003/F004 identity and ownership — locally accepted 2026-10-31
 
 Agent 0 accepted exactly **LAN-00201–LAN-00400** at functional candidate
 `aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`, accepting F003 before dependent
-F004. The LAN program is now **400/10,000 requirements and 80/2,000
-capabilities**; **F001–F004 are complete and 9,600 requirements remain TODO**.
+F004. At that milestone, the catalog recorded **400/10,000 accepted requirements
+and 80/2,000 capabilities**.
 Previous two hundred completion objects retain their exact order and evidence.
 The separate original WebAppX catalog remains **179 done / 821 remaining**.
 

@@ -1,5 +1,13 @@
 # Update Log
 
+## Canonical graph and versioned API accepted — 2026-11-19
+
+Agent 0 accepted F005 (LAN-00401–LAN-00500), validated its catalog entries, then
+accepted F006 (LAN-00501–LAN-00600). The LAN catalog now records **600/10,000
+requirements and 120/2,000 capabilities**, with 9,400 requirements remaining.
+The [acceptance receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md) links the original
+criteria to tested behavior.
+
 ## Graph and versioned API documentation — 2026-11-08
 
 Documented the saved experimental F005/F006 graph/API implementation and its

@@ -1,9 +1,16 @@
 # SYSTEMX LAN Webflow-Class Designer Master Plan
 
+## Canonical graph and API contracts — 2026-11-19
+
+F005 and F006 brought the LAN catalog to **600/10,000 accepted requirements
+and 120/2,000 capabilities**. Read the [graph guide](SYSTEMX-LAN-Canonical-Graph.md),
+[API guide](SYSTEMX-LAN-Versioned-API-Contracts.md) and
+[acceptance receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md).
+
 ## Accepted delivery milestone — 2026-10-31
 
-F001–F004 now have **400/10,000 accepted requirements and 80/2,000 capabilities**;
-9,600 requirements remain. Durable identity, bounded source ownership and the
+At the F004 milestone, the catalog recorded **400/10,000 accepted requirements
+and 80/2,000 capabilities**. Durable identity, bounded source ownership and the
 responsive dashboard passed the [candidate-bound QA](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md)
 on `aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`. The broader Designer program
 below remains proposed beyond those accepted slices. The

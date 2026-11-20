@@ -69,13 +69,12 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
-## Experimental LAN graph and versioned API workspace
+## LAN graph and versioned API workspace
 
-The saved F005/F006 implementation adds **Build → Code → Graph and API
-contracts** beside the existing source-identity inspector. Start a local session
-with `npm run dev:systemx`, open its printed `/__systemx/` bridge, then expand
-that disclosure. It starts closed and sends no graph command until an explicit
-action. No provider account is required for this local metadata workflow.
+Run `npm run dev:systemx`, open the printed `/__systemx/` bridge, and choose
+**Build → Code → Graph and API contracts**. To import a template page, select
+its accepted source identity, choose **Use current identity document ID**,
+then **Preview graph import**. Review the result before accepting it.
 
 The graph inspector supports bounded import previews, qualified lookup,
 filtered findings, deterministic revisions, comparison, export/reopen and a
@@ -89,16 +88,15 @@ snapshot for same-workspace reopen.
 Read the [graph operator guide](docs/LAN-CANONICAL-GRAPH.md),
 [versioned API guide](docs/LAN-VERSIONED-API-CONTRACTS.md) and
 [F005/F006 execution plan](docs/LAN-GRAPH-API-PLAN-2026-10-31.md).
-This is experimental implementation awaiting original requirement acceptance.
-**LAN-00401–LAN-00600 remain TODO**; accepted progress stays **400/10,000
-requirements and 80/2,000 capabilities**. A source or wiki publication does not
-accept this next two hundred or establish production readiness.
+Agent 0 accepted **LAN-00401–LAN-00600**, bringing the LAN catalog to **600/10,000
+requirements and 120/2,000 capabilities**. The [acceptance receipt](docs/LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md)
+records the tested behavior and all 200 requirement IDs. In the local Home walkthrough, the 21-node graph reopened at the same revision after a 17,693-byte export. All 40 graph and API browser groups passed.
 
 ## LAN durable identity and source ownership — accepted
 
 Agent 0 accepted exactly **LAN-00201–LAN-00400**, F003 before dependent F004.
-The program now has **400/10,000 accepted requirements and 80/2,000 capabilities**;
-**F001–F004 are complete and 9,600 requirements remain TODO**. Original definitions
+At that milestone, F001–F004 accounted for **400/10,000 accepted requirements
+and 80/2,000 capabilities**. Original definitions
 and the prior 200 completion objects remain exact. The separate original WebAppX
 catalog remains **179 done / 821 remaining**.
 

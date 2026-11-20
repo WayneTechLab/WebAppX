@@ -4,10 +4,9 @@ This guide describes the F003/F004 local source-import workflow selected for
 the LAN builder. The authored [F003](backlog/lan-10000/F003.md) and
 [F004](backlog/lan-10000/F004.md) checklists own the exact requirements; the
 [bounded iteration plan](LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) owns the
-execution sequence. The accepted baseline remains **200/10,000 requirements and
-40/2,000 capabilities** (F001 and F002). The target after separate Agent 0
-acceptance of both families is **400/10,000 and 80/2,000**. These pages do not
-record acceptance or qualify an untested integration.
+execution sequence. On 2026-10-31, F004 acceptance brought the catalog to
+400 requirements and 80 capabilities. See the [F003/F004 QA receipt](LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md)
+for the tested revision and the [active iteration](LAN-ACTIVE-ITERATION.md) for current progress.
 
 The import is a narrow `schemaVersion: 1` source identity read model for
 eligible static TSX, alongside the future full

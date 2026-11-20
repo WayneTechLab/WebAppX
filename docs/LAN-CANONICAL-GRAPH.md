@@ -97,5 +97,5 @@ separately. Newer operator drafts must survive a delayed migration response.
 The [versioned API guide](LAN-VERSIONED-API-CONTRACTS.md) describes request,
 response, version, capability, confirmation and revision boundaries. The
 [F005 checklist](backlog/lan-10000/F005.md) retains the original hundred
-requirements and their dependencies. Generated progress and the final QA receipt,
-when accepted, distinguish implementation from tested and published delivery.
+requirements and their dependencies. See the [acceptance receipt](LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md)
+for the revision and results bound to each requirement.

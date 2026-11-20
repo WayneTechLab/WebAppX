@@ -1,15 +1,13 @@
 # SYSTEMX LAN Canonical Graph
 
-The experimental F005 graph inspector provides a bounded read model of pages,
+The F005 graph inspector provides a bounded read model of pages,
 nodes, components, collections and references beside the existing
 [source identity inspector](SYSTEMX-LAN-Identity-and-Ownership.md). Graph data is
 descriptive metadata. It cannot save source, infer writable structure from a
 canvas element or widen source policy.
 
-**LAN-00401–LAN-00600 remain TODO** pending original F005/F006 acceptance.
-Accepted progress remains **400/10,000 requirements and 80/2,000 capabilities**.
-The [execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-PLAN-2026-10-31.md)
-separates implementation, verification, acceptance and publication.
+The [F005 acceptance receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md)
+covers graph import, validation, comparison, export and recovery.
 
 ## Open and import
 
@@ -29,6 +27,8 @@ separates implementation, verification, acceptance and publication.
    draft or newer preview invalidates the previous pending action.
 5. Inspect retained findings and qualified lookup. Supply workspace, document,
    object identity and kind; wrong-kind or cross-document references are refused.
+
+On November 19, the local Home walkthrough produced 21 nodes, including one opaque node, and four optional-reference warnings. The 17,693-byte export reopened at the accepted revision. A subsequent schema-version refusal showed migration guidance and preserved that revision.
 
 ## Revisions, export and recovery
 

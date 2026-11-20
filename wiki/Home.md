@@ -1,6 +1,6 @@
 # WebAppX Wiki
 
-## Experimental graph and versioned API workspace
+## Graph and versioned API workspace
 
 The F005/F006 implementation adds **Build → Code → Graph and API contracts**
 for explicit graph import/acceptance, lookup, findings, revision comparison,
@@ -9,19 +9,15 @@ metadata export/reopen and isolated migration copies. API 1.1 and supported
 [graph workflow](SYSTEMX-LAN-Canonical-Graph.md) and
 [versioned API workflow](SYSTEMX-LAN-Versioned-API-Contracts.md).
 
-**LAN-00401–LAN-00600 remain TODO** awaiting original requirement acceptance.
-The accepted baseline remains **400/10,000 requirements and 80/2,000
-capabilities**. Graph metadata cannot write template source; publication is
-separate from acceptance and production. The
-[current plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-PLAN-2026-10-31.md)
-records the remaining gates.
+F005 and F006 bring the LAN catalog to **600/10,000 accepted requirements and
+120/2,000 capabilities**. The [acceptance receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md)
+covers the 200 original requirements for these two families.
 
 ## F003/F004 identity and ownership — accepted 2026-10-31
 
 Agent 0 accepted **LAN-00201–LAN-00400**, F003 before F004, at candidate
-`aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`. The program now has
-**400/10,000 requirements and 80/2,000 capabilities** accepted, with **9,600
-requirements remaining TODO**. All 73 CI stages, 140 identity unit/API tests,
+`aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`. At that milestone, the catalog reached
+**400/10,000 accepted requirements and 80/2,000 capabilities**. All 73 CI stages, 140 identity unit/API tests,
 40 identity browser capabilities, 25 responsive groups, source 55+7, Navigator
 16 and separate Hosting preflight passed. Read the [QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md),
 [Identity and Ownership](SYSTEMX-LAN-Identity-and-Ownership.md) and

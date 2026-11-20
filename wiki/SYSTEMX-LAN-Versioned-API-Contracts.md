@@ -1,10 +1,10 @@
 # SYSTEMX LAN Versioned API Contracts
 
-The experimental graph/contract surface implements API **1.1** and an executable
+The graph API implements API **1.1** and an executable
 supported **1.0** contract. Each has its own schemas, capability IDs and operation
 set. This surface does not silently version every legacy LAN route or implement
-planned source/structure commands. **LAN-00401–LAN-00600 remain TODO**; the
-accepted baseline remains **400/10,000 requirements and 80/2,000 capabilities**.
+planned source/structure commands. The [F006 acceptance receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md)
+identifies the operation sets and schema versions exercised.
 
 ## Discover and run deliberately
 
@@ -63,7 +63,6 @@ The [versioned API guide](https://github.com/WayneTechLab/WebAppX/blob/main/docs
 and [F005/F006 execution plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-GRAPH-API-PLAN-2026-10-31.md)
 own full shapes and delivery gates. The original
 [F006 checklist](https://github.com/WayneTechLab/WebAppX/blob/main/docs/backlog/lan-10000/F006.md)
-requires F005 acceptance first. Type declarations, examples, a published branch
-or a successful worker exit alone accept neither family.
+records the completed requirements and their F005 prerequisites.
 
 [Canonical graph](SYSTEMX-LAN-Canonical-Graph.md) · [Legacy API reference](SYSTEMX-LAN-API-Reference.md) · [LAN Builder](SYSTEMX-LAN-Builder.md) · [Home](Home.md)

@@ -1,31 +1,25 @@
-# LAN active iteration — F005/F006 experimental source
+# LAN active iteration — graph and API acceptance
 
-Updated 2026-11-08. The implementation for **LAN-00401–LAN-00600** is integrated
-from ten authenticated CLI branches and qualified for experimental GitHub
-source/wiki synchronization. All 75 CI stages, 147 graph/API tests, 40 graph
-browser groups and separate Hosting preflight passed. Existing source browser
-regression passed 55 groups plus seven geometry checks. Read the
-[synchronization QA](LAN-GRAPH-API-SYNC-QA-2026-11-08.md) for exact candidates,
-retained failures, preservation evidence and limits.
+On 2026-11-19 Agent 0 accepted the canonical document graph (F005) and then
+the versioned API (F006). Together they cover **LAN-00401–LAN-00600**. The
+catalog now counts **600/10,000 accepted requirements and 120/2,000
+capabilities**. **9,400 requirements remain open.**
 
-Acceptance remains **400/10,000 requirements and 80/2,000 capabilities**.
-**LAN-00401–LAN-00600 remain TODO** pending original F005 then F006 acceptance;
-600/120 is only the target. Full WebAppX Pages reconciliation and an observed
-operator-session graph workflow remain pending. The operator runtime was not
-restarted. Feature development remains paused after this source/wiki sync.
+Open **Build → Code → Graph and API contracts** to preview a graph import,
+inspect findings, compare revisions or reopen a saved graph. The versioned API
+inspector lists supported commands and queries for clients 1.0 and 1.1. Use
+the [graph guide](LAN-CANONICAL-GRAPH.md), [API guide](LAN-VERSIONED-API-CONTRACTS.md)
+and [acceptance receipt](LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md) for setup, limits and tested behavior.
 
-Follow the [execution plan](LAN-GRAPH-API-PLAN-2026-10-31.md). The
-[separate scratch AI research](LAN-LOCAL-AI-RESEARCH-2026-10-31.md) retains its
-20.85 MB own-weight pilot and weak 2/10 exploratory result; it supplies no app
-adoption or LAN completion. Reusable records and managed snapshots stay blank
-or immutable as applicable.
+The [execution plan](LAN-GRAPH-API-PLAN-2026-10-31.md) records the delivery
+sequence. The [November 8 synchronization QA](LAN-GRAPH-API-SYNC-QA-2026-11-08.md)
+preserves the original experimental publication results.
 
 ## Completed F003/F004 baseline
 
 Updated 2026-10-31. Agent 0 accepted exactly **LAN-00201–LAN-00400** after terminal
-qualification, with F003 accepted before dependent F004. The program now has
-**400/10,000 requirements and 80/2,000 capabilities** accepted; **9,600 remain
-TODO**. The original definitions and prior 200 completion objects remain exact.
+qualification, with F003 accepted before dependent F004. At that milestone, the program reached
+**400/10,000 accepted requirements and 80/2,000 capabilities**. The original definitions and prior 200 completion objects remain exact.
 Read the [candidate-bound QA receipt](LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md),
 [completed plan](LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) and
 [operating guide](LAN-IDENTITY-OWNERSHIP.md).

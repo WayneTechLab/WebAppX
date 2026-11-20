@@ -1,9 +1,18 @@
 # LAN Builder Designer Master Plan Status
 
+## Accepted graph and API delivery — 2026-11-19
+
+F005 added the canonical document graph and F006 added versioned API contracts.
+Agent 0 accepted the two families in dependency order. The catalog now records
+**600/10,000 requirements and 120/2,000 capabilities**. Read the
+[acceptance receipt](../../docs/LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md), the
+[execution plan](../../docs/LAN-GRAPH-API-PLAN-2026-10-31.md) and the earlier
+[synchronization QA](../../docs/LAN-GRAPH-API-SYNC-QA-2026-11-08.md).
+
 ## Accepted F003/F004 delivery — 2026-10-31
 
-Agent 0 accepted 200 original requirements, F003 before F004. Current progress
-is **400/10,000 requirements and 80/2,000 capabilities**, with 9,600 TODO.
+Agent 0 accepted 200 original requirements, F003 before F004. The catalog then reached
+**400/10,000 requirements and 80/2,000 capabilities**.
 All 73 CI stages, 40 identity browser capabilities, 25 layout groups, source
 55+7, Navigator 16 and Hosting preflight passed on candidate
 `aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`.
@@ -24,7 +33,7 @@ Build a repository-native visual Designer for the WebAppX template using a canon
   capability and schema decisions now recorded in the repository.
 - Wave 0 implementation: COMPLETE — documentation, safety, characterization,
   link validation, capability manifest, and evidence packet pass.
-- Source families F001–F004: locally accepted at 400/10,000 requirements and 80/2,000 capabilities; source editing/recovery/policy, identity/ownership and responsive dashboard behavior have candidate-bound proof.
+- F001–F006 cover source editing, recovery, policy, identity, ownership, the canonical graph and versioned API contracts. Together they account for 600 accepted requirements and 120 capabilities.
 - Wave 1 preparation: source-revision and source-policy modules are locally verified. Full transport/domain modularization, the typed Designer kernel and structural round-trip work remain future milestones.
 
 ## Source access and host swarm — locally accepted 2026-10-30
@@ -215,23 +224,3 @@ The separately requested custom editor fork has an additive
 [32 unchecked tasks](../../docs/backlog/LAN-VSCODE-FORK-TODO.md).
 No original catalog definitions, accepted counts or reusable seed records are
 changed by this proposal; no native editor build or distribution is claimed.
-
-
-## Authorized F005 and F006 execution
-
-The next bounded wave selects LAN-00401–LAN-00600, canonical document graph
-followed by versioned API contracts. Current acceptance remains 400 requirements
-and 80 capabilities. The ten CLI results are integrated; the experimental
-implementation passed 75 CI stages, 147 graph/API tests, 40 graph browser groups
-and separate Hosting preflight. Source/wiki publication does not accept these
-200 requirements. Agent 0 owns integration and accepts F005 before dependent F006 only
-after exact-candidate review, browser proof and terminal checks. Read the
-[execution plan](../../docs/LAN-GRAPH-API-PLAN-2026-10-31.md) and the
-[separate local AI research](../../docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md).
-The scratch model's 2/10 exploratory quality is not accepted chatbot quality;
-model adoption supplies no completion in this LAN wave.
-
-The [2026-11-08 synchronization QA](../../docs/LAN-GRAPH-API-SYNC-QA-2026-11-08.md)
-records terminal results and retained failures. Original requirement acceptance,
-full Page-tree reconciliation and an observed operator-session graph workflow
-remain pending; new feature development stays paused after synchronization.

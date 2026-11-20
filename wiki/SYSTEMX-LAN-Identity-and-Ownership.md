@@ -6,9 +6,8 @@ the LAN builder. The authored [F003](https://github.com/WayneTechLab/WebAppX/blo
 [bounded iteration plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-PLAN-2026-10-30.md) owns the
 execution sequence. Agent 0 accepted **LAN-00201–LAN-00400** at functional
 candidate `aea59e748f9e9b6f1c953e1cf05b08db51a4d1f0`, accepting F003 before
-dependent F004 after terminal qualification. The program is **400/10,000
-requirements and 80/2,000 capabilities**, with **F001–F004 complete and 9,600
-requirements TODO**. Previous two hundred completion objects remain exact.
+dependent F004 after terminal qualification. At the F004 milestone, the program
+reached **400/10,000 accepted requirements and 80/2,000 capabilities**. Previous two hundred completion objects remain exact.
 Read the [candidate-bound QA receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-IDENTITY-OWNERSHIP-QA-2026-10-31.md).
 Publication/readback is a separate final delivery gate; this page records local
 acceptance rather than an already-pushed or production claim.
