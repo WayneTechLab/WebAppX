@@ -22,6 +22,20 @@ accepted original LAN requirements, complete capabilities and the next eligible
 items by gate. Agent 0 uses `wave` to plan disjoint branches and `prepare-wave`
 to create the reviewed assignments. Each prepared generation has a private
 checkpoint that the Mac IDE or Codex CLI can reopen after an interruption.
+Preview their execution separately with
+`node .SYSTEMX/swarm/cli.mjs run-wave --manifest "$SWARM_MANIFEST"`. Review its
+ready workers, skipped findings and exact `runDigest`, then explicitly launch
+that group with `run-wave --manifest "$SWARM_MANIFEST" --run-digest "$RUN_DIGEST" --apply`.
+Apply rechecks the reviewed bindings and checkpoints all selected leases before
+concurrent provider launch. It reuses pinned providers and grants no task or
+catalog acceptance. A stale digest requires a new preview; partial outcomes
+remain attached to their original generations.
+
+After controller loss, inspect the same private `status`, worker ownership and
+execution/completion sidecars. Restart neither clears uncertain leases nor
+relaunches their workers. Historical PIDs and missing receipts are not safe
+retry or kill authority. The [batch recovery guide](../docs/SYSTEMX-SWARM.md#recover-from-a-partial-run-or-controller-loss)
+records the local limits and manual audit boundary.
 
 The [host swarm guide](../docs/SYSTEMX-SWARM.md) defines one canonical Agent 0
 integration owner, Agent X event observations, up to ten authorized Agent Y CLI
@@ -41,6 +55,14 @@ GitHub merge, branch deletion or IDE acceptance.
 This is a host extension above managed SYSTEMX 1.9.0-alpha.6. It preserves release
 snapshots and blank reusable seeds. Its operating support does not inflate LAN
 acceptance counts or authorize production deployment.
+
+For source context before assigning work, use the
+[inventory and graph-proposal commands](../docs/SYSTEMX-SWARM.md#inventory-and-graph-proposals-before-assignment).
+Inventory `compare` is observational; a complete `scan` can replace the private
+accepted metadata snapshot. Declared settings remain distinct from installed or
+running facts. Graph `create`/`inspect` reviews have no apply or worker-launch
+mode. Their revisions and proposal IDs do not substitute for swarm digests or
+Agent 0 acceptance.
 
 ## Canonical graph and versioned API
 

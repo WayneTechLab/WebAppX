@@ -41,7 +41,7 @@ a fresh slot `sync` before launching an assigned worker. The response's
 `progress.complete` means every task in that manifest has been accepted and
 all its generations have closed. The WebAppX goal covers 10,000 original LAN
 requirements and 2,000 capabilities. The [current LAN iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md)
-records catalog acceptance and F007 scope.
+records catalog acceptance and the selected next scope.
 
 ### Check the program goal and prepare the reviewed wave
 
@@ -59,8 +59,15 @@ node .SYSTEMX/swarm/cli.mjs prepare-wave --manifest "$SWARM_MANIFEST" --wave-dig
 
 Preparation checkpoints each generation. If a slot fails, the response lists
 completed preparations and the remaining assignments. Inspect the failed slot,
-refresh the preview and use the new digest. A separate slot sync and launch
-start each worker.
+refresh the preview and use the new digest. An individual launch needs slot
+`sync`. For a prepared group, preview `run-wave --manifest "$SWARM_MANIFEST"`,
+review `workers`, `skipped` and its full `runDigest`, then use
+`run-wave --manifest "$SWARM_MANIFEST" --run-digest "$RUN_DIGEST" --apply` through
+the same host CLI. Apply rechecks bindings, checkpoints all leases before
+concurrent launch, and preserves separate partial/uncertain results. Completion
+means review, not acceptance. Restart does not reconcile sidecars, clear leases
+or relaunch workers; audit live ownership before manual recovery. Read the
+[batch commands, crash recovery and limits](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-SWARM.md#preview-and-run-prepared-workers-together).
 
 The ten-slot CLI rehearsal uses a disposable local Git origin. It ran ten synthetic
 workers concurrently on ten branches, verified ten changed heads and reopened
@@ -100,7 +107,8 @@ ignored host-local state.
 
 Run `node .SYSTEMX/swarm/cli.mjs --help` in the selected repository. An explicit
 private schema-1 manifest pins repository/base, tasks/scopes/checks, concurrency
-budget and merge policy. Commands are `plan`, `wave`, `next`, `status`, `prepare`, `sync`, `run`,
+budget and merge policy. Commands include `goal`, `plan`, `wave`, `next`, `status`,
+`prepare`, `prepare-wave`, `sync`, `run`, `run-wave`,
 `verify`, `review`, `alpha`, `feedback`, `integrate`, `publish-plan`, `publish`, `ready`,
 `merge-plan`, `merge`, `observe-merge`, `accept`, `close` and `advance`. Every
 mutation needs `--apply`; read-only plans grant no authority. `next --slot N`
