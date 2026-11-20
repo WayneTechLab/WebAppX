@@ -10,7 +10,7 @@ import { readViteInputs } from './inventory-vite.mjs'
 import { inspectDeclaredRoutes, publicPattern } from './declared-routes.mjs'
 import { inspectComponents, validComponentInventory } from './component-inventory.mjs'
 import { configurationInputPaths, inspectInventoryConfig, validInventoryConfig } from './inventory-config.mjs'
-import { effectivePublicDirectory, inspectInventoryMetadata, inventoryResourceStatsMatch, isInventoryMetadataPath, missingInventoryCapabilities, potentialPublicAsset, privateInventoryName as privateName, validInventoryMetadata } from './inventory-metadata.mjs'
+import { effectivePublicDirectory, inspectInventoryMetadata, inventoryResourceStatsMatch, isInventoryMetadataPath, collectMissingCapabilities, potentialPublicAsset, privateInventoryName as privateName, validInventoryMetadata } from './inventory-metadata.mjs'
 import { compareInventories } from './inventory-comparison.mjs'
 import { prunedNames, stagedSources, untrackedSources, workBudget } from './inventory-working-state.mjs'
 
@@ -161,7 +161,7 @@ function inspect(repo, ts, budget, observation) {
   const { head, index, modes, exclusions, indexRevision, includePublicAssets } = loadIndex(root, budget)
   observation.indexExclusions = exclusions
   const entries = [], routes = [], routeDeclarations = [], routeBindings = [], findings = [], evidence = new Map()
-  const names = new Map(), normalized = new Set(), findingCodes = new Set()
+  const names = new Map(), normalized = new Set(), missingCapabilities = new Set()
   let totalBytes = 0, omittedFindings = 0
   function exactFile(path) {
     const candidate = confinedFile(root, join(root, path))
@@ -190,7 +190,7 @@ function inspect(repo, ts, budget, observation) {
   function unresolved(code, path, line, occurrences = 1) {
     // Codes are fixed by the adapters. Preserve capability coverage even when
     // earlier findings use up the operator's per-location display budget.
-    findingCodes.add(code)
+    collectMissingCapabilities(missingCapabilities,code,path)
     if (findings.length >= inventoryLimits.findings) { omittedFindings += occurrences; return }
     findings.push({ state: 'unresolved', code, ...(path ? { path } : {}), ...(line ? { line } : {}), ...(occurrences > 1 ? { occurrences } : {}) })
   }
@@ -227,7 +227,13 @@ function inspect(repo, ts, budget, observation) {
   let pkg
   if (index.has('package.json')) {
     const manifest = read('package.json')
-    try { pkg = JSON.parse(manifest) } catch { fail('invalid-package-manifest') }
+    try { pkg = JSON.parse(manifest) } catch {
+      collectMissingCapabilities(missingCapabilities,'invalid-package-manifest','package.json')
+      observation.capabilities = { stack:'unknown', commit:head, indexRevision, eligibleTrackedCount:index.size,
+        available:['tracked-index','package-manifest-digest','last-good-readback'],
+        missing:[...missingCapabilities].sort(), evidence:[...evidence.values()] }
+      fail('invalid-package-manifest')
+    }
   }
   if (!(pkg?.dependencies?.vite || pkg?.devDependencies?.vite)) {
     const declared = { ...pkg?.dependencies, ...pkg?.devDependencies }
@@ -445,7 +451,7 @@ function inspect(repo, ts, budget, observation) {
   if (findings.length) {
     observation.capabilities = { stack:'vite', commit:head, indexRevision, eligibleTrackedCount:index.size,
       available:['tracked-index','verified-source-digests','partial-declarations','last-good-readback'],
-      missing:missingInventoryCapabilities(findingCodes) }
+      missing:[...missingCapabilities].sort() }
   }
   names.clear()
   for (const item of evidence.values()) {
