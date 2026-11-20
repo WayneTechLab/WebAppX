@@ -21,7 +21,11 @@ function sourcePath(value) {
   return value
 }
 const pathMatches = (path, allowed) => allowed.endsWith('/') ? path.startsWith(allowed) : path === allowed
-const scopesOverlap = (a, b) => { a = a.toLowerCase(); b = b.toLowerCase(); return a === b || pathMatches(a, b) || pathMatches(b, a) }
+function scopesOverlap(a, b) {
+  const left = a.toLowerCase().replace(/\/$/, ''), right = b.toLowerCase().replace(/\/$/, '')
+  // A file and a directory at the same path cannot coexist in a merged tree.
+  return left === right || left.startsWith(`${right}/`) || right.startsWith(`${left}/`)
+}
 const protectedPath = path => /^(?:\.git(?:\/|$)|\.env(?:[./]|$)|\.systemx\/(?:state|local|\.systemx|plan|global|work|memory|projects)(?:\/|$)|\.systemx\/(?:current\.md|project\.json|installation\.json)$|\.systemx\/agents\/(?!readme\.md$)|\.systemx\/lan\/(?:temp|backup|files)(?:\/|$))/i.test(path)
 function validateScope(value) { if (typeof value !== 'string') fail('SCOPE_INVALID', 'Scope entries must be repository-relative path text.'); const suffix = value.endsWith('/') ? '/' : ''; return sourcePath(suffix ? value.slice(0, -1) : value) + suffix }
 function command(value) {
@@ -64,7 +68,7 @@ export function inspectRepository(input) {
   const root = realpathSync(resolve(input))
   if (!isCanonicalRepositoryRoot(root, git(root, ['rev-parse', '--show-toplevel']))) fail('REPOSITORY_ROOT_REQUIRED', 'Select the exact Git worktree root.');
   const common = realpathSync(resolve(root, git(root, ['rev-parse', '--git-common-dir']))), entry = statSync(common)
-  return { root, workspaceId: digest(`systemx-swarm\0${root}\0${common}\0${entry.dev}\0${entry.ino}`), head: git(root, ['rev-parse', 'HEAD']), branch: git(root, ['branch', '--show-current']), clean: git(root, ['status', '--porcelain=v1', '--untracked-files=all']) === '' }
+  return { root, workspaceId: digest(`systemx-swarm\0${root}\0${common}\0${entry.dev}\0${entry.ino}`), head: git(root, ['rev-parse', 'HEAD']), branch: git(root, ['branch', '--show-current']), clean: git(root, ['--no-optional-locks', 'status', '--porcelain=v1', '--untracked-files=all']) === '' }
 }
 function remoteRepository(root) {
   const remote = git(root, ['remote', 'get-url', 'origin']) ?? ''
@@ -131,7 +135,7 @@ export function createController({ repo, manifest, stateDir }) {
     } finally { closeSync(owner); rmSync(lock) }
   }
   const slotFor = (state, number) => {
-    if (!Number.isInteger(number) || number < 1 || number > validated.maxWorkers) fail('SLOT_INVALID', 'Choose a worker slot within the configured 1–10 limit.');
+    checkSlotNumber(number)
     return state.slots[String(number)] ?? fail('SLOT_UNASSIGNED', 'Prepare this worker slot first.');
   }
   const currentWorker = slot => {
@@ -177,31 +181,96 @@ export function createController({ repo, manifest, stateDir }) {
     }
     return { baseBranch: validated.baseBranch, targetRevision: target, mergeCommit, relation: target === mergeCommit ? 'identical' : 'ancestor', observedAt: new Date().toISOString() }
   }
+  function checkSlotNumber(number) {
+    if (!Number.isInteger(number) || number < 1 || number > validated.maxWorkers) fail('SLOT_INVALID', 'Choose a configured worker slot from 1 through 10.')
+  }
+  function assignmentContext(state) {
+    const slots = Object.values(state.slots)
+    const live = slots.filter(slot => slot.phase !== 'closed')
+    const accepted = new Set(state.acceptedTaskIds), assigned = new Set(slots.map(slot => slot.taskId))
+    const ready = validated.tasks.filter(task => !accepted.has(task.id) && !assigned.has(task.id) && task.dependsOn.every(id => accepted.has(id)))
+    const heldPaths = live.flatMap(slot => taskById(slot.taskId).allowedPaths)
+    return { live, ready, heldPaths, available: Math.max(0, validated.maxWorkers - live.length - validated.externalWorkers) }
+  }
+  const overlapsHeld = (task, heldPaths) => task.allowedPaths.some(path => heldPaths.some(held => scopesOverlap(path, held)))
+
+  function planSummary(state, context) {
+    return {
+      schemaVersion: 1, runId: validated.runId, manifestDigest, workspaceId: identity.workspaceId, baseline: state.baseRevision,
+      activeWorkers: context.live.length, externalWorkers: validated.externalWorkers, availableSlots: context.available,
+      readyTasks: context.ready.map(({ id, title, allowedPaths }) => ({ id, title, allowedPaths })), autoMerge: validated.autoMerge, applied: false,
+    }
+  }
+  function dispatchBaseBlock(state, live) {
+    // An integrated worker or observed merge may already be ahead of the
+    // coordinator before the operator accepts and closes the last generation.
+    if (live.some(slot => slot.baseRevision !== state.baseRevision ||
+        (slot.targetObservation?.targetRevision && slot.targetObservation.targetRevision !== state.baseRevision) ||
+        (slot.pr?.mergeCommit && slot.pr.mergeCommit !== state.baseRevision))) return 'SYNC_BARRIER_REQUIRED'
+    for (let index = state.events.length - 1; index >= 0; index--) {
+      const event = state.events[index].event
+      if (event === 'sync-barrier-advanced') break
+      if (['merge-verified', 'delivery-accepted', 'generation-closed'].includes(event)) return 'SYNC_BARRIER_REQUIRED'
+    }
+    const coordinator = inspectRepository(identity.root)
+    const namedBase = git(identity.root, ['rev-parse', '--verify', `refs/heads/${validated.baseBranch}`], { allowFailure: true })
+    return coordinator.clean && coordinator.head === state.baseRevision && namedBase === state.baseRevision ? null : 'BASE_STALE'
+  }
+  function proposeWave(state, selectedSlot) {
+    const context = assignmentContext(state), plan = planSummary(state, context)
+    const totalTasks = validated.tasks.length, acceptedTasks = state.acceptedTaskIds.length
+    const remainingTasks = totalTasks - acceptedTasks, activeGenerations = context.live.length
+    const progress = { totalTasks, acceptedTasks, remainingTasks, activeGenerations, complete: remainingTasks === 0 && activeGenerations === 0 }
+    const assignments = []
+    let blockedBy
+    if (remainingTasks === 0) blockedBy = progress.complete ? 'COMPLETE' : 'AWAITING_CLOSURE'
+    else blockedBy = dispatchBaseBlock(state, context.live)
+    if (!blockedBy && !context.available) blockedBy = 'CAPACITY_EXCEEDED'
+    if (!blockedBy && !context.ready.length) blockedBy = 'NO_READY_TASKS'
+    if (!blockedBy) {
+      const freeSlots = []
+      for (let number = 1; number <= validated.maxWorkers; number++) {
+        const slot = state.slots[String(number)]
+        if ((selectedSlot === undefined || number === selectedSlot) && (!slot || slot.phase === 'closed')) freeSlots.push(number)
+      }
+      const heldPaths = [...context.heldPaths]
+      for (const task of context.ready) {
+        if (assignments.length >= context.available || assignments.length >= freeSlots.length) break
+        if (overlapsHeld(task, heldPaths)) continue
+        const slot = freeSlots[assignments.length], generation = (state.slots[String(slot)]?.generation ?? 0) + 1
+        assignments.push({ slot, generation, taskId: task.id, allowedPaths: task.allowedPaths })
+        heldPaths.push(...task.allowedPaths)
+      }
+      if (!assignments.length) blockedBy = 'SCOPE_LEASE_CONFLICT'
+    }
+    const activeSlots = context.live.map(({ number: slot, generation, taskId, phase }) => ({ slot, generation, taskId, phase }))
+    return { ...plan, stateRevision: state.revision, assignments, activeSlots, progress, blockedBy, executionAuthority: false }
+  }
   return {
     manifest: validated,
     status() { const state = load(), executions = Object.values(state.slots).filter(slot => slot.lease && existsSync(join(location, `execution-${slot.lease}.json`))).map(slot => readJsonFile(join(location, `execution-${slot.lease}.json`), true)); return { ...state, executions, stateDir: location, repository: validated.repository, hostExtension: true, canonicalTaskAcceptance: false } },
-    plan() {
-      const state = load(), live = Object.values(state.slots).filter(slot => slot.phase !== 'closed'), accepted = new Set(state.acceptedTaskIds)
-      return { schemaVersion: 1, runId: validated.runId, manifestDigest, workspaceId: identity.workspaceId, baseline: state.baseRevision, activeWorkers: live.length, externalWorkers: validated.externalWorkers, availableSlots: Math.max(0, validated.maxWorkers - live.length - validated.externalWorkers), readyTasks: validated.tasks.filter(task => task.dependsOn.every(id => accepted.has(id)) && !accepted.has(task.id) && !Object.values(state.slots).some(slot => slot.taskId === task.id)).map(task => ({ id: task.id, title: task.title, allowedPaths: task.allowedPaths })), autoMerge: validated.autoMerge, applied: false }
-    },
+    plan() { const state = load(); return planSummary(state, assignmentContext(state)) },
+    wave() { return proposeWave(load()) },
     next(number) {
-      const state = load(), plan = this.plan(), previous = number === undefined ? null : state.slots[String(number)]
-      if (previous && previous.phase !== 'closed') fail('SLOT_BUSY', 'Keep the current generation open while feedback or acceptance remains.');
-      const live = Object.values(state.slots).filter(slot => slot.phase !== 'closed')
-      const task = plan.readyTasks.find(candidate => !live.some(slot => candidate.allowedPaths.some(path => taskById(slot.taskId).allowedPaths.some(other => scopesOverlap(path, other))))) ?? null
-      return { ...plan, nextTask: task, slot: number ?? null, freshGenerationRequired: true, previousProviderMayBeReused: Boolean(previous), providerChoiceRequired: !previous, executionAuthority: false, applied: false }
+      if (number !== undefined) checkSlotNumber(number)
+      const state = load(), previous = number === undefined ? null : state.slots[String(number)]
+      if (previous && previous.phase !== 'closed') fail('SLOT_BUSY', 'Keep the current generation open while feedback or acceptance remains.')
+      const wave = proposeWave(state, number)
+      const nextTask = wave.readyTasks.find(task => task.id === wave.assignments[0]?.taskId) ?? null
+      return { ...wave, nextTask, slot: number ?? null, freshGenerationRequired: true, previousProviderMayBeReused: Boolean(previous), providerChoiceRequired: !previous }
     },
     async prepare({ taskId, slot: number, executable, args = [], apply = false }) {
       return change(apply, state => {
-        if (!Number.isInteger(number) || number < 1 || number > validated.maxWorkers) fail('SLOT_INVALID', 'Choose a configured worker slot from 1 through 10.');
+        checkSlotNumber(number)
         const old = state.slots[String(number)]
-        if (old && old.phase !== 'closed') fail('SLOT_BUSY', 'Keep this branch open until feedback, merge, acceptance and closure are verified.');
-        const task = taskById(taskId), slots = Object.values(state.slots), live = slots.filter(slot => slot.phase !== 'closed')
-        if (live.length + validated.externalWorkers >= validated.maxWorkers) fail('CAPACITY_EXCEEDED', 'The shared CLI/app/IDE worker budget is full.');
-        if (state.acceptedTaskIds.includes(taskId) || slots.some(slot => slot.taskId === taskId) || !task.dependsOn.every(id => state.acceptedTaskIds.includes(id))) fail('TASK_NOT_READY', 'Task is already assigned or its dependencies are not accepted.');
-        if (live.some(slot => task.allowedPaths.some(path => taskById(slot.taskId).allowedPaths.some(other => scopesOverlap(path, other))))) fail('SCOPE_LEASE_CONFLICT', 'Another active slot owns an overlapping write scope.');
-        const coordinator = inspectRepository(identity.root)
-        if (!coordinator.clean || coordinator.head !== state.baseRevision || git(identity.root, ['rev-parse', validated.baseBranch]) !== state.baseRevision) fail('BASE_STALE', 'Coordinator and named base branch must be clean at the reviewed baseline.');
+        if (old && old.phase !== 'closed') fail('SLOT_BUSY', 'Keep this branch open until feedback, merge, acceptance and closure are verified.')
+        const task = taskById(taskId), context = assignmentContext(state)
+        if (!context.available) fail('CAPACITY_EXCEEDED', 'The shared CLI/app/IDE worker budget is full.')
+        if (!context.ready.includes(task)) fail('TASK_NOT_READY', 'Task is already assigned or its dependencies are not accepted.')
+        if (overlapsHeld(task, context.heldPaths)) fail('SCOPE_LEASE_CONFLICT', 'Another active slot owns an overlapping write scope.')
+        const blocked = dispatchBaseBlock(state, context.live)
+        if (blocked === 'BASE_STALE') fail(blocked, 'Coordinator and named base branch must be clean at the reviewed baseline.')
+        if (blocked) fail(blocked, 'Complete and close the current wave, synchronize the coordinator and advance before dispatching a fresh generation.')
         if (state.acceptedTaskIds.length) {
           if (remoteRepository(identity.root) !== validated.repository) fail('REMOTE_MISMATCH', 'Origin changed before the next dispatch.');
           const currentTarget = git(identity.root, ['ls-remote', '--exit-code', 'origin', `refs/heads/${validated.baseBranch}`])?.split(/\s+/)[0]
