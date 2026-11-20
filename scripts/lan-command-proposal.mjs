@@ -7,6 +7,7 @@ import { relative, resolve } from 'node:path'
 import { API_VERSION, getContractRegistry } from '../.SYSTEMX/LAN/Builder/api-contracts.mjs'
 import { validateApiResponse } from '../.SYSTEMX/LAN/Builder/api-validation.mjs'
 import { GraphError } from '../.SYSTEMX/LAN/Builder/graph-core.mjs'
+import { isRelationalFinding } from '../.SYSTEMX/LAN/Builder/graph-validation.mjs'
 import { exportGraphDocument } from '../.SYSTEMX/LAN/Builder/graph-evolution.mjs'
 import { createCommandProposal, inspectCommandProposal } from '../.SYSTEMX/LAN/Builder/command-proposal.mjs'
 import { parsePublicJson } from './package-script-discovery.mjs'
@@ -24,7 +25,10 @@ current accepted baseline and the proposal produced by create.
 Replace --baseline FILE with --origin http://127.0.0.1:PORT --document ID to
 read the accepted graph from the direct LAN service. The tool obtains the local
 dashboard session and reads graph status and document metadata. It only reviews
-proposals. A successful command prints the portable proposal as JSON.
+proposals. The JSON output includes the child IDs before and after a structural
+change, zero-based placements, and affected source owners. The full review must
+fit within 128000 bytes. Split larger edits and rerun create. Older saved reviews
+with incomplete structural details need to be created again.
 
 Use - for one JSON input from stdin. Inputs must be UTF-8 JSON, at most 2 MB
 each, with unique object keys and regular file paths free of symbolic links.
@@ -173,6 +177,23 @@ async function main(args) {
   process.stdout.write(JSON.stringify(result, null, 2) + '\n')
 }
 
+function graphRepair(error) {
+  if (actionableCodes.has(error.code)) return error.message
+  const fallback = 'Check the graph export and candidate schema.'
+  if (error.code !== 'GRAPH_VALIDATION_FAILED') return fallback
+  // Emit verified validator reason codes only. Dynamic object IDs, values,
+  // paths and messages from the submitted graph never become CLI diagnostics.
+  const codes = [...new Set(error.findings.filter(finding => isRelationalFinding(finding) && finding.severity === 'error')
+    .map(finding => finding.code))].sort()
+  const guidance = {
+    GRAPH_ROOT_MISSING: 'Point each page and component root at an existing node.',
+    NODE_CHILD_DUPLICATE: 'List each child only once in its parent.',
+  }
+  const reasons = codes.slice(0, 4).map(code => guidance[code] ? code + ' — ' + guidance[code] : code)
+  const remainder = codes.length > 4 || error.omittedCount > 0 ? ' Additional findings were omitted.' : ''
+  return [fallback, ...reasons].join(' ') + remainder
+}
+
 try { await main(process.argv.slice(2)) }
 catch (error) {
   if (error instanceof UsageError) {
@@ -182,8 +203,7 @@ catch (error) {
     let detail = 'Cannot read the requested input or local service.'
     if (error instanceof InputError) detail = error.message
     if (error instanceof GraphError && /^[A-Z][A-Z0-9_]{1,63}$/.test(error.code)) {
-      const repair = actionableCodes.has(error.code) ? error.message : 'Check the graph export and candidate schema.'
-      detail = error.code + '. ' + repair
+      detail = error.code + '. ' + graphRepair(error)
     }
     process.stderr.write(`Proposal review refused: ${detail}\n`)
     process.exitCode = 1

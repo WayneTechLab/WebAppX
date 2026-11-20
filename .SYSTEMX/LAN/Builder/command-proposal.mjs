@@ -67,10 +67,70 @@ function changedFields(kind, before, after) {
   return keys.filter(key => canonicalJson(before[key]) !== canonicalJson(after[key])).sort()
 }
 
-function orderOfSurvivors(before, after) {
-  const oldIds = new Set(before.childIds)
-  const newIds = new Set(after.childIds)
-  return [before.childIds.filter(id => newIds.has(id)), after.childIds.filter(id => oldIds.has(id))]
+function placement(index, node) {
+  if (!node) return null
+  return { parentId: node.parentId === null ? null : publicId(node.parentId),
+    index: node.parentId === null ? null : index.node.get(node.parentId).childIds.indexOf(node.id) }
+}
+
+// A survivor crosses another if any earlier new sibling originally followed it,
+// or any later new sibling originally preceded it. Both scans are linear and
+// catch a middle sibling that keeps its absolute index in a reversal.
+function crossedSiblings(survivors, oldPositions) {
+  const crossed = new Set()
+  let largest = -1
+  for (const id of survivors) {
+    const position = oldPositions.get(id)
+    if (position < largest) crossed.add(id)
+    largest = Math.max(largest, position)
+  }
+  let smallest = Infinity
+  for (let i = survivors.length - 1; i >= 0; i--) {
+    const id = survivors[i]
+    const position = oldPositions.get(id)
+    if (position > smallest) crossed.add(id)
+    smallest = Math.min(smallest, position)
+  }
+  return crossed
+}
+
+function childOrder(before, after) {
+  const oldPositions = new Map(before.map((id, index) => [id, index]))
+  const newPositions = new Map(after.map((id, index) => [id, index]))
+  const oldSurvivors = before.filter(id => newPositions.has(id))
+  const newSurvivors = after.filter(id => oldPositions.has(id))
+  const crossed = crossedSiblings(newSurvivors, oldPositions)
+  const changed = new Set()
+  const inserted = [], removed = [], moved = [], neighborChanges = []
+  for (const id of before) {
+    if (!newPositions.has(id)) {
+      removed.push({ id: publicId(id), from: oldPositions.get(id), to: null })
+      changed.add(id)
+    }
+  }
+  for (const [to, id] of after.entries()) {
+    const from = oldPositions.get(id)
+    if (from === undefined) {
+      inserted.push({ id: publicId(id), from: null, to })
+      changed.add(id)
+      continue
+    }
+    if (from !== to || crossed.has(id)) {
+      moved.push({ id: publicId(id), from, to, relativeOrderChanged: crossed.has(id) })
+      changed.add(id)
+    }
+    // Also include unmoved anchors, e.g. appending a child gives the previous
+    // final child a new neighbor without changing its index or survivor order.
+    if (before[from - 1] !== after[to - 1] || before[from + 1] !== after[to + 1]) {
+      neighborChanges.push(publicId(id))
+      changed.add(id)
+    }
+  }
+  return {
+    report: { before: before.map(publicId), after: after.map(publicId), inserted, removed, moved, neighborChanges },
+    oldSurvivors, newSurvivors,
+    affectedBefore: before.filter(id => changed.has(id)), affectedAfter: after.filter(id => changed.has(id)),
+  }
 }
 
 function effect(category, { kind, id }, oldIndex, newIndex, owners, documentId) {
@@ -87,21 +147,28 @@ function effect(category, { kind, id }, oldIndex, newIndex, owners, documentId) 
     if (kind === 'node' && before.source && after.source && result.fields.includes('source')) {
       result.sourceFields = changedFields('source', before.source, after.source)
     }
-    if (kind === 'node' && result.fields.includes('childIds')) {
-      const oldSet = new Set(before.childIds)
-      const newSet = new Set(after.childIds)
-      oldChildren = before.childIds.filter(child => !newSet.has(child))
-      newChildren = after.childIds.filter(child => !oldSet.has(child))
-      // Reorders have their own record. Include childIds here only for a membership change.
-      if (!oldChildren.length && !newChildren.length) result.fields = result.fields.filter(key => key !== 'childIds')
-    }
   }
-  if (category === 'reordered') {
-    const [oldOrder, newOrder] = orderOfSurvivors(before, after)
-    result.beforeOrder = oldOrder.map(publicId)
-    result.afterOrder = newOrder.map(publicId)
-    oldChildren = oldOrder.filter((child, index) => child !== newOrder[index])
-    newChildren = newOrder.filter((child, index) => child !== oldOrder[index])
+  if (kind === 'node') {
+    if (!before || !after || before.parentId !== after.parentId) {
+      result.placement = { before: placement(oldIndex, before), after: placement(newIndex, after) }
+    }
+    const oldOrder = before?.childIds ?? []
+    const newOrder = after?.childIds ?? []
+    if (category === 'reordered' || result.fields?.includes('childIds') || (!before || !after) && (oldOrder.length || newOrder.length)) {
+      const order = childOrder(oldOrder, newOrder)
+      if (category === 'changed' && !order.report.inserted.length && !order.report.removed.length) {
+        // The separate reorder row contains this order and its ownership.
+        result.fields = result.fields.filter(field => field !== 'childIds')
+      } else {
+        result.childOrder = order.report
+        oldChildren = order.affectedBefore
+        newChildren = order.affectedAfter
+        if (category === 'reordered') {
+          result.beforeOrder = order.oldSurvivors.map(publicId)
+          result.afterOrder = order.newSurvivors.map(publicId)
+        }
+      }
+    }
   }
   result.ownersBefore = ownersFor(oldIndex, kind, before, oldChildren, owners, documentId)
   result.ownersAfter = ownersFor(newIndex, kind, after, newChildren, owners, documentId)
