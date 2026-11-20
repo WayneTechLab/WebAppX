@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, truncateSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
@@ -45,6 +45,9 @@ try {
   report.testSHA256 = digest(readFileSync(fileURLToPath(import.meta.url)))
   mkdirSync(dirname(join(fixture, sourcePath)), { recursive: true })
   writeFileSync(join(fixture, sourcePath), source)
+  const streamAsset = join(fixture, lan, 'Website', 'INTERRUPTED_ASSET.css')
+  writeFileSync(streamAsset, '')
+  truncateSync(streamAsset, 32 * 1024 * 1024)
   // An owned placeholder serves the iframe and receives all status TCP probes.
   // Neither the dashboard nor its probes use the operator's app or emulators.
   preview = createServer((_request, response) => {
@@ -121,7 +124,7 @@ try {
   const rows = panel.locator('#transport-entries > li')
   const session = await page.locator('meta[name="systemx-session"]').getAttribute('content')
   assert.ok(session)
-  const sensitive = [sourcePath, fixture, 'SOURCE_CONTENT_CANARY', 'UNSAVED_DRAFT_CANARY', 'INVALID_SESSION_CANARY', session]
+  const sensitive = [sourcePath, fixture, 'SOURCE_CONTENT_CANARY', 'UNSAVED_DRAFT_CANARY', 'INVALID_SESSION_CANARY', 'INTERRUPTED_ASSET', session]
   const assertSafe = text => {
     assert.ok(sensitive.every(value => !text.includes(value)), 'Diagnostics exposed a private fixture value')
   }
@@ -146,7 +149,14 @@ try {
     assert.equal(body.limit, 64)
     assert.ok(body.entries.length > 0 && body.entries.length <= body.limit)
     for (const entry of body.entries) {
-      assert.deepEqual(Object.keys(entry).sort(), ['category', 'durationMs', 'method', 'status', 'transportId'])
+      const fields = ['category', 'durationMs', 'method', 'status', 'transportId']
+      if (entry.status === null) {
+        fields.push('outcome')
+        assert.equal(entry.outcome, 'cancelled')
+      } else {
+        assert.ok(Number.isInteger(entry.status) && entry.status >= 100 && entry.status <= 599)
+      }
+      assert.deepEqual(Object.keys(entry).sort(), fields.sort())
       assert.match(entry.transportId, uuid)
       assert.ok(Number.isInteger(entry.durationMs) && entry.durationMs >= 0)
     }
@@ -167,8 +177,24 @@ try {
 
   await expect(panel.locator('summary')).toBeVisible()
   await noPolling(0)
+  const interruptedId = await page.evaluate(async () => {
+    const controller = new AbortController()
+    const response = await fetch('/Website/INTERRUPTED_ASSET.css', { signal: controller.signal })
+    const chunk = await response.body.getReader().read()
+    if (chunk.done) throw new Error('Expected an in-flight response')
+    controller.abort()
+    return response.headers.get('x-systemx-request-id')
+  })
+  assert.match(interruptedId, uuid)
   const initial = await read(panel.locator('summary'))
   report.sourceRead = await snapshot(initial, sourceId, 200, 'builder')
+  const interruptedRows = (await initial.result.json()).entries.filter(entry => entry.transportId === interruptedId)
+  assert.equal(interruptedRows.length, 1)
+  const [interrupted] = interruptedRows
+  assert.deepEqual([interrupted.status, interrupted.outcome, interrupted.category], [null, 'cancelled', 'assets'])
+  await expect(rows.filter({ hasText: interruptedId })).toContainText('GET · assets · Cancelled')
+  report.cancelledRead = interrupted
+  report.checks.push('Aborting a streamed browser read produced one correlated Cancelled row.')
   await noPolling(1)
   report.checks.push('A single on-demand read rendered the observed source response ID and bounded metadata.')
   const visibleBeforeRefusal = await rows.allTextContents()

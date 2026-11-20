@@ -11,9 +11,20 @@ export function validTransportId(id) {
   return typeof id === 'string' && id.length === 36 && transportIdPattern.test(id)
 }
 
+const snapshotKeys = ['schemaVersion', 'limit', 'entries']
+const completedKeys = ['transportId', 'method', 'category', 'status', 'durationMs']
+const cancelledKeys = [...completedKeys, 'outcome']
+
+function hasExactKeys(value, keys) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === keys.length && keys.every(key => Object.hasOwn(value, key))
+}
+
 function validEntry(entry) {
-  return entry && validTransportId(entry.transportId) && transportMethods.has(entry.method)
-    && routeCategories.has(entry.category) && Number.isInteger(entry.status) && entry.status >= 100 && entry.status <= 599
+  const cancelled = entry?.outcome === 'cancelled'
+  return hasExactKeys(entry, cancelled ? cancelledKeys : completedKeys)
+    && validTransportId(entry.transportId) && transportMethods.has(entry.method) && routeCategories.has(entry.category)
+    && (cancelled ? entry.status === null : Number.isInteger(entry.status) && entry.status >= 100 && entry.status <= 599)
     && Number.isSafeInteger(entry.durationMs) && entry.durationMs >= 0
 }
 
@@ -63,16 +74,17 @@ export function attachTransportDiagnostics(panel, request) {
       })
       if (read !== pending) return
       if (!panel.open) return cancel()
-      if (snapshot?.schemaVersion !== 1 || snapshot.limit !== diagnosticsLimit || !Array.isArray(snapshot.entries)
+      if (!hasExactKeys(snapshot, snapshotKeys) || snapshot.schemaVersion !== 1 || snapshot.limit !== diagnosticsLimit || !Array.isArray(snapshot.entries)
         || snapshot.entries.length > diagnosticsLimit || !snapshot.entries.every(validEntry)) {
         finish(read, 'unavailable', 'Invalid diagnostics response. Retry to read a fresh result.')
         return
       }
-      const rows = snapshot.entries.map(({ method, category, status: httpStatus, durationMs, transportId }) => {
+      const rows = snapshot.entries.map(({ method, category, status: httpStatus, outcome, durationMs, transportId }) => {
         const row = doc.createElement('li')
         const id = doc.createElement('code')
         id.textContent = transportId
-        row.append(`${method} · ${category} · HTTP ${httpStatus} · ${durationMs} ms`, id)
+        const result = outcome === 'cancelled' ? 'Cancelled' : `HTTP ${httpStatus}`
+        row.append(`${method} · ${category} · ${result} · ${durationMs} ms`, id)
         return row
       })
       entries.replaceChildren(...rows)

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { randomInt } from 'node:crypto'
 import { once } from 'node:events'
-import { cp, mkdir, mkdtemp, rename, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, rename, rm, truncate, writeFile } from 'node:fs/promises'
 import { request } from 'node:http'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -57,11 +57,11 @@ async function startFixture(t, prepare) {
     req.once('error', reject)
     req.end(body)
   })
-  return { target, send }
+  return { target, send, origin }
 }
 
 test('loopback LAN correlates completed responses and exposes only bounded session-local transport metadata', async t => {
-  const { target, send } = await startFixture(t)
+  const { target, send, origin } = await startFixture(t)
   const dashboard = await send('/')
   assert.equal(dashboard.status, 200)
   assert.match(dashboard.id, uuid)
@@ -116,6 +116,46 @@ test('loopback LAN correlates completed responses and exposes only bounded sessi
     }
     assert.doesNotMatch(check.text, /PRIVATE_|private\.invalid|api\/contracts|Website\/|x-systemx-session/)
     assert.ok(!check.text.includes(token) && !check.text.includes(target))
+  })
+
+  await t.test('interrupting a live response records one cancellation with its issued ID and no HTTP status', async () => {
+    // A sparse fixture keeps the stream open past the first chunk on loopback.
+    const asset = join(target, 'Website', 'PRIVATE_STREAM.css')
+    await writeFile(asset, '')
+    await truncate(asset, 32 * 1024 * 1024)
+    const interruptedId = await new Promise((resolve, reject) => {
+      const req = request(origin, { path: '/Website/PRIVATE_STREAM.css?PRIVATE_QUERY', agent: false, signal: AbortSignal.timeout(8000) }, res => {
+        res.once('error', reject)
+        res.once('data', () => {
+          resolve(res.headers['x-systemx-request-id'])
+          res.destroy()
+        })
+      })
+      req.once('error', reject)
+      req.end()
+    })
+    assert.match(interruptedId, uuid)
+    // Poll the owned server until it has observed the peer close.
+    let row
+    const deadline = performance.now() + 3000
+    do {
+      const result = await read()
+      assert.equal(result.status, 200)
+      assert.ok(!result.text.includes('PRIVATE_STREAM'))
+      const matches = JSON.parse(result.text).entries.filter(item => item.transportId === interruptedId)
+      assert.ok(matches.length <= 1)
+      row = matches[0]
+      if (!row) await new Promise(resolve => setTimeout(resolve, 20))
+    } while (!row && performance.now() < deadline)
+    assert.ok(row, 'Missing cancellation record')
+    assert.deepEqual(Object.keys(row).sort(), ['category', 'durationMs', 'method', 'outcome', 'status', 'transportId'])
+    assert.deepEqual([row.method, row.category, row.status, row.outcome], ['GET', 'assets', null, 'cancelled'])
+    assert.ok(Number.isSafeInteger(row.durationMs) && row.durationMs >= 0)
+    const health = await send('/api/health')
+    assert.equal(health.status, 200)
+    const final = JSON.parse((await read()).text).entries
+    assert.equal(final.filter(item => item.transportId === interruptedId).length, 1)
+    assert.equal(final.filter(item => item.transportId === health.id).length, 1)
   })
 
   await t.test('an unexpected handler error returns a correlated safe 500 and leaves health available', async () => {
