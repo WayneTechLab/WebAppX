@@ -41,7 +41,7 @@ try {
   cpSync(join(root, 'package.json'), join(fixture, 'package.json'))
   report.implementationSHA256 = Object.fromEntries([
     'server.mjs', 'Builder/transport-diagnostics.mjs', 'Builder/request-admission.mjs', 'Builder/transport-policy.mjs', 'Website_Dashboard.html',
-    'Website/dashboard.css', 'Website/dashboard.js', 'Website/transport-diagnostics.js',
+    'Website/dashboard.css', 'Website/dashboard.js', 'Website/transport-diagnostics.js', 'Website/request-feedback.js',
   ].map(file => [file, digest(readFileSync(join(fixture, lan, file)))]))
   report.testSHA256 = digest(readFileSync(fileURLToPath(import.meta.url)))
   mkdirSync(dirname(join(fixture, sourcePath)), { recursive: true })
@@ -91,7 +91,9 @@ try {
     if (url.origin === 'https://fonts.googleapis.com' && url.pathname === '/css2') {
       return route.fulfill({ contentType: 'text/css', body: '' })
     }
-    if (![origin, previewOrigin].includes(url.origin) || !['GET', 'HEAD'].includes(request.method())) {
+    const graphStatusRead = url.origin === origin && url.pathname === '/api/contracts/query' && request.method() === 'POST'
+      && request.postDataJSON()?.operation === 'graph.status' && request.postDataJSON()?.kind === 'query'
+    if (![origin, previewOrigin].includes(url.origin) || !(['GET', 'HEAD'].includes(request.method()) || graphStatusRead)) {
       unexpectedRequests++
       return route.abort()
     }
@@ -204,6 +206,14 @@ try {
   assert.match(interruptedId, uuid)
   const initial = await read(panel.locator('summary'))
   report.sourceRead = await snapshot(initial, sourceId, 200, 'builder')
+  const lastRequest = panel.locator('#transport-last-request')
+  assert.equal(await loaded.headerValue('x-systemx-retry'), 'read-only')
+  await expect(lastRequest).toBeVisible()
+  await expect(lastRequest).toContainText('Source read completed (HTTP 200)')
+  await expect(lastRequest).toContainText(sourceId)
+  await expect(lastRequest).toContainText('Safe to repeat this read.')
+  assertSafe(await lastRequest.innerText())
+  report.checks.push('Selecting and loading a source file showed its actual correlation header and retry disposition.')
   const interruptedRows = (await initial.result.json()).entries.filter(entry => entry.transportId === interruptedId)
   assert.equal(interruptedRows.length, 1)
   const [interrupted] = interruptedRows
@@ -297,6 +307,38 @@ try {
   await page.getByRole('button', { name: 'Open code and provider tools' }).click()
   await page.getByRole('link', { name: 'Code', exact: true }).click()
   await expect(page.getByRole('textbox', { name: 'Source editor' })).toHaveValue(draft)
+  await page.locator('#graph-contract-inspector > summary').click()
+  await page.locator('#contract-version').selectOption('2.0')
+  const [unsupported] = await Promise.all([
+    page.waitForResponse(response => new URL(response.url()).pathname === '/api/contracts/discovery'),
+    page.locator('#contract-discover').click(),
+  ])
+  assert.ok(unsupported.status() >= 400 && unsupported.status() < 500)
+  assert.equal(await unsupported.headerValue('x-systemx-retry'), 'read-only')
+  await expect(lastRequest).toHaveAttribute('data-state', 'refused')
+  await expect(lastRequest).toContainText(await unsupported.headerValue('x-systemx-request-id'))
+  await expect(lastRequest).toContainText('Safe to repeat this read.')
+  await page.locator('#contract-version').selectOption('1.1')
+  const [graph] = await Promise.all([
+    page.waitForResponse(origin + '/api/contracts/query'), page.locator('#contract-send').click(),
+  ])
+  assert.equal(graph.status(), 200)
+  assert.equal(await graph.headerValue('x-systemx-retry'), 'read-only')
+  const graphId = await graph.headerValue('x-systemx-request-id')
+  assert.match(graphId, uuid)
+  const envelope = await graph.json()
+  assert.ok(envelope.ok && envelope.requestId)
+  await page.getByRole('link', { name: 'Insights', exact: true }).click()
+  await expect(lastRequest).toBeVisible()
+  await expect(lastRequest).toContainText('Graph query completed (HTTP 200)')
+  await expect(lastRequest).toContainText(graphId)
+  await expect(lastRequest).toContainText('Safe to repeat this read.')
+  assert.ok(!(await lastRequest.innerText()).includes(envelope.requestId))
+  assertSafe(await lastRequest.innerText())
+  assert.equal(await editor.inputValue(), draft)
+  assert.equal(pageErrors, 0)
+  assert.equal(unexpectedRequests, 0)
+  report.checks.push('An unsupported graph discovery showed a correlated refusal. A subsequent real graph query replaced it with its own transport ID and preserved the draft.')
   report.fixtureSourceSHA256 = digest(source)
   report.reads = reads
   report.status = 'passed'

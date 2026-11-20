@@ -5,6 +5,7 @@ import { canonicalSourcePath, sourceNavigationKey, createSourceNavigation, parse
 import { attachSourceIdentityInspector } from './source-identities.js'
 import { attachTransportDiagnostics } from './transport-diagnostics.js'
 import { createLanConnection } from './lan-connection.js'
+import { createRequestFeedback } from './request-feedback.js'
 
 const apiBase = window.location.pathname.startsWith('/__systemx') ? '/__systemx' : ''
 const sessionToken = document.querySelector('meta[name="systemx-session"]')?.content ?? ''
@@ -565,10 +566,18 @@ function getEmbeddedStatus() {
   }
 }
 
+const observeRequest = createRequestFeedback((state, message) => {
+  const output = document.querySelector('#transport-last-request')
+  if (output) {
+    output.dataset.state = state
+    output.textContent = message
+  }
+})
+
 async function request(path, options = {}) {
   if (typeof fetch !== 'function') throw new Error('This browser does not expose fetch; use a standard local browser for editing actions.')
   const { onResponseHeaders, ...fetchOptions } = options
-  const { response, result, transportId } = await connection.readResponse(path, options, () => fetch(`${apiBase}${path}`, {
+  const send = observed => connection.readResponse(path, observed, () => fetch(`${apiBase}${path}`, {
     ...fetchOptions,
     headers: {
       Accept: 'application/json',
@@ -578,6 +587,7 @@ async function request(path, options = {}) {
     },
     cache: 'no-store',
   }))
+  const { response, result, transportId } = await observeRequest(path, options, send)
   if (!response.ok) {
     const error = new Error(typeof result?.error === 'string' ? result.error : result?.error?.message ?? `HTTP ${response.status}`)
     error.kind = 'http'

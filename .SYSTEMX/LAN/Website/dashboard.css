@@ -4501,6 +4501,7 @@ code,
   outline-offset: 2px;
 }
 
+#transport-last-request,
 #transport-status,
 #transport-policy-status {
   display: block;
@@ -4511,6 +4512,7 @@ code,
 }
 
 #transport-cancel[hidden],
+#transport-last-request:empty,
 #transport-policy-status:empty,
 #transport-policy-summary:empty,
 #transport-entries:empty {
