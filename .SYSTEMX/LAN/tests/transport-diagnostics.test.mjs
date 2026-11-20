@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { randomInt } from 'node:crypto'
 import { once } from 'node:events'
-import { cp, mkdir, mkdtemp, rename, rm, truncate, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, readFile, rename, rm, truncate, writeFile } from 'node:fs/promises'
 import { request } from 'node:http'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -97,7 +97,7 @@ test('loopback LAN correlates completed responses and exposes only bounded sessi
     assert.equal(snapshot.schemaVersion, 1)
     assert.equal(snapshot.limit, 64)
     const expected = [
-      [dashboard, 'GET', 'dashboard', 200], [health, 'GET', 'health', 200], [asset, 'HEAD', 'assets', 200],
+      [dashboard, 'GET', 'dashboard', 200], [health, 'GET', 'health', 400], [asset, 'HEAD', 'assets', 200],
       [missing, 'GET', 'other', 404], [noSession, 'GET', 'diagnostics', 403], [wrongSession, 'GET', 'diagnostics', 403],
       [badHost, 'GET', 'other', 403], [badOrigin, 'GET', 'other', 403], [method, 'POST', 'diagnostics', 405],
       [oddMethod, 'OTHER', 'health', 405], [badQuery, 'GET', 'diagnostics', 400],
@@ -160,7 +160,7 @@ test('loopback LAN correlates completed responses and exposes only bounded sessi
 
   await t.test('an unexpected handler error returns a correlated safe 500 and leaves health available', async () => {
     await writeFile(join(target, 'Files', 'local-data.json'), 'null')
-    const response = await send('/api/builder/workspace?target=PRIVATE_FAULT')
+    const response = await send('/api/builder/workspace')
     assert.equal(response.status, 500)
     assert.match(response.id, uuid)
     assert.deepEqual(JSON.parse(response.text), { error: 'The local LAN request could not be completed.' })
@@ -243,4 +243,74 @@ test('LAN admits normal API work and reports a pre-body 429 without blocking gua
   assert.deepEqual(JSON.parse(checked.text), { ...before, availableTokens: 0 })
   const recent = await inspect(endpoint)
   assert.equal(recent.entries.find(row => row.transportId === checked.id)?.category, 'diagnostics')
+})
+
+test('singleton URL inputs preserve status and typed errors; refused mutations leave fixture bytes intact', async t => {
+  const sourcePath = 'src/pages/HomePage.tsx'
+  const source = 'export function HomePage() { return <main>Fixture</main> }\n'
+  const { target, send } = await startFixture(t, async lanRoot => {
+    const file = join(lanRoot, '..', '..', sourcePath)
+    await mkdir(dirname(file), { recursive: true })
+    await writeFile(file, source)
+  })
+  const dashboard = await send('/')
+  const token = dashboard.text.match(/<meta name="systemx-session" content="([\da-f]{48})"/)?.[1]
+  assert.ok(token)
+  const headers = { 'x-systemx-session': token, 'content-type': 'application/json' }
+  const read = async path => {
+    const response = await send(path, { headers })
+    assert.equal(response.status, 200, path)
+    return JSON.parse(response.text)
+  }
+  const post = (path, value) => send(path, { method: 'POST', headers, body: JSON.stringify(value) })
+  const files = ['Files/local-data.json', 'Files/component-registry.json', '../../' + sourcePath]
+  const readBytes = () => Promise.all(files.map(file => readFile(join(target, file))))
+  const before = await readBytes()
+
+  const css = await send('/Website/dashboard.css')
+  const cachedCss = await send('/Website/dashboard.css?ui=first&ui=second')
+  assert.equal(css.status, 200)
+  assert.equal(cachedCss.status, 200)
+  assert.equal(cachedCss.text, css.text)
+  for (const [path, first, second] of [
+    ['/api/fonts/catalog', 'q=Inter&category=sans-serif', 'category=sans-serif&q=Inter'],
+    ['/api/builder/source/inventory', 'extension=.tsx&search=Home&limit=1', 'limit=1&search=Home&extension=.tsx'],
+  ]) assert.deepEqual(await read(path + '?' + first), await read(path + '?' + second))
+  const selection = async query => (await read('/api/status?' + query)).operating.workStatus.adoptedProject
+  assert.deepEqual(await selection('project=Fixture&workScope=child'), await selection('workScope=child&project=Fixture'))
+  for (const query of ['workScope=root&workScope=child', 'workScope=root&unknown=1']) {
+    assert.equal((await selection(query)).diagnostic, 'invalid-scope-selection')
+  }
+
+  for (const [path, code] of [
+    ['/api/health?unknown=1', 'QUERY_INVALID'], ['/api/builder/data?resource=A&resource=B', 'QUERY_INVALID'],
+    ['/api/fonts/catalog?q=one&%71=two', 'FONT_QUERY_INVALID'], ['/api/fonts/project?extra=1', 'FONT_QUERY_INVALID'],
+    ['/api/builder/source?path=a&path=b', 'SOURCE_QUERY_INVALID'],
+    ['/api/builder/source/history?path=a&limit=1&limit=1', 'SOURCE_HISTORY_QUERY_INVALID'],
+    ['/api/identity/document?documentId=a&%64ocumentId=b', 'IDENTITY_QUERY_INVALID'],
+  ]) {
+    const response = await send(path, { headers })
+    assert.equal(response.status, 400, path)
+    assert.equal(JSON.parse(response.text).code, code, path)
+  }
+  const loaded = await read('/api/builder/source?path=' + encodeURIComponent(sourcePath))
+  assert.equal(loaded.content, source)
+  const sourceWrite = { confirmation: 'SAVE LOCAL CHANGE', path: sourcePath, baseRevision: loaded.revision, content: source.replace('Fixture', 'Draft') }
+  for (const [path, value, code] of [
+    ['/api/builder/source?path=a&path=b', sourceWrite, 'QUERY_INVALID'],
+    ['/api/builder/record?resource=users', { resource: 'users', record: { name: 'Fixture' } }, 'QUERY_INVALID'],
+    ['/api/identity/preview?route=a&route=b', { path: sourcePath }, 'IDENTITY_QUERY_INVALID'],
+  ]) {
+    const response = await post(path, value)
+    assert.equal(response.status, 400, path)
+    assert.equal(response.headers.connection, 'close')
+    assert.equal(JSON.parse(response.text).code, code, path)
+  }
+  for (const kind of ['query', 'command']) {
+    const response = await post('/api/contracts/' + kind + '?operation=a&operation=b', { apiVersion: '1.0', requestId: 'retainedId', kind })
+    const envelope = JSON.parse(response.text)
+    assert.equal(response.status, 400)
+    assert.deepEqual([envelope.apiVersion, envelope.requestId, envelope.ok, envelope.error.code], ['1.0', 'retainedId', false, 'GRAPH_QUERY_INVALID'])
+  }
+  assert.deepEqual(await readBytes(), before)
 })

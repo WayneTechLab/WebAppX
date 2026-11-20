@@ -737,3 +737,29 @@ Agent 0 accepted the exact one hundred F002 requirements at `e1588c4`; the
 [candidate-bound QA receipt](../../docs/LAN-SOURCE-POLICY-QA-2026-10-30.md)
 records terminal qualification. These host extensions preserve the selected
 managed release and reusable work records.
+
+## LAN API query parameters
+
+Each listed GET parameter may appear once. Parameter order is interchangeable.
+Names are case-sensitive after URL decoding, so an encoded name and its literal
+spelling count as the same field.
+
+| GET route | Accepted query parameters |
+| --- | --- |
+| `/api/status` | `workScope`, `project` |
+| `/api/fonts/catalog` | `q`, `category` |
+| `/api/fonts/project` | `path` |
+| `/api/builder/source` | `path` (required) |
+| `/api/builder/source/inventory` | `extension`, `search`, `limit` |
+| `/api/builder/source/policy` | `compare`, `selection` (requires `compare`) |
+| `/api/builder/source/history` | `path` (required), `limit` |
+| `/api/identity/document` | `documentId` (required) |
+| `/api/contracts/discovery` | `clientVersion` |
+
+Other API reads take no query parameters. POST operations take their inputs in
+the JSON body. Unknown or repeated query keys receive HTTP 400 before a command
+can alter local data. On `/api/status`, an invalid selection preserves the HTTP
+200 aggregate and sets the adopted-project diagnostic to `invalid-scope-selection`.
+Graph query and command refusals preserve the supported API version and safe
+request ID from the submitted envelope. Dashboard and static asset URLs continue
+to accept cache-busting suffixes such as `?ui=20260806-v9`.
