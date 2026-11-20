@@ -80,7 +80,10 @@ function safeDirectory(path, create = true) {
   let current = root
   for (const part of parts) {
     current = join(current, part)
-    if (!existsSync(current)) { if (!create) return absolute; mkdirSync(current, { mode: 0o700 }) }
+    if (!existsSync(current)) {
+      if (!create) return absolute
+      try { mkdirSync(current, { mode: 0o700 }) } catch (error) { if (error.code !== 'EEXIST') throw error }
+    }
     const entry = lstatSync(current)
     if (entry.isSymbolicLink() || !entry.isDirectory()) fail('STATE_PATH_REFUSED', 'Private state cannot traverse links or non-directories.');
   }
@@ -113,11 +116,14 @@ export function createController({ repo, manifest, stateDir }) {
     return state
   }
   const taskById = id => validated.tasks.find(task => task.id === id) ?? fail('TASK_UNKNOWN', 'Select an exact manifest task.');
-  const observe = (state, event, slot, detail = {}) => {
+  const ensureEventRoom = state => {
     if (state.events.length >= 2000) fail('STATE_EVENT_LIMIT', 'Archive this completed run before adding more events.');
+  }
+  const observe = (state, event, slot, detail = {}) => {
+    ensureEventRoom(state)
     state.events.push({ event, slot, at: new Date().toISOString(), ...detail })
   }
-  async function change(apply, operation) {
+  async function withStateLock(apply, operation) {
     if (!apply) fail('APPLY_REQUIRED', 'This action requires explicit --apply after reviewing its plan.');
     safeDirectory(location)
     let owner
@@ -129,10 +135,19 @@ export function createController({ repo, manifest, stateDir }) {
       }
     }
     writeFileSync(owner, JSON.stringify({ pid: process.pid, workspaceId: identity.workspaceId, at: new Date().toISOString() }))
-    try {
-      const state = load(), result = await operation(state)
-      state.revision += 1; atomicJson(file, state); return result
-    } finally { closeSync(owner); rmSync(lock) }
+    try { return await operation(load()) } finally { closeSync(owner); rmSync(lock) }
+  }
+  function saveState(state) {
+    const revision = state.revision + 1
+    atomicJson(file, { ...state, revision })
+    state.revision = revision
+  }
+  function change(apply, operation) {
+    return withStateLock(apply, async state => {
+      const result = await operation(state)
+      saveState(state)
+      return result
+    })
   }
   const slotFor = (state, number) => {
     checkSlotNumber(number)
@@ -143,8 +158,7 @@ export function createController({ repo, manifest, stateDir }) {
     if (found.workspaceId !== slot.workerWorkspaceId || found.branch !== slot.branch) fail('WORKER_IDENTITY_CHANGED', 'Worker worktree identity or branch changed.');
     return found
   }
-  const makeSync = (state, slot) => {
-    const worker = currentWorker(slot)
+  const makeSync = (state, slot, worker = currentWorker(slot)) => {
     return { schemaVersion: 1, runId: validated.runId, coordinatorWorkspaceId: identity.workspaceId, workerWorkspaceId: worker.workspaceId, slot: slot.number, generation: slot.generation, taskId: slot.taskId, assignmentDigest: slot.assignmentDigest, baseRevision: slot.baseRevision, headRevision: worker.head, branch: worker.branch, clean: worker.clean, phase: slot.phase, stateRevision: state.revision, observedAt: new Date().toISOString() }
   }
   function ensureHead(slot, cleanRequired = true) {
@@ -198,7 +212,7 @@ export function createController({ repo, manifest, stateDir }) {
     return {
       schemaVersion: 1, runId: validated.runId, manifestDigest, workspaceId: identity.workspaceId, baseline: state.baseRevision,
       activeWorkers: context.live.length, externalWorkers: validated.externalWorkers, availableSlots: context.available,
-      readyTasks: context.ready.map(({ id, title, allowedPaths }) => ({ id, title, allowedPaths })), autoMerge: validated.autoMerge, applied: false,
+      readyTasks: context.ready.map(({ id, title, allowedPaths }) => ({ id, title, allowedPaths: [...allowedPaths] })), autoMerge: validated.autoMerge, applied: false,
     }
   }
   function dispatchBaseBlock(state, live) {
@@ -238,7 +252,7 @@ export function createController({ repo, manifest, stateDir }) {
         if (assignments.length >= context.available || assignments.length >= freeSlots.length) break
         if (overlapsHeld(task, heldPaths)) continue
         const slot = freeSlots[assignments.length], generation = (state.slots[String(slot)]?.generation ?? 0) + 1
-        assignments.push({ slot, generation, taskId: task.id, allowedPaths: task.allowedPaths })
+        assignments.push({ slot, generation, taskId: task.id, allowedPaths: [...task.allowedPaths] })
         heldPaths.push(...task.allowedPaths)
       }
       if (!assignments.length) blockedBy = 'SCOPE_LEASE_CONFLICT'
@@ -246,11 +260,48 @@ export function createController({ repo, manifest, stateDir }) {
     const activeSlots = context.live.map(({ number: slot, generation, taskId, phase }) => ({ slot, generation, taskId, phase }))
     return { ...plan, stateRevision: state.revision, assignments, activeSlots, progress, blockedBy, executionAuthority: false }
   }
+  function reviewedWave(state) {
+    const wave = proposeWave(state)
+    const waveDigest = digest({
+      schemaVersion: 1, workspaceId: identity.workspaceId, manifestDigest, stateDigest: digest(state),
+      baseRevision: state.baseRevision, stateRevision: state.revision, blockedBy: wave.blockedBy, assignments: wave.assignments,
+    })
+    return { ...wave, waveDigest }
+  }
+  function prepareSlot(state, { taskId, slot: number, executable, args = [] }, expectedProvider) {
+    checkSlotNumber(number)
+    const old = state.slots[String(number)]
+    if (old && old.phase !== 'closed') fail('SLOT_BUSY', 'Keep this branch open until feedback, merge, acceptance and closure are verified.')
+    const task = taskById(taskId), context = assignmentContext(state)
+    if (!context.available) fail('CAPACITY_EXCEEDED', 'The shared CLI/app/IDE worker budget is full.')
+    if (!context.ready.includes(task)) fail('TASK_NOT_READY', 'Task is already assigned or its dependencies are not accepted.')
+    if (overlapsHeld(task, context.heldPaths)) fail('SCOPE_LEASE_CONFLICT', 'Another active slot owns an overlapping write scope.')
+    const blocked = dispatchBaseBlock(state, context.live)
+    if (blocked === 'BASE_STALE') fail(blocked, 'Coordinator and named base branch must be clean at the reviewed baseline.')
+    if (blocked) fail(blocked, 'Complete and close the current wave, synchronize the coordinator and advance before dispatching a fresh generation.')
+    if (state.acceptedTaskIds.length) {
+      if (remoteRepository(identity.root) !== validated.repository) fail('REMOTE_MISMATCH', 'Origin changed before the next dispatch.');
+      const currentTarget = git(identity.root, ['ls-remote', '--exit-code', 'origin', `refs/heads/${validated.baseBranch}`])?.split(/\s+/)[0]
+      if (currentTarget !== state.baseRevision) fail('SYNC_BARRIER_REQUIRED', 'Complete and close the current wave, synchronize the coordinator and advance before dispatching a fresh generation.');
+    }
+    ensureEventRoom(state)
+    const provider = pinExecutable(executable, args)
+    if (expectedProvider && digest(provider) !== digest(expectedProvider)) fail('PROVIDER_CHANGED', 'Provider identity changed during batch preparation. Review the executable before preparing further slots.')
+    const generation = (old?.generation ?? 0) + 1, branch = `codex/swarm/${validated.runId}/y${String(number).padStart(2, '0')}-g${String(generation).padStart(3, '0')}-${task.id.toLowerCase()}`
+    const worktree = join(location, 'worktrees', `y${number}-g${generation}`)
+    safeDirectory(dirname(worktree))
+    if (existsSync(worktree) || git(identity.root, ['show-ref', '--verify', `refs/heads/${branch}`], { allowFailure: true })) fail('WORKER_COLLISION', 'A branch or worktree already exists for this generation. Preserve it for review.');
+    git(identity.root, ['worktree', 'add', '-b', branch, worktree, state.baseRevision])
+    const worker = inspectRepository(worktree)
+    if (worker.branch !== branch || worker.head !== state.baseRevision) fail('WORKER_IDENTITY_CHANGED', 'Inspect the newly created worktree before continuing. Its branch or revision changed.')
+    const slot = { number, generation, taskId, phase: 'ready', branch, worktree, workerWorkspaceId: worker.workspaceId, baseRevision: state.baseRevision, headRevision: worker.head, assignmentDigest: digest({ manifestDigest, task }), provider, checks: null, review: null, pr: null, acceptance: null }
+    state.slots[String(number)] = slot; observe(state, 'worker-prepared', number, { taskId, generation, headRevision: worker.head }); return makeSync(state, slot, worker)
+  }
   return {
-    manifest: validated,
+    get manifest() { return structuredClone(validated) },
     status() { const state = load(), executions = Object.values(state.slots).filter(slot => slot.lease && existsSync(join(location, `execution-${slot.lease}.json`))).map(slot => readJsonFile(join(location, `execution-${slot.lease}.json`), true)); return { ...state, executions, stateDir: location, repository: validated.repository, hostExtension: true, canonicalTaskAcceptance: false } },
     plan() { const state = load(); return planSummary(state, assignmentContext(state)) },
-    wave() { return proposeWave(load()) },
+    wave() { return reviewedWave(load()) },
     next(number) {
       if (number !== undefined) checkSlotNumber(number)
       const state = load(), previous = number === undefined ? null : state.slots[String(number)]
@@ -259,32 +310,34 @@ export function createController({ repo, manifest, stateDir }) {
       const nextTask = wave.readyTasks.find(task => task.id === wave.assignments[0]?.taskId) ?? null
       return { ...wave, nextTask, slot: number ?? null, freshGenerationRequired: true, previousProviderMayBeReused: Boolean(previous), providerChoiceRequired: !previous }
     },
-    async prepare({ taskId, slot: number, executable, args = [], apply = false }) {
-      return change(apply, state => {
-        checkSlotNumber(number)
-        const old = state.slots[String(number)]
-        if (old && old.phase !== 'closed') fail('SLOT_BUSY', 'Keep this branch open until feedback, merge, acceptance and closure are verified.')
-        const task = taskById(taskId), context = assignmentContext(state)
-        if (!context.available) fail('CAPACITY_EXCEEDED', 'The shared CLI/app/IDE worker budget is full.')
-        if (!context.ready.includes(task)) fail('TASK_NOT_READY', 'Task is already assigned or its dependencies are not accepted.')
-        if (overlapsHeld(task, context.heldPaths)) fail('SCOPE_LEASE_CONFLICT', 'Another active slot owns an overlapping write scope.')
-        const blocked = dispatchBaseBlock(state, context.live)
-        if (blocked === 'BASE_STALE') fail(blocked, 'Coordinator and named base branch must be clean at the reviewed baseline.')
-        if (blocked) fail(blocked, 'Complete and close the current wave, synchronize the coordinator and advance before dispatching a fresh generation.')
-        if (state.acceptedTaskIds.length) {
-          if (remoteRepository(identity.root) !== validated.repository) fail('REMOTE_MISMATCH', 'Origin changed before the next dispatch.');
-          const currentTarget = git(identity.root, ['ls-remote', '--exit-code', 'origin', `refs/heads/${validated.baseBranch}`])?.split(/\s+/)[0]
-          if (currentTarget !== state.baseRevision) fail('SYNC_BARRIER_REQUIRED', 'Complete and close the current wave, synchronize the coordinator and advance before dispatching a fresh generation.');
+    prepare({ apply = false, ...assignment }) { return change(apply, state => prepareSlot(state, assignment)) },
+    prepareWave({ waveDigest, executable, args = [], apply = false }) {
+      return withStateLock(apply, state => {
+        if (typeof waveDigest !== 'string' || !/^[a-f0-9]{64}$/.test(waveDigest)) fail('WAVE_DIGEST_INVALID', 'Supply the full SHA-256 digest from the reviewed wave.')
+        const wave = reviewedWave(state)
+        if (wave.waveDigest !== waveDigest) fail('WAVE_STALE', 'The reviewed assignments or coordinator state changed. Inspect a fresh wave before preparing worktrees.')
+        if (!wave.assignments.length) fail('WAVE_BLOCKED', `The reviewed wave has no assignments (${wave.blockedBy}). Inspect the wave before continuing.`)
+        const prepared = []
+        let expectedProvider
+        for (const [index, assignment] of wave.assignments.entries()) {
+          let receipt
+          try {
+            receipt = prepareSlot(state, { ...assignment, executable, args }, expectedProvider)
+            // Checkpoint every generation before creating the next worktree.
+            saveState(state)
+          } catch (error) {
+            if (!prepared.length && !receipt) throw error
+            return {
+              waveDigest, status: 'partial', stateRevision: state.revision, prepared, unprepared: wave.assignments.slice(index),
+              failure: { slot: assignment.slot, taskId: assignment.taskId, code: receipt ? 'STATE_CHECKPOINT_FAILED' : (error.code ?? 'PREPARATION_FAILED') },
+              nextStep: 'Inspect the failed branch, worktree and private slot record. Preserve any unrecorded files and review a fresh wave before retrying.',
+              applied: true, executionAuthority: false,
+            }
+          }
+          expectedProvider = state.slots[String(assignment.slot)].provider
+          prepared.push({ ...receipt, stateRevision: state.revision })
         }
-        const provider = pinExecutable(executable, args)
-        const generation = (old?.generation ?? 0) + 1, branch = `codex/swarm/${validated.runId}/y${String(number).padStart(2, '0')}-g${String(generation).padStart(3, '0')}-${task.id.toLowerCase()}`
-        const worktree = join(location, 'worktrees', `y${number}-g${generation}`)
-        safeDirectory(dirname(worktree))
-        if (existsSync(worktree) || git(identity.root, ['show-ref', '--verify', `refs/heads/${branch}`], { allowFailure: true })) fail('WORKER_COLLISION', 'A branch or worktree already exists for this generation. Preserve it for review.');
-        git(identity.root, ['worktree', 'add', '-b', branch, worktree, state.baseRevision])
-        const worker = inspectRepository(worktree)
-        const slot = { number, generation, taskId, phase: 'ready', branch, worktree, workerWorkspaceId: worker.workspaceId, baseRevision: state.baseRevision, headRevision: worker.head, assignmentDigest: digest({ manifestDigest, task }), provider, checks: null, review: null, pr: null, acceptance: null }
-        state.slots[String(number)] = slot; observe(state, 'worker-prepared', number, { taskId, generation, headRevision: worker.head }); return makeSync(state, slot)
+        return { waveDigest, status: 'prepared', stateRevision: state.revision, prepared, unprepared: [], failure: null, applied: true, executionAuthority: false }
       })
     },
     sync(number, expectedDigest) {

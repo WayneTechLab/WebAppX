@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 import { createController, loadManifest } from './runtime.mjs'
 
-const commands = ['plan', 'wave', 'next', 'status', 'prepare', 'sync', 'run', 'verify', 'review', 'alpha', 'feedback', 'integrate', 'publish-plan', 'publish', 'ready', 'merge-plan', 'merge', 'observe-merge', 'accept', 'close', 'advance']
+const commands = ['plan', 'wave', 'next', 'status', 'prepare', 'prepare-wave', 'sync', 'run', 'verify', 'review', 'alpha', 'feedback', 'integrate', 'publish-plan', 'publish', 'ready', 'merge-plan', 'merge', 'observe-merge', 'accept', 'close', 'advance']
 const usage = `SYSTEMX host swarm (selected upstream release is unchanged)
 Usage: node .SYSTEMX/swarm/cli.mjs COMMAND --manifest FILE [--repo PATH] [options]
 Commands: ${commands.join(', ')}
 Common: --state-dir PATH --slot 1..10 --apply
 wave:                                        Read-only assignments across available slots
 prepare: --task ID --executable ABSOLUTE_PATH [--arg VALUE ...]
+prepare-wave: --wave-digest SHA256 --executable ABSOLUTE_PATH [--arg VALUE ...] --apply
 sync: [--sync-digest SHA256]                 Read-only IDE/Codex handoff check
 run: --sync-digest SHA256                   Requires fresh slot sync observation
 review: --reviewer agent.z --evidence-digest SHA256
@@ -26,7 +27,7 @@ function parse(argv) {
   const [command, ...rest] = argv
   if (command === '--help' || command === 'help' || !command) return { help: true }
   if (!commands.includes(command)) throw Object.assign(new Error('Choose a supported swarm command. Use --help.'), { code: 'COMMAND_INVALID' })
-  const options = { args: [] }, keys = new Set(['manifest', 'repo', 'state-dir', 'slot', 'task', 'executable', 'arg', 'sync-digest', 'reviewer', 'evidence-digest', 'expires-minutes', 'reason', 'gh-executable', 'pr', 'plan-digest', 'base-revision'])
+  const options = { args: [] }, keys = new Set(['manifest', 'repo', 'state-dir', 'slot', 'task', 'executable', 'arg', 'wave-digest', 'sync-digest', 'reviewer', 'evidence-digest', 'expires-minutes', 'reason', 'gh-executable', 'pr', 'plan-digest', 'base-revision'])
   for (let index = 0; index < rest.length; index += 1) {
     const flag = rest[index]
     if (flag === '--apply' || flag === '--delete-branch') { if (options[flag]) throw new Error('Duplicate flag.'); options[flag] = true; continue }
@@ -38,6 +39,9 @@ function parse(argv) {
   if (!options['--manifest']) throw new Error('An explicit --manifest FILE is required.')
   if (command === 'wave' && (options.args.length || Object.keys(options).some(key => !['args', '--manifest', '--repo', '--state-dir'].includes(key)))) {
     throw Object.assign(new Error('Wave accepts only --manifest, --repo and --state-dir.'), { code: 'OPTION_INVALID' })
+  }
+  if (command === 'prepare-wave' && Object.keys(options).some(key => !['args', '--manifest', '--repo', '--state-dir', '--wave-digest', '--executable', '--apply'].includes(key))) {
+    throw Object.assign(new Error('Prepare-wave requires the reviewed wave digest and an explicit executable for all assignments.'), { code: 'OPTION_INVALID' })
   }
   return { command, options }
 }
@@ -52,6 +56,7 @@ try {
     const requests = {
       plan: () => controller.plan(), wave: () => controller.wave(), next: () => controller.next(common.slot), status: () => controller.status(),
       prepare: () => controller.prepare({ ...common, taskId: options['--task'], executable: options['--executable'], args: options.args }),
+      'prepare-wave': () => controller.prepareWave({ waveDigest: options['--wave-digest'], executable: options['--executable'], args: options.args, apply: common.apply }),
       sync: () => controller.sync(common.slot, options['--sync-digest']),
       run: () => controller.run({ ...common, syncDigest: options['--sync-digest'] }),
       verify: () => controller.verify(common),
@@ -67,7 +72,9 @@ try {
       close: () => controller.close({ ...common, deleteBranch: options['--delete-branch'] === true }),
       advance: () => controller.advance({ ...common, baseRevision: options['--base-revision'] }),
     }
-    process.stdout.write(`${JSON.stringify(await requests[parsed.command](), null, 2)}\n`)
+    const result = await requests[parsed.command]()
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`)
+    if (parsed.command === 'prepare-wave' && result.status === 'partial') process.exitCode = 1
   }
 } catch (error) {
   process.stderr.write(`${JSON.stringify({ code: error.code ?? 'SWARM_INVALID', error: error.code ? error.message : 'Invalid local swarm input or unavailable repository state; inspect configuration separately.' })}\n`)
