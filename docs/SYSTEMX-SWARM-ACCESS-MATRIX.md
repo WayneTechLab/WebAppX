@@ -11,6 +11,8 @@ not an authentication system or a provider permission grant. The reusable
 | Action | Agent 0 | Agent X | Agent Y worker | Agent Z | Alpha |
 | --- | --- | --- | --- | --- | --- |
 | Preview a wave | Reads the manifest, current baseline, capacity, dependencies and scopes. Selects proposals for preparation. | Records observed state and receipt revisions. | Receives an assignment after preparation. | May inspect the proposed scope. | May inspect the integration policy. |
+| Prepare a reviewed wave | Checks the exact digest, executable, scopes and capacity. Creates isolated branches and checkpoints each slot. | Observes prepared and outstanding slots in the receipt. | Receives one prepared generation. | Can inspect scope. | Can inspect policy. |
+| Read LAN goal | Reviews catalog receipts and selects ready work. | May observe counts and their source. | May inspect eligible IDs. | May verify evidence. | May inspect acceptance boundaries. |
 | Select task, acceptance and write scope | Owns under owner authority. | Observes decision. | Receives bounded packet. | Reviews clarity/scope. | Checks consistency with lease. |
 | Change canonical integration checkout/branch | Sole writer. | No. | No. | No. | No. |
 | Edit an assigned task worktree | Coordinates integration. | No. | Only its exact task/generation/allowed paths. | Review-only unless separately assigned a distinct implementation task. | Review-only. |

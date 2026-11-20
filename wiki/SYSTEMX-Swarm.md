@@ -43,6 +43,25 @@ all its generations have closed. The WebAppX goal covers 10,000 original LAN
 requirements and 2,000 capabilities. The [current LAN iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md)
 records catalog acceptance and F007 scope.
 
+### Check the program goal and prepare the reviewed wave
+
+Run `node .SYSTEMX/swarm/cli.mjs goal --limit 5` from WebAppX. It reads original LAN
+definitions and evidence and reports accepted requirements, completed capabilities
+and the next eligible IDs for local, operator and provider work. Add the private
+manifest to see run progress beside the program totals.
+
+Record the preview's `waveDigest` in `WAVE_DIGEST`, then use the approved absolute
+provider executable in `WORKER_EXECUTABLE`.
+
+```sh
+node .SYSTEMX/swarm/cli.mjs prepare-wave --manifest "$SWARM_MANIFEST" --wave-digest "$WAVE_DIGEST" --executable "$WORKER_EXECUTABLE" --apply
+```
+
+Preparation checkpoints each generation. If a slot fails, the response lists
+completed preparations and the remaining assignments. Inspect the failed slot,
+refresh the preview and use the new digest. A separate slot sync and launch
+start each worker.
+
 ## Branch, PR and reassignment lifecycle
 
 Agent 0 selects a bounded task, observed base, provider and allowed paths. A

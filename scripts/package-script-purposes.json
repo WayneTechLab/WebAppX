@@ -227,6 +227,11 @@
       "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
     },
     {
+      "name": "browser:transport",
+      "purpose": "SYSTEMX",
+      "description": "Verify request diagnostics, cancellation and draft preservation in an isolated Chromium workspace."
+    },
+    {
       "name": "browser:work-status",
       "purpose": "portal",
       "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
@@ -445,6 +450,11 @@
       "name": "lan:identity:test",
       "purpose": "SYSTEMX",
       "description": "Exercise bounded source identity, ownership, reconciliation and their local browser evidence."
+    },
+    {
+      "name": "lan:transport:test",
+      "purpose": "SYSTEMX",
+      "description": "Exercise the LAN request lifecycle with temporary workspace data and owned loopback servers."
     },
     {
       "name": "lint",

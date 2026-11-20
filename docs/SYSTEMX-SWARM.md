@@ -85,7 +85,36 @@ with `feedback` on its existing branch. Obtain a fresh `sync` digest before
 Agent Y runs. A changed candidate needs fresh checks, Agent Z review and Alpha's
 lease before Agent 0 integrates it. Re-read `wave` for each subsequent group.
 
+### Prepare and resume the reviewed assignments
+
+Set `WAVE_DIGEST` to the exact `waveDigest` from the reviewed preview and
+`WORKER_EXECUTABLE` to the absolute executable chosen for these workers.
+This command creates a worktree and branch for each assignment and checkpoints
+each result under one controller lock.
+
+```sh
+node .SYSTEMX/swarm/cli.mjs prepare-wave --manifest "$SWARM_MANIFEST" --wave-digest "$WAVE_DIGEST" --executable "$WORKER_EXECUTABLE" --apply
+```
+
+A stale digest requires another preview. A partial result returns a nonzero
+exit, the prepared receipts, unprepared assignments and the failed slot.
+After inspecting the reported branch, worktree and private state, run `status`
+and `wave` again. Each worker needs a fresh slot `sync` before launch.
+
 ### What counts as complete
+
+Run the independent catalog report from the repository root.
+
+```sh
+node .SYSTEMX/swarm/cli.mjs goal --limit 5
+```
+
+`requirements` reports the percentage accepted out of all 10,000. `capabilities`
+counts completed groups of five and partially accepted groups. `ready` lists
+eligible original IDs and their families for each gate. The limit controls the
+sample size per gate. Add `--manifest "$SWARM_MANIFEST"` to include run progress
+alongside those totals. Catalog reads validate the definitions, prerequisites
+and public receipt bindings before reporting acceptance.
 
 In `progress`, `totalTasks` is the size of this manifest, `acceptedTasks`
 counts recorded delivery acceptances, and `remainingTasks` is their difference.

@@ -16,6 +16,9 @@ const register = (command, description) => reviewed.set(command, description)
 register('node --test .SYSTEMX/LAN/tests/graph-*.test.mjs .SYSTEMX/LAN/tests/api-*.test.mjs tests/graph-api/*.test.mjs', temporary('Tests bounded graph normalization, qualified references, accepted history and isolated migrations, plus exact versioned request/response schemas and negative state-preservation behavior in owned fixtures.'))
 register('node scripts/lan-graph-contract-browser.mjs', temporary('Exercises all forty canonical graph and versioned API capabilities using copied LAN code, synthetic fixtures, isolated browser storage and owned local processes; creates candidate-bound local evidence without provider or production writes.'))
 
+register('node --test .SYSTEMX/LAN/tests/request-*.test.mjs .SYSTEMX/LAN/tests/transport-*.test.mjs .SYSTEMX/LAN/tests/record-*.test.mjs tests/transport/*.test.mjs', temporary('Exercise the LAN request lifecycle with temporary workspace data and owned loopback servers.'))
+register('node scripts/lan-transport-browser.mjs', temporary('Verify request diagnostics, cancellation and draft preservation in an isolated Chromium workspace.'))
+
 // These are reviewed command signatures, not a second gate list. Gate order
 // comes exclusively from check-template.sh. A changed command is unknown until
 // its behavior is reviewed; a familiar script name never grants classification.

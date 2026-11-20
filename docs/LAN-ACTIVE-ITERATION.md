@@ -15,7 +15,8 @@ F001–F006 accounted for **600 requirements and 120 capabilities (6%)**.
 2. Agent 0 creates a private manifest for the selected work with disjoint paths,
    explicit dependencies, named checks and capacity shared with app/IDE workers.
    Set `SWARM_MANIFEST` to its path. At the clean reviewed base, run `node .SYSTEMX/swarm/cli.mjs wave --manifest "$SWARM_MANIFEST"`.
-   Inspect assignments and blockers before preparing workers.
+   Inspect assignments and blockers. Use the reviewed digest with `prepare-wave`
+   to checkpoint the selected worktrees. Run `sync` for each generation before launch.
 3. Have Agent Y implement and test the assigned scopes. Agent X retains
    candidate-bound observations such as temporary-server request and refusal
    results, sanitized response diagnostics and controller handoffs. Agent Z
@@ -26,7 +27,8 @@ F001–F006 accounted for **600 requirements and 120 capabilities (6%)**.
    Regenerate the catalog and select the next dependency-ready group. Continue
    until the ledger reaches 10,000/10,000 and 2,000/2,000. Record GitHub publication and production deployment independently.
 
-On resumption, inspect the current ledger, Git base and open generations
+On resumption, run `node .SYSTEMX/swarm/cli.mjs goal --limit 5` to read the verified
+catalog and ready queues. Inspect the current Git base and open generations
 before assigning work. A swarm manifest can be complete while other F007
 requirements are still open. The [swarm runbook](SYSTEMX-SWARM.md#plan-and-resume-a-wave)
 describes the fresh receipts and Mac IDE/Codex sync point.

@@ -29,6 +29,13 @@ external process. File scopes detect conflicts conservatively across case aliase
 Managed releases, private runtime paths and reusable ledgers remain protected
 even when a broad host scope is assigned.
 
+## Check the LAN goal
+
+Run `node .SYSTEMX/swarm/cli.mjs goal --limit 5` in WebAppX. The controller
+validates the original definitions and completion evidence, reports the percentage
+of accepted requirements and lists ready work by local, operator and provider
+gate. Add `--manifest "$SWARM_MANIFEST"` to inspect that run alongside the catalog.
+
 ## Preview a worker wave
 
 Preview the shipped synthetic manifest from the repository root.
@@ -44,6 +51,17 @@ The preview reports proposed slots and generations plus acceptance progress
 for that manifest. Agent 0 reviews those entries before preparing any worker.
 See [wave planning and resumption](../../docs/SYSTEMX-SWARM.md#plan-and-resume-a-wave)
 for the decision table and catalog acceptance rules.
+
+After reviewing the paths and the returned `waveDigest`, use the approved provider
+executable and that digest to prepare the whole group.
+
+```sh
+node .SYSTEMX/swarm/cli.mjs prepare-wave --manifest "$SWARM_MANIFEST" --wave-digest "$WAVE_DIGEST" --executable "$WORKER_EXECUTABLE" --apply
+```
+
+Each successfully prepared generation has its own state receipt. If a later
+slot fails, read `prepared`, `unprepared` and `failure`, inspect that slot, then
+generate a fresh wave. Run `sync` before an explicit `run` for each worker.
 
 ## Run a generation
 

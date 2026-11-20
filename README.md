@@ -147,6 +147,12 @@ claimed; original WebAppX and LAN catalog acceptance remains separate.
 
 ## SYSTEMX host swarm — Agent 0, X/Y/Z and Alpha
 
+From the WebAppX root, run `node .SYSTEMX/swarm/cli.mjs goal --limit 5` to see
+accepted original LAN requirements, complete capabilities and the next eligible
+items by gate. Agent 0 uses `wave` to plan disjoint branches and `prepare-wave`
+to create the reviewed assignments. Each prepared generation has a private
+checkpoint that the Mac IDE or Codex CLI can reopen after an interruption.
+
 The [host swarm guide](docs/SYSTEMX-SWARM.md) defines one canonical Agent 0
 integration owner, Agent X event observations, up to ten authorized Agent Y CLI
 slots with independent task-generation branches/worktrees, Agent Z independent
