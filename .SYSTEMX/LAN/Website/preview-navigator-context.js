@@ -1,10 +1,12 @@
 import { collectPreviewHierarchy, previewNavigatorLimits, projectPreviewRows } from './preview-navigator.js'
+import { mountNavigatorComparison } from './preview-navigator-comparison.js'
+import { mountVirtualCoverage } from './preview-navigator-inspection.js'
 import { emptyNavigatorFilters, hasNavigatorFilters, mountNavigatorFilters } from './preview-navigator-filters.js'
 
 const maxScopes = 4, maxBoundaries = 32
 const limits = { ...previewNavigatorLimits, rows: 100 }
 const watched = { subtree: true, childList: true, attributes: true,
-  attributeFilter: ['id', 'class', 'hidden', 'inert', 'aria-hidden', 'data-systemx-name', 'data-systemx-component', 'src', 'srcdoc', 'sandbox', 'role', 'href', 'style', 'open', 'data-systemx-id', 'data-systemx-source'] }
+  attributeFilter: ['id', 'class', 'hidden', 'inert', 'aria-hidden', 'data-systemx-name', 'data-systemx-component', 'src', 'srcdoc', 'sandbox', 'role', 'href', 'style', 'open', 'data-systemx-id', 'data-systemx-source', 'data-systemx-virtualized', 'aria-posinset', 'aria-setsize', 'aria-rowindex', 'aria-rowcount'] }
 
 function boundaryKind(host) {
   if (host.tagName === 'IFRAME') return 'Frame'
@@ -74,6 +76,16 @@ export function mountNavigatorContexts(tree) {
   })
 
   let top, stack = [], timer, notice = ''
+  const coverage = mountVirtualCoverage(boundaries, 'context')
+  const comparison = mountNavigatorComparison(boundaries, { scope: 'context', readSnapshot() {
+    reconcile()
+    return panel.open && stack.length > 1 ? collectPreviewHierarchy(stack.at(-1).root, limits) : null
+  } })
+  function updateScopeTools(snapshot) {
+    const nested = stack.length > 1 ? snapshot : null
+    coverage.panel.hidden = comparison.panel.hidden = !nested
+    coverage.update(nested); comparison.update(nested)
+  }
   const observer = new MutationObserver(schedule)
   let watchedFrames = []
   function schedule() {
@@ -110,12 +122,13 @@ export function mountNavigatorContexts(tree) {
     path.textContent = stack.map(item => item.label).join(' › ')
     back.hidden = stack.length < 2; filter.hidden = !current; facets.group.hidden = stack.length < 2
     boundaries.replaceChildren(); rows.replaceChildren()
-    if (!current) { status.textContent = 'Preview context unavailable.'; return }
+    if (!current) { updateScopeTools(null); status.textContent = 'Preview context unavailable.'; return }
     for (const item of stack.slice(1)) {
       observer.observe(item.kind === 'Frame' ? item.root.ownerDocument.documentElement : item.root, watched)
       if (item.kind === 'Frame') { item.host.addEventListener('load', schedule); watchedFrames.push(item.host) }
     }
     const snapshot = stack.length === 1 ? top : collectPreviewHierarchy(current.root, limits)
+    updateScopeTools(snapshot)
     current.expanded = new Set([...current.expanded].filter(node => snapshot.byElement.has(node)))
     facets.update(current.filters)
     filter.value = current.query
@@ -188,7 +201,7 @@ export function mountNavigatorContexts(tree) {
     status.textContent = messages.filter(Boolean).join(' ')
     if (focusButton) focusButton.focus({ preventScroll: true })
   }
-  panel.addEventListener('toggle', () => { if (!panel.open) { unwatch(); stack = []; notice = ''; boundaries.replaceChildren(); rows.replaceChildren() } else render() })
+  panel.addEventListener('toggle', () => { if (!panel.open) { unwatch(); stack = []; updateScopeTools(null); notice = ''; boundaries.replaceChildren(); rows.replaceChildren() } else render() })
   filter.addEventListener('input', () => { if (stack.length) stack.at(-1).query = filter.value.slice(0, limits.query); notice = ''; render() })
   refresh.addEventListener('click', () => { notice = ''; render() })
   back.addEventListener('click', () => {
@@ -200,7 +213,7 @@ export function mountNavigatorContexts(tree) {
   return { update(snapshot) {
     if (top === snapshot) return
     top = snapshot
-    if (!top) { unwatch(); stack = []; notice = 'The preview document changed.' }
+    if (!top) { unwatch(); stack = []; updateScopeTools(null); notice = 'The preview document changed.' }
     if (panel.open) render()
   } }
 }

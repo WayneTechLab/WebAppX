@@ -418,3 +418,37 @@ test('Navigator filters reject ambiguous and incomplete ownership while recogniz
   await change(data => { data.stale = true; data.sourceErrorCode = 'SOURCE_MISSING'; data.currentRevision = null }, 'unmapped')
   assert.equal(f.handle.navigatorOwnership(), null)
 })
+
+test('Navigator identities return immutable accepted node and definition metadata independent of write support', async t => {
+  const f = fixture(t)
+  const map = await f.accept()
+  const identify = f.handle.navigatorIdentity()
+  const target = previewDetail(map)
+  const branch = identify(previewDetail(map, { tag: 'main', anchor: 'home' }))
+  const heading = identify(target)
+  assert.equal(branch.nodeId, map.nodes.find(node => node.anchor === 'home').id)
+  assert.equal(heading.nodeId, map.nodes.find(node => node.anchor === 'headline').id)
+  assert.notEqual(branch.key, heading.key)
+  assert.deepEqual(heading.definition, { name: 'HomePage', sourcePath: path })
+  assert.ok(Object.isFrozen(heading) && Object.isFrozen(heading.definition))
+  assert.equal(identify({ ...target, workspaceId: 'b'.repeat(64) }), null)
+  assert.equal(identify({ ...target, route: '/other' }), null)
+  assert.equal(identify({ ...target, tag: 'h2' }), null)
+  f.intercept((request, execute) => {
+    const data = execute()
+    if (request.endpoint.startsWith('/api/identity/document?')) {
+      const owner = data.ownership.objects.find(item => item.nodeId === heading.nodeId)
+      owner.definition = { name: 'Unknown', sourcePath: path }
+    }
+    return data
+  })
+  await f.handle.refresh()
+  assert.equal(identify(target), null)
+  assert.equal(f.handle.navigatorIdentity()(target).definition, null)
+  f.intercept(null)
+  writeFileSync(f.file, content + '// updated revision\n')
+  await f.handle.refresh()
+  assert.equal(f.handle.navigatorOwnership()(target), 'stale')
+  assert.equal(f.handle.navigatorIdentity()(target), null)
+  assert.deepEqual(f.staged, [])
+})

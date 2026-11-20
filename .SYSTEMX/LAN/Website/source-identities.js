@@ -156,7 +156,11 @@ function indexNavigatorOwnership(map, ownership, readState) {
   }
   const documentStale = map.sourceRevision !== ownership.sourceRevision ||
     (readState === 'stale' && !ownership.objects.some(owner => owner?.status === 'stale'))
-  const nodes = new Map()
+  const nodes = new Map(), ids = new Set(), repeatedIds = new Set()
+  for (const node of map.nodes) {
+    if (ids.has(node.id)) repeatedIds.add(node.id)
+    ids.add(node.id)
+  }
   for (const node of map.nodes) {
     if (!validPreviewAnchor(node?.anchor)) continue
     if (nodes.has(node.anchor)) { nodes.set(node.anchor, null); continue }
@@ -179,17 +183,28 @@ function indexNavigatorOwnership(map, ownership, readState) {
         }
       }
     }
-    nodes.set(node.anchor, { tag: node.tag, status })
+    let identity = null
+    if (['mapped', 'read-only'].includes(status) && node.opaque === false && node.external === false && !repeatedIds.has(node.id) &&
+        typeof node.id === 'string' && /^node_[a-f0-9]{64}$/.test(node.id)) {
+      const declared = node.definition, owned = owner.definition
+      const definition = declared && declared.sourcePath === map.sourcePath && owned?.sourcePath === declared.sourcePath &&
+        typeof declared.name === 'string' && declared.name.length <= 120 && /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(declared.name) &&
+        declared.name === owned.name ? Object.freeze({ name: declared.name, sourcePath: declared.sourcePath }) : null
+      const key = JSON.stringify([map.workspaceId, map.documentId, map.sourcePath, map.route, node.id, node.tag, node.anchor])
+      identity = Object.freeze({ key, workspaceId: map.workspaceId, documentId: map.documentId, sourcePath: map.sourcePath,
+        route: map.route, nodeId: node.id, tag: node.tag, anchor: node.anchor, definition })
+    }
+    nodes.set(node.anchor, { tag: node.tag, status, identity })
   }
   const signature = JSON.stringify([map.workspaceId, map.documentId, map.sourcePath, map.route,
     map.sourceRevision, ownership.sourceRevision, readState, [...nodes]])
-  function lookup(detail) {
+  function match(detail) {
     if (!detail || detail.workspaceId !== map.workspaceId || detail.sourcePath !== map.sourcePath ||
-        detail.route !== map.route || !validPreviewAnchor(detail.anchor)) return 'unmapped'
+        detail.route !== map.route || !validPreviewAnchor(detail.anchor)) return null
     const node = nodes.get(detail.anchor)
-    return node && detail.tag === node.tag ? node.status : 'unmapped'
+    return node && detail.tag === node.tag ? node : null
   }
-  return { signature, lookup }
+  return { signature, lookup: detail => match(detail)?.status ?? 'unmapped', identify: detail => match(detail)?.identity ?? null }
 }
 
 function runtimeSelection(detail) {
@@ -318,6 +333,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
   let navigatorInputs = [null, null, state.readState, state.path]
   let navigatorIndex = null
   let navigatorLookup = null
+  let navigatorIdentify = null
   function updateNavigatorOwnership(map) {
     const inputs = [map, state.ownership, state.readState, state.path]
     if (inputs.every((value, index) => value === navigatorInputs[index])) return
@@ -328,6 +344,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     navigatorIndex = next
     // A retained handle from an older generation must fail closed.
     navigatorLookup = next && (detail => navigatorIndex === next && !state.destroyed ? next.lookup(detail) : 'unmapped')
+    navigatorIdentify = next && (detail => navigatorIndex === next && !state.destroyed ? next.identify(detail) : null)
     onNavigatorOwnershipChange?.()
   }
 
@@ -855,6 +872,9 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     observePreviewSelection,
     navigatorOwnership() {
       return !state.destroyed && safePath(selectedPath) === state.path ? navigatorLookup : null
+    },
+    navigatorIdentity() {
+      return !state.destroyed && safePath(selectedPath) === state.path ? navigatorIdentify : null
     },
     currentDocumentReference() {
       if (!acceptedForPath()) return null
