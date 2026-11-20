@@ -24,7 +24,30 @@ async function readFixedJson(root, name, maxBytes) {
   } finally { await file.close() }
 }
 
-export async function readLanGoal({ publicRoot, limit = 5, controller }) {
+function inspectFamily(catalog, familyId, readyFamilies) {
+  const rows = catalog.items.filter(item => item.familyId === familyId)
+  if (!rows.length) {
+    throw Object.assign(new Error('Choose an original LAN family from F001 through F100.'), { code: 'GOAL_FAMILY_INVALID' })
+  }
+  const { familyName, gate } = rows[0]
+  const accepted = rows.filter(item => item.status === 'done').length
+  const firstReadyId = readyFamilies[gate].find(item => item.familyId === familyId)?.firstReadyId
+  const next = firstReadyId ? rows.find(item => item.id === firstReadyId) : rows.find(item => item.status === 'todo')
+  const family = { familyId, familyName, gate, accepted, total: rows.length, status: 'complete', capability: null }
+  if (!next) return family
+  const done = new Set(catalog.items.filter(item => item.status === 'done').map(item => item.id))
+  family.status = firstReadyId ? 'ready' : 'blocked'
+  family.capability = {
+    key: next.capabilityKey, title: next.capabilityTitle, firstReadyId: firstReadyId ?? null,
+    requirements: rows.filter(item => item.capabilityKey === next.capabilityKey).map(item => ({
+      id: item.id, lane: item.lane, status: item.status, acceptance: item.acceptance,
+      definitionSha256: item.definitionSha256, pendingPrerequisites: item.dependsOn.filter(id => !done.has(id)),
+    })),
+  }
+  return family
+}
+
+export async function readLanGoal({ publicRoot, limit = 5, familyId, controller }) {
   if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
     throw Object.assign(new Error('Choose a goal sample limit from 1 through 100 per gate.'), { code: 'GOAL_LIMIT_INVALID' })
   }
@@ -58,6 +81,7 @@ export async function readLanGoal({ publicRoot, limit = 5, controller }) {
     capabilities: { accepted: capabilities.done, total: capabilities.total, partial: capabilities.partial },
     ready, readyFamilies, applied: false, executionAuthority: false,
   }
+  if (familyId !== undefined) result.family = inspectFamily(catalog, familyId, readyFamilies)
   if (controller) {
     const { runId, stateRevision, progress, assignments, blockedBy } = controller.wave()
     result.manifestWave = { runId, stateRevision, progress, blockedBy, assignments: assignments.map(({ slot, generation, taskId }) => ({ slot, generation, taskId })) }

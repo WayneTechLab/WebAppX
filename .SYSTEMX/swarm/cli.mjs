@@ -7,7 +7,7 @@ Usage: node .SYSTEMX/swarm/cli.mjs COMMAND [--repo PATH] [options]
 All commands except goal require --manifest FILE.
 Commands: ${commands.join(', ')}
 Common: --state-dir PATH --slot 1..10 --apply
-goal: [--limit 1..100] [--manifest FILE [--state-dir PATH]]  Validated LAN catalog and optional wave
+goal: [--family F001..F100] [--limit 1..100] [--manifest FILE [--state-dir PATH]]  Validated LAN catalog and optional wave
 wave:                                        Read-only assignments across available slots
 prepare: --task ID --executable ABSOLUTE_PATH [--arg VALUE ...]
 prepare-wave: --wave-digest SHA256 --executable ABSOLUTE_PATH [--arg VALUE ...] --apply
@@ -31,7 +31,7 @@ function parse(argv) {
   const [command, ...rest] = argv
   if (command === '--help' || command === 'help' || !command) return { help: true }
   if (!commands.includes(command)) throw Object.assign(new Error('Choose a supported swarm command. Use --help.'), { code: 'COMMAND_INVALID' })
-  const options = { args: [] }, keys = new Set(['manifest', 'limit', 'repo', 'state-dir', 'slot', 'task', 'executable', 'arg', 'wave-digest', 'run-digest', 'sync-digest', 'reviewer', 'evidence-digest', 'expires-minutes', 'reason', 'gh-executable', 'pr', 'plan-digest', 'base-revision'])
+  const options = { args: [] }, keys = new Set(['manifest', 'limit', 'family', 'repo', 'state-dir', 'slot', 'task', 'executable', 'arg', 'wave-digest', 'run-digest', 'sync-digest', 'reviewer', 'evidence-digest', 'expires-minutes', 'reason', 'gh-executable', 'pr', 'plan-digest', 'base-revision'])
   for (let index = 0; index < rest.length; index += 1) {
     const flag = rest[index]
     if (flag === '--apply' || flag === '--delete-branch') { if (options[flag]) throw new Error('Duplicate flag.'); options[flag] = true; continue }
@@ -41,15 +41,15 @@ function parse(argv) {
     else { if (options[flag] !== undefined) throw new Error('Duplicate option.'); options[flag] = value }
   }
   if (command === 'goal') {
-    if (options.args.length || Object.keys(options).some(key => !['args', '--repo', '--manifest', '--state-dir', '--limit'].includes(key)) || (options['--state-dir'] && !options['--manifest'])) {
-      throw Object.assign(new Error('Goal accepts --repo, --limit and an optional --manifest with --state-dir.'), { code: 'OPTION_INVALID' })
+    if (options.args.length || Object.keys(options).some(key => !['args', '--repo', '--manifest', '--state-dir', '--limit', '--family'].includes(key)) || (options['--state-dir'] && !options['--manifest'])) {
+      throw Object.assign(new Error('Goal accepts --repo, --limit, --family and an optional --manifest with --state-dir.'), { code: 'OPTION_INVALID' })
     }
     if (options['--limit'] !== undefined && !/^(?:[1-9][0-9]?|100)$/.test(options['--limit'])) {
       throw Object.assign(new Error('Choose a goal sample limit from 1 through 100 per gate.'), { code: 'GOAL_LIMIT_INVALID' })
     }
   } else {
     if (!options['--manifest']) throw new Error('An explicit --manifest FILE is required.')
-    if (options['--limit'] !== undefined) throw Object.assign(new Error('--limit applies only to goal.'), { code: 'OPTION_INVALID' })
+    if (options['--limit'] !== undefined || options['--family'] !== undefined) throw Object.assign(new Error('--limit and --family apply only to goal.'), { code: 'OPTION_INVALID' })
   }
   if (command === 'wave' && (options.args.length || Object.keys(options).some(key => !['args', '--manifest', '--repo', '--state-dir'].includes(key)))) {
     throw Object.assign(new Error('Wave accepts only --manifest, --repo and --state-dir.'), { code: 'OPTION_INVALID' })
@@ -86,7 +86,7 @@ try {
     const requests = {
       goal: async () => {
         const { readLanGoal } = await import('./lan-goal.mjs')
-        return readLanGoal({ publicRoot: repo, limit: options['--limit'] === undefined ? undefined : Number(options['--limit']), controller })
+        return readLanGoal({ publicRoot: repo, familyId: options['--family'], limit: options['--limit'] === undefined ? undefined : Number(options['--limit']), controller })
       },
       plan: () => controller.plan(), wave: () => controller.wave(), next: () => controller.next(common.slot), status: () => controller.status(),
       prepare: () => controller.prepare({ ...common, taskId: options['--task'], executable: options['--executable'], args: options.args }),

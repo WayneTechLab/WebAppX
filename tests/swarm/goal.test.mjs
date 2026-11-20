@@ -203,3 +203,20 @@ test('a reader can close the goal report early without failing the CLI', async t
   assert.deepEqual(result, { code: 0, signal: null })
   assert.equal(stderr, '')
 })
+
+
+test('family handoffs expose the five original lanes and exact unmet dependencies', t => {
+  const { repo } = fixture(t)
+  const original = buildCatalog(specificationFiles.map(path => readJson(join(repo, path))))
+  for (const [id, status] of [['F001','ready'],['F002','blocked']]) {
+    const { family, executionAuthority } = JSON.parse(goal(repo, '--family', id, '--limit', '1').stdout)
+    assert.equal(family.status, status)
+    assert.equal(executionAuthority, false)
+    const expected = original.items.filter(row => row.familyId === id && row.capabilityKey === family.capability.key)
+    assert.equal(expected.length, 5)
+    assert.deepEqual(family.capability.requirements.map(row => [row.id,row.definitionSha256,row.acceptance,row.pendingPrerequisites]),
+      expected.map(row => [row.id,row.definitionSha256,row.acceptance,row.dependsOn]))
+    assert.equal(family.capability.firstReadyId, status === 'ready' ? expected[0].id : null)
+  }
+  assert.equal(JSON.parse(goal(repo, '--family', 'F101').stderr).code, 'GOAL_FAMILY_INVALID')
+})
