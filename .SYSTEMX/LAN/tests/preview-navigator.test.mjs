@@ -131,3 +131,47 @@ test('a fresh snapshot reflects replacement and reparenting without resolving st
   assert.equal(next.byElement.get(replacement).parent.element, root)
   assert.equal(isCurrentPreviewElement(old, root), false)
 })
+
+test('semantic filtering intersects metadata with a union of kinds and preserves ancestor expansion', () => {
+  const action = node('div', { role: 'button', class: 'shared' })
+  const heading = node('h2', { class: 'shared' })
+  const link = node('a', { href: '/', class: 'shared' })
+  const section = node('section', { class: 'shared' }, [action, heading, link])
+  const root = node('body', {}, [section])
+  const snapshot = collectPreviewHierarchy(root)
+  const expanded = new Set([root])
+  const filters = { kind: ['control', 'heading'], visibility: 'any', mapping: 'any' }
+  const result = projectPreviewRows(snapshot, { expanded, filters, query: 'shared' })
+  assert.deepEqual(result.rows.map(item => [item.tag, item.matched]), [['body', false], ['section', false], ['div', true], ['h2', true]])
+  assert.equal(result.matchCount, 2)
+  assert.deepEqual(projectPreviewRows(snapshot, { expanded }).rows.map(item => item.tag), ['body', 'section'])
+})
+
+test('mapping projection qualifies unique explicit anchors only within a complete scan', () => {
+  const el = (id, source) => node('h2', { 'data-systemx-id': id, ...(source && { 'data-systemx-source': source }) })
+  const group = node('section', { 'data-systemx-source': 'src/Owner.tsx' }, [el('unique'), el('duplicate'), el('duplicate'), el('other', 'src/Other.tsx')])
+  const root = node('body', {}, [group])
+  const filters = { kind: [], visibility: 'any', mapping: 'mapped' }
+  const lookups = []
+  const ownership = entry => { lookups.push(entry.anchor); return entry.sourcePath === 'src/Owner.tsx' ? 'mapped' : 'unmapped' }
+  const result = projectPreviewRows(collectPreviewHierarchy(root), { filters, ownership })
+  assert.equal(result.matchCount, 1)
+  assert.deepEqual(lookups, ['unique', 'other'])
+  lookups.length = 0
+  assert.equal(projectPreviewRows(collectPreviewHierarchy(root, limits({ nodes: 4 })), { filters, ownership }).matchCount, 0)
+  assert.deepEqual(lookups, [])
+})
+
+test('declared cross-origin and opaque frame boundaries exclude contents before any document inspection', async () => {
+  const { frameBoundary } = await import('../Website/preview-navigator-context.js')
+  const doc = { baseURI: 'http://127.0.0.1:5123/', defaultView: { origin: 'http://127.0.0.1:5123' } }
+  for (const [attrs, reason] of [[{ src: 'http://localhost:5123/private?token=redacted' }, 'Cross-origin frame'], [{ sandbox: '' }, 'Opaque sandbox'], [{ src: 'data:text/html,redacted' }, 'Unsupported frame URL']]) {
+    const frame = new ElementFixture('iframe', attrs, [node('h2')], doc)
+    frame.sandbox = { contains: () => false }
+    let read = 0
+    Object.defineProperty(frame, 'contentDocument', { get() { read++; throw Error('Private frame') } })
+    assert.deepEqual(frameBoundary(frame), { root: null, reason })
+    assert.equal(read, 0)
+    assert.equal(collectPreviewHierarchy(frame).entries.length, 1)
+  }
+})

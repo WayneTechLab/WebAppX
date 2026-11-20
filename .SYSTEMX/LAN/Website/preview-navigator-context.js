@@ -1,9 +1,10 @@
 import { collectPreviewHierarchy, previewNavigatorLimits, projectPreviewRows } from './preview-navigator.js'
+import { emptyNavigatorFilters, hasNavigatorFilters, mountNavigatorFilters } from './preview-navigator-filters.js'
 
 const maxScopes = 4, maxBoundaries = 32
 const limits = { ...previewNavigatorLimits, rows: 100 }
 const watched = { subtree: true, childList: true, attributes: true,
-  attributeFilter: ['id', 'class', 'hidden', 'inert', 'aria-hidden', 'data-systemx-name', 'data-systemx-component', 'src', 'sandbox'] }
+  attributeFilter: ['id', 'class', 'hidden', 'inert', 'aria-hidden', 'data-systemx-name', 'data-systemx-component', 'src', 'srcdoc', 'sandbox', 'role', 'href', 'style', 'open', 'data-systemx-id', 'data-systemx-source'] }
 
 function boundaryKind(host) {
   if (host.tagName === 'IFRAME') return 'Frame'
@@ -11,20 +12,29 @@ function boundaryKind(host) {
   return null
 }
 
+// Check declarative origin and sandbox before asking for a document. The
+// browser's same-origin contentDocument getter safely returns null on redirects.
+export function frameBoundary(host) {
+  const exclude = reason => ({ reason, root: null })
+  if (!host.isConnected) return exclude('Detached frame')
+  try {
+    if (host.hasAttribute('sandbox') && !host.sandbox.contains('allow-same-origin')) return exclude('Opaque sandbox')
+    const src = host.getAttribute('src')?.trim(), srcdoc = host.hasAttribute('srcdoc')
+    if (src && src !== 'about:blank' && !srcdoc) {
+      const target = new URL(src, host.ownerDocument.baseURI)
+      if (!['http:', 'https:', 'blob:'].includes(target.protocol)) return exclude('Unsupported frame URL')
+      if (target.origin !== host.ownerDocument.defaultView.origin) return exclude('Cross-origin frame')
+    }
+    const doc = host.contentDocument
+    if (!doc?.body || (doc.URL === 'about:blank' && (srcdoc || (src && src !== 'about:blank')))) return exclude('Frame document unavailable')
+    return { root: doc.body, reason: null }
+  } catch { return exclude('Frame document unavailable') }
+}
+
 function boundaryRoot(host, kind) {
   if (!host.isConnected) return null
-  try {
-    if (kind === 'Open shadow root') return boundaryKind(host) === kind ? host.shadowRoot : null
-    if (host.hasAttribute('sandbox') && !host.sandbox.contains('allow-same-origin')) return null
-    const doc = host.contentDocument
-    if (!doc || doc !== host.contentWindow?.document || !doc.body) return null
-    // An iframe has a transient same-origin blank document while its URL loads.
-    if (doc.URL === 'about:blank') {
-      const src = host.getAttribute('src')?.trim()
-      if (host.hasAttribute('srcdoc') || (src && src !== 'about:blank')) return null
-    }
-    return doc.body
-  } catch { return null }
+  if (kind === 'Open shadow root') return boundaryKind(host) === kind ? host.shadowRoot : null
+  return frameBoundary(host).root
 }
 
 const element = (tag, text = '') => {
@@ -39,7 +49,7 @@ const button = label => {
   node.style.maxWidth = '100%'; node.style.whiteSpace = 'normal'
   return node
 }
-const scope = (root, label, host = null, kind = null) => ({ root, label, host, kind, query: '', expanded: new Set([root]) })
+const scope = (root, label, host = null, kind = null) => ({ root, label, host, kind, query: '', filters: emptyNavigatorFilters(), expanded: new Set([root]) })
 
 // Scoped nodes stay in this inspector. The canvas selection and source tools
 // only receive elements selected through their original top-document workflow.
@@ -58,6 +68,10 @@ export function mountNavigatorContexts(tree) {
   actions.append(back, refresh)
   panel.append(heading, path, actions, filter, boundaries, rows, status)
   tree.before(panel)
+  const facets = mountNavigatorFilters(boundaries, 'context', filters => {
+    if (stack.length < 2) return
+    stack.at(-1).filters = filters; notice = ''; render()
+  })
 
   let top, stack = [], timer, notice = ''
   const observer = new MutationObserver(schedule)
@@ -94,7 +108,7 @@ export function mountNavigatorContexts(tree) {
     const active = document.activeElement
     const focusedKey = focusTarget ?? active?.navigatorFocusKey
     path.textContent = stack.map(item => item.label).join(' › ')
-    back.hidden = stack.length < 2; filter.hidden = !current
+    back.hidden = stack.length < 2; filter.hidden = !current; facets.group.hidden = stack.length < 2
     boundaries.replaceChildren(); rows.replaceChildren()
     if (!current) { status.textContent = 'Preview context unavailable.'; return }
     for (const item of stack.slice(1)) {
@@ -103,20 +117,35 @@ export function mountNavigatorContexts(tree) {
     }
     const snapshot = stack.length === 1 ? top : collectPreviewHierarchy(current.root, limits)
     current.expanded = new Set([...current.expanded].filter(node => snapshot.byElement.has(node)))
+    facets.update(current.filters)
     filter.value = current.query
     const query = current.query.trim().toLocaleLowerCase(), findings = []
+    const view = stack.length > 1 ? projectPreviewRows(snapshot, { expanded: current.expanded, query,
+      filters: current.filters, scopes: stack.slice(1), limits }) : null
     let focusButton
     const occurrences = new Map()
     for (const entry of snapshot.entries) {
       const kind = boundaryKind(entry.element)
-      if (!kind) continue
+      if (!kind || (hasNavigatorFilters(current.filters) && !view?.matching.has(entry))) continue
       const label = `${kind} · ${entry.label}`
       const occurrence = (occurrences.get(label) ?? 0) + 1
       occurrences.set(label, occurrence)
       if (query && !entry.search.includes(query) && !kind.toLocaleLowerCase().includes(query)) continue
       findings.push(entry)
       if (findings.length > maxBoundaries) continue
-      const open = button(occurrence === 1 ? label : `${label} (${occurrence})`)
+      const name = occurrence === 1 ? label : `${label} (${occurrence})`
+      if (kind === 'Frame') {
+        entry.element.addEventListener('load', schedule)
+        watchedFrames.push(entry.element)
+        const { reason } = frameBoundary(entry.element)
+        if (reason) {
+          const boundary = element('span', `${name} · ${reason}. Frame contents excluded.`)
+          boundary.dataset.navBoundary = 'excluded'
+          boundaries.append(boundary)
+          continue
+        }
+      }
+      const open = button(name)
       open.navigatorFocusKey = entry.element
       if (entry.element === focusedKey) focusButton = open
       open.addEventListener('click', () => {
@@ -133,7 +162,6 @@ export function mountNavigatorContexts(tree) {
     const messages = [notice, `${Math.min(findings.length, maxBoundaries)} of ${findings.length} matching context boundaries.`]
     if (stack.length === 1) messages.push(...snapshot.reasons, 'Closed roots and unmounted content are outside this view.')
     else {
-      const view = projectPreviewRows(snapshot, { expanded: current.expanded, query, limits })
       for (const entry of view.rows) {
         const item = element('li')
         item.style.paddingInlineStart = `${Math.min(6, entry.depth) * 0.5}rem`
@@ -141,7 +169,7 @@ export function mountNavigatorContexts(tree) {
           const toggle = button(entry.label)
           toggle.setAttribute('aria-expanded', String(entry.expanded)); toggle.navigatorFocusKey = entry.element
           toggle.addEventListener('click', () => {
-            if (query) { notice = 'Clear the filter to change expansion.'; render(entry.element); return }
+            if (view.filtering) { notice = 'Clear the filters and search to change expansion.'; render(entry.element); return }
             if (current.expanded.has(entry.element)) current.expanded.delete(entry.element)
             else current.expanded.add(entry.element)
             render(entry.element)
@@ -149,9 +177,13 @@ export function mountNavigatorContexts(tree) {
           if (!focusButton && entry.element === focusedKey) focusButton = toggle
           item.append(toggle)
         } else item.textContent = entry.label
+        if (view.filtering) {
+          item.dataset.navMatch = entry.matched ? 'match' : 'ancestor'
+          if (!entry.matched && hasNavigatorFilters(current.filters)) item.append(element('small', ' · ancestor'))
+        }
         rows.append(item)
       }
-      messages.push(`${snapshot.entries.length} inspected nodes · ${view.rows.length} shown${query ? ` · ${view.matchCount} metadata matches` : ''}.`, ...view.reasons)
+      messages.push(`${snapshot.entries.length} inspected nodes · ${view.rows.length} shown${view.filtering ? ` · ${view.matchCount} ${hasNavigatorFilters(current.filters) ? 'matches' : 'metadata matches'}` : ''}.`, ...view.reasons)
     }
     status.textContent = messages.filter(Boolean).join(' ')
     if (focusButton) focusButton.focus({ preventScroll: true })

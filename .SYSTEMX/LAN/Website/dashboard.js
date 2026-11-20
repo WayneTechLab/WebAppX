@@ -1,5 +1,6 @@
 import { previewNavigatorLimits, collectPreviewHierarchy, projectPreviewRows, ancestorPreviewEntries, isCurrentPreviewElement } from './preview-navigator.js'
-import { mountNavigatorContexts } from './preview-navigator-context.js'
+import { emptyNavigatorFilters, hasNavigatorFilters, mountNavigatorFilters } from './preview-navigator-filters.js'
+import { frameBoundary, mountNavigatorContexts } from './preview-navigator-context.js'
 import { sourceComparisonLimits, compareSourceText } from './source-comparison.js'
 import { sourceRecordLimits, createRecoveryRecord, parseRecoveryRecord, normalizeSourceDisplay, createComparisonExport } from './source-draft-records.js'
 import { canonicalSourcePath, sourceNavigationKey, createSourceNavigation, parseSourceNavigation, parseSourceInventory, filterSourceMetadata, sourcePickerSelection } from './source-navigation.js'
@@ -163,6 +164,8 @@ const state = {
   previewNavigatorExpanded: new Set(),
   previewNavigatorFocus: null,
   previewNavigatorQuery: '',
+  previewNavigatorFilters: emptyNavigatorFilters(),
+  previewNavigatorNotice: '',
   previewNavigatorObserver: null,
   previewNavigatorTimer: null,
   previewNavigatorRoute: null,
@@ -1178,6 +1181,7 @@ function resetPreviewNavigator() {
   state.previewNavigatorObserver = null
   if (state.previewNavigatorTimer) window.clearTimeout(state.previewNavigatorTimer)
   state.previewNavigatorTimer = null
+  if (state.previewNavigatorSnapshot && hasNavigatorFilters(state.previewNavigatorFilters)) state.previewNavigatorNotice = 'Preview document replaced. Results now use its mounted hierarchy.'
   state.previewNavigatorSnapshot = null
   state.previewNavigatorRows = []
   state.previewNavigatorExpanded.clear()
@@ -1224,10 +1228,19 @@ function renderPreviewBreadcrumbs() {
   }
 }
 
-let navigatorContexts
+let navigatorContexts, navigatorFacets
+function navigatorIsFiltered() {
+  return Boolean(state.previewNavigatorQuery.trim() || hasNavigatorFilters(state.previewNavigatorFilters))
+}
 function renderPreviewNavigator({ focus = false, reveal = false } = {}) {
   const tree = document.querySelector('#preview-layer-tree')
   if (!tree) return
+  navigatorFacets ??= mountNavigatorFilters(document.querySelector('#preview-layer-summary'), 'preview', filters => {
+    state.previewNavigatorFilters = filters
+    state.previewNavigatorNotice = ''
+    renderPreviewNavigator()
+  })
+  navigatorFacets.update(state.previewNavigatorFilters)
   navigatorContexts ??= mountNavigatorContexts(tree)
   navigatorContexts.update(state.previewNavigatorSnapshot)
   const hadFocus = tree.contains(document.activeElement)
@@ -1239,7 +1252,14 @@ function renderPreviewNavigator({ focus = false, reveal = false } = {}) {
     output('#preview-layer-summary', 'Live hierarchy unavailable. Open the same-origin Vite preview to inspect elements.')
     return
   }
-  const projection = projectPreviewRows(snapshot, { expanded: state.previewNavigatorExpanded, query: state.previewNavigatorQuery })
+  const route = currentPreviewRoute().split('#')[0]
+  const pageSource = state.data?.pages?.find(page => String(page.route ?? '').replace(/\/+$/, '') === route.replace(/\/+$/, ''))?.source
+  const lookup = state.previewNavigatorFilters.mapping !== 'any' ? identityInspector?.navigatorOwnership() : null
+  const projection = projectPreviewRows(snapshot, {
+    expanded: state.previewNavigatorExpanded, query: state.previewNavigatorQuery, filters: state.previewNavigatorFilters,
+    ownership: lookup && (entry => lookup({ workspaceId: state.sourceRecoveryWorkspaceId, route,
+      sourcePath: entry.sourcePath ?? pageSource, tag: entry.tag, anchor: entry.anchor })),
+  })
   const rows = projection.rows
   state.previewNavigatorRows = rows
   if (!rows.some((entry) => entry.element === state.previewNavigatorFocus)) {
@@ -1252,6 +1272,7 @@ function renderPreviewNavigator({ focus = false, reveal = false } = {}) {
     const button = create('button', `preview-layer-row${selected ? ' selected' : ''}${entry.matched ? ' search-match' : ''}`)
     button.type = 'button'
     button.dataset.previewLayerIndex = String(index)
+    if (projection.filtering) button.dataset.navMatch = entry.matched ? 'match' : 'ancestor'
     button.dataset.previewDepth = String(Math.min(entry.depth, 8))
     button.setAttribute('role', 'treeitem')
     button.setAttribute('aria-level', String(entry.depth + 1))
@@ -1264,7 +1285,8 @@ function renderPreviewNavigator({ focus = false, reveal = false } = {}) {
     const toggle = create('span', '', entry.children.length ? entry.expanded ? '▾' : '▸' : selected ? '◎' : '·')
     if (entry.children.length) toggle.dataset.previewToggle = 'true'
     toggle.setAttribute('aria-hidden', 'true')
-    const flags = [entry.hidden && 'hidden', entry.inert && 'inert', entry.ariaHidden && 'ARIA hidden'].filter(Boolean)
+    const frameExcluded = entry.tag === 'iframe' && frameBoundary(entry.element).reason
+    const flags = [hasNavigatorFilters(state.previewNavigatorFilters) && !entry.matched && 'ancestor', frameExcluded && `${frameExcluded} · contents excluded`, entry.hidden && 'hidden', entry.inert && 'inert', entry.ariaHidden && 'ARIA hidden'].filter(Boolean)
     button.append(
       toggle,
       create('small', '', `${entry.label}${flags.length ? ` (${flags.join(', ')})` : ''}`),
@@ -1272,14 +1294,17 @@ function renderPreviewNavigator({ focus = false, reveal = false } = {}) {
     tree.append(button)
     if (button.tabIndex === 0) focusedRow = button
   })
-  const result = projection.query
+  const result = projection.filtering
     ? `${projection.matchCount} match${projection.matchCount === 1 ? '' : 'es'} in ${snapshot.entries.length} inspected nodes`
     : `${snapshot.entries.length} inspected nodes · ${rows.length} visible rows`
   const selectedOutside = state.previewSelectedElement && !snapshot.byElement.has(state.previewSelectedElement)
     ? ' Selected element is outside the inspected range.' : ''
-  const empty = projection.query && !projection.matchCount
-    ? projection.truncated ? ' No matches in the inspected range; the search is incomplete.' : ' No matching element metadata.' : ''
-  output('#preview-layer-summary', `${result}.${empty}${selectedOutside} ${projection.reasons.join(' ')}`.trim())
+  let empty = ''
+  if (projection.filtering && !projection.matchCount) {
+    empty = hasNavigatorFilters(state.previewNavigatorFilters) ? ' No matching elements in this scope.' : ' No matching element metadata.'
+    if (projection.truncated) empty = ' No matches in the inspected range; the search is incomplete.'
+  }
+  output('#preview-layer-summary', `${result}.${empty}${selectedOutside} ${[state.previewNavigatorNotice, ...projection.reasons].filter(Boolean).join(' ')}`.trim())
   if (focus || hadFocus) focusedRow?.focus({ preventScroll: true })
   if (reveal) tree.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
 }
@@ -1298,6 +1323,7 @@ function rebuildPreviewNavigator() {
   const newDocument = previous?.root !== root
   const route = currentPreviewRoute().split('#')[0] || '/'
   if (newDocument) state.previewNavigatorExpanded.clear()
+  if (previous && !newDocument && state.previewSelectedElement && !isCurrentPreviewElement(state.previewSelectedElement, root)) state.previewNavigatorNotice = 'The selected element was replaced or removed from this hierarchy.'
   state.previewNavigatorSnapshot = collectPreviewHierarchy(root)
   const currentElements = state.previewNavigatorSnapshot.byElement
   state.previewNavigatorExpanded = new Set([...state.previewNavigatorExpanded].filter((element) => currentElements.has(element)))
@@ -1325,9 +1351,10 @@ function installPreviewNavigator(frameDocument) {
     const observer = new MutationObserver(schedulePreviewNavigatorRefresh)
     observer.observe(frameDocument.documentElement, {
       subtree: true, childList: true, attributes: true,
-      attributeFilter: ['id', 'class', 'hidden', 'inert', 'aria-hidden', 'data-systemx-name', 'data-systemx-component'],
+      attributeFilter: ['id', 'class', 'hidden', 'inert', 'aria-hidden', 'data-systemx-name', 'data-systemx-component', 'data-systemx-source', 'data-systemx-id', 'role', 'href', 'style', 'open', 'src', 'srcdoc', 'sandbox'],
     })
     state.previewNavigatorObserver = observer
+    frameDocument.defaultView?.addEventListener('resize', schedulePreviewNavigatorRefresh)
     frameDocument.defaultView?.addEventListener('popstate', schedulePreviewNavigatorRefresh)
     frameDocument.defaultView?.addEventListener('hashchange', schedulePreviewNavigatorRefresh)
   }
@@ -3633,8 +3660,8 @@ function bind() {
       return
     }
     if (event.target.closest('[data-preview-toggle]')) {
-      if (state.previewNavigatorQuery.trim()) {
-        output('#preview-layer-summary', 'Search shows matching ancestor paths. Clear search to collapse branches.')
+      if (navigatorIsFiltered()) {
+        output('#preview-layer-summary', 'Search and filters show matching ancestor paths. Clear them to collapse branches.')
         return
       }
       if (state.previewNavigatorExpanded.has(element)) state.previewNavigatorExpanded.delete(element)
@@ -3670,11 +3697,11 @@ function bind() {
     if (event.key === 'Home') next = rows[0]
     if (event.key === 'End') next = rows[rows.length - 1]
     if (event.key === 'ArrowRight' && entry.children.length) {
-      if (!entry.expanded && !state.previewNavigatorQuery.trim()) state.previewNavigatorExpanded.add(entry.element)
+      if (!entry.expanded && !navigatorIsFiltered()) state.previewNavigatorExpanded.add(entry.element)
       else next = rows[index + 1]?.parent?.element === entry.element ? rows[index + 1] : entry
     }
     if (event.key === 'ArrowLeft') {
-      if (entry.expanded && entry.children.length && !state.previewNavigatorQuery.trim()) state.previewNavigatorExpanded.delete(entry.element)
+      if (entry.expanded && entry.children.length && !navigatorIsFiltered()) state.previewNavigatorExpanded.delete(entry.element)
       else next = rows.find((row) => row.element === entry.parent?.element) || entry
     }
     state.previewNavigatorFocus = next.element
@@ -3695,6 +3722,7 @@ function bind() {
     if (!state.previewSelectedElement) { output('#preview-layer-summary', 'Select an element in the preview or hierarchy first.'); return }
     state.previewNavigatorQuery = ''
     setControlValue('#preview-navigator-search', '')
+    state.previewNavigatorFilters = emptyNavigatorFilters()
     selectNavigatorElement(state.previewSelectedElement, { focus: true })
   })
   document.querySelector('#canvas-element-breadcrumbs')?.addEventListener('click', (event) => {
@@ -4072,6 +4100,7 @@ async function boot() {
     },
     selectedPath: () => document.querySelector('#source-file-select')?.value ?? '',
     onStageLiteral: stageIdentityLiteral,
+    onNavigatorOwnershipChange: () => { if (state.previewNavigatorFilters.mapping !== 'any') renderPreviewNavigator() },
   })
   const graphContainer = create('div', 'graph-contract-container')
   graphContainer.id = 'graph-contract-container'

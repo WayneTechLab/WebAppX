@@ -50,7 +50,8 @@ const captureProtectedBytes = () => Object.fromEntries([...new Set([...listProte
   .map((name) => [name, existsSync(join(repoRoot, name)) ? sha256(readFileSync(join(repoRoot, name))) : null]))
 const originalProtected = captureProtectedBytes()
 const runtimeSourcePaths = ['.SYSTEMX/LAN/Website/dashboard.js', '.SYSTEMX/LAN/Website/dashboard.css',
-  '.SYSTEMX/LAN/Website/preview-navigator.js', '.SYSTEMX/LAN/Website/preview-navigator-context.js', '.SYSTEMX/LAN/Website_Dashboard.html']
+  '.SYSTEMX/LAN/Website/preview-navigator.js', '.SYSTEMX/LAN/Website/preview-navigator-context.js',
+  '.SYSTEMX/LAN/Website/preview-navigator-filters.js', '.SYSTEMX/LAN/Website/source-identities.js', '.SYSTEMX/LAN/Website_Dashboard.html']
 const runtimeDigests = (snapshot) => Object.fromEntries(runtimeSourcePaths.map((path) => [path, snapshot[path] ?? null]))
 writeFileSync(join(evidence, 'protected-before.json'), `${JSON.stringify(originalProtected, null, 2)}\n`)
 const sourceRevision = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repoRoot, encoding: 'utf8' }).trim()
