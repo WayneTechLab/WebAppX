@@ -45,9 +45,10 @@ export async function readLanGoal({ publicRoot, limit = 5, controller }) {
   }
 
   const { requirements, capabilities } = summary(catalog)
-  const ready = {}
+  const ready = {}, readyFamilies = {}
   for (const gate of ['local', 'operator', 'provider']) {
-    const queue = readyItems(catalog, { limit, gate })
+    const queue = readyItems(catalog, { limit, gate, includeFamilies: true })
+    readyFamilies[gate] = queue.families
     ready[gate] = { count: queue.matches, items: queue.items.map(({ id, familyId }) => ({ id, familyId })) }
   }
   const result = {
@@ -55,7 +56,7 @@ export async function readLanGoal({ publicRoot, limit = 5, controller }) {
     requirements: { accepted: requirements.done, total: requirements.total, remaining: requirements.todo,
       percentage: 100 * requirements.done / requirements.total, complete: requirements.done === requirements.total },
     capabilities: { accepted: capabilities.done, total: capabilities.total, partial: capabilities.partial },
-    ready, applied: false, executionAuthority: false,
+    ready, readyFamilies, applied: false, executionAuthority: false,
   }
   if (controller) {
     const { runId, stateRevision, progress, assignments, blockedBy } = controller.wave()

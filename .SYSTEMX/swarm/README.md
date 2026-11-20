@@ -34,7 +34,14 @@ even when a broad host scope is assigned.
 Run `node .SYSTEMX/swarm/cli.mjs goal --limit 5` in WebAppX. The controller
 validates the original definitions and completion evidence, reports the percentage
 of accepted requirements and lists ready work by local, operator and provider
-gate. Add `--manifest "$SWARM_MANIFEST"` to inspect that run alongside the catalog.
+gate. Set `--limit 1` to sample one original requirement per gate. The
+`readyFamilies.local`, `readyFamilies.operator` and `readyFamilies.provider`
+arrays still list every family with eligible work. Each entry gives the family
+ID and name, its total number of ready original requirements, and the first
+ready requirement ID in catalog order. A family appears once under its gate,
+so the summary spans at most the catalog's 100 families. Use `firstReadyId`
+to inspect a requirement with `node scripts/lan-backlog.mjs --item ID --json`.
+Add `--manifest "$SWARM_MANIFEST"` to inspect a run alongside the catalog.
 
 ## Preview a worker wave
 
