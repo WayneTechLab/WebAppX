@@ -9,6 +9,7 @@
  * genuine Home/About journeys. No fixture is written to source or builder data.
  */
 import assert from 'node:assert/strict'
+import { checkNavigatorContexts } from './navigator-context-browser.mjs'
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
@@ -49,7 +50,7 @@ const captureProtectedBytes = () => Object.fromEntries([...new Set([...listProte
   .map((name) => [name, existsSync(join(repoRoot, name)) ? sha256(readFileSync(join(repoRoot, name))) : null]))
 const originalProtected = captureProtectedBytes()
 const runtimeSourcePaths = ['.SYSTEMX/LAN/Website/dashboard.js', '.SYSTEMX/LAN/Website/dashboard.css',
-  '.SYSTEMX/LAN/Website/preview-navigator.js', '.SYSTEMX/LAN/Website_Dashboard.html']
+  '.SYSTEMX/LAN/Website/preview-navigator.js', '.SYSTEMX/LAN/Website/preview-navigator-context.js', '.SYSTEMX/LAN/Website_Dashboard.html']
 const runtimeDigests = (snapshot) => Object.fromEntries(runtimeSourcePaths.map((path) => [path, snapshot[path] ?? null]))
 writeFileSync(join(evidence, 'protected-before.json'), `${JSON.stringify(originalProtected, null, 2)}\n`)
 const sourceRevision = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repoRoot, encoding: 'utf8' }).trim()
@@ -175,6 +176,9 @@ try {
   await assertThreePanels()
   await page.screenshot({ path: join(evidence, '01-actual-home-three-panels.png') })
   check('actual-app', 'Actual Home heading selects through canvas inspection and the metadata search/tree while all three builder panels remain visible.')
+
+  report.scopedNavigator = await checkNavigatorContexts(page, frame, expect)
+  check('scoped-dom-fixture', 'Real open and closed shadow roots, same-origin nested and opaque sandboxed frames, a replaced frame, repeated metadata, a 1600-node subtree and four-context traversal preserved parent expansion and canvas selection.')
 
   // Browser-document-only fixture; no source, app workspace, database or model writes.
   await frame.evaluate(() => {

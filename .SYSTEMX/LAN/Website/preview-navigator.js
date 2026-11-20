@@ -28,7 +28,8 @@ export function collectPreviewHierarchy(root, limits = previewNavigatorLimits) {
   const entries = []
   const byElement = new Map()
   const reasons = new Set()
-  if (!isElement(root)) return { root, entries, byElement, reasons: ['Preview document unavailable.'], truncated: false }
+  const shadow = root?.nodeType === 11 && root.mode === 'open' && root.host?.shadowRoot === root
+  if (!isElement(root) && !shadow) return { root, entries, byElement, reasons: ['Preview document unavailable.'], truncated: false }
   // Indexed child access avoids copying an arbitrarily large children collection.
   const stack = [{ element: root, parent: null, depth: 0 }]
   let examined = 0
@@ -37,14 +38,15 @@ export function collectPreviewHierarchy(root, limits = previewNavigatorLimits) {
     if (!next.entry) {
       if (examined >= limits.nodes) { reasons.add(`Inspection limited to ${limits.nodes} nodes.`); break }
       examined += 1
-      if (!isElement(next.element) || excludedTags.has(next.element.tagName)) { stack.pop(); continue }
+      const boundary = shadow && next.element === root
+      if (!boundary && (!isElement(next.element) || excludedTags.has(next.element.tagName))) { stack.pop(); continue }
       const parent = next.parent
       const entry = {
         element: next.element, parent, depth: next.depth, children: [],
-        hidden: Boolean(parent?.hidden || next.element.hasAttribute('hidden')),
-        inert: Boolean(parent?.inert || next.element.hasAttribute('inert')),
-        ariaHidden: Boolean(parent?.ariaHidden || next.element.getAttribute('aria-hidden') === 'true'),
-        ...metadata(next.element),
+        hidden: Boolean(parent?.hidden || (!boundary && next.element.hasAttribute('hidden'))),
+        inert: Boolean(parent?.inert || (!boundary && next.element.hasAttribute('inert'))),
+        ariaHidden: Boolean(parent?.ariaHidden || (!boundary && next.element.getAttribute('aria-hidden') === 'true')),
+        ...(boundary ? { tag: '#shadow-root', label: 'Open shadow root', search: 'open shadow root' } : metadata(next.element)),
       }
       entries.push(entry)
       if (entry.metadataLimited) reasons.add(`Element metadata limited to ${previewNavigatorLimits.metadata} characters per attribute.`)
