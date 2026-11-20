@@ -90,6 +90,7 @@ const state = {
   sourceDisplayBaseline: null,
   sourceConflictRevision: null,
   sourceLoadGeneration: 0,
+  sourceLoadController: null,
   sourceTargetGeneration: 0,
   sourceLoading: false,
   sourceSaving: false,
@@ -142,6 +143,7 @@ const state = {
   previewTextSourcePending: null,
   previewTextSaving: null,
   previewTextSourceGeneration: 0,
+  previewTextReadController: null,
   previewInspectorRetry: null,
   fontCatalog: [],
   fontCatalogMeta: null,
@@ -1073,8 +1075,7 @@ function clearPreviewSelection() {
   state.previewSelection = null
   state.previewSelectionAnchor = null
   state.previewTextSource = null
-  state.previewTextSourcePending = null
-  state.previewTextSourceGeneration += 1
+  cancelSelectedTextRead()
   state.previewLayerElements = []
   hidePreviewContextMenu()
   renderPreviewBreadcrumbs()
@@ -1375,8 +1376,7 @@ function selectPreviewElement(element, options = {}) {
   if (!isCurrentPreviewElement(element, previewDocument()?.body)) return
   if (state.previewSelectedElement !== element) {
     state.previewTextSource = null
-    state.previewTextSourcePending = null
-    state.previewTextSourceGeneration += 1
+    cancelSelectedTextRead()
   }
   state.previewSelectedElement?.removeAttribute('data-systemx-inspector-selected')
   element.setAttribute('data-systemx-inspector-selected', '')
@@ -1963,6 +1963,7 @@ function renderSourceInventory() {
   }
   select.value = selection.path
   if (selection.absent) {
+    cancelSourceLoad()
     state.sourceTargetGeneration += 1
     invalidateSourceRecoveryReview('Complete inventory no longer includes the selected path. The picker is cleared; the loaded draft and baseline are kept.')
     invalidateSourceHistory()
@@ -2657,6 +2658,8 @@ function initializeSourceRecovery(workspaceId) {
   state.sourceRecoveryHasStored = false
   state.sourceRecoveryEnabled = false
   if (previousId) {
+    cancelSourceLoad()
+    cancelSelectedTextRead()
     stopSourceDraftPreviewRead('Checkout changed. The literal preview retains its previous checkout snapshot; load source explicitly before making a new preview.')
     if (state.sourceDraftPreview) { state.sourceDraftPreview.currentRevision = null; state.sourceDraftPreview.freshness = 'Unknown' }
     invalidateSourceComparison('Checkout changed. The raw draft and old loaded baseline are kept; load the current checkout source explicitly before reviewing replacement.', true)
@@ -3165,16 +3168,26 @@ function renderSourceRevision() {
   else label.removeAttribute('data-current-revision')
 }
 
+function cancelSelectedTextRead() {
+  state.previewTextSourceGeneration += 1
+  state.previewTextReadController?.abort()
+  state.previewTextReadController = null
+  state.previewTextSourcePending = null
+}
+
 async function loadSelectedTextSource(element = state.previewSelectedElement, path = state.previewSelection?.sourcePath) {
   if (!element || !path) return
-  const generation = ++state.previewTextSourceGeneration
+  cancelSelectedTextRead()
+  const generation = state.previewTextSourceGeneration
+  const controller = new AbortController()
+  state.previewTextReadController = controller
   const workspaceId = state.sourceRecoveryWorkspaceId
   const observation = sourceObservationVersions.get(path) || 0
   state.previewTextSourcePending = element
   setControlDisabled('#settings-text-save', true)
   output('#settings-source-revision', 'Reading latest source revision; the text draft is kept.')
   try {
-    const result = await request(`/api/builder/source?path=${encodeURIComponent(path)}`)
+    const result = await request(`/api/builder/source?path=${encodeURIComponent(path)}`, { signal: controller.signal })
     if (generation !== state.previewTextSourceGeneration || state.previewSelectedElement !== element || state.previewSelection?.sourcePath !== path) return
     if (sourceObservationSuperseded(path, observation, result.revision)) throw new Error('A newer source observation arrived while reading. Reload latest source before saving.')
     if (!sourceSnapshotForWorkspace(result, workspaceId) || result.path !== path || !validSourceRevision(result.revision)) throw new Error('Source revision unavailable. Choose Reload latest source before saving.')
@@ -3185,6 +3198,7 @@ async function loadSelectedTextSource(element = state.previewSelectedElement, pa
     if (generation === state.previewTextSourceGeneration) output('#settings-source-revision', `${error.message} The text draft and loaded revision are kept. Check the local connection and reload source before retrying.`)
   } finally {
     if (generation === state.previewTextSourceGeneration) {
+      state.previewTextReadController = null
       state.previewTextSourcePending = null
       const loaded = state.previewTextSource
       setControlDisabled('#settings-text-save', loaded?.element !== element || loaded.writable === false || loaded.path !== path || loaded.workspaceId !== state.sourceRecoveryWorkspaceId || state.previewTextSaving === element)
@@ -3212,12 +3226,24 @@ function sourceContentForDraft(displayDraft) {
   return uniformCrLf ? displayDraft.replaceAll('\n', '\r\n') : displayDraft
 }
 
+function cancelSourceLoad() {
+  if (!state.sourceLoadController) return
+  state.sourceLoadGeneration += 1
+  state.sourceLoadController.abort()
+  state.sourceLoadController = null
+  state.sourceLoading = false
+  setControlDisabled('#source-editor', false)
+  output('#source-output', 'Source read cancelled. The open draft and loaded revision are kept.')
+  updateSourceSaveAvailability()
+}
+
 async function loadSource({ path } = {}) {
   const select = document.querySelector('#source-file-select')
   const editor = document.querySelector('#source-editor')
   const wantedPath = path || select?.value
   if (!select || !editor || !wantedPath || state.sourceSaving) return
   if (!canonicalSourcePath(wantedPath)) { output('#source-output', 'SOURCE_PATH_INVALID: choose a canonical repository-relative source path. The draft and loaded revision are kept; no file request was made.'); return }
+  cancelSourceLoad()
   invalidateSourceRecoveryReview('Source load requested. Review saved draft again before restoring.')
   invalidateSourceHistory()
   stopSourceDraftPreviewRead('Source load requested. The preview keeps its captured text and baseline.')
@@ -3228,6 +3254,8 @@ async function loadSource({ path } = {}) {
     return
   }
   const generation = ++state.sourceLoadGeneration
+  const controller = new AbortController()
+  state.sourceLoadController = controller
   const targetGeneration = state.sourceTargetGeneration
   const workspaceId = state.sourceRecoveryWorkspaceId
   const observation = sourceObservationVersions.get(wantedPath) || 0
@@ -3235,7 +3263,7 @@ async function loadSource({ path } = {}) {
   editor.disabled = true
   updateSourceSaveAvailability()
   try {
-    const result = await request(`/api/builder/source?path=${encodeURIComponent(wantedPath)}`)
+    const result = await request(`/api/builder/source?path=${encodeURIComponent(wantedPath)}`, { signal: controller.signal })
     if (generation !== state.sourceLoadGeneration) return
     if (targetGeneration !== state.sourceTargetGeneration) throw new Error('Selected source changed while reading. Load the selected file explicitly.')
     if (sourceObservationSuperseded(wantedPath, observation, result.revision)) throw new Error('A newer source observation arrived while reading. Reload source again.')
@@ -3276,6 +3304,7 @@ async function loadSource({ path } = {}) {
     }
   } finally {
     if (generation === state.sourceLoadGeneration) {
+      state.sourceLoadController = null
       state.sourceLoading = false
       editor.disabled = false
       updateSourceSaveAvailability()
@@ -3884,6 +3913,7 @@ function bind() {
     invalidateSourceComparison('Draft changed. Comparison is outdated; compare latest and review again.')
   })
   document.querySelector('#source-file-select')?.addEventListener('change', () => {
+    cancelSourceLoad()
     state.sourceTargetGeneration += 1
     state.sourceNavigationPending = null
     renderSourceFileMetadata()

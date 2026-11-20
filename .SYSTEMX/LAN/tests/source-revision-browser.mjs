@@ -60,6 +60,7 @@ const freePort = () => new Promise((resolvePort, reject) => {
 })
 const port = await freePort()
 let appPort, server, browser, browserServer, context, page, failure, releasePendingResponse
+let heldSourceRead
 let serverOutput = ''
 const checks = [], pageErrors = [], posts = [], fontPosts = [], sourceReads = [], unexpectedRequests = [], syntheticFontRequests = []
 const loadedBrowserAssets = [], browserAssetCaptures = []
@@ -73,6 +74,10 @@ const app = createServer(async (request, response) => {
       const upstream = await fetch(`http://127.0.0.1:${port}${url.pathname.slice('/__systemx'.length) || '/'}${url.search}`, {
         method: request.method, headers, ...(['GET', 'HEAD'].includes(request.method) ? {} : { body: Buffer.concat(chunks) }),
       })
+      if (heldSourceRead && url.pathname === '/__systemx/api/builder/source' && url.searchParams.get('path') === heldSourceRead.path && request.method === 'GET') {
+        heldSourceRead.started()
+        await heldSourceRead.release
+      }
       response.writeHead(upstream.status, Object.fromEntries(upstream.headers))
       response.end(Buffer.from(await upstream.arrayBuffer()))
       return
@@ -229,6 +234,32 @@ try {
   await page.locator('#load-source').click()
   await expect(editor).toHaveValue(initial)
   await expect(revision).toHaveAttribute('data-revision', sha(initial))
+  // Hold the real file response in the fixture bridge until the picker has moved on.
+  const started = Promise.withResolvers(), release = Promise.withResolvers()
+  heldSourceRead = { path: secondPath, started: started.resolve, release: release.promise }
+  releasePendingResponse = release.resolve
+  await file.selectOption(secondPath)
+  await page.locator('#load-source').click()
+  await Promise.race([started.promise, delay(15000).then(() => { throw new Error('Source read did not reach the fixture bridge.') })])
+  await expect(editor).toBeDisabled()
+  const aborted = page.waitForEvent('requestfailed', { predicate: request => {
+    const url = new URL(request.url())
+    return request.method() === 'GET' && url.pathname.endsWith('/api/builder/source') && url.searchParams.get('path') === secondPath
+  } })
+  void aborted.catch(() => {})
+  await file.selectOption(sourcePath)
+  await expect(editor).toBeEnabled()
+  await expect(output).toContainText('Source read cancelled')
+  assert.match((await aborted).failure()?.errorText ?? '', /abort|cancel/i)
+  await editor.fill(initial + '// draft after cancellation')
+  release.resolve()
+  releasePendingResponse = null
+  heldSourceRead = null
+  await expect(file).toHaveValue(sourcePath)
+  await expect(editor).toHaveValue(initial + '// draft after cancellation')
+  await expect(revision).toHaveAttribute('data-revision', sha(initial))
+  assert.equal(readFileSync(secondFile, 'utf8'), secondInitial)
+  checks.push('Selecting Home during a held About source GET aborts the browser request and restores editing. The selected Home revision and subsequent unsaved draft survive.')
   const draft = initial.replace('Fixture original', 'Raw operator draft')
   await editor.fill(draft)
   await confirmation.fill('SAVE LOCAL CHANGE')
