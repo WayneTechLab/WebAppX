@@ -297,6 +297,61 @@ export function createController({ repo, manifest, stateDir }) {
     const slot = { number, generation, taskId, phase: 'ready', branch, worktree, workerWorkspaceId: worker.workspaceId, baseRevision: state.baseRevision, headRevision: worker.head, assignmentDigest: digest({ manifestDigest, task }), provider, checks: null, review: null, pr: null, acceptance: null }
     state.slots[String(number)] = slot; observe(state, 'worker-prepared', number, { taskId, generation, headRevision: worker.head }); return makeSync(state, slot, worker)
   }
+  function syncPointDigest(point) {
+    return digest({ ...point, observedAt: undefined, stateRevision: undefined })
+  }
+  function qualifiedRunPoint(state, slot) {
+    checkSlotNumber(slot.number)
+    cleanupCheck(slot)
+    const point = makeSync(state, slot, ensureHead(slot))
+    verifyExecutable(slot.provider)
+    return point
+  }
+  function reviewRuns(state, qualifiedPoints) {
+    const live = Object.values(state.slots).filter(slot => slot.phase !== 'closed')
+    const workers = [], skipped = []
+    for (const slot of live.filter(slot => slot.phase === 'ready')) {
+      const worker = { slot: slot.number, generation: slot.generation, taskId: slot.taskId }
+      try {
+        if (live.length + validated.externalWorkers > validated.maxWorkers) fail('CAPACITY_EXCEEDED', 'The shared worker budget is full.')
+        const point = qualifiedRunPoint(state, slot)
+        qualifiedPoints?.set(slot.number, point)
+        workers.push({ ...worker, branch: point.branch, headRevision: point.headRevision,
+          assignmentDigest: point.assignmentDigest, providerDigest: digest(slot.provider), syncDigest: syncPointDigest(point) })
+      } catch (error) {
+        skipped.push({ ...worker, code: error.code ?? 'WORKER_UNAVAILABLE' })
+      }
+    }
+    const plan = { schemaVersion: 1, runId: validated.runId, workspaceId: identity.workspaceId, manifestDigest, stateRevision: state.revision,
+      maxWorkers: validated.maxWorkers, externalWorkers: validated.externalWorkers, workers, skipped }
+    return { ...plan, runDigest: digest({ ...plan, stateDigest: digest(state) }), applied: false, executionAuthority: false }
+  }
+  function reserveRun(state, number, syncDigest, checkedPoint) {
+    if (process.platform === 'win32') fail('PROVIDER_HOST_UNVERIFIED', 'Native Windows provider execution is unavailable until process termination is qualified.')
+    const slot = slotFor(state, number)
+    if (!['ready', 'review', 'failed'].includes(slot.phase)) fail('PHASE_INVALID', 'Only ready, review or explicitly retried failed work may run.');
+    const point = checkedPoint ?? qualifiedRunPoint(state, slot)
+    const currentDigest = syncPointDigest(point)
+    if (!syncDigest || syncDigest !== currentDigest) fail('SYNC_STALE', 'Supply the fresh IDE/Codex sync digest for this exact generation.');
+    const task = taskById(slot.taskId), packet = { schemaVersion: 1, role: 'agent.y', coordinator: 'agent.0', alpha: 'integration-assurance', task, feedback: slot.feedback ?? null, syncPoint: point, instructions: 'Work only in this worktree and assigned paths. Commit completed changes only when the CLI permits Git metadata writes. If refused, preserve scoped files and report to Agent 0; do not reroute the Git index or widen the sandbox. Do not merge, accept tasks, change remote settings, deploy or message other chats. Return original verification evidence to Agent 0.' }
+    const input = `${JSON.stringify(packet)}\n`
+    if (Buffer.byteLength(input) > swarmLimits.packetBytes) fail('PACKET_LIMIT', 'The bounded handoff packet is too large.');
+    slot.phase = 'running'; slot.lease = randomUUID(); observe(state, 'provider-launch-requested', number, { headRevision: slot.headRevision, lease: slot.lease })
+    return { slot: number, taskId: slot.taskId, lease: slot.lease, generation: slot.generation, assignmentDigest: slot.assignmentDigest, provider: slot.provider, worktree: slot.worktree, input }
+  }
+  async function executeReserved(prepared) {
+    const number = prepared.slot
+    const result = await runChild(prepared.provider.executable, prepared.provider.args, { cwd: prepared.worktree, input: prepared.input, onSpawn: owner => atomicJson(join(location, `execution-${prepared.lease}.json`), { ...owner, lease: prepared.lease, generation: prepared.generation, assignmentDigest: prepared.assignmentDigest, providerSha256: prepared.provider.sha256 }) })
+    atomicJson(join(location, `completion-${prepared.lease}.json`), { lease: prepared.lease, generation: prepared.generation, assignmentDigest: prepared.assignmentDigest, result })
+    return change(true, state => {
+      const slot = slotFor(state, number)
+      if (slot.phase !== 'running' || slot.lease !== prepared.lease || slot.generation !== prepared.generation || slot.assignmentDigest !== prepared.assignmentDigest) fail('LEASE_STALE', 'Provider completion does not own the current worker generation.');
+      slot.headRevision = currentWorker(slot).head; slot.checks = null; slot.review = null; slot.alpha = null
+      slot.providerResult = result; slot.phase = result.exitCode === 0 && !result.timedOut && !result.outputLimit && !result.pipeDeadline && result.ownedGroupStopped ? 'review' : 'failed'; delete slot.lease
+      try { scopeCheck(slot) } catch (error) { slot.phase = 'failed'; slot.failureCode = error.code; observe(state, 'scope-refused', number, { code: error.code }); saveState(state); throw error }
+      observe(state, 'provider-exited', number, { headRevision: slot.headRevision, exitCode: result.exitCode, phase: slot.phase }); return { phase: slot.phase, headRevision: slot.headRevision, result, acceptanceGranted: false }
+    })
+  }
   return {
     get manifest() { return structuredClone(validated) },
     status() { const state = load(), executions = Object.values(state.slots).filter(slot => slot.lease && existsSync(join(location, `execution-${slot.lease}.json`))).map(slot => readJsonFile(join(location, `execution-${slot.lease}.json`), true)); return { ...state, executions, stateDir: location, repository: validated.repository, hostExtension: true, canonicalTaskAcceptance: false } },
@@ -343,34 +398,43 @@ export function createController({ repo, manifest, stateDir }) {
     sync(number, expectedDigest) {
       const state = load(), slot = slotFor(state, number), point = makeSync(state, slot)
       // A sync point is an observation, not a lock or permission to execute.
-      const syncDigest = digest({ ...point, observedAt: undefined, stateRevision: undefined })
+      const syncDigest = syncPointDigest(point)
       if (expectedDigest && expectedDigest !== syncDigest) fail('SYNC_STALE', 'IDE/Codex handoff does not match the current branch, task generation and state revision.');
       return { ...point, syncDigest, executionAuthority: false }
     },
-    async run({ slot: number, syncDigest, apply = false }) {
-      const prepared = await change(apply, state => {
-        const slot = slotFor(state, number)
-        cleanupCheck(slot)
-        if (!['ready', 'review', 'failed'].includes(slot.phase)) fail('PHASE_INVALID', 'Only ready, review or explicitly retried failed work may run.');
-        const point = makeSync(state, slot), currentDigest = digest({ ...point, observedAt: undefined, stateRevision: undefined })
-        if (!syncDigest || syncDigest !== currentDigest) fail('SYNC_STALE', 'Supply the fresh IDE/Codex sync digest for this exact generation.');
-        ensureHead(slot); verifyExecutable(slot.provider)
-        const task = taskById(slot.taskId), packet = { schemaVersion: 1, role: 'agent.y', coordinator: 'agent.0', alpha: 'integration-assurance', task, feedback: slot.feedback ?? null, syncPoint: point, instructions: 'Work only in this worktree and assigned paths. Commit completed changes only when the CLI permits Git metadata writes. If refused, preserve scoped files and report to Agent 0; do not reroute the Git index or widen the sandbox. Do not merge, accept tasks, change remote settings, deploy or message other chats. Return original verification evidence to Agent 0.' }
-        const input = `${JSON.stringify(packet)}\n`
-        if (Buffer.byteLength(input) > swarmLimits.packetBytes) fail('PACKET_LIMIT', 'The bounded handoff packet is too large.');
-        slot.phase = 'running'; slot.lease = randomUUID(); observe(state, 'provider-launch-requested', number, { headRevision: slot.headRevision, lease: slot.lease })
-        return { lease: slot.lease, generation: slot.generation, assignmentDigest: slot.assignmentDigest, provider: slot.provider, worktree: slot.worktree, input }
+    async run({ slot, syncDigest, apply = false }) {
+      const prepared = await change(apply, state => reserveRun(state, slot, syncDigest))
+      return executeReserved(prepared)
+    },
+    async runWave({ runDigest, apply = false } = {}) {
+      if (!apply) {
+        if (runDigest !== undefined) fail('OPTION_INVALID', 'A run digest applies only to an explicit batch launch.')
+        return reviewRuns(load())
+      }
+      if (typeof runDigest !== 'string' || !/^[a-f0-9]{64}$/.test(runDigest)) fail('RUN_DIGEST_INVALID', 'Supply the full digest from the reviewed run-wave preview.')
+      const batch = await change(true, state => {
+        const checkedPoints = new Map()
+        const plan = reviewRuns(state, checkedPoints)
+        if (plan.runDigest !== runDigest) fail('RUN_WAVE_STALE', 'Prepared work or its sync receipt changed. Review a fresh run-wave preview.')
+        if (!plan.workers.length) fail('RUN_WAVE_EMPTY', 'No eligible prepared workers are ready to start.')
+        if (state.events.length + 2 * plan.workers.length > 2000) fail('STATE_EVENT_LIMIT', 'The private event log lacks room for this batch.')
+        // All leases reach one atomic checkpoint before any child may start.
+        // Other controllers can observe progress while these children run.
+        return plan.workers.map(worker => reserveRun(state, worker.slot, worker.syncDigest, checkedPoints.get(worker.slot)))
       })
-      const result = await runChild(prepared.provider.executable, prepared.provider.args, { cwd: prepared.worktree, input: prepared.input, onSpawn: owner => atomicJson(join(location, `execution-${prepared.lease}.json`), { ...owner, lease: prepared.lease, generation: prepared.generation, assignmentDigest: prepared.assignmentDigest, providerSha256: prepared.provider.sha256 }) })
-      atomicJson(join(location, `completion-${prepared.lease}.json`), { lease: prepared.lease, generation: prepared.generation, assignmentDigest: prepared.assignmentDigest, result })
-      return change(apply, state => {
-        const slot = slotFor(state, number)
-        if (slot.phase !== 'running' || slot.lease !== prepared.lease || slot.generation !== prepared.generation || slot.assignmentDigest !== prepared.assignmentDigest) fail('LEASE_STALE', 'Provider completion does not own the current worker generation.');
-        slot.headRevision = currentWorker(slot).head; slot.checks = null; slot.review = null; slot.alpha = null
-        slot.providerResult = result; slot.phase = result.exitCode === 0 && !result.timedOut && !result.outputLimit && !result.pipeDeadline && result.ownedGroupStopped ? 'review' : 'failed'; delete slot.lease
-        try { scopeCheck(slot) } catch (error) { slot.phase = 'failed'; slot.failureCode = error.code; observe(state, 'scope-refused', number, { code: error.code }); atomicJson(file, state); throw error }
-        observe(state, 'provider-exited', number, { headRevision: slot.headRevision, exitCode: result.exitCode, phase: slot.phase }); return { phase: slot.phase, headRevision: slot.headRevision, result, acceptanceGranted: false }
-      })
+      const workers = await Promise.all(batch.map(async prepared => {
+        const { slot, generation, assignmentDigest } = prepared
+        const receipt = { slot, generation, taskId: prepared.taskId, assignmentDigest }
+        try {
+          const { phase, headRevision, result } = await executeReserved(prepared)
+          return { ...receipt, phase, headRevision, exitCode: result.exitCode }
+        } catch (error) {
+          // A lost checkpoint leaves the generation owned. Never relaunch it.
+          const phase = error.code === 'SCOPE_VIOLATION' ? 'failed' : 'inspect'
+          return { ...receipt, phase, code: error.code ?? 'RUN_UNCONFIRMED' }
+        }
+      }))
+      return { runDigest, workers, status: workers.every(item => item.phase === 'review') ? 'completed' : 'partial', applied: true, acceptanceGranted: false }
     },
     async verify({ slot: number, apply = false }) {
       const prepared = await change(apply, state => {
