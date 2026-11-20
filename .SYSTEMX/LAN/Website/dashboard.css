@@ -4501,7 +4501,8 @@ code,
   outline-offset: 2px;
 }
 
-#transport-status {
+#transport-status,
+#transport-policy-status {
   display: block;
 }
 
@@ -4510,8 +4511,25 @@ code,
 }
 
 #transport-cancel[hidden],
+#transport-policy-status:empty,
+#transport-policy-summary:empty,
 #transport-entries:empty {
   display: none;
+}
+
+#transport-policy-summary {
+  margin: 0 8px 8px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+#transport-policy-summary dt {
+  margin-block-start: 6px;
+  font-weight: 700;
+}
+
+#transport-policy-summary dd {
+  margin: 0;
 }
 
 #transport-entries {
