@@ -128,10 +128,10 @@ function conflictsFor(routes, exports, issue) {
   return conflicts
 }
 
-export function inspectInventoryMetadata({ index, statFor, evidence, entryPoints, routes, components, findings, routeDeclarations = routes, issue }) {
+export function inspectInventoryMetadata({ index, statFor, evidence, entryPoints, routes, components, findings, routeDeclarations = routes, componentDeclarations = components.exports, issue }) {
   const evidenceCount = evidence instanceof Map ? evidence.size : evidence?.length
   if (!(index instanceof Map) || index.size > 16000 || !Number.isInteger(evidenceCount) || evidenceCount > limits.sourceResources
-    || !list(entryPoints, 32) || !list(routes, 300) || !list(routeDeclarations, 300) || !list(components?.exports, 600) || !list(findings, 100)) {
+    || !list(entryPoints, 32) || !list(routes, 300) || !list(routeDeclarations, 300) || !list(components?.exports, 600) || !list(componentDeclarations, 1200) || !list(findings, 100)) {
     throw Object.assign(new Error('Inventory metadata input exceeded its bounded scan scope.'), { inventoryCode: 'inventory-metadata-input-limit' })
   }
   const resources = [...evidence.values()].map(sourceResource)
@@ -144,7 +144,7 @@ export function inspectInventoryMetadata({ index, statFor, evidence, entryPoints
     else { omittedResources++; issue('inventory-resource-unavailable', path) }
   }
   if (selected > limits.extraResources) issue('inventory-resource-limit')
-  const conflicts = conflictsFor(routeDeclarations, components.exports, issue)
+  const conflicts = conflictsFor(routeDeclarations, componentDeclarations, issue)
   resources.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0)
   return { resources, omittedResources, conflicts, provenance: provenance(entryPoints, findings) }
 }
@@ -182,7 +182,7 @@ export function validInventoryMetadata(metadata, snapshot) {
     } else if (row.kind !== 'ownership-marker' || row.owner === 'repository' || !exact(row, ['path','owner','kind','revision','indexOid'])) return false
   }
   return proof.size === 0 && metadata.conflicts.every(row => {
-    if (!exact(row, ['kind','key','references','omittedReferences']) || !Number.isInteger(row.omittedReferences) || row.omittedReferences < 0 || row.omittedReferences > 600
+    if (!exact(row, ['kind','key','references','omittedReferences']) || !Number.isInteger(row.omittedReferences) || row.omittedReferences < 0 || row.omittedReferences > 1200
       || !list(row.references, limits.references) || row.references.length < 2) return false
     if (row.kind === 'component') {
       const [path, name, ...rest] = typeof row.key === 'string' ? row.key.split('#') : []

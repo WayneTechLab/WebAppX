@@ -36,6 +36,7 @@ test('operator CLI exports a bounded v4 inventory and revalidates selected decla
 export function renderPage(pathname) { switch(pathname) { case '${target}': return <Page />; default: return <Page /> } }`
   put('src/router.tsx',router('/'))
   put(page,'export const Page = () => <main/> // SOURCE_BODY_FIXTURE')
+  put('src/Other.tsx','export const Other = () => <aside/>')
   put(asset,'<svg>ASSET_BODY_FIXTURE</svg>')
   put('.SYSTEMX/LAN/Builder/contracts/capability-manifest.json','{"sample":"HOST_CONTENT_FIXTURE"}')
   put(marker,'MANAGED_BODY_FIXTURE')
@@ -59,6 +60,24 @@ export function renderPage(pathname) { switch(pathname) { case '${target}': retu
   assert.equal(review(marker).code, 'ownership-review-required')
   put('src/router.tsx',router('/updated'))
   assert.equal(review(page).code, 'resource-changed-rescan-required')
+  put('src/router.tsx', `import { Page } from './Welcome'
+import { Other } from './Other'
+export function renderPage(pathname) {
+  switch (pathname) {
+    case '/duplicate': return <Page />
+    case '/duplicate': return <Other />
+    default: return <Page />
+  }
+}`)
+  const conflict = run('compare')
+  assert.equal(conflict.status, 'incomplete', JSON.stringify(conflict))
+  const competing = conflict.inventory.metadata.conflicts.filter(row => row.key === '/duplicate')
+  assert.deepEqual(competing.map(row => row.kind), ['route','page'])
+  assert.deepEqual(competing[0].references.map(row => [row.path,row.line,row.target]), [
+    ['src/router.tsx',5,page], ['src/router.tsx',6,'src/Other.tsx'],
+  ])
+  assert.equal(conflict.inventory.routes.some(row => row.pattern === '/duplicate'), false)
+  assert.equal(review(page).code, 'fresh-complete-comparison-required')
   assert.equal(run('export').artifact.inventoryRevision, revision)
   assert.equal(run('last-good').lastGood.revision, revision)
 })

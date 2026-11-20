@@ -18,14 +18,14 @@ function seal(snapshot) {
   return { ...data, revision: sha(JSON.stringify(data)) }
 }
 
-function fixture({ edits = {}, extraIndex = [], statFor = stat, routeDeclarations = routes, exportRows = [component] } = {}) {
+function fixture({ edits = {}, extraIndex = [], statFor = stat, routeDeclarations = routes, exportRows = [component], componentDeclarations } = {}) {
   const files = ['src/main.tsx', router, page, 'src/Sidebar.tsx']
   const evidence = files.map(path => ({ path, sha256: sha(edits[path] ?? path), indexOid: 'a'.repeat(40), matchesIndex: !edits[path] }))
   const index = new Map([...files, asset, host, managed, ...extraIndex].map(p => [p, 'a'.repeat(40)]))
   const entryPoints = [{ state: 'inferred', source: 'src/main.tsx', basis: 'vite-entry-convention' }]
   const components = { scope: 'tracked-src-jsx-tsx-and-route-modules', exports: exportRows.map(row => ({ ...row, sourceRevision: evidence.find(e => e.path === row.source)?.sha256 })), shellSources: [] }
   const findings = []
-  const metadata = inspectInventoryMetadata({ index, evidence, entryPoints, routes, routeDeclarations, components, findings, statFor,
+  const metadata = inspectInventoryMetadata({ index, evidence, entryPoints, routes, routeDeclarations, components, componentDeclarations, findings, statFor,
     issue: (code, path, line) => findings.push({ state: 'unresolved', code, ...(path ? {path} : {}), ...(line ? {line} : {}) }) })
   const snapshot = seal({ schemaVersion: 4, checkoutId: sha('checkout'), commit: 'b'.repeat(40), indexRevision: sha('index'),
     supportedStack: 'vite', complete: findings.length === 0, entryPoints, routes, components,
@@ -82,6 +82,10 @@ test('route, page and module-local component conflicts retain source references 
   assert.equal(exportInventoryMetadata(snapshot).status, 'refused')
   const otherModule = fixture({ exportRows: [component, { ...component, source: 'src/Sidebar.tsx' }] }).snapshot
   assert.equal(otherModule.complete, true, 'Equal export names in distinct modules are independently qualified')
+  const suppressed = fixture({ exportRows: [], componentDeclarations: [component, { ...component, exportLine: 22 }] }).snapshot
+  assert.deepEqual(suppressed.metadata.conflicts[0].references.map(ref => ref.line), [1,22])
+  assert.equal(suppressed.components.exports.length, 0)
+  assert.throws(() => fixture({ componentDeclarations: Array(1201).fill(component) }), { inventoryCode: 'inventory-metadata-input-limit' })
 })
 
 test('portable export projects verified metadata only and never includes unknown or private fields', () => {
