@@ -12,8 +12,9 @@ import { fileURLToPath } from 'node:url'
 import { outputDirectory, stopOwned } from './lan-graph-contract-browser.mjs'
 
 const root = resolve(fileURLToPath(new URL('../', import.meta.url)))
-const git = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim()
-const checkout = dirname(resolve(root, git('rev-parse', '--git-common-dir')))
+const gitOptions = { cwd: root, encoding: 'utf8' }
+const commonDirectory = execFileSync('git', ['rev-parse', '--git-common-dir'], gitOptions).trim()
+const checkout = dirname(resolve(root, commonDirectory))
 const dependencies = createRequire(join(existsSync(join(root, 'node_modules')) ? root : checkout, 'package.json'))
 const { chromium, expect } = dependencies('@playwright/test')
 const output = outputDirectory(process.argv.slice(2), tmpdir())
@@ -26,7 +27,7 @@ const source = 'export const TransportFixturePage = () => <p>SOURCE_CONTENT_CANA
 const draft = source.replace('SOURCE_CONTENT_CANARY', 'UNSAVED_DRAFT_CANARY')
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 const digest = bytes => createHash('sha256').update(bytes).digest('hex')
-const report = { schemaVersion: 1, revision: git('rev-parse', 'HEAD'), browser: 'Chromium', checks: [], status: 'failed' }
+const report = { schemaVersion: 1, revision: execFileSync('git', ['rev-parse', 'HEAD'], gitOptions).trim(), browser: 'Chromium', checks: [], status: 'failed' }
 const listen = server => new Promise((done, reject) => {
   server.once('error', reject)
   server.listen(0, '127.0.0.1', () => done(server.address().port))

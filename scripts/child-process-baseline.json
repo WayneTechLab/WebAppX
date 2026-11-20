@@ -58,6 +58,13 @@
       "fingerprint": "dd45caf34a5d9447e600eb04b3e5a6c27ee90d261c615b35f9c1d5b834180f29",
       "count": 1,
       "reason": "Agent 0 reviewed F003/F004 owned-fixture spawn: current Node process.execPath, explicit single server-path argv array, bounded loopback environment and owned child cleanup. The static parser does not infer this fixed runtime executable; no shell or caller executable is accepted."
+    },
+    {
+      "path": "scripts/lan-transport-browser.mjs",
+      "kind": "javascript:spawn",
+      "fingerprint": "10b57fba658deeee90efd7a0235dea2abb549a49482e3ef20357c76fb9900a21",
+      "count": 1,
+      "reason": "The browser fixture starts the current Node executable with one argument for its copied LAN server. Its loopback environment and process handle are local to the test."
     }
   ]
 }
