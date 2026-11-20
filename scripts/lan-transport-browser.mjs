@@ -121,7 +121,7 @@ try {
   page.setDefaultTimeout(12000)
   page.on('pageerror', () => { pageErrors++ })
   await page.clock.install()
-  await page.goto(origin + '/#source')
+  await page.goto(origin + '/#source', { waitUntil: 'domcontentloaded', timeout: 30_000 })
   const editor = page.locator('#source-editor')
   await page.locator('#source-file-select').selectOption(sourcePath)
   const [loaded] = await Promise.all([
