@@ -134,9 +134,10 @@ test('actual file scanner parses JS/Python execution traps inertly and rejects s
 
 test('reviewed real source baseline is finite and the report is read-only', async () => {
   const url=new URL('../../scripts/child-process-baseline.json',import.meta.url), before=await readFile(url,'utf8'), report=await readChildProcessReport()
-  assert.equal(report.ok,true); assert.equal(report.counts.reviewedOccurrences,8); assert.equal(report.counts.findings,8)
+  assert.equal(report.ok,true); assert.equal(report.counts.reviewedOccurrences,9); assert.equal(report.counts.findings,9)
   const reviewed=JSON.parse(before).exceptions
   assert.equal(reviewed.filter(item=>item.path==='scripts/lan-source-identity-browser.mjs' && item.kind==='javascript:spawn').length,1)
+  assert.equal(reviewed.filter(item=>item.path==='scripts/lan-transport-browser.mjs' && item.kind==='javascript:spawn').length,1)
   assert.deepEqual(report.diagnostics,[]); assert.equal(await readFile(url,'utf8'),before)
 })
 

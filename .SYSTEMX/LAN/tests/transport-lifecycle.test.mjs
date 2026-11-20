@@ -169,6 +169,13 @@ test('LAN operator transport lifecycle uses an isolated server and disposable re
       assert.equal(method.status, 405)
       assert.equal(method.headers.get('allow'), 'POST')
       assert.equal(method.body.code, 'METHOD_NOT_ALLOWED')
+      const wrongGraph = await request(server, '/api/contracts/discovery', {
+        method: 'POST', headers: { 'content-type': 'application/json' }, body: '{',
+      })
+      assert.equal(wrongGraph.status, 405)
+      assert.equal(wrongGraph.headers.get('allow'), 'GET')
+      assert.equal(wrongGraph.body.error.code, 'GRAPH_ROUTE_UNAVAILABLE')
+      assert.equal(wrongGraph.body.requestId, null)
       const media = await request(server, recordRoute, {
         method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify(recordBody('Private unsubmitted contact')),
       })

@@ -180,7 +180,7 @@ test('read models expose the current repository without cloud authority', async 
   assert.ok(status.body.files.includes('src/index.css'), 'The controlled stylesheet must be selectable in the Code inventory')
   assert.ok(status.body.workspace.sourceFiles.includes('src/index.css'), 'The shared source inventory must include the controlled stylesheet')
   const branch = execFileSync('git', ['branch', '--show-current'], { cwd: repoRoot, encoding: 'utf8' }).trim()
-  assert.equal(workspace.body.repository.branch, branch)
+  assert.equal(workspace.body.repository.branch, branch || 'unknown')
   assert.ok(Array.isArray(workspace.body.pages))
   assert.ok(Array.isArray(workspace.body.providers))
   assert.deepEqual(auth.body.localAllowedProviders, ['email-password'])

@@ -1329,8 +1329,15 @@ async function handleRequest(request, response, recordRoute) {
     } catch (error) {
       if (response.destroyed || response.writableEnded) return
       if (!(error instanceof RequestBodyError)) throw error
-      response.setHeader('X-Systemx-Transport-Code', error.code)
       if (error.closeConnection) response.setHeader('Connection', 'close')
+      // A graph client may send its request ID with a wrong-method POST. A
+      // malformed optional envelope cannot turn that method refusal into a body error.
+      if (refusal?.readContractEnvelope) {
+        response.setHeader('Allow', refusal.allow)
+        sendJson(response, refusal.statusCode, refusal.result)
+        return
+      }
+      response.setHeader('X-SystemX-Transport-Code', error.code)
       if (graphRoute) {
         sendJson(response, error.statusCode, {
           apiVersion: '1.1', requestId: null, ok: false,
