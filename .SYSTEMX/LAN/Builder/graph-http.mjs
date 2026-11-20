@@ -1,4 +1,5 @@
 import { GraphError } from './graph-core.mjs'
+import { acceptsRequestQuery } from './request-query.mjs'
 import { types } from 'node:util'
 import { API_VERSION, SUPPORTED_API_VERSIONS, discoveryForClient } from './api-contracts.mjs'
 import { validateApiRequest, validateApiResponse, apiErrorResult } from './api-validation.mjs'
@@ -69,11 +70,10 @@ export async function dispatchGraphContract({ service, method, url, body, handle
 
     if (method === 'GET' && target.pathname === '/api/contracts/discovery') {
       if (body !== undefined && body !== null) refuse('GRAPH_DISCOVERY_BODY_INVALID', 'Discovery uses query parameters only.')
-      const parameters = [...target.searchParams]
-      if (parameters.length > 1 || parameters.some(([key]) => key !== 'clientVersion')) {
+      if (!acceptsRequestQuery(method, target)) {
         refuse('GRAPH_DISCOVERY_QUERY_INVALID', 'Discovery accepts only one clientVersion parameter.')
       }
-      const clientVersion = parameters.length ? parameters[0][1] : API_VERSION
+      const clientVersion = target.searchParams.get('clientVersion') ?? API_VERSION
       if (!clientVersion) refuse('GRAPH_DISCOVERY_QUERY_INVALID', 'Choose an exact client version.')
       const result = await discoveryForClient(clientVersion)
       return { statusCode: 200, result: { apiVersion: API_VERSION, requestId: null, ok: true, result } }
@@ -84,7 +84,7 @@ export async function dispatchGraphContract({ service, method, url, body, handle
     if (method !== 'POST' || kind === null) {
       refuse('GRAPH_ROUTE_UNAVAILABLE', 'Choose a supported contract endpoint and method.', 'capability', 405)
     }
-    if ([...target.searchParams].length) refuse('GRAPH_QUERY_INVALID', 'Contract operations use a JSON body without query parameters.')
+    if (!acceptsRequestQuery(method, target)) refuse('GRAPH_QUERY_INVALID', 'Contract operations use a JSON body without query parameters.')
 
     // Worker 7 validates the exact envelope, payload discriminator, version,
     // capability, confirmation, and expected-revision shape before any lookup.

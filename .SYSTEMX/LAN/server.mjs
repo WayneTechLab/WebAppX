@@ -26,6 +26,7 @@ import { dispatchSourceIdentity } from './Builder/source-identity-http.mjs'
 import { createRequestAdmission } from './Builder/request-admission.mjs'
 import { getTransportPolicy } from './Builder/transport-policy.mjs'
 import { readRequestBody, RequestBodyError } from './Builder/request-body.mjs'
+import { acceptsRequestQuery, invalidQueryResponse } from './Builder/request-query.mjs'
 import { evaluateRequestPolicy } from './Builder/request-policy.mjs'
 import { createTransportDiagnostics } from './Builder/transport-diagnostics.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
@@ -1255,6 +1256,14 @@ async function handleRequest(request, response, recordRoute) {
 
   const policyInput = { pathname, method: request.method, contentType: request.headersDistinct['content-type'] }
   let refusal = evaluateRequestPolicy(policyInput)
+  const validQuery = acceptsRequestQuery(request.method, requestUrl)
+  // Graph errors retain the caller's envelope. Status reports an invalid work
+  // selection within its normal aggregate, leaving the other reports readable.
+  if (!refusal && !validQuery && !graphRoute && pathname !== '/api/status') {
+    if (apiPost) response.setHeader('Connection', 'close')
+    sendJson(response, 400, invalidQueryResponse(request.method, pathname))
+    return
+  }
   // Even a wrong-route graph POST can require a bounded envelope read. Admit
   // that work before reading bytes, while preserving cheap protocol refusals.
   if (!refusal || refusal.readContractEnvelope) {
@@ -1330,8 +1339,7 @@ async function handleRequest(request, response, recordRoute) {
   if (requestUrl.pathname === '/api/status') {
     const scope = requestUrl.searchParams.get('workScope')
     const project = requestUrl.searchParams.get('project')
-    const ambiguous = requestUrl.searchParams.getAll('workScope').length > 1 || requestUrl.searchParams.getAll('project').length > 1
-    const selection = ambiguous ? { kind: 'invalid' } : scope === null && project === null ? null
+    const selection = !validQuery ? { kind: 'invalid' } : scope === null && project === null ? null
       : scope === 'root' && project === null ? { kind: 'root' }
         : scope === 'child' && project !== null ? { kind: 'child', name: project }
           : { kind: 'invalid' }
@@ -1345,10 +1353,6 @@ async function handleRequest(request, response, recordRoute) {
   }
 
   if (requestUrl.pathname === '/api/fonts/catalog' && request.method === 'GET') {
-    if (['q', 'category'].some(name => requestUrl.searchParams.getAll(name).length > 1)) {
-      sendJson(response, 400, { code: 'FONT_QUERY_INVALID', error: 'Supply each font catalog filter once.' })
-      return
-    }
     const catalog = await getFontCatalog()
     const query = requestUrl.searchParams.get('q')?.trim().toLocaleLowerCase() ?? ''
     const category = requestUrl.searchParams.get('category')?.trim().toLocaleLowerCase() ?? ''
@@ -1369,10 +1373,6 @@ async function handleRequest(request, response, recordRoute) {
   }
 
   if (requestUrl.pathname === '/api/fonts/project' && request.method === 'GET') {
-    if (requestUrl.searchParams.getAll('path').length > 1) {
-      sendJson(response, 400, { code: 'FONT_QUERY_INVALID', error: 'Supply a single project stylesheet path.' })
-      return
-    }
     const { statusCode = 200, ...result } = projectFontState(requestUrl.searchParams.get('path') ?? projectCssPath)
     sendJson(response, statusCode, result)
     return
@@ -1418,9 +1418,8 @@ async function handleRequest(request, response, recordRoute) {
   if (requestUrl.pathname === '/api/builder/source/inventory' && request.method === 'GET') {
     const query = requestUrl.searchParams
     const limitValue = query.get('limit')
-    if ([...query.keys()].some(key => !['extension', 'search', 'limit'].includes(key) || query.getAll(key).length !== 1)
-      || (limitValue !== null && !/^[1-9]\d{0,2}$/.test(limitValue))) {
-      sendJson(response, 400, { code: 'SOURCE_QUERY_INVALID', error: 'Use unique supported source inventory filters and a limit from 1 through 500.' })
+    if (limitValue !== null && !/^[1-9]\d{0,2}$/.test(limitValue)) {
+      sendJson(response, 400, invalidQueryResponse(request.method, pathname))
       return
     }
     const { statusCode = 200, ...result } = enumerateSourceInventory(repoRoot, {
@@ -1432,9 +1431,8 @@ async function handleRequest(request, response, recordRoute) {
 
   if (requestUrl.pathname === '/api/builder/source/policy' && request.method === 'GET') {
     const query = requestUrl.searchParams
-    if ([...query.keys()].some(key => !['compare', 'selection'].includes(key) || query.getAll(key).length !== 1)
-      || (query.has('selection') && !query.has('compare'))) {
-      sendJson(response, 400, { code: 'SOURCE_QUERY_INVALID', error: 'Choose one reviewed policy comparison and an optional repository-relative selection.' })
+    if (query.has('selection') && !query.has('compare')) {
+      sendJson(response, 400, invalidQueryResponse(request.method, pathname))
       return
     }
     const result = { ...sourcePolicyCatalog(), workspaceId }
@@ -1450,8 +1448,8 @@ async function handleRequest(request, response, recordRoute) {
   }
 
   if (requestUrl.pathname === '/api/builder/source' && request.method === 'GET') {
-    if (requestUrl.searchParams.getAll('path').length !== 1 || [...requestUrl.searchParams.keys()].some(key => key !== 'path')) {
-      sendJson(response, 400, { code: 'SOURCE_QUERY_INVALID', error: 'Choose one canonical repository-relative source path.' })
+    if (!requestUrl.searchParams.has('path')) {
+      sendJson(response, 400, invalidQueryResponse(request.method, pathname))
       return
     }
     const { statusCode = 200, ...result } = sourceRead(requestUrl.searchParams.get('path'))
@@ -1463,10 +1461,9 @@ async function handleRequest(request, response, recordRoute) {
     const query = requestUrl.searchParams
     const limitValue = query.get('limit')
     const limit = limitValue === null ? 50 : Number(limitValue)
-    if (query.getAll('path').length !== 1 || !query.get('path') || query.get('path').length > 512 || query.getAll('limit').length > 1
-      || [...query.keys()].some((key) => !['path', 'limit'].includes(key))
+    if (!query.get('path') || query.get('path').length > 512
       || (limitValue !== null && !/^[1-9]\d{0,2}$/.test(limitValue)) || !Number.isInteger(limit) || limit > sourceHistoryLimits.entries) {
-      sendJson(response, 400, { code: 'SOURCE_HISTORY_QUERY_INVALID', error: 'Choose one allowlisted source path and an optional history limit from 1 through 100.' })
+      sendJson(response, 400, invalidQueryResponse(request.method, pathname))
       return
     }
     // History publishes only the raw revision, not decoded source. Preserve

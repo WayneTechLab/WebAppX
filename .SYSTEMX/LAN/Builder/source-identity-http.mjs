@@ -1,4 +1,5 @@
-/** Bounded HTTP dispatch for the host's source-identity read model. */
+import { acceptsRequestQuery, invalidQueryResponse } from './request-query.mjs'
+
 const postMethods = Object.freeze({
   preview: ['preview', ['path', 'route', 'label', 'renameFrom', 'aliases', 'ruleVersion']],
   accept: ['accept', ['digest', 'confirmation']],
@@ -15,22 +16,23 @@ function invalid(code, message, statusCode = 400) {
   return { statusCode, result: { code, error: message } }
 }
 
+/** Bounded HTTP dispatch for the host's source-identity read model. */
 export async function dispatchSourceIdentity({ service, method, url, body }) {
   const action = url.pathname.slice('/api/identity/'.length)
   if (method === 'GET' && action === 'status') {
-    if ([...url.searchParams].length) return invalid('IDENTITY_QUERY_INVALID', 'Status does not accept query parameters.')
+    if (!acceptsRequestQuery(method, url)) return { statusCode: 400, result: invalidQueryResponse(method, url.pathname) }
     return { statusCode: 200, result: await service.status() }
   }
   if (method === 'GET' && action === 'document') {
     const query = url.searchParams
-    if (query.getAll('documentId').length !== 1 || [...query.keys()].some(key => key !== 'documentId')) {
-      return invalid('IDENTITY_QUERY_INVALID', 'Choose one qualified document identifier.')
+    if (!query.has('documentId') || !acceptsRequestQuery(method, url)) {
+      return { statusCode: 400, result: invalidQueryResponse(method, url.pathname) }
     }
     body = { documentId: query.get('documentId') }
   } else if (method !== 'POST' || !Object.hasOwn(postMethods, action)) {
     return invalid('IDENTITY_ROUTE_UNAVAILABLE', 'Choose a supported identity operation and method.', 405)
   }
-  if (method === 'POST' && [...url.searchParams].length) return invalid('IDENTITY_QUERY_INVALID', 'Identity operations use a bounded JSON body without query parameters.')
+  if (method === 'POST' && !acceptsRequestQuery(method, url)) return { statusCode: 400, result: invalidQueryResponse(method, url.pathname) }
   const [operation, keys] = method === 'GET' ? ['read', ['documentId']] : postMethods[action]
   if (!body || typeof body !== 'object' || Array.isArray(body) || Object.keys(body).some(key => !keys.includes(key))
     || Buffer.byteLength(JSON.stringify(body), 'utf8') > 400_000) {
