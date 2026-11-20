@@ -4501,6 +4501,43 @@ code,
   outline-offset: 2px;
 }
 
+#transport-status {
+  display: block;
+}
+
+#transport-diagnostics .button-row {
+  margin: 0 8px 8px;
+}
+
+#transport-cancel[hidden],
+#transport-entries:empty {
+  display: none;
+}
+
+#transport-entries {
+  margin: 0;
+  padding: 0 8px;
+  max-block-size: 16rem;
+  overflow-y: auto;
+  list-style: none;
+}
+
+#transport-entries li {
+  display: grid;
+  gap: 2px;
+  padding-block: 6px;
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+#transport-entries code {
+  color: var(--muted);
+  font-size: 11px;
+  user-select: all;
+}
+
 /* Native focus scrolling accounts for the complete measured sticky stack,
    including any title/status wrapping caused by an operator's panel width. */
 .left-panel,
