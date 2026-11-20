@@ -23,6 +23,8 @@ import { hashSourceRevision, checkSourceRevision } from './Builder/source-revisi
 import { inspectSourcePath, enumerateSourceInventory, sourcePolicyCatalog, compareSourcePolicies, sourcePolicyLimits } from './Builder/source-policy.mjs'
 import { createSourceHistory, readSourceOperationHistory, sourceHistoryLimits } from './Builder/source-history.mjs'
 import { dispatchSourceIdentity } from './Builder/source-identity-http.mjs'
+import { createRequestAdmission } from './Builder/request-admission.mjs'
+import { getTransportPolicy } from './Builder/transport-policy.mjs'
 import { readRequestBody, RequestBodyError } from './Builder/request-body.mjs'
 import { evaluateRequestPolicy } from './Builder/request-policy.mjs'
 import { createTransportDiagnostics } from './Builder/transport-diagnostics.mjs'
@@ -1202,10 +1204,18 @@ async function getStatus(workSelection = null) {
 }
 
 const transportDiagnostics = createTransportDiagnostics()
+const requestAdmission = createRequestAdmission()
+const transportReads = new Map([
+  ['/api/transport/diagnostics', () => transportDiagnostics.snapshot()],
+  ['/api/transport/limits', () => requestAdmission.snapshot()],
+  ['/api/transport/policy', getTransportPolicy],
+])
 const server = createServer((request, response) => {
   const recordRoute = transportDiagnostics.begin(request.method, response)
   applySecurityHeaders(response)
-  handleRequest(request, response, recordRoute).catch(() => handleServerError(response))
+  handleRequest(request, response, recordRoute)
+    .catch(() => handleServerError(response))
+    .finally(() => requestAdmission.complete(response))
 })
 
 function handleServerError(response) {
@@ -1239,11 +1249,24 @@ async function handleRequest(request, response, recordRoute) {
   const graphRoute = pathname.startsWith('/api/contracts/')
   const identityRoute = pathname.startsWith('/api/identity/')
   const apiPost = request.method === 'POST' && pathname.startsWith('/api/')
-  if ((graphRoute || identityRoute || apiPost || pathname === '/api/transport/diagnostics')
+  const readTransport = transportReads.get(pathname)
+  if ((graphRoute || identityRoute || apiPost || readTransport)
     && !requireSessionToken(request, response)) return
 
   const policyInput = { pathname, method: request.method, contentType: request.headersDistinct['content-type'] }
   let refusal = evaluateRequestPolicy(policyInput)
+  // Even a wrong-route graph POST can require a bounded envelope read. Admit
+  // that work before reading bytes, while preserving cheap protocol refusals.
+  if (!refusal || refusal.readContractEnvelope) {
+    const limited = requestAdmission.admit(pathname, response)
+    if (limited) {
+      response.setHeader('Retry-After', String(limited.retryAfterSeconds))
+      response.setHeader('X-SystemX-Transport-Code', limited.code)
+      if (apiPost) response.setHeader('Connection', 'close')
+      sendJson(response, 429, limited)
+      return
+    }
+  }
   let body
   if (apiPost && (!refusal || refusal.readContractEnvelope)) {
     try {
@@ -1272,9 +1295,9 @@ async function handleRequest(request, response, recordRoute) {
     return
   }
 
-  if (pathname === '/api/transport/diagnostics') {
-    if (requestUrl.search) sendJson(response, 400, { error: 'Transport diagnostics accept no query parameters.' })
-    else sendJson(response, 200, transportDiagnostics.snapshot())
+  if (readTransport) {
+    if (requestUrl.search) sendJson(response, 400, { error: 'Transport inspection endpoints accept no query parameters.' })
+    else sendJson(response, 200, readTransport())
     return
   }
 
