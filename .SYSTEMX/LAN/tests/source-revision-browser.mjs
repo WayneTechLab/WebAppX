@@ -448,7 +448,6 @@ try {
     void failedRequest.catch(() => {})
     await save.click()
     await failedRequest
-    await expect(save).toBeEnabled()
     await expect(output).toContainText('Save was not confirmed')
     await expect(output).toContainText('Check the local connection and reload source before retrying')
     await expect(output).not.toContainText('Source changed since it was loaded')
@@ -457,8 +456,24 @@ try {
     await expect(revision).toHaveAttribute('data-revision', failedBase)
     assert.deepEqual(effects(), beforeFailedSave)
     await page.unroute('**/api/builder/source')
+    if (mode === 'transport') {
+      await expect(save).toBeDisabled()
+      await expect(page.locator('#lan-connection')).toHaveAttribute('data-state', 'offline')
+      const sentBeforeCheck = posts.length
+      const statusRead = waitForResponse(item => new URL(item.url()).pathname.endsWith('/api/status') && item.status() === 200)
+      const sessionRead = waitForResponse(item => new URL(item.url()).pathname.endsWith('/api/transport/diagnostics') && item.status() === 200)
+      await page.getByRole('button', { name: 'Check connection' }).click()
+      await Promise.all([statusRead, sessionRead])
+      await expect(page.locator('#lan-connection')).toBeHidden()
+      await expect(editor).toHaveValue(transportDraft)
+      await expect(revision).toHaveAttribute('data-revision', failedBase)
+      await expect(confirmation).toHaveValue('SAVE LOCAL CHANGE')
+      assert.equal(posts.length, sentBeforeCheck)
+      assert.deepEqual(effects(), beforeFailedSave)
+    }
+    await expect(save).toBeEnabled()
   }
-  checks.push('Explicit aborted-transport and HTTP503 save fixtures retain the draft, confirmation and base without promotion or effects, and report an unconfirmed outcome with connection/reload guidance distinct from409.')
+  checks.push('An interrupted save pauses mutations until an explicit same-session status check, with retained draft, confirmation and base and no automatic replay. HTTP503 and409 remain distinguishable from connection loss.')
 
   await file.selectOption(secondPath)
   const attemptedPosts = posts.length

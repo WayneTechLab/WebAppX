@@ -4,9 +4,34 @@ import { sourceRecordLimits, createRecoveryRecord, parseRecoveryRecord, normaliz
 import { canonicalSourcePath, sourceNavigationKey, createSourceNavigation, parseSourceNavigation, parseSourceInventory, filterSourceMetadata, sourcePickerSelection } from './source-navigation.js'
 import { attachSourceIdentityInspector } from './source-identities.js'
 import { attachTransportDiagnostics } from './transport-diagnostics.js'
+import { createLanConnection } from './lan-connection.js'
 
 const apiBase = window.location.pathname.startsWith('/__systemx') ? '/__systemx' : ''
 const sessionToken = document.querySelector('meta[name="systemx-session"]')?.content ?? ''
+const mutationForms = ':is(#page-create-form, #component-save-form, #ingest-form, #page-meta-form, #record-form, #user-form)'
+const mutationControls = [
+  `${mutationForms} button[type="submit"]`, '[data-node-type]', '[data-remove-node]', '#save-source', '#font-save-project', '#settings-text-save',
+  '#identity-import-preview', '#identity-accept', '#identity-reopen', '#identity-ownership-preview', '#identity-ownership-accept', '#identity-operation-preview',
+  '#graph-preview', '#graph-accept', '#graph-reopen', '#graph-migration-preview', '#graph-migration-apply',
+].join(', ')
+let connectionReturnFocus
+const connection = createLanConnection((state, message) => {
+  const blocked = state !== 'ready'
+  const notice = document.querySelector('#lan-connection')
+  if (blocked && notice.hidden) connectionReturnFocus = document.activeElement
+  const returnFocus = !blocked && notice.contains(document.activeElement)
+  notice.hidden = !blocked
+  notice.dataset.state = state
+  text('#lan-connection-status', message)
+  text('#controller-state', blocked ? 'Connection unavailable' : 'Online')
+  text('#controller-detail', message)
+  document.querySelector('#lan-reconnect').setAttribute('aria-disabled', String(state === 'checking'))
+  for (const control of document.querySelectorAll(mutationControls)) {
+    if (blocked) control.setAttribute('aria-disabled', 'true')
+    else control.removeAttribute('aria-disabled')
+  }
+  if (returnFocus && connectionReturnFocus?.isConnected) connectionReturnFocus.focus({ preventScroll: true })
+})
 let identityInspector
 const layoutStorageKey = 'systemx.lan.builder.layout.v4'
 const inspectorGroups = {
@@ -543,7 +568,7 @@ function getEmbeddedStatus() {
 async function request(path, options = {}) {
   if (typeof fetch !== 'function') throw new Error('This browser does not expose fetch; use a standard local browser for editing actions.')
   const { onResponseHeaders, ...fetchOptions } = options
-  const response = await fetch(`${apiBase}${path}`, {
+  const { response, result, transportId } = await connection.readResponse(path, options, () => fetch(`${apiBase}${path}`, {
     ...fetchOptions,
     headers: {
       Accept: 'application/json',
@@ -552,17 +577,17 @@ async function request(path, options = {}) {
       ...(options.headers ?? {}),
     },
     cache: 'no-store',
-  })
-  onResponseHeaders?.(response.headers)
-  const result = await response.json().catch(() => ({}))
+  }))
   if (!response.ok) {
-    const error = new Error(typeof result.error === 'string' ? result.error : result.error?.message ?? `HTTP ${response.status}`)
+    const error = new Error(typeof result?.error === 'string' ? result.error : result?.error?.message ?? `HTTP ${response.status}`)
+    error.kind = 'http'
+    error.transportId = transportId
     error.status = response.status
-    error.code = result.code ?? result.error?.code
-    if (path.startsWith('/api/contracts/') && result.ok === false && typeof result.apiVersion === 'string'
+    error.code = result?.code ?? result?.error?.code
+    if (path.startsWith('/api/contracts/') && result?.ok === false && typeof result.apiVersion === 'string'
       && result.error && typeof result.error === 'object' && typeof result.error.code === 'string') error.contractEnvelope = result
-    if (Array.isArray(result.diagnostics) && result.diagnostics.length <= 1000) error.diagnostics = result.diagnostics
-    if (validSourceRevision(result.currentRevision)) error.currentRevision = result.currentRevision.toLowerCase()
+    if (Array.isArray(result?.diagnostics) && result.diagnostics.length <= 1000) error.diagnostics = result.diagnostics
+    if (validSourceRevision(result?.currentRevision)) error.currentRevision = result.currentRevision.toLowerCase()
     throw error
   }
   return result
@@ -1781,6 +1806,7 @@ function renderWorkStatus(work) {
 }
 
 function renderStatus(status) {
+  connection.observeStatus(status)
   state.status = status
   initializeSourceRecovery(status.repository?.workspaceId)
   initializeSourceNavigation(status.repository?.workspaceId)
@@ -2360,6 +2386,8 @@ function renderTools(tools) {
 }
 
 async function refresh() {
+  if (connection.blocked) return connection.reconnect(request)
+  const connectionGeneration = connection.generation
   const generation = ++state.statusRequestGeneration
   const selection = state.workSelection
   const query = selection?.kind === 'root' ? '?workScope=root'
@@ -2371,7 +2399,7 @@ async function refresh() {
     if (generation !== state.statusRequestGeneration) return
     throw error
   }
-  if (generation !== state.statusRequestGeneration) return
+  if (generation !== state.statusRequestGeneration || connection.generation !== connectionGeneration) return
   state.data = data
   renderStatus(status)
   renderPages(data.pages)
@@ -3999,6 +4027,16 @@ async function boot() {
   restoreLayout()
   applyInspectorTabs(state.layout.activeRight || 'style')
   bind()
+  document.querySelector('#lan-reconnect').addEventListener('click', () => void connection.reconnect(request))
+  for (const eventType of ['click', 'submit']) {
+    document.addEventListener(eventType, (event) => {
+      if (!connection.blocked || !event.target.closest(eventType === 'click' ? mutationControls : mutationForms)) return
+      event.preventDefault()
+      event.stopImmediatePropagation()
+      connectionReturnFocus = event.submitter ?? event.target.closest(mutationControls) ?? document.activeElement
+      document.querySelector('#lan-reconnect').focus()
+    }, true)
+  }
   attachTransportDiagnostics(document.querySelector('#transport-diagnostics'), request)
   identityInspector = attachSourceIdentityInspector({
     container: document.querySelector('#panel-source'),

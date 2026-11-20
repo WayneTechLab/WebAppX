@@ -7,7 +7,7 @@ const routeCategories = new Set([
 ])
 const transportIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 
-function validTransportId(id) {
+export function validTransportId(id) {
   return typeof id === 'string' && id.length === 36 && transportIdPattern.test(id)
 }
 
