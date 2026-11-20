@@ -28,8 +28,93 @@ function validEntry(entry) {
     && Number.isSafeInteger(entry.durationMs) && entry.durationMs >= 0
 }
 
+function policySummary(limits, policy) {
+  const fits = (value, maximum) => Number.isSafeInteger(value) && value >= 0 && value <= maximum
+  const positive = value => value > 0 && fits(value, 1_000_000)
+  const contains = (list, value) => Array.isArray(list) && list.length <= 64 && list.includes(value)
+  const keyed = policy?.retry?.['idempotent-keyed']
+  const reads = policy?.retry?.['read-only']
+  const proposal = policy?.retry?.['fresh-proposal']
+  const manual = policy?.retry?.['reconcile-before-retry']
+  if (limits?.schemaVersion !== 1 || limits.scope !== 'local-session' || !positive(limits.maxInFlight)
+    || !positive(limits.burst) || !positive(limits.refillPerSecond) || !fits(limits.inFlight, limits.maxInFlight)
+    || !fits(limits.availableTokens, limits.burst) || policy?.schemaVersion !== 1
+    || !contains(reads?.methods, 'Admitted GET or HEAD') || !contains(reads?.postRoutes, '/api/contracts/query')
+    || keyed?.method !== 'POST' || keyed.route !== '/api/builder/record' || keyed.keyHeader !== 'Idempotency-Key'
+    || keyed.keyFormat !== 'UUIDv4' || !positive(keyed.retentionHours) || !positive(keyed.maximumLiveKeys)
+    || !contains(proposal?.routes, '/api/builder/source') || !contains(manual?.routes, '/api/builder/record')) return null
+  return [
+    ['Session budget', `${limits.inFlight} of ${limits.maxInFlight} slots in use. ${limits.availableTokens} of ${limits.burst} burst requests available, refilling at ${limits.refillPerSecond} per second.`],
+    ['Exempt reads', 'Health, transport inspection and static files.'],
+    ['Read again', 'Repeat a supported GET, HEAD or read-only query. After HTTP 429, wait for the Retry-After interval.'],
+    ['Keyed record', `Resubmit the same record with the same UUIDv4 Idempotency-Key within ${keyed.retentionHours} hours. The workspace holds ${keyed.maximumLiveKeys} active keys. A changed payload conflicts.`],
+    ['Other changes', 'Check current state before resubmitting an unkeyed change. For source or proposal commands, review a fresh revision or proposal first.'],
+  ]
+}
+
+function attachPolicyRead(panel, request) {
+  const button = panel.querySelector('#transport-policy-read')
+  if (!button) return
+  const status = panel.querySelector('#transport-policy-status')
+  const summary = panel.querySelector('#transport-policy-summary')
+  const doc = panel.ownerDocument
+  let current
+
+  function finish(read, state, message) {
+    if (current !== read) return
+    current = undefined
+    clearTimeout(read.timer)
+    if (state !== 'completed') read.controller.abort()
+    status.dataset.state = state
+    const kept = state !== 'completed' && summary.childElementCount ? ' Showing the last verified limits and rules.' : ''
+    status.textContent = message + kept
+    button.textContent = summary.childElementCount ? 'Refresh limits and retry rules' : 'Read limits and retry rules'
+  }
+
+  function cancel() {
+    if (current) finish(current, 'cancelled', 'Policy read cancelled.')
+  }
+
+  async function load() {
+    if (!panel.open) return
+    if (current) return cancel()
+    const read = { controller: new AbortController() }
+    current = read
+    status.dataset.state = 'pending'
+    status.textContent = 'Reading limits and retry rules…'
+    button.textContent = 'Cancel policy read'
+    read.timer = setTimeout(() => finish(read, 'unavailable', 'Policy read timed out.'), readTimeoutMs)
+    const options = { method: 'GET', mode: 'same-origin', redirect: 'error', signal: read.controller.signal }
+    try {
+      const [limits, policy] = await Promise.all([
+        request('/api/transport/limits', options), request('/api/transport/policy', options),
+      ])
+      if (read !== current) return
+      if (!panel.open) return cancel()
+      const rows = policySummary(limits, policy)
+      if (!rows) return finish(read, 'unavailable', 'Could not verify the service limits and retry rules.')
+      summary.replaceChildren(...rows.flatMap(([label, text]) => {
+        const term = doc.createElement('dt'), description = doc.createElement('dd')
+        term.textContent = label
+        description.textContent = text
+        return [term, description]
+      }))
+      finish(read, 'completed', 'Limits and retry rules refreshed.')
+    } catch (error) {
+      if (read !== current) return
+      if (!panel.open) return cancel()
+      const message = [401, 403].includes(error?.status) ? 'Access refused. Reopen the local dashboard to renew your session.' : 'Limits and retry rules unavailable.'
+      finish(read, 'unavailable', message + (validTransportId(error?.transportId) ? ` Request ${error.transportId}.` : ''))
+    }
+  }
+  button.addEventListener('click', () => void load())
+  panel.addEventListener('toggle', () => { if (!panel.open) cancel() })
+  doc.defaultView?.addEventListener('pagehide', cancel)
+}
+
 export function attachTransportDiagnostics(panel, request) {
   if (!panel) return
+  attachPolicyRead(panel, request)
   const status = panel.querySelector('#transport-status')
   const readButton = panel.querySelector('#transport-read')
   const cancelButton = panel.querySelector('#transport-cancel')

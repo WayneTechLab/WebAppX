@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { attachTransportDiagnostics } from '../../.SYSTEMX/LAN/Website/transport-diagnostics.js'
+import { getTransportPolicy } from '../../.SYSTEMX/LAN/Builder/transport-policy.mjs'
+import { createRequestAdmission } from '../../.SYSTEMX/LAN/Builder/request-admission.mjs'
 
 const firstId = '66666666-6666-4666-8666-666666666666'
 const nextId = '77777777-7777-4777-8777-777777777777'
@@ -25,7 +27,9 @@ function inspector() {
     replaceChildren(...children) { this.children = children }
     focus() { doc.activeElement = this }
   }
-  const [panel, status, refresh, cancel, entries] = ['diagnostics', 'status', 'read', 'cancel', 'entries'].map(name => {
+  const [panel, status, refresh, cancel, entries, policyRead, policyStatus, policySummary] = [
+    'diagnostics', 'status', 'read', 'cancel', 'entries', 'policy-read', 'policy-status', 'policy-summary',
+  ].map(name => {
     const element = new Element()
     controls.set(`#transport-${name}`, element)
     return element
@@ -39,8 +43,52 @@ function inspector() {
     panel.dispatchEvent(new Event('toggle'))
   }
   const click = element => element.dispatchEvent(new Event('click'))
-  return { requests, status, refresh, cancel, entries, click, toggle, doc }
+  return { requests, status, refresh, cancel, entries, policyRead, policyStatus, policySummary, click, toggle, doc }
 }
+
+test('policy reads publish only verified summaries and cannot replace a completed view after folding or cancellation', async () => {
+  const ui = inspector()
+  ui.toggle(true)
+  ui.requests[0].resolve(snapshot())
+  await settle()
+  assert.equal(ui.requests.length, 1)
+  const limits = createRequestAdmission().snapshot()
+  const rules = getTransportPolicy()
+  ui.click(ui.policyRead)
+  const [oldLimits, oldPolicy] = ui.requests.slice(-2)
+  ui.toggle(false)
+  assert.equal(oldLimits.options.signal.aborted, true)
+  assert.equal(oldPolicy.options.signal.aborted, true)
+  ui.toggle(true)
+  ui.requests.at(-1).resolve(snapshot())
+  ui.click(ui.policyRead)
+  const [currentLimits, currentPolicy] = ui.requests.slice(-2)
+  currentPolicy.resolve(rules)
+  currentLimits.resolve(limits)
+  await settle()
+  assert.equal(ui.policyStatus.dataset.state, 'completed')
+  const rendered = () => ui.policySummary.children.map(row => row.textContent)
+  const verified = rendered()
+  assert.equal(verified.length, 10)
+  oldLimits.resolve({ ...limits, burst: 1 })
+  oldPolicy.reject(new Error('PRIVATE_STALE_POLICY'))
+  await settle()
+  assert.deepEqual(rendered(), verified)
+  for (const [budget, policy] of [
+    [{ ...limits, inFlight: limits.maxInFlight + 1 }, rules], [limits, { ...rules, retry: {} }],
+    [limits, { ...rules, retry: { ...rules.retry, 'idempotent-keyed': { ...rules.retry['idempotent-keyed'], route: '/private-route' } } }],
+  ]) {
+    ui.click(ui.policyRead)
+    const [remaining, contract] = ui.requests.slice(-2)
+    remaining.resolve(budget)
+    contract.resolve(policy)
+    await settle()
+    assert.equal(ui.policyStatus.dataset.state, 'unavailable')
+    assert.deepEqual(rendered(), verified)
+    assert.doesNotMatch(ui.policyStatus.textContent, /private/i)
+  }
+  assert.equal(ui.status.dataset.state, 'completed')
+})
 
 test('only the latest explicit read owns the status and rows, even if cancelled requests settle later', async () => {
   const ui = inspector()

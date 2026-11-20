@@ -34,13 +34,13 @@ const listen = server => new Promise((done, reject) => {
 })
 const close = server => new Promise(done => { server.close(done); server.closeAllConnections() })
 
-let server, preview, browser, releasePending
+let server, preview, browser, releasePending, releasePolicy
 try {
   const ignored = ['Backup', 'Files', 'Research', 'Temp', 'tests'].map(name => join(root, lan, name))
   cpSync(join(root, lan), join(fixture, lan), { recursive: true, filter: path => !ignored.includes(path) })
   cpSync(join(root, 'package.json'), join(fixture, 'package.json'))
   report.implementationSHA256 = Object.fromEntries([
-    'server.mjs', 'Builder/transport-diagnostics.mjs', 'Website_Dashboard.html',
+    'server.mjs', 'Builder/transport-diagnostics.mjs', 'Builder/request-admission.mjs', 'Builder/transport-policy.mjs', 'Website_Dashboard.html',
     'Website/dashboard.css', 'Website/dashboard.js', 'Website/transport-diagnostics.js',
   ].map(file => [file, digest(readFileSync(join(fixture, lan, file)))]))
   report.testSHA256 = digest(readFileSync(fileURLToPath(import.meta.url)))
@@ -62,6 +62,7 @@ try {
   const origin = `http://127.0.0.1:${port}`
   const previewOrigin = `http://127.0.0.1:${previewPort}`
   const diagnostics = origin + '/api/transport/diagnostics'
+  const limitsUrl = origin + '/api/transport/limits', policyUrl = origin + '/api/transport/policy'
   const isolatedPorts = Object.fromEntries(['APP', 'FIREBASE_AUTH', 'FIREBASE_FIRESTORE', 'FIREBASE_STORAGE'].map(key => [`SYSTEMX_${key}_PORT`, String(previewPort)]))
   const nativeEnv = Object.fromEntries(['PATH', 'SystemRoot', 'TEMP', 'TMP'].filter(key => process.env[key]).map(key => [key, process.env[key]]))
   server = spawn(process.execPath, [join(fixture, lan, 'server.mjs')], { cwd: fixture,
@@ -79,7 +80,12 @@ try {
   browser = await chromium.launch()
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: 'block' })
   let reads = 0, refusal = false, holdNext = false, pageErrors = 0, unexpectedRequests = 0
-  context.on('request', request => { if (request.url() === diagnostics) reads++ })
+  let limitReads = 0, policyReads = 0, denyPolicy = false, holdPolicy = false
+  context.on('request', request => {
+    if (request.url() === diagnostics) reads++
+    if (request.url() === limitsUrl) limitReads++
+    if (request.url() === policyUrl) policyReads++
+  })
   await context.route('**/*', async route => {
     const request = route.request(), url = new URL(request.url())
     if (url.origin === 'https://fonts.googleapis.com' && url.pathname === '/css2') {
@@ -96,6 +102,15 @@ try {
     if (request.url() === diagnostics && holdNext) {
       holdNext = false
       await new Promise(done => { releasePending = done })
+      return route.abort().catch(() => {})
+    }
+    if (request.url() === policyUrl && denyPolicy) {
+      denyPolicy = false
+      return route.continue({ headers: { ...request.headers(), 'x-systemx-session': 'INVALID_SESSION_CANARY' } })
+    }
+    if (request.url() === policyUrl && holdPolicy) {
+      holdPolicy = false
+      await new Promise(done => { releasePolicy = done })
       return route.abort().catch(() => {})
     }
     return route.continue()
@@ -230,6 +245,53 @@ try {
   assert.equal(pageErrors, 0, 'Unexpected page error')
   assert.equal(unexpectedRequests, 0, 'Unexpected provider or write request')
   report.checks.push('Cancel and retry preserved the unsaved draft and the fixture file, with five explicit reads and no polling.')
+  assert.deepEqual([limitReads, policyReads], [0, 0], 'Opening or refreshing recent requests also fetched the policy')
+  const policyButton = panel.locator('#transport-policy-read')
+  const policyStatus = panel.locator('#transport-policy-status'), guidance = panel.locator('#transport-policy-summary')
+  const priorDiagnostics = await status.textContent()
+  await policyButton.focus()
+  const [limitResponse, policyResponse] = await Promise.all([
+    page.waitForResponse(limitsUrl), page.waitForResponse(policyUrl), policyButton.press('Enter'),
+  ])
+  assert.equal(limitResponse.status(), 200)
+  assert.equal(policyResponse.status(), 200)
+  const limits = await limitResponse.json(), rules = (await policyResponse.json()).retry['idempotent-keyed']
+  await expect(policyStatus).toHaveAttribute('data-state', 'completed')
+  await expect(guidance).toContainText(`${limits.inFlight} of ${limits.maxInFlight} slots in use`)
+  await expect(guidance).toContainText(`${limits.availableTokens} of ${limits.burst} burst requests`)
+  await expect(guidance).toContainText(`refilling at ${limits.refillPerSecond} per second`)
+  for (const value of ['Health, transport inspection and static files', 'Retry-After', 'read-only query',
+    `within ${rules.retentionHours} hours`, `${rules.maximumLiveKeys} active keys`, 'a fresh revision or proposal']) {
+    await expect(guidance).toContainText(value)
+  }
+  report.checks.push('Keyboard activation read both real endpoints and displayed current slots, rate, exemptions and keyed or manual retry rules.')
+  const verified = await guidance.innerText()
+  denyPolicy = true
+  const [denial] = await Promise.all([page.waitForResponse(policyUrl), policyButton.click()])
+  assert.equal(denial.status(), 403)
+  await expect(policyStatus).toHaveAttribute('data-state', 'unavailable')
+  await expect(policyStatus).toContainText(await denial.headerValue('x-systemx-request-id'))
+  assert.equal(await guidance.innerText(), verified)
+  assert.equal(await status.textContent(), priorDiagnostics)
+  holdPolicy = true
+  await policyButton.click()
+  await expect.poll(() => typeof releasePolicy).toBe('function')
+  await policyButton.press('Enter')
+  await expect(policyStatus).toHaveAttribute('data-state', 'cancelled')
+  await Promise.all([page.waitForResponse(policyUrl), policyButton.click()])
+  await expect(policyStatus).toHaveAttribute('data-state', 'completed')
+  releasePolicy()
+  releasePolicy = null
+  await noPolling(5)
+  assert.deepEqual([limitReads, policyReads], [4, 4])
+  await expect(policyStatus).toHaveAttribute('data-state', 'completed')
+  assert.equal(await status.textContent(), priorDiagnostics)
+  assert.equal(await editor.inputValue(), draft)
+  assertSafe(await panel.innerText())
+  assert.equal(pageErrors, 0)
+  assert.equal(unexpectedRequests, 0)
+  report.policyReads = policyReads
+  report.checks.push('A refused policy read retained prior guidance and kept its request ID in its own status. Cancelling and reading again preserved the draft without polling.')
   await panel.scrollIntoViewIfNeeded()
   await panel.screenshot({ path: join(evidence, 'transport-diagnostics.png') })
   await page.getByRole('button', { name: 'Open code and provider tools' }).click()
@@ -240,6 +302,7 @@ try {
   report.status = 'passed'
 } finally {
   releasePending?.()
+  releasePolicy?.()
   try { await browser?.close() } finally {
     try { await stopOwned(server) } finally {
       if (preview?.listening) await close(preview)

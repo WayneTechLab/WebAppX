@@ -725,7 +725,10 @@
               <div class="button-row">
                 <button class="button button-dark" id="transport-read" type="button">Refresh</button>
                 <button class="button" id="transport-cancel" type="button" hidden>Cancel</button>
+                <button class="button" id="transport-policy-read" type="button" aria-controls="transport-policy-summary">Read limits and retry rules</button>
               </div>
+              <output class="panel-help" id="transport-policy-status" role="status"></output>
+              <dl id="transport-policy-summary" aria-label="Request limits and retry rules"></dl>
               <ul id="transport-entries" aria-label="Recent local requests, newest first"></ul>
             </details>
           </section>
