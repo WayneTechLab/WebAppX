@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { checkNavigatorTargets } from './navigator-targets-browser.mjs'
 import { inspectOwnership } from '../Builder/source-ownership.mjs'
 
 // Parsed alongside the fixture Home source by the project's TSX adapter.
@@ -123,6 +124,7 @@ export async function checkNavigatorInspection(page, frame, expect, map, draft) 
     await expect(components).toContainText(one)
     assert.deepEqual(await domOrder(), originalOrder)
     await expect(editor).toHaveValue(draft)
+    const targets = await checkNavigatorTargets(page, frame, expect, map, draft)
 
     await openPanel(coverage)
     const virtual = coverageRows.locator(':scope > *').filter({ hasText: 'sx-virtual-window' })
@@ -179,7 +181,7 @@ export async function checkNavigatorInspection(page, frame, expect, map, draft) 
     await expect(compareNow).toBeDisabled()
     await expect(editor).toHaveValue(draft)
     await expect(compare).not.toContainText('PRIVATE_NAVIGATOR_UNSAVED_DRAFT')
-    return { durableExpansionRestored: true, duplicateAndReplacedBranchesCollapsed: true,
+    return { targets, durableExpansionRestored: true, duplicateAndReplacedBranchesCollapsed: true,
       declaredInstances: 2, selectedSecondSourceInstance: true, distinctQualifiedReveal: true, runtimeOrderPreserved: true,
       mountedWindowSizes: [2, 1], logicalSize: 200, unknownTotalDisclosed: true,
       comparison: ['added', 'removed', 'reparented'], boundedComparisonAvoidedFalseRemovals: true,
