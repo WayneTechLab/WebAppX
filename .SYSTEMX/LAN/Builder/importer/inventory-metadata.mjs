@@ -3,6 +3,7 @@ import { posix } from 'node:path'
 import { isCanonicalSourcePath } from '../source-policy.mjs'
 import { publicPattern } from './declared-routes.mjs'
 import { validComponentInventory } from './component-inventory.mjs'
+import { publicDirectory } from './inventory-build-config.mjs'
 import { configurationInputPaths, validInventoryConfig } from './inventory-config.mjs'
 
 const digest = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)
@@ -11,7 +12,9 @@ const hash = value => createHash('sha256').update(JSON.stringify(value)).digest(
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 const exact = (o, keys) => o !== null && typeof o === 'object' && !Array.isArray(o) && Object.keys(o).length === keys.length && keys.every(k => Object.hasOwn(o, k))
 const list = (v, max) => Array.isArray(v) && v.length <= max
-const privateName = /private|secret|credential|password|api[._-]?key|access[._-]?token|(?:^|[^a-z])(?:tokens?|keys?)(?:[^a-z]|$)|gh[pousr]_|github_pat_|sk_live_|AKIA[0-9A-Z]/i
+const previousPrivateName = /private|secret|credential|password|api[._-]?key|access[._-]?token|(?:^|[^a-z])(?:tokens?|keys?)(?:[^a-z]|$)|gh[pousr]_|github_pat_|sk_live_|AKIA[0-9A-Z]/i
+const providerCredentialName = /(?:sk|rk)_(?:live|test)_|sk-(?:proj-|svcacct-|[a-z0-9_-]{16,})|AIza[a-z0-9_-]{20,}|ASIA[0-9a-z]{12,}|npm_[a-z0-9]{12,}|hf_[a-z0-9]{12,}|xox[baprs]-/i
+export const privateInventoryName = new RegExp(previousPrivateName.source + '|' + providerCredentialName.source, 'i')
 const config = new Set([...configurationInputPaths, 'tsconfig.json'])
 const hostMarkers = new Set(['.SYSTEMX/INSTALLATION.json', '.SYSTEMX/LAN/Builder/contracts/capability-manifest.json', '.SYSTEMX/LAN/Website_Dashboard.html'])
 const managedMarker = /^\.SYSTEMX\/\.systemx\/releases\/\d{1,3}\.\d{1,3}\.\d{1,3}(?:-(?:alpha|beta|rc)\.\d{1,3})?\/(?:STANDARD|START-HERE)\.md$/
@@ -22,15 +25,34 @@ const mime = new Map(Object.entries({
   '.mp4': 'video/mp4', '.webm': 'video/webm',
 }))
 const limits = Object.freeze({ extraResources: 200, sourceResources: 160, conflicts: 100, references: 64, selected: 32 })
-const sourcePath = path => typeof path === 'string' && !privateName.test(path) && (config.has(path) || isCanonicalSourcePath(path)
+const sourcePath = path => typeof path === 'string' && !privateInventoryName.test(path) && (config.has(path) || isCanonicalSourcePath(path)
   && (/^src\/.*\.(?:[jt]sx?|mjs|html)$/.test(path) || /^[^/]+\.html$/.test(path)))
 const lineNumber = n => Number.isSafeInteger(n) && n > 0 && n <= 256000
-const componentName = name => typeof name === 'string' && /^[A-Za-z_$][A-Za-z_$0-9]{0,79}$/.test(name) && !privateName.test(name)
+const componentName = name => typeof name === 'string' && /^[A-Za-z_$][A-Za-z_$0-9]{0,79}$/.test(name) && !privateInventoryName.test(name)
 
-function assetType(path) {
-  if (!isCanonicalSourcePath(path) || !path.startsWith('public/') || privateName.test(path)
-    || /(?:^|\/)(?:vendor|node_modules|runtime|state|uploads?|backups?|temp|drafts?)(?:\/|$)/i.test(path)) return null
-  return path === 'public/robots.txt' ? 'text/plain' : mime.get(posix.extname(path).toLowerCase()) ?? null
+export function potentialPublicAsset(path, privateNames = privateInventoryName) {
+  if (!isCanonicalSourcePath(path) || !path.includes('/') || privateNames.test(path)
+    || /(?:^|\/)(?:vendor|node_modules|runtime|state|uploads?|backups?|temp|drafts?)(?:\/|$)/i.test(path)) return false
+  return posix.basename(path) === 'robots.txt' || mime.has(posix.extname(path).toLowerCase())
+}
+
+function assetType(path, directory, privateNames = privateInventoryName) {
+  if (!directory || !potentialPublicAsset(path, privateNames) || !path.startsWith(directory + '/')) return null
+  return path === directory + '/robots.txt' ? 'text/plain' : mime.get(posix.extname(path).toLowerCase()) ?? null
+}
+
+export function effectivePublicDirectory(configuration, evidence, findings = []) {
+  if (findings.some(row => ['ambiguous-vite-config', 'untracked-vite-public-directory'].includes(row.code))) return null
+  const targets = (configuration?.buildTargets ?? []).filter(row => row.field === 'publicDir')
+  if (targets.length === 1) {
+    const target = targets[0]
+    if (['declared','inferred'].includes(target.state) && publicDirectory(target.directory)) return target.directory
+    return null
+  }
+  // With a tracked config, a missing or ambiguous result is unresolved. Vite
+  // supplies its public/ default only when no config selected another root.
+  if (targets.length || [...evidence.values()].some(row => /^vite\.config\.(?:js|cjs|mjs|ts|cts|mts)$/.test(row.path))) return null
+  return 'public'
 }
 
 function owner(path) {
@@ -39,7 +61,7 @@ function owner(path) {
   return 'repository'
 }
 
-export const isInventoryMetadataPath = path => owner(path) !== 'repository' || Boolean(assetType(path))
+export const isInventoryMetadataPath = (path, directory = 'public') => owner(path) !== 'repository' || Boolean(assetType(path, directory))
 
 // Rule IDs are part of the portable format. Lists with mixed rules carry an
 // aligned rule ID per row. Uniform lists share one rule ID for all members.
@@ -66,14 +88,14 @@ function findingRule(code) {
   if (/config/.test(code)) return 'configuration'
   return 'scan'
 }
-function provenance(entries, findings) {
+function provenance(entries, findings, directory) {
   return { ruleVersion: 1, rules: Object.fromEntries(Object.entries(rules).map(([key, [adapter, basis]]) => [key, { adapter, basis }])),
     entryPoints: entries.map(row => row.state === 'inferred' ? 'vite-convention' : 'vite-input'),
     routes: 'route', componentExports: 'component', sharedShells: 'shell', configuration: 'configuration',
     configurationFields: { dependencies: 'package', runtimePins: 'pin', firebase: 'firebase',
       buildTargets: { declared: 'vite', disabled: 'vite', inferred: 'vite-default', unresolved: 'vite-unresolved' },
       bridges: 'vite' },
-    sourceResources: 'file', publicAssets: 'asset', publicAssetScope: 'reviewed tracked public/ filenames; serving and rendering unobserved',
+    sourceResources: 'file', publicAssets: 'asset', publicAssetScope: directory ? `reviewed tracked ${directory}/ filenames; serving and rendering unobserved` : 'no resolved active public directory',
     ownership: 'ownership', conflicts: 'conflict',
     revisionBasis: { source: 'sha256-working-source-bytes', metadataOnly: 'git-index-oid-and-working-size-and-file-times' },
     ownershipBoundaries: { repository: 'review-before-effect', 'host-extension': 'host-owner-review', 'managed-release': 'immutable-upstream-snapshot' },
@@ -84,7 +106,7 @@ function sourceResource(row) {
   return { path: row.path, owner: 'repository', kind: 'source', revision: row.sha256, indexOid: row.indexOid }
 }
 
-function inspectResource(path, indexOid, statFor) {
+function inspectResource(path, indexOid, statFor, directory) {
   const stat = statFor(path)
   if (!stat || typeof stat.isFile === 'function' && (!stat.isFile() || Number(stat.nlink) !== 1)) return null
   const size = Number(stat.size)
@@ -95,7 +117,7 @@ function inspectResource(path, indexOid, statFor) {
   const revision = hash([indexOid, size, String(stat.mtimeNs), String(stat.ctimeNs)])
   const ownership = owner(path)
   return ownership === 'repository'
-    ? { path, owner: ownership, kind: 'public-asset', revision, indexOid, bytes: size, mediaType: assetType(path), rendering: 'not-observed' }
+    ? { path, owner: ownership, kind: 'public-asset', revision, indexOid, bytes: size, mediaType: assetType(path, directory), rendering: 'not-observed' }
     : { path, owner: ownership, kind: 'ownership-marker', revision, indexOid }
 }
 
@@ -128,7 +150,7 @@ function conflictsFor(routes, exports, issue) {
   return conflicts
 }
 
-export function inspectInventoryMetadata({ index, statFor, evidence, entryPoints, routes, components, findings, routeDeclarations = routes, componentDeclarations = components.exports, issue }) {
+export function inspectInventoryMetadata({ index, statFor, evidence, entryPoints, routes, components, findings, routeDeclarations = routes, componentDeclarations = components.exports, publicDirectory: directory = 'public', issue }) {
   const evidenceCount = evidence instanceof Map ? evidence.size : evidence?.length
   if (!(index instanceof Map) || index.size > 16000 || !Number.isInteger(evidenceCount) || evidenceCount > limits.sourceResources
     || !list(entryPoints, 32) || !list(routes, 300) || !list(routeDeclarations, 300) || !list(components?.exports, 600) || !list(componentDeclarations, 1200) || !list(findings, 100)) {
@@ -137,29 +159,29 @@ export function inspectInventoryMetadata({ index, statFor, evidence, entryPoints
   const resources = [...evidence.values()].map(sourceResource)
   let selected = 0, omittedResources = 0
   for (const [path, indexOid] of index) {
-    if (!isInventoryMetadataPath(path)) continue
+    if (!isInventoryMetadataPath(path, directory)) continue
     if (++selected > limits.extraResources) { omittedResources++; continue }
-    const resource = oid(indexOid) ? inspectResource(path, indexOid, statFor) : null
+    const resource = oid(indexOid) ? inspectResource(path, indexOid, statFor, directory) : null
     if (resource) resources.push(resource)
     else { omittedResources++; issue('inventory-resource-unavailable', path) }
   }
   if (selected > limits.extraResources) issue('inventory-resource-limit')
   const conflicts = conflictsFor(routeDeclarations, componentDeclarations, issue)
   resources.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0)
-  return { resources, omittedResources, conflicts, provenance: provenance(entryPoints, findings) }
+  return { resources, omittedResources, conflicts, provenance: provenance(entryPoints, findings, directory) }
 }
 
 // Recheck index-qualified stat observations without rereading public asset data
 // or rerunning the conflict reporter. Source bytes have their own scanner check.
-export function inventoryResourceStatsMatch(metadata, index, statFor) {
+export function inventoryResourceStatsMatch(metadata, index, statFor, directory = 'public') {
   return list(metadata?.resources, limits.sourceResources + limits.extraResources) && metadata.resources.every(row => {
     if (row.kind === 'source') return true
-    if (!isInventoryMetadataPath(row.path) || !oid(index.get(row.path))) return false
-    return same(row, inspectResource(row.path, index.get(row.path), statFor))
+    if (!isInventoryMetadataPath(row.path, directory) || !oid(index.get(row.path))) return false
+    return same(row, inspectResource(row.path, index.get(row.path), statFor, directory))
   })
 }
 
-export function validInventoryMetadata(metadata, snapshot) {
+export function validInventoryMetadata(metadata, snapshot, { previousAssetPolicy = false } = {}) {
   if (!exact(metadata, ['resources', 'omittedResources', 'conflicts', 'provenance']) || !list(metadata.resources, limits.sourceResources + limits.extraResources)
     || !Number.isInteger(metadata.omittedResources) || metadata.omittedResources < 0 || metadata.omittedResources > 16000
     || !list(metadata.conflicts, limits.conflicts) || !list(snapshot?.evidence, limits.sourceResources)
@@ -168,7 +190,11 @@ export function validInventoryMetadata(metadata, snapshot) {
     || snapshot.entryPoints.some(row => !row || !['explicit','inferred'].includes(row.state))
     || snapshot.findings.some(row => !row || typeof row.code !== 'string' || row.code.length > 96)) return false
   if (snapshot.complete && (metadata.conflicts.length || metadata.omittedResources)) return false
-  if (!same(metadata.provenance, provenance(snapshot.entryPoints, snapshot.findings))) return false
+  // The old policy is accepted only to identify a replaceable historical
+  // cache. Readback, export, comparison and proposals use the current policy.
+  const directory = previousAssetPolicy ? 'public' : effectivePublicDirectory(snapshot.configuration, snapshot.evidence, snapshot.findings)
+  const assetNames = previousAssetPolicy ? previousPrivateName : privateInventoryName
+  if (!same(metadata.provenance, provenance(snapshot.entryPoints, snapshot.findings, directory))) return false
   const proof = new Map(snapshot.evidence.map(row => [row.path, row])), seen = new Set()
   for (const row of metadata.resources) {
     if (!row || seen.has(row.path) || !digest(row.revision) || !oid(row.indexOid) || row.owner !== owner(row.path)) return false
@@ -177,8 +203,8 @@ export function validInventoryMetadata(metadata, snapshot) {
       if (!sourcePath(row.path) || !proof.has(row.path) || !same(row, sourceResource(proof.get(row.path)))) return false
       proof.delete(row.path)
     } else if (row.kind === 'public-asset') {
-      if (!exact(row, ['path','owner','kind','revision','indexOid','bytes','mediaType','rendering']) || !assetType(row.path)
-        || row.mediaType !== assetType(row.path) || !Number.isSafeInteger(row.bytes) || row.bytes < 0 || row.rendering !== 'not-observed') return false
+      if (!exact(row, ['path','owner','kind','revision','indexOid','bytes','mediaType','rendering']) || !assetType(row.path, directory, assetNames)
+        || row.mediaType !== assetType(row.path, directory, assetNames) || !Number.isSafeInteger(row.bytes) || row.bytes < 0 || row.rendering !== 'not-observed') return false
     } else if (row.kind !== 'ownership-marker' || row.owner === 'repository' || !exact(row, ['path','owner','kind','revision','indexOid'])) return false
   }
   return proof.size === 0 && metadata.conflicts.every(row => {
@@ -247,7 +273,12 @@ function proposalFacts(snapshot, paths) {
       for (const step of use.trace) depends.add(step.source)
     }
   }
-  return hash({ entries, routes, components, shells, resources: snapshot.metadata.resources.filter(row => depends.has(row.path)) })
+  const resources = snapshot.metadata.resources.filter(row => depends.has(row.path))
+  const publicDirectoryProof = resources.some(row => row.kind === 'public-asset') ? {
+    directory: effectivePublicDirectory(snapshot.configuration, snapshot.evidence, snapshot.findings),
+    declaration: snapshot.configuration.buildTargets.find(target => target.field === 'publicDir') ?? null,
+  } : null
+  return hash({ entries, routes, components, shells, resources, publicDirectoryProof })
 }
 
 export function revalidateInventoryProposal(previous, fresh, { paths } = {}) {
