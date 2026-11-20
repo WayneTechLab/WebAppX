@@ -34,7 +34,7 @@ import { acceptsRequestQuery, invalidQueryResponse } from './Builder/request-que
 import { evaluateRequestPolicy } from './Builder/request-policy.mjs'
 import { fontCatalogRowLimit, encodeTransportJson, getRetryDisposition, getTransportPolicy } from './Builder/transport-policy.mjs'
 import { createTransportDiagnostics } from './Builder/transport-diagnostics.mjs'
-import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
+import { claimSession, clearSession, findAvailablePort, readSession, validPort } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
 import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
 import { readOperatingStatus } from './work-status.mjs'
@@ -98,17 +98,42 @@ const operationsLog = join(lanRoot, 'Temp', 'operations.jsonl')
 const backupRoot = join(lanRoot, 'Backup')
 const host = '127.0.0.1'
 const preferredPort = validPort(process.env.SYSTEMX_LAN_PORT ?? '7331', 'SYSTEMX_LAN_PORT')
-const port = process.env.SYSTEMX_STRICT_PORT === 'true'
-  ? preferredPort
-  : await findAvailablePort(preferredPort)
+const testMode = process.env.SYSTEMX_LAN_TEST_MODE === 'true'
+const supervisorPid = process.env.SYSTEMX_SESSION_OWNER_PID
+const standalone = !testMode && !supervisorPid
+const sessionId = process.env.SYSTEMX_SESSION_ID ?? `systemx-${randomUUID()}`
+// Test fixtures and supervisor children do not publish a standalone generation.
+const claimTools = standalone ? await import('./session-claim.mjs') : null
+
+function refuseIncumbent({ allowPending = false } = {}) {
+  if (!standalone) return
+  const existing = claimTools.readSessionClaim(repoRoot)
+  if (existing.status === 'absent') return
+  // If a writer is in the brief gap before its first receipt, take the same
+  // record guard at claim time and read the generation that actually won.
+  if (allowPending && existing.reasons.includes('session-update-in-progress-or-interrupted')) return
+  throw claimTools.sessionClaimError(existing)
+}
+
+async function choosePort() {
+  refuseIncumbent({ allowPending: true })
+  if (!testMode && supervisorPid) {
+    const owner = readSession(repoRoot)
+    if (String(process.ppid) !== supervisorPid || owner?.ownerPid !== process.ppid || owner.sessionId !== sessionId ||
+        (owner.mode && owner.mode !== 'combined') || (owner.processes?.session !== undefined && owner.processes.session !== process.ppid)) {
+      throw new Error('The LAN child does not match the recorded supervisor generation. Inspect session status before starting.')
+    }
+  }
+  try { return process.env.SYSTEMX_STRICT_PORT === 'true' ? preferredPort : await findAvailablePort(preferredPort) }
+  catch (error) { refuseIncumbent(); throw error }
+}
+const port = await choosePort().catch(error => { console.error(`[SYSTEMX LAN] ${error.message}`); process.exit(1) })
 const appPort = validPort(process.env.SYSTEMX_APP_PORT ?? '5173', 'SYSTEMX_APP_PORT')
 const firebaseAuthPort = validPort(process.env.SYSTEMX_FIREBASE_AUTH_PORT ?? '9099', 'SYSTEMX_FIREBASE_AUTH_PORT')
 const firebaseFirestorePort = validPort(process.env.SYSTEMX_FIREBASE_FIRESTORE_PORT ?? '8080', 'SYSTEMX_FIREBASE_FIRESTORE_PORT')
 const firebaseStoragePort = validPort(process.env.SYSTEMX_FIREBASE_STORAGE_PORT ?? '9199', 'SYSTEMX_FIREBASE_STORAGE_PORT')
-const sessionId = process.env.SYSTEMX_SESSION_ID ?? `lan-${Date.now()}-${process.pid}`
 const sessionToken = randomBytes(24).toString('hex')
 const styleNonce = randomBytes(18).toString('base64')
-const testMode = process.env.SYSTEMX_LAN_TEST_MODE === 'true'
 
 const allowedHosts = new Set([`127.0.0.1:${port}`, `localhost:${port}`])
 const allowedOrigins = new Set([
@@ -1750,46 +1775,47 @@ async function handleRequest(request, response, recordRoute) {
   input.once('error', () => handleServerError(response)).pipe(response)
 }
 
-server.listen(port, host, () => {
-  if (!testMode && !process.env.SYSTEMX_SESSION_OWNER_PID) {
-    const existingSession = readSession(repoRoot)
-    const session = existingSession?.sessionId === sessionId
-      ? {
-          ...existingSession,
-          processes: { ...existingSession.processes, lan: process.pid },
-          processIdentities: { ...existingSession.processIdentities, lan: captureSessionProcessIdentity(process.pid, { workingDirectory: process.cwd() }) },
-          ports: { ...existingSession.ports, lan: port, app: appPort },
-          urls: {
-            ...existingSession.urls,
-            lan: `http://${host}:${port}/`,
-            app: `http://${host}:${appPort}/`,
-            bridge: `http://${host}:${appPort}/__systemx/`,
-          },
-        }
-      : {
-          schemaVersion: 1,
-          sessionId,
-          ownerPid: Number.parseInt(process.env.SYSTEMX_SESSION_OWNER_PID ?? String(process.pid), 10),
-          processes: { lan: process.pid },
-          processIdentities: { lan: captureSessionProcessIdentity(process.pid, { workingDirectory: process.cwd() }) },
-          ports: { lan: port, app: appPort },
-          urls: {
-            lan: `http://${host}:${port}/`,
-            app: `http://${host}:${appPort}/`,
-            bridge: `http://${host}:${appPort}/__systemx/`,
-          },
-          mode: process.env.SYSTEMX_SESSION_ID ? 'combined' : 'lan-only',
-          startedAt: new Date().toISOString(),
-        }
-    writeSession(repoRoot, session)
+let ownsSession = false
+function releaseSession() {
+  if (ownsSession) { clearSession(repoRoot, sessionId); ownsSession = false }
+}
+function startupFailed(error) {
+  releaseSession()
+  console.error(`[SYSTEMX LAN] ${error.message}`)
+  process.exitCode = 1
+}
+
+try {
+  if (standalone) {
+    if (!/^[A-Za-z0-9_-]{1,128}$/.test(sessionId)) throw new Error('Invalid LAN session generation.')
+    confinedDirectory(repoRoot, join(repoRoot, '.SYSTEMX', 'state'))
+    const lanOrigin = `http://${host}:${port}`, appOrigin = `http://${host}:${appPort}`
+    try {
+      claimSession(repoRoot, {
+        schemaVersion: 1, sessionId, ownerPid: process.pid, mode: 'lan-only', host,
+        processes: { lan: process.pid },
+        processIdentities: { lan: captureSessionProcessIdentity(process.pid, { workingDirectory: process.cwd() }) },
+        ports: { lan: port, app: appPort },
+        origin: { scheme: 'http', host, port, url: lanOrigin, fixed: process.env.SYSTEMX_STRICT_PORT === 'true' },
+        urls: { lan: lanOrigin + '/', app: appOrigin + '/', bridge: appOrigin + '/__systemx/' },
+        startedAt: new Date().toISOString(),
+      })
+      ownsSession = true
+    } catch (error) {
+      if (error.code === 'EEXIST' || error.code === 'SESSION_RECORD_BUSY') refuseIncumbent()
+      throw error
+    }
   }
-  console.log(`[SYSTEMX LAN] http://${host}:${port}/`)
-  console.log('[SYSTEMX LAN] Loopback-only local builder shell')
-})
+  server.once('error', startupFailed)
+  server.listen(port, host, () => {
+    server.off('error', startupFailed)
+    console.log(`[SYSTEMX LAN] http://${host}:${port}/`)
+    console.log('[SYSTEMX LAN] Loopback-only local builder shell')
+  })
+} catch (error) { startupFailed(error) }
 
 function shutdown() {
-  if (!testMode && !process.env.SYSTEMX_SESSION_OWNER_PID) clearSession(repoRoot, sessionId)
-  server.close(() => process.exit(0))
+  server.close(() => { releaseSession(); process.exit(0) })
 }
 
 process.on('SIGINT', shutdown)
