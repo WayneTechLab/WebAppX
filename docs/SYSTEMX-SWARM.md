@@ -191,6 +191,11 @@ sample size per gate. Add `--manifest "$SWARM_MANIFEST"` to include run progress
 alongside those totals. Catalog reads validate the definitions, prerequisites
 and public receipt bindings before reporting acceptance.
 
+For a work assignment, add `--family F008` (or another original family ID) to
+the goal command. Copy its five lane criteria and definition hashes into the
+review packet. Each lane lists outstanding direct prerequisites. A blocked
+family has no ready ID, and a complete family has no next capability.
+
 In `progress`, `totalTasks` is the size of this manifest, `acceptedTasks`
 counts recorded delivery acceptances, and `remainingTasks` is their difference.
 `activeGenerations` counts slots still open, including accepted work awaiting
