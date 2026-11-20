@@ -143,14 +143,17 @@ function findingRule(code,path) {
   return 'scan'
 }
 function provenance(entries, findings, directory, bridges = []) {
-  const findingsByRule = findings.map(row => findingRule(row.code,row.path))
   const descriptors = Object.fromEntries(Object.entries(rules).map(([key, [adapter,basis]]) => [key,{adapter,basis}]))
-  // Preserve the exact v4 dictionary of accepted inventories. Additional
-  // descriptors are used only for unresolved findings in partial scans.
-  for (const [name,domain] of Object.entries(configDomains)) {
+  // Accepted v4 snapshots retain the original rule dictionary. Partial scans
+  // must distinguish an unresolved observation from a literal the adapter verified.
+  const findingsByRule = findings.map(row => {
+    const rule = findingRule(row.code, row.path)
+    if (descriptors[rule]?.basis === 'unresolved') return rule
+    const name = rule.endsWith('-unresolved') ? rule.slice(0, -'-unresolved'.length) : rule
     const id = name + '-unresolved'
-    if (findingsByRule.includes(id)) descriptors[id] = {adapter:domain.adapter,basis:'unresolved'}
-  }
+    descriptors[id] = { adapter: descriptors[name]?.adapter ?? configDomains[name].adapter, basis: 'unresolved' }
+    return id
+  })
   return { ruleVersion: 1, rules:descriptors,
     entryPoints: entries.map(row => row.state === 'inferred' ? 'vite-convention' : 'vite-input'),
     routes: 'route', componentExports: 'component', sharedShells: 'shell', configuration: 'configuration',

@@ -198,6 +198,16 @@ export function renderPage(pathname) { switch(pathname){case dynamicPath():retur
   const adapters = Object.fromEntries(inventory.findings.map((row,i) => [row.code,provenance.rules[provenance.findings[i]].adapter]))
   assert.equal(adapters['unsupported-vite-proxy-route'],'vite-static-config')
   assert.equal(adapters['dynamic-route-pattern'],'react-route-declaration')
+  for (const key of provenance.findings) assert.equal(provenance.rules[key].basis, 'unresolved')
+  f.put('src/Barrel.tsx', "export { Widget } from './MissingWidget'")
+  f.git('add','src/Barrel.tsx')
+  const components = cli(f.root, 'compare', 1).inventory
+  const componentIndex = components.findings.findIndex(row => row.code === 'unresolved-component-reexport')
+  assert.ok(componentIndex >= 0)
+  const componentRules = components.metadata.provenance
+  assert.deepEqual(componentRules.rules[componentRules.findings[componentIndex]], { adapter: 'typescript-component-export', basis: 'unresolved' })
+  f.git('rm','-q','-f','src/Barrel.tsx')
+
 
   const cases = Array.from({ length:105 }, (_, n) => `case choose(${n}): return <Page/>`).join('\n')
   f.put('src/router.tsx', `import Page from './Page'
