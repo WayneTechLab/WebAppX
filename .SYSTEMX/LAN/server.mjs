@@ -25,6 +25,8 @@ import { createSourceHistory, readSourceOperationHistory, sourceHistoryLimits } 
 import { dispatchSourceIdentity } from './Builder/source-identity-http.mjs'
 import { readRequestBody, RequestBodyError } from './Builder/request-body.mjs'
 import { evaluateRequestPolicy } from './Builder/request-policy.mjs'
+import { encodeTransportJson, getRetryDisposition } from './Builder/transport-policy.mjs'
+import { isValidRecordKey } from './Builder/record-command.mjs'
 import { createTransportDiagnostics } from './Builder/transport-diagnostics.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
@@ -188,10 +190,19 @@ function applySecurityHeaders(response) {
   response.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive')
 }
 
-function sendJson(response, statusCode, value) {
-  response.statusCode = statusCode
-  response.setHeader('Content-Type', 'application/json; charset=utf-8')
-  response.end(`${JSON.stringify(value)}\n`)
+const responsePathname = Symbol('LAN response pathname')
+
+function sendJson(response, statusCode, value, { attachment } = {}) {
+  const encoded = encodeTransportJson({
+    method: response.req.method, pathname: response[responsePathname], statusCode, value, pretty: Boolean(attachment),
+  })
+  response.statusCode = encoded.statusCode
+  response.setHeader('X-SystemX-Representation', encoded.representation)
+  if (encoded.statusCode !== 204) response.setHeader('Content-Type', 'application/json; charset=utf-8')
+  if (attachment && encoded.representation === 'complete' && encoded.statusCode === 200) {
+    response.setHeader('Content-Disposition', `attachment; filename="${attachment}"`)
+  }
+  response.end(encoded.body)
 }
 
 function sendText(response, statusCode, value) {
@@ -1205,6 +1216,7 @@ const transportDiagnostics = createTransportDiagnostics()
 const server = createServer((request, response) => {
   const recordRoute = transportDiagnostics.begin(request.method, response)
   applySecurityHeaders(response)
+  response.setHeader('X-SystemX-Retry', 'not-applicable')
   handleRequest(request, response, recordRoute).catch(() => handleServerError(response))
 })
 
@@ -1236,12 +1248,16 @@ async function handleRequest(request, response, recordRoute) {
   recordRoute(requestUrl.pathname)
 
   const pathname = requestUrl.pathname
+  response[responsePathname] = pathname
   const graphRoute = pathname.startsWith('/api/contracts/')
   const identityRoute = pathname.startsWith('/api/identity/')
   const apiPost = request.method === 'POST' && pathname.startsWith('/api/')
   if ((graphRoute || identityRoute || apiPost || pathname === '/api/transport/diagnostics')
     && !requireSessionToken(request, response)) return
 
+  const recordKeys = request.headersDistinct['idempotency-key']
+  const keyedRecord = pathname === '/api/builder/record' && recordKeys?.length === 1 && isValidRecordKey(recordKeys[0])
+  response.setHeader('X-SystemX-Retry', getRetryDisposition({ method: request.method, pathname, keyedRecord }))
   const policyInput = { pathname, method: request.method, contentType: request.headersDistinct['content-type'] }
   let refusal = evaluateRequestPolicy(policyInput)
   let body
@@ -1385,10 +1401,7 @@ async function handleRequest(request, response, recordRoute) {
   }
 
   if (requestUrl.pathname === '/api/builder/components/export' && request.method === 'GET') {
-    response.statusCode = 200
-    response.setHeader('Content-Type', 'application/json; charset=utf-8')
-    response.setHeader('Content-Disposition', 'attachment; filename="systemx-component-registry.json"')
-    response.end(`${JSON.stringify(readComponentRegistry(), null, 2)}\n`)
+    sendJson(response, 200, readComponentRegistry(), { attachment: 'systemx-component-registry.json' })
     return
   }
 
