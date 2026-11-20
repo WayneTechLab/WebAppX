@@ -144,7 +144,7 @@ function inspect(repo, ts, budget, observation) {
   const { head, index, modes, exclusions, indexRevision } = loadIndex(root, budget)
   observation.indexExclusions = exclusions
   const entries = [], routes = [], routeDeclarations = [], routeBindings = [], findings = [], evidence = new Map()
-  const names = new Map(), normalized = new Set()
+  const names = new Map(), normalized = new Set(), findingCodes = new Set()
   let totalBytes = 0, omittedFindings = 0
   function exactFile(path) {
     const candidate = confinedFile(root, join(root, path))
@@ -171,6 +171,9 @@ function inspect(repo, ts, budget, observation) {
     return candidate
   }
   function unresolved(code, path, line, occurrences = 1) {
+    // Codes are fixed by the adapters. Preserve capability coverage even when
+    // earlier findings use up the operator's per-location display budget.
+    findingCodes.add(code)
     if (findings.length >= inventoryLimits.findings) { omittedFindings += occurrences; return }
     findings.push({ state: 'unresolved', code, ...(path ? { path } : {}), ...(line ? { line } : {}), ...(occurrences > 1 ? { occurrences } : {}) })
   }
@@ -422,7 +425,7 @@ function inspect(repo, ts, budget, observation) {
   if (findings.length) {
     observation.capabilities = { stack:'vite', commit:head, indexRevision, eligibleTrackedCount:index.size,
       available:['tracked-index','verified-source-digests','partial-declarations','last-good-readback'],
-      missing:missingInventoryCapabilities(findings) }
+      missing:missingInventoryCapabilities(findingCodes) }
   }
   names.clear()
   for (const item of evidence.values()) {

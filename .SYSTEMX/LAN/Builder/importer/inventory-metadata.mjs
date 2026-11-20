@@ -64,9 +64,9 @@ function viteCapability(code) {
   return 'static-configuration-resolution'
 }
 
-export function missingInventoryCapabilities(findings) {
+export function missingInventoryCapabilities(codes) {
   const missing = new Set()
-  for (const {code} of findings) {
+  for (const code of codes) {
     const vite = viteCapability(code)
     if (vite) {
       missing.add('static-configuration-resolution')
