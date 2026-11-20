@@ -11,8 +11,10 @@ This is WebAppX's host-owned swarm map. The reusable
 ```mermaid
 flowchart TD
     Owner[Owner: scope and lifecycle authority] --> A0[Agent 0: canonical integration owner]
-    A0 --> Wave[Preview a wave from manifest and private receipts]
-    Wave -->|Disjoint scopes and capacity| Packet[Exact task / base / paths / provider / generation]
+    A0 --> Goal[Read original catalog and ready queues]
+    Goal --> Wave[Preview assignments and review wave digest]
+    Wave --> Prepare[Prepare and checkpoint each worktree]
+    Prepare -->|Disjoint scopes and capacity| Packet[Exact task / base / paths / provider / generation]
     Packet --> Y[Agent Y: up to 10 isolated CLI slots]
     Y --> Result[Task branch + original evidence + open PR]
     Result --> Z[Agent Z: independent review]

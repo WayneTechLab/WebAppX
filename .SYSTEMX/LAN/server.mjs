@@ -1710,7 +1710,9 @@ async function handleRequest(request, response, recordRoute) {
     return
   }
 
-  createReadStream(file).once('error', () => handleServerError(response)).pipe(response)
+  const input = createReadStream(file)
+  response.once('close', () => input.destroy())
+  input.once('error', () => handleServerError(response)).pipe(response)
 }
 
 server.listen(port, host, () => {
