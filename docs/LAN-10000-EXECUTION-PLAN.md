@@ -4,7 +4,7 @@ Planning source: `053382b383d0fbffbe5161e9fb4d5f07a3c1fed8`; created 2026-10-26.
 
 The catalog contains 100 authored capability families, 2000 capabilities and 10000 delivery requirements. Five lanes describe behavior, boundaries/refusal, recovery, feedback and evidence. They are acceptance requirements, not a claim that this many independent features ship today.
 
-Current accepted status: 805/10000 requirements and 161/2000 capabilities. 0 capabilities have partial acceptance.
+Current accepted status: 825/10000 requirements and 165/2000 capabilities. 0 capabilities have partial acceptance.
 
 ## Execution and ownership
 
@@ -16,7 +16,7 @@ Preserve the source ownership, Designer kernel, command journal, style engine, c
 
 ## Dependency-ready local queue
 
-The validated progress ledger currently makes **59 local TODO requirement(s)** dependency-ready. This snapshot displays 20 in catalog ID order, with a maximum of 20 rows. The active iteration identifies the selected batch; its blocked requirements remain pending until their prerequisites are accepted. Queue membership grants no assignment, execution or publication authority.
+The validated progress ledger currently makes **55 local TODO requirement(s)** dependency-ready. This snapshot displays 20 in catalog ID order, with a maximum of 20 rows. The active iteration identifies the selected batch; its blocked requirements remain pending until their prerequisites are accepted. Queue membership grants no assignment, execution or publication authority.
 
 | Requirement | Capability | Lane | Priority | Direct prerequisites |
 | --- | --- | --- | --- | --- |
@@ -41,7 +41,7 @@ The validated progress ledger currently makes **59 local TODO requirement(s)** d
 | LAN-01061 | Expose unsupported stack findings | behavior | P1 | LAN-00105, LAN-00110, LAN-00115, LAN-00120, LAN-00125, LAN-00130, LAN-00135, LAN-00140, LAN-00145, LAN-00150, LAN-00155, LAN-00160, LAN-00165, LAN-00170, LAN-00175, LAN-00180, LAN-00185, LAN-00190, LAN-00195, LAN-00200 |
 | LAN-01076 | Inventory public asset metadata | behavior | P1 | LAN-00105, LAN-00110, LAN-00115, LAN-00120, LAN-00125, LAN-00130, LAN-00135, LAN-00140, LAN-00145, LAN-00150, LAN-00155, LAN-00160, LAN-00165, LAN-00170, LAN-00175, LAN-00180, LAN-00185, LAN-00190, LAN-00195, LAN-00200 |
 
-39 additional ready requirement(s) are omitted from this bounded snapshot. Run `node scripts/lan-backlog.mjs --ready --limit 100 --json` for up to 100 rows.
+35 additional ready requirement(s) are omitted from this bounded snapshot. Run `node scripts/lan-backlog.mjs --ready --limit 100 --json` for up to 100 rows.
 
 Recompute this generated snapshot with `node scripts/lan-backlog.mjs --write` after a reviewed progress change. Use `--ready --json` for the current validated queue without writing any artifacts.
 
