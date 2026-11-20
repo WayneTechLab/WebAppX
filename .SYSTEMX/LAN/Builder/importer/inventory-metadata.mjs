@@ -46,24 +46,35 @@ export const isInventoryMetadataPath = path => owner(path) !== 'repository' || B
 const rules = Object.freeze({
   'vite-input': ['vite-entry', 'literal'], 'vite-convention': ['vite-entry', 'inferred'],
   route: ['react-route-declaration', 'literal'], component: ['typescript-component-export', 'literal'],
-  shell: ['jsx-role-and-route-usage', 'inferred'], configuration: ['static-project-configuration', 'literal'],
+  shell: ['jsx-role-and-route-usage', 'inferred'], configuration: ['static-project-configuration', 'field-specific'],
+  package: ['package-declaration', 'literal'], pin: ['runtime-pin', 'literal'], vite: ['vite-static-config', 'literal'],
+  'vite-default': ['vite-static-config', 'inferred'], 'vite-unresolved': ['vite-static-config', 'unresolved'],
+  firebase: ['firebase-manifest', 'literal'],
   file: ['git-index-and-worktree', 'observed'], asset: ['public-file-stat', 'observed'],
   ownership: ['systemx-directory-ownership', 'inferred'], conflict: ['declaration-conflicts', 'unresolved'],
   scan: ['tracked-repository-inventory', 'unresolved'],
 })
 function findingRule(code) {
-  if (/ambiguous|conflict|duplicate/.test(code)) return 'conflict'
+  if (/^inventory-(?:route|page|component)-conflict$/.test(code)) return 'conflict'
   if (/component|shell/.test(code)) return 'component'
   if (/route/.test(code)) return 'route'
   if (/entry|html/.test(code)) return 'vite-input'
-  if (/package|config|firebase|runtime|build|bridge|target|proxy/.test(code)) return 'configuration'
+  if (/firebase/.test(code)) return 'firebase'
+  if (/package|dependency/.test(code)) return 'package'
+  if (/runtime/.test(code)) return 'pin'
+  if (/vite|build|bridge|target|proxy/.test(code)) return 'vite-unresolved'
+  if (/config/.test(code)) return 'configuration'
   return 'scan'
 }
 function provenance(entries, findings) {
   return { ruleVersion: 1, rules: Object.fromEntries(Object.entries(rules).map(([key, [adapter, basis]]) => [key, { adapter, basis }])),
     entryPoints: entries.map(row => row.state === 'inferred' ? 'vite-convention' : 'vite-input'),
     routes: 'route', componentExports: 'component', sharedShells: 'shell', configuration: 'configuration',
-    sourceResources: 'file', publicAssets: 'asset', ownership: 'ownership', conflicts: 'conflict',
+    configurationFields: { dependencies: 'package', runtimePins: 'pin', firebase: 'firebase',
+      buildTargets: { declared: 'vite', disabled: 'vite', inferred: 'vite-default', unresolved: 'vite-unresolved' },
+      bridges: 'vite' },
+    sourceResources: 'file', publicAssets: 'asset', publicAssetScope: 'reviewed tracked public/ filenames; serving and rendering unobserved',
+    ownership: 'ownership', conflicts: 'conflict',
     revisionBasis: { source: 'sha256-working-source-bytes', metadataOnly: 'git-index-oid-and-working-size-and-file-times' },
     ownershipBoundaries: { repository: 'review-before-effect', 'host-extension': 'host-owner-review', 'managed-release': 'immutable-upstream-snapshot' },
     findings: findings.map(row => findingRule(row.code)) }
