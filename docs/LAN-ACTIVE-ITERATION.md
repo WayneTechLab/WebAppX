@@ -1,11 +1,25 @@
-# LAN active iteration — F007 transport and request lifecycle
+# LAN active iteration — command proposals, inventory, Navigator and session ownership
 
-The program goal is **10,000 accepted requirements and 2,000 completed
-capabilities** across 100 families. At the November 19 acceptance checkpoint,
-F001–F006 accounted for **600 requirements and 120 capabilities (6%)**.
-**9,400 requirements and 1,880 capabilities remain.** F007 is the active family.
+The goal is **10,000 accepted original requirements and 2,000 complete
+capabilities**. On November 20 the ledger reached **720 requirements and 144
+capabilities (7.2%)**. **9,280 requirements and 1,856 capabilities remain.**
+F001–F007 are complete. F011, F013 and F015 have accepted capabilities.
 
-## F007 delivery plan
+## Current assignments
+
+| Family | Verified checkpoint | Next work |
+| --- | --- | --- |
+| F008 command proposals | Its F007 prerequisites are accepted. | Build and review proposals tied to the current graph revision and inspect their semantic effects. |
+| F011 repository inventory | LAN-01001–01005, tracked entry points. | Refuse ambiguous route targets, preserve the previous complete inventory, then verify shell, export and configuration discovery. |
+| F013 Navigator discovery | LAN-01201–01210, open shadow roots and same-origin nested frames. | Select the next original Navigator discovery capability from the ready queue. |
+| F015 session ownership | LAN-01401–01405, read-only start preview. | Verify that the losing standalone launcher identifies the winning session across both launch paths. |
+
+The [F007 verification](LAN-F007-ACCEPTANCE-2026-11-20.md) and
+[inventory, Navigator and session verification](LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md)
+record the exact tested revisions and evidence. `goal --limit 1` shows all eligible
+families as well as the first row in each gate.
+
+## Agent 0 workflow used for F007
 
 1. Select bounded work from [F007 transport and request lifecycle](backlog/lan-10000/F007.md),
    covering LAN-00601–LAN-00700. Check the dependency-ready rows in the
@@ -29,8 +43,7 @@ F001–F006 accounted for **600 requirements and 120 capabilities (6%)**.
 
 On resumption, run `node .SYSTEMX/swarm/cli.mjs goal --limit 5` to read the verified
 catalog and ready queues. Inspect the current Git base and open generations
-before assigning work. A swarm manifest can be complete while other F007
-requirements are still open. The [swarm runbook](SYSTEMX-SWARM.md#plan-and-resume-a-wave)
+before assigning work. The manifest and catalog have independent completion counts. The [swarm runbook](SYSTEMX-SWARM.md#plan-and-resume-a-wave)
 describes the fresh receipts and Mac IDE/Codex sync point.
 
 ## Running and verifying F007 locally

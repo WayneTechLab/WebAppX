@@ -69,6 +69,22 @@ Core PowerShell launchers are included; native Windows Agent Y `run --apply`
 remains unavailable pending verified descendant-process termination. Local
 macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
+## LAN program and current swarm
+
+Agent 0 has accepted **720 of 10,000 requirements (7.2%)** and **144 of 2,000
+capabilities**. The November 20 checkpoint covers all 100 F007 request lifecycle
+requirements, tracked entry-point inventory, inspection of shadow roots and
+nested frames, and read-only session launch preview. The original WebAppX
+checklist remains at 179 of 1,000. Read the
+[F007 receipt](docs/LAN-F007-ACCEPTANCE-2026-11-20.md) and the
+[inventory, Navigator and session receipt](docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md).
+
+Run `node .SYSTEMX/swarm/cli.mjs goal --limit 1` from WebAppX for the current
+counts and every family with eligible work. Agent 0 previews assignments with
+`wave` and supplies the reviewed digest to `prepare-wave` to checkpoint the
+isolated worktrees. The [active plan](docs/LAN-ACTIVE-ITERATION.md) records the
+next work and unresolved findings.
+
 ## LAN graph and versioned API workspace
 
 Run `npm run dev:systemx`, open the printed `/__systemx/` bridge, and choose

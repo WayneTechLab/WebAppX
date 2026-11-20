@@ -7,6 +7,10 @@ for the current session. Each row has a correlation ID, method, route category,
 duration and HTTP status. An interrupted response shows **Cancelled**. Refresh
 to see another snapshot. The service retains the latest 64 observations in memory.
 
+Choose **Read limits and retry rules** to inspect the local request budget.
+**Last request** shows what happened to the selected source or graph request,
+its retry guidance and its correlation ID. These reads preserve the open draft.
+
 If a request loses its connection, the dashboard keeps the open editor draft and
 pauses submissions. Choose **Check connection**. Once the original workspace and
 credential have been verified, review the last operation before submitting again.

@@ -11,6 +11,10 @@ executes selected defaults; `WSG-MENU.sh` retains the webapp lifecycle. Adopted 
 tasks live in `WORK/TASKS.json`; legacy `status/` files retain the LAN
 feature roadmap. The sections below describe retained webapp extensions.
 
+## Current LAN checkpoint
+
+On November 20 the ledger reached **720/10,000 accepted requirements and 144/2,000 completed capabilities**. The [F007 receipt](../docs/LAN-F007-ACCEPTANCE-2026-11-20.md) records the transport verification. The [active plan](../docs/LAN-ACTIVE-ITERATION.md) lists accepted inventory, Navigator and session capabilities and the next open requirements. Run `node .SYSTEMX/swarm/cli.mjs goal --limit 1` for the current ready families.
+
 ## SYSTEMX host swarm — Agent 0, X/Y/Z and Alpha
 
 From the WebAppX root, run `node .SYSTEMX/swarm/cli.mjs goal --limit 5` to see

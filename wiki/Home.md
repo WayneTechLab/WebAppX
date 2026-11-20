@@ -1,5 +1,9 @@
 # WebAppX Wiki
 
+## Current LAN checkpoint
+
+On November 20 the ledger reached **720/10,000 accepted requirements and 144/2,000 completed capabilities**. The [F007 receipt](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-F007-ACCEPTANCE-2026-11-20.md) records the transport verification. The [active plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) lists accepted inventory, Navigator and session capabilities and the next open requirements. Run `node .SYSTEMX/swarm/cli.mjs goal --limit 1` for the current ready families.
+
 ## Graph and versioned API workspace
 
 The F005/F006 implementation adds **Build → Code → Graph and API contracts**
