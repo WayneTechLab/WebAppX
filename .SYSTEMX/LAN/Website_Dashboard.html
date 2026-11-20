@@ -719,6 +719,15 @@
             </div>
             <output id="inspector-sync-summary" class="command-output" aria-live="polite">Waiting for local evidence refresh.</output>
             <button class="button button-dark panel-action" id="inspector-refresh-sync" type="button">Refresh local evidence</button>
+            <details id="transport-diagnostics" class="panel-guidance">
+              <summary>Transport diagnostics</summary>
+              <output id="transport-status" class="panel-help" role="status" data-state="idle">Open to read recent local requests.</output>
+              <div class="button-row">
+                <button class="button button-dark" id="transport-read" type="button">Refresh</button>
+                <button class="button" id="transport-cancel" type="button" hidden>Cancel</button>
+              </div>
+              <ul id="transport-entries" aria-label="Recent local requests, newest first"></ul>
+            </details>
           </section>
         </aside>
       </div>

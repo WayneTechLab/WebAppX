@@ -3,6 +3,7 @@ import { sourceComparisonLimits, compareSourceText } from './source-comparison.j
 import { sourceRecordLimits, createRecoveryRecord, parseRecoveryRecord, normalizeSourceDisplay, createComparisonExport } from './source-draft-records.js'
 import { canonicalSourcePath, sourceNavigationKey, createSourceNavigation, parseSourceNavigation, parseSourceInventory, filterSourceMetadata, sourcePickerSelection } from './source-navigation.js'
 import { attachSourceIdentityInspector } from './source-identities.js'
+import { attachTransportDiagnostics } from './transport-diagnostics.js'
 
 const apiBase = window.location.pathname.startsWith('/__systemx') ? '/__systemx' : ''
 const sessionToken = document.querySelector('meta[name="systemx-session"]')?.content ?? ''
@@ -539,8 +540,9 @@ function getEmbeddedStatus() {
 
 async function request(path, options = {}) {
   if (typeof fetch !== 'function') throw new Error('This browser does not expose fetch; use a standard local browser for editing actions.')
+  const { onResponseHeaders, ...fetchOptions } = options
   const response = await fetch(`${apiBase}${path}`, {
-    ...options,
+    ...fetchOptions,
     headers: {
       Accept: 'application/json',
       ...(options.body ? { 'Content-Type': 'application/json' } : {}),
@@ -549,6 +551,7 @@ async function request(path, options = {}) {
     },
     cache: 'no-store',
   })
+  onResponseHeaders?.(response.headers)
   const result = await response.json().catch(() => ({}))
   if (!response.ok) {
     const error = new Error(typeof result.error === 'string' ? result.error : result.error?.message ?? `HTTP ${response.status}`)
@@ -3966,6 +3969,7 @@ async function boot() {
   restoreLayout()
   applyInspectorTabs(state.layout.activeRight || 'style')
   bind()
+  attachTransportDiagnostics(document.querySelector('#transport-diagnostics'), request)
   identityInspector = attachSourceIdentityInspector({
     container: document.querySelector('#panel-source'),
     api: (path, options = {}) => {
