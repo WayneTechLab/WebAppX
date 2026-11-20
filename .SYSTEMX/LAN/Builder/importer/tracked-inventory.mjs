@@ -447,7 +447,7 @@ function inspect(repo, ts, budget, observation) {
     return stat.isFile() && stat.nlink === 1n ? stat : null
   }
   const metadata = inspectInventoryMetadata({index, statFor, evidence, entryPoints:entries,
-    routes:declaredRoutes, components, findings, routeDeclarations, componentDeclarations, publicDirectory, issue:unresolved})
+    routes:declaredRoutes, components, findings, routeDeclarations, componentDeclarations, bridges:configuration.bridges, publicDirectory, issue:unresolved})
   if (findings.length) {
     observation.capabilities = { stack:'vite', commit:head, indexRevision, eligibleTrackedCount:index.size,
       available:['tracked-index','verified-source-digests','partial-declarations','last-good-readback'],

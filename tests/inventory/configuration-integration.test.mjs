@@ -179,6 +179,11 @@ test('unresolved Vite directories and bridge routes identify the missing adapter
     assert.equal(findings[index].path,config)
     assert.equal(findings[index].line,2)
     const rule = metadata.provenance.findings[index]
+    for (const bridge of report.inventory.configuration.bridges) {
+      const stateRules = metadata.provenance.configurationFields.bridges
+      const bridgeRule = typeof stateRules === 'string' ? stateRules : stateRules[bridge.state]
+      assert.equal(metadata.provenance.rules[bridgeRule].basis, bridge.state === 'unresolved' ? 'unresolved' : 'literal')
+    }
     assert.deepEqual(metadata.provenance.rules[rule],{adapter:'vite-static-config',basis:'unresolved'})
     assert.equal(report.lastGoodRevision,good.inventory.revision)
     assert.deepEqual(readFileSync(f.cache),accepted)

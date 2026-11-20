@@ -142,7 +142,7 @@ function findingRule(code,path) {
   if (/config/.test(code)) return 'configuration'
   return 'scan'
 }
-function provenance(entries, findings, directory) {
+function provenance(entries, findings, directory, bridges = []) {
   const findingsByRule = findings.map(row => findingRule(row.code,row.path))
   const descriptors = Object.fromEntries(Object.entries(rules).map(([key, [adapter,basis]]) => [key,{adapter,basis}]))
   // Preserve the exact v4 dictionary of accepted inventories. Additional
@@ -156,7 +156,7 @@ function provenance(entries, findings, directory) {
     routes: 'route', componentExports: 'component', sharedShells: 'shell', configuration: 'configuration',
     configurationFields: { dependencies: 'package', runtimePins: 'pin', firebase: 'firebase',
       buildTargets: { declared: 'vite', disabled: 'vite', inferred: 'vite-default', unresolved: 'vite-unresolved' },
-      bridges: 'vite' },
+      bridges: bridges.some(row => row.state === 'unresolved') ? { declared: 'vite', unresolved: 'vite-unresolved' } : 'vite' },
     sourceResources: 'file', publicAssets: 'asset', publicAssetScope: directory ? `reviewed tracked ${directory}/ filenames; serving and rendering unobserved` : 'no resolved active public directory',
     ownership: 'ownership', conflicts: 'conflict',
     revisionBasis: { source: 'sha256-working-source-bytes', metadataOnly: 'git-index-oid-and-working-size-and-file-times' },
@@ -212,7 +212,7 @@ function conflictsFor(routes, exports, issue) {
   return conflicts
 }
 
-export function inspectInventoryMetadata({ index, statFor, evidence, entryPoints, routes, components, findings, routeDeclarations = routes, componentDeclarations = components.exports, publicDirectory: directory = 'public', issue }) {
+export function inspectInventoryMetadata({ index, statFor, evidence, entryPoints, routes, components, findings, routeDeclarations = routes, componentDeclarations = components.exports, bridges, publicDirectory: directory = 'public', issue }) {
   const evidenceCount = evidence instanceof Map ? evidence.size : evidence?.length
   if (!(index instanceof Map) || index.size > 16000 || !Number.isInteger(evidenceCount) || evidenceCount > limits.sourceResources
     || !list(entryPoints, 32) || !list(routes, 300) || !list(routeDeclarations, 300) || !list(components?.exports, 600) || !list(componentDeclarations, 1200) || !list(findings, 100)) {
@@ -230,7 +230,7 @@ export function inspectInventoryMetadata({ index, statFor, evidence, entryPoints
   if (selected > limits.extraResources) issue('inventory-resource-limit')
   const conflicts = conflictsFor(routeDeclarations, componentDeclarations, issue)
   resources.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0)
-  return { resources, omittedResources, conflicts, provenance: provenance(entryPoints, findings, directory) }
+  return { resources, omittedResources, conflicts, provenance: provenance(entryPoints, findings, directory, bridges) }
 }
 
 // Recheck index-qualified stat observations without rereading public asset data
@@ -256,7 +256,7 @@ export function validInventoryMetadata(metadata, snapshot, { previousAssetPolicy
   // cache. Readback, export, comparison and proposals use the current policy.
   const directory = previousAssetPolicy ? 'public' : effectivePublicDirectory(snapshot.configuration, snapshot.evidence, snapshot.findings)
   const assetNames = previousAssetPolicy ? previousPrivateName : privateInventoryName
-  if (!same(metadata.provenance, provenance(snapshot.entryPoints, snapshot.findings, directory))) return false
+  if (!same(metadata.provenance, provenance(snapshot.entryPoints, snapshot.findings, directory, snapshot.configuration?.bridges))) return false
   const proof = new Map(snapshot.evidence.map(row => [row.path, row])), seen = new Set()
   for (const row of metadata.resources) {
     if (!row || seen.has(row.path) || !digest(row.revision) || !oid(row.indexOid) || row.owner !== owner(row.path)) return false
