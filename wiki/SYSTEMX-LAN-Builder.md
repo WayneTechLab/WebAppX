@@ -1,5 +1,16 @@
 # SYSTEMX LAN Builder
 
+## Local request diagnostics
+
+In **Insights/Ops → Gates → Transport diagnostics**, request the recent activity
+for the current session. Each row has a correlation ID, method, route category,
+duration and HTTP status. An interrupted response shows **Cancelled**. Refresh
+to see another snapshot. The service retains the latest 64 observations in memory.
+
+If a request loses its connection, the dashboard keeps the open editor draft and
+pauses submissions. Choose **Check connection**. Once the original workspace and
+credential have been verified, review the last operation before submitting again.
+
 ## Graph and versioned API workspace
 
 The F005/F006 implementation adds **Build → Code → Graph and API contracts**

@@ -62,6 +62,12 @@ completed preparations and the remaining assignments. Inspect the failed slot,
 refresh the preview and use the new digest. A separate slot sync and launch
 start each worker.
 
+The ten-slot CLI rehearsal uses a disposable local Git origin. It ran ten synthetic
+workers concurrently on ten branches, verified ten changed heads and reopened
+the ten generation records in a fresh process. The
+[rehearsal and command](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTEMX-SWARM.md#verify-ten-concurrent-workers-locally)
+explain how to read the JSON receipt and where independent review begins.
+
 ## Branch, PR and reassignment lifecycle
 
 Agent 0 selects a bounded task, observed base, provider and allowed paths. A

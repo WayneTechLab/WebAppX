@@ -33,6 +33,21 @@ before assigning work. A swarm manifest can be complete while other F007
 requirements are still open. The [swarm runbook](SYSTEMX-SWARM.md#plan-and-resume-a-wave)
 describes the fresh receipts and Mac IDE/Codex sync point.
 
+## Running and verifying F007 locally
+
+Use **Insights/Ops → Gates → Transport diagnostics** for the last 64 requests.
+An interrupted stream has a correlation ID and a cancelled outcome. The view
+opens on demand. A lost connection pauses changes and keeps the current draft.
+**Check connection** rechecks the workspace, session and tab credential.
+
+For automated checks, run `npm run lan:transport:test` and `npm run browser:transport`.
+The HTTP suite uses disposable workspaces. It exercises split UTF-8, refused
+requests, a stalled body, restart, and a repeated record command. Clients may
+opt into exactly one stored record by supplying the same UUIDv4
+`Idempotency-Key` and equivalent command during its 24-hour retention period.
+Use `X-SystemX-Retry` and the current response to decide whether a fresh read,
+reconciliation or a new confirmed proposal is needed.
+
 ## Completed F005/F006 baseline
 
 On 2026-11-19 Agent 0 accepted the canonical document graph (F005) and then

@@ -101,6 +101,18 @@ exit, the prepared receipts, unprepared assignments and the failed slot.
 After inspecting the reported branch, worktree and private state, run `status`
 and `wave` again. Each worker needs a fresh slot `sync` before launch.
 
+### Verify ten concurrent workers locally
+
+Run `node --test --test-reporter=tap tests/swarm/ten-slot-cli.test.mjs`.
+The fixture creates a disposable bare Git origin, assigns ten nonoverlapping
+branches and holds ten synthetic Node workers concurrently. It verifies their
+ten distinct commit heads and the checks on each. A fresh CLI process reopens
+all ten generation records and rejects the previous handoff digest after a
+worker changes its branch. The JSON diagnostic in TAP records the receipts.
+At commit `6665056435331d0602c64568e0a55b5dc64005e9`, all ten workers reached
+independent review with zero running processes. GitHub review, merge and catalog
+acceptance are subsequent steps.
+
 ### What counts as complete
 
 Run the independent catalog report from the repository root.
