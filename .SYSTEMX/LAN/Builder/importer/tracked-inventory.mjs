@@ -10,6 +10,8 @@ import { readViteInputs } from './inventory-vite.mjs'
 import { inspectDeclaredRoutes, publicPattern } from './declared-routes.mjs'
 import { inspectComponents, validComponentInventory } from './component-inventory.mjs'
 import { configurationInputPaths, inspectInventoryConfig, validInventoryConfig } from './inventory-config.mjs'
+import { compareInventories } from './inventory-comparison.mjs'
+import { prunedNames, stagedSources, untrackedSources, workBudget } from './inventory-working-state.mjs'
 
 const require = createRequire(import.meta.url)
 export const inventoryLimits = Object.freeze({ indexBytes: 4_000_000, records: 16_000, sourceBytes: 256_000, totalBytes: 3_000_000, files: 160, routes: 300, findings: 100, stateBytes: 750_000 })
@@ -25,6 +27,7 @@ const safeModule = path => isCanonicalSourcePath(path) && path.startsWith('src/'
 const safeHtml = path => isCanonicalSourcePath(path) && (!path.includes('/') || path.startsWith('src/')) && path.endsWith('.html') && !privateName.test(path)
 const safeEvidence = path => safeModule(path) || safeHtml(path) || viteConfigs.includes(path) || ['package.json', 'tsconfig.json'].includes(path)
 const safeConfigEvidence = path => configurationInputPaths.includes(path)
+const eligible = path => (safeEvidence(path) || safeConfigEvidence(path)) && !path.split('/').some(part => prunedNames.test(part))
 
 function validSnapshot(value, checkoutId) {
   const keys = (record, names) => record && typeof record === 'object' && Object.keys(record).length === names.length && names.every(key => Object.hasOwn(record, key))
@@ -51,15 +54,21 @@ function validSnapshot(value, checkoutId) {
   return revision === hash(JSON.stringify(report))
 }
 
-function git(root, args) {
+function git(root, args, { budget, input, allowOne = false } = {}) {
+  budget?.check()
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith('GIT_')))
   Object.assign(env, { GIT_CONFIG_GLOBAL: process.platform === 'win32' ? 'NUL' : '/dev/null', GIT_CONFIG_NOSYSTEM: '1',
     GIT_NO_LAZY_FETCH: '1', GIT_OPTIONAL_LOCKS: '0', GIT_TERMINAL_PROMPT: '0', LC_ALL: 'C' })
   try {
     return utf8.decode(execFileSync('git', ['-c', 'core.fsmonitor=false', '-c', 'core.untrackedCache=false', ...args], {
-      cwd: root, env, timeout: 6000, maxBuffer: inventoryLimits.indexBytes, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true,
+      cwd: root, env, timeout: Math.min(6000, budget?.remaining() ?? 6000), maxBuffer: inventoryLimits.indexBytes, input,
+      stdio: [input === undefined ? 'ignore' : 'pipe', 'pipe', 'pipe'], windowsHide: true,
     }))
-  } catch { fail('git-inventory-unavailable') }
+  } catch (error) {
+    budget?.check()
+    if (allowOne && error.status === 1) return utf8.decode(error.stdout ?? Buffer.alloc(0))
+    fail('git-inventory-unavailable')
+  }
 }
 
 function readBounded(path, max) {
@@ -82,7 +91,7 @@ function readBounded(path, max) {
   } finally { closeSync(fd) }
 }
 
-function repository(rootPath) {
+function repository(rootPath, budget) {
   let supplied = resolve(rootPath)
   if (lstatSync(supplied).isSymbolicLink()) fail('linked-repository')
   const root = realpathSync(supplied)
@@ -100,16 +109,16 @@ function repository(rootPath) {
     if (basename(dirname(gitDir)) !== 'worktrees' || realpathSync(gitDir) !== gitDir
       || resolve(gitDir, utf8.decode(readBounded(join(gitDir, 'gitdir'), 4096)).trim()) !== marker) fail('unverified-git-directory')
   } else if (!info.isDirectory()) fail('linked-repository')
-  if (realpathSync(git(root, ['rev-parse', '--show-toplevel']).trim()) !== root
-    || realpathSync(git(root, ['rev-parse', '--absolute-git-dir']).trim()) !== gitDir) fail('unverified-git-directory')
+  if (realpathSync(git(root, ['rev-parse', '--show-toplevel'], {budget}).trim()) !== root
+    || realpathSync(git(root, ['rev-parse', '--absolute-git-dir'], {budget}).trim()) !== gitDir) fail('unverified-git-directory')
   return { root, gitDir, checkoutId: hash(`repository-inventory-v1\0${root}`) }
 }
 
-function loadIndex(root) {
-  const head = git(root, ['rev-parse', '--verify', 'HEAD']).trim()
+function loadIndex(root, budget) {
+  const head = git(root, ['rev-parse', '--verify', 'HEAD'], {budget}).trim()
   if (!/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(head)) fail('missing-commit')
-  const raw = git(root, ['ls-files', '--stage', '-z'])
-  const index = new Map()
+  const raw = git(root, ['ls-files', '--stage', '-z'], {budget})
+  const index = new Map(), modes = new Map()
   const exclusions = { outsideSourceScope: 0, privateOrNoncanonical: 0, nonregularIndex: 0 }
   const records = raw.split('\0')
   if (records.pop() !== '' || records.length > inventoryLimits.records) fail('index-budget')
@@ -118,19 +127,21 @@ function loadIndex(root) {
     if (!match) fail('invalid-index')
     const [,mode,oid,stage,path] = match
     if ((!isCanonicalSourcePath(path) && !['.nvmrc', '.node-version'].includes(path)) || privateName.test(path)) { exclusions.privateOrNoncanonical++; continue }
-    if (!safeEvidence(path) && !safeConfigEvidence(path)) { exclusions.outsideSourceScope++; continue }
+    if (!eligible(path)) { exclusions.outsideSourceScope++; continue }
     if (stage !== '0') fail('unmerged-source')
+    modes.set(path, mode)
     if (!['100644','100755'].includes(mode)) { exclusions.nonregularIndex++; index.set(path, null); continue }
     index.set(path, oid)
   }
-  return { head, index, exclusions, indexRevision: hash(raw) }
+  return { head, index, modes, exclusions, indexRevision: hash(raw) }
 }
 
-function inspect(repo, ts) {
+function inspect(repo, ts, budget, observation) {
   const { root, checkoutId } = repo
-  const { head, index, exclusions, indexRevision } = loadIndex(root)
+  const { head, index, modes, exclusions, indexRevision } = loadIndex(root, budget)
+  observation.indexExclusions = exclusions
   const entries = [], routes = [], routeBindings = [], findings = [], evidence = new Map()
-  const names = new Map()
+  const names = new Map(), normalized = new Set()
   let totalBytes = 0, omittedFindings = 0
   function exactFile(path) {
     const candidate = confinedFile(root, join(root, path))
@@ -138,10 +149,12 @@ function inspect(repo, ts) {
     let parent = root
     for (const part of path.split('/')) {
       if (!names.has(parent)) {
+        budget.add('directories')
         const listing = new Map(), handle = opendirSync(parent)
         try {
           let item
           while ((item = handle.readSync())) {
+            budget.add('directoryEntries')
             if (listing.size >= 4000) fail('directory-budget')
             const key = item.name.toLowerCase()
             listing.set(key, listing.has(key) ? null : item.name)
@@ -158,24 +171,50 @@ function inspect(repo, ts) {
     if (findings.length >= inventoryLimits.findings) { omittedFindings += occurrences; return }
     findings.push({ state: 'unresolved', code, ...(path ? { path } : {}), ...(line ? { line } : {}), ...(occurrences > 1 ? { occurrences } : {}) })
   }
+  function fileBytes(file) {
+    budget.add('fileReads')
+    const size = lstatSync(file).size
+    if (size > inventoryLimits.sourceBytes) fail('linked-or-oversized-file')
+    budget.add('bytesRead', size)
+    const bytes = readBounded(file, size)
+    if (bytes.length !== size) fail('file-changed')
+    return bytes
+  }
   function read(path) {
     if (!index.get(path)) fail('module-unavailable')
     const file = exactFile(path)
     if (!file) fail('module-unavailable')
-    const bytes = readBounded(file, inventoryLimits.sourceBytes)
+    const bytes = fileBytes(file)
     if (!evidence.has(path)) totalBytes += bytes.length
     if ((!evidence.has(path) && evidence.size >= inventoryLimits.files) || totalBytes > inventoryLimits.totalBytes) fail('source-budget')
     const sha256 = hash(bytes)
     if (evidence.has(path) && evidence.get(path).sha256 !== sha256) fail('file-changed')
     const indexOid = index.get(path)
-    const blob = createHash(indexOid.length === 40 ? 'sha1' : 'sha256').update(`blob ${bytes.length}\0`).update(bytes).digest('hex')
+    const oidOf = data => createHash(indexOid.length === 40 ? 'sha1' : 'sha256').update(`blob ${data.length}\0`).update(data).digest('hex')
+    const blob = oidOf(bytes)
+    if (blob !== indexOid && bytes.includes('\r\n')) {
+      const lf = Buffer.from(bytes.toString('binary').replace(/\r\n/g, '\n'), 'binary')
+      if (oidOf(lf) === indexOid) normalized.add(path)
+    }
     evidence.set(path, { path, sha256, indexOid, matchesIndex: blob === indexOid })
     const source = utf8.decode(bytes)
     if (source.includes('\0')) fail('non-text-source')
     return source
   }
-  const pkg = JSON.parse(read('package.json'))
-  if (!(pkg?.dependencies?.vite || pkg?.devDependencies?.vite)) fail('unsupported-stack')
+  let pkg
+  if (index.has('package.json')) {
+    const manifest = read('package.json')
+    try { pkg = JSON.parse(manifest) } catch { fail('invalid-package-manifest') }
+  }
+  if (!(pkg?.dependencies?.vite || pkg?.devDependencies?.vite)) {
+    const declared = { ...pkg?.dependencies, ...pkg?.devDependencies }
+    const stack = ['next','nuxt','astro','@angular/core','svelte','vue','react'].find(name => Object.hasOwn(declared, name)) ?? 'unknown'
+    observation.capabilities = { stack, commit:head, indexRevision, eligibleTrackedCount:index.size,
+      available: ['tracked-index', ...(pkg ? ['package-manifest-digest'] : []), 'last-good-readback'],
+      missing: ['supported-entry-and-route-adapter', 'component-attribution-adapter'],
+      evidence: [...evidence.values()] }
+    fail('unsupported-stack')
+  }
   let alias = false
   if (index.has('tsconfig.json')) {
     const parsed = ts.parseConfigFileTextToJson('tsconfig.json', read('tsconfig.json'))
@@ -297,15 +336,86 @@ function inspect(repo, ts) {
   const configuration = inspectInventoryConfig({
     ts, hasTracked: path => index.has(path), read, evidenceFor: path => evidence.get(path), issue: unresolved,
   })
+  // Observe eligible staged, working and untracked paths independently of HEAD.
+  // Do not use git status or invoke checkout-provided clean/textconv filters.
+  function inputFor(paths) { return Buffer.from(paths.join('\0') + '\0') }
+  const staged = stagedSources(git(root, ['diff', '--cached', '--name-status', '-z', '--no-renames', '--no-ext-diff', '--no-textconv', head, '--'], {budget}), eligible)
+  const local = untrackedSources({root, index, eligible, budget,
+    safeDirectory: path => isCanonicalSourcePath(path) && !privateName.test(path),
+    ignored: paths => new Set(git(root, ['check-ignore', '-z', '--stdin'], {budget, allowOne:true, input:inputFor(paths)}).split('\0').filter(Boolean)) })
+  const fileMode = git(root, ['config', '--bool', '--get', 'core.filemode'], {budget, allowOne:true}).trim() !== 'false'
+  const unstaged = [], changedBytes = []
+  for (const [path, indexOid] of index) {
+    budget.check()
+    if (!indexOid) continue // index already counts nonregular entries as exclusions
+    const file = exactFile(path)
+    if (!file) {
+      // Only lstat a leaf if every ancestor still belongs to this checkout.
+      let parent = root, status = 'deleted'
+      for (const part of path.split('/')) {
+        parent = join(parent, part)
+        const entry = lstatSync(parent, {throwIfNoEntry:false})
+        if (!entry) break
+        if (entry.isSymbolicLink() || (!entry.isDirectory() && parent !== join(root,path))) { status = 'type-changed'; break }
+        if (parent === join(root,path)) status = 'unavailable'
+      }
+      unstaged.push({path, status})
+      unresolved('working-source-unavailable',path)
+      continue
+    }
+    if (!evidence.has(path)) read(path)
+    const modeChanged = fileMode && Boolean(lstatSync(file).mode & 0o100) !== (modes.get(path) === '100755')
+    if (!evidence.get(path).matchesIndex) changedBytes.push({path, modeChanged})
+    else if (modeChanged) unstaged.push({path, status:'mode-changed'})
+  }
+  if (changedBytes.length) {
+    // Compare common line ending conversions without executing repository filters.
+    const attrs = git(root, ['check-attr', '-z', '--stdin', 'text', 'eol', 'filter', 'working-tree-encoding', 'ident'],
+      {budget, input:inputFor(changedBytes.map(row => row.path))}).split('\0')
+    const byPath = new Map()
+    for (let i=0; i+2<attrs.length; i+=3) {
+      if (!byPath.has(attrs[i])) byPath.set(attrs[i],new Map())
+      byPath.get(attrs[i]).set(attrs[i+1],attrs[i+2])
+    }
+    const auto = git(root, ['config', '--get', 'core.autocrlf'], {budget, allowOne:true}).trim()
+    for (const {path,modeChanged} of changedBytes) {
+      const attr = byPath.get(path)
+      if (!attr) fail('unverified-working-source')
+      const active = key => !['unset','unspecified'].includes(attr.get(key))
+      if (['filter','working-tree-encoding','ident'].some(active)) {
+        unstaged.push({path, status:'working-bytes-differ-filter-unverified'})
+        continue
+      }
+      const eol = attr.get('text') !== 'unset' && (active('text') || active('eol') || ['true','input'].includes(auto))
+      if (!eol || !normalized.has(path)) unstaged.push({path, status:'modified'})
+      else if (modeChanged) unstaged.push({path, status:'mode-changed'})
+    }
+  }
+  function bounded(rows) { return { total:rows.length, rows:rows.slice(0,128), omitted:Math.max(0,rows.length-128) } }
+  unstaged.sort((a,b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0)
+  observation.workingState = { scope:'eligible-source-files', commit:head, indexRevision,
+    staged:bounded(staged), unstaged:bounded(unstaged), untracked:bounded(local.paths), exclusions:local.exclusions }
   const declaredRoutes = routes.filter(row => !duplicates.has(row.pattern))
   const proofs = [...evidence.values()].sort((a, b) => a.path.localeCompare(b.path))
   if (!validInventoryConfig(configuration, proofs) || !validComponentInventory(components, proofs, declaredRoutes)) fail('unverified-inventory-metadata')
+  if (findings.length) {
+    const missing = new Set()
+    for (const {code} of findings) {
+      if (/config|proxy|pin|dependency|manifest|firebase|emulator|build-target/.test(code)) missing.add('static-configuration-resolution')
+      if (/route|routing|entry|module-script|vite-input/.test(code)) missing.add('complete-entry-and-route-resolution')
+      if (/component|shell/.test(code)) missing.add('complete-component-attribution')
+      if (/working-source/.test(code)) missing.add('exact-working-source')
+    }
+    observation.capabilities = { stack:'vite', commit:head, indexRevision, eligibleTrackedCount:index.size,
+      available:['tracked-index','verified-source-digests','partial-declarations','last-good-readback'],
+      missing:[...missing].sort() }
+  }
   names.clear()
   for (const item of evidence.values()) {
     const target = exactFile(item.path)
-    if (!target || hash(readBounded(target, inventoryLimits.sourceBytes)) !== item.sha256) fail('file-changed')
+    if (!target || hash(fileBytes(target)) !== item.sha256) fail('file-changed')
   }
-  const finished = loadIndex(root)
+  const finished = loadIndex(root,budget)
   if (finished.head !== head || finished.indexRevision !== indexRevision) fail('index-changed')
   const report = { schemaVersion: 3, checkoutId, commit: head, indexRevision, supportedStack: 'vite', complete: !findings.length && !omittedFindings,
     entryPoints: entries, routes: declaredRoutes, components, configuration, findings, omittedFindings, exclusions, evidence: proofs }
@@ -313,38 +423,62 @@ function inspect(repo, ts) {
   return { ...report, revision: hash(JSON.stringify(report)) }
 }
 
-export function trackedInventory(root, action = 'scan') {
-  let lastGood = null
-  let dir, repo
+export function trackedInventory(root, action = 'scan', options = {}) {
+  let lastGood = null, baselineDigest = null, repo, budget
+  const observation = {}
   try {
-    if (!['scan', 'last-good'].includes(action)) fail('invalid-action')
+    if (!['scan', 'compare', 'last-good'].includes(action)) fail('invalid-action')
+    // Resolve the retained baseline even when a tiny rescan budget expires.
     repo = repository(root)
-    dir = join(repo.gitDir, 'systemx-repository-inventory')
-    if (action === 'scan') confinedDirectory(repo.gitDir, dir)
-    else if (!lstatSync(dir, { throwIfNoEntry: false })) return { status: 'empty', checkoutId: repo.checkoutId, lastGood: null }
-    if (realpathSync(dir) !== dir) fail('linked-state-directory')
+    const dir = join(repo.gitDir, 'systemx-repository-inventory')
     const cache = join(dir, cacheFile)
-    if (lstatSync(cache, { throwIfNoEntry: false })) {
-      const value = JSON.parse(utf8.decode(readBounded(cache, inventoryLimits.stateBytes)))
+    function readCache() {
+      const info = lstatSync(dir, {throwIfNoEntry:false})
+      if (!info) return null
+      if (!info.isDirectory() || info.isSymbolicLink() || realpathSync(dir) !== dir) fail('linked-state-directory')
+      return lstatSync(cache, {throwIfNoEntry:false}) ? readBounded(cache,inventoryLimits.stateBytes) : null
+    }
+    const retained = readCache()
+    if (retained) {
+      const value = JSON.parse(utf8.decode(retained))
       if (!validSnapshot(value, repo.checkoutId)) fail('invalid-retained-inventory')
       lastGood = value
+      baselineDigest = hash(retained)
     }
     if (action === 'last-good') return { status: lastGood ? 'retained' : 'empty', checkoutId: repo.checkoutId, lastGood,
       ...(lastGood && lastGood.schemaVersion < 3 ? { missingCoverage: lastGood.schemaVersion === 1
         ? ['component-exports', 'shared-shell-sources', 'configuration'] : ['configuration'] } : {}) }
-    const inventory = inspect(repo, require('typescript'))
-    if (!inventory.complete) return { status: 'incomplete', inventory, lastGoodRevision: lastGood?.revision ?? null, lastGoodSchemaVersion: lastGood?.schemaVersion ?? null }
+    budget = workBudget(options.elapsedMs)
+    const inventory = inspect(repo, require('typescript'), budget, observation)
+    budget.check()
+    const comparison = compareInventories(lastGood,inventory)
+    const result = { inventory, comparison, ...observation, lastGoodRevision:lastGood?.revision ?? null, lastGoodSchemaVersion:lastGood?.schemaVersion ?? null }
+    budget.check()
+    if (!inventory.complete) return {status:'incomplete', ...result, work:budget.report()}
+    if (!validSnapshot(inventory,repo.checkoutId)) fail('unverified-inventory-metadata')
+    if (action === 'compare') return {status:'compared', ...result, work:budget.report()}
     const data = JSON.stringify(inventory) + '\n'
     if (Buffer.byteLength(data) > inventoryLimits.stateBytes) fail('snapshot-budget')
-    const temp = join(dir, `${randomUUID()}.tmp`)
-    const fd = openSync(temp, 'wx', 0o600)
+    confinedDirectory(repo.gitDir,dir)
+    // Serialize the short publication step so a concurrent accepted scan cannot
+    // silently replace the exact baseline used for this comparison.
+    const lock = join(dir, 'accept.lock')
+    let lockFd
+    try { lockFd = openSync(lock, 'wx', 0o600) } catch (error) { if (error.code === 'EEXIST') fail('accept-in-progress'); throw error }
     try {
-      try { writeFileSync(fd, data); fsyncSync(fd) } finally { closeSync(fd) }
-      renameSync(temp, cache)
-    } finally { try { unlinkSync(temp) } catch (error) { if (error.code !== 'ENOENT') throw error } }
-    return { status: 'accepted', inventory, lastGoodRevision: inventory.revision }
+      const current = readCache()
+      if ((current ? hash(current) : null) !== baselineDigest) fail('baseline-changed')
+      const temp = join(dir, `${randomUUID()}.tmp`)
+      const fd = openSync(temp, 'wx', 0o600)
+      try {
+        try { writeFileSync(fd, data); fsyncSync(fd) } finally { closeSync(fd) }
+        budget.check()
+        renameSync(temp,cache)
+      } finally { try { unlinkSync(temp) } catch (error) { if (error.code !== 'ENOENT') throw error } }
+    } finally { closeSync(lockFd); unlinkSync(lock) }
+    return { ...result, status:'accepted', lastGoodRevision:inventory.revision, lastGoodSchemaVersion:inventory.schemaVersion, work:budget.report() }
   } catch (error) {
     return { status: 'refused', code: error.inventoryCode ?? (error.code === 'MODULE_NOT_FOUND' ? 'parser-unavailable' : 'inventory-unavailable'),
-      checkoutId: repo?.checkoutId ?? null, lastGoodRevision: lastGood?.revision ?? null }
+      checkoutId: repo?.checkoutId ?? null, lastGoodRevision: lastGood?.revision ?? null, ...observation, ...(budget ? {work:budget.report()} : {}) }
   }
 }
