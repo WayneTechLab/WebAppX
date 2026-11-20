@@ -36,9 +36,9 @@ async function withInspector(run, override = () => undefined) {
   let workspace = WORKSPACE, accepted = false
   const calls = []
   const success = (version, requestId, result) => ({ apiVersion: version, requestId, ok: true, result })
-  const api = async (path, envelope) => {
+  const api = async (path, envelope, options) => {
     calls.push({ path, envelope: envelope && structuredClone(envelope) })
-    const custom = override(path, envelope, success)
+    const custom = override(path, envelope, success, options)
     if (custom !== undefined) return custom
     if (path.startsWith('/api/contracts/discovery')) {
       const clientVersion = new URL(path, 'http://fixture.invalid').searchParams.get('clientVersion')
@@ -103,6 +103,10 @@ test('an isolated migration result cannot overwrite a newer import draft and rem
     ui.change('graph-migration-confirmation', 'MIGRATE GRAPH COPY')
     const apply = ui.click('graph-migration-apply')
     await until(() => ui.calls.some(call => call.envelope?.operation === 'graph.migrationApply'))
+    assert.equal(ui.element('graph-document-select').disabled, true)
+    const callCount = ui.calls.length
+    ui.change('graph-document-select', 'doc_fixture', 'change')
+    assert.equal(ui.calls.length, callCount)
     ui.change('graph-import-json', 'newer unsaved graph draft')
     ui.change('graph-identity-id', 'doc_newer')
     const request = ui.calls.at(-1).envelope
@@ -173,4 +177,68 @@ test('editing a reopen input during initial status loading prevents the older ex
     assert.equal(ui.calls.filter(call => call.envelope?.operation === 'graph.reopen').length, 0)
     assert.match(ui.element('graph-contract-status').textContent, /input changed/i)
   }, (_path, envelope) => envelope?.operation === 'graph.status' ? pending.promise : undefined)
+})
+
+test('a newer document selection owns the accepted view, error, picker and mutation lock even if the adapter ignores abort', async () => {
+  const reads = []
+  const snapshots = new Map(['docA', 'docB'].map((id, i) => {
+    const value = snapshot()
+    value.document.documentId = id
+    value.revision = value.stats.revision = String(i + 1).repeat(64)
+    return [id, value]
+  }))
+  const documents = [...snapshots].map(([documentId, value]) => ({ documentId, revision: value.revision, sourceRevision: null, stats: value.stats }))
+  await withInspector(async ui => {
+    const choose = id => ui.change('graph-document-select', id, 'change')
+    const accepted = () => JSON.parse(ui.element('graph-accepted-result').textContent)
+    const mutation = ui.element('graph-accept')
+    await ui.click('graph-refresh')
+    choose('docB')
+    reads[0].respond()
+    await until(() => !mutation.disabled)
+    const baseline = accepted()
+    assert.equal(baseline.documentId, 'docB')
+    ui.change('graph-import-json', 'my unsaved draft')
+
+    choose('docA')
+    choose('docB')
+    assert.equal(reads[1].signal.aborted, true)
+    assert.equal(reads[2].signal.aborted, false)
+    reads[1].respond() // Deliberately deliver a valid old answer while B is pending.
+    await new Promise(resolve => setImmediate(resolve))
+    assert.equal(ui.element('graph-document-select').disabled, false)
+    assert.equal(ui.element('graph-document-select').value, 'docB')
+    assert.equal(mutation.disabled, true)
+    assert.deepEqual(accepted(), baseline)
+    const draft = ui.element('graph-import-json').value
+    reads[2].respond('docA') // Current response has the wrong document.
+    await until(() => !mutation.disabled)
+    assert.deepEqual(accepted(), baseline)
+    assert.match(ui.element('graph-contract-status').textContent, /previous view was kept/)
+    assert.equal(ui.element('graph-document-select').value, 'docB')
+
+    choose('docB')
+    choose('docA')
+    reads[4].respond()
+    await until(() => !mutation.disabled)
+    const evidence = ui.element('contract-evidence').textContent
+    assert.equal(accepted().documentId, 'docA')
+    reads[3].respond() // Older result settles after the successful new result.
+    await new Promise(resolve => setImmediate(resolve))
+    assert.equal(accepted().documentId, 'docA')
+    assert.equal(ui.element('graph-document-select').value, 'docA')
+    assert.equal(ui.element('contract-evidence').textContent, evidence)
+    assert.equal(ui.element('graph-import-json').value, draft)
+
+    choose('docB')
+    ui.controller.destroy()
+    assert.equal(reads[5].signal.aborted, true)
+    reads[5].respond()
+  }, (path, envelope, success, { signal }) => {
+    if (envelope?.operation === 'graph.status') return success(envelope.apiVersion, envelope.requestId, { workspaceId: WORKSPACE, documents })
+    if (envelope?.operation !== 'graph.document') return
+    const pending = deferred()
+    reads.push({ signal, respond: (id = envelope.payload.documentId) => pending.resolve(success(envelope.apiVersion, envelope.requestId, snapshots.get(id))) })
+    return pending.promise
+  })
 })
