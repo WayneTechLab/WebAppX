@@ -54,7 +54,7 @@ if (action === 'sessions') {
   const { createSessionTable, parseSessionTableArgs } = await import('./session-table.mjs')
   let table
   try { table = createSessionTable({ repoRoot, workspaces: parseSessionTableArgs(process.argv.slice(3)) }) }
-  catch { await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs sessions [--workspace DIRECTORY ...] (up to 12 workspaces). Choose existing project directories.\n', 2) }
+  catch { await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs sessions [--workspace DIRECTORY ...] The current workspace is included automatically. Add up to 11 distinct existing project directories.\n', 2) }
   await writeJsonAndExit(table, 0)
 }
 
