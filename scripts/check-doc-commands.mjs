@@ -8,6 +8,8 @@ import { assertPublicData, parsePublicJson, readPublicText } from './package-scr
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 export const docCommandLimits = Object.freeze({ documents: 500, characters: 10_000_000, references: 20_000, contexts: 300 })
+// On disk we stream one bounded Markdown file at a time, including the generated LAN catalog.
+const maintainedCharacterLimit = 32_000_000
 export const documentationScope = Object.freeze(['README.md', 'docs/**/*.md', 'wiki/**/*.md', '.SYSTEMX/Template/starter/README.md'])
 const contextsAllowed = ['root', 'starter', 'functions']
 const prefixContexts = new Map([['.', 'root'], ['./', 'root'], ['.SYSTEMX/Template/starter', 'starter'], ['./.SYSTEMX/Template/starter', 'starter'], ['integrations/gusto/functions', 'functions'], ['./integrations/gusto/functions', 'functions']])
@@ -173,6 +175,12 @@ function validateDocuments(documents) {
 
 export function buildDocCommandReport({ documents, manifests, contexts = [] }) {
   validateDocuments(documents)
+  const report = createReportCollector(manifests, contexts)
+  for (const document of documents) report.inspect(document)
+  return report.finish()
+}
+
+function createReportCollector(manifests, contexts) {
   assertPublicData(manifests); assertPublicData(contexts)
   if (!Array.isArray(contexts) || contexts.length > docCommandLimits.contexts || !plain(manifests) || !contextsAllowed.every(context => plain(manifests[context]?.scripts))) invalid()
   for (const context of contextsAllowed) {
@@ -188,7 +196,7 @@ export function buildDocCommandReport({ documents, manifests, contexts = [] }) {
     overrides.set(identity(row), row)
   }
   const references = [], errors = []
-  for (const document of documents) {
+  function inspect(document) {
     if (documentPaths.has(document.path.toLowerCase())) invalid()
     documentPaths.add(document.path.toLowerCase())
     for (const reference of scanMarkdownCommands(document)) {
@@ -197,18 +205,21 @@ export function buildDocCommandReport({ documents, manifests, contexts = [] }) {
       if (override && override.script === reference.script) { context = override.context; used.add(identity(reference)) }
       const { invalid: unsupported, ...safe } = reference
       const result = { ...safe, context, ...(context === 'placeholder' ? { kind: 'placeholder' } : {}) }
+      if (references.length >= docCommandLimits.references) invalid()
       references.push(result)
       if (reference.kind !== 'script') continue
       const reason = unsupported ? 'unsupported-command-form' : !context ? 'unresolved-package-context' : ['historical', 'placeholder'].includes(context) ? null : !Object.hasOwn(manifests[context].scripts, reference.script) ? 'unknown-npm-script' : null
       if (reason) errors.push({ path: reference.path, line: reference.line, column: reference.column, script: reference.script, context, reason })
     }
   }
-  if (references.length > docCommandLimits.references) invalid()
-  for (const [key, row] of overrides) if (!used.has(key)) errors.push({ path: row.path, line: row.line, column: row.column, script: row.script, context: row.context, reason: 'stale-context-record' })
-  return { schemaVersion: 1, ok: !errors.length, documentCount: documents.length, referenceCount: references.length, references, errors, scope: [...documentationScope], limitation: 'Public Markdown and reviewed manifests only. Examples are parsed as data; no command, environment expansion or shell was executed.' }
+  function finish() {
+    for (const [key, row] of overrides) if (!used.has(key)) errors.push({ path: row.path, line: row.line, column: row.column, script: row.script, context: row.context, reason: 'stale-context-record' })
+    return { schemaVersion: 1, ok: !errors.length, documentCount: documentPaths.size, referenceCount: references.length, references, errors, scope: [...documentationScope], limitation: 'Public Markdown and reviewed manifests only. Examples are parsed as data; no command, environment expansion or shell was executed.' }
+  }
+  return { inspect, finish }
 }
 
-async function maintainedDocuments(root) {
+async function maintainedPaths(root) {
   const paths = ['README.md', '.SYSTEMX/Template/starter/README.md'], folded = new Set(paths.map(path => path.toLowerCase()))
   async function walk(relative) {
     const directory = await lstat(resolve(root, relative))
@@ -225,23 +236,24 @@ async function maintainedDocuments(root) {
     }
   }
   await walk('docs'); await walk('wiki')
-  const documents = []; let characters = 0
-  for (const path of paths.sort()) {
-    const text = await readPublicText(root, path)
-    characters += text.length
-    if (characters > docCommandLimits.characters) invalid()
-    documents.push({ path, text, defaultContext: path === '.SYSTEMX/Template/starter/README.md' ? 'starter' : 'root' })
-  }
-  return documents
+  return paths.sort()
 }
 
 export async function checkDocumentationCommands(root = repository) {
-  const [documents, rootManifest, starter, functions, contextText] = await Promise.all([
-    maintainedDocuments(root), readPublicText(root, 'package.json'), readPublicText(root, '.SYSTEMX/Template/starter/package.json'), readPublicText(root, 'integrations/gusto/functions/package.json'), readPublicText(root, 'scripts/doc-command-contexts.json'),
+  const [paths, rootManifest, starter, functions, contextText] = await Promise.all([
+    maintainedPaths(root), readPublicText(root, 'package.json'), readPublicText(root, '.SYSTEMX/Template/starter/package.json'), readPublicText(root, 'integrations/gusto/functions/package.json'), readPublicText(root, 'scripts/doc-command-contexts.json'),
   ])
   const metadata = parsePublicJson(contextText)
   if (!exact(metadata, ['schemaVersion', 'contexts']) || metadata.schemaVersion !== 1) invalid()
-  return buildDocCommandReport({ documents, manifests: { root: parsePublicJson(rootManifest), starter: parsePublicJson(starter), functions: parsePublicJson(functions) }, contexts: metadata.contexts })
+  const report = createReportCollector({ root: parsePublicJson(rootManifest), starter: parsePublicJson(starter), functions: parsePublicJson(functions) }, metadata.contexts)
+  let characters = 0
+  for (const path of paths) {
+    const text = await readPublicText(root, path)
+    characters += text.length
+    if (characters > maintainedCharacterLimit) invalid()
+    report.inspect({ path, text, defaultContext: path === '.SYSTEMX/Template/starter/README.md' ? 'starter' : 'root' })
+  }
+  return report.finish()
 }
 
 export async function runDocCommandsCli(args = process.argv.slice(2), { root = repository, stdout = process.stdout, stderr = process.stderr } = {}) {

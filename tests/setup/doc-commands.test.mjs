@@ -165,6 +165,21 @@ test('actual reader and CLI inspect maintained scope without reading private sta
   for (const [name, value] of Object.entries(files)) assert.equal(await readFile(join(root, name), 'utf8'), value)
 })
 
+test('the maintained reader checks the full catalog across the in-memory corpus boundary', async t => {
+  const { root } = await fixture(t)
+  const chapter = ' '.repeat(1_999_940)
+  for (let index = 0; index < 6; index++) {
+    const command = index === 5 ? 'npm run final-typo' : 'npm run test'
+    await writeFile(join(root, 'docs', `chapter-${index}.md`), `${chapter}\n\`${command}\`\n`)
+  }
+  const actual = await checkDocumentationCommands(root)
+  assert.equal(actual.documentCount, 10)
+  assert.equal(actual.referenceCount, 10)
+  assert.deepEqual(actual.errors.map(row => [row.path, row.script, row.reason]), [
+    ['docs/chapter-5.md', 'final-typo', 'unknown-npm-script'],
+  ])
+})
+
 test('CLI rejects unknown names and invalid flags with bounded diagnostics excluding arguments', async t => {
   const { root } = await fixture(t)
   await writeFile(join(root, 'docs/guide.md'), '`npm run typo -- PRIVATE_ARG`')
