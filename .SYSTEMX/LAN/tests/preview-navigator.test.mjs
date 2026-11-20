@@ -1,3 +1,4 @@
+import './preview-navigator-expansion.test.mjs'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { previewNavigatorLimits, collectPreviewHierarchy, projectPreviewRows, ancestorPreviewEntries, isCurrentPreviewElement } from '../Website/preview-navigator.js'
@@ -174,4 +175,106 @@ test('declared cross-origin and opaque frame boundaries exclude contents before 
     assert.equal(read, 0)
     assert.equal(collectPreviewHierarchy(frame).entries.length, 1)
   }
+})
+
+test('comparison tracks DOM identity across repeated labels, moving parents and replacement without reading private fields', async () => {
+  const { createHierarchySampler, compareHierarchySamples } = await import('../Website/preview-navigator-comparison.js')
+  const first = node('span'), second = node('span'), oldField = node('input', { value: 'private' })
+  const left = node('section', { id: 'left' }, [first, second, oldField])
+  const right = node('section', { id: 'right' })
+  const root = node('body', {}, [left, right])
+  const sampler = createHierarchySampler()
+  const before = sampler.capture(collectPreviewHierarchy(root))
+  // The first span stays in place. The second moves. An identical-looking
+  // input replaces the old element and gets its own ephemeral handle.
+  left.children = [first, node('input', { value: 'private again' })]
+  right.children = [second]
+  const after = sampler.capture(collectPreviewHierarchy(root))
+  const diff = compareHierarchySamples(before, after)
+  assert.deepEqual(diff.counts, { added: 1, removed: 1, reparented: 1, 'first-seen': 0, 'last-seen': 0 })
+  const moved = diff.changes.find(change => change.kind === 'reparented')
+  assert.equal(moved.node.label, 'span')
+  assert.equal(moved.from.label, 'section#left')
+  assert.equal(moved.to.label, 'section#right')
+  assert.deepEqual(before.records.filter(record => record.label === 'span').map(record => record.parent), [moved.from.id, moved.from.id])
+  assert.equal(Object.isFrozen(before.records[0]), true)
+  assert.ok(!JSON.stringify(diff).includes('private'))
+})
+
+test('comparison bounds presentation and reports uncertain membership for the incomplete direction only', async () => {
+  const { createHierarchySampler, compareHierarchySamples } = await import('../Website/preview-navigator-comparison.js')
+  const root = node('body', {}, Array.from({ length: 145 }, () => node('li')))
+  const sampler = createHierarchySampler()
+  const full = sampler.capture(collectPreviewHierarchy(root))
+  const partial = sampler.capture(collectPreviewHierarchy(root, limits({ nodes: 2 })))
+  const seen = compareHierarchySamples(partial, full)
+  assert.equal(seen.counts['first-seen'], 144)
+  assert.equal(seen.counts.added, 0)
+  assert.equal(seen.changes.length, 120)
+  assert.equal(seen.total, 144)
+  const lost = compareHierarchySamples(full, partial)
+  assert.equal(lost.counts['last-seen'], 144)
+  assert.equal(lost.counts.removed, 0)
+  // Long authored labels alone do not hide nodes from discovery.
+  root.children = [node('span', { id: 'x'.repeat(550) })]
+  const shortened = sampler.capture(collectPreviewHierarchy(root))
+  assert.equal(shortened.partial, false)
+  assert.equal(compareHierarchySamples(full, shortened).counts.removed, 145)
+})
+
+test('comparison refuses another scope, replaced document, foreign handle series and detached roots', async () => {
+  const { createHierarchySampler, compareHierarchySamples } = await import('../Website/preview-navigator-comparison.js')
+  const frame = node('iframe')
+  const root = node('body', {}, [frame])
+  const sampler = createHierarchySampler()
+  const top = collectPreviewHierarchy(root)
+  const original = sampler.capture(top)
+  assert.equal(sampler.sameScope(original, top), true)
+  assert.equal(compareHierarchySamples(original, createHierarchySampler().capture(top)), null)
+  assert.equal(compareHierarchySamples(original, sampler.capture(collectPreviewHierarchy(frame))), null)
+  root.ownerDocument = {}
+  assert.equal(sampler.sameScope(original, collectPreviewHierarchy(root)), false)
+  assert.equal(compareHierarchySamples(original, sampler.capture(collectPreviewHierarchy(root))), null)
+  root.isConnected = false
+  assert.equal(sampler.capture(collectPreviewHierarchy(root)), null)
+})
+
+test('virtual windows count nearest mounted items independently and retain unknown or conflicting logical totals', async () => {
+  const { virtualCoverage } = await import('../Website/preview-navigator-inspection.js')
+  const child = node('ul', { id: 'nested', 'data-systemx-virtualized': 'true' }, [node('li')])
+  const list = node('ol', { id: 'window' }, [
+    node('li', { 'aria-setsize': '500', 'aria-posinset': '31' }, [child]),
+    node('li', { 'aria-setsize': '500', 'aria-posinset': '32' }),
+  ])
+  const grid = node('div', { role: 'grid', 'aria-rowcount': '800' }, [node('div', { role: 'rowgroup' }, [node('div', { role: 'row', 'aria-rowindex': '14' })])])
+  const wrong = node('ul', { id: 'invalid' }, [
+    node('li', { 'aria-setsize': '16', 'aria-posinset': '4' }),
+    node('li', { 'aria-setsize': '15', 'aria-posinset': '4' }),
+  ])
+  const normal = node('ol', {}, [node('li')])
+  const root = node('body', {}, [list, grid, wrong, normal])
+  const view = virtualCoverage(collectPreviewHierarchy(root))
+  assert.deepEqual(view.map(({ total, mounted, positioned, inconsistent }) => [total, mounted, positioned, inconsistent]), [
+    [500, 2, 2, false], [null, 1, 0, false], [800, 1, 1, false], [null, 2, 1, true],
+  ])
+  const limited = collectPreviewHierarchy(root, limits({ nodes: 3 }))
+  assert.equal(limited.rangeLimited, true)
+  assert.equal(virtualCoverage(limited)[0].mounted, 1)
+})
+
+test('grouping requires a current definition-matched declaration, retaining DOM order and repeated instance labels', async () => {
+  const { componentGroups } = await import('../Website/preview-navigator-inspection.js')
+  const first = node('article', { 'data-systemx-component': 'Card' })
+  const unmapped = node('article', { 'data-systemx-component': 'Card' })
+  const wrongName = node('article', { 'data-systemx-component': 'Other' })
+  const second = node('article', { 'data-systemx-component': 'Card' })
+  const root = node('body', {}, [second, wrongName, first, unmapped])
+  const snapshot = collectPreviewHierarchy(root)
+  const definition = { name: 'Card', sourcePath: 'src/Card.tsx' }
+  const common = { workspaceId: 'local', documentId: 'document', definition }
+  const identities = new Map([[first, { ...common, key: 'first' }], [second, { ...common, key: 'second' }], [wrongName, common]])
+  const [group] = componentGroups(snapshot, identities)
+  assert.deepEqual(group.instances.map(instance => instance.key), ['second', 'first'])
+  assert.deepEqual(root.children, [second, wrongName, first, unmapped])
+  assert.deepEqual(componentGroups(snapshot, new Map()), [])
 })

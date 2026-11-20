@@ -3364,6 +3364,9 @@ code,
 }
 
 .navigator-search-label { display: block; margin: 10px 0 5px; font-size: 11px; font-weight: 800; }
+.navigator-inspection { min-width: 0; overflow-wrap: anywhere; }
+.navigator-inspection [data-nav-instance] { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin-block: 6px; }
+.navigator-inspection [data-nav-instance] span { flex: 1 0 100%; }
 .navigator-filters label { display: grid; gap: 3px; margin-block: 6px; }
 .navigator-filters select { width: 100%; min-width: 0; }
 .navigator-search { width: 100%; min-width: 0; }

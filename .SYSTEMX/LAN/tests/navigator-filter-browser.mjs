@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { parseSourceIdentity } from '../Builder/source-identity-adapter.mjs'
 import { buildOwnership } from '../Builder/source-ownership.mjs'
+import { checkNavigatorInspection, inspectionSource } from './navigator-inspection-browser.mjs'
 
 const sourcePath = 'src/pages/HomePage.tsx'
 const revision = value => createHash('sha256').update(value).digest('hex')
@@ -75,14 +76,15 @@ export async function checkMappingFilters(page, frame, expect) {
   assert.equal(liveStatus.status(), 200)
   const { workspaceId } = (await liveStatus.json()).repository
   assert.match(workspaceId, /^[0-9a-f]{64}$/)
-  // Only these two GETs receive fixture responses, in this isolated page. Build
+  // These GETs supply local identity fixtures in this isolated page. Build
   // real adapter/ownership envelopes without installing a map or writing a file.
   const content = 'export default function HomePage(){return <section><h2 data-systemx-id="nav-proof-heading">Heading</h2><div data-systemx-id="nav-proof-readonly"><span>Child</span></div></section>}'
-  const sourceRevision = revision(content)
-  const { map } = parseSourceIdentity({ path: sourcePath, content, sourceRevision, workspaceId, route: '/' })
+  const fixtureSource = content + '\n' + inspectionSource
+  const sourceRevision = revision(fixtureSource)
+  const { map } = parseSourceIdentity({ path: sourcePath, content: fixtureSource, sourceRevision, workspaceId, route: '/' })
   const docUrl = base + '/api/identity/document?documentId=' + map.documentId
   const current = buildOwnership(map, { currentRevision: sourceRevision })
-  const older = buildOwnership(map, { currentRevision: revision(content + ' changed') })
+  const older = buildOwnership(map, { currentRevision: revision(fixtureSource + ' changed') })
   const owner = anchor => current.objects.find(row => row.nodeId === map.nodes.find(node => node.anchor === anchor).id)
   assert.deepEqual(owner('nav-proof-heading').supportedOperations, ['literal'])
   assert.equal(owner('nav-proof-readonly').status, 'mapped')
@@ -92,7 +94,7 @@ export async function checkMappingFilters(page, frame, expect) {
     assert.equal(route.request().method(), 'GET')
     const isStatus = route.request().url() === statusUrl
     await route.fulfill({ json: isStatus ? { workspaceId, documents: [{ sourcePath, documentId: map.documentId }] }
-      : { workspaceId, map, stale, currentRevision: stale ? revision(content + ' changed') : sourceRevision,
+      : { workspaceId, map, stale, currentRevision: stale ? revision(fixtureSource + ' changed') : sourceRevision,
         ownership: stale ? older : current, retiredOwnershipClaims: [] } })
   }
   const matchesDoc = url => url.href === docUrl
@@ -153,15 +155,20 @@ export async function checkMappingFilters(page, frame, expect) {
     await expect(tree).toContainText('sx-map-fixture-mapped')
     await frame.evaluate(() => document.getElementById('sx-map-fixture-duplicate').remove())
     await expect(tree).not.toContainText('sx-map-fixture-mapped')
+    await group.locator('[data-nav-clear-filters]').click()
+    await search.fill('')
+    const inspection = await checkNavigatorInspection(page, frame, expect, map, draft)
     stale = true
     await refresh.click()
     await expect(identityStatus).toContainText('stale')
+    await search.fill('sx-map-fixture-')
     await mapping.selectOption('stale')
     await expect(tree).toContainText('sx-map-fixture-mapped')
     await expect(tree).toContainText('sx-map-fixture-readonly')
     await expect(tree).not.toContainText('sx-map-fixture-unmapped')
     await expect(editor).toHaveValue(draft)
     await expect(tree).not.toContainText('PRIVATE_NAVIGATOR_UNSAVED_DRAFT')
+    return inspection
   } finally {
     await page.unroute(statusUrl, handler)
     await page.unroute(matchesDoc, handler)
