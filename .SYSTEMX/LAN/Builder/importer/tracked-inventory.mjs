@@ -8,6 +8,7 @@ import { isCanonicalSourcePath } from '../source-policy.mjs'
 import { readModuleScripts } from './inventory-html.mjs'
 import { readViteInputs } from './inventory-vite.mjs'
 import { inspectDeclaredRoutes, publicPattern } from './declared-routes.mjs'
+import { inspectComponents, validComponentInventory } from './component-inventory.mjs'
 
 const require = createRequire(import.meta.url)
 export const inventoryLimits = Object.freeze({ indexBytes: 4_000_000, records: 16_000, sourceBytes: 256_000, totalBytes: 3_000_000, files: 160, routes: 300, findings: 100, stateBytes: 750_000 })
@@ -30,7 +31,8 @@ function validSnapshot(value, checkoutId) {
   const line = number => Number.isInteger(number) && number > 0 && number <= inventoryLimits.sourceBytes
   const rows = (list, max, verify) => Array.isArray(list) && list.length <= max && list.every(verify)
   const exportKeys = ['schemaVersion','checkoutId','commit','indexRevision','supportedStack','complete','entryPoints','routes','findings','omittedFindings','exclusions','evidence','revision']
-  if (!keys(value, exportKeys) || value.schemaVersion !== 1 || value.checkoutId !== checkoutId || !oid(value.commit)
+  if (value?.schemaVersion === 2) exportKeys.push('components')
+  if (!keys(value, exportKeys) || ![1, 2].includes(value.schemaVersion) || value.checkoutId !== checkoutId || !oid(value.commit)
     || !digest(value.indexRevision) || value.supportedStack !== 'vite' || value.complete !== true || value.omittedFindings !== 0
     || !Array.isArray(value.findings) || value.findings.length !== 0 || !digest(value.revision)) return false
   const provenance = entry => keys(entry, ['state','source','declaredIn','line'])
@@ -39,6 +41,7 @@ function validSnapshot(value, checkoutId) {
     || (keys(e, ['state','source','basis']) && e.state === 'inferred' && e.basis === 'vite-entry-convention' && entryCandidates.includes(e.source)))) return false
   if (!rows(value.routes, inventoryLimits.routes, r => keys(r, ['state','pattern','source','declaredIn','line']) && r.state === 'explicit' && publicPattern(r.pattern) && safeModule(r.source) && safeModule(r.declaredIn) && line(r.line))) return false
   if (!rows(value.evidence, inventoryLimits.files, e => keys(e, ['path','sha256','indexOid','matchesIndex']) && safeEvidence(e.path) && digest(e.sha256) && oid(e.indexOid) && typeof e.matchesIndex === 'boolean')) return false
+  if (value.schemaVersion === 2 && !validComponentInventory(value.components, value.evidence, value.routes)) return false
   if (!keys(value.exclusions, ['outsideSourceScope','privateOrNoncanonical','nonregularIndex']) || Object.values(value.exclusions).some(n => !Number.isInteger(n) || n < 0 || n > inventoryLimits.records)) return false
   const { revision, ...report } = value
   return revision === hash(JSON.stringify(report))
@@ -122,7 +125,7 @@ function loadIndex(root) {
 function inspect(repo, ts) {
   const { root, checkoutId } = repo
   const { head, index, exclusions, indexRevision } = loadIndex(root)
-  const entries = [], routes = [], findings = [], evidence = new Map()
+  const entries = [], routes = [], routeBindings = [], findings = [], evidence = new Map()
   const names = new Map()
   let totalBytes = 0, omittedFindings = 0
   function exactFile(path) {
@@ -147,9 +150,9 @@ function inspect(repo, ts) {
     }
     return candidate
   }
-  function unresolved(code, path, line) {
-    if (findings.length >= inventoryLimits.findings) { omittedFindings++; return }
-    findings.push({ state: 'unresolved', code, ...(path ? { path } : {}), ...(line ? { line } : {}) })
+  function unresolved(code, path, line, occurrences = 1) {
+    if (findings.length >= inventoryLimits.findings) { omittedFindings += occurrences; return }
+    findings.push({ state: 'unresolved', code, ...(path ? { path } : {}), ...(line ? { line } : {}), ...(occurrences > 1 ? { occurrences } : {}) })
   }
   function read(path) {
     if (!index.get(path)) fail('module-unavailable')
@@ -157,7 +160,7 @@ function inspect(repo, ts) {
     if (!file) fail('module-unavailable')
     const bytes = readBounded(file, inventoryLimits.sourceBytes)
     if (!evidence.has(path)) totalBytes += bytes.length
-    if (evidence.size >= inventoryLimits.files || totalBytes > inventoryLimits.totalBytes) fail('source-budget')
+    if ((!evidence.has(path) && evidence.size >= inventoryLimits.files) || totalBytes > inventoryLimits.totalBytes) fail('source-budget')
     const sha256 = hash(bytes)
     if (evidence.has(path) && evidence.get(path).sha256 !== sha256) fail('file-changed')
     const indexOid = index.get(path)
@@ -245,6 +248,7 @@ function inspect(repo, ts) {
         if (!evidence.has(row.source)) read(row.source)
         seenRoutes.set(row.pattern, true)
         routes.push({ state: 'explicit', pattern: row.pattern, source: row.source, declaredIn: path, line: row.line })
+        routeBindings.push({ ...row, declaredIn: path })
       },
     })
     if (parsed?.recognized) { recognized = true; return }
@@ -279,6 +283,13 @@ function inspect(repo, ts) {
   }
   for (const entry of entries) inspectModule(entry.source, 0)
   if (!recognized) unresolved('no-supported-route-declarations')
+  const componentSources = new Set([...index.keys()].filter(path => safeModule(path) && /\.[jt]sx$/.test(path)))
+  for (const path of [...visited, ...routes.map(row => row.source)]) componentSources.add(path)
+  const components = inspectComponents({
+    ts, sources: componentSources, entryPoints: entries, routes: routeBindings.filter(row => !duplicates.has(row.pattern)),
+    read: path => index.get(path) && exactFile(path) ? read(path) : null,
+    resolveImport: resolveModule, revisionOf: path => evidence.get(path).sha256, unresolved,
+  })
   names.clear()
   for (const item of evidence.values()) {
     const target = exactFile(item.path)
@@ -286,8 +297,9 @@ function inspect(repo, ts) {
   }
   const finished = loadIndex(root)
   if (finished.head !== head || finished.indexRevision !== indexRevision) fail('index-changed')
-  const report = { schemaVersion: 1, checkoutId, commit: head, indexRevision, supportedStack: 'vite', complete: !findings.length && !omittedFindings,
-    entryPoints: entries, routes: routes.filter(row => !duplicates.has(row.pattern)), findings, omittedFindings, exclusions, evidence: [...evidence.values()].sort((a,b) => a.path.localeCompare(b.path)) }
+  const report = { schemaVersion: 2, checkoutId, commit: head, indexRevision, supportedStack: 'vite', complete: !findings.length && !omittedFindings,
+    entryPoints: entries, routes: routes.filter(row => !duplicates.has(row.pattern)), components, findings, omittedFindings, exclusions, evidence: [...evidence.values()].sort((a,b) => a.path.localeCompare(b.path)) }
+  if (Buffer.byteLength(JSON.stringify(report)) + 100 > inventoryLimits.stateBytes) fail('snapshot-budget')
   return { ...report, revision: hash(JSON.stringify(report)) }
 }
 
@@ -307,9 +319,10 @@ export function trackedInventory(root, action = 'scan') {
       if (!validSnapshot(value, repo.checkoutId)) fail('invalid-retained-inventory')
       lastGood = value
     }
-    if (action === 'last-good') return { status: lastGood ? 'retained' : 'empty', checkoutId: repo.checkoutId, lastGood }
+    if (action === 'last-good') return { status: lastGood ? 'retained' : 'empty', checkoutId: repo.checkoutId, lastGood,
+      ...(lastGood?.schemaVersion === 1 ? { missingCoverage: ['component-exports', 'shared-shell-sources'] } : {}) }
     const inventory = inspect(repo, require('typescript'))
-    if (!inventory.complete) return { status: 'incomplete', inventory, lastGoodRevision: lastGood?.revision ?? null }
+    if (!inventory.complete) return { status: 'incomplete', inventory, lastGoodRevision: lastGood?.revision ?? null, lastGoodSchemaVersion: lastGood?.schemaVersion ?? null }
     const data = JSON.stringify(inventory) + '\n'
     if (Buffer.byteLength(data) > inventoryLimits.stateBytes) fail('snapshot-budget')
     const temp = join(dir, `${randomUUID()}.tmp`)

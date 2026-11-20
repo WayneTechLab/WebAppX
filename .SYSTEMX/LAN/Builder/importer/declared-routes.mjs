@@ -50,7 +50,7 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
     const specifier = statement.moduleSpecifier.text
     const add = (name, imported) => {
       if (imports.has(name)) shadowed.add(name)
-      imports.set(name, specifier)
+      imports.set(name, { specifier, imported })
       if (specifier !== 'react-router' && specifier !== 'react-router-dom') return
       if (imported === 'Routes') routers.add(name)
       if (imported === 'Route') routes.add(name)
@@ -72,6 +72,7 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
   const candidates = []
   let overflow = false
   let recognized = false
+  let dispatch
   const lineOf = node => file.getLineAndCharacterOfPosition(node.getStart(file)).line + 1
   function addFinding(list, item) {
     if (findings.length + candidates.length >= maxFindings) overflow = true
@@ -91,10 +92,10 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
   function record(node, pattern, expression) {
     if (!publicPattern(pattern)) return issue(node, 'dynamic-route-pattern')
     const tag = tagOf(unwrap(expression))
-    const specifier = imports.get(tag)
-    const path = specifier && !shadowed.has(tag) ? resolveImport(specifier) : null
+    const binding = imports.get(tag)
+    const path = binding && !shadowed.has(tag) ? resolveImport(binding.specifier) : null
     if (!path) return issue(node, 'unresolved-route-module')
-    addFinding(candidates, { pattern, source: path, line: lineOf(node) })
+    addFinding(candidates, { pattern, source: path, line: lineOf(node), exportName: binding.imported, dispatch })
   }
   function directReturn(statement) {
     if (ts.isBlock(statement) && statement.statements.length === 1) statement = statement.statements[0]
@@ -134,6 +135,7 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
   for (const fn of file.statements) {
     if (!ts.isFunctionDeclaration(fn) || fn.name?.text !== 'renderPage' || !fn.body) continue
     recognized = true
+    dispatch = { kind: 'renderPage', line: lineOf(fn) }
     const parameter = fn.parameters[0]?.name
     if (!parameter || !ts.isIdentifier(parameter) || parameter.text !== 'pathname') { issue(fn, 'dynamic-route-dispatch'); continue }
     for (const statement of fn.body.statements) {
@@ -157,6 +159,7 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
     const routerName = tagOf(router)
     if (!routers.has(routerName)) continue
     recognized = true
+    dispatch = { kind: 'Routes', line: lineOf(router) }
     if (shadowed.has(routerName)) { issue(router, 'ambiguous-route-branch'); continue }
     let nested = false
     for (let ancestor = router.parent; ancestor; ancestor = ancestor.parent) {
