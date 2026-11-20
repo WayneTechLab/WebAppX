@@ -8,6 +8,8 @@ const routes = new Map([
   ['/api/health', read],
   ['/api/status', read],
   ['/api/transport/diagnostics', read],
+  ['/api/transport/limits', read],
+  ['/api/transport/policy', read],
   ['/api/tools', read],
   ['/api/auth/providers', read],
   ['/api/fonts/catalog', read],

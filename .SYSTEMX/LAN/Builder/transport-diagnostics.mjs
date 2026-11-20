@@ -6,7 +6,8 @@ const methods = new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIO
 const routes = new Map([
   ['/', 'dashboard'], ['/Website_Dashboard.html', 'dashboard'],
   ['/api/health', 'health'], ['/api/status', 'status'], ['/api/tools', 'tools'],
-  ['/api/transport/diagnostics', 'diagnostics'],
+  ['/api/transport/diagnostics', 'diagnostics'], ['/api/transport/limits', 'diagnostics'],
+  ['/api/transport/policy', 'diagnostics'],
 ])
 const namespaces = [
   ['/Website/', 'assets'], ['/api/contracts/', 'contracts'], ['/api/identity/', 'identity'],

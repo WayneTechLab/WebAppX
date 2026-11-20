@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { randomInt } from 'node:crypto'
 import { once } from 'node:events'
-import { cp, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, mkdtemp, rename, rm, writeFile } from 'node:fs/promises'
 import { request } from 'node:http'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -15,7 +15,7 @@ const lan = fileURLToPath(new URL('../', import.meta.url))
 const endpoint = '/api/transport/diagnostics'
 const uuid = /^[\da-f]{8}-[\da-f]{4}-4[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/
 
-async function startFixture(t) {
+async function startFixture(t, prepare) {
   const fixture = await mkdtemp(join(tmpdir(), 'webappx-transport-'))
   const target = join(fixture, '.SYSTEMX', 'LAN')
   let child, stopped
@@ -28,6 +28,7 @@ async function startFixture(t) {
   for (const path of ['Builder', 'Website', 'Website_Dashboard.html', 'server.mjs', 'session-restart-preview.mjs', 'work-status.mjs']) {
     await cp(join(lan, path), join(target, path), { recursive: true })
   }
+  if (prepare) await prepare(target)
   const port = String(await findAvailablePort(randomInt(20000, 60000)))
   child = spawn(process.execPath, [join(target, 'server.mjs')], {
     cwd: fixture,
@@ -135,4 +136,71 @@ test('loopback LAN correlates completed responses and exposes only bounded sessi
     assert.equal(snapshot.entries.length, 64)
     assert.deepEqual(snapshot.entries.map(row => row.transportId), ids.slice(-64).reverse())
   })
+})
+
+test('LAN admits normal API work and reports a pre-body 429 without blocking guarded transport inspections', async t => {
+  const { send } = await startFixture(t, async target => {
+    // Give this disposable server a stationary clock and one remaining token.
+    // Seed the real bucket in memory. No traffic burst or open socket is needed.
+    const module = join(target, 'Builder', 'request-admission.mjs')
+    await rename(module, join(target, 'Builder', 'fixture-real-admission.mjs'))
+    await writeFile(module, `
+      import { EventEmitter } from 'node:events'
+      import { createRequestAdmission as create, requestAdmissionLimits } from './fixture-real-admission.mjs'
+      export function createRequestAdmission() {
+        const admission = create({ now: () => 0 })
+        for (let i = 1; i < requestAdmissionLimits.burst; i++) {
+          const response = new EventEmitter()
+          admission.admit('/api/builder/data', response)
+          response.emit('finish')
+          admission.complete(response)
+        }
+        return admission
+      }
+    `)
+  })
+  const dashboard = await send('/')
+  const token = dashboard.text.match(/<meta name="systemx-session" content="([\da-f]{48})"/)?.[1]
+  assert.ok(token)
+  const headers = { 'x-systemx-session': token }
+  const limits = '/api/transport/limits'
+  const policy = '/api/transport/policy'
+  const inspect = async path => {
+    const response = await send(path, { headers })
+    assert.equal(response.status, 200)
+    return JSON.parse(response.text)
+  }
+  for (const path of [limits, policy]) {
+    assert.equal((await send(path)).status, 403)
+    assert.equal((await send(path + '?filter=private', { headers })).status, 400)
+    const wrongMethod = await send(path, { method: 'POST', headers })
+    assert.equal(wrongMethod.status, 405)
+    assert.equal(wrongMethod.headers.allow, 'GET')
+  }
+  const before = await inspect(limits)
+  assert.equal(before.scope, 'local-session')
+  assert.equal(before.availableTokens, 1)
+  assert.equal(before.inFlight, 0)
+  assert.equal((await send('/api/builder/data')).status, 200)
+  assert.deepEqual(await inspect(limits), { ...before, availableTokens: 0 })
+
+  // Both an ordinary POST and the compatibility read of a wrong-route graph
+  // envelope would return invalid-body errors if parsing happened before admission.
+  for (const path of ['/api/builder/preview', '/api/contracts/discovery']) {
+    const response = await send(path, { method: 'POST', headers: { ...headers, 'content-type': 'application/json' }, body: '{' })
+    assert.equal(response.status, 429)
+    assert.equal(response.headers['retry-after'], '1')
+    assert.equal(response.headers['x-systemx-transport-code'], 'REQUEST_RATE_LIMIT')
+    assert.equal(response.headers.connection, 'close')
+    const body = JSON.parse(response.text)
+    assert.equal(body.code, 'REQUEST_RATE_LIMIT')
+    assert.equal(body.scope, 'local-session')
+    assert.equal(body.retryAfterSeconds, 1)
+  }
+  assert.equal((await send('/api/health')).status, 200)
+  assert.equal((await inspect(policy)).schemaVersion, 1)
+  const checked = await send(limits, { headers })
+  assert.deepEqual(JSON.parse(checked.text), { ...before, availableTokens: 0 })
+  const recent = await inspect(endpoint)
+  assert.equal(recent.entries.find(row => row.transportId === checked.id)?.category, 'diagnostics')
 })
