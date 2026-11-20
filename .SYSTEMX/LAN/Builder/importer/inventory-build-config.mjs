@@ -1,6 +1,7 @@
 // Describe reviewed literals in Vite's authored configuration. Never load Vite,
 // its plugins, the project's modules or the environment named in that file.
 const configName = /^vite\.config\.(?:js|cjs|mjs|ts|cts|mts)$/
+const loopbackHosts = ['127.0.0.1', 'localhost', '::1']
 const defaults = { 'build.outDir': 'dist', 'build.assetsDir': 'assets', publicDir: 'public' }
 const directoryWords = new Set('app asset assets build bundle client compiled deploy dist distribution frontend generated html media out output public release resources site static web website www wwwroot'.split(' '))
 function publicDirectory(value) {
@@ -120,6 +121,22 @@ export function inspectBuildConfig({ ts, path, source, evidence, issue }) {
   directory('build.assetsDir', build, 'assetsDir', buildNode ?? node)
   directory('publicDir', config, 'publicDir', node)
 
+  // Preview can declare a proxy even when there is no development server proxy.
+  let preview = 'inherits-server-proxy'
+  const previewNode = config.get('preview')
+  const settings = properties(previewNode)
+  if (previewNode) {
+    if (!settings || settings.has('proxy')) {
+      const previewProxy = settings?.get('proxy')
+      const routes = properties(previewProxy)
+      preview = routes?.size === 0 ? 'explicit-empty-proxy' : 'unresolved'
+      if (preview === 'unresolved') {
+        const bridge = routes?.get('/__systemx')
+        finding(bridge ? 'unsupported-vite-preview-bridge' : 'unsupported-vite-preview-proxy', bridge ?? previewProxy ?? previewNode)
+      }
+    }
+  }
+
   const serverNode = config.get('server')
   if (!serverNode) return result
   const server = properties(serverNode)
@@ -132,6 +149,11 @@ export function inspectBuildConfig({ ts, path, source, evidence, issue }) {
   if (otherRoutes) finding('unsupported-vite-proxy-route', proxyNode)
   const bridgeNode = proxy.get('/__systemx')
   if (!bridgeNode) return result
+  const previewHost = settings?.get('host')
+  if (preview === 'inherits-server-proxy' && previewHost && !loopbackHosts.includes(literal(previewHost))) {
+    preview = 'unresolved'
+    finding('unsupported-vite-preview-host', previewHost)
+  }
   const options = properties(bridgeNode)
   const target = options?.get('target') ?? bridgeNode
   let targetKind = 'unresolved', portSource = 'unresolved'
@@ -152,7 +174,7 @@ export function inspectBuildConfig({ ts, path, source, evidence, issue }) {
     }
   }
   const host = server.get('host')
-  const listener = !host ? 'not-declared' : ['127.0.0.1', 'localhost', '::1'].includes(literal(host)) ? 'loopback-literal'
+  const listener = !host ? 'not-declared' : loopbackHosts.includes(literal(host)) ? 'loopback-literal'
     : literal(host) !== null || host.kind === ts.SyntaxKind.TrueKeyword ? 'non-loopback' : 'unresolved'
   let rewrite = 'not-declared'
   const replacement = options?.get('rewrite')
@@ -165,12 +187,6 @@ export function inspectBuildConfig({ ts, path, source, evidence, issue }) {
         && call.arguments.length === 2 && call.arguments[0].kind === ts.SyntaxKind.RegularExpressionLiteral
         && call.arguments[0].text === '/^\\/__systemx\\/?/' && literal(call.arguments[1]) === '/') rewrite = 'strip-prefix'
     }
-  }
-  let preview = 'inherits-server-proxy'
-  if (config.has('preview')) {
-    const settings = properties(config.get('preview'))
-    if (!settings) preview = 'unresolved'
-    else if (settings.has('proxy')) preview = properties(settings.get('proxy'))?.size === 0 ? 'explicit-empty-proxy' : 'unresolved'
   }
   const changeOrigin = options?.get('changeOrigin')
   const ambiguous = otherRoutes || options && ([...options.keys()].some(key => !['target', 'changeOrigin', 'rewrite'].includes(key))

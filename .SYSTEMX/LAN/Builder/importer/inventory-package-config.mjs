@@ -1,7 +1,6 @@
 const dependencyGroups = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies']
 const toolNames = ['node', 'npm', 'pnpm', 'yarn', 'bun']
 const packageLimit = 256
-const exactVersion = /^(?:0|[1-9]\d{0,7})(?:\.(?:0|[1-9]\d{0,7})){2}(?:-(?:alpha|beta|rc|next|dev|canary|preview)(?:\.\d{1,8})*)?$/
 const privateMarker = /private|secret|credential|password|api[._-]?key|access[._-]?token|(?:^|[^a-z])(?:tokens?|keys?)(?:[^a-z]|$)|npm_[A-Za-z0-9]{20}|gh[pousr]_|github_pat_|sk_live_|AKIA[0-9A-Z]/i
 const plain = object => object !== null && typeof object === 'object' && !Array.isArray(object)
 const keys = (obj, names) => plain(obj) && Object.keys(obj).length === names.length && names.every(key => Object.hasOwn(obj, key))
@@ -14,8 +13,11 @@ function safeName(name) {
 // Restrict public ranges to numeric npm selectors and known prerelease labels.
 // URLs, local links, aliases, arbitrary tags and build metadata can carry
 // private registry locations or credentials and are never copied to a report.
-const versionComponent = '(?:0|[1-9]\\d{0,7}|[Xx*])'
-const versionSelector = 'v?' + versionComponent + '(?:\\.' + versionComponent + '){0,2}(?:-(?:alpha|beta|rc|next|dev|canary|preview)(?:\\.\\d{1,8})*)?'
+const versionNumber = '(?:0|[1-9]\\d{0,7})'
+const prerelease = '(?:-(?:alpha|beta|rc|next|dev|canary|preview)(?:\\.' + versionNumber + ')*)?'
+const exactVersion = new RegExp('^' + versionNumber + '(?:\\.' + versionNumber + '){2}' + prerelease + '$')
+const versionComponent = '(?:' + versionNumber + '|[Xx*])'
+const versionSelector = 'v?' + versionComponent + '(?:\\.' + versionComponent + '){0,2}' + prerelease
 const selector = new RegExp('^' + versionSelector + '$')
 const comparator = new RegExp('^(?:>=|<=|>|<|=|~|\\^)?' + versionSelector + '$')
 function safeRange(value) {
@@ -26,6 +28,56 @@ function safeRange(value) {
     if (interval.length > 1) return interval.length === 2 && interval.every(part => selector.test(part))
     return clause.replace(/(>=|<=|[><=~^]) +/g, '$1').split(/ +/).every(part => comparator.test(part))
   })
+}
+
+// npm admits a prerelease only in an alternative that names a prerelease of
+// that same major.minor.patch. Limit this proof to fully specified comparators;
+// TypeScript alone also admits prereleases behind some wildcard boundaries.
+function admitsPrerelease(ts, selector, version) {
+  const prefix = version.split('-')[0] + '-'
+  return selector.split('||').some(alternative => {
+    const clause = alternative.trim()
+    const versions = clause.split(/ +/).map(part => part.replace(/^[<>=]+/, ''))
+    return versions.every(part => exactVersion.test(part)) && versions.some(part => part.startsWith(prefix))
+      && ts.VersionRange.tryParse(clause).test(version)
+  })
+}
+
+function checkRuntimeSelectors(ts, rows, issue) {
+  if (!rows.length) return
+  const declarations = rows.map(row => ({ ...row, range: ts.VersionRange.tryParse(row.value), exact: exactVersion.test(row.value) }))
+  if (declarations.some(row => row.exact)) {
+    for (const [index, left] of declarations.entries()) {
+      for (const right of declarations.slice(index + 1)) {
+        if ((!left.exact && !right.exact) || left.value === right.value) continue
+        const pin = left.exact ? left : right
+        const other = left.exact ? right : left
+        const hasEngine = left.field === 'engines' || right.field === 'engines'
+        const path = (left.field === 'engines' ? right : left).evidence.path
+        if (!other.range.test(pin.value)) {
+          issue(hasEngine ? 'runtime-pin-outside-engine' : 'conflicting-runtime-pins', path)
+        } else if (pin.value.includes('-') && !admitsPrerelease(ts, other.value, pin.value)) {
+          issue('runtime-selector-comparison-unresolved', path)
+        }
+      }
+    }
+    return
+  }
+  // A shared version proves overlap across every selector (including
+  // alternatives). If no tested boundary supplies a witness, keep the scan partial.
+  const candidates = new Set(['0.0.0'])
+  for (const { value } of rows) {
+    for (const [prereleaseVersion] of value.matchAll(/\d+\.\d+\.\d+-[a-z]+(?:\.\d+)*/g)) candidates.add(prereleaseVersion)
+    for (const [, boundary] of value.matchAll(/(?:^|[<>=~^|\s])v?(\d+(?:\.\d+){0,2})/g)) {
+      const version = new ts.Version(boundary)
+      candidates.add(version.toString())
+      for (const part of ['patch', 'minor', 'major']) candidates.add(version.increment(part).toString())
+    }
+  }
+  if (![...candidates].some(version => declarations.every(row => version.includes('-')
+    ? admitsPrerelease(ts, row.value, version) : row.range.test(version)))) {
+    issue('runtime-selector-comparison-unresolved', rows[0].evidence.path)
+  }
 }
 
 export function inspectPackageConfig({ ts, manifest, inputs, issue }) {
@@ -71,22 +123,7 @@ export function inspectPackageConfig({ ts, manifest, inputs, issue }) {
     if (input) addPin('node', 'version-file', input.source.trim(), input.evidence)
   }
 
-  for (const tool of toolNames) {
-    const rows = runtimePins.filter(row => row.tool === tool)
-    for (const pin of rows.filter(row => row.field !== 'engines' && exactVersion.test(row.value))) {
-      const version = new ts.Version(pin.value)
-      for (const other of rows) {
-        if (other !== pin && !ts.VersionRange.tryParse(other.value).test(version)) {
-          issue(other.field === 'engines' ? 'runtime-pin-outside-engine' : 'conflicting-runtime-pins', pin.evidence.path)
-        }
-      }
-    }
-    // Complex ranges can overlap. Do not invent a conflict or silently choose
-    // one when independent selectors have no exact pin to compare against.
-    if (new Set(rows.map(row => row.value)).size > 1 && rows.every(row => !exactVersion.test(row.value))) {
-      issue('runtime-selector-comparison-unresolved', rows[0].evidence.path)
-    }
-  }
+  for (const tool of toolNames) checkRuntimeSelectors(ts, runtimePins.filter(row => row.tool === tool), issue)
   return { dependencies, runtimePins }
 }
 
