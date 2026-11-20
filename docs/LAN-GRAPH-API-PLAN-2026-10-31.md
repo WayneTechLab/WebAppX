@@ -70,12 +70,18 @@ not authorize an alternate index or a wider sandbox.
 - [x] Freeze the functional candidate and pass aggregate CI, separate Hosting preflight and required host/template checks.
 - [x] Accept F005, regenerate and validate progress, then accept dependent F006 and validate again.
 - [x] Reconcile README, host SYSTEMX, wiki and the full WebAppX Page hierarchy with the verified result. All 23 Pages were read back on November 19.
-- [ ] Publish the reviewed delivery to GitHub main and wiki, read it back and retain a resumable local handoff.
+- [x] Publish the reviewed delivery to GitHub main and wiki, read it back and retain a resumable local handoff.
 
 Retain failed/interrupted attempts with their actual dispositions. Bind each
 accepted requirement to its unchanged definition, exact source revision and
 existing public QA receipt. A generated type, rendered label, CLI exit or merged
 branch alone does not establish runtime acceptance.
+
+## Publication and next work
+
+The November 19 [delivery commit](https://github.com/WayneTechLab/WebAppX/commit/0142c4f148ffd25c226ea99dea98ccc235e168fc) passed all 75 CI stages and a separate Hosting preflight. Both checkouts matched GitHub main. The [wiki](https://github.com/WayneTechLab/WebAppX/wiki) matched all 70 maintained pages at `03b6786113d2`. The WebAppX Pages hierarchy was read back across all 23 Pages. Agent 0 retained the ten worker branches and a local resume record.
+
+The next catalog family is [F007, Transport and request lifecycle](backlog/lan-10000/F007.md), beginning at LAN-00601.
 
 ## Source synchronization checkpoint — 2026-11-08
 
