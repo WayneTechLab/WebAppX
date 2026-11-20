@@ -17,13 +17,14 @@ import { execFileSync } from 'node:child_process'
 import { randomBytes, randomUUID } from 'node:crypto'
 import { dirname, extname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { StringDecoder } from 'node:string_decoder'
 import net from 'node:net'
 import { inspectCurrentRepository, inspectExternalProject } from './Builder/importer/current-repo.mjs'
 import { hashSourceRevision, checkSourceRevision } from './Builder/source-revision.mjs'
 import { inspectSourcePath, enumerateSourceInventory, sourcePolicyCatalog, compareSourcePolicies, sourcePolicyLimits } from './Builder/source-policy.mjs'
 import { createSourceHistory, readSourceOperationHistory, sourceHistoryLimits } from './Builder/source-history.mjs'
 import { dispatchSourceIdentity } from './Builder/source-identity-http.mjs'
+import { readRequestBody, RequestBodyError } from './Builder/request-body.mjs'
+import { evaluateRequestPolicy } from './Builder/request-policy.mjs'
 import { createTransportDiagnostics } from './Builder/transport-diagnostics.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
@@ -768,43 +769,6 @@ function requireSessionToken(request, response) {
   return true
 }
 
-function readRequestBody(request) {
-  return new Promise((resolveBody, rejectBody) => {
-    const decoder = new StringDecoder('utf8')
-    let body = ''
-    let settled = false
-    const fail = (error) => {
-      if (settled) return
-      settled = true
-      rejectBody(error)
-    }
-    const append = (text) => {
-      if (settled) return false
-      // Keep the existing decoded UTF-16 length limit. The decoder retains only
-      // an incomplete UTF-8 character; the accumulated body never exceeds it.
-      if (body.length + text.length > 1_000_000) {
-        fail(new Error('Request body exceeds local builder limit'))
-        request.destroy()
-        return false
-      }
-      body += text
-      return true
-    }
-    request.on('data', (chunk) => { if (!settled) append(decoder.write(chunk)) })
-    request.on('end', () => {
-      if (settled || !append(decoder.end())) return
-      try {
-        const value = body ? JSON.parse(body) : {}
-        settled = true
-        resolveBody(value)
-      } catch {
-        fail(new Error('Request body must be valid JSON'))
-      }
-    })
-    request.on('error', fail)
-  })
-}
-
 function sourceRead(value) {
   const source = readEditableSource(value)
   if (source.error) return source
@@ -1251,13 +1215,13 @@ function handleServerError(response) {
 
 async function handleRequest(request, response, recordRoute) {
   const requestHost = request.headers.host
-  if (requestHost && !allowedHosts.has(requestHost)) {
+  if (!allowedHosts.has(requestHost)) {
     sendText(response, 403, 'Forbidden host')
     return
   }
 
   const origin = request.headers.origin
-  if (origin && !allowedOrigins.has(origin)) {
+  if (origin !== undefined && !allowedOrigins.has(origin)) {
     sendText(response, 403, 'Forbidden origin')
     return
   }
@@ -1271,32 +1235,55 @@ async function handleRequest(request, response, recordRoute) {
   }
   recordRoute(requestUrl.pathname)
 
-  if (requestUrl.pathname === '/api/transport/diagnostics') {
-    if (!requireSessionToken(request, response)) return
-    if (request.method !== 'GET') {
-      response.setHeader('Allow', 'GET')
-      sendJson(response, 405, { error: 'Transport diagnostics require GET.' })
-    } else if (requestUrl.search) {
-      sendJson(response, 400, { error: 'Transport diagnostics accept no query parameters.' })
-    } else {
-      sendJson(response, 200, transportDiagnostics.snapshot())
+  const pathname = requestUrl.pathname
+  const graphRoute = pathname.startsWith('/api/contracts/')
+  const identityRoute = pathname.startsWith('/api/identity/')
+  const apiPost = request.method === 'POST' && pathname.startsWith('/api/')
+  if ((graphRoute || identityRoute || apiPost || pathname === '/api/transport/diagnostics')
+    && !requireSessionToken(request, response)) return
+
+  const policyInput = { pathname, method: request.method, contentType: request.headersDistinct['content-type'] }
+  let refusal = evaluateRequestPolicy(policyInput)
+  let body
+  if (apiPost && (!refusal || refusal.readContractEnvelope)) {
+    try {
+      body = await readRequestBody(request)
+    } catch (error) {
+      if (response.destroyed || response.writableEnded) return
+      if (!(error instanceof RequestBodyError)) throw error
+      response.setHeader('X-Systemx-Transport-Code', error.code)
+      if (error.closeConnection) response.setHeader('Connection', 'close')
+      if (graphRoute) {
+        sendJson(response, error.statusCode, {
+          apiVersion: '1.1', requestId: null, ok: false,
+          error: { category: 'validation', code: 'API_BODY_INVALID',
+            message: 'Use a bounded valid JSON contract envelope.', findings: [], omittedCount: 0 },
+        })
+      } else {
+        sendJson(response, error.statusCode, { error: error.message })
+      }
+      return
     }
+    if (refusal) refusal = evaluateRequestPolicy({ ...policyInput, contractEnvelope: body })
+  }
+  if (refusal) {
+    if (refusal.allow !== undefined) response.setHeader('Allow', refusal.allow)
+    sendJson(response, refusal.statusCode, refusal.result)
     return
   }
 
-  if (!['GET', 'HEAD', 'POST'].includes(request.method)) {
-    sendText(response, 405, 'Method not allowed')
+  if (pathname === '/api/transport/diagnostics') {
+    if (requestUrl.search) sendJson(response, 400, { error: 'Transport diagnostics accept no query parameters.' })
+    else sendJson(response, 200, transportDiagnostics.snapshot())
     return
   }
 
-  if (requestUrl.pathname.startsWith('/api/contracts/') && request.method !== 'POST') {
-    if (!requireSessionToken(request, response)) return
+  if (graphRoute && request.method !== 'POST') {
     await dispatchGraphRequest(request, response, requestUrl)
     return
   }
 
-  if (requestUrl.pathname.startsWith('/api/identity/') && request.method !== 'POST') {
-    if (!requireSessionToken(request, response)) return
+  if (identityRoute && request.method !== 'POST') {
     try {
       const { statusCode, result } = await dispatchSourceIdentity({ service: await identityService(), method: request.method, url: requestUrl })
       sendJson(response, statusCode, result)
@@ -1335,6 +1322,10 @@ async function handleRequest(request, response, recordRoute) {
   }
 
   if (requestUrl.pathname === '/api/fonts/catalog' && request.method === 'GET') {
+    if (['q', 'category'].some(name => requestUrl.searchParams.getAll(name).length > 1)) {
+      sendJson(response, 400, { code: 'FONT_QUERY_INVALID', error: 'Supply each font catalog filter once.' })
+      return
+    }
     const catalog = await getFontCatalog()
     const query = requestUrl.searchParams.get('q')?.trim().toLocaleLowerCase() ?? ''
     const category = requestUrl.searchParams.get('category')?.trim().toLocaleLowerCase() ?? ''
@@ -1355,6 +1346,10 @@ async function handleRequest(request, response, recordRoute) {
   }
 
   if (requestUrl.pathname === '/api/fonts/project' && request.method === 'GET') {
+    if (requestUrl.searchParams.getAll('path').length > 1) {
+      sendJson(response, 400, { code: 'FONT_QUERY_INVALID', error: 'Supply a single project stylesheet path.' })
+      return
+    }
     const { statusCode = 200, ...result } = projectFontState(requestUrl.searchParams.get('path') ?? projectCssPath)
     sendJson(response, statusCode, result)
     return
@@ -1472,23 +1467,6 @@ async function handleRequest(request, response, recordRoute) {
   }
 
   if (request.method === 'POST' && requestUrl.pathname.startsWith('/api/')) {
-    if (!requireSessionToken(request, response)) return
-    let body
-    try {
-      body = await readRequestBody(request)
-    } catch (error) {
-      if (requestUrl.pathname.startsWith('/api/contracts/')) {
-        sendJson(response, 400, {
-          apiVersion: '1.1', requestId: null, ok: false,
-          error: { category: 'validation', code: 'API_BODY_INVALID',
-            message: 'Use a bounded valid JSON contract envelope.', findings: [], omittedCount: 0 },
-        })
-        return
-      }
-      sendJson(response, 400, { error: error.message })
-      return
-    }
-
     try {
       if (requestUrl.pathname.startsWith('/api/contracts/')) {
         await dispatchGraphRequest(request, response, requestUrl, body)
@@ -1667,6 +1645,7 @@ async function handleRequest(request, response, recordRoute) {
     mimeTypes[extname(file).toLowerCase()] ?? 'application/octet-stream',
   )
 
+  if (file !== dashboardFile) response.setHeader('Cache-Control', 'private, no-cache')
   if (request.method === 'HEAD') {
     response.end()
     return

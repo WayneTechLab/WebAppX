@@ -83,7 +83,7 @@ test('loopback LAN correlates completed responses and exposes only bounded sessi
     const envelope = { apiVersion: '1.1', requestId: 'PRIVATE_ENVELOPE_ID', kind: 'query',
       operation: 'graph.status', payload: { type: 'graph.status' } }
     const contract = await send('/api/contracts/query', { method: 'POST', headers: { ...headers, 'content-type': 'application/json' }, body: JSON.stringify(envelope) })
-    const badBody = await send('/api/contracts/query', { method: 'POST', headers, body: 'PRIVATE_INVALID_JSON' })
+    const badBody = await send('/api/contracts/query', { method: 'POST', headers: { ...headers, 'content-type': 'application/json' }, body: 'PRIVATE_INVALID_JSON' })
     assert.equal(JSON.parse(contract.text).requestId, envelope.requestId)
     assert.notEqual(contract.id, envelope.requestId)
     assert.equal(method.headers.allow, 'GET')

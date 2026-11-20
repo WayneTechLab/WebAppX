@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { EventEmitter, once } from 'node:events'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { createServer as createHttpServer } from 'node:http'
 import { createServer as createTcpServer } from 'node:net'
 import { tmpdir } from 'node:os'
@@ -378,7 +378,9 @@ test('Windows Firebase command uses Node and npm argument arrays without a comma
 
 test('combined LAN child cannot overwrite or clear supervisor record; standalone retains ownership', { timeout: 15_000 }, async () => {
   const root = await fixtureRoot()
-  const files = ['server.mjs', 'work-status.mjs', 'session-restart-preview.mjs', 'Builder/importer/current-repo.mjs', 'Builder/source-revision.mjs', 'Builder/source-history.mjs', 'Builder/source-policy.mjs', 'Builder/source-identity-http.mjs', 'Builder/runtime/port-utils.mjs', 'Builder/runtime/file-boundary.mjs']
+  const lan = join(root, '.SYSTEMX', 'LAN')
+  await cp(join(repository, '.SYSTEMX/LAN/Builder'), join(lan, 'Builder'), { recursive: true })
+  const files = ['server.mjs', 'work-status.mjs', 'session-restart-preview.mjs']
   for (const file of files) {
     const target = join(root, '.SYSTEMX/LAN', file)
     await mkdir(dirname(target), { recursive: true })

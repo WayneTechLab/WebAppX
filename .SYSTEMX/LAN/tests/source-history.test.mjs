@@ -248,7 +248,8 @@ test('isolated history HTTP scopes operations, binds workspace/current bytes and
     assert.equal((await sourcePost(leafChanged, leaf.body.revision)).body.status, 'unchanged')
     assert.equal((await sourcePost('stale draft', sha(original))).status, 409)
     const unsupportedPost = await fetch(origin + '/api/builder/source/history', { method: 'POST', headers: { 'content-type': 'application/json', 'x-systemx-session': token }, body: '{}' })
-    assert.equal(unsupportedPost.status, 404)
+    assert.equal(unsupportedPost.status, 405)
+    assert.equal(unsupportedPost.headers.get('allow'), 'GET')
     await unsupportedPost.text()
     assert.equal((await history(sourcePath, '&limit=1')).body.entries.length, 1)
     for (const tail of ['&limit=0', '&limit=101', '&limit=NaN', '&limit=1.5', '&limit=1junk', '&limit=1&limit=2', '&rollback=true', '&path=src%2Findex.css']) {
