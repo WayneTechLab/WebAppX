@@ -9,6 +9,7 @@ import { readModuleScripts } from './inventory-html.mjs'
 import { readViteInputs } from './inventory-vite.mjs'
 import { inspectDeclaredRoutes, publicPattern } from './declared-routes.mjs'
 import { inspectComponents, validComponentInventory } from './component-inventory.mjs'
+import { configurationInputPaths, inspectInventoryConfig, validInventoryConfig } from './inventory-config.mjs'
 
 const require = createRequire(import.meta.url)
 export const inventoryLimits = Object.freeze({ indexBytes: 4_000_000, records: 16_000, sourceBytes: 256_000, totalBytes: 3_000_000, files: 160, routes: 300, findings: 100, stateBytes: 750_000 })
@@ -23,6 +24,7 @@ const privateName = /private|secret|credential|password|api[._-]?key|access[._-]
 const safeModule = path => isCanonicalSourcePath(path) && path.startsWith('src/') && suffixes.some(ext => path.endsWith(ext)) && !privateName.test(path)
 const safeHtml = path => isCanonicalSourcePath(path) && (!path.includes('/') || path.startsWith('src/')) && path.endsWith('.html') && !privateName.test(path)
 const safeEvidence = path => safeModule(path) || safeHtml(path) || viteConfigs.includes(path) || ['package.json', 'tsconfig.json'].includes(path)
+const safeConfigEvidence = path => configurationInputPaths.includes(path)
 
 function validSnapshot(value, checkoutId) {
   const keys = (record, names) => record && typeof record === 'object' && Object.keys(record).length === names.length && names.every(key => Object.hasOwn(record, key))
@@ -31,8 +33,9 @@ function validSnapshot(value, checkoutId) {
   const line = number => Number.isInteger(number) && number > 0 && number <= inventoryLimits.sourceBytes
   const rows = (list, max, verify) => Array.isArray(list) && list.length <= max && list.every(verify)
   const exportKeys = ['schemaVersion','checkoutId','commit','indexRevision','supportedStack','complete','entryPoints','routes','findings','omittedFindings','exclusions','evidence','revision']
-  if (value?.schemaVersion === 2) exportKeys.push('components')
-  if (!keys(value, exportKeys) || ![1, 2].includes(value.schemaVersion) || value.checkoutId !== checkoutId || !oid(value.commit)
+  if (value?.schemaVersion >= 2) exportKeys.push('components')
+  if (value?.schemaVersion === 3) exportKeys.push('configuration')
+  if (!keys(value, exportKeys) || ![1, 2, 3].includes(value.schemaVersion) || value.checkoutId !== checkoutId || !oid(value.commit)
     || !digest(value.indexRevision) || value.supportedStack !== 'vite' || value.complete !== true || value.omittedFindings !== 0
     || !Array.isArray(value.findings) || value.findings.length !== 0 || !digest(value.revision)) return false
   const provenance = entry => keys(entry, ['state','source','declaredIn','line'])
@@ -40,8 +43,9 @@ function validSnapshot(value, checkoutId) {
   if (!rows(value.entryPoints, 32, e => (provenance(e) && e.state === 'explicit' && (safeHtml(e.declaredIn) || viteConfigs.includes(e.declaredIn)) && line(e.line) && safeModule(e.source))
     || (keys(e, ['state','source','basis']) && e.state === 'inferred' && e.basis === 'vite-entry-convention' && entryCandidates.includes(e.source)))) return false
   if (!rows(value.routes, inventoryLimits.routes, r => keys(r, ['state','pattern','source','declaredIn','line']) && r.state === 'explicit' && publicPattern(r.pattern) && safeModule(r.source) && safeModule(r.declaredIn) && line(r.line))) return false
-  if (!rows(value.evidence, inventoryLimits.files, e => keys(e, ['path','sha256','indexOid','matchesIndex']) && safeEvidence(e.path) && digest(e.sha256) && oid(e.indexOid) && typeof e.matchesIndex === 'boolean')) return false
-  if (value.schemaVersion === 2 && !validComponentInventory(value.components, value.evidence, value.routes)) return false
+  if (!rows(value.evidence, inventoryLimits.files, e => keys(e, ['path','sha256','indexOid','matchesIndex']) && (safeEvidence(e.path) || (value.schemaVersion === 3 && safeConfigEvidence(e.path))) && digest(e.sha256) && oid(e.indexOid) && typeof e.matchesIndex === 'boolean')) return false
+  if (value.schemaVersion >= 2 && !validComponentInventory(value.components, value.evidence, value.routes)) return false
+  if (value.schemaVersion === 3 && !validInventoryConfig(value.configuration, value.evidence)) return false
   if (!keys(value.exclusions, ['outsideSourceScope','privateOrNoncanonical','nonregularIndex']) || Object.values(value.exclusions).some(n => !Number.isInteger(n) || n < 0 || n > inventoryLimits.records)) return false
   const { revision, ...report } = value
   return revision === hash(JSON.stringify(report))
@@ -113,8 +117,8 @@ function loadIndex(root) {
     const match = /^(\d{6}) ([a-f0-9]{40}|[a-f0-9]{64}) ([0-3])\t([\s\S]+)$/.exec(record)
     if (!match) fail('invalid-index')
     const [,mode,oid,stage,path] = match
-    if (!isCanonicalSourcePath(path) || privateName.test(path)) { exclusions.privateOrNoncanonical++; continue }
-    if (!safeEvidence(path)) { exclusions.outsideSourceScope++; continue }
+    if ((!isCanonicalSourcePath(path) && !['.nvmrc', '.node-version'].includes(path)) || privateName.test(path)) { exclusions.privateOrNoncanonical++; continue }
+    if (!safeEvidence(path) && !safeConfigEvidence(path)) { exclusions.outsideSourceScope++; continue }
     if (stage !== '0') fail('unmerged-source')
     if (!['100644','100755'].includes(mode)) { exclusions.nonregularIndex++; index.set(path, null); continue }
     index.set(path, oid)
@@ -290,6 +294,12 @@ function inspect(repo, ts) {
     read: path => index.get(path) && exactFile(path) ? read(path) : null,
     resolveImport: resolveModule, revisionOf: path => evidence.get(path).sha256, unresolved,
   })
+  const configuration = inspectInventoryConfig({
+    ts, hasTracked: path => index.has(path), read, evidenceFor: path => evidence.get(path), issue: unresolved,
+  })
+  const declaredRoutes = routes.filter(row => !duplicates.has(row.pattern))
+  const proofs = [...evidence.values()].sort((a, b) => a.path.localeCompare(b.path))
+  if (!validInventoryConfig(configuration, proofs) || !validComponentInventory(components, proofs, declaredRoutes)) fail('unverified-inventory-metadata')
   names.clear()
   for (const item of evidence.values()) {
     const target = exactFile(item.path)
@@ -297,8 +307,8 @@ function inspect(repo, ts) {
   }
   const finished = loadIndex(root)
   if (finished.head !== head || finished.indexRevision !== indexRevision) fail('index-changed')
-  const report = { schemaVersion: 2, checkoutId, commit: head, indexRevision, supportedStack: 'vite', complete: !findings.length && !omittedFindings,
-    entryPoints: entries, routes: routes.filter(row => !duplicates.has(row.pattern)), components, findings, omittedFindings, exclusions, evidence: [...evidence.values()].sort((a,b) => a.path.localeCompare(b.path)) }
+  const report = { schemaVersion: 3, checkoutId, commit: head, indexRevision, supportedStack: 'vite', complete: !findings.length && !omittedFindings,
+    entryPoints: entries, routes: declaredRoutes, components, configuration, findings, omittedFindings, exclusions, evidence: proofs }
   if (Buffer.byteLength(JSON.stringify(report)) + 100 > inventoryLimits.stateBytes) fail('snapshot-budget')
   return { ...report, revision: hash(JSON.stringify(report)) }
 }
@@ -320,7 +330,8 @@ export function trackedInventory(root, action = 'scan') {
       lastGood = value
     }
     if (action === 'last-good') return { status: lastGood ? 'retained' : 'empty', checkoutId: repo.checkoutId, lastGood,
-      ...(lastGood?.schemaVersion === 1 ? { missingCoverage: ['component-exports', 'shared-shell-sources'] } : {}) }
+      ...(lastGood && lastGood.schemaVersion < 3 ? { missingCoverage: lastGood.schemaVersion === 1
+        ? ['component-exports', 'shared-shell-sources', 'configuration'] : ['configuration'] } : {}) }
     const inventory = inspect(repo, require('typescript'))
     if (!inventory.complete) return { status: 'incomplete', inventory, lastGoodRevision: lastGood?.revision ?? null, lastGoodSchemaVersion: lastGood?.schemaVersion ?? null }
     const data = JSON.stringify(inventory) + '\n'

@@ -103,15 +103,16 @@ test('tracked shell rename and unrelated dirty JSX change refresh the evidence w
 
 test('unknown component creation or re-exports keep the previous complete snapshot, including v1 snapshots read by the newer tool', t => {
   const f = fixture(t), accepted = f.scan().inventory
-  const { revision, components, ...oldFields } = accepted
+  const { revision, components, configuration, ...oldFields } = accepted
   assert.ok(components.exports.length)
+  assert.ok(configuration.dependencies.length)
   oldFields.schemaVersion = 1
   const legacy = { ...oldFields, revision: sha(JSON.stringify(oldFields)) }
   assert.notEqual(legacy.revision, revision)
   writeFileSync(f.cache, JSON.stringify(legacy))
   const old = trackedInventory(f.root, 'last-good')
   assert.deepEqual(old.lastGood, legacy)
-  assert.deepEqual(old.missingCoverage, ['component-exports','shared-shell-sources'])
+  assert.deepEqual(old.missingCoverage, ['component-exports','shared-shell-sources','configuration'])
   const bytes = readFileSync(f.cache)
   f.put('src/Chrome.tsx', chrome + "\nexport const Generated = externalFactory()\nexport * from './not-analysed'")
   const incomplete = f.scan()
@@ -122,7 +123,7 @@ test('unknown component creation or re-exports keep the previous complete snapsh
   assert.ok(incomplete.inventory.findings.some(item => item.path === 'src/Chrome.tsx' && /component-export/.test(item.code)))
   f.put('src/Chrome.tsx',chrome)
   assert.equal(f.scan().status,'accepted')
-  assert.equal(trackedInventory(f.root,'last-good').lastGood.schemaVersion,2)
+  assert.equal(trackedInventory(f.root,'last-good').lastGood.schemaVersion,3)
 })
 
 test('retained role, path and revision evidence are validated before displaying old component metadata', t => {
