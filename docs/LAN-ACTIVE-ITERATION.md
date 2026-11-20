@@ -1,23 +1,27 @@
 # LAN active iteration — command proposals, inventory, Navigator and session ownership
 
-The goal is **10,000 accepted original requirements and 2,000 complete
-capabilities**. On November 20 the ledger reached **720 requirements and 144
-capabilities (7.2%)**. **9,280 requirements and 1,856 capabilities remain.**
-F001–F007 are complete. F011, F013 and F015 have accepted capabilities.
+The goal is **10,000 accepted original requirements and 2,000 complete capabilities**.
+On November 20 the ledger reached **910 requirements and 182 capabilities
+(9.1%)**. **9,090 requirements and 1,818 capabilities remain.**
 
-## Current assignments
-
-| Family | Verified checkpoint | Next work |
+| Family | Accepted requirements | Next work |
 | --- | --- | --- |
-| F008 command proposals | Its F007 prerequisites are accepted. | Build and review proposals tied to the current graph revision and inspect their semantic effects. |
-| F011 repository inventory | LAN-01001–01005, tracked entry points. | Refuse ambiguous route targets, preserve the previous complete inventory, then verify shell, export and configuration discovery. |
-| F013 Navigator discovery | LAN-01201–01210, open shadow roots and same-origin nested frames. | Select the next original Navigator discovery capability from the ready queue. |
-| F015 session ownership | LAN-01401–01405, read-only start preview. | Verify that the losing standalone launcher identifies the winning session across both launch paths. |
+| F008 command proposals | LAN-00701–00730 | Next eligible LAN-00731. |
+| F011 repository inventory | LAN-01001–01100 | All 100 original requirements have verified evidence. |
+| F013 Navigator discovery | LAN-01201–01250 | Next eligible LAN-01251. |
+| F015 session ownership | LAN-01401–01430 | Next eligible LAN-01431. |
 
-The [F007 verification](LAN-F007-ACCEPTANCE-2026-11-20.md) and
-[inventory, Navigator and session verification](LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md)
-record the exact tested revisions and evidence. `goal --limit 1` shows all eligible
-families as well as the first row in each gate.
+The [F007 receipt](LAN-F007-ACCEPTANCE-2026-11-20.md), [session and inventory follow-up](LAN-INVENTORY-AND-SESSION-FOLLOWUP-2026-11-20.md), [graph proposals](LAN-PROPOSAL-AND-CONFIGURATION-ACCEPTANCE-2026-11-20.md) and [repository comparisons](LAN-INVENTORY-COMPARISON-ACCEPTANCE-2026-11-20.md) bind original requirements to their tested revisions. The [final inventory review](LAN-INVENTORY-PROVENANCE-ACCEPTANCE-2026-11-20.md) completes F011. The [session ownership review](LAN-SESSION-CONTROL-ACCEPTANCE-2026-11-20.md) covers process and listener recovery. The [generated plan](LAN-10000-EXECUTION-PLAN.md) contains the complete catalog and its gates.
+
+Use `node .SYSTEMX/swarm/cli.mjs goal --limit 1` for the current queues. After preparing and syncing workers, use `run-wave` to preview the set and inspect its run digest before `--apply`. After an interruption, inspect each reserved generation with `status` before taking further action.
+
+## Using the current capabilities
+
+Open Navigator to filter a mounted hierarchy by element kind, visibility or ownership. Select or reveal a declared instance and compare snapshots. A bounded scan labels unseen items as unknown. The [filter](LAN-NAVIGATOR-FILTER-ACCEPTANCE-2026-11-20.md) and [hierarchy](LAN-NAVIGATOR-HIERARCHY-ACCEPTANCE-2026-11-20.md) receipts describe the Chromium fixtures.
+
+To edit accepted graph metadata, run `node scripts/lan-graph-edit.mjs --help`. Select a page, node or component by its accepted revision, draft the edit, and review its effects. The current confirmation applies it once. Cancel returns to the selection and draft. [Typed command acceptance](LAN-SCOPED-GRAPH-EDIT-ACCEPTANCE-2026-11-20.md)
+
+Run `node .SYSTEMX/LAN/session-control.mjs sessions` for the current workspace. Add another project with `--workspace DIRECTORY` to inspect multiple records. Each row distinguishes the recorded origin from an actively verified listener. The stop and restart previews describe available ownership evidence.
 
 ## Agent 0 workflow used for F007
 
@@ -60,6 +64,10 @@ opt into exactly one stored record by supplying the same UUIDv4
 `Idempotency-Key` and equivalent command during its 24-hour retention period.
 Use `X-SystemX-Retry` and the current response to decide whether a fresh read,
 reconciliation or a new confirmed proposal is needed.
+
+## Graph command proposals (F008)
+
+Run `node scripts/lan-command-proposal.mjs --help` for the file and loopback inputs. Create a proposal using the accepted baseline, edited graph document and expected revision. Inspect the saved proposal against the current baseline to verify exact source ownership, sibling order and insertion positions. A stale revision or changed candidate requires a new proposal.
 
 ## Repository inventory (F011)
 

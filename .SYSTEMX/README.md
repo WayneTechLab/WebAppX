@@ -13,7 +13,7 @@ feature roadmap. The sections below describe retained webapp extensions.
 
 ## Current LAN checkpoint
 
-On November 20 the ledger reached **720/10,000 accepted requirements and 144/2,000 completed capabilities**. The [F007 receipt](../docs/LAN-F007-ACCEPTANCE-2026-11-20.md) records the transport verification. The [active plan](../docs/LAN-ACTIVE-ITERATION.md) lists accepted inventory, Navigator and session capabilities and the next open requirements. Run `node .SYSTEMX/swarm/cli.mjs goal --limit 1` for the current ready families.
+On November 20 Agent 0 had accepted **910/10,000 requirements and 182/2,000 capabilities**. Use the [active plan](../docs/LAN-ACTIVE-ITERATION.md) for the tested revisions and next eligible work. The [generated ledger](../docs/backlog/LAN-10000-TODO.md) carries the original criteria.
 
 ## SYSTEMX host swarm — Agent 0, X/Y/Z and Alpha
 

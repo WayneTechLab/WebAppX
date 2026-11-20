@@ -71,19 +71,19 @@ macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
 ## LAN program and current swarm
 
-Agent 0 has accepted **720 of 10,000 requirements (7.2%)** and **144 of 2,000
-capabilities**. The November 20 checkpoint covers all 100 F007 request lifecycle
-requirements, tracked entry-point inventory, inspection of shadow roots and
-nested frames, and read-only session launch preview. The original WebAppX
-checklist remains at 179 of 1,000. Read the
-[F007 receipt](docs/LAN-F007-ACCEPTANCE-2026-11-20.md) and the
-[inventory, Navigator and session receipt](docs/LAN-INVENTORY-NAVIGATOR-SESSION-ACCEPTANCE-2026-11-20.md).
+Agent 0 has accepted **910 of 10,000 requirements (9.1%)** and **182 of
+2,000 capabilities**. F001–F007 and F011 are complete. In the latest reviews, graph
+proposals reported source owners and insertion positions, inventory compared
+working and staged inputs, and concurrent launchers identified the winning
+session. The separate WebAppX checklist is at 179 of 1,000. Read the
+[proposal verification](docs/LAN-PROPOSAL-AND-CONFIGURATION-ACCEPTANCE-2026-11-20.md), [inventory verification](docs/LAN-INVENTORY-PROVENANCE-ACCEPTANCE-2026-11-20.md) and
+[current plan](docs/LAN-ACTIVE-ITERATION.md).
 
-Run `node .SYSTEMX/swarm/cli.mjs goal --limit 1` from WebAppX for the current
-counts and every family with eligible work. Agent 0 previews assignments with
-`wave` and supplies the reviewed digest to `prepare-wave` to checkpoint the
-isolated worktrees. The [active plan](docs/LAN-ACTIVE-ITERATION.md) records the
-next work and unresolved findings.
+Run `node .SYSTEMX/swarm/cli.mjs goal --limit 1` for the counts and the next
+eligible requirement in each family. After preparing and syncing a group of
+workers, Agent 0 can preview it with `run-wave` and start that exact group with
+its reviewed digest. The [swarm guide](docs/SYSTEMX-SWARM.md) explains how
+to inspect a partially launched group and resume review after a restart.
 
 ## LAN graph and versioned API workspace
 
