@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 
 import { spawn } from 'node:child_process'
-import { closeSync, constants, existsSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, readdirSync, readSync, realpathSync, unlinkSync, writeFileSync } from 'node:fs'
+import { randomUUID } from 'node:crypto'
+import { closeSync, constants, existsSync, fstatSync, lstatSync, openSync, readFileSync, readdirSync, readSync, realpathSync, unlinkSync, writeFileSync } from 'node:fs'
 import { isAbsolute, join, relative, resolve, win32 } from 'node:path'
+import { setTimeout as delay } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
-import { cleanStalePidFiles, clearSession, readSession, removePidFile, writePidFile, writeSession } from './Builder/runtime/port-utils.mjs'
+import { confinedDirectory } from './Builder/runtime/file-boundary.mjs'
+import { claimSession, cleanStalePidFiles, clearSession, readSession, removePidFile, writePidFile, writeSession } from './Builder/runtime/port-utils.mjs'
+import { readSessionClaim, sessionClaimError } from './session-claim.mjs'
 import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
-import { createReadinessTracker, formatSessionSummary, parseSessionOptions, readinessComponents, resolveSessionPorts, sessionUrls } from './session-supervisor.mjs'
+import { createReadinessTracker, formatSessionSummary, parseSessionOptions, readinessComponents, resolveSessionPorts, sessionUrls, validSessionGeneration } from './session-supervisor.mjs'
 
 const scriptFile = fileURLToPath(import.meta.url)
 const lanRoot = fileURLToPath(new URL('.', import.meta.url))
@@ -18,11 +22,6 @@ export function firebaseCommand({ platform = process.platform, environment = pro
   // JavaScript entry point, which Node can run with an ordinary argument array.
   if (!environment.npm_execpath || !/\.[cm]?js$/i.test(environment.npm_execpath)) throw new Error('Start the Windows session with npm run dev:systemx so Node can invoke npm without a command shell.')
   return { executable, args: [environment.npm_execpath, 'exec', '--no', '--', 'firebase-tools'] }
-}
-
-function processAlive(pid) {
-  if (!Number.isInteger(pid) || pid <= 0) return false
-  try { process.kill(pid, 0); return true } catch (error) { return error.code === 'EPERM' }
 }
 
 /** Validate only local file structure; never read or print emulator dataset values. */
@@ -116,7 +115,7 @@ export async function startDevSession(options, {
   environment = process.env,
   spawnChild = spawn,
   available,
-  alive = processAlive,
+  inspectProcess,
   captureIdentity = captureSessionProcessIdentity,
   output = process.stdout,
   errors = process.stderr,
@@ -129,12 +128,26 @@ export async function startDevSession(options, {
   const emulatorImport = validateEmulatorImport(options.emulatorImport)
   const viteBin = join(repoRoot, 'node_modules', 'vite', 'bin', 'vite.js')
   if (!existsSync(viteBin)) throw new Error('Missing local Vite dependency. Run npm ci first.')
-  const existing = readSession(repoRoot)
-  if (existing && [existing.ownerPid, ...Object.values(existing.processes ?? {})].some(alive)) throw new Error('An existing local session still has live recorded processes. Inspect npm run systemx:session:status and use its owned stop controls before starting another session.')
+  if (options.generation !== undefined && !validSessionGeneration(options.generation)) throw new Error('Invalid proposed session generation.')
+  const observeClaim = () => readSessionClaim(repoRoot, { inspectProcess })
+  let existing = observeClaim()
+  // A different process may be publishing its first receipt. Allow the short
+  // transaction to finish so the loser can report the actual generation.
+  for (let attempt = 0; attempt < 20 && existing.reasons.includes('session-update-in-progress-or-interrupted'); attempt++) {
+    await delay(10)
+    existing = observeClaim()
+  }
+  if (existing.status !== 'absent') throw sessionClaimError(existing)
 
   // Plan every listener before spawning children or writing runtime state.
-  const ports = await resolveSessionPorts(options, { available })
-  const sessionId = `systemx-${now()}-${process.pid}`
+  let ports
+  try { ports = await resolveSessionPorts(options, { available }) }
+  catch (error) {
+    const concurrent = observeClaim()
+    if (concurrent.status !== 'absent') throw sessionClaimError(concurrent)
+    throw error
+  }
+  const sessionId = options.generation ?? `systemx-${randomUUID()}`
   const stateRoot = join(repoRoot, '.SYSTEMX', 'state')
   const firebaseConfigFile = join(stateRoot, `firebase-${sessionId}.json`)
   const firebaseConfig = JSON.parse(readFileSync(join(repoRoot, 'firebase.json'), 'utf8'))
@@ -154,6 +167,7 @@ export async function startDevSession(options, {
   const children = []
   let closed = false
   let published = false
+  let createdConfig
   let interval
   const session = {
     schemaVersion: 1,
@@ -201,6 +215,7 @@ export async function startDevSession(options, {
     closed = true
     tracker.stop()
     clearInterval(interval)
+    if (!published) return
     for (const { child } of children) {
       if (!child.killed && child.exitCode === null && child.signalCode === null) child.kill('SIGTERM')
     }
@@ -208,7 +223,10 @@ export async function startDevSession(options, {
       const pid = session.processes[name]
       if (pid) removePidFile(repoRoot, `local-${name}-${ports[name === 'vite' ? 'app' : 'lan']}.pid`, pid)
     }
-    if (existsSync(firebaseConfigFile)) unlinkSync(firebaseConfigFile)
+    if (createdConfig) {
+      const current = lstatSync(firebaseConfigFile, { bigint: true, throwIfNoEntry: false })
+      if (current?.isFile() && current.dev === createdConfig.dev && current.ino === createdConfig.ino) unlinkSync(firebaseConfigFile)
+    }
     clearSession(repoRoot, sessionId)
   }
 
@@ -224,6 +242,9 @@ export async function startDevSession(options, {
     VITE_FIREBASE_STORAGE_EMULATOR_PORT: String(ports.firebase.storage),
   }
   function start(name, executable, args) {
+    // A crash between spawn and PID capture must remain visible to recovery.
+    session.startingRole = name
+    persist()
     let child
     try {
       child = spawnChild(executable, args, {
@@ -241,6 +262,8 @@ export async function startDevSession(options, {
         stdio: ['inherit', 'pipe', 'pipe'],
       })
     } catch (error) {
+      delete session.startingRole
+      persist()
       tracker.processFailed(name, `Could not start ${name}: ${error.code ?? error.message}`)
       return
     }
@@ -256,17 +279,28 @@ export async function startDevSession(options, {
       session.processIdentities[name] = captureIdentity(child.pid, { workingDirectory: repoRoot })
       if (name === 'lan' || name === 'vite') writePidFile(repoRoot, `local-${name}-${ports[name === 'vite' ? 'app' : 'lan']}.pid`, child.pid)
     }
+    delete session.startingRole
+    persist()
   }
 
   try {
-    mkdirSync(stateRoot, { recursive: true, mode: 0o700 })
+    confinedDirectory(repoRoot, stateRoot)
+    try { claimSession(repoRoot, session) }
+    catch (error) {
+      if (error.code === 'EEXIST') throw sessionClaimError(observeClaim())
+      throw error
+    }
+    published = true
+    const configDescriptor = openSync(firebaseConfigFile, 'wx', 0o600)
+    try {
+      createdConfig = fstatSync(configDescriptor, { bigint: true })
+      writeFileSync(configDescriptor, `${JSON.stringify(firebaseConfig, null, 2)}\n`)
+    } finally { closeSync(configDescriptor) }
     cleanStalePidFiles(repoRoot)
-    writeFileSync(firebaseConfigFile, `${JSON.stringify(firebaseConfig, null, 2)}\n`, { mode: 0o600 })
     start('firebase', command.executable, [...command.args, 'emulators:start', '--config', firebaseConfigFile, '--project', 'demo-systemx', '--only', 'auth,firestore,storage', ...(emulatorImport ? ['--import', emulatorImport] : [])])
     start('lan', process.execPath, [join(repoRoot, '.SYSTEMX', 'LAN', 'server.mjs')])
     start('vite', process.execPath, [viteBin, '--host', options.host, '--port', String(ports.app), '--strictPort'])
-    writeSession(repoRoot, session)
-    published = true
+    persist()
     output.write(formatSessionSummary(session))
     if (emulatorImport) output.write('[SYSTEMX] Firebase will import the explicitly selected local export. Keep that export unchanged until emulator startup completes; readiness does not verify imported workflows.\n')
     const pollReadiness = async () => {
@@ -285,7 +319,7 @@ export async function startDevSession(options, {
 export async function main(args = process.argv.slice(2), environment = process.env) {
   const options = parseSessionOptions(args, environment)
   if (options.help) {
-    console.log('Usage: npm run dev:systemx -- [--host <127.0.0.1|localhost>] [--port <1024-65535>] [--fixed-origin] [--emulator-import <exportdir>]\nDefault: select free loopback ports. Supplying --host, --port, SYSTEMX_DEV_HOST or SYSTEMX_APP_PORT fixes the app origin; SYSTEMX_FIXED_ORIGIN=true also fixes the default origin. A busy fixed app port fails before any child starts. Vite always uses --strictPort. Mock saves belong to the printed HTTP origin and browser profile. App/LAN HTTP readiness and individual emulator readiness are reported separately. Emulator import occurs only with --emulator-import and requires an existing local Firebase export directory; quote paths containing spaces as one argument. Keep the export unchanged during startup.')
+    console.log('Usage: npm run dev:systemx -- [--host <127.0.0.1|localhost>] [--port <1024-65535>] [--fixed-origin] [--generation <proposed-systemx-UUIDv4>] [--emulator-import <exportdir>]\nDefault: select free loopback ports. Supplying --host, --port, SYSTEMX_DEV_HOST or SYSTEMX_APP_PORT fixes the app origin; SYSTEMX_FIXED_ORIGIN=true also fixes the default origin. A busy fixed app port fails before any child starts. Vite always uses --strictPort. Mock saves belong to the printed HTTP origin and browser profile. App/LAN HTTP readiness and individual emulator readiness are reported separately. Emulator import occurs only with --emulator-import and requires an existing local Firebase export directory; quote paths containing spaces as one argument. Keep the export unchanged during startup.')
     return
   }
   const owned = await startDevSession(options, { environment })

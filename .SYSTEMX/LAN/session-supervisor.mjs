@@ -12,6 +12,10 @@ function parsePort(value, label) {
   return Number(value)
 }
 
+export function validSessionGeneration(value) {
+  return typeof value === 'string' && /^systemx-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(value)
+}
+
 export function parseSessionOptions(args = [], environment = {}) {
   const options = {
     host: environment.SYSTEMX_DEV_HOST ?? '127.0.0.1',
@@ -29,6 +33,10 @@ export function parseSessionOptions(args = [], environment = {}) {
     } else if (argument === '--port') {
       options.ports.app = parsePort(args[++index], '--port')
       options.fixedOrigin = true
+    } else if (argument === '--generation') {
+      const generation = args[++index]
+      if (options.generation || !validSessionGeneration(generation)) throw new Error('--generation requires one proposed systemx-UUIDv4 generation.')
+      options.generation = generation
     } else if (argument === '--emulator-import') {
       const directory = args[++index]
       if (typeof directory !== 'string' || !directory.trim() || directory.startsWith('--') || directory.includes('\0')) throw new Error('--emulator-import requires one existing Firebase export directory argument.')

@@ -211,6 +211,7 @@ export function createSessionStopPlan({ repoRoot, session, inspectProcess = insp
     plan.reasons = ownership.reasons.length ? [...new Set(ownership.reasons)] : ['session-processes-unverified']
     return plan
   }
+  if (allExited && session.startingRole) return { ...plan, reasons: ['child-launch-outcome-unverified'] }
   if (allExited) return { ...plan, canStop: true, cleanup: true }
   if (owner?.state !== 'owned') return { ...plan, reasons: ['supervisor-ownership-unverified'] }
   return {

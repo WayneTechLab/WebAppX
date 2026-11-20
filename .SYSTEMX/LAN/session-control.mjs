@@ -1,9 +1,9 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, unlinkSync } from 'node:fs'
-import { readSession, clearSession } from './Builder/runtime/port-utils.mjs'
+import { readSession, clearExitedSession } from './Builder/runtime/port-utils.mjs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
-import { createSessionRestartPreview, executeSessionStopPlan, sessionRuntimeCleanupTarget } from './session-restart-preview.mjs'
+import { createSessionRestartPreview, createSessionStopPlan, executeSessionStopPlan, sessionRuntimeCleanupTarget } from './session-restart-preview.mjs'
 
 const lanRoot = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(lanRoot, '..', '..')
@@ -67,6 +67,22 @@ function belongsToRepository(pid, name, session) {
     command.includes('dev-session.mjs')
 }
 
+if (action === 'start') {
+  const [preview, ...args] = process.argv.slice(3)
+  if (preview !== '--preview') {
+    await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs start --preview [session options]\n', 2)
+  }
+  const { parseSessionOptions } = await import('./session-supervisor.mjs')
+  const { createSessionStartPreview } = await import('./session-start-preview.mjs')
+  let options
+  try { options = parseSessionOptions(args, process.env) } catch (error) {
+    await writeAndExit(process.stderr, error.message + '\n', 2)
+  }
+  if (options.help) await writeAndExit(process.stdout, 'Usage: node .SYSTEMX/LAN/session-control.mjs start --preview [--port PORT] [--host HOST] [--fixed-origin] [--generation ID] [--emulator-import DIRECTORY]\n', 0)
+  const result = await createSessionStartPreview({ repoRoot, options })
+  await writeJsonAndExit(result, result.canStart ? 0 : 1)
+}
+
 const session = readSession(repoRoot)
 if (action === 'restart' || action === 'restart-preview') {
   const argumentsAfterAction = process.argv.slice(3)
@@ -94,18 +110,20 @@ if (action === 'status') {
 }
 
 if (action !== 'stop') {
-  await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop|restart --preview|restart-preview]\n', 2)
+  await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop|start --preview|restart --preview|restart-preview]\n', 2)
 }
 
 const stop = executeSessionStopPlan({
   repoRoot, session,
   signalProcess: (pid, signal) => process.kill(pid, signal),
   cleanupSession() {
-    if (JSON.stringify(readSession(repoRoot)) !== JSON.stringify(session)) throw new Error('Session changed during stop')
-    const runtime = sessionRuntimeCleanupTarget(repoRoot, session)
-    if (!runtime.allowed) throw new Error(runtime.reason)
-    if (runtime.path && existsSync(runtime.path)) unlinkSync(runtime.path)
-    if (!clearSession(repoRoot, session.sessionId)) throw new Error('Session was not cleared')
+    const cleared = clearExitedSession(repoRoot, session, () => {
+      if (!createSessionStopPlan({ repoRoot, session }).cleanup) throw new Error('Session processes changed during cleanup')
+      const runtime = sessionRuntimeCleanupTarget(repoRoot, session)
+      if (!runtime.allowed) throw new Error(runtime.reason)
+      if (runtime.path && existsSync(runtime.path)) unlinkSync(runtime.path)
+    })
+    if (!cleared) throw new Error('Session changed during cleanup')
   },
 })
 if (!stop.canStop) {
