@@ -38,7 +38,7 @@ async function fixture() {
   const vite = join(root, 'node_modules', 'vite', 'bin')
   const bin = join(root, 'bin')
   await Promise.all([lan, vite, bin].map(path => mkdir(path, { recursive: true })))
-  const files = ['Builder', 'server.mjs', 'session-supervisor.mjs', 'session-claim.mjs', 'session-restart-preview.mjs', 'dev-session.mjs', 'work-status.mjs']
+  const files = ['Builder', 'server.mjs', 'session-supervisor.mjs', 'session-claim.mjs', 'session-restart-preview.mjs', 'session-origin-recovery.mjs', 'session-table.mjs', 'dev-session.mjs', 'work-status.mjs']
   await Promise.all(files.map(name => cp(new URL('../' + name, import.meta.url), join(lan, name), { recursive: true })))
   // Local HTTP fixtures satisfy the real supervisor's readiness checks. The LAN
   // process and both launcher entry points are unmodified copies of the project.

@@ -1,4 +1,3 @@
-import { execFileSync } from 'node:child_process'
 import { existsSync, unlinkSync } from 'node:fs'
 import { readSession, clearExitedSession } from './Builder/runtime/port-utils.mjs'
 import { fileURLToPath } from 'node:url'
@@ -31,42 +30,6 @@ async function writeJsonAndExit(value, exitCode, stream = process.stdout) {
   await writeAndExit(stream, `${JSON.stringify(value, null, 2)}\n`, exitCode)
 }
 
-function processCommand(pid) {
-  if (!Number.isSafeInteger(pid) || pid <= 0) return ''
-  try {
-    return process.platform === 'win32'
-      ? execFileSync('powershell.exe', ['-NoProfile', '-Command', `(Get-CimInstance Win32_Process -Filter "ProcessId = ${pid}").CommandLine`], { encoding: 'utf8' }).trim()
-      : execFileSync('ps', ['-p', String(pid), '-o', 'command='], { encoding: 'utf8' }).trim()
-  } catch {
-    return ''
-  }
-}
-
-function alive(pid) {
-  if (!Number.isSafeInteger(pid) || pid <= 0) return false
-  try {
-    process.kill(pid, 0)
-    return true
-  } catch {
-    return false
-  }
-}
-
-function belongsToRepository(pid, name, session) {
-  const command = processCommand(pid)
-
-  if (command.includes(repoRoot)) {
-    return true
-  }
-
-  // macOS may expose the supervisor's relative npm command without its
-  // working directory. The recorded owner PID plus the canonical launcher
-  // name is sufficient for status reporting; stop still skips this process.
-  return name === 'session' &&
-    pid === session.ownerPid &&
-    command.includes('dev-session.mjs')
-}
-
 if (action === 'start') {
   const [preview, ...args] = process.argv.slice(3)
   if (preview !== '--preview') {
@@ -81,6 +44,18 @@ if (action === 'start') {
   if (options.help) await writeAndExit(process.stdout, 'Usage: node .SYSTEMX/LAN/session-control.mjs start --preview [--port PORT] [--host HOST] [--fixed-origin] [--generation ID] [--emulator-import DIRECTORY]\n', 0)
   const result = await createSessionStartPreview({ repoRoot, options })
   await writeJsonAndExit(result, result.canStart ? 0 : 1)
+}
+
+if (action === '--help' || action === '-h' || action === 'sessions' && process.argv.length === 4 && ['--help', '-h'].includes(process.argv[3])) {
+  await writeAndExit(process.stdout, 'Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop|start --preview|restart --preview|sessions [--workspace DIRECTORY ...]]\nThe sessions table includes the current workspace and up to 11 selected project directories. Recorded and verified active origins are shown separately.\n', 0)
+}
+
+if (action === 'sessions') {
+  const { createSessionTable, parseSessionTableArgs } = await import('./session-table.mjs')
+  let table
+  try { table = createSessionTable({ repoRoot, workspaces: parseSessionTableArgs(process.argv.slice(3)) }) }
+  catch { await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs sessions [--workspace DIRECTORY ...] (up to 12 workspaces). Choose existing project directories.\n', 2) }
+  await writeJsonAndExit(table, 0)
 }
 
 const session = readSession(repoRoot)
@@ -99,18 +74,20 @@ if (!session) {
 }
 
 if (action === 'status') {
-  const processes = Object.fromEntries(
-    Object.entries(session.processes ?? {}).map(([name, pid]) => [name, {
-      pid,
-      alive: alive(pid),
-      belongsToRepo: belongsToRepository(pid, name, session),
-    }]),
-  )
-  await writeJsonAndExit({ ...session, status: 'recorded', processes }, 0)
+  const plan = createSessionStopPlan({ repoRoot, session })
+  const inspected = new Map(plan.processes.map(entry => [entry.role, entry]))
+  const processes = Object.fromEntries(Object.entries(session.processes ?? {}).map(([role, pid]) => {
+    const entry = inspected.get(role)
+    return [role, { pid, alive: entry?.alive ?? null, belongsToRepo: entry?.state === 'owned',
+      ownership: entry?.state ?? 'unverified', identity: entry?.identity ?? null,
+      reasons: entry?.reasons ?? ['unrecognized-recorded-process-role'] }]
+  }))
+  await writeJsonAndExit({ ...session, status: 'recorded', processes,
+    ...(plan.termination === 'owning-terminal' ? { termination: plan.termination, guidance: plan.guidance } : {}) }, 0)
 }
 
 if (action !== 'stop') {
-  await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop|start --preview|restart --preview|restart-preview]\n', 2)
+  await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs [status|sessions [--workspace DIRECTORY ...]|stop|start --preview|restart --preview|restart-preview]\n', 2)
 }
 
 const stop = executeSessionStopPlan({
