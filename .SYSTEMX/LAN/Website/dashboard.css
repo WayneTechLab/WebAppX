@@ -4538,6 +4538,20 @@ code,
   user-select: all;
 }
 
+#lan-connection:not([hidden]) {
+  display: flex;
+  align-items: center;
+  flex: 1 0 100%;
+  grid-column: 1 / -1;
+  grid-row: 3;
+  gap: 8px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+#lan-connection-status { flex: 1; }
+.builder-app button[aria-disabled="true"] { opacity: .6; }
+
 /* Native focus scrolling accounts for the complete measured sticky stack,
    including any title/status wrapping caused by an operator's panel width. */
 .left-panel,
