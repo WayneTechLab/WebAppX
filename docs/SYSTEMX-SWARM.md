@@ -35,6 +35,74 @@ dependency-ready, nonoverlapping work within the available host and provider
 capacity. Registered roles, reserved slots and prepared jobs are distinct from
 running processes.
 
+## Plan and resume a wave
+
+From the root of the selected checkout, preview the shipped example.
+
+```sh
+node .SYSTEMX/swarm/cli.mjs wave --manifest .SYSTEMX/swarm/examples/manifest.example.json
+```
+
+Its all-zero baseline produces an empty `assignments` array and `BASE_STALE`.
+For an adopted run, copy the example to private storage. Set its repository,
+branch and full observed SHA, then supply task IDs, original acceptance criteria,
+checks and exact write scopes. A trailing slash grants the directory subtree.
+Record app/IDE writers in `externalWorkers` and their paths in `reservedPaths`.
+For a resumed run use its original manifest and state directory. From the
+coordinator checkout, set `SWARM_MANIFEST` to that file and run the same preview.
+
+```sh
+node .SYSTEMX/swarm/cli.mjs wave --manifest "$SWARM_MANIFEST"
+```
+
+The JSON extends `plan` with the current private `stateRevision` (initially 0), deterministic
+`assignments` entries containing `slot`, `generation`, `taskId` and `allowedPaths`,
+one `blockedBy` value and a `progress` object. The planner walks tasks in manifest order and assigns the lowest available
+slot first. Each proposal needs accepted
+manifest prerequisites, a free slot and a write scope disjoint from open
+generations and earlier proposals. Reserved paths are checked when the manifest
+loads. Count all open generations and declared app/IDE reservations against
+`maxWorkers`, up to ten. Wave planning reads local Git and controller state.
+The response carries `executionAuthority: false` and `applied: false`.
+Agent 0 verifies the current origin target at handoff and reviews a fresh proposal
+after any change to the base, ownership or state.
+
+| `blockedBy` | Agent 0's next action |
+| --- | --- |
+| `null` | Review the proposed paths and task criteria, then use `prepare` for the selected slot and task with a reviewed provider. |
+| `BASE_STALE` | Check the coordinator worktree, its HEAD and the named local base against the recorded baseline. Preserve pending work before reconciling. |
+| `SYNC_BARRIER_REQUIRED` | Reconcile the previous wave and target. Close verified generations, synchronize the coordinator and use `advance` at the observed descendant SHA. |
+| `CAPACITY_EXCEEDED` | Recheck occupied slots and other declared workers. Continue existing assignments until verified capacity is available. |
+| `NO_READY_TASKS` | Inspect dependencies and assigned tasks. Follow the existing generation or finish its prerequisite before selecting another task. |
+| `SCOPE_LEASE_CONFLICT` | Find the open generation owning the overlapping path and serialize the work. Path comparisons include case aliases. |
+| `AWAITING_CLOSURE` | All manifest tasks have acceptance receipts. Verify each remaining open generation and close it. |
+| `COMPLETE` | Check the accepted results against the intended delivery scope before selecting another manifest. |
+
+On a Mac IDE or Codex handoff, run `status` against the same private state.
+Agent X reconciles outstanding process and PR observations with their original
+receipts. Continue a pending PR with `observe-merge` or a requested change
+with `feedback` on its existing branch. Obtain a fresh `sync` digest before
+Agent Y runs. A changed candidate needs fresh checks, Agent Z review and Alpha's
+lease before Agent 0 integrates it. Re-read `wave` for each subsequent group.
+
+### What counts as complete
+
+In `progress`, `totalTasks` is the size of this manifest, `acceptedTasks`
+counts recorded delivery acceptances, and `remainingTasks` is their difference.
+`activeGenerations` counts slots still open, including accepted work awaiting
+closure. `complete` becomes true when every manifest task is accepted and every
+generation is closed. Use `blockedBy` to distinguish an empty proposal awaiting work from a
+completed run.
+
+WebAppX reaches **100% of the LAN catalog** when Agent 0 records reviewed
+evidence for all 10,000 original requirements in the
+[progress ledger](backlog/lan-10000-progress.json) and the generated catalog counts
+all 2,000 capabilities complete across their five acceptance lanes. A manifest
+can cover just part of a family or contain supporting work. Catalog counts
+come from the [generated execution plan](LAN-10000-EXECUTION-PLAN.md).
+The [active iteration](LAN-ACTIVE-ITERATION.md) names the current family and
+the last accepted baseline.
+
 ## Assignment and generation contract
 
 Each assignment identifies the selected repository and project scope, existing
@@ -149,6 +217,7 @@ Do not activate project records or run example tasks in the blank reusable templ
 | Command | Actual effect and gate |
 | --- | --- |
 | `plan`, `status` | Read bounded manifest/assignment state; no worker or provider starts. |
+| `wave` | Preview one group of disjoint assignments and per-manifest progress from the current private state. Accepts the manifest, optional repository and optional state directory. |
 | `next --slot N` | Read the dependency-ready, nonoverlapping next-task proposal for a free slot. A new generation and reviewed provider choice are still required; it does not dispatch. |
 | `prepare --task ID --slot N --executable ABSOLUTE_PATH --arg VALUE` | With `--apply`, pin the reviewed executable and create the owned generation branch/worktree after repository/base, dependency, budget and scope checks. Repeat `--arg` for an argument array. |
 | `sync --slot N` | Return a read-only revision/generation/state digest for a Mac IDE/Codex handoff. An optional `--sync-digest SHA256` verifies an earlier observation. |
@@ -263,11 +332,9 @@ the repository instructions. Production deployment still needs explicit
 operator authorization. Preserve failed attempts and terminal reruns rather
 than rewriting them as a single pass.
 
-This swarm work is additional operating support. It does **not** accept any of
-the next one hundred LAN source-policy requirements by itself. The
-[active iteration](LAN-ACTIVE-ITERATION.md) and
-[F002 plan](LAN-SOURCE-POLICY-PLAN-2026-10-30.md) retain that separate goal,
-original definitions and revision-bound acceptance gates.
+The [active iteration](LAN-ACTIVE-ITERATION.md) names the current catalog
+goal. The [F002 plan](LAN-SOURCE-POLICY-PLAN-2026-10-30.md) records the
+historical source-policy scope used in the following qualification.
 
 ## Local qualification — 2026-10-30
 

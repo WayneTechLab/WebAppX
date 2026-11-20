@@ -29,7 +29,25 @@ external process. File scopes detect conflicts conservatively across case aliase
 Managed releases, private runtime paths and reusable ledgers remain protected
 even when a broad host scope is assigned.
 
-`plan`, `next`, `status` and `sync` are read-only observations. Mutations require
+## Preview a worker wave
+
+Preview the shipped synthetic manifest from the repository root.
+
+```sh
+node .SYSTEMX/swarm/cli.mjs wave --manifest .SYSTEMX/swarm/examples/manifest.example.json
+```
+
+Its all-zero base yields `blockedBy: "BASE_STALE"` and an empty `assignments`
+array. For a real run, pass a reviewed private manifest with the clean local
+base revision, bounded task paths, dependencies and available worker budget.
+The preview reports proposed slots and generations plus acceptance progress
+for that manifest. Agent 0 reviews those entries before preparing any worker.
+See [wave planning and resumption](../../docs/SYSTEMX-SWARM.md#plan-and-resume-a-wave)
+for the decision table and catalog acceptance rules.
+
+## Run a generation
+
+`plan`, `wave`, `next`, `status` and `sync` are read-only observations. Mutations require
 `--apply`. `prepare` pins the selected absolute provider executable and argument
 array. `run` hands it a task packet through stdin in its own worktree. Provider
 and check execution use short state locks and separate completion leases, allowing

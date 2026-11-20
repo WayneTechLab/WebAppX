@@ -10,6 +10,7 @@ not an authentication system or a provider permission grant. The reusable
 
 | Action | Agent 0 | Agent X | Agent Y worker | Agent Z | Alpha |
 | --- | --- | --- | --- | --- | --- |
+| Preview a wave | Reads the manifest, current baseline, capacity, dependencies and scopes. Selects proposals for preparation. | Records observed state and receipt revisions. | Receives an assignment after preparation. | May inspect the proposed scope. | May inspect the integration policy. |
 | Select task, acceptance and write scope | Owns under owner authority. | Observes decision. | Receives bounded packet. | Reviews clarity/scope. | Checks consistency with lease. |
 | Change canonical integration checkout/branch | Sole writer. | No. | No. | No. | No. |
 | Edit an assigned task worktree | Coordinates integration. | No. | Only its exact task/generation/allowed paths. | Review-only unless separately assigned a distinct implementation task. | Review-only. |
@@ -32,6 +33,7 @@ processes or an allowance to exceed provider/account limits.
 
 | Operation | Required facts | Refuse or invalidate when |
 | --- | --- | --- |
+| Wave preview | Validated manifest, current local baseline and private run state. Proposals respect accepted dependencies, declared capacity and disjoint file scopes. | A proposal conveys no write or launch authority. Check `blockedBy` for the reason an empty wave has no assignments. |
 | Assign/run | Exact selected repository and base, bounded paths, known installed provider, free owned slot/worktree, reviewed budgets and stop condition. | Destination occupied, ownership ambiguous, provider replaced, stale base, unsupported host or expired assignment. |
 | Review | Original task acceptance, exact source/evidence snapshot, independent reviewer and retained negative/refusal proof. | Self-review, unexamined worker summary, changed source/evidence or unresolved required findings. |
 | Lease | Agent 0-selected policy, repository/task/generation/head/base constraints, bounded validity and retained evidence. | Expired, broadened, missing or not matching fresh observations. A same-user editable record is not a cryptographic attestation. |
@@ -40,6 +42,13 @@ processes or an allowance to exceed provider/account limits.
 | Cleanup | Accepted work, verified PR target/merge ancestry, exact owned branch/head and clean reconciled worktree. Default close retains branch/worktree. Optional deletion creates/verifies an unlinked regular exact-head private Git bundle within 128 MiB, then rechecks origin before removal. | Dirty/unowned material, ignored/untracked files, moved branch, invalid/oversized bundle, active process or uncertain provider state. Preserve ignored data separately. |
 | Target integration / next generation | Integrate verified target into only the clean owned worker; invalidate check/Z/Alpha records. Next-wave `advance` requires all slots closed and clean coordinator/base/remote agreement. | Dirty branch, conflict needing manual resolution, stale target or an open generation. No rebase, force-push, reset or implicit conflict resolution. |
 | IDE/App handoff | Exact checkout/branch/revision/generation plus observed dirty state, owner and evidence. | Changed source/branch/dirty state/generation or outdated handoff. Reobserve before action; never reset/pull silently. |
+
+Agent 0 owns the two acceptance decisions. The swarm records delivery
+acceptance against the manifest. LAN catalog acceptance binds each original
+requirement to a reviewed revision and evidence in the project ledger.
+Closing the final generation completes an accepted manifest. The catalog's
+100% mark requires all 10,000 requirements and all 2,000 capabilities.
+See [wave planning and resumption](SYSTEMX-SWARM.md#plan-and-resume-a-wave).
 
 ## Data and credential boundary
 
