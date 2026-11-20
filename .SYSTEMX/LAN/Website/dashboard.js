@@ -4016,8 +4016,12 @@ async function ingestProject(event) {
     projectRoot: document.querySelector('#ingest-root')?.value,
   })
   document.querySelector('#ingest-confirmation').value = ''
-  const manifest = result.manifest
-  output('#ingest-output', `Inventory complete · ${manifest.project.framework} · ${manifest.pages.length} pages · ${manifest.components.length} components · review ${result.manifestPath}`)
+  const { framework, pageCount, componentCount } = result.acknowledgement ? result.summary : {
+    framework: result.manifest.project.framework,
+    pageCount: result.manifest.pages.length,
+    componentCount: result.manifest.components.length,
+  }
+  output('#ingest-output', `Inventory complete · ${framework} · ${pageCount} pages · ${componentCount} components · review ${result.manifestPath}`)
 }
 
 async function boot() {

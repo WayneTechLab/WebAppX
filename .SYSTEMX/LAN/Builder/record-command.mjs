@@ -8,6 +8,10 @@ import { confinedDirectory } from './runtime/file-boundary.mjs'
 export const recordReplayLimits = Object.freeze({ keys: 128, windowMs: 24 * 60 * 60 * 1000 })
 const ledgerField = '_recordCreateReceipts'
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+export function isValidRecordKey(value) {
+  return typeof value === 'string' && uuid.test(value)
+}
+
 const hexDigest = /^[0-9a-f]{64}$/
 const digest = value => createHash('sha256').update(value).digest('hex')
 const refused = (statusCode, code, error) => ({ statusCode, result: { code, error } })
@@ -101,7 +105,7 @@ function activeReceipts(data, now) {
 // The caller holds withLocalDataWriter around this whole operation.
 export function executeRecordCommand({ body, idempotencyKey, readData, writeData, recordOperation, now = Date.now() }) {
   const keyed = idempotencyKey !== undefined
-  if (keyed && (typeof idempotencyKey !== 'string' || !uuid.test(idempotencyKey))) {
+  if (keyed && !isValidRecordKey(idempotencyKey)) {
     return refused(400, 'RECORD_KEY_INVALID', 'Use a UUID v4 Idempotency-Key for this local record.')
   }
   if (!body?.record || typeof body.record !== 'object') return refused(400, 'RECORD_REQUIRED', 'Record is required')
