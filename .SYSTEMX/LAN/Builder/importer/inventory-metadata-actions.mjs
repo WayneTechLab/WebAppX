@@ -25,5 +25,6 @@ export function runInventoryMetadataAction(argv, trackedInventory, defaultRoot =
   if (revision !== retained.lastGood.revision) return refused('proposal-baseline-changed')
   const fresh = trackedInventory(root ?? defaultRoot, 'compare')
   if (fresh.status !== 'compared') return refused('fresh-complete-comparison-required')
+  if (fresh.lastGoodRevision !== revision) return refused('proposal-baseline-changed')
   return revalidateInventoryProposal(retained.lastGood, fresh.inventory, { paths })
 }

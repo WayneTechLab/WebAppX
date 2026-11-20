@@ -117,7 +117,7 @@ test('CLI export uses retained state, while a proposal forces a fresh read-only 
   const { snapshot } = fixture()
   const calls = []
   const load = (root, action) => { calls.push([root, action]); return action === 'last-good'
-    ? { status: 'retained', lastGood: snapshot } : { status: 'compared', inventory: snapshot } }
+    ? { status: 'retained', lastGood: snapshot } : { status: 'compared', inventory: snapshot, lastGoodRevision: snapshot.revision } }
   assert.equal(runInventoryMetadataAction(['export','--root','fixture'], load).status, 'exported')
   assert.deepEqual(calls, [['fixture','last-good']])
   const args = ['revalidate','--root','fixture','--revision',snapshot.revision,'--path',page]
@@ -126,6 +126,9 @@ test('CLI export uses retained state, while a proposal forces a fresh read-only 
   assert.equal(runInventoryMetadataAction([...args,'--path',page], load).code, 'invalid-metadata-arguments')
   assert.equal(runInventoryMetadataAction(['revalidate','--path',page], load).code, 'expected-revision-and-resource-path')
   assert.equal(runInventoryMetadataAction(args, (root, action) => action === 'last-good' ? load(root, action) : { status: 'incomplete' }).code, 'fresh-complete-comparison-required')
+  const concurrentPromotion = (root, action) => action === 'last-good' ? load(root, action) :
+    { status: 'compared', inventory: snapshot, lastGoodRevision: sha('another accepted inventory') }
+  assert.equal(runInventoryMetadataAction(args, concurrentPromotion).code, 'proposal-baseline-changed')
 })
 
 test('asset work and conflicting-reference output stop at declared limits and block promotion', () => {
