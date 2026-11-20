@@ -4,7 +4,7 @@ Planning source: `053382b383d0fbffbe5161e9fb4d5f07a3c1fed8`; created 2026-10-26.
 
 The catalog contains 100 authored capability families, 2000 capabilities and 10000 delivery requirements. Five lanes describe behavior, boundaries/refusal, recovery, feedback and evidence. They are acceptance requirements, not a claim that this many independent features ship today.
 
-Current accepted status: 885/10000 requirements and 177/2000 capabilities. 0 capabilities have partial acceptance.
+Current accepted status: 905/10000 requirements and 181/2000 capabilities. 0 capabilities have partial acceptance.
 
 ## Execution and ownership
 
@@ -16,7 +16,7 @@ Preserve the source ownership, Designer kernel, command journal, style engine, c
 
 ## Dependency-ready local queue
 
-The validated progress ledger currently makes **43 local TODO requirement(s)** dependency-ready. This snapshot displays 20 in catalog ID order, with a maximum of 20 rows. The active iteration identifies the selected batch; its blocked requirements remain pending until their prerequisites are accepted. Queue membership grants no assignment, execution or publication authority.
+The validated progress ledger currently makes **39 local TODO requirement(s)** dependency-ready. This snapshot displays 20 in catalog ID order, with a maximum of 20 rows. The active iteration identifies the selected batch; its blocked requirements remain pending until their prerequisites are accepted. Queue membership grants no assignment, execution or publication authority.
 
 | Requirement | Capability | Lane | Priority | Direct prerequisites |
 | --- | --- | --- | --- | --- |
@@ -41,7 +41,7 @@ The validated progress ledger currently makes **43 local TODO requirement(s)** d
 | LAN-01266 | Reveal ancestor chains progressively | behavior | P1 | LAN-00205, LAN-00210, LAN-00215, LAN-00220, LAN-00225, LAN-00230, LAN-00235, LAN-00240, LAN-00245, LAN-00250, LAN-00255, LAN-00260, LAN-00265, LAN-00270, LAN-00275, LAN-00280, LAN-00285, LAN-00290, LAN-00295, LAN-00300, LAN-00405, LAN-00410, LAN-00415, LAN-00420, LAN-00425, LAN-00430, LAN-00435, LAN-00440, LAN-00445, LAN-00450, LAN-00455, LAN-00460, LAN-00465, LAN-00470, LAN-00475, LAN-00480, LAN-00485, LAN-00490, LAN-00495, LAN-00500 |
 | LAN-01271 | Filter hierarchy to a selected subtree | behavior | P1 | LAN-00205, LAN-00210, LAN-00215, LAN-00220, LAN-00225, LAN-00230, LAN-00235, LAN-00240, LAN-00245, LAN-00250, LAN-00255, LAN-00260, LAN-00265, LAN-00270, LAN-00275, LAN-00280, LAN-00285, LAN-00290, LAN-00295, LAN-00300, LAN-00405, LAN-00410, LAN-00415, LAN-00420, LAN-00425, LAN-00430, LAN-00435, LAN-00440, LAN-00445, LAN-00450, LAN-00455, LAN-00460, LAN-00465, LAN-00470, LAN-00475, LAN-00480, LAN-00485, LAN-00490, LAN-00495, LAN-00500 |
 
-23 additional ready requirement(s) are omitted from this bounded snapshot. Run `node scripts/lan-backlog.mjs --ready --limit 100 --json` for up to 100 rows.
+19 additional ready requirement(s) are omitted from this bounded snapshot. Run `node scripts/lan-backlog.mjs --ready --limit 100 --json` for up to 100 rows.
 
 Recompute this generated snapshot with `node scripts/lan-backlog.mjs --write` after a reviewed progress change. Use `--ready --json` for the current validated queue without writing any artifacts.
 
