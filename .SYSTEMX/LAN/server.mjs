@@ -3,13 +3,17 @@
 import {
   appendFileSync,
   copyFileSync,
+  closeSync,
   createReadStream,
   existsSync,
   mkdirSync,
+  lstatSync,
+  openSync,
   readFileSync,
   realpathSync,
   renameSync,
   statSync,
+  unlinkSync,
   writeFileSync,
 } from 'node:fs'
 import { createServer } from 'node:http'
@@ -25,6 +29,7 @@ import { createSourceHistory, readSourceOperationHistory, sourceHistoryLimits } 
 import { dispatchSourceIdentity } from './Builder/source-identity-http.mjs'
 import { createRequestAdmission } from './Builder/request-admission.mjs'
 import { getTransportPolicy } from './Builder/transport-policy.mjs'
+import { executeRecordCommand, publicRecordData, withLocalDataWriter, LocalDataWriterError } from './Builder/record-command.mjs'
 import { readRequestBody, RequestBodyError } from './Builder/request-body.mjs'
 import { evaluateRequestPolicy } from './Builder/request-policy.mjs'
 import { createTransportDiagnostics } from './Builder/transport-diagnostics.mjs'
@@ -447,14 +452,14 @@ function updateProjectFontSource(content, family, cssUrl, newline) {
 }
 
 async function saveProjectFont(body) {
-  if (body.confirmation !== 'SAVE FONT CHANGE') throw new Error('Type SAVE FONT CHANGE to approve this local font write')
+  if (body.confirmation !== 'SAVE FONT CHANGE') throw new BuilderInputError('Type SAVE FONT CHANGE to approve this local font write')
   if (body.path !== undefined && body.path !== projectCssPath) return fontSourceFailure('SOURCE_TARGET_UNSUPPORTED', 'Project font changes only support src/index.css.')
   // Preserve catalog-validation precedence where the local/cached catalog can
   // answer without fetching metadata or changing the cache before the guard.
   const cached = fontCatalogCache.expiresAt > Date.now() && fontCatalogCache.items.length
   const locallyAvailable = cached ? fontCatalogCache.items : readCuratedFontCatalog()
   const completeLocalCatalog = cached || !process.env.SYSTEMX_GOOGLE_FONTS_API_KEY?.trim() || typeof globalThis.fetch !== 'function'
-  if (((completeLocalCatalog || body.baseRevision === undefined) && !findFontFamily(locallyAvailable, body.family)) || typeof body.family !== 'string' || !body.family.trim()) throw new Error('Choose a font from the verified local or Google Fonts catalog')
+  if (((completeLocalCatalog || body.baseRevision === undefined) && !findFontFamily(locallyAvailable, body.family)) || typeof body.family !== 'string' || !body.family.trim()) throw new BuilderInputError('Choose a font from the verified local or Google Fonts catalog')
   const initial = readProjectFontSource({ forWrite: true })
   if (initial.error) return initial
   const initialPrecondition = checkSourceRevision(body.baseRevision, initial.bytes)
@@ -465,7 +470,7 @@ async function saveProjectFont(body) {
   if (initialLayout.error) return initialLayout
   const catalog = await getFontCatalog()
   const font = findFontFamily(catalog.items, body.family)
-  if (!font) throw new Error('Choose a font from the verified local or Google Fonts catalog')
+  if (!font) throw new BuilderInputError('Choose a font from the verified local or Google Fonts catalog')
   // Metadata may await a response while another editor changes or removes CSS.
   const source = readProjectFontSource({ forWrite: true })
   if (source.error) return source
@@ -478,7 +483,7 @@ async function saveProjectFont(body) {
   const cssUrl = fontCssUrl(font.family, font.variants)
   const next = updateProjectFontSource(previous, font.family, cssUrl, decoded.newline)
   if (typeof next !== 'string') return next
-  if (containsSecretMarker(next)) throw new Error('Secret-shaped content is rejected by SYSTEMX')
+  if (containsSecretMarker(next)) throw new BuilderInputError('Secret-shaped content is rejected by SYSTEMX')
   const nextBytes = Buffer.from(next, 'utf8')
   const revision = hashSourceRevision(nextBytes)
   const revisions = { previousRevision: precondition.revision, revision, currentRevision: revision }
@@ -521,6 +526,8 @@ function defaultNodeTree(pageId) {
   }
 }
 
+class BuilderInputError extends Error {}
+
 function createLocalData() {
   const workspace = inspectCurrentRepository(repoRoot, runGit(['branch', '--show-current']) || 'unknown')
   return {
@@ -560,16 +567,26 @@ function createLocalData() {
   }
 }
 
-function readLocalData() {
-  mkdirSync(dirname(localDataFile), { recursive: true })
+function storeUnavailable() {
+  return new LocalDataWriterError('LOCAL_DATA_UNAVAILABLE', 'The local data store could not be verified. Inspect its state before writing.')
+}
+
+function readFixtureJson(file) {
+  if (!confinedFile(lanRoot, file) || lstatSync(file).nlink !== 1) throw storeUnavailable()
+  return JSON.parse(readFileSync(file, 'utf8'))
+}
+
+function readLocalData({ strict = false } = {}) {
   if (!existsSync(localDataFile)) {
-    const seed = createLocalData()
-    writeFileSync(localDataFile, `${JSON.stringify(seed, null, 2)}\n`, { mode: 0o600 })
-    return seed
+    return withLocalDataWriter(localDataFile, () => existsSync(localDataFile)
+      ? readLocalData({ strict }) : writeLocalData(createLocalData()))
   }
   try {
-    return JSON.parse(readFileSync(localDataFile, 'utf8'))
-  } catch {
+    const data = readFixtureJson(localDataFile)
+    if (strict && (data?.schemaVersion !== 1 || !Array.isArray(data.pages) || !Array.isArray(data.users) || !Array.isArray(data.collections))) throw storeUnavailable()
+    return data
+  } catch (error) {
+    if (strict || error instanceof LocalDataWriterError) throw storeUnavailable()
     return createLocalData()
   }
 }
@@ -590,27 +607,19 @@ function componentRegistrySeed() {
   }
 }
 
-function readComponentRegistry() {
-  mkdirSync(dirname(componentRegistryFile), { recursive: true })
-  if (!existsSync(componentRegistryFile)) {
-    const seed = componentRegistrySeed()
-    writeFileSync(componentRegistryFile, `${JSON.stringify(seed, null, 2)}\n`, { mode: 0o600 })
-    return seed
+function readComponentRegistry({ strict = false } = {}) {
+  if (!lstatSync(componentRegistryFile, { throwIfNoEntry: false })) {
+    return withLocalDataWriter(localDataFile, () => lstatSync(componentRegistryFile, { throwIfNoEntry: false })
+      ? readComponentRegistry({ strict }) : writeFixtureJson(componentRegistryFile, componentRegistrySeed()))
   }
   try {
-    const value = JSON.parse(readFileSync(componentRegistryFile, 'utf8'))
-    return value?.schemaVersion === 1 && Array.isArray(value.components) ? value : componentRegistrySeed()
-  } catch {
-    return componentRegistrySeed()
+    const value = readFixtureJson(componentRegistryFile)
+    if (value?.schemaVersion === 1 && Array.isArray(value.components)) return value
+    if (strict) throw storeUnavailable()
+  } catch (error) {
+    if (strict || error instanceof LocalDataWriterError) throw storeUnavailable()
   }
-}
-
-function writeComponentRegistry(registry) {
-  registry.updatedAt = new Date().toISOString()
-  const temporary = `${componentRegistryFile}.${process.pid}.tmp`
-  writeFileSync(temporary, `${JSON.stringify(registry, null, 2)}\n`, { mode: 0o600 })
-  renameSync(temporary, componentRegistryFile)
-  return registry
+  return componentRegistrySeed()
 }
 
 function componentId(value) {
@@ -630,8 +639,9 @@ function normalizeList(value, limit = 20) {
 function saveComponent(body) {
   const name = typeof body.name === 'string' ? body.name.trim().slice(0, 120) : ''
   const id = componentId(body.id || name)
-  if (!name || !id) throw new Error('A reusable module name is required')
-  const registry = readComponentRegistry()
+  if (!name || !id) throw new BuilderInputError('A reusable module name is required')
+  const data = body.pageId && body.nodeId ? readLocalData({ strict: true }) : null
+  const registry = readComponentRegistry({ strict: true })
   const component = {
     id,
     name,
@@ -652,16 +662,14 @@ function saveComponent(body) {
   if (existingIndex >= 0) registry.components[existingIndex] = { ...registry.components[existingIndex], ...component }
   else registry.components.push(component)
   const backup = existsSync(componentRegistryFile) ? backupSource({ normalized: '.SYSTEMX/LAN/Files/component-registry.json', target: componentRegistryFile }) : null
-  writeComponentRegistry(registry)
+  writeFixtureJson(componentRegistryFile, registry)
   let linkedNode = null
-  if (body.pageId && body.nodeId) {
-    const data = readLocalData()
+  if (data) {
     const page = data.pages.find((item) => item.id === body.pageId)
-    const node = page?.nodeTree?.nodes?.[body.nodeId]
+    const nodes = page?.nodeTree?.nodes
+    const node = nodes && Object.hasOwn(nodes, body.nodeId) ? nodes[body.nodeId] : null
     if (node) {
-      const localDataBackup = join(backupRoot, new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-'), '.SYSTEMX/LAN/Files/local-data.json')
-      mkdirSync(dirname(localDataBackup), { recursive: true, mode: 0o700 })
-      copyFileSync(localDataFile, localDataBackup)
+      const localDataBackup = backupLocalData()
       node.props = {
         ...(node.props ?? {}),
         moduleId: id,
@@ -671,7 +679,7 @@ function saveComponent(body) {
         width: component.responsive.width,
       }
       writeLocalData(data)
-      linkedNode = { pageId: body.pageId, nodeId: body.nodeId, backup: relative(repoRoot, localDataBackup).replaceAll('\\', '/') }
+      linkedNode = { pageId: body.pageId, nodeId: body.nodeId, backup: localDataBackup }
     }
   }
   recordOperation('component_registry_updated', { componentId: id, backup, linkedNode })
@@ -686,12 +694,35 @@ function writeIngestManifest(manifest) {
   return relative(repoRoot, target).replaceAll('\\', '/')
 }
 
-function writeLocalData(data) {
+function writeFixtureJson(file, data) {
   data.updatedAt = new Date().toISOString()
-  const temporary = `${localDataFile}.${process.pid}.tmp`
-  writeFileSync(temporary, `${JSON.stringify(data, null, 2)}\n`, { mode: 0o600 })
-  renameSync(temporary, localDataFile)
+  const bytes = JSON.stringify(data, null, 2) + '\n'
+  const temporary = `${file}.${process.pid}.tmp`
+  const descriptor = openSync(temporary, 'wx', 0o600)
+  try {
+    try {
+      writeFileSync(descriptor, bytes)
+    } finally {
+      closeSync(descriptor)
+    }
+    renameSync(temporary, file)
+  } catch (error) {
+    unlinkSync(temporary)
+    throw error
+  }
   return data
+}
+
+function writeLocalData(data) {
+  return writeFixtureJson(localDataFile, data)
+}
+
+function backupLocalData() {
+  const source = '.SYSTEMX/LAN/Files/local-data.json'
+  const target = join(backupRoot, new Date().toISOString().replaceAll(':', '-') + '-' + randomUUID(), source)
+  confinedDirectory(lanRoot, dirname(target))
+  copyFileSync(localDataFile, target, 1)
+  return relative(repoRoot, target).replaceAll('\\', '/')
 }
 
 function recordOperation(event, detail = {}) {
@@ -788,7 +819,7 @@ function sourceRead(value) {
 
 function updateLocalPage(data, body) {
   const page = data.pages.find((item) => item.id === body.pageId)
-  if (!page) throw new Error('Unknown local page')
+  if (!page) throw new BuilderInputError('Unknown local page')
   if (body.operation === 'update-meta') {
     if (typeof body.name === 'string' && body.name.trim()) page.name = body.name.trim().slice(0, 120)
     if (typeof body.route === 'string' && /^\/[a-z0-9/_-]*$/.test(body.route)) page.route = body.route
@@ -811,11 +842,11 @@ function updateLocalPage(data, body) {
     root.children.push(nodeId)
   } else if (body.operation === 'remove-node') {
     const node = page.nodeTree.nodes[body.nodeId]
-    if (!node || body.nodeId === page.nodeTree.rootNodeId) throw new Error('Root node cannot be removed')
+    if (!node || body.nodeId === page.nodeTree.rootNodeId) throw new BuilderInputError('Root node cannot be removed')
     delete page.nodeTree.nodes[body.nodeId]
     for (const candidate of Object.values(page.nodeTree.nodes)) candidate.children = candidate.children.filter((id) => id !== body.nodeId)
   } else {
-    throw new Error('Unsupported page operation')
+    throw new BuilderInputError('Unsupported page operation')
   }
   return page
 }
@@ -824,11 +855,11 @@ function createLocalPage(data, body) {
   const name = typeof body.name === 'string' ? body.name.trim().slice(0, 120) : ''
   const route = typeof body.route === 'string' ? body.route.trim() : ''
   if (!name || !/^\/[a-z0-9/_-]*$/.test(route) || route === '*') {
-    throw new Error('A page name and lowercase slash route are required')
+    throw new BuilderInputError('A page name and lowercase slash route are required')
   }
-  if (data.pages.some((page) => page.route === route)) throw new Error('That route already exists')
+  if (data.pages.some((page) => page.route === route)) throw new BuilderInputError('That route already exists')
   const id = route === '/' ? 'home' : route.replace(/^\//, '').replaceAll('/', '-').replace(/[^a-z0-9-]/g, '') || `page-${randomUUID().slice(0, 8)}`
-  if (data.pages.some((page) => page.id === id)) throw new Error('That page identifier already exists')
+  if (data.pages.some((page) => page.id === id)) throw new BuilderInputError('That page identifier already exists')
   const sourceName = name.replace(/[^A-Za-z0-9]+/g, ' ').trim().split(/\s+/).map((part) => `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`).join('') || 'New'
   const page = {
     id,
@@ -1214,12 +1245,13 @@ const server = createServer((request, response) => {
   const recordRoute = transportDiagnostics.begin(request.method, response)
   applySecurityHeaders(response)
   handleRequest(request, response, recordRoute)
-    .catch(() => handleServerError(response))
+    .catch(error => handleServerError(response, error))
     .finally(() => requestAdmission.complete(response))
 })
 
-function handleServerError(response) {
+function handleServerError(response, error) {
   if (response.headersSent) response.destroy()
+  else if (error instanceof LocalDataWriterError) sendJson(response, error.statusCode, { code: error.code, error: error.message })
   else sendJson(response, 500, { error: 'The local LAN request could not be completed.' })
 }
 
@@ -1398,7 +1430,7 @@ async function handleRequest(request, response, recordRoute) {
   }
 
   if (requestUrl.pathname === '/api/builder/data' && request.method === 'GET') {
-    sendJson(response, 200, readLocalData())
+    sendJson(response, 200, publicRecordData(readLocalData({ strict: true })))
     return
   }
 
@@ -1542,8 +1574,8 @@ async function handleRequest(request, response, recordRoute) {
       }
 
       if (requestUrl.pathname === '/api/builder/source') {
-        if (body.confirmation !== 'SAVE LOCAL CHANGE') throw new Error('Type SAVE LOCAL CHANGE to approve this local write')
-        if (typeof body.content !== 'string' || body.content.length > 500_000) throw new Error('Source content is missing or exceeds the local limit')
+        if (body.confirmation !== 'SAVE LOCAL CHANGE') throw new BuilderInputError('Type SAVE LOCAL CHANGE to approve this local write')
+        if (typeof body.content !== 'string' || body.content.length > 500_000) throw new BuilderInputError('Source content is missing or exceeds the local limit')
         if (Buffer.byteLength(body.content, 'utf8') > sourcePolicyLimits.maxBytes) {
           sendJson(response, 413, { code: 'SOURCE_TOO_LARGE', error: 'Proposed source exceeds the 1000000-byte write limit.' })
           return
@@ -1552,7 +1584,7 @@ async function handleRequest(request, response, recordRoute) {
           sendJson(response, 415, { code: 'SOURCE_ENCODING_UNSUPPORTED', error: 'Proposed source must be lossless UTF-8 text without NUL bytes.' })
           return
         }
-        if (containsSecretMarker(body.content)) throw new Error('Secret-shaped content is rejected by SYSTEMX')
+        if (containsSecretMarker(body.content)) throw new BuilderInputError('Secret-shaped content is rejected by SYSTEMX')
         const source = readEditableSource(body.path, { forWrite: true })
         if (source.error) {
           const { statusCode, ...failure } = source
@@ -1597,31 +1629,30 @@ async function handleRequest(request, response, recordRoute) {
       }
 
       if (requestUrl.pathname === '/api/builder/page') {
-        const data = readLocalData()
-        const backupTarget = join(backupRoot, new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-'), '.SYSTEMX/LAN/Files/local-data.json')
-        mkdirSync(dirname(backupTarget), { recursive: true, mode: 0o700 })
-        copyFileSync(localDataFile, backupTarget)
-        const page = body.operation === 'create-page'
-          ? createLocalPage(data, body)
-          : updateLocalPage(data, body)
-        writeLocalData(data)
-        recordOperation('page_model_updated', { operation: body.operation, pageId: page.id, backup: relative(repoRoot, backupTarget).replaceAll('\\', '/') })
-        sendJson(response, 200, { status: 'saved-local-model', page, backup: relative(repoRoot, backupTarget).replaceAll('\\', '/') })
+        const result = withLocalDataWriter(localDataFile, () => {
+          const data = readLocalData({ strict: true })
+          const page = body.operation === 'create-page' ? createLocalPage(data, body) : updateLocalPage(data, body)
+          const backup = backupLocalData()
+          writeLocalData(data)
+          recordOperation('page_model_updated', { operation: body.operation, pageId: page.id, backup })
+          return { status: 'saved-local-model', page, backup }
+        })
+        sendJson(response, 200, result)
         return
       }
 
       if (requestUrl.pathname === '/api/builder/component') {
-        if (body.confirmation !== 'SAVE MODULE') throw new Error('Type SAVE MODULE to approve this local module definition')
-        const result = saveComponent(body)
+        if (body.confirmation !== 'SAVE MODULE') throw new BuilderInputError('Type SAVE MODULE to approve this local module definition')
+        const result = withLocalDataWriter(localDataFile, () => saveComponent(body))
         sendJson(response, 200, { status: 'saved-local-component', ...result })
         return
       }
 
       if (requestUrl.pathname === '/api/builder/ingest') {
-        if (body.confirmation !== 'SCAN EXISTING PROJECT') throw new Error('Type SCAN EXISTING PROJECT to approve an inventory scan')
-        if (typeof body.projectRoot !== 'string' || !body.projectRoot.trim()) throw new Error('An existing project root is required')
+        if (body.confirmation !== 'SCAN EXISTING PROJECT') throw new BuilderInputError('Type SCAN EXISTING PROJECT to approve an inventory scan')
+        if (typeof body.projectRoot !== 'string' || !body.projectRoot.trim()) throw new BuilderInputError('An existing project root is required')
         const projectRoot = resolve(body.projectRoot.trim())
-        if (!existsSync(projectRoot) || !statSync(projectRoot).isDirectory()) throw new Error('Existing project root is not a directory')
+        if (!existsSync(projectRoot) || !statSync(projectRoot).isDirectory()) throw new BuilderInputError('Existing project root is not a directory')
         const manifest = inspectExternalProject(projectRoot)
         const manifestPath = writeIngestManifest(manifest)
         recordOperation('existing_project_ingest', { projectRoot, manifestPath, mode: manifest.mode })
@@ -1630,19 +1661,11 @@ async function handleRequest(request, response, recordRoute) {
       }
 
       if (requestUrl.pathname === '/api/builder/record') {
-        const data = readLocalData()
-        const resource = body.resource === 'users' ? 'users' : 'collections'
-        if (!body.record || typeof body.record !== 'object') throw new Error('Record is required')
-        if (resource === 'collections') {
-          const collection = data.collections.find((item) => item.id === body.collectionId)
-          if (!collection) throw new Error('Unknown collection')
-          collection.rows.push({ id: randomUUID(), ...body.record, createdAt: new Date().toISOString() })
-        } else {
-          data.users.push({ id: randomUUID(), ...body.record, status: 'local fixture', provider: 'firebase-auth' })
-        }
-        writeLocalData(data)
-        recordOperation('local_record_created', { resource, collectionId: body.collectionId ?? null })
-        sendJson(response, 200, { status: 'saved-local-record', data })
+        const { statusCode, result } = withLocalDataWriter(localDataFile, () => executeRecordCommand({
+          body, idempotencyKey: request.headers['idempotency-key'],
+          readData: () => readLocalData({ strict: true }), writeData: writeLocalData, recordOperation,
+        }))
+        sendJson(response, statusCode, result)
         return
       }
 
@@ -1651,7 +1674,8 @@ async function handleRequest(request, response, recordRoute) {
         return
       }
     } catch (error) {
-      sendJson(response, 400, { error: error.message })
+      if (error instanceof BuilderInputError) sendJson(response, 400, { error: error.message })
+      else throw error
       return
     }
   }
