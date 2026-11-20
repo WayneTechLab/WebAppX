@@ -9,13 +9,16 @@ const roles = new Set(['header', 'footer', 'navigation'])
 const relations = new Set(['page-render', 'route-wrapper', 'route-sibling', 'router-markup'])
 const key = (path, name) => path + '\0' + name
 
-export function inspectComponents({ ts, sources, entryPoints, routes, read, resolveImport, revisionOf, unresolved }) {
+export function inspectComponents({ ts, sources, entryPoints, routes, read, resolveImport, revisionOf, unresolved, componentDeclaration }) {
   const modules = new Map()
   const exports = []
   for (const path of sources) {
     const source = read(path)
     if (source === null) { unresolved('component-module-unavailable', path); continue }
-    const metadata = inspectComponentModule({ ts, path, source })
+    function record(name, exportLine) {
+      if (names(name)) componentDeclaration?.({ source:path, name, exportLine })
+    }
+    const metadata = inspectComponentModule({ ts, path, source, ambiguousBinding:record })
     const issues = new Map()
     for (const issue of metadata.findings) {
       const group = issues.get(issue.code)
@@ -24,13 +27,23 @@ export function inspectComponents({ ts, sources, entryPoints, routes, read, reso
     }
     for (const issue of issues.values()) unresolved(issue.code, path, issue.line, issue.occurrences)
     const definitions = new Map(metadata.components.map(row => [row.name, row]))
-    const exported = new Map()
+    const exported = new Map(), repeatedExports = new Set()
+    for (const row of metadata.exports) {
+      if (!names(row.name) || !names(row.local) || !definitions.has(row.local)) continue
+      if (exported.has(row.name)) repeatedExports.add(row.name)
+      exported.set(row.name,definitions.get(row.local))
+    }
+    for (const name of repeatedExports) exported.delete(name)
     for (const row of metadata.exports) {
       const definition = definitions.get(row.local)
       if (!definition) continue
       if (!names(row.name) || !names(row.local)) { unresolved('unsupported-component-name', path, row.line); continue }
-      exported.set(row.name, definition)
       if (row.name !== 'default' && !/^[A-Z]/.test(row.name)) continue
+      record(row.name,row.line)
+      if (repeatedExports.has(row.name)) {
+        unresolved('ambiguous-component-export',path,row.line)
+        continue
+      }
       if (exports.length >= limits.exports) { unresolved('component-export-budget', path); break }
       exports.push({ source: path, name: row.name, declarationLine: definition.line, exportLine: row.line, kind: definition.kind, sourceRevision: revisionOf(path) })
     }

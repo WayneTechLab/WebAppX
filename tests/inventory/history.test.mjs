@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -180,4 +181,69 @@ test('elapsed, file and directory limits reject candidates while preserving the 
   assert.equal(limited.code,'directory-depth-budget')
   assert.ok(limited.work.spent.directories > 0)
   assert.deepEqual(readFileSync(f.cache),bytes)
+})
+
+test('the CLI reads an accepted v3 cache unchanged until complete v4 metadata can be promoted', t => {
+  const f = fixture(t)
+  const {revision,metadata,...legacy} = f.call().inventory
+  assert.ok(metadata.resources.length)
+  legacy.schemaVersion = 3
+  legacy.revision = createHash('sha256').update(JSON.stringify(legacy)).digest('hex')
+  assert.notEqual(legacy.revision,revision)
+  writeFileSync(f.cache,JSON.stringify(legacy))
+  const before = readFileSync(f.cache)
+  assert.deepEqual(f.command('last-good').missingCoverage,['resource-metadata'])
+  assert.equal(f.command('export').code,'current-complete-inventory-required')
+  f.put('public/icon.svg','<svg/>')
+  f.git('add','public/icon.svg')
+  const comparison = f.command('compare')
+  assert.equal(comparison.lastGoodRevision,legacy.revision)
+  assert.ok(comparison.comparison.differences.some(row => row.kind === 'public-asset' && row.change === 'previouslyUncovered'))
+  assert.deepEqual(readFileSync(f.cache),before)
+  assert.equal(f.call().inventory.schemaVersion,4)
+  assert.equal(f.command('export').status,'exported')
+})
+
+test('conflicting route and page declarations keep both exact source locations and withhold the route', t => {
+  const f = fixture(t)
+  const first = f.call()
+  f.put('src/Other.tsx','export const Other = () => <article/>')
+  f.git('add','src/Other.tsx')
+  f.put('src/main.tsx',`import {Routes,Route} from 'react-router-dom'
+import {Page} from './Page'
+import {Other} from './Other'
+export function App() { return <Routes>
+  <Route path="/same" element={<Page/>}/>
+  <Route path="/same" element={<Other/>}/>
+</Routes> }`)
+  const partial = f.command('scan')
+  assert.equal(partial.status,'incomplete')
+  assert.equal(partial.lastGoodRevision,first.inventory.revision)
+  assert.equal(partial.inventory.routes.some(row=>row.pattern==='/same'),false)
+  for (const kind of ['route','page']) {
+    const conflict = partial.inventory.metadata.conflicts.find(row=>row.kind===kind && row.key==='/same')
+    assert.deepEqual(conflict.references,[
+      {path:'src/main.tsx',line:5,target:'src/Page.tsx'},
+      {path:'src/main.tsx',line:6,target:'src/Other.tsx'}])
+  }
+})
+
+test('competing component exports and local declarations retain both sources and select neither definition', t => {
+  const f = fixture(t)
+  const original = f.call()
+  f.put('src/Page.tsx',`const Alpha = () => <header/>
+const Beta = () => <footer/>
+export { Alpha as Page }
+export { Beta as Page }
+export function Repeated() { return <header/> }
+export function Repeated() { return <footer/> }`)
+  const result = f.command('scan')
+  assert.equal(result.status,'incomplete',JSON.stringify(result))
+  assert.equal(result.lastGoodRevision,original.inventory.revision)
+  for (const [name,lines] of [['Page',[3,4]],['Repeated',[5,6]]]) {
+    const conflict = result.inventory.metadata.conflicts.find(row=>row.kind==='component' && row.key==='src/Page.tsx#'+name)
+    assert.deepEqual(conflict?.references,lines.map(line=>({path:'src/Page.tsx',line})))
+    assert.ok(!result.inventory.components.exports.some(row=>row.name===name))
+  }
+  assert.ok(!result.inventory.components.shellSources.some(row=>row.source==='src/Page.tsx'))
 })

@@ -41,6 +41,11 @@ function resources(snapshot) {
     group('component-export',snapshot.components.exports,r=>[r.source,r.name])
     group('shell-source',snapshot.components.shellSources,r=>[r.source,r.component])
   }
+  if (snapshot.metadata) {
+    for (const kind of ['public-asset','ownership-marker']) {
+      group(kind,snapshot.metadata.resources.filter(r => r.kind === kind),r=>[r.path],r=>r)
+    }
+  }
   if (snapshot.configuration) {
     const c = snapshot.configuration
     group('dependency',c.dependencies,r=>[r.group,r.name])

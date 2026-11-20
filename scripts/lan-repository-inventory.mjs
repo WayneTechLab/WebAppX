@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import { trackedInventory } from '../.SYSTEMX/LAN/Builder/importer/tracked-inventory.mjs'
 
+import { runInventoryMetadataAction } from '../.SYSTEMX/LAN/Builder/importer/inventory-metadata-actions.mjs'
+
 const [action = 'scan', ...args] = process.argv.slice(2)
-const usage = 'Usage: node scripts/lan-repository-inventory.mjs [scan|compare|last-good] [--root DIR] [--budget-ms N]'
+const usage = 'Usage: node scripts/lan-repository-inventory.mjs [scan|compare|last-good|export|revalidate] [--root DIR] [--budget-ms N]'
 function run() {
   if (action === '--help' && !args.length) {
     console.log(`${usage}
@@ -10,10 +12,18 @@ function run() {
 scan       Compare with the retained inventory and accept a complete validated result.
 compare    Compare eligible resources and report staged, unstaged and untracked source effects without accepting.
 last-good  Read this checkout's most recent complete inventory from private Git metadata.
+export     Export reviewed metadata from the accepted inventory.
+revalidate --revision SHA256 --path PATH [--path PATH ...]  Recheck a proposal against current inputs.
 
 The scan covers Vite entries, routes, component exports, shared shells and declared package, runtime, build, bridge and Firebase configuration.
 A partial or refused scan exits 1 and retains the last accepted revision. Work budgets are included in the JSON output.
 Install the tool checkout's normal development dependencies to enable the TypeScript parser.`)
+    return
+  }
+  if (action === 'export' || action === 'revalidate') {
+    const result = runInventoryMetadataAction([action,...args],trackedInventory)
+    console.log(JSON.stringify(result,null,2))
+    if (result.status === 'refused') process.exitCode = 1
     return
   }
   let root, elapsedMs

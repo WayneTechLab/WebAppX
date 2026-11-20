@@ -10,6 +10,7 @@ import { readViteInputs } from './inventory-vite.mjs'
 import { inspectDeclaredRoutes, publicPattern } from './declared-routes.mjs'
 import { inspectComponents, validComponentInventory } from './component-inventory.mjs'
 import { configurationInputPaths, inspectInventoryConfig, validInventoryConfig } from './inventory-config.mjs'
+import { inspectInventoryMetadata, inventoryResourceStatsMatch, isInventoryMetadataPath, validInventoryMetadata } from './inventory-metadata.mjs'
 import { compareInventories } from './inventory-comparison.mjs'
 import { prunedNames, stagedSources, untrackedSources, workBudget } from './inventory-working-state.mjs'
 
@@ -37,8 +38,9 @@ function validSnapshot(value, checkoutId) {
   const rows = (list, max, verify) => Array.isArray(list) && list.length <= max && list.every(verify)
   const exportKeys = ['schemaVersion','checkoutId','commit','indexRevision','supportedStack','complete','entryPoints','routes','findings','omittedFindings','exclusions','evidence','revision']
   if (value?.schemaVersion >= 2) exportKeys.push('components')
-  if (value?.schemaVersion === 3) exportKeys.push('configuration')
-  if (!keys(value, exportKeys) || ![1, 2, 3].includes(value.schemaVersion) || value.checkoutId !== checkoutId || !oid(value.commit)
+  if (value?.schemaVersion >= 3) exportKeys.push('configuration')
+  if (value?.schemaVersion === 4) exportKeys.push('metadata')
+  if (!keys(value, exportKeys) || ![1, 2, 3, 4].includes(value.schemaVersion) || value.checkoutId !== checkoutId || !oid(value.commit)
     || !digest(value.indexRevision) || value.supportedStack !== 'vite' || value.complete !== true || value.omittedFindings !== 0
     || !Array.isArray(value.findings) || value.findings.length !== 0 || !digest(value.revision)) return false
   const provenance = entry => keys(entry, ['state','source','declaredIn','line'])
@@ -46,9 +48,10 @@ function validSnapshot(value, checkoutId) {
   if (!rows(value.entryPoints, 32, e => (provenance(e) && e.state === 'explicit' && (safeHtml(e.declaredIn) || viteConfigs.includes(e.declaredIn)) && line(e.line) && safeModule(e.source))
     || (keys(e, ['state','source','basis']) && e.state === 'inferred' && e.basis === 'vite-entry-convention' && entryCandidates.includes(e.source)))) return false
   if (!rows(value.routes, inventoryLimits.routes, r => keys(r, ['state','pattern','source','declaredIn','line']) && r.state === 'explicit' && publicPattern(r.pattern) && safeModule(r.source) && safeModule(r.declaredIn) && line(r.line))) return false
-  if (!rows(value.evidence, inventoryLimits.files, e => keys(e, ['path','sha256','indexOid','matchesIndex']) && (safeEvidence(e.path) || (value.schemaVersion === 3 && safeConfigEvidence(e.path))) && digest(e.sha256) && oid(e.indexOid) && typeof e.matchesIndex === 'boolean')) return false
+  if (!rows(value.evidence, inventoryLimits.files, e => keys(e, ['path','sha256','indexOid','matchesIndex']) && (safeEvidence(e.path) || (value.schemaVersion >= 3 && safeConfigEvidence(e.path))) && digest(e.sha256) && oid(e.indexOid) && typeof e.matchesIndex === 'boolean')) return false
   if (value.schemaVersion >= 2 && !validComponentInventory(value.components, value.evidence, value.routes)) return false
-  if (value.schemaVersion === 3 && !validInventoryConfig(value.configuration, value.evidence)) return false
+  if (value.schemaVersion >= 3 && !validInventoryConfig(value.configuration, value.evidence)) return false
+  if (value.schemaVersion === 4 && !validInventoryMetadata(value.metadata,value)) return false
   if (!keys(value.exclusions, ['outsideSourceScope','privateOrNoncanonical','nonregularIndex']) || Object.values(value.exclusions).some(n => !Number.isInteger(n) || n < 0 || n > inventoryLimits.records)) return false
   const { revision, ...report } = value
   return revision === hash(JSON.stringify(report))
@@ -126,8 +129,8 @@ function loadIndex(root, budget) {
     const match = /^(\d{6}) ([a-f0-9]{40}|[a-f0-9]{64}) ([0-3])\t([\s\S]+)$/.exec(record)
     if (!match) fail('invalid-index')
     const [,mode,oid,stage,path] = match
-    if ((!isCanonicalSourcePath(path) && !['.nvmrc', '.node-version'].includes(path)) || privateName.test(path)) { exclusions.privateOrNoncanonical++; continue }
-    if (!eligible(path)) { exclusions.outsideSourceScope++; continue }
+    if ((!isInventoryMetadataPath(path) && !isCanonicalSourcePath(path) && !['.nvmrc', '.node-version'].includes(path)) || privateName.test(path)) { exclusions.privateOrNoncanonical++; continue }
+    if (!eligible(path) && !isInventoryMetadataPath(path)) { exclusions.outsideSourceScope++; continue }
     if (stage !== '0') fail('unmerged-source')
     modes.set(path, mode)
     if (!['100644','100755'].includes(mode)) { exclusions.nonregularIndex++; index.set(path, null); continue }
@@ -140,7 +143,7 @@ function inspect(repo, ts, budget, observation) {
   const { root, checkoutId } = repo
   const { head, index, modes, exclusions, indexRevision } = loadIndex(root, budget)
   observation.indexExclusions = exclusions
-  const entries = [], routes = [], routeBindings = [], findings = [], evidence = new Map()
+  const entries = [], routes = [], routeDeclarations = [], routeBindings = [], findings = [], evidence = new Map()
   const names = new Map(), normalized = new Set()
   let totalBytes = 0, omittedFindings = 0
   function exactFile(path) {
@@ -284,6 +287,10 @@ function inspect(repo, ts, budget, observation) {
     const resolveImport = specifier => resolveModule(path, specifier)
     const parsed = inspectDeclaredRoutes({ sourcePath: path, source, ts, resolveImport,
       unresolved: finding => unresolved(finding.code, path, finding.line),
+      declaration: row => {
+        if (routeDeclarations.length >= inventoryLimits.routes) fail('route-budget')
+        routeDeclarations.push({ pattern:row.pattern, source:row.source, declaredIn:path, line:row.line })
+      },
       route: row => {
         if (routes.length >= inventoryLimits.routes) fail('route-budget')
         if (seenRoutes.has(row.pattern)) { duplicates.add(row.pattern); unresolved('duplicate-route-pattern', path, row.line); return }
@@ -328,7 +335,12 @@ function inspect(repo, ts, budget, observation) {
   if (!recognized) unresolved('no-supported-route-declarations')
   const componentSources = new Set([...index.keys()].filter(path => safeModule(path) && /\.[jt]sx$/.test(path)))
   for (const path of [...visited, ...routes.map(row => row.source)]) componentSources.add(path)
+  const componentDeclarations = []
   const components = inspectComponents({
+    componentDeclaration: row => {
+      if (componentDeclarations.length >= 1200) fail('component-declaration-budget')
+      componentDeclarations.push(row)
+    },
     ts, sources: componentSources, entryPoints: entries, routes: routeBindings.filter(row => !duplicates.has(row.pattern)),
     read: path => index.get(path) && exactFile(path) ? read(path) : null,
     resolveImport: resolveModule, revisionOf: path => evidence.get(path).sha256, unresolved,
@@ -347,7 +359,7 @@ function inspect(repo, ts, budget, observation) {
   const unstaged = [], changedBytes = []
   for (const [path, indexOid] of index) {
     budget.check()
-    if (!indexOid) continue // index already counts nonregular entries as exclusions
+    if (!indexOid || !eligible(path)) continue // metadata-only resources are never opened
     const file = exactFile(path)
     if (!file) {
       // Only lstat a leaf if every ancestor still belongs to this checkout.
@@ -398,6 +410,15 @@ function inspect(repo, ts, budget, observation) {
   const declaredRoutes = routes.filter(row => !duplicates.has(row.pattern))
   const proofs = [...evidence.values()].sort((a, b) => a.path.localeCompare(b.path))
   if (!validInventoryConfig(configuration, proofs) || !validComponentInventory(components, proofs, declaredRoutes)) fail('unverified-inventory-metadata')
+  function statFor(path) {
+    if (!isInventoryMetadataPath(path)) return null
+    const target = exactFile(path)
+    if (!target) return null
+    const stat = lstatSync(target,{bigint:true})
+    return stat.isFile() && stat.nlink === 1n ? stat : null
+  }
+  const metadata = inspectInventoryMetadata({index, statFor, evidence, entryPoints:entries,
+    routes:declaredRoutes, components, findings, routeDeclarations, componentDeclarations, issue:unresolved})
   if (findings.length) {
     const missing = new Set()
     for (const {code} of findings) {
@@ -415,10 +436,12 @@ function inspect(repo, ts, budget, observation) {
     const target = exactFile(item.path)
     if (!target || hash(fileBytes(target)) !== item.sha256) fail('file-changed')
   }
+  if (!inventoryResourceStatsMatch(metadata,index,statFor)) fail('file-changed')
   const finished = loadIndex(root,budget)
   if (finished.head !== head || finished.indexRevision !== indexRevision) fail('index-changed')
-  const report = { schemaVersion: 3, checkoutId, commit: head, indexRevision, supportedStack: 'vite', complete: !findings.length && !omittedFindings,
-    entryPoints: entries, routes: declaredRoutes, components, configuration, findings, omittedFindings, exclusions, evidence: proofs }
+  const report = { schemaVersion: 4, checkoutId, commit: head, indexRevision, supportedStack: 'vite', complete: !findings.length && !omittedFindings,
+    entryPoints: entries, routes: declaredRoutes, components, configuration, metadata, findings, omittedFindings, exclusions, evidence: proofs }
+  if (!validInventoryMetadata(metadata,report)) fail('unverified-inventory-metadata')
   if (Buffer.byteLength(JSON.stringify(report)) + 100 > inventoryLimits.stateBytes) fail('snapshot-budget')
   return { ...report, revision: hash(JSON.stringify(report)) }
 }
@@ -438,6 +461,10 @@ export function trackedInventory(root, action = 'scan', options = {}) {
       if (!info.isDirectory() || info.isSymbolicLink() || realpathSync(dir) !== dir) fail('linked-state-directory')
       return lstatSync(cache, {throwIfNoEntry:false}) ? readBounded(cache,inventoryLimits.stateBytes) : null
     }
+    function verifyBaseline() {
+      const current = readCache()
+      if ((current ? hash(current) : null) !== baselineDigest) fail('baseline-changed')
+    }
     const retained = readCache()
     if (retained) {
       const value = JSON.parse(utf8.decode(retained))
@@ -446,8 +473,9 @@ export function trackedInventory(root, action = 'scan', options = {}) {
       baselineDigest = hash(retained)
     }
     if (action === 'last-good') return { status: lastGood ? 'retained' : 'empty', checkoutId: repo.checkoutId, lastGood,
-      ...(lastGood && lastGood.schemaVersion < 3 ? { missingCoverage: lastGood.schemaVersion === 1
-        ? ['component-exports', 'shared-shell-sources', 'configuration'] : ['configuration'] } : {}) }
+      ...(lastGood && lastGood.schemaVersion < 4 ? { missingCoverage:[
+        ...(lastGood.schemaVersion === 1 ? ['component-exports','shared-shell-sources'] : []),
+        ...(lastGood.schemaVersion < 3 ? ['configuration'] : []), 'resource-metadata'] } : {}) }
     budget = workBudget(options.elapsedMs)
     const inventory = inspect(repo, require('typescript'), budget, observation)
     budget.check()
@@ -456,7 +484,10 @@ export function trackedInventory(root, action = 'scan', options = {}) {
     budget.check()
     if (!inventory.complete) return {status:'incomplete', ...result, work:budget.report()}
     if (!validSnapshot(inventory,repo.checkoutId)) fail('unverified-inventory-metadata')
-    if (action === 'compare') return {status:'compared', ...result, work:budget.report()}
+    if (action === 'compare') {
+      verifyBaseline()
+      return {status:'compared', ...result, work:budget.report()}
+    }
     const data = JSON.stringify(inventory) + '\n'
     if (Buffer.byteLength(data) > inventoryLimits.stateBytes) fail('snapshot-budget')
     confinedDirectory(repo.gitDir,dir)
@@ -466,8 +497,7 @@ export function trackedInventory(root, action = 'scan', options = {}) {
     let lockFd
     try { lockFd = openSync(lock, 'wx', 0o600) } catch (error) { if (error.code === 'EEXIST') fail('accept-in-progress'); throw error }
     try {
-      const current = readCache()
-      if ((current ? hash(current) : null) !== baselineDigest) fail('baseline-changed')
+      verifyBaseline()
       const temp = join(dir, `${randomUUID()}.tmp`)
       const fd = openSync(temp, 'wx', 0o600)
       try {
