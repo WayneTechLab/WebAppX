@@ -193,4 +193,14 @@ export function renderPage(pathname) { switch(pathname){case dynamicPath():retur
   const adapters = Object.fromEntries(inventory.findings.map((row,i) => [row.code,provenance.rules[provenance.findings[i]].adapter]))
   assert.equal(adapters['unsupported-vite-proxy-route'],'vite-static-config')
   assert.equal(adapters['dynamic-route-pattern'],'react-route-declaration')
+
+  const cases = Array.from({ length:105 }, (_, n) => `case choose(${n}): return <Page/>`).join('\n')
+  f.put('src/router.tsx', `import Page from './Page'
+export function renderPage(pathname) { switch(pathname){${cases}
+default:return <Page/>} }`)
+  const capped = cli(f.root,'compare',1)
+  assert.ok(capped.inventory.omittedFindings > 0)
+  assert.ok(!capped.inventory.findings.some(row => row.code === 'unsupported-vite-proxy-route'))
+  assert.deepEqual(capped.capabilities.missing,capabilities.missing)
+  assert.deepEqual(readFileSync(f.cache),accepted)
 })
