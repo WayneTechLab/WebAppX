@@ -1,13 +1,20 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { tmpdir } from 'node:os'
+import { fileURLToPath } from 'node:url'
 import { trackedInventory } from '../../.SYSTEMX/LAN/Builder/importer/tracked-inventory.mjs'
 
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
+const cliPath = fileURLToPath(new URL('../../scripts/lan-repository-inventory.mjs', import.meta.url))
+function cli(root, action, exitCode = 0) {
+  const result = spawnSync(process.execPath, [cliPath, action, '--root', root], { encoding: 'utf8' })
+  assert.equal(result.status, exitCode, result.stderr || result.stdout)
+  return JSON.parse(result.stdout)
+}
 function fixture(t) {
   const root = mkdtempSync(join(tmpdir(),'tracked-config-fixture-'))
   t.after(() => rmSync(root, { recursive:true, force:true }))
@@ -72,4 +79,77 @@ test('v2 readback reports its missing configuration coverage; unresolved new dec
   assert.ok(partial.inventory.findings.some(item => item.code === 'unsupported-dependency-declaration'))
   assert.ok(!JSON.stringify(partial).includes('PACKAGE_SOURCE_CANARY'))
   assert.deepEqual(readFileSync(f.cache),kept)
+})
+
+test('preview proxy declarations surface independently of development routing and preserve the accepted inventory', t => {
+  const f = fixture(t)
+  f.put('vite.config.ts', 'export default {preview:{proxy:{}}}')
+  f.git('add', 'vite.config.ts')
+  const good = cli(f.root, 'scan')
+  assert.equal(good.status, 'accepted')
+  const bytes = readFileSync(f.cache)
+  for (const server of ['', 'server:{host:"localhost"},', 'server:{proxy:{}},']) {
+    const source = 'export default {\n' + server + '\npreview:{proxy:{\n"/__systemx":"http://PRIVATE_CANARY"\n}}}'
+    f.put('vite.config.ts', source)
+    const report = cli(f.root, 'scan', 1)
+    assert.equal(report.status, 'incomplete')
+    assert.deepEqual(report.inventory.configuration.bridges, [])
+    assert.deepEqual(report.inventory.findings.find(row => row.code === 'unsupported-vite-preview-bridge'),
+      { state: 'unresolved', code: 'unsupported-vite-preview-bridge', path: 'vite.config.ts', line: 4 })
+    assert.ok(report.inventory.evidence.some(row => row.path === 'vite.config.ts' && row.sha256 === sha(source)))
+    assert.doesNotMatch(JSON.stringify(report), /PRIVATE_CANARY/)
+    assert.equal(report.lastGoodRevision, good.inventory.revision)
+    assert.deepEqual(readFileSync(f.cache), bytes)
+  }
+  assert.deepEqual(cli(f.root, 'last-good').lastGood, good.inventory)
+  const server = 'server:{host:"localhost",proxy:{"/__systemx":"http://localhost"}}'
+  for (const host of ['true', 'pickHost()']) {
+    f.put('vite.config.ts', 'export default {' + server + ',preview:{host:' + host + '}}')
+    const report = cli(f.root, 'scan', 1)
+    assert.ok(report.inventory.findings.some(row => row.code === 'unsupported-vite-preview-host'))
+    assert.equal(report.inventory.configuration.bridges[0].preview, 'unresolved')
+    assert.deepEqual(readFileSync(f.cache), bytes)
+  }
+  f.put('vite.config.ts', 'export default {' + server + ',preview:{host:true,proxy:{}}}')
+  assert.equal(cli(f.root, 'scan').inventory.configuration.bridges[0].preview, 'explicit-empty-proxy')
+})
+
+test('a scan needs a shared version across all runtime declarations before replacing the last complete inventory', t => {
+  const f = fixture(t)
+  function setPins(engine, nvm) {
+    f.put('package.json', JSON.stringify({ devDependencies: { vite: '6' }, engines: { node: engine } }))
+    f.put('.nvmrc', nvm + '\n')
+  }
+  setPins('24.0.0', '24.x')
+  f.git('add', '.nvmrc')
+  let good = cli(f.root, 'scan')
+  assert.equal(good.status, 'accepted')
+  for (const [engine, selector] of [
+    ['22.x || 24.x', '>=24 <25'], ['>23.9.4 <24', '23.9.x'],
+    ['>=24.0.0-rc.1 <24.0.0', '24.0.0-rc.2'], ['>=24.0.0-rc.1 <24.0.0', '=24.0.0-rc.2'],
+  ]) {
+    setPins(engine, selector)
+    good = cli(f.root, 'scan')
+    assert.equal(good.status, 'accepted')
+    assert.deepEqual(good.inventory.configuration.runtimePins.map(row => row.value), [engine, selector])
+  }
+  const bytes = readFileSync(f.cache)
+  for (const [engine, selector, code, path] of [
+    ...['22', '22.x', '>=22 <23'].map(selector => ['24.0.0', selector, 'runtime-pin-outside-engine', '.nvmrc']),
+    ['>=22 <23', '24.0.0', 'runtime-pin-outside-engine', '.nvmrc'],
+    ['>=22 <23', '24.x', 'runtime-selector-comparison-unresolved', 'package.json'],
+    ['>=22 <25', '24.0.0-rc.1', 'runtime-selector-comparison-unresolved', '.nvmrc'],
+    ['>=24.0.0-rc.4 <24.0.0 || >=22', '24.0.0-rc.2', 'runtime-selector-comparison-unresolved', '.nvmrc'],
+    ['>=24 >=24.0.0-rc.1', '24.0.0-rc.2', 'runtime-selector-comparison-unresolved', '.nvmrc'],
+    ['>=24 <23', '>=24 <23', 'runtime-selector-comparison-unresolved', 'package.json'],
+    ['>=22', '24.0.0-rc.01', 'unsupported-runtime-declaration', '.nvmrc'],
+  ]) {
+    setPins(engine, selector)
+    const report = cli(f.root, 'scan', 1)
+    assert.equal(report.status, 'incomplete')
+    assert.ok(report.inventory.findings.some(row => row.code === code && row.path === path), JSON.stringify(report.inventory.findings))
+    assert.equal(report.lastGoodRevision, good.inventory.revision)
+    assert.deepEqual(readFileSync(f.cache), bytes)
+  }
+  assert.deepEqual(cli(f.root, 'last-good').lastGood, good.inventory)
 })
