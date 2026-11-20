@@ -84,16 +84,17 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
     return node
   }
   function tagOf(node) {
+    node = unwrap(node)
     if (!node) return null
     const opening = ts.isJsxElement(node) ? node.openingElement : node
     return (ts.isJsxOpeningElement(opening) || ts.isJsxSelfClosingElement(opening))
-      && ts.isIdentifier(opening.tagName) ? opening.tagName.text : null
+      && ts.isIdentifier(opening.tagName) && !/^[a-z]/.test(opening.tagName.text) ? opening.tagName.text : null
   }
-  function record(node, pattern, expression) {
+  function record(node, pattern, tag) {
     if (!publicPattern(pattern)) return issue(node, 'dynamic-route-pattern')
-    const tag = tagOf(unwrap(expression))
     const binding = imports.get(tag)
-    const path = binding && !shadowed.has(tag) ? resolveImport(binding.specifier) : null
+    const routerPrimitive = binding && ['react-router', 'react-router-dom'].includes(binding.specifier)
+    const path = binding && !routerPrimitive && !shadowed.has(tag) ? resolveImport(binding.specifier) : null
     if (!path) return issue(node, 'unresolved-route-module')
     addFinding(candidates, { pattern, source: path, line: lineOf(node), exportName: binding.imported, dispatch })
   }
@@ -109,8 +110,8 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
       const target = clause.statements.length === 1 && directReturn(clause.statements[0])
       for (const item of pending) {
         if (!target) issue(item, 'ambiguous-route-branch')
-        else if (ts.isDefaultClause(item)) record(item, '*', target)
-        else record(item, ts.isStringLiteral(item.expression) ? item.expression.text : null, target)
+        else if (ts.isDefaultClause(item)) record(item, '*', tagOf(target))
+        else record(item, ts.isStringLiteral(item.expression) ? item.expression.text : null, tagOf(target))
       }
       pending = []
     }
@@ -144,7 +145,7 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
       } else if (ts.isIfStatement(statement) && !statement.elseStatement) {
         const paths = ifPatterns(statement.expression, parameter.text)
         const target = directReturn(statement.thenStatement)
-        if (paths && target) for (const { node, pattern } of paths) record(node, pattern, target)
+        if (paths && target) for (const { node, pattern } of paths) record(node, pattern, tagOf(target))
         else issue(statement, 'dynamic-route-dispatch')
       } else {
         issue(statement, 'dynamic-route-dispatch')
@@ -170,21 +171,25 @@ export function inspectDeclaredRoutes({ sourcePath, source, ts, resolveImport, r
       }
     }
     if (nested) { issue(router, 'nested-route-declaration'); continue }
-    for (const child of router.children) {
+    children: for (const child of router.children) {
       if (ts.isJsxText(child) && !child.text.trim() || ts.isJsxExpression(child) && !child.expression) continue
       const tag = tagOf(child)
       if (!routes.has(tag) || shadowed.has(tag)) { issue(child, 'dynamic-route-dispatch'); continue }
       if (!ts.isJsxSelfClosingElement(child)) { issue(child, 'nested-route-declaration'); continue }
-      const attrs = child.attributes.properties
       const fields = new Map()
-      for (const attr of attrs) {
-        if (!ts.isJsxAttribute(attr) || fields.has(attr.name.getText(file))) break
+      for (const attr of child.attributes.properties) {
+        if (!ts.isJsxAttribute(attr) || fields.has(attr.name.getText(file))) {
+          issue(attr, 'ambiguous-route-branch')
+          continue children
+        }
         fields.set(attr.name.getText(file), attr.initializer)
       }
-      const path = fields.get('path'), element = fields.get('element')
-      if (fields.size !== attrs.length) { issue(child, 'ambiguous-route-branch'); continue }
-      record(child, path && ts.isStringLiteral(path) ? path.text : null,
-        element && ts.isJsxExpression(element) ? element.expression : null)
+      if (fields.has('Component') && fields.has('element')) { issue(child, 'ambiguous-route-branch'); continue }
+      const path = fields.get('path')
+      const prop = fields.get(fields.has('Component') ? 'Component' : 'element')
+      const value = prop && ts.isJsxExpression(prop) ? unwrap(prop.expression) : null
+      const target = fields.has('Component') ? value && ts.isIdentifier(value) && value.text : tagOf(value)
+      record(child, path && ts.isStringLiteral(path) ? path.text : null, target)
     }
   }
   if (overflow) {
