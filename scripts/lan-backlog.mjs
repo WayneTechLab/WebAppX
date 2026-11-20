@@ -185,13 +185,23 @@ export function applyProgress(catalog, progress) {
   return { ...catalog, items: catalog.items.map(item => completions.has(item.id) ? { ...item, status: 'done', completion: { ...completions.get(item.id) } } : { ...item, status: 'todo' }) }
 }
 
-export function readyItems(catalog, { limit = 20, gate = 'local' } = {}) {
+export function readyItems(catalog, { limit = 20, gate = 'local', includeFamilies = false } = {}) {
   if (!Number.isInteger(limit) || limit < 1 || limit > 100 || !gates.includes(gate)) throw new Error('Ready queries require limit 1..100 and a known gate.')
   // Validated progress closes every accepted dependency, so checking all direct
   // prerequisites is equivalent to checking the complete transitive closure.
   const done = new Set(catalog.items.filter(item => item.status === 'done').map(item => item.id))
   const matches = catalog.items.filter(item => item.status === 'todo' && item.gate === gate && item.dependsOn.every(id => done.has(id)))
-  return { gate, executionAuthorized: false, meaning: 'Dependency-ready delivery requirements only; no assignment, execution, provider access or publication authority.', matches: matches.length, items: matches.slice(0, limit) }
+  const result = { gate, executionAuthorized: false, meaning: 'Dependency-ready delivery requirements only; no assignment, execution, provider access or publication authority.', matches: matches.length, items: matches.slice(0, limit) }
+  if (includeFamilies === true) {
+    const families = new Map()
+    for (const item of matches) {
+      const family = families.get(item.familyId)
+      if (family) family.count += 1
+      else families.set(item.familyId, { familyId: item.familyId, familyName: item.familyName, count: 1, firstReadyId: item.id })
+    }
+    result.families = [...families.values()]
+  }
+  return result
 }
 
 const countBy = (items, key) => Object.fromEntries([...new Set(items.map(item => item[key]))].sort().map(value => [value, items.filter(item => item[key] === value).length]))

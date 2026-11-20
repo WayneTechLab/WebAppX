@@ -41,6 +41,8 @@ test('CLI goal matches authoritative summary and all gate counts from the select
   for (const gate of gates) {
     const ready = await runCli(['--ready', '--json', '--gate', gate, '--limit', '2'], options)
     assert.deepEqual(report.ready[gate], { count: ready.matches, items: ready.items.map(({ id, familyId }) => ({ id, familyId })) })
+    assert.equal(Object.hasOwn(ready, 'families'), false, 'The existing backlog --ready response retains its schema.')
+    assert.equal(report.readyFamilies[gate].reduce((sum, family) => sum + family.count, 0), ready.matches)
   }
   assert.equal(report.manifestWave, undefined)
   assert.equal(report.applied, false); assert.equal(report.executionAuthority, false)
@@ -114,8 +116,7 @@ test('an exact receipt outside the selected repository cannot accept a requireme
   assert.equal(JSON.parse(goal(repo).stderr).code, 'GOAL_CATALOG_INVALID')
 })
 
-test('only acceptance of every original definition completes the catalog goal', async t => {
-  const { repo } = fixture(t)
+function bindFixtureDefinitions(repo) {
   const source = buildCatalog(specificationFiles.map(name => readJson(join(repo, name))))
   const receipts = new Map(), entries = []
   for (const item of source.items) {
@@ -128,6 +129,49 @@ test('only acceptance of every original definition completes the catalog goal', 
   for (const [evidence, requirements] of receipts) {
     writeFileSync(join(repo, evidence), '```lan-completion-evidence\n' + JSON.stringify({ schemaVersion: 1, requirements }) + '\n```\n')
   }
+  return { source, entries }
+}
+
+test('a one-row sample still reports all eligible families and tracks progress within each gate', async t => {
+  const { repo } = fixture(t)
+  const { source, entries } = bindFixtureDefinitions(repo)
+  const dependencies = new Set(source.items.flatMap(item => item.dependsOn))
+  // Leaving only terminal requirements unfinished makes every remaining row
+  // ready while preserving the closure required by the real receipt validator.
+  const leaves = source.items.filter(item => !dependencies.has(item.id))
+  const pending = new Set(leaves.map(item => item.id))
+  const save = () => jsonFile(join(repo, progressFile), { schemaVersion: 1, completions: entries.filter(entry => !pending.has(entry.id)) })
+  save()
+  const command = goal(repo, '--limit', '1')
+  assert.equal(command.status, 0, command.stderr)
+  const initial = JSON.parse(command.stdout)
+  assert.ok(initial.ready.local.count > 100, 'Exercise families beyond the maximum raw requirement sample.')
+  assert.ok(initial.readyFamilies.local.length > 1)
+  for (const gate of gates) {
+    const gated = leaves.filter(item => item.gate === gate)
+    assert.ok(gated.length > 0, `Exercise the ${gate} gate.`)
+    assert.equal(initial.ready[gate].count, gated.length)
+    assert.deepEqual(initial.ready[gate].items, [{ id: gated[0].id, familyId: gated[0].familyId }])
+    const familyIds = [...new Set(gated.map(item => item.familyId))]
+    const expected = familyIds.map(familyId => {
+      const family = gated.filter(item => item.familyId === familyId)
+      return { familyId, familyName: family[0].familyName, count: family.length, firstReadyId: family[0].id }
+    })
+    assert.deepEqual(initial.readyFamilies[gate], expected)
+  }
+  const family = initial.readyFamilies.local.find(item => item.count > 1)
+  pending.delete(family.firstReadyId); save()
+  const advanced = await readLanGoal({ publicRoot: repo, limit: 1 })
+  const next = advanced.readyFamilies.local.find(item => item.familyId === family.familyId)
+  assert.equal(next.count, family.count - 1)
+  assert.equal(next.firstReadyId, leaves.find(item => item.familyId === family.familyId && pending.has(item.id)).id)
+  assert.deepEqual(advanced.readyFamilies.operator, initial.readyFamilies.operator)
+  assert.deepEqual(advanced.readyFamilies.provider, initial.readyFamilies.provider)
+})
+
+test('only acceptance of every original definition completes the catalog goal', async t => {
+  const { repo } = fixture(t)
+  const { source, entries } = bindFixtureDefinitions(repo)
   const prerequisites = new Set(source.items.flatMap(item => item.dependsOn))
   const leaf = source.items.find(item => !prerequisites.has(item.id))
   jsonFile(join(repo, progressFile), { schemaVersion: 1, completions: entries.filter(entry => entry.id !== leaf.id) })
@@ -139,5 +183,8 @@ test('only acceptance of every original definition completes the catalog goal', 
   jsonFile(join(repo, progressFile), { schemaVersion: 1, completions: entries })
   const complete = await readLanGoal({ publicRoot: repo })
   assert.deepEqual(complete.requirements, { accepted: entries.length, total: entries.length, remaining: 0, percentage: 100, complete: true })
-  for (const gate of gates) assert.deepEqual(complete.ready[gate], { count: 0, items: [] })
+  for (const gate of gates) {
+    assert.deepEqual(complete.ready[gate], { count: 0, items: [] })
+    assert.deepEqual(complete.readyFamilies[gate], [])
+  }
 })
