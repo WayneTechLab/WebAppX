@@ -19,6 +19,30 @@ and [access matrix](https://github.com/WayneTechLab/WebAppX/blob/main/docs/SYSTE
 They are host-owned records beside the public blank map/access seeds; the
 reusable template keeps those seeds and its task/context/plan/memory records blank.
 
+## Preview the next group of workers
+
+Preview the example from the WebAppX checkout root.
+
+```sh
+node .SYSTEMX/swarm/cli.mjs wave --manifest .SYSTEMX/swarm/examples/manifest.example.json
+```
+
+The example deliberately has an all-zero base. Its empty `assignments` and
+`blockedBy: "BASE_STALE"` show how a stale baseline is reported. With a
+reviewed private manifest at the clean current base, the same command proposes
+a slot, generation, task ID and allowed paths for each eligible worker.
+It accounts for accepted dependencies, scopes already claimed by other work
+and capacity shared with IDE/app workers. Agent 0 reviews the proposals before
+preparing each generation.
+
+To resume, load the same manifest and private state, inspect `status` and
+reconcile outstanding checks or PRs. Refresh the `wave` observation and use
+a fresh slot `sync` before launching an assigned worker. The response's
+`progress.complete` means every task in that manifest has been accepted and
+all its generations have closed. The WebAppX goal covers 10,000 original LAN
+requirements and 2,000 capabilities. The [current LAN iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md)
+records catalog acceptance and F007 scope.
+
 ## Branch, PR and reassignment lifecycle
 
 Agent 0 selects a bounded task, observed base, provider and allowed paths. A
@@ -51,7 +75,7 @@ ignored host-local state.
 
 Run `node .SYSTEMX/swarm/cli.mjs --help` in the selected repository. An explicit
 private schema-1 manifest pins repository/base, tasks/scopes/checks, concurrency
-budget and merge policy. Commands are `plan`, `next`, `status`, `prepare`, `sync`, `run`,
+budget and merge policy. Commands are `plan`, `wave`, `next`, `status`, `prepare`, `sync`, `run`,
 `verify`, `review`, `alpha`, `feedback`, `integrate`, `publish-plan`, `publish`, `ready`,
 `merge-plan`, `merge`, `observe-merge`, `accept`, `close` and `advance`. Every
 mutation needs `--apply`; read-only plans grant no authority. `next --slot N`
@@ -104,11 +128,9 @@ prove ten live provider processes, a GitHub merge, branch deletion, installed
 Windows cleanup or IDE acceptance. Source publication needs full CI and Hosting
 preflight. Production deployment needs a separate operator instruction.
 
-Swarm operating support is separate from the next one hundred F002 LAN
-requirements. Read the [active iteration](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md)
-and [source-policy plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md)
-for those original requirements and acceptance counts. For ordinary new-app
-single-job setup, use [Agent Y setup](Agent-Y-New-App-Setup.md).
+The [F002 source-policy plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-SOURCE-POLICY-PLAN-2026-10-30.md)
+covers the original requirements behind the October qualification below.
+For a single CLI assignment in a new app, use [Agent Y setup](Agent-Y-New-App-Setup.md).
 
 ## Local qualification — 2026-10-30
 

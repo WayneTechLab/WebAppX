@@ -1,15 +1,48 @@
-# LAN active iteration — graph and API acceptance
+# LAN active iteration — F007 transport and request lifecycle
+
+The program goal is **10,000 accepted requirements and 2,000 completed
+capabilities** across 100 families. At the November 19 acceptance checkpoint,
+F001–F006 accounted for **600 requirements and 120 capabilities (6%)**.
+**9,400 requirements and 1,880 capabilities remain.** F007 is the active family.
+
+## F007 delivery plan
+
+1. Select bounded work from [F007 transport and request lifecycle](backlog/lan-10000/F007.md),
+   covering LAN-00601–LAN-00700. Check the dependency-ready rows in the
+   [generated execution plan](LAN-10000-EXECUTION-PLAN.md) against the original
+   criteria. Its 20 capabilities each have five lanes covering behavior,
+   boundaries/refusal, recovery, operator feedback and verification evidence.
+2. Agent 0 creates a private manifest for the selected work with disjoint paths,
+   explicit dependencies, named checks and capacity shared with app/IDE workers.
+   Set `SWARM_MANIFEST` to its path. At the clean reviewed base, run `node .SYSTEMX/swarm/cli.mjs wave --manifest "$SWARM_MANIFEST"`.
+   Inspect assignments and blockers before preparing workers.
+3. Have Agent Y implement and test the assigned scopes. Agent X retains
+   candidate-bound observations such as temporary-server request and refusal
+   results, sanitized response diagnostics and controller handoffs. Agent Z
+   reviews the exact worker change and Alpha checks its integration lease. Resolve findings and repeat the affected checks on the resulting revision.
+4. Agent 0 reviews each original requirement against the final evidence,
+   checks prerequisite closure and records accepted rows in the
+   [LAN ledger](backlog/lan-10000-progress.json).
+   Regenerate the catalog and select the next dependency-ready group. Continue
+   until the ledger reaches 10,000/10,000 and 2,000/2,000. Record GitHub publication and production deployment independently.
+
+On resumption, inspect the current ledger, Git base and open generations
+before assigning work. A swarm manifest can be complete while other F007
+requirements are still open. The [swarm runbook](SYSTEMX-SWARM.md#plan-and-resume-a-wave)
+describes the fresh receipts and Mac IDE/Codex sync point.
+
+## Completed F005/F006 baseline
 
 On 2026-11-19 Agent 0 accepted the canonical document graph (F005) and then
 the versioned API (F006). Together they cover **LAN-00401–LAN-00600**. The
-catalog now counts **600/10,000 accepted requirements and 120/2,000
-capabilities**. **9,400 requirements remain open.**
+graph and API [acceptance receipt](LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md)
+records the tested candidate and accepted requirements.
 
 Open **Build → Code → Graph and API contracts** to preview a graph import,
 inspect findings, compare revisions or reopen a saved graph. The versioned API
 inspector lists supported commands and queries for clients 1.0 and 1.1. Use
-the [graph guide](LAN-CANONICAL-GRAPH.md), [API guide](LAN-VERSIONED-API-CONTRACTS.md)
-and [acceptance receipt](LAN-GRAPH-API-ACCEPTANCE-2026-11-19.md) for setup, limits and tested behavior.
+the [graph guide](LAN-CANONICAL-GRAPH.md) and [API guide](LAN-VERSIONED-API-CONTRACTS.md)
+for setup, limits and tested behavior.
 
 The [execution plan](LAN-GRAPH-API-PLAN-2026-10-31.md) records the delivery
 sequence. The [November 8 synchronization QA](LAN-GRAPH-API-SYNC-QA-2026-11-08.md)
@@ -161,7 +194,7 @@ comparison download. They are preserved rather than recertified by metadata.
 
 ## Additional host swarm scope
 
-The additive [host swarm operating extension](SYSTEMX-SWARM.md) provides twenty
+At the F002 milestone, the [host swarm operating extension](SYSTEMX-SWARM.md) provided twenty
 stepwise commands and up to ten isolated CLI slots under Agent 0/X/Y/Z/Alpha.
 Read its [operational map](SYSTEMX-SWARM-MAP.md),
 [access matrix](SYSTEMX-SWARM-ACCESS-MATRIX.md) and

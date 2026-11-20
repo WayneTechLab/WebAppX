@@ -11,7 +11,8 @@ This is WebAppX's host-owned swarm map. The reusable
 ```mermaid
 flowchart TD
     Owner[Owner: scope and lifecycle authority] --> A0[Agent 0: canonical integration owner]
-    A0 --> Packet[Exact task / base / paths / provider / generation]
+    A0 --> Wave[Preview a wave from manifest and private receipts]
+    Wave -->|Disjoint scopes and capacity| Packet[Exact task / base / paths / provider / generation]
     Packet --> Y[Agent Y: up to 10 isolated CLI slots]
     Y --> Result[Task branch + original evidence + open PR]
     Result --> Z[Agent Z: independent review]
@@ -27,8 +28,10 @@ flowchart TD
     Verify --> Other[Other wave branches have an older base]
     Other --> Integrate[Merge verified target into owned branch]
     Integrate --> Checks
-    Cleanup --> Next[New task generation and branch]
-    Next --> Packet
+    Cleanup --> Barrier[Close open generations and advance the verified base]
+    Barrier --> Wave
+    Acceptance --> Evidence[Agent 0 reviews each LAN requirement against its original criteria]
+    Evidence --> Catalog[LAN catalog ledger and generated capability counts]
     Result --> X[Agent X: observed events with revisions and times]
     Z --> X
     Verify --> X
@@ -54,6 +57,18 @@ provider readback determine which transitions actually occurred.
 | GitHub PR and required checks | Provider delivery/verification observations. | Recheck exact head/base and protection state before integration; read back merge and cleanup. |
 | Mac IDE / Codex app | Separate runtime surfaces reading a revision-bound handoff. | Invalidate stale handoffs; a visible file or chat is not synchronization proof. |
 | `integrate` / `advance` | Per-worker target integration versus next-wave coordinator sync barrier. | Merge only into an owned clean branch; invalidate checks/Z/Alpha. New generations wait for all slots closed and clean local/base/remote agreement. |
+
+## Planning and progress records
+
+| Record | How the coordinator uses it |
+| --- | --- |
+| Reviewed manifest | Select tasks whose prerequisite receipts exist, reserve IDE/app paths, and budget up to ten total worker slots across the declared workers. |
+| Local `wave` response | Inspect the recorded baseline, state revision, proposed slot/generation/task/path assignments and blocking reason. Refresh after a handoff or state change. |
+| Persisted generation and PR receipts | Reobserve the branch, worktree and any outstanding operation. Continue an existing generation through feedback, verification, integration or closure. |
+| LAN completion ledger | Agent 0 binds accepted requirement IDs to the tested revision and original evidence. The generated catalog reports the 10,000-requirement, 2,000-capability goal. |
+
+The [operator guide](SYSTEMX-SWARM.md#plan-and-resume-a-wave) includes a
+reproducible preview and explains how to resume a blocked wave.
 
 ## Handoff boundaries
 
