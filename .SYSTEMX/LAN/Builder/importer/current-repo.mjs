@@ -126,37 +126,39 @@ function readJsonFile(root, relativePath) {
 function walkProjectFiles(root, maxFiles = 1200) {
   const ignored = new Set(['.git', 'node_modules', 'dist', 'build', '.SYSTEMX'])
   const files = []
+  let truncated = false
   const visit = (current, relativeDirectory) => {
-    if (files.length >= maxFiles) return
     for (const entry of readdirSync(current, { withFileTypes: true })) {
       if (ignored.has(entry.name)) continue
       const relativePath = relativeDirectory ? `${relativeDirectory}/${entry.name}` : entry.name
       const absolutePath = join(current, entry.name)
       if (entry.isDirectory()) visit(absolutePath, relativePath)
-      else files.push(relativePath)
-      if (files.length >= maxFiles) return
+      else if (files.length < maxFiles) files.push(relativePath)
+      else truncated = true
+      if (truncated) return
     }
   }
   visit(root, '')
-  return files.sort()
+  return { files: files.sort(), truncated, maxFiles }
 }
 
-function inferExternalPages(files) {
-  return files
-    .filter((file) => /(^|\/)(pages|app|routes)(\/|\/.*\/).*(\.(tsx|jsx|ts|js|vue|svelte|html))$/.test(file) || /(^|\/)(pages|app)\/[^/]+\.(tsx|jsx|ts|js|vue|svelte|html)$/.test(file))
-    .slice(0, 240)
-    .map((source) => ({ source, state: 'detected', route: null, mapping: 'needs-review' }))
+function externalPage(file) {
+  return /(^|\/)(pages|app|routes)(\/|\/.*\/).*(\.(tsx|jsx|ts|js|vue|svelte|html))$/.test(file) || /(^|\/)(pages|app)\/[^/]+\.(tsx|jsx|ts|js|vue|svelte|html)$/.test(file)
 }
 
 export function inspectExternalProject(projectRoot) {
   const root = join(projectRoot)
   if (!existsSync(root) || !statSync(root).isDirectory()) throw new Error('Existing project root is not a directory')
   const packageJson = readJsonFile(root, 'package.json')
-  const files = walkProjectFiles(root)
-  const sourceFiles = files.filter((file) => /\.(tsx|jsx|ts|js|vue|svelte|css|scss|html)$/.test(file)).slice(0, 500)
-  const components = sourceFiles
-    .filter((file) => /(^|\/)(components|ui|layouts|layout|shared)(\/|\/.*\/).*(\.(tsx|jsx|vue|svelte))$/.test(file))
-    .slice(0, 240)
+  const { files, truncated: fileScanTruncated, maxFiles } = walkProjectFiles(root)
+  const windows = {}
+  function take(name, values, limit, scope = 'scanned-files') {
+    const returned = values.slice(0, limit)
+    windows[name] = { scope, total: values.length, count: returned.length, limit, omittedCount: values.length - returned.length }
+    return returned
+  }
+  const sourceFiles = take('sourceFiles', files.filter((file) => /\.(tsx|jsx|ts|js|vue|svelte|css|scss|html)$/.test(file)), 500)
+  const components = take('components', sourceFiles.filter((file) => /(^|\/)(components|ui|layouts|layout|shared)(\/|\/.*\/).*(\.(tsx|jsx|vue|svelte))$/.test(file)), 240, 'sourceFiles')
     .map((source) => ({
       id: source.replace(/[^a-z0-9]+/gi, '-').toLowerCase(),
       name: source.slice(source.lastIndexOf('/') + 1).replace(/\.[^.]+$/, ''),
@@ -181,8 +183,8 @@ export function inspectExternalProject(projectRoot) {
               : dependencyNames.includes('@angular/core')
                 ? 'angular'
                 : 'unknown'
-  const providerFiles = files.filter((file) => /firebase|gcloud|google|stripe|supabase|prisma|drizzle|sql|storage|firestore/i.test(file) && !/(^|\/)(\.env|secrets?)/i.test(file)).slice(0, 120)
-  const sensitiveFiles = files.filter((file) => /(^|\/)(\.env|\.env\.|.*\.(pem|key|p12|json\.secret))$/i.test(file)).slice(0, 80)
+  const providerFiles = take('providers', files.filter((file) => /firebase|gcloud|google|stripe|supabase|prisma|drizzle|sql|storage|firestore/i.test(file) && !/(^|\/)(\.env|secrets?)/i.test(file)), 120)
+  const sensitiveFiles = take('sensitiveFiles', files.filter((file) => /(^|\/)(\.env|\.env\.|.*\.(pem|key|p12|json\.secret))$/i.test(file)), 80)
   return {
     schemaVersion: 1,
     status: 'needs-review',
@@ -193,17 +195,17 @@ export function inspectExternalProject(projectRoot) {
       name: packageJson?.name ?? root.split('/').pop(),
       framework,
       packageManager: existsSync(join(root, 'pnpm-lock.yaml')) ? 'pnpm' : existsSync(join(root, 'yarn.lock')) ? 'yarn' : 'npm-compatible',
-      scripts: Object.keys(packageJson?.scripts ?? {}).slice(0, 120),
+      scripts: take('scripts', Object.keys(packageJson?.scripts ?? {}), 120, 'package-scripts'),
     },
-    pages: inferExternalPages(files),
+    pages: take('pages', files.filter(externalPage), 240).map((source) => ({ source, state: 'detected', route: null, mapping: 'needs-review' })),
     components,
     providers: providerFiles,
-    styles: sourceFiles.filter((file) => /\.(css|scss)$/.test(file)).slice(0, 120),
-    routes: sourceFiles.filter((file) => /router|route|routes|next\.config|vite\.config/i.test(file)).slice(0, 100),
-    tooling: files.filter((file) => /(^|\/)(playwright|cypress|vitest|jest|eslint|tsconfig|firebase|\.github)/i.test(file)).slice(0, 120),
+    styles: take('styles', sourceFiles.filter((file) => /\.(css|scss)$/.test(file)), 120, 'sourceFiles'),
+    routes: take('routes', sourceFiles.filter((file) => /router|route|routes|next\.config|vite\.config/i.test(file)), 100, 'sourceFiles'),
+    tooling: take('tooling', files.filter((file) => /(^|\/)(playwright|cypress|vitest|jest|eslint|tsconfig|firebase|\.github)/i.test(file)), 120),
     security: {
       secretsNotRead: true,
-      sensitiveFileCount: sensitiveFiles.length,
+      sensitiveFileCount: windows.sensitiveFiles.total,
       sensitiveFiles: sensitiveFiles.map(() => '[redacted path]'),
       writeAllowed: false,
     },
@@ -212,6 +214,7 @@ export function inspectExternalProject(projectRoot) {
       { state: 'needs-review', message: 'Route and component mappings require operator approval before bridge installation.' },
       { state: 'blocked', message: 'No files are modified by the ingest operation.' },
     ],
-    limits: { filesScanned: files.length, maxFiles: 1200, truncated: files.length >= 1200 },
+    limits: { filesScanned: files.length, maxFiles, fileScanTruncated, windows,
+      truncated: fileScanTruncated || Object.values(windows).some(window => window.omittedCount > 0) },
   }
 }

@@ -633,7 +633,7 @@ function renderFontList() {
     .filter((font) => !category || font.category === category)
   list.replaceChildren()
   if (!items.length) {
-    list.append(create('p', 'empty-state', 'No catalog families match this filter.'))
+    list.append(create('p', 'empty-state', state.fontCatalogMeta?.truncated ? 'No loaded families match this filter.' : 'No catalog families match this filter.'))
     return
   }
   for (const font of items) {
@@ -783,7 +783,8 @@ async function loadFontWorkspace() {
   const catalog = await request('/api/fonts/catalog')
   state.fontCatalog = catalog.items ?? []
   state.fontCatalogMeta = catalog
-  text('#font-catalog-state', `${state.fontCatalog.length} families · ${catalog.source === 'google-developer-api' ? 'live metadata' : 'offline fallback'}`)
+  const count = catalog.truncated ? `${catalog.count} of ${catalog.total} families loaded` : `${state.fontCatalog.length} families`
+  text('#font-catalog-state', `${count} · ${catalog.source === 'google-developer-api' ? 'live metadata' : 'offline fallback'}`)
   renderFontList()
   if (catalog.warning) output('#font-status', catalog.warning)
   await refreshFontSource({ selectCurrent: true })
@@ -4016,12 +4017,13 @@ async function ingestProject(event) {
     projectRoot: document.querySelector('#ingest-root')?.value,
   })
   document.querySelector('#ingest-confirmation').value = ''
-  const { framework, pageCount, componentCount } = result.acknowledgement ? result.summary : {
+  const { framework, pageCount, componentCount, truncated } = result.acknowledgement ? result.summary : {
     framework: result.manifest.project.framework,
     pageCount: result.manifest.pages.length,
     componentCount: result.manifest.components.length,
+    truncated: result.manifest.limits?.truncated,
   }
-  output('#ingest-output', `Inventory complete · ${framework} · ${pageCount} pages · ${componentCount} components · review ${result.manifestPath}`)
+  output('#ingest-output', `${truncated ? 'Partial inventory' : 'Inventory complete'} · ${framework} · ${pageCount} pages · ${componentCount} components · review ${result.manifestPath}`)
 }
 
 async function boot() {

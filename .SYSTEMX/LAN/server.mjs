@@ -32,7 +32,7 @@ import { executeRecordCommand, isValidRecordKey, publicRecordData, withLocalData
 import { readRequestBody, RequestBodyError } from './Builder/request-body.mjs'
 import { acceptsRequestQuery, invalidQueryResponse } from './Builder/request-query.mjs'
 import { evaluateRequestPolicy } from './Builder/request-policy.mjs'
-import { encodeTransportJson, getRetryDisposition, getTransportPolicy } from './Builder/transport-policy.mjs'
+import { fontCatalogRowLimit, encodeTransportJson, getRetryDisposition, getTransportPolicy } from './Builder/transport-policy.mjs'
 import { createTransportDiagnostics } from './Builder/transport-diagnostics.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
@@ -235,21 +235,40 @@ function readCuratedFontCatalog() {
   try {
     const manifest = JSON.parse(readFileSync(fontCatalogFile, 'utf8'))
     return Array.isArray(manifest.families)
-      ? manifest.families.map((item) => normalizeFontItem(item, manifest.source ?? 'curated'))
+      ? manifest.families.map((item) => normalizeFontItem(item, 'curated-google-fonts-fallback')).filter((item) => item.family)
       : []
   } catch {
     return []
   }
 }
 
+function fontText(value, limit) {
+  return typeof value === 'string' && value.length <= limit && value.isWellFormed() && !/[\u0000-\u001f\u007f]/.test(value)
+}
+
 function normalizeFontItem(item, source) {
+  const omitted = {}
+  function list(name, limit, accept) {
+    const values = Array.isArray(item?.[name]) ? item[name] : []
+    const kept = []
+    for (const value of values) {
+      if (kept.length === limit) break
+      if (accept(value)) kept.push(value)
+    }
+    if (kept.length < values.length) omitted[name] = values.length - kept.length
+    return kept
+  }
+
+  const variants = list('variants', 32, value => fontText(value, 64))
+  const subsets = list('subsets', 32, value => fontText(value, 64))
+  const axes = list('axes', 12, axis => axis && fontText(axis.tag, 4) && axis.tag.length === 4
+    && Number.isFinite(axis.start) && Number.isFinite(axis.end))
+    .map(({ tag, start, end }) => ({ tag, start, end }))
   return {
-    family: typeof item?.family === 'string' ? item.family.trim().slice(0, 120) : '',
-    category: typeof item?.category === 'string' ? item.category : 'sans-serif',
-    variants: Array.isArray(item?.variants) ? item.variants.filter((value) => typeof value === 'string').slice(0, 32) : [],
-    subsets: Array.isArray(item?.subsets) ? item.subsets.filter((value) => typeof value === 'string').slice(0, 32) : [],
-    axes: Array.isArray(item?.axes) ? item.axes.filter((value) => typeof value === 'object').slice(0, 12) : [],
-    source,
+    family: fontText(item?.family, 120) ? item.family.trim() : '',
+    category: fontText(item?.category, 40) ? item.category : 'sans-serif',
+    variants, subsets, axes, source,
+    ...(Object.keys(omitted).length ? { omitted } : {}),
   }
 }
 
@@ -288,19 +307,20 @@ async function getFontCatalog() {
   try {
     const url = `https://www.googleapis.com/webfonts/v1/webfonts?key=${encodeURIComponent(apiKey)}&capability=WOFF2&sort=popularity`
     const response = await globalThis.fetch(url, { signal: controller.signal })
-    if (!response.ok) throw new Error(`Google Fonts metadata request returned HTTP ${response.status}`)
+    if (!response.ok) throw new Error('Font metadata unavailable')
     const payload = await response.json()
     const remote = Array.isArray(payload.items)
       ? payload.items.map((item) => normalizeFontItem(item, 'google-developer-api')).filter((item) => item.family)
       : []
+    if (!remote.length) throw new Error('Font metadata empty')
     fontCatalogCache.expiresAt = Date.now() + 10 * 60 * 1000
     fontCatalogCache.source = 'google-developer-api'
     fontCatalogCache.warning = null
-    fontCatalogCache.items = remote.length ? remote : curated
-  } catch (error) {
+    fontCatalogCache.items = remote
+  } catch {
     fontCatalogCache.expiresAt = Date.now() + 60 * 1000
     fontCatalogCache.source = 'curated-google-fonts-fallback'
-    fontCatalogCache.warning = `Live Google Fonts metadata unavailable; using the checked-in catalog (${error.message}).`
+    fontCatalogCache.warning = 'Live Google Fonts metadata is unavailable. Showing the checked-in catalog.'
     fontCatalogCache.items = curated
   } finally {
     clearTimeout(timeout)
@@ -1402,17 +1422,17 @@ async function handleRequest(request, response, recordRoute) {
     const catalog = await getFontCatalog()
     const query = requestUrl.searchParams.get('q')?.trim().toLocaleLowerCase() ?? ''
     const category = requestUrl.searchParams.get('category')?.trim().toLocaleLowerCase() ?? ''
-    const items = catalog.items
+    const matches = catalog.items
       .filter((item) => !query || item.family.toLocaleLowerCase().includes(query))
       .filter((item) => !category || item.category.toLocaleLowerCase() === category)
-      .slice(0, 200)
-      .map((item) => ({ ...item, cssUrl: fontCssUrl(item.family, item.variants) }))
+    const items = matches.slice(0, fontCatalogRowLimit).map((item) => ({ ...item, cssUrl: fontCssUrl(item.family, item.variants) }))
     sendJson(response, 200, {
       source: catalog.source,
       warning: catalog.warning,
       apiConfigured: Boolean(process.env.SYSTEMX_GOOGLE_FONTS_API_KEY?.trim()),
       cssApi: 'https://fonts.googleapis.com/css2',
-      count: items.length,
+      count: items.length, total: matches.length, limit: fontCatalogRowLimit,
+      omittedCount: matches.length - items.length, truncated: matches.length > items.length,
       items,
     })
     return

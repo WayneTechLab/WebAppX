@@ -3,6 +3,8 @@ import { evaluateRequestPolicy } from './request-policy.mjs'
 import { sourceHistoryLimits } from './source-history.mjs'
 import { sourcePolicyLimits } from './source-policy.mjs'
 
+export const fontCatalogRowLimit = 200
+
 export const responseLimits = Object.freeze({
   jsonBytes: 4_000_000,
   legacyAcknowledgementBytes: 256_000,
@@ -67,7 +69,8 @@ export function getTransportPolicy() {
         sourceInventory: { maximumRows: sourcePolicyLimits.maxResults, fields: ['complete', 'truncated', 'omitted'] },
         sourceHistory: { maximumEntries: sourceHistoryLimits.entries, fields: ['truncated', 'omittedEntries'] },
         graphFindings: { maximumPageSize: contractLimits.pageSize, fields: ['offset', 'limit', 'total', 'upstreamOmittedCount'] },
-        fontCatalog: { maximumRows: 200, countScope: 'returned rows' },
+        projectIngest: { fields: ['limits.fileScanTruncated', 'limits.windows', 'limits.truncated'], totalScope: 'each window names its scanned or retained input' },
+        fontCatalog: { maximumRows: fontCatalogRowLimit, countScope: 'returned rows', totalScope: 'all matching catalog families', fields: ['count', 'total', 'omittedCount', 'truncated'] },
       },
     },
   }
@@ -135,6 +138,7 @@ function acknowledgement(pathname, value) {
     receipt.manifestPath = smallText(value.manifestPath, 1024)
     receipt.summary = { framework: smallText(value.manifest?.project?.framework, 120),
       pageCount: value.manifest?.pages?.length, componentCount: value.manifest?.components?.length }
+    if (value.manifest?.limits?.truncated) receipt.summary.truncated = true
   }
   return receipt
 }
