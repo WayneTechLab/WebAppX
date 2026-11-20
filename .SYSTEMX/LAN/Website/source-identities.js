@@ -141,6 +141,57 @@ function matchingOwnership(ownership, map) {
     && ownership.sourceRevision === map.sourceRevision && Array.isArray(ownership.objects)
 }
 
+const validPreviewAnchor = value => typeof value === 'string' && value.length <= 80 && /^[A-Za-z][A-Za-z0-9_-]*$/.test(value)
+
+// Project the accepted ownership envelope once. This index describes inspection
+// state only. It cannot select a durable node, stage a patch or authorize a save.
+function indexNavigatorOwnership(map, ownership, readState) {
+  if (!map || typeof map.route !== 'string' || !map.route.startsWith('/') || (!currentReadState(readState) && readState !== 'stale') ||
+      !ownership || ownership.workspaceId !== map.workspaceId || ownership.documentId !== map.documentId ||
+      !/^[a-f0-9]{64}$/.test(ownership.sourceRevision ?? '') ||
+      !Array.isArray(ownership.objects) || ownership.objects.length > 1000) return null
+  const owners = new Map()
+  for (const owner of ownership.objects) {
+    if (typeof owner?.nodeId === 'string') owners.set(owner.nodeId, owners.has(owner.nodeId) ? null : owner)
+  }
+  const documentStale = map.sourceRevision !== ownership.sourceRevision ||
+    (readState === 'stale' && !ownership.objects.some(owner => owner?.status === 'stale'))
+  const nodes = new Map()
+  for (const node of map.nodes) {
+    if (!validPreviewAnchor(node?.anchor)) continue
+    if (nodes.has(node.anchor)) { nodes.set(node.anchor, null); continue }
+    const owner = owners.get(node.id)
+    let status = 'unmapped'
+    if (node.confidence === 'explicit' && typeof node.tag === 'string' && owner?.source?.path === map.sourcePath &&
+        typeof owner.source.sourceRevision === 'string' && /^[a-f0-9]{64}$/.test(owner.source.sourceRevision)) {
+      const policy = ownership.sourcePolicy
+      const policyReadOnly = policy?.writable === false && typeof policy.reasonCode === 'string' &&
+        Array.isArray(owner.reasons) && owner.reasons.includes(policy.reasonCode) &&
+        owner.reasons.every(reason => reason === policy.reasonCode || reason === 'LITERAL_FIELD_UNAVAILABLE')
+      if (owner.status === 'stale') status = 'stale'
+      else if (owner.status === 'mapped' || (owner.status === 'partial' && policyReadOnly)) {
+        if (documentStale || owner.source.sourceRevision !== map.sourceRevision) status = 'stale'
+        else if (Array.isArray(owner.supportedOperations)) {
+          if (!owner.supportedOperations.length || policy?.writable === false) status = 'read-only'
+          else if (owner.supportedOperations.includes('literal') &&
+            ['source-owned', 'hybrid-controlled'].includes(owner.mode) &&
+            owner.fields?.text?.owner === 'source' && owner.fields.text.supported === true) status = 'mapped'
+        }
+      }
+    }
+    nodes.set(node.anchor, { tag: node.tag, status })
+  }
+  const signature = JSON.stringify([map.workspaceId, map.documentId, map.sourcePath, map.route,
+    map.sourceRevision, ownership.sourceRevision, readState, [...nodes]])
+  function lookup(detail) {
+    if (!detail || detail.workspaceId !== map.workspaceId || detail.sourcePath !== map.sourcePath ||
+        detail.route !== map.route || !validPreviewAnchor(detail.anchor)) return 'unmapped'
+    const node = nodes.get(detail.anchor)
+    return node && detail.tag === node.tag ? node.status : 'unmapped'
+  }
+  return { signature, lookup }
+}
+
 function runtimeSelection(detail) {
   const string = (value, limit) => typeof value === 'string' ? value.replace(/[\p{Cc}\p{Cs}]/gu, '').slice(0, limit) : ''
   return {
@@ -175,7 +226,7 @@ function cssOnce() {
   document.head.append(link)
 }
 
-export function attachSourceIdentityInspector({ container, api, selectedPath, onStageLiteral } = {}) {
+export function attachSourceIdentityInspector({ container, api, selectedPath, onStageLiteral, onNavigatorOwnershipChange } = {}) {
   if (!container || typeof container.append !== 'function' || typeof api !== 'function' || typeof selectedPath !== 'function') {
     throw new TypeError('Identity inspector needs a container, API request function and selectedPath callback.')
   }
@@ -264,6 +315,22 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     authorityVersion: 0,
   }
 
+  let navigatorInputs = [null, null, state.readState, state.path]
+  let navigatorIndex = null
+  let navigatorLookup = null
+  function updateNavigatorOwnership(map) {
+    const inputs = [map, state.ownership, state.readState, state.path]
+    if (inputs.every((value, index) => value === navigatorInputs[index])) return
+    const pathChanged = inputs[3] !== navigatorInputs[3]
+    navigatorInputs = inputs
+    const next = indexNavigatorOwnership(map, state.ownership, state.readState)
+    if (!pathChanged && next?.signature === navigatorIndex?.signature) return
+    navigatorIndex = next
+    // A retained handle from an older generation must fail closed.
+    navigatorLookup = next && (detail => navigatorIndex === next && !state.destroyed ? next.lookup(detail) : 'unmapped')
+    onNavigatorOwnershipChange?.()
+  }
+
   function clearAuthority() {
     state.map = null
     state.ownership = null
@@ -341,6 +408,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     if (state.destroyed) return
     status.textContent = `Workspace: ${state.workspaceId ?? 'not read'}\nSelected path: ${state.path || 'none'}\n${state.message}`
     const map = acceptedForPath() ? state.map : null
+    updateNavigatorOwnership(map)
     const coverage = state.ownership?.coverage ?? null
     const preview = state.preview
     summary.textContent = json({
@@ -500,7 +568,8 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
       state.ownership = ownership
       state.retiredOwnershipClaims = retirements
       const staleCount = Number(ownership?.coverage?.stale ?? 0)
-      state.readState = read?.stale || staleCount > 0 ? 'stale' : 'current source read'
+      state.readState = read.sourceErrorCode || read.currentRevision === null ? 'source unavailable; mapping unverified'
+        : read.stale || staleCount > 0 ? 'stale' : 'current source read'
       state.message = `Accepted document ${map.documentId} read. ${state.readState}.`
     } catch (error) {
       syncPath()
@@ -716,7 +785,7 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
     state.runtimeSelection = observation
     const map = acceptedForPath() && currentReadState(state.readState) ? state.map : null
     const anchor = detail?.anchor
-    const matches = map && typeof anchor === 'string' && anchor.length <= 80 && /^[A-Za-z][A-Za-z0-9_-]*$/.test(anchor)
+    const matches = map && validPreviewAnchor(anchor)
       ? map.nodes.filter(node => node.anchor === anchor && node.confidence === 'explicit') : []
     const qualified = map && matchingOwnership(state.ownership, map) && matches.length === 1
       && detail?.workspaceId === map.workspaceId && detail?.sourcePath === map.sourcePath
@@ -784,6 +853,9 @@ export function attachSourceIdentityInspector({ container, api, selectedPath, on
   const handle = {
     refresh,
     observePreviewSelection,
+    navigatorOwnership() {
+      return !state.destroyed && safePath(selectedPath) === state.path ? navigatorLookup : null
+    },
     currentDocumentReference() {
       if (!acceptedForPath()) return null
       return { workspaceId: state.map.workspaceId, documentId: state.map.documentId,
