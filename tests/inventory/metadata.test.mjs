@@ -64,6 +64,8 @@ test('every declaration collection has an adapter, a version and an interpretati
   assert.deepEqual(p.rules[p.entryPoints[0]], { adapter: 'vite-entry', basis: 'inferred' })
   assert.deepEqual(p.rules[p.routes], { adapter: 'react-route-declaration', basis: 'literal' })
   assert.equal(p.ruleVersion, 1)
+  assert.equal(p.rules[p.configurationFields.buildTargets.inferred].basis, 'inferred')
+  assert.equal(p.rules[p.configurationFields.buildTargets.declared].basis, 'literal')
   for (const field of ['componentExports','sharedShells','configuration','sourceResources','publicAssets','ownership','conflicts']) {
     assert.ok(p.rules[p[field]].adapter, field)
   }
