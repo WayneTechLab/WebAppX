@@ -24,6 +24,7 @@ import { hashSourceRevision, checkSourceRevision } from './Builder/source-revisi
 import { inspectSourcePath, enumerateSourceInventory, sourcePolicyCatalog, compareSourcePolicies, sourcePolicyLimits } from './Builder/source-policy.mjs'
 import { createSourceHistory, readSourceOperationHistory, sourceHistoryLimits } from './Builder/source-history.mjs'
 import { dispatchSourceIdentity } from './Builder/source-identity-http.mjs'
+import { createTransportDiagnostics } from './Builder/transport-diagnostics.mjs'
 import { clearSession, findAvailablePort, readSession, validPort, writeSession } from './Builder/runtime/port-utils.mjs'
 import { confinedDirectory, confinedFile } from './Builder/runtime/file-boundary.mjs'
 import { captureSessionProcessIdentity } from './session-restart-preview.mjs'
@@ -1236,9 +1237,19 @@ async function getStatus(workSelection = null) {
   }
 }
 
-const server = createServer(async (request, response) => {
+const transportDiagnostics = createTransportDiagnostics()
+const server = createServer((request, response) => {
+  const recordRoute = transportDiagnostics.begin(request.method, response)
   applySecurityHeaders(response)
+  handleRequest(request, response, recordRoute).catch(() => handleServerError(response))
+})
 
+function handleServerError(response) {
+  if (response.headersSent) response.destroy()
+  else sendJson(response, 500, { error: 'The local LAN request could not be completed.' })
+}
+
+async function handleRequest(request, response, recordRoute) {
   const requestHost = request.headers.host
   if (requestHost && !allowedHosts.has(requestHost)) {
     sendText(response, 403, 'Forbidden host')
@@ -1251,12 +1262,32 @@ const server = createServer(async (request, response) => {
     return
   }
 
+  let requestUrl
+  try {
+    requestUrl = new URL(request.url ?? '/', `http://${host}:${port}`)
+  } catch {
+    sendText(response, 400, 'Invalid request URL')
+    return
+  }
+  recordRoute(requestUrl.pathname)
+
+  if (requestUrl.pathname === '/api/transport/diagnostics') {
+    if (!requireSessionToken(request, response)) return
+    if (request.method !== 'GET') {
+      response.setHeader('Allow', 'GET')
+      sendJson(response, 405, { error: 'Transport diagnostics require GET.' })
+    } else if (requestUrl.search) {
+      sendJson(response, 400, { error: 'Transport diagnostics accept no query parameters.' })
+    } else {
+      sendJson(response, 200, transportDiagnostics.snapshot())
+    }
+    return
+  }
+
   if (!['GET', 'HEAD', 'POST'].includes(request.method)) {
     sendText(response, 405, 'Method not allowed')
     return
   }
-
-  const requestUrl = new URL(request.url ?? '/', `http://${host}:${port}`)
 
   if (requestUrl.pathname.startsWith('/api/contracts/') && request.method !== 'POST') {
     if (!requireSessionToken(request, response)) return
@@ -1653,8 +1684,8 @@ const server = createServer(async (request, response) => {
     return
   }
 
-  createReadStream(file).pipe(response)
-})
+  createReadStream(file).once('error', () => handleServerError(response)).pipe(response)
+}
 
 server.listen(port, host, () => {
   if (!testMode && !process.env.SYSTEMX_SESSION_OWNER_PID) {
