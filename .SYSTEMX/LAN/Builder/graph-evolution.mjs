@@ -1,7 +1,10 @@
 import { createHash } from 'node:crypto'
 import { types } from 'node:util'
-import { GraphError, canonicalJson } from './graph-core.mjs'
+import { GraphError, canonicalJson, graphFindingRegistry, publicDiagnosticId } from './graph-core.mjs'
 import { validateGraph } from './graph-validation.mjs'
+
+const migrationFindings = graphFindingRegistry()
+export const isMigrationFinding = migrationFindings.has
 
 const HEX64 = /^[a-f0-9]{64}$/
 const MAX_GRAPH_BYTES = 400000
@@ -111,7 +114,7 @@ function exactFields(value, fields, location, unsupported, shapeCode = 'GRAPH_LE
   const allowed = new Set(fields)
   for (const field of Object.keys(value)) {
     if (allowed.has(field)) continue
-    const safeField = /^[A-Za-z][A-Za-z0-9_-]{0,59}$/.test(field) ? field : '<unrecognized>'
+    const safeField = field.length <= 60 && publicDiagnosticId(field) ? field : '<unrecognized>'
     unsupported.push(`${location}.${safeField}`)
   }
   for (const field of fields) {
@@ -144,7 +147,7 @@ function legacyShape(input) {
   input.collections.forEach((collection, index) => exactFields(collection, COLLECTION_FIELDS, `collections[${index}]`, unsupported))
   if (unsupported.length) {
     unsupported.sort()
-    const findings = unsupported.slice(0, MAX_RESULTS_PER_KIND).map((field, index) => ({
+    const findings = unsupported.slice(0, MAX_RESULTS_PER_KIND).map((field, index) => migrationFindings.record({
       id: `unsupported-${index + 1}`, code: 'GRAPH_LEGACY_FIELD_UNSUPPORTED', severity: 'error',
       objectId: null, referenceType: null, message: `Unsupported legacy field ${field}.`,
     }))

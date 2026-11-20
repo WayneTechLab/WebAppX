@@ -32,6 +32,32 @@ const RUNTIME_NAMES = new Set([
   'sourcetext', 'sourcecode', 'html', 'jsx', 'markup', 'body', 'content',
 ])
 
+// Each producer keeps its own registry private and exports only its membership
+// check. An injected GraphError or a copied finding cannot vouch for its text.
+export function graphFindingRegistry() {
+  const findings = new WeakSet()
+  return {
+    record(finding) {
+      Object.freeze(finding)
+      findings.add(finding)
+      return finding
+    },
+    has: finding => findings.has(finding),
+  }
+}
+
+const coreFindings = graphFindingRegistry()
+export const isCoreFinding = coreFindings.has
+
+// Only short graph identifiers may appear in dynamic diagnostics. Use a
+// placeholder for credential-shaped or private names, including legacy keys.
+export function publicDiagnosticId(id) {
+  return typeof id === 'string' && ID.test(id)
+    && !/(?:secret|private|password|credential|token|api[_-]?key|authorization|cookie|canary)/i.test(id)
+    && !/^(?:hf_|gh[pousr]_|github_pat_|sk[-_]|AIza|AKIA|ASIA|xox[a-z]-|eyJ)/i.test(id)
+    ? id : null
+}
+
 /** A contained, typed refusal. Diagnostics contain fixed messages, never input. */
 export class GraphError extends Error {
   constructor(code, message, { category = 'validation', statusCode = 400, findings = [], omittedCount = 0 } = {}) {
@@ -46,8 +72,8 @@ export class GraphError extends Error {
 }
 
 function refuse(code, message, options = {}) {
-  const finding = { id: `graph_${code.toLowerCase()}`, code, severity: 'error',
-    objectId: null, referenceType: null, message }
+  const finding = coreFindings.record({ id: `graph_${code.toLowerCase()}`, code, severity: 'error',
+    objectId: null, referenceType: null, message })
   throw new GraphError(code, message, { ...options, findings: [finding] })
 }
 

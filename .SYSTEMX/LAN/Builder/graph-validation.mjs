@@ -5,7 +5,10 @@
  */
 import { createHash } from 'node:crypto'
 import { types } from 'node:util'
-import { GraphError, graphLimits, graphRevision, normalizeGraph } from './graph-core.mjs'
+import { GraphError, graphFindingRegistry, graphLimits, graphRevision, normalizeGraph, publicDiagnosticId } from './graph-core.mjs'
+
+const relationalFindings = graphFindingRegistry()
+export const isRelationalFinding = relationalFindings.has
 
 const IDENTIFIER = /^[A-Za-z][A-Za-z0-9_-]{0,95}$/
 const HEX64 = /^[a-f0-9]{64}$/
@@ -51,7 +54,7 @@ function issueCollector() {
     const key = `${code}\0${severity}\0${referenceType ?? ''}\0${objectId ?? ''}\0${detail}`
     if (issues.has(key)) return
     const id = `F_${createHash('sha256').update(key).digest('hex').slice(0, 24)}`
-    issues.set(key, { id, code, severity, objectId, referenceType, message })
+    issues.set(key, relationalFindings.record({ id, code, severity, objectId, referenceType, message }))
   }
   function finish() {
     const sorted = [...issues.values()].sort((a, b) =>
@@ -68,7 +71,7 @@ function cycleMessage(path) {
   // Identifiers are core-validated ASCII. Keep a useful path without echoing
   // arbitrary labels, source paths or a potentially thousand-node ancestry.
   const shown = path.length <= 4 ? path : [...path.slice(0, 3), '…', path.at(-1)]
-  const message = `Node ancestry cycle: ${shown.join(' -> ')}.`
+  const message = `Node ancestry cycle: ${shown.map(id => id === '…' ? id : publicDiagnosticId(id) ?? '<redacted>').join(' -> ')}.`
   return message.length <= 400 ? message : `${message.slice(0, 397)}...`
 }
 

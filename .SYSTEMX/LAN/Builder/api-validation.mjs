@@ -1,5 +1,7 @@
 import { Buffer } from 'node:buffer';
-import { GraphError } from './graph-core.mjs';
+import { GraphError, isCoreFinding, publicDiagnosticId } from './graph-core.mjs';
+import { isRelationalFinding } from './graph-validation.mjs';
+import { isMigrationFinding } from './graph-evolution.mjs';
 import { ApiToolError } from './api-tools.mjs';
 import {
   API_VERSION,
@@ -79,11 +81,22 @@ const CONFIRMATIONS = Object.freeze({
 const PUBLIC_MESSAGES = Object.freeze({
   INVALID_REQUEST: 'Request does not match the selected contract.',
   INVALID_JSON: 'Request must contain plain JSON data.',
-  REQUEST_TOO_LARGE: 'Request exceeds the contract byte limit.',
+  REQUEST_TOO_LARGE: `Request exceeds the ${BYTE_LIMIT}-byte contract limit.`,
   REQUEST_TOO_COMPLEX: 'Request exceeds the contract complexity limit.',
   UNSUPPORTED_API_VERSION: `The requested API version is unsupported. Supported versions: ${SUPPORTED_API_VERSIONS.join(', ')}.`,
   API_VERSION_UNSUPPORTED: `The requested API version is unsupported. Supported versions: ${SUPPORTED_API_VERSIONS.join(', ')}.`,
   OPERATION_UNAVAILABLE: 'Operation is unavailable in the selected API version.',
+  GRAPH_VALIDATION_FAILED: 'Review the graph relationship findings before previewing again.',
+  GRAPH_LEGACY_FIELD_UNSUPPORTED: 'Review the listed unsupported fields before migrating the legacy graph.',
+  GRAPH_SCHEMA_UNSUPPORTED: 'Only graph schema version 1 is supported. Preview a reviewed migration for a legacy document.',
+  GRAPH_MIGRATION_SOURCE: 'Only legacy graph schema version 0 can be migrated to version 1.',
+  GRAPH_MIGRATION_TARGET: 'Only graph schema version 1 is a reviewed migration target.',
+  GRAPH_REVISION_CONFLICT: 'The accepted graph changed. Reload it and preview again.',
+  GRAPH_PROPOSAL_MISSING: 'The graph preview is unavailable. Preview the document again.',
+  GRAPH_DOCUMENT_MISSING: 'The accepted graph document was not found. Check the selected document.',
+  GRAPH_LOOKUP_DOCUMENT_MISMATCH: 'Check the workspace and document of the graph reference.',
+  GRAPH_LOOKUP_WRONG_KIND: 'The graph object exists under a different kind. Check the reference kind.',
+  GRAPH_LOOKUP_MISSING: 'The referenced graph object was not found. Check the qualified target.',
   RESPONSE_CONTRACT_INVALID: 'The handler result does not match its public contract.',
 });
 
@@ -397,7 +410,15 @@ export function validateApiRequest(envelope, { kind } = {}) {
   if (descriptor.kind !== input.kind) issues.add('$.kind', 'KIND', 'Operation kind does not match the selected payload variant.');
 
   const allowedPayloadFields = new Set(PAYLOAD_FIELDS[input.operation]);
-  for (const key of Object.keys(input.payload)) if (!allowedPayloadFields.has(key)) issues.add('$.payload.*', 'UNKNOWN_FIELD', 'An unrecognized payload field is present.');
+  // The copy is owned by validation. Count unknown keys independently, then
+  // let the public schema inspect every recognized field without double counting.
+  let unknownPayloadCount = 0;
+  for (const key of Object.keys(input.payload)) {
+    if (!allowedPayloadFields.has(key)) {
+      delete input.payload[key];
+      unknownPayloadCount += 1;
+    }
+  }
   if (input.payload.type !== input.operation) issues.add('$.payload.type', 'DISCRIMINATOR', 'Payload type must match its operation.');
   for (const key of REQUIRED_PAYLOAD_FIELDS[input.operation]) {
     if (!has(input.payload, key)) issues.add(`$.payload.${key}`, 'REQUIRED', 'Required field is absent.');
@@ -429,8 +450,14 @@ export function validateApiRequest(envelope, { kind } = {}) {
   // Public inputSchema describes the entire discriminated envelope. Validating
   // a payload against that schema rejects every otherwise valid request.
   const schemaResult = validatePublicSchema(descriptor.inputSchema, input);
-  for (const item of schemaResult.findings) issues.add(item.path, item.code, item.message);
+  const reportedPaths = new Set(issues.findings.map(item => item.path));
+  for (const item of schemaResult.findings) {
+    if (!reportedPaths.has(item.path)) issues.add(item.path, item.code, item.message);
+  }
   issues.addOmitted(schemaResult.omittedCount);
+  for (let index = 0; index < unknownPayloadCount; index += 1) {
+    issues.add('$.payload.*', 'UNKNOWN_FIELD', 'An unrecognized payload field is present.');
+  }
   if (!issues.valid) {
     const payloadOrEnvelopeInvalid = issues.findings.some(item =>
       item.path !== '$.confirmation' && item.path !== '$.capabilityId');
@@ -472,8 +499,10 @@ export function validateApiResponse(descriptor, result, { endpoint } = {}) {
   }
   let copy;
   try { copy = boundedCopy(result, RESPONSE_BYTE_LIMIT); }
-  catch {
-    throw mismatch();
+  catch (error) {
+    const code = error instanceof ApiContractError && error.code === 'REQUEST_TOO_LARGE' ? 'MAX_BYTES'
+      : error instanceof ApiContractError && error.code === 'REQUEST_TOO_COMPLEX' ? 'MAX_COMPLEXITY' : 'INVALID_JSON';
+    throw mismatch([finding('$', code, FINDING_MESSAGES[code])]);
   }
   const report = validatePublicSchema(descriptor.resultSchema, copy, { maxBytes: RESPONSE_BYTE_LIMIT });
   if (!report.valid) {
@@ -523,18 +552,21 @@ export function apiErrorResult(error, { apiVersion = API_VERSION, requestId = nu
       : 'The requested contract operation could not be completed.';
   const rawFindings = (typed || graphTyped) && Array.isArray(error.findings) ? error.findings : [];
   const findings = graphTyped ? rawFindings.slice(0, FINDING_LIMIT).map((item, index) => {
+    // These immutable findings come from the actual domain validators. Their
+    // text contains reviewed messages, limits and sanitized graph identifiers.
+    if (isCoreFinding(item) || isRelationalFinding(item) || isMigrationFinding(item)) {
+      return { ...item, objectId: publicDiagnosticId(item.objectId) };
+    }
     const code = typeof item?.code === 'string' && /^GRAPH_[A-Z0-9_]{1,57}$/.test(item.code)
       ? item.code : 'GRAPH_DIAGNOSTIC_INVALID';
     const sourceRevisionMessage = code === 'GRAPH_SOURCE_REVISION_REFUSED' && typeof item?.message === 'string'
       && /^Source revision [a-f0-9]{64} could not be imported; the previous accepted graph remains available\.$/.test(item.message)
       ? item.message : null;
     return {
-      id: typeof item?.id === 'string' && /^[A-Za-z][A-Za-z0-9_-]{0,95}$/.test(item.id)
-        ? item.id : `graph_diagnostic_${index}`,
+      id: publicDiagnosticId(item?.id) ?? `graph_diagnostic_${index}`,
       code,
       severity: ['error', 'warning', 'info'].includes(item?.severity) ? item.severity : 'error',
-      objectId: typeof item?.objectId === 'string' && /^[A-Za-z][A-Za-z0-9_-]{0,95}$/.test(item.objectId)
-        ? item.objectId : null,
+      objectId: publicDiagnosticId(item?.objectId),
       referenceType: ['node', 'component', 'collection', 'page'].includes(item?.referenceType)
         ? item.referenceType : null,
       message: sourceRevisionMessage ?? 'Graph validation requires review of the affected metadata.',

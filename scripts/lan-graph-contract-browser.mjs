@@ -218,10 +218,16 @@ async function main() {
           // uses the copied production response validator. It is never installed
           // into the application server or selected through a public request flag.
           if (malformedResponseRequestId && parsed?.requestId === malformedResponseRequestId && url.pathname === '/__systemx/api/contracts/query') {
+            const fixtureKind = malformedResponseRequestId
             malformedResponseRequestId = null
+            const malformedStatus = () => {
+              if (fixtureKind === 'oversizedStub') return { synthetic: 'x'.repeat(800001) }
+              if (fixtureKind === 'nonJsonStub') return { synthetic: 1n }
+              return { fake: 'PRIVATE_GRAPH_CANARY' }
+            }
             const malformed = await dispatchGraphContract({ service: createGraphService({ workspaceId: sha('isolated-response-fixture') }), method: 'POST',
               url: new URL('http://127.0.0.1/api/contracts/query'), body: parsed,
-              handlerOverrides: { 'graph.status': () => ({ fake: 'PRIVATE_GRAPH_CANARY' }) } })
+              handlerOverrides: { 'graph.status': malformedStatus } })
             response.writeHead(malformed.statusCode, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' })
             response.end(JSON.stringify(malformed.result))
             return
@@ -401,14 +407,29 @@ async function main() {
       const renderedResponse = JSON.parse(await page.locator('#contract-runner-result').innerText())
       assert.equal(renderedResponse.ok, false)
       assert.equal(renderedResponse.requestId, exchange.body.requestId)
-      assert.equal(renderedResponse.error.code, error.code)
-      assert.equal(renderedResponse.error.category, error.category)
+      assert.deepEqual(renderedResponse.error, error, 'The editable request runner must render all public findings, including field paths and recovery guidance')
+      const details = JSON.parse(await page.locator('#graph-contract-error').innerText())
+      assert.deepEqual(details, { requestId: renderedResponse.requestId, apiVersion: renderedResponse.apiVersion, ...error })
       await expect(page.locator('#graph-contract-error')).toContainText(error.code)
       await expect(page.locator('#graph-contract-status')).toContainText('Refused:')
       return { requestId: renderedResponse.requestId, code: renderedResponse.error.code, category: renderedResponse.error.category,
         renderedErrorSha256: sha(await page.locator('#graph-contract-error').innerText()) }
     }
 
+    // Inspect the public diagnostic fields themselves: an object ID in an
+    // unrelated finding must never be enough to pass a cycle or field test.
+    const graphFinding = (error, code, messagePattern, objectId) => {
+      const match = error.findings.find((item) => item.code === code && item.severity === 'error'
+        && (objectId === undefined || item.objectId === objectId) && messagePattern.test(item.message))
+      assert.ok(match, `Expected ${code} diagnostic matching ${messagePattern}; received ${JSON.stringify(error)}`)
+      return match
+    }
+    const checkRenderedRefusal = async (response, inspect) => {
+      const error = refusal(response)
+      inspect(error)
+      await showRefusalUi(lastExchange, error)
+      return error
+    }
     const record = async (familyId, index, behavior, boundary, feedback) => {
       const entry = checks[(familyId === 'F005' ? 0 : 20) + index]
       assert.equal(typeof behavior, 'function')
@@ -459,9 +480,26 @@ async function main() {
       assert.equal((await current()).revision, acceptedRevision)
       return accepted
     }, genericGraphRefusal)
-    await record('F005', 1, async () => { const bad = copy(graph); bad.pages[0].rootId = 'crossDocumentRoot'; const error = refusal(await preview(bad)); assert.match(JSON.stringify(error), /crossDocumentRoot|root/i); return error }, genericGraphRefusal)
-    await record('F005', 2, async () => { const bad = copy(graph); bad.nodes.find((node) => node.id === 'root').parentId = 'alpha'; bad.nodes.find((node) => node.id === 'alpha').childIds = ['root']; const error = refusal(await preview(bad)); assert.match(JSON.stringify(error), /cycle|root|alpha/i); assert.ok(JSON.stringify(error).length < 20_000); return error }, genericGraphRefusal)
-    await record('F005', 3, async () => { const bad = copy(graph); bad.nodes.find((node) => node.id === 'opaque').parentId = 'alpha'; const error = refusal(await preview(bad)); assert.match(JSON.stringify(error), /parent|child|opaque/i); return error }, genericGraphRefusal)
+    await record('F005', 1, async () => {
+      const bad = copy(graph)
+      bad.pages[0].rootId = 'crossDocumentRoot'
+      return checkRenderedRefusal(await preview(bad), error => graphFinding(error, 'GRAPH_ROOT_MISSING', /root.*missing/i, 'page'))
+    }, genericGraphRefusal)
+    await record('F005', 2, async () => {
+      const bad = copy(graph)
+      bad.nodes.find(node => node.id === 'root').parentId = 'alpha'
+      bad.nodes.find(node => node.id === 'alpha').childIds = ['root']
+      return checkRenderedRefusal(await preview(bad), error => {
+        const cycle = graphFinding(error, 'NODE_ANCESTRY_CYCLE', /(?:root -> alpha -> root|alpha -> root -> alpha)/)
+        assert.equal(cycle.referenceType, 'node')
+        assert.ok(cycle.message.length <= 400)
+      })
+    }, genericGraphRefusal)
+    await record('F005', 3, async () => {
+      const bad = copy(graph)
+      bad.nodes.find(node => node.id === 'opaque').parentId = 'alpha'
+      return checkRenderedRefusal(await preview(bad), error => graphFinding(error, 'NODE_PARENT_CHILD_MISMATCH', /parent.*child|child.*parent/i, 'opaque'))
+    }, genericGraphRefusal)
     await record('F005', 4, async () => {
       const exported = success(await query('graph.export', { documentId: graph.documentId }))
       assert.deepEqual(exported.document.nodes.find((node) => node.id === 'root').childIds, ['alpha', 'opaque', 'instance'])
@@ -491,12 +529,17 @@ async function main() {
       const tooMany = copy(graph)
       for (let i = 0; i < 1001; i += 1) tooMany.nodes.push({ id: `extra${i}`, kind: 'element', parentId: 'root', childIds: [], label: 'x', ownership: 'read-only', source: null, opaqueReason: null })
       const error = refusal(await preview(tooMany))
-      assert.match(JSON.stringify(error), /node|limit|size|budget/i)
+      assert.equal(error.code, 'GRAPH_COLLECTION_LIMIT')
+      graphFinding(error, 'GRAPH_COLLECTION_LIMIT', /nodes.*1000/i)
       const oversized = copy(graph); oversized.nodes[0].label = 'x'.repeat(400001)
-      refusal(await preview(oversized))
+      const byteError = refusal(await preview(oversized))
+      assert.equal(byteError.code, 'REQUEST_TOO_LARGE')
+      assert.match(byteError.message, /400000/)
       const tooManyReferences = copy(graph)
       for (let i = 0; i < 2001; i += 1) tooManyReferences.references.push({ id: `ref${i}`, kind: 'node', documentId: graph.documentId, targetId: 'alpha', expectedVersion: null, expectedSchemaId: null, required: false })
-      refusal(await preview(tooManyReferences))
+      const referenceError = refusal(await preview(tooManyReferences))
+      assert.equal(referenceError.code, 'GRAPH_COLLECTION_LIMIT')
+      graphFinding(referenceError, 'GRAPH_COLLECTION_LIMIT', /references.*2000/i)
       const tooDeep = copy(graph)
       for (let i = 0; i < 65; i += 1) {
         const parent = i === 0 ? tooDeep.nodes.find((node) => node.id === 'alpha') : tooDeep.nodes.at(-1)
@@ -504,10 +547,18 @@ async function main() {
         parent.childIds.push(id)
         tooDeep.nodes.push({ id, kind: 'element', parentId: parent.id, childIds: [], label: id, ownership: 'read-only', source: null, opaqueReason: null })
       }
-      refusal(await preview(tooDeep))
+      await checkRenderedRefusal(await preview(tooDeep), depthError => graphFinding(depthError, 'NODE_DEPTH_LIMIT', /depth.*64/i))
       return error
     }, genericGraphRefusal)
-    await record('F005', 7, async () => { const future = copy(graph); future.schemaVersion = 2; const error = refusal(await preview(future)); assert.match(JSON.stringify(error), /version|schema/i); return error }, genericGraphRefusal)
+    await record('F005', 7, async () => {
+      const future = copy(graph)
+      future.schemaVersion = 2
+      return checkRenderedRefusal(await preview(future), error => {
+        assert.equal(error.code, 'GRAPH_SCHEMA_UNSUPPORTED')
+        assert.match(error.message, /schema version 1/i)
+        assert.match(error.message, /migration/i)
+      })
+    }, genericGraphRefusal)
     await record('F005', 8, async () => {
       const reorderedKeys = { nodes: [...graph.nodes].reverse(), pages: graph.pages, references: [...graph.references].reverse(), collections: graph.collections, components: graph.components, extensions: graph.extensions, sourceRevision: graph.sourceRevision, documentId: graph.documentId, workspaceId: graph.workspaceId, schemaVersion: 1 }
       const equivalent = success(await preview(reorderedKeys))
@@ -574,13 +625,21 @@ async function main() {
       assert.deepEqual(isolated.document.nodes.find((node) => node.id === 'root').childIds, graph.nodes[0].childIds)
       assert.equal(JSON.stringify(legacy), original, 'Migration must not modify its original input')
       assert.equal((await current()).revision, acceptedRevision)
-      const unsupported = copy(legacy); unsupported.unknownTransformation = true
-      refusal(await command('graph.migrationPreview', { document: unsupported, targetVersion: 1 }))
+      const unsupported = copy(legacy)
+      const sensitiveField = 'ghp_' + 'a'.repeat(32)
+      unsupported.unknownTransformation = 'PRIVATE_GRAPH_CANARY'
+      unsupported.nodes[0][sensitiveField] = 'SESSION_GRAPH_CANARY'
+      await checkRenderedRefusal(await command('graph.migrationPreview', { document: unsupported, targetVersion: 1 }), error => {
+        assert.equal(error.code, 'GRAPH_LEGACY_FIELD_UNSUPPORTED')
+        graphFinding(error, error.code, /document\.unknownTransformation/)
+        assert.ok(error.findings.some(finding => finding.message.includes('<unrecognized>')))
+        assert.ok(!JSON.stringify(error).includes(sensitiveField), 'Credential-shaped keys must be redacted')
+      })
       return isolated
     }, async () => refusal(await command('graph.migrationApply', { digest: '0'.repeat(64) }, { confirmation: 'MIGRATE GRAPH COPY' })))
     await record('F005', 15, async () => {
       const bad = copy(graph); bad.references.find((item) => item.id === 'componentRef').expectedVersion = '2.0'
-      const error = refusal(await preview(bad))
+      const error = await checkRenderedRefusal(await preview(bad), diagnostic => graphFinding(diagnostic, 'COMPONENT_REFERENCE_VERSION_MISMATCH', /version.*incompatible/i, 'componentRef'))
       const optional = copy(bad); optional.references.find((item) => item.id === 'componentRef').required = false
       assert.ok(success(await preview(optional)).findings.some((item) => item.objectId === 'componentRef'))
       const missing = copy(graph); missing.components = []; missing.nodes = missing.nodes.filter((node) => node.id !== 'componentRoot')
@@ -591,7 +650,7 @@ async function main() {
     }, genericGraphRefusal)
     await record('F005', 16, async () => {
       const bad = copy(graph); bad.references.find((item) => item.id === 'collectionRef').expectedSchemaId = 'otherSchema'
-      const error = refusal(await preview(bad))
+      const error = await checkRenderedRefusal(await preview(bad), diagnostic => graphFinding(diagnostic, 'COLLECTION_REFERENCE_INCOMPATIBLE', /schema.*version/i, 'collectionRef'))
       const incompatible = copy(graph); incompatible.references.find((item) => item.id === 'collectionRef').expectedVersion = '2.0'
       refusal(await preview(incompatible))
       const missing = copy(graph); missing.collections = []
@@ -637,7 +696,13 @@ async function main() {
       const bad = { apiVersion: '1.1', requestId: 'unknownField', kind: 'command', operation: 'graph.preview', capabilityId: descriptor.capabilityId, confirmation: '', expectedRevision: null, payload: { type: 'graph.preview', document: graph }, unknown: true }
       return refusal(await browserRequest('POST', '/api/contracts/command', bad), 'validation')
     }, genericApiRefusal)
-    await record('F006', 4, async () => refusal(await query('graph.findings', { documentId: graph.documentId, offset: '0', limit: 10 }), 'validation'), genericApiRefusal)
+    await record('F006', 4, async () => {
+      const response = await query('graph.findings', { documentId: graph.documentId, offset: '0', limit: 10 })
+      return checkRenderedRefusal(response, error => {
+        assert.equal(error.category, 'validation')
+        assert.ok(error.findings.some(item => item.path === '$.payload.offset' && item.code === 'PAGINATION'))
+      })
+    }, genericApiRefusal)
     await record('F006', 5, async () => {
       const old = success(await browserRequest('GET', '/api/contracts/discovery?clientVersion=1.0'))
       assert.equal(old.compatibleVersion, '1.0')
@@ -672,9 +737,22 @@ async function main() {
       const error = refusal(malformed, 'internal')
       const malformedExchange = lastExchange
       assert.equal(error.code, 'RESPONSE_CONTRACT_INVALID')
+      assert.match(error.message, /\/api\/contracts\/query/)
+      assert.ok(error.findings.some(item => item.path === '$.workspaceId' && item.code === 'REQUIRED'))
       const ui = await showRefusalUi(malformedExchange, error)
+      const malformedResults = []
+      for (const [requestId, findingCode] of [['oversizedStub', 'MAX_BYTES'], ['nonJsonStub', 'INVALID_JSON']]) {
+        malformedResponseRequestId = requestId
+        const response = await browserRequest('POST', '/api/contracts/query', { ...malformedExchange.body, requestId })
+        const fault = await checkRenderedRefusal(response, diagnostic => {
+          assert.equal(diagnostic.code, 'RESPONSE_CONTRACT_INVALID')
+          assert.match(diagnostic.message, /\/api\/contracts\/query/)
+          assert.ok(diagnostic.findings.some(item => item.path === '$' && item.code === findingCode))
+        })
+        malformedResults.push({ requestId, findings: fault.findings })
+      }
       assert.equal(await page.locator('#graph-accepted-result').innerText(), beforeClient)
-      report.malformedResponseBrowserProof = { ...ui, previousClientViewPreserved: true, scope: 'One-shot owned HTTP fixture fault using copied production response validation, followed by the real dashboard client refusal.' }
+      report.malformedResponseBrowserProof = { ...ui, malformedResults, previousClientViewPreserved: true, scope: 'One-shot owned HTTP fixture fault using copied production response validation, followed by the real dashboard client refusal.' }
       return error
     }, genericApiRefusal)
     await record('F006', 9, async () => { const descriptor = descriptors.get('graph.findings'); assert.ok(descriptor.pagination); const error = refusal(await query('graph.findings', { documentId: graph.documentId, offset: -1, limit: 51 })); return { pagination: descriptor.pagination, error } }, genericApiRefusal)
@@ -700,13 +778,17 @@ async function main() {
     await record('F006', 14, async () => {
       const descriptor = descriptors.get('graph.preview')
       const mixed = { apiVersion: '1.1', requestId: 'mixedVariant', kind: 'command', operation: 'graph.preview', capabilityId: descriptor.capabilityId, confirmation: '', expectedRevision: null, payload: { type: 'graph.accept', document: graph } }
-      return refusal(await browserRequest('POST', '/api/contracts/command', mixed), 'validation')
+      return checkRenderedRefusal(await browserRequest('POST', '/api/contracts/command', mixed), error => {
+        assert.equal(error.category, 'validation')
+        assert.ok(error.findings.some(item => item.path === '$.payload.type' && item.code === 'DISCRIMINATOR'))
+      })
     }, genericApiRefusal)
     await record('F006', 15, async () => {
       const many = Object.fromEntries(Array.from({ length: 70 }, (_, index) => [`wrong${index}`, index]))
       const error = refusal(await query('graph.findings', { documentId: graph.documentId, ...many }), 'validation')
       assert.equal(error.findings.length, 50)
-      assert.ok(error.omittedCount >= 20)
+      assert.equal(error.omittedCount, 20, 'Seventy unknown fields must produce seventy findings before the display limit')
+      assert.ok(error.findings.every(item => item.path === '$.payload.*' && item.code === 'UNKNOWN_FIELD'))
       return error
     }, genericApiRefusal)
     await record('F006', 16, async () => {
@@ -943,6 +1025,9 @@ async function main() {
     assert.ok((await futureDiscoveryPending).status() >= 400)
     await expect(page.locator('#contract-discover')).toBeEnabled()
     await expect(page.locator('#graph-contract-error')).toContainText('incompatible-version')
+    const versionRefusal = JSON.parse(await page.locator('#graph-contract-error').innerText())
+    assert.equal(versionRefusal.code, 'API_VERSION_UNSUPPORTED')
+    assert.match(versionRefusal.message, /1\.0.*1\.1/)
     assert.equal(await page.locator('#graph-accepted-result').innerText(), beforeFutureUi)
     assert.equal(await page.locator('#contract-discovery').innerText(), beforeFutureDiscovery)
     await page.locator('#contract-version').selectOption('1.1')

@@ -9,6 +9,8 @@ import {
 } from '../Builder/api-validation.mjs';
 import { getOperationDescriptor } from '../Builder/api-contracts.mjs';
 import { GraphError } from '../Builder/graph-core.mjs';
+import { validateGraph } from '../Builder/graph-validation.mjs';
+import { previewGraphMigration } from '../Builder/graph-evolution.mjs';
 
 const query = (operation = 'graph.status', apiVersion = '1.1') => ({
   apiVersion, requestId: 'request_1', kind: 'query', operation,
@@ -283,4 +285,89 @@ test('only trusted graph findings retain qualified metadata and a reviewed sourc
   assert.equal(foreignResponse.result.error.category, 'internal');
   assert.equal(foreignResponse.result.error.code, 'INTERNAL_ERROR');
   assert.deepEqual(foreignResponse.result.error.findings, []);
+});
+
+test('request validation counts every unknown payload key once alongside other invalid fields', () => {
+  const extras = Object.fromEntries(Array.from({ length: 70 }, (_, index) => [`privateKey${index}`, 'private-value']));
+  for (const mixed of [false, true]) {
+    const req = query('graph.findings');
+    req.payload = { type: req.operation, documentId: 'Doc', ...extras };
+    if (mixed) req.payload.limit = 'not-an-integer';
+    assert.throws(() => validateApiRequest(req), error => {
+      const { findings, omittedCount } = apiErrorResult(error).result.error;
+      assert.equal(findings.length, 50);
+      assert.equal(omittedCount, mixed ? 21 : 20);
+      assert.equal(findings.filter(item => item.code === 'UNKNOWN_FIELD').length, mixed ? 49 : 50);
+      if (mixed) assert.ok(findings.some(item => item.path === '$.payload.limit' && item.code === 'PAGINATION'));
+      assert.doesNotMatch(JSON.stringify(findings), /privateKey|private-value|not-an-integer/);
+      return true;
+    });
+    assert.equal(req.payload.privateKey69, 'private-value');
+  }
+});
+
+test('invalid handler output reports the bounded root cause and endpoint without result data', () => {
+  const descriptor = { resultSchema: { type: 'object' } };
+  let deep = {};
+  for (let index = 0; index < 65; index += 1) deep = [deep];
+  for (const [bad, expected] of [
+    [{ data: 'x'.repeat(800001) }, 'MAX_BYTES'], [deep, 'MAX_COMPLEXITY'],
+    [{ 'private-field': undefined }, 'INVALID_JSON'],
+  ]) {
+    assert.throws(() => validateApiResponse(descriptor, bad, { endpoint: '/api/contracts/query' }), error => {
+      const result = apiErrorResult(error);
+      assert.equal(result.statusCode, 500);
+      assert.equal(result.result.ok, false);
+      const failure = result.result.error;
+      assert.match(failure.message, /\/api\/contracts\/query/);
+      assert.equal(failure.findings.length, 1);
+      assert.equal(failure.findings[0].path, '$');
+      assert.equal(failure.findings[0].code, expected);
+      assert.doesNotMatch(JSON.stringify(failure), /xxxxx|private-field/);
+      return true;
+    });
+  }
+});
+
+test('only authentic graph validator findings publish cycle paths, import limits and migration field locations', () => {
+  const node = id => ({ id, kind: 'element', parentId: id, childIds: [id],
+    label: 'Preview', ownership: 'read-only', source: null, opaqueReason: null });
+  const graph = { schemaVersion: 1, workspaceId: 'a'.repeat(64), documentId: 'Doc', sourceRevision: null,
+    pages: [{ id: 'Page', rootId: 'Root', route: '/' }], nodes: [node('Root')],
+    components: [], references: [], collections: [], extensions: {} };
+  assert.throws(() => validateGraph(graph), error => {
+    const finding = error.findings.find(item => item.code === 'NODE_ANCESTRY_CYCLE');
+    assert.ok(Object.isFrozen(finding));
+    const cycle = apiErrorResult(error).result.error.findings.find(item => item.code === 'NODE_ANCESTRY_CYCLE');
+    assert.equal(cycle.message, 'Node ancestry cycle: Root -> Root.');
+    const forged = new GraphError('GRAPH_VALIDATION_FAILED', 'private-message', {
+      findings: [{ ...finding, message: 'private-message' }],
+    });
+    assert.doesNotMatch(JSON.stringify(apiErrorResult(forged)), /private-message/);
+    return true;
+  });
+  assert.throws(() => validateGraph({ ...graph, pages: Array(51).fill(graph.pages[0]) }), error => {
+    const detail = apiErrorResult(error).result.error.findings[0];
+    assert.equal(detail.code, 'GRAPH_COLLECTION_LIMIT');
+    assert.match(detail.message, /Pages.*50-item limit/);
+    return true;
+  });
+  const privateId = `hf_${'a'.repeat(32)}`;
+  assert.throws(() => validateGraph({ ...graph, nodes: [node(privateId)] }), error => {
+    const result = apiErrorResult(error);
+    assert.doesNotMatch(JSON.stringify(result), new RegExp(privateId));
+    assert.match(JSON.stringify(result), /<redacted>/);
+    return true;
+  });
+  const { pages, ...legacy } = graph;
+  legacy.nodes = [];
+  Object.assign(legacy, { schemaVersion: 0, page: pages[0], legacyOption: 'concealed-value', [privateId]: 'concealed-value' });
+  assert.throws(() => previewGraphMigration(legacy), error => {
+    const detail = apiErrorResult(error).result.error;
+    assert.equal(detail.code, 'GRAPH_LEGACY_FIELD_UNSUPPORTED');
+    assert.deepEqual(detail.findings.map(item => item.message).sort(),
+      ['Unsupported legacy field document.<unrecognized>.', 'Unsupported legacy field document.legacyOption.']);
+    assert.doesNotMatch(JSON.stringify(detail), /concealed-value|hf_aaaa/);
+    return true;
+  });
 });
