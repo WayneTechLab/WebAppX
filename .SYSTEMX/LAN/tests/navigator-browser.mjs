@@ -52,6 +52,7 @@ const originalProtected = captureProtectedBytes()
 const runtimeSourcePaths = ['.SYSTEMX/LAN/Website/dashboard.js', '.SYSTEMX/LAN/Website/dashboard.css',
   '.SYSTEMX/LAN/Website/preview-navigator.js', '.SYSTEMX/LAN/Website/preview-navigator-context.js',
   '.SYSTEMX/LAN/Website/preview-navigator-filters.js', '.SYSTEMX/LAN/Website/preview-navigator-inspection.js',
+  '.SYSTEMX/LAN/Website/preview-navigator-targets.js', '.SYSTEMX/LAN/Website/preview-navigator-search.js', '.SYSTEMX/LAN/Website/preview-navigator-bookmarks.js',
   '.SYSTEMX/LAN/Website/preview-navigator-expansion.js', '.SYSTEMX/LAN/Website/preview-navigator-comparison.js', '.SYSTEMX/LAN/Website/source-identities.js', '.SYSTEMX/LAN/Website_Dashboard.html']
 const runtimeDigests = (snapshot) => Object.fromEntries(runtimeSourcePaths.map((path) => [path, snapshot[path] ?? null]))
 writeFileSync(join(evidence, 'protected-before.json'), `${JSON.stringify(originalProtected, null, 2)}\n`)

@@ -1,6 +1,8 @@
 import { collectPreviewHierarchy, previewNavigatorLimits, projectPreviewRows } from './preview-navigator.js'
 import { mountNavigatorComparison } from './preview-navigator-comparison.js'
 import { mountVirtualCoverage } from './preview-navigator-inspection.js'
+import { bindNavigatorSearch, duplicateMatchContexts, revealAncestorStep, revealPathMatches } from './preview-navigator-targets.js'
+import { parseNavigatorSearch, matchesNavigatorSearch } from './preview-navigator-search.js'
 import { emptyNavigatorFilters, hasNavigatorFilters, mountNavigatorFilters } from './preview-navigator-filters.js'
 
 const maxScopes = 4, maxBoundaries = 32
@@ -67,7 +69,9 @@ export function mountNavigatorContexts(tree) {
   rows.setAttribute('aria-label', 'Scoped element hierarchy')
   rows.style.paddingInlineStart = '1rem'
   status.className = 'command-output'; status.setAttribute('aria-live', 'polite')
-  actions.append(back, refresh)
+  const nextReveal = button('Reveal next ancestors')
+  nextReveal.dataset.navRevealNext = 'context'; nextReveal.hidden = true
+  actions.append(back, refresh, nextReveal)
   panel.append(heading, path, actions, filter, boundaries, rows, status)
   tree.before(panel)
   const facets = mountNavigatorFilters(boundaries, 'context', filters => {
@@ -132,9 +136,14 @@ export function mountNavigatorContexts(tree) {
     current.expanded = new Set([...current.expanded].filter(node => snapshot.byElement.has(node)))
     facets.update(current.filters)
     filter.value = current.query
-    const query = current.query.trim().toLocaleLowerCase(), findings = []
+    const query = current.query, search = parseNavigatorSearch(query), findings = []
+    if (current.pending && !revealPathMatches(snapshot, current.pending)) {
+      current.pending = null; notice = 'The pending reveal path changed or was replaced.'
+    }
+    nextReveal.hidden = !current.pending
     const view = stack.length > 1 ? projectPreviewRows(snapshot, { expanded: current.expanded, query,
       filters: current.filters, scopes: stack.slice(1), limits }) : null
+    const duplicateLabels = view ? duplicateMatchContexts(view) : new Map()
     let focusButton
     const occurrences = new Map()
     for (const entry of snapshot.entries) {
@@ -143,7 +152,9 @@ export function mountNavigatorContexts(tree) {
       const label = `${kind} · ${entry.label}`
       const occurrence = (occurrences.get(label) ?? 0) + 1
       occurrences.set(label, occurrence)
-      if (query && !entry.search.includes(query) && !kind.toLocaleLowerCase().includes(query)) continue
+      if (search.mode === 'refused') continue
+      if (search.mode !== 'empty' && !matchesNavigatorSearch(search, entry) &&
+          !(search.mode === 'plain' && kind.toLocaleLowerCase().includes(search.query))) continue
       findings.push(entry)
       if (findings.length > maxBoundaries) continue
       const name = occurrence === 1 ? label : `${label} (${occurrence})`
@@ -189,20 +200,52 @@ export function mountNavigatorContexts(tree) {
           })
           if (!focusButton && entry.element === focusedKey) focusButton = toggle
           item.append(toggle)
-        } else item.textContent = entry.label
+        } else {
+          item.textContent = entry.label
+          item.tabIndex = -1
+          item.navigatorFocusKey = entry.element
+          if (!focusButton && entry.element === focusedKey) focusButton = item
+        }
         if (view.filtering) {
           item.dataset.navMatch = entry.matched ? 'match' : 'ancestor'
           if (!entry.matched && hasNavigatorFilters(current.filters)) item.append(element('small', ' · ancestor'))
+        }
+        const context = duplicateLabels.get(entry.element)
+        if (context) {
+          const detail = element('small', context); detail.dataset.navDuplicate = ''; item.append(detail)
+        }
+        if (view.filtering && entry.matched) {
+          const reveal = button('Reveal'); reveal.dataset.navRevealMatch = ''
+          reveal.setAttribute('aria-label', 'Reveal ' + entry.label)
+          reveal.addEventListener('click', () => revealScoped(current, entry.element))
+          item.append(reveal)
         }
         rows.append(item)
       }
       messages.push(`${snapshot.entries.length} inspected nodes · ${view.rows.length} shown${view.filtering ? ` · ${view.matchCount} ${hasNavigatorFilters(current.filters) ? 'matches' : 'metadata matches'}` : ''}.`, ...view.reasons)
     }
-    status.textContent = messages.filter(Boolean).join(' ')
-    if (focusButton) focusButton.focus({ preventScroll: true })
+    status.textContent = search.refusal || messages.filter(Boolean).join(' ')
+    if (focusButton) {
+      focusButton.focus({ preventScroll: true })
+      if (focusTarget) focusButton.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+    }
   }
   panel.addEventListener('toggle', () => { if (!panel.open) { unwatch(); stack = []; updateScopeTools(null); notice = ''; boundaries.replaceChildren(); rows.replaceChildren() } else render() })
-  filter.addEventListener('input', () => { if (stack.length) stack.at(-1).query = filter.value.slice(0, limits.query); notice = ''; render() })
+  function revealScoped(current, target, prior) {
+    reconcile()
+    if (stack.at(-1) !== current) { notice = 'Context unavailable.'; render(); return }
+    const snapshot = collectPreviewHierarchy(current.root, limits)
+    const step = revealAncestorStep(snapshot, target, current.expanded, { limits, previous: prior })
+    current.pending = step.pending; notice = step.notice
+    if (step.status === 'partial' || step.status === 'revealed') { current.expanded = step.expanded; current.query = ''; current.filters = emptyNavigatorFilters() }
+    render(step.frontier)
+    if (step.pending) nextReveal.focus({ preventScroll: true })
+  }
+  nextReveal.addEventListener('click', () => {
+    const current = stack.at(-1)
+    if (current?.pending) revealScoped(current, current.pending.target, current.pending)
+  })
+  bindNavigatorSearch(filter, query => { if (stack.length) stack.at(-1).query = query; notice = ''; render() })
   refresh.addEventListener('click', () => { notice = ''; render() })
   back.addEventListener('click', () => {
     const previous = stack.at(-1)

@@ -1,24 +1,37 @@
+import { matchesNavigatorSearch, navigatorQueryLimit, parseNavigatorSearch } from './preview-navigator-search.js'
 import { hasNavigatorFilters, semanticKind, visibilityStates } from './preview-navigator-filters.js'
 
 // Read-only runtime DOM metadata. This is not a canonical source/document graph.
-export const previewNavigatorLimits = Object.freeze({ nodes: 1500, depth: 40, query: 160, matches: 120, rows: 500, metadata: 500 })
+export const previewNavigatorLimits = Object.freeze({ nodes: 1500, depth: 40, query: navigatorQueryLimit, matches: 120, rows: 500, metadata: 500 })
 
 const excludedTags = new Set(['HTML', 'HEAD', 'SCRIPT', 'STYLE', 'LINK', 'META', 'TITLE', 'NOSCRIPT', 'TEMPLATE'])
 const isElement = (node) => Boolean(node?.nodeType === 1 && typeof node.tagName === 'string')
 const normalized = (value) => String(value ?? '').replace(/\s+/g, ' ').trim()
 
 function metadata(element) {
-  const take = (value) => normalized(String(value ?? '').slice(0, previewNavigatorLimits.metadata))
-  const tag = element.tagName.toLowerCase()
-  const id = take(element.getAttribute('id'))
-  const classes = take(element.getAttribute('class'))
-  const name = take(element.getAttribute('data-systemx-name'))
-  const component = take(element.getAttribute('data-systemx-component'))
+  const max = previewNavigatorLimits.metadata
+  const rawTag = element.tagName
+  const rawId = element.getAttribute('id') ?? ''
+  const rawClass = element.getAttribute('class') ?? ''
+  const rawName = element.getAttribute('data-systemx-name') ?? ''
+  const rawComponent = element.getAttribute('data-systemx-component') ?? ''
+  const take = value => normalized(value.slice(0, max))
+  const tag = rawTag.slice(0, max).toLowerCase()
+  const id = take(rawId), classes = take(rawClass)
+  const name = take(rawName), component = take(rawComponent)
+  // A clipped value cannot establish an exact predicate match. Other fields
+  // remain independently searchable when one authored attribute is oversized.
+  const searchFields = {
+    tag: rawTag.length <= max ? tag : null,
+    id: rawId.length <= max ? rawId : null,
+    class: rawClass.length <= max ? rawClass.split(/[\t\n\f\r ]+/u) : null,
+    name: rawName.length <= max ? name.toLowerCase() : null,
+    component: rawComponent.length <= max ? component.toLowerCase() : null,
+  }
   const identity = `${tag}${id ? `#${id}` : ''}${classes ? `.${classes.split(' ').slice(0, 3).join('.')}` : ''}`
   const label = `${name || component ? `${name || component} · ` : ''}${identity}`.slice(0, 160)
-  const metadataLimited = ['id', 'class', 'data-systemx-name', 'data-systemx-component']
-    .some((attribute) => String(element.getAttribute(attribute) ?? '').length > previewNavigatorLimits.metadata)
-  return { tag, label, metadataLimited, search: [tag, id, classes, name, component, identity, classes.split(' ').map((value) => `.${value}`).join(' ')].join(' ').toLocaleLowerCase() }
+  const metadataLimited = Object.values(searchFields).includes(null)
+  return { tag, label, metadataLimited, searchFields, search: [tag, id, classes, name, component, identity, classes.split(' ').map((value) => `.${value}`).join(' ')].join(' ').toLocaleLowerCase() }
 }
 
 export function isCurrentPreviewElement(element, root) {
@@ -89,17 +102,19 @@ export function ancestorPreviewEntries(snapshot, element) {
 }
 
 export function projectPreviewRows(snapshot, { expanded = new Set(), query = '', filters, ownership, scopes, limits = previewNavigatorLimits } = {}) {
-  const queryLimited = String(query).length > limits.query
-  const rawQuery = normalized(String(query).slice(0, limits.query))
-  const needle = rawQuery.slice(0, limits.query).toLocaleLowerCase()
+  const search = parseNavigatorSearch(query, limits.query)
   const reasons = [...(snapshot?.reasons ?? [])]
-  if (queryLimited) reasons.push(`Search limited to the first ${limits.query} characters. Refine the query.`)
+  if (search.limited) reasons.push(`Search limited to the first ${limits.query} characters. Refine the query.`)
+  const searchInfo = { query: search.query, searchMode: search.mode, searchRefusal: search.refusal ?? null, predicateCount: search.terms.length }
+  if (search.refusal) {
+    return { ...searchInfo, rows: [], filtering: true, matching: new Set(), matchCount: 0, reasons, truncated: reasons.length > 0 }
+  }
   const entries = snapshot?.entries ?? []
   const included = new Set()
-  const filtering = Boolean(needle || hasNavigatorFilters(filters))
+  const filtering = search.mode !== 'empty' || hasNavigatorFilters(filters)
   const visibility = filters && filters.visibility !== 'any' ? visibilityStates(entries, scopes) : null
   const mapping = entry => ownership && !snapshot.rangeLimited && entry.anchor && snapshot.anchors.get(entry.anchor) === 1 ? ownership(entry) : 'unmapped'
-  const matches = filtering ? entries.filter(entry => (!needle || entry.search.includes(needle))
+  const matches = filtering ? entries.filter(entry => matchesNavigatorSearch(search, entry)
     && (!filters?.kind.length || filters.kind.includes(entry.kind))
     && (!visibility || visibility.get(entry) === filters.visibility)
     && (!filters || filters.mapping === 'any' || mapping(entry) === filters.mapping)) : []
@@ -120,5 +135,5 @@ export function projectPreviewRows(snapshot, { expanded = new Set(), query = '',
     visible.add(entry)
     rows.push({ ...entry, expanded: filtering ? entry.children.some((child) => included.has(child)) : expanded.has(entry.element), matched: matching.has(entry) })
   }
-  return { rows, filtering, matching, query: needle, matchCount: matches.length, reasons, truncated: reasons.length > 0 }
+  return { rows, filtering, matching, ...searchInfo, matchCount: matches.length, reasons, truncated: reasons.length > 0 }
 }

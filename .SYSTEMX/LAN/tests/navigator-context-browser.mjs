@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { checkScopedTargetReveal } from './navigator-targets-browser.mjs'
 import { checkMappingFilters, checkScopedFilters } from './navigator-filter-browser.mjs'
 
 export async function checkNavigatorContexts(page, frame, expect) {
@@ -102,6 +103,7 @@ export async function checkNavigatorContexts(page, frame, expect) {
     await rows.getByRole('button', { name: 'section#sx-shadow-group' }).click()
     await expect(rows).toContainText('span#sx-shadow-leaf')
     await checkScopedFilters(page, frame, expect, rows, info, filter)
+    await checkScopedTargetReveal(page, frame, expect, panel, filter, rows, info)
     const shadowCoverage = panel.locator('[data-nav-coverage="context"]')
     await shadowCoverage.locator(':scope > summary').click()
     await expect(shadowCoverage.locator('[data-nav-coverage-rows]')).toContainText(/sx-virtual.*1 mounted.*500 logical/)
@@ -201,7 +203,7 @@ export async function checkNavigatorContexts(page, frame, expect) {
     assert.equal(await page.locator('#canvas-breadcrumb-element').innerText(), parentSelection)
     assert.doesNotMatch(await panel.innerText(), /PRIVATE_|sx-closed-private|sx-cross-private/)
     assert.equal(await frame.evaluate(() => window.__sxExcludedDocumentReads), 0)
-    return { advancedInspection, shadowWindowMounted: 1, shadowWindowDeclaredTotal: 500, snapshotInvalidatedOnFrameEntry: true, inaccessibleFrameKinds: ['opaque sandbox', 'second loopback HTTP origin', 'unsupported data URL'], excludedFrameDocumentReads: 0, changedFrameOriginRecovered: true,
+    return { advancedInspection, scopedProgressiveReveal: true, shadowWindowMounted: 1, shadowWindowDeclaredTotal: 500, snapshotInvalidatedOnFrameEntry: true, inaccessibleFrameKinds: ['opaque sandbox', 'second loopback HTTP origin', 'unsupported data URL'], excludedFrameDocumentReads: 0, changedFrameOriginRecovered: true,
       kindFilters: ['heading', 'control'], visibilityFilters: ['rendered', 'hidden', 'inert', 'unavailable-box'],
       mappingFixture: 'Read-only GET fixture envelopes built by the source identity and ownership adapters.',
       mappingFilters: ['mapped', 'unmapped', 'read-only', 'stale'], duplicateRuntimeAnchorsUnmapped: true,

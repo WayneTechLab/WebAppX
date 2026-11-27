@@ -1,4 +1,6 @@
 import './preview-navigator-expansion.test.mjs'
+import './preview-navigator-search.test.mjs'
+import './preview-navigator-bookmarks.test.mjs'
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { previewNavigatorLimits, collectPreviewHierarchy, projectPreviewRows, ancestorPreviewEntries, isCurrentPreviewElement } from '../Website/preview-navigator.js'
@@ -277,4 +279,44 @@ test('grouping requires a current definition-matched declaration, retaining DOM 
   assert.deepEqual(group.instances.map(instance => instance.key), ['second', 'first'])
   assert.deepEqual(root.children, [second, wrongName, first, unmapped])
   assert.deepEqual(componentGroups(snapshot, new Map()), [])
+})
+
+test('duplicate match contexts distinguish inspected occurrences and only expose two bounded authored ancestors', async () => {
+  const { duplicateMatchContexts } = await import('../Website/preview-navigator-targets.js')
+  const duplicate = () => node('button', { 'data-systemx-name': 'Save', class: 'action' })
+  const a = duplicate(), b = duplicate(), c = duplicate()
+  const root = node('body', {}, [node('main', { id: 'outer' }, [node('div', { id: 'left' }, [a, b]), node('div', { id: 'right' }, [c])])])
+  const snapshot = collectPreviewHierarchy(root)
+  const result = projectPreviewRows(snapshot, { query: 'tag:button name:Save' })
+  const contexts = duplicateMatchContexts(result)
+  assert.deepEqual([...contexts.values()], [
+    'main#outer › div#left · inspected match 1 of 3', 'main#outer › div#left · inspected match 2 of 3',
+    'main#outer › div#right · inspected match 3 of 3',
+  ])
+  assert.equal(duplicateMatchContexts(projectPreviewRows(snapshot)).size, 0)
+})
+
+test('progressive reveal opens five or fewer collapsed ancestors per action and refuses a changed path', async () => {
+  const { revealAncestorStep, revealPathMatches } = await import('../Website/preview-navigator-targets.js')
+  const target = node('button'), parents = [target]
+  for (let i = 0; i < 16; i++) parents.unshift(node('section', {}, [parents[0]]))
+  const root = node('body', {}, [parents[0]])
+  const snap = collectPreviewHierarchy(root)
+  let expanded = new Set([root]), pending
+  for (const expected of ['partial', 'partial', 'partial', 'revealed']) {
+    const result = revealAncestorStep(snap, target, expanded, { previous: pending })
+    assert.equal(result.status, expected)
+    assert.ok(result.expanded.size - expanded.size <= 5)
+    expanded = result.expanded
+    pending = result.pending
+  }
+  const firstStep = revealAncestorStep(snap, target, new Set([root]))
+  parents.at(-2).children = []
+  parents[0].children.push(target)
+  const changed = collectPreviewHierarchy(root)
+  assert.equal(revealPathMatches(changed, firstStep.pending), false)
+  assert.equal(revealAncestorStep(changed, target, expanded, { previous: firstStep.pending }).status, 'unavailable')
+  const limited = collectPreviewHierarchy(root, limits({ depth: 1 }))
+  assert.match(revealAncestorStep(limited, target, expanded).notice, /depth limited to 1/)
+  assert.equal(revealAncestorStep(snap, target, expanded, { limits: limits({ rows: 4 }) }).status, 'limited')
 })

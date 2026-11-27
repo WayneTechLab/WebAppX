@@ -143,7 +143,7 @@ export function mountComponentGroups(before, activate) {
           if (focused === button.navigatorGroupFocus) restoreFocus = button
           button.addEventListener('click', () => {
             const result = activate(instance, group.key, action)
-            notice = result ? `${action === 'Select' ? 'Selected' : 'Revealed'} ${instance.anchor} · ${instance.nodeId}.` : 'Instance unavailable or its declaration changed. Refresh the inspected hierarchy.'
+            notice = result ? `${action === 'Select' ? 'Selected' : 'Reveal requested for'} ${instance.anchor} · ${instance.nodeId}.` : 'Instance unavailable or its declaration changed. Refresh the inspected hierarchy.'
             status.textContent = notice
           })
           line.append(button)
