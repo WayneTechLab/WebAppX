@@ -185,12 +185,18 @@ test('mode cannot enter at URL descendants, aliases, other native pages, or malf
   assert.equal(ui.requests.length, 0)
 })
 
+const navigationCommit = {
+  sequence: 1, location: recruitingPath, kind: 'route', entry: { id: 'recruiting', index: 1 },
+  restoreEntryId: null, focus: 'destination',
+}
 const layoutDependencies = {
+  WalkthroughNotice: 'WalkthroughNotice',
+  useCommittedNavigationFocus: commit => assert.equal(commit, navigationCommit),
   React: jsx, Navbar: 'Navbar', Footer: 'Footer', FirebaseSetupNotice: 'FirebaseSetupNotice', PageSnapMenu: 'PageSnapMenu', HelpDeskChat: 'HelpDeskChat', AccessibilityPageControl: 'AccessibilityPageControl', AppLink: 'AppLink',
   siteControls: { pageSnap: true, helpDesk: 'help', accessibility: true, showPageTravel: true },
 }
 function layout(active) {
-  return new Function(...Object.keys(layoutDependencies), 'useScopedPortalChrome', `${compile(layoutSource.replaceAll('import.meta.env.DEV', 'false'))}\nreturn Layout`)(...Object.values(layoutDependencies), () => active)({ currentPath: recruitingPath, children: 'literal scoped content' })
+  return new Function(...Object.keys(layoutDependencies), 'useScopedPortalChrome', `${compile(layoutSource.replaceAll('import.meta.env.DEV', 'false'))}\nreturn Layout`)(...Object.values(layoutDependencies), () => active)({ currentPath: recruitingPath, navigationCommit, children: 'literal scoped content' })
 }
 function nodes(tree) {
   const found = []
@@ -210,7 +216,10 @@ test('active layout unmounts all global management chrome while preserving neutr
   assert.deepEqual(exits[0].props.children, ['Portal directory'])
   const main = rendered.filter(node => node.type === 'main')
   assert.equal(main.length, 1); assert.equal(main[0].props.id, 'content'); assert.equal(main[0].props.tabIndex, -1)
-  assert.deepEqual(main[0].props.children, ['literal scoped content'])
+  const [notice, content] = main[0].props.children
+  assert.equal(notice.type, 'WalkthroughNotice')
+  assert.equal(content, 'literal scoped content')
+  assert.equal(main[0].props.children.length, 2)
   assert.ok(rendered.some(node => node.type === 'a' && node.props.href === '#content'))
   assert.equal(rendered.filter(node => node.type === 'AccessibilityPageControl').length, 1)
   assert.equal(rendered.some(node => node.props.hidden || node.props['aria-hidden']), false)
