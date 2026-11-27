@@ -10,7 +10,7 @@ import { test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
-const modulePaths = ['session-control.mjs', 'session-restart-preview.mjs', 'Builder/runtime/port-utils.mjs']
+const modulePaths = ['session-control.mjs', 'session-restart-preview.mjs', 'Builder/runtime/port-utils.mjs', 'Builder/runtime/session-transition-plan.mjs', 'Builder/runtime/session-artifacts.mjs']
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex')
 
 function createFixture() {

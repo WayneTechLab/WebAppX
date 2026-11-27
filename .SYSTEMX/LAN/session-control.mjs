@@ -1,8 +1,8 @@
-import { existsSync, unlinkSync } from 'node:fs'
-import { readSession, clearExitedSession } from './Builder/runtime/port-utils.mjs'
+import { readSession, readSessionRecordSnapshot } from './Builder/runtime/port-utils.mjs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
-import { createSessionRestartPreview, createSessionStopPlan, executeSessionStopPlan, sessionRuntimeCleanupTarget } from './session-restart-preview.mjs'
+import { describeShutdownPlan } from './Builder/runtime/session-transition-plan.mjs'
+import { createSessionRestartPreview, createSessionStopPlan, executeSessionStopPlan } from './session-restart-preview.mjs'
 
 const lanRoot = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(lanRoot, '..', '..')
@@ -47,7 +47,7 @@ if (action === 'start') {
 }
 
 if (action === '--help' || action === '-h' || action === 'sessions' && process.argv.length === 4 && ['--help', '-h'].includes(process.argv[3])) {
-  await writeAndExit(process.stdout, 'Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop|start --preview|restart --preview|sessions [--workspace DIRECTORY ...]]\nThe sessions table includes the current workspace and up to 11 selected project directories. Recorded and verified active origins are shown separately.\n', 0)
+  await writeAndExit(process.stdout, 'Usage: node .SYSTEMX/LAN/session-control.mjs [status|stop [--preview]|recover --preview|recover --generation ID|start --preview|restart --preview|sessions [--workspace DIRECTORY ...]]\nThe sessions table includes the current workspace and up to 11 selected project directories. Recorded and verified active origins are shown separately.\n', 0)
 }
 
 if (action === 'sessions') {
@@ -58,7 +58,34 @@ if (action === 'sessions') {
   await writeJsonAndExit(table, 0)
 }
 
-const session = readSession(repoRoot)
+const args = process.argv.slice(3)
+if (action === 'stop' && !(args.length === 0 || args.length === 1 && args[0] === '--preview') ||
+    action === 'recover' && !(args.length === 1 && args[0] === '--preview' || args.length === 2 && args[0] === '--generation')) {
+  await writeAndExit(process.stderr, 'Use stop [--preview], recover --preview, or recover --generation ID.\n', 2)
+}
+let session
+if (action === 'stop' || action === 'recover') {
+  try { session = readSessionRecordSnapshot(repoRoot).record }
+  catch { await writeJsonAndExit({ status: 'refused', reasons: ['session-record-unverified'] }, 1, process.stderr) }
+} else session = readSession(repoRoot)
+if (action === 'recover') {
+  const { createSessionRecoveryPlan, recoverExitedSession } = await import('./session-recovery.mjs')
+  const result = args[0] === '--preview' ? createSessionRecoveryPlan({ repoRoot, session }) : recoverExitedSession({ repoRoot, session }, args[1])
+  await writeJsonAndExit(result, (args[0] === '--preview' ? result.canRecover : result.recovered) ? 0 : 1)
+}
+if (action === 'stop' && args[0] === '--preview') {
+  const plan = createSessionStopPlan({ repoRoot, session })
+  if (plan.cleanup || plan.processes.some(entry => entry.state === 'orphaned')) {
+    const { createSessionRecoveryPlan } = await import('./session-recovery.mjs')
+    plan.recovery = createSessionRecoveryPlan({ repoRoot, session })
+    if (!plan.recovery.canRecover) {
+      plan.canStop = false
+      plan.cleanup = false
+      plan.reasons = [...new Set([...plan.reasons, ...plan.recovery.reasons])]
+    }
+  }
+  await writeJsonAndExit({ ...plan, action: 'stop-preview', readOnly: true, shutdown: describeShutdownPlan(session, plan) }, plan.canStop ? 0 : 1)
+}
 if (action === 'restart' || action === 'restart-preview') {
   const argumentsAfterAction = process.argv.slice(3)
   if ((action === 'restart' && (argumentsAfterAction.length !== 1 || argumentsAfterAction[0] !== '--preview')) ||
@@ -90,24 +117,19 @@ if (action !== 'stop') {
   await writeAndExit(process.stderr, 'Usage: node .SYSTEMX/LAN/session-control.mjs [status|sessions [--workspace DIRECTORY ...]|stop|start --preview|restart --preview|restart-preview]\n', 2)
 }
 
+const initial = createSessionStopPlan({ repoRoot, session })
+if (initial.cleanup) {
+  const { recoverExitedSession } = await import('./session-recovery.mjs')
+  const result = recoverExitedSession({ repoRoot, session }, session.sessionId)
+  if (!result.recovered) await writeJsonAndExit({ ...result, status: 'refused' }, 1, process.stderr)
+  await writeAndExit(process.stdout, '[SYSTEMX] Local exited session record cleared; unrelated projects were not touched.\n', 0)
+}
 const stop = executeSessionStopPlan({
-  repoRoot, session,
-  signalProcess: (pid, signal) => process.kill(pid, signal),
-  cleanupSession() {
-    const cleared = clearExitedSession(repoRoot, session, () => {
-      if (!createSessionStopPlan({ repoRoot, session }).cleanup) throw new Error('Session processes changed during cleanup')
-      const runtime = sessionRuntimeCleanupTarget(repoRoot, session)
-      if (!runtime.allowed) throw new Error(runtime.reason)
-      if (runtime.path && existsSync(runtime.path)) unlinkSync(runtime.path)
-    })
-    if (!cleared) throw new Error('Session changed during cleanup')
-  },
+  repoRoot, session, signalProcess: (pid, signal) => process.kill(pid, signal),
+  cleanupSession() { throw new Error('Session state changed. Preview recovery before clearing it.') },
 })
 if (!stop.canStop) {
   await writeJsonAndExit({ ...stop, status: 'refused' }, 1, process.stderr)
 }
-if (stop.cleanup) console.log('[SYSTEMX] Local exited session record cleared; unrelated projects were not touched.')
-else {
-  console.log(`[SYSTEMX] Requested owned ${stop.targets[0].role} process ${stop.targets[0].pid} to stop.`)
-  console.log(stop.guidance ?? '[SYSTEMX] Its supervisor will clear the session state during shutdown.')
-}
+console.log(`[SYSTEMX] Requested owned ${stop.targets[0].role} process ${stop.targets[0].pid} to stop.`)
+console.log(stop.guidance ?? '[SYSTEMX] Its supervisor will clear the session state during shutdown.')
