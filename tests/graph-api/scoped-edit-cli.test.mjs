@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { once } from 'node:events'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { dirname, join } from 'node:path'
 import { createInterface } from 'node:readline'
@@ -202,6 +202,193 @@ test('host-disabled operation names the missing capability and retains the draft
   assert.match(refusal.error.message, /lan\.node\.setLabel@1/)
   assert.match(refusal.error.message, /LAN host disabled/)
   assert.equal((await editor.run({ action: 'context' })).result.draft.value, 'Retained draft')
+  assert.deepEqual(await f.exported(), f.before)
+  assert.deepEqual(await readFile(f.path), f.source)
+  editor.child.stdin.end()
+  await editor.closed
+})
+
+const batchEdits = () => [
+  { operation: 'node.setLabel', target: { kind: 'node', id: 'alpha' }, expectedValue: 'Synthetic alpha', value: 'Reviewed label' },
+  { operation: 'page.setRoute', target: { kind: 'page', id: 'page' }, expectedValue: '/graph-fixture', value: '/reviewed-page' },
+  { operation: 'component.setVersion', target: { kind: 'component', id: 'card' }, expectedValue: '1.0', value: '2.0' },
+]
+async function startBatch(editor, f, edits) {
+  const selection = { documentId: f.documentId, expectedRevision: f.before.revision, target: { kind: 'document', id: f.documentId } }
+  assert.equal((await editor.run({ action: 'select', ...selection })).ok, true)
+  assert.equal((await editor.run({ action: 'draftBatch', edits })).ok, true)
+  return { mode: 'edit', selection, draft: { edits }, proposalId: null }
+}
+test('batch editor shows complete change and unaffected scope, restores the exact canceled draft and commits all selected changes together', { timeout: 25000 }, async t => {
+  const f = await accepted(t, { ownComponent: true }), editor = openEditor(t, f.origin), edits = batchEdits()
+  const original = await startBatch(editor, f, edits)
+  const output = await editor.run({ action: 'review' })
+  assert.equal(output.ok, true, JSON.stringify(output.error))
+  const review = output.result
+  assert.equal(review.operation, 'graph.batch')
+  assert.deepEqual(review.target, original.selection.target)
+  assert.deepEqual(review.targets, edits.map(e => e.target))
+  assert.deepEqual(review.sourceChecks, [{ ownerId: 'source:' + createHash('sha256').update('src/pages/GraphFixture.tsx').digest('hex'),
+    revision: createHash('sha256').update(f.source).digest('hex') }])
+  assert.deepEqual(review.preconditions, edits.map(edit => ({
+    target: edit.target, capabilityId: 'lan.' + edit.operation + '@1', expectedValueChecked: true,
+  })))
+  assert.deepEqual(review.scope.affected, [
+    { kind: 'component', id: 'card' }, { kind: 'node', id: 'alpha' }, { kind: 'page', id: 'page' },
+    { kind: 'reference', id: 'componentRef' },
+  ])
+  assert.deepEqual(review.scope.unaffected, { pages: 0, nodes: 4, components: 0, references: 1, collections: 1 })
+  assert.equal(review.scope.outsideSelection, 'all-other-objects-and-documents-unchanged')
+  assert.equal(review.scope.sourceWrites, false)
+  assert.deepEqual(review.effects.changed.find(r => r.id === 'componentRef').fields, ['expectedVersion'])
+  assert.equal((await editor.run({ action: 'draftBatch', edits: [edits[0]] })).error.code, 'EDITOR_REVIEW_OPEN')
+  const canceled = await editor.run({ action: 'cancel' })
+  assert.deepEqual(canceled.result, { decision: 'cancel', ...original })
+  assert.deepEqual(await f.exported(), f.before)
+  assert.deepEqual(await readFile(f.path), f.source)
+  const newReview = (await editor.run({ action: 'review' })).result
+  assert.notEqual(newReview.proposalId, review.proposalId)
+  assert.equal((await editor.run({ action: 'confirm', confirmation: review.confirmationText })).error.code, 'SCOPED_CONFIRMATION')
+  const acceptedBatch = await editor.run({ action: 'confirm', confirmation: newReview.confirmationText })
+  assert.equal(acceptedBatch.ok, true, JSON.stringify(acceptedBatch.error))
+  const expected = structuredClone(f.before.document)
+  expected.nodes.find(node => node.id === 'alpha').label = edits[0].value
+  expected.pages[0].route = edits[1].value
+  expected.components[0].version = edits[2].value
+  expected.references.find(r => r.kind === 'component').expectedVersion = edits[2].value
+  const after = await f.exported()
+  assert.deepEqual(after.document, expected)
+  assert.equal(after.revision, newReview.candidateRevision)
+  assert.deepEqual(await readFile(f.path), f.source)
+  editor.child.stdin.end()
+  await editor.closed
+})
+
+test('batch refuses precise target preconditions and overlapping document and source writes without publishing draft values', { timeout: 25000 }, async t => {
+  const f = await accepted(t, { ownComponent: true }), editor = openEditor(t, f.origin), edits = batchEdits()
+  const sourceEdit = { operation: 'node.planSourceReplacement', target: edits[0].target, value: 'Example replacement' }
+  const cases = [
+    [[edits[0], { ...edits[1], expectedValue: '/unpublished-value' }], 'SCOPED_PRECONDITION', 1],
+    [[edits[0], { ...edits[0], value: 'Second label' }], 'SCOPED_WRITE_CONFLICT', 1],
+    [[edits[1], sourceEdit, { ...sourceEdit, value: 'Other replacement' }], 'SCOPED_WRITE_CONFLICT', 2],
+    [[edits[1], sourceEdit], 'SCOPED_SOURCE_PROMOTION_UNAVAILABLE', 1],
+  ]
+  for (const [draft, code, editIndex] of cases) {
+    const original = await startBatch(editor, f, draft)
+    const reply = await editor.run({ action: 'review' })
+    assert.equal(reply.error.code, code)
+    assert.deepEqual(reply.error.details, { condition: code, editIndex, target: draft[editIndex].target })
+    if (code === 'SCOPED_WRITE_CONFLICT') {
+      const conflict = reply.error.conflict
+      assert.equal(conflict.firstEditIndex, editIndex - 1)
+      assert.equal(conflict.secondEditIndex, editIndex)
+      assert.deepEqual([conflict.firstTarget, conflict.secondTarget], [draft[editIndex-1].target, draft[editIndex].target])
+      if (draft[editIndex].operation === 'node.planSourceReplacement') {
+        assert.equal(conflict.kind, 'source')
+        assert.equal(conflict.ownerId, 'source:' + createHash('sha256').update('src/pages/GraphFixture.tsx').digest('hex'))
+        assert.deepEqual(conflict.firstRange, { start: 0, end: 12 })
+        assert.deepEqual(conflict.secondRange, conflict.firstRange)
+      } else {
+        assert.equal(conflict.kind, 'document')
+        assert.equal(conflict.field, 'label')
+      }
+    }
+    assert.doesNotMatch(JSON.stringify(reply), /unpublished-value|Example replacement|Second label|Reviewed label/)
+    assert.deepEqual((await editor.run({ action: 'context' })).result, original)
+    assert.deepEqual(await f.exported(), f.before)
+    assert.deepEqual(await readFile(f.path), f.source)
+  }
+  for (const invalid of [[], Array(17).fill(edits[0])]) {
+    assert.equal((await editor.run({ action: 'draftBatch', edits: invalid })).error.code, 'SCOPED_BATCH_LIMIT')
+    assert.deepEqual((await editor.run({ action: 'context' })).result.draft.edits, cases.at(-1)[0])
+  }
+  editor.child.stdin.end()
+  await editor.closed
+})
+
+test('a changed or missing source retires the precise batch confirmation while keeping the selection and draft', { timeout: 25000 }, async t => {
+  const f = await accepted(t, { ownComponent: true }), editor = openEditor(t, f.origin), edits = batchEdits()
+  const original = await startBatch(editor, f, edits)
+  for (const code of ['SCOPED_SOURCE_STALE','SCOPED_SOURCE_UNAVAILABLE']) {
+    const { result: review } = await editor.run({ action: 'review' })
+    if (code === 'SCOPED_SOURCE_STALE') await writeFile(f.path, Buffer.concat([f.source, Buffer.from('// New local revision\n')]))
+    else await rename(f.path, f.path + '.held')
+    const action = { action: 'confirm', confirmation: review.confirmationText }
+    const refusal = await editor.run(action)
+    assert.equal(refusal.error.code, code)
+    assert.equal(refusal.error.details.condition, code)
+    assert.deepEqual((await editor.run({ action: 'context' })).result, original)
+    if (code === 'SCOPED_SOURCE_STALE') await writeFile(f.path, f.source)
+    else await rename(f.path + '.held', f.path)
+    assert.equal((await editor.run(action)).error.code, 'EDITOR_NO_REVIEW')
+    assert.deepEqual(await f.exported(), f.before)
+    assert.deepEqual(await readFile(f.path), f.source)
+  }
+  editor.child.stdin.end()
+  await editor.closed
+})
+
+test('external cancellation and graph-head changes return the CLI to its preserved batch draft', { timeout: 25000 }, async t => {
+  const f = await accepted(t, { ownComponent: true }), editor = openEditor(t, f.origin)
+  const original = await startBatch(editor, f, batchEdits())
+  const { result: first } = await editor.run({ action: 'review' })
+  const raw = await f.read('/api/graph/commands', { method: 'POST', headers: { 'content-type': 'application/json', 'x-systemx-session': f.session },
+    body: JSON.stringify({ action: 'cancel', proposalId: first.proposalId, expectedRevision: f.before.revision }) })
+  assert.equal((await raw.json()).result.canceled, true)
+  const alreadyGone = (await editor.run({ action: 'confirm', confirmation: first.confirmationText })).error
+  assert.equal(alreadyGone.code, 'SCOPED_PROPOSAL_MISSING')
+  assert.equal(alreadyGone.reason, 'canceled')
+  assert.deepEqual((await editor.run({ action: 'context' })).result, original)
+  const { result: second } = await editor.run({ action: 'review' })
+  const external = structuredClone(f.before.document)
+  external.pages[0].route = '/external'
+  const preview = await f.call('command', 'graph.preview', { document: external }, f.before.revision)
+  await f.call('command', 'graph.accept', { digest: preview.digest }, f.before.revision)
+  const stale = (await editor.run({ action: 'confirm', confirmation: second.confirmationText })).error
+  assert.equal(stale.code, 'SCOPED_STALE')
+  assert.deepEqual(stale.details, { condition: 'SCOPED_STALE', editIndex: null, target: { kind: 'document', id: f.documentId } })
+  assert.deepEqual((await editor.run({ action: 'context' })).result, original)
+  assert.deepEqual((await f.exported()).document, external)
+  assert.deepEqual(await readFile(f.path), f.source)
+  editor.child.stdin.end()
+  await editor.closed
+})
+
+test('batch CLI refuses uncorrelated scope, owner, source-check and linked-reference replies without approving or reserving the edit', { timeout: 25000 }, async t => {
+  const f = await accepted(t, { ownComponent: true })
+  const alterations = [
+    proposal => proposal.scope.unaffected.nodes++,
+    proposal => proposal.owners[0].id = 'source:' + '0'.repeat(64),
+    proposal => proposal.effects.changed.find(row => row.kind === 'reference').id = 'anotherReference',
+    proposal => proposal.sourceChecks[0].revision = '0'.repeat(64),
+    proposal => proposal.preconditions[0].expectedValueChecked = false,
+  ]
+  let alter, canceled = 0
+  const proxy = createServer(async (req, res) => {
+    let body = ''
+    for await (const chunk of req) body += chunk
+    const upstream = await f.read(req.url, { method: req.method, headers: req.method === 'POST'
+      ? { 'content-type': 'application/json', 'x-systemx-session': req.headers['x-systemx-session'] } : {}, ...(body && { body }) })
+    let text = await upstream.text()
+    if (req.url === '/api/graph/commands') {
+      const action = JSON.parse(body).action
+      if (action === 'reviewBatch' && alter) { const data = JSON.parse(text); alter(data.result); text = JSON.stringify(data) }
+      if (action === 'cancel') canceled++
+    }
+    res.writeHead(upstream.status, { 'content-type': upstream.headers.get('content-type') }).end(text)
+  })
+  proxy.listen(0, '127.0.0.1')
+  await once(proxy, 'listening')
+  t.after(() => new Promise(resolve => proxy.close(resolve)))
+  const editor = openEditor(t, 'http://127.0.0.1:' + proxy.address().port)
+  const context = await startBatch(editor, f, batchEdits())
+  for (alter of alterations) {
+    const refused = await editor.run({ action: 'review' })
+    assert.equal(refused.error.code, 'EDITOR_RESPONSE')
+    assert.ok(!JSON.stringify(refused).includes('anotherReference'))
+    assert.deepEqual((await editor.run({ action: 'context' })).result, context)
+  }
+  assert.equal(canceled, alterations.length)
   assert.deepEqual(await f.exported(), f.before)
   assert.deepEqual(await readFile(f.path), f.source)
   editor.child.stdin.end()

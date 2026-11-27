@@ -239,6 +239,12 @@ function rejectPrivate(value, path = []) {
   }
 }
 
+// The staged editor applies the canonical text guard to each declared field
+// before aggregating effects, so a refusal can identify the originating target.
+export function checkGraphEditText(value, table, field) {
+  rejectPrivate(value, [table, 0, field])
+}
+
 function extensionValue(value, depth = 0) {
   if (depth > graphLimits.extensionDepth) {
     refuse('GRAPH_EXTENSION_DEPTH', 'Reviewed extension metadata exceeds depth 5.', { statusCode: 413 })

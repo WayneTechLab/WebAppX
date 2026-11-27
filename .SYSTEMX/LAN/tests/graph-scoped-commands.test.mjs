@@ -23,7 +23,7 @@ async function fixture({ change = () => {}, now } = {}) {
   const baseline = exportGraphDocument(graph)
   const reopen = (exported, revision) => service.reopen({ document: exported, expectedRevision: revision, confirmation: 'REOPEN GRAPH' })
   reopen(baseline, null)
-  const { run } = createScopedGraphCommands(service, { now })
+  const { run } = createScopedGraphCommands(service, { now, readSource: () => ({ revision: sourceRevision, stamp: 'test-fixture', length: source.length, writable: true }) })
   function request(operation, id, value) {
     return { action: 'review', documentId: graph.documentId, expectedRevision: baseline.revision,
       operation, target: { kind: operation.split('.')[0], id }, capabilityId: 'lan.' + operation + '@1', value }
@@ -134,7 +134,7 @@ test('stale head, expiry, forged commit, unavailable owners and foreign source r
   assert.deepEqual(f.state().baseline, live)
   const next = f.run({ ...f.request('component.setVersion', 'card', '2.0'), expectedRevision: live.revision })
   t = next.expiresAt
-  assert.throws(() => f.run(decide(next, 'confirm')), { code: 'SCOPED_PROPOSAL_MISSING' })
+  assert.throws(() => f.run(decide(next, 'confirm')), { code: 'SCOPED_PROPOSAL_MISSING', reason: 'expired' })
   assert.deepEqual(f.state().baseline, live)
   const different = await fixture({ change(g) { by(g, 'alpha').source.sourceRevision = 'f'.repeat(64); by(g, 'componentRoot').source = null } })
   for (const edit of [different.request('node.setLabel', 'alpha', 'New'), different.request('component.setVersion', 'card', '2.0')]) {

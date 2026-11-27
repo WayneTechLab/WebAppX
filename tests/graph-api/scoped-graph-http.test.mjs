@@ -9,11 +9,10 @@ import { startGraphCommandFixture } from './graph-command-server-fixture.mjs'
 test('two direct LAN clients share server checks and one-use confirmation, and the accepted graph survives a fresh read', async t => {
   const { root, status, session, read, call } = await startGraphCommandFixture(t)
   const bytes = 'export const Example = "Initial file";\n'
-  const path = join(root, 'src', 'GraphFixture.tsx')
-  await mkdir(join(root, 'src'), { recursive: true })
+  const path = join(root, 'src', 'pages', 'GraphFixture.tsx')
+  await mkdir(join(root, 'src', 'pages'), { recursive: true })
   await writeFile(path, bytes)
   const graph = graphFixture(status.repository.workspaceId, createHash('sha256').update(bytes).digest('hex'))
-  graph.nodes.find(n => n.id === 'alpha').source.path = 'src/GraphFixture.tsx'
   const preview = await call('command', 'graph.preview', { document: graph })
   await call('command', 'graph.accept', { digest: preview.digest })
   const current = () => call('query', 'graph.export', { documentId: graph.documentId })
@@ -60,8 +59,11 @@ test('two direct LAN clients share server checks and one-use confirmation, and t
 })
 
 test('direct clients cannot enable a host-disabled edit even with a valid capability and source ownership', async t => {
-  const { status, session, read, call } = await startGraphCommandFixture(t, { capabilitySetting: 'lan.page.setRoute@1' })
-  const graph = graphFixture(status.repository.workspaceId, 'b'.repeat(64))
+  const { root, status, session, read, call } = await startGraphCommandFixture(t, { capabilitySetting: 'lan.page.setRoute@1' })
+  const bytes = 'export const Fixture = 1234567890;'
+  await mkdir(join(root, 'src', 'pages'), { recursive: true })
+  await writeFile(join(root, 'src', 'pages', 'GraphFixture.tsx'), bytes)
+  const graph = graphFixture(status.repository.workspaceId, createHash('sha256').update(bytes).digest('hex'))
   const first = await call('command', 'graph.preview', { document: graph })
   await call('command', 'graph.accept', { digest: first.digest })
   const before = await call('query', 'graph.export', { documentId: graph.documentId })

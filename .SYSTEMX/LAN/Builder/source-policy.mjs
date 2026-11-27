@@ -134,7 +134,7 @@ function metadataFor(value, entry, rule, generated) {
 export function inspectSourcePath(root, value, options = {}) {
   return inspectSource(root, value, options)
 }
-function inspectSource(root, value, { read = false, forWrite = false, decodeText = true } = {}, cache) {
+function inspectSource(root, value, { read = false, forWrite = false, decodeText = true, revisionWitness = false } = {}, cache) {
   if (!isCanonicalSourcePath(value)) return failures.invalid()
   const rule = matchingRule(value)
   if (!rule) return failures.policy()
@@ -163,11 +163,13 @@ function inspectSource(root, value, { read = false, forWrite = false, decodeText
       if (content.length > sourcePolicyLimits.maxTextUnits) return failures.size()
     }
     const fresh = checkPath(root, value, { cache })
+    const stamp = revisionWitness ? fstatSync(fd, { bigint: true }) : null
     const after = fstatSync(fd)
     if (fresh.error) return fresh
     if (fresh.entry.ino !== entry.ino || fresh.entry.dev !== entry.dev || fresh.entry.size !== entry.size
       || after.size !== entry.size || after.mtimeMs !== entry.mtimeMs || after.ctimeMs !== entry.ctimeMs) return failures.unavailable()
-    return { sourcePath: { normalized: value, target: checked.target }, metadata, ...(needsRead ? { bytes } : {}), ...(needsDecode ? { content } : {}) }
+    return { sourcePath: { normalized: value, target: checked.target }, metadata,
+      ...(stamp && { revisionWitness: [stamp.dev, stamp.ino, stamp.mtimeNs, stamp.ctimeNs].join(':') }), ...(needsRead ? { bytes } : {}), ...(needsDecode ? { content } : {}) }
   } catch (error) {
     if (error.code === 'ENOENT') return failures.unavailable()
     if (error.code === 'ELOOP') return failures.linked()
