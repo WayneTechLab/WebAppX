@@ -2,12 +2,13 @@
 
 import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { closeSync, constants, existsSync, fstatSync, lstatSync, openSync, readFileSync, readdirSync, readSync, realpathSync, unlinkSync, writeFileSync } from 'node:fs'
+import { closeSync, constants, existsSync, fstatSync, lstatSync, openSync, readFileSync, readdirSync, readSync, realpathSync } from 'node:fs'
 import { isAbsolute, join, relative, resolve, win32 } from 'node:path'
 import { setTimeout as delay } from 'node:timers/promises'
 import { fileURLToPath } from 'node:url'
+import { createSessionArtifact, removeSessionArtifacts, sessionWorkspaceId } from './Builder/runtime/session-artifacts.mjs'
 import { confinedDirectory } from './Builder/runtime/file-boundary.mjs'
-import { claimSession, cleanStalePidFiles, clearSession, readSession, removePidFile, writePidFile, writeSession } from './Builder/runtime/port-utils.mjs'
+import { claimSession, clearSession, readSession, writeSession } from './Builder/runtime/port-utils.mjs'
 import { readSessionClaim, sessionClaimError } from './session-claim.mjs'
 import { captureSessionProcessIdentity, inspectSessionListeners, manualSessionTermination } from './session-restart-preview.mjs'
 import { createReadinessTracker, formatSessionSummary, parseSessionOptions, readinessComponents, resolveSessionPorts, sessionUrls, validSessionGeneration } from './session-supervisor.mjs'
@@ -181,10 +182,10 @@ export async function startDevSession(options, {
   const children = []
   let closed = false
   let published = false
-  let createdConfig
   let interval
   const session = {
     schemaVersion: 1,
+    workspaceId: sessionWorkspaceId(repoRoot),
     sessionId,
     ownerPid: process.pid,
     processes: { session: process.pid },
@@ -193,6 +194,7 @@ export async function startDevSession(options, {
     ports,
     origin: { scheme: 'http', host: options.host, port: ports.app, url: `http://${options.host}:${ports.app}`, fixed: options.fixedOrigin },
     urls: sessionUrls(options.host, ports),
+    artifactReceipts: {},
     runtime: { firebaseConfig: firebaseConfigFile, ...(emulatorImport ? { emulatorImport } : {}) },
     mode: 'combined',
     startedAt: new Date(now()).toISOString(),
@@ -238,13 +240,10 @@ export async function startDevSession(options, {
     for (const { child } of children) {
       if (!child.killed && child.exitCode === null && child.signalCode === null) child.kill('SIGTERM')
     }
-    for (const name of ['lan', 'vite']) {
-      const pid = session.processes[name]
-      if (pid) removePidFile(repoRoot, `local-${name}-${ports[name === 'vite' ? 'app' : 'lan']}.pid`, pid)
-    }
-    if (createdConfig) {
-      const current = lstatSync(firebaseConfigFile, { bigint: true, throwIfNoEntry: false })
-      if (current?.isFile() && current.dev === createdConfig.dev && current.ino === createdConfig.ino) unlinkSync(firebaseConfigFile)
+    const currentRecord = readSession(repoRoot)
+    if (currentRecord?.sessionId === sessionId && currentRecord.ownerPid === process.pid) {
+      try { removeSessionArtifacts(repoRoot, session, { createdOnly: true }) }
+      catch { errors.write('[SYSTEMX] Runtime artifact ownership changed. Inspect recovery before clearing this session.\n'); return }
     }
     clearSession(repoRoot, sessionId)
   }
@@ -296,7 +295,15 @@ export async function startDevSession(options, {
     if (Number.isInteger(child.pid) && child.pid > 0) {
       session.processes[name] = child.pid
       session.processIdentities[name] = captureIdentity(child.pid, { workingDirectory: repoRoot })
-      if (name === 'lan' || name === 'vite') writePidFile(repoRoot, `local-${name}-${ports[name === 'vite' ? 'app' : 'lan']}.pid`, child.pid)
+      if (name === 'lan' || name === 'vite') {
+        const marker = join(stateRoot, `local-${name}-${ports[name === 'vite' ? 'app' : 'lan']}.pid`)
+        try { session.artifactReceipts[name + 'Pid'] = createSessionArtifact(marker, String(child.pid) + '\n') }
+        catch (error) {
+          if (error.code !== 'EEXIST') throw error
+          session.preservedPidMarkers ??= []
+          session.preservedPidMarkers.push(name + 'Pid')
+        }
+      }
     }
     delete session.startingRole
     persist()
@@ -310,12 +317,8 @@ export async function startDevSession(options, {
       throw error
     }
     published = true
-    const configDescriptor = openSync(firebaseConfigFile, 'wx', 0o600)
-    try {
-      createdConfig = fstatSync(configDescriptor, { bigint: true })
-      writeFileSync(configDescriptor, `${JSON.stringify(firebaseConfig, null, 2)}\n`)
-    } finally { closeSync(configDescriptor) }
-    cleanStalePidFiles(repoRoot)
+    session.artifactReceipts.firebaseConfig = createSessionArtifact(firebaseConfigFile, JSON.stringify(firebaseConfig, null, 2) + '\n')
+    persist()
     start('firebase', command.executable, [...command.args, 'emulators:start', '--config', firebaseConfigFile, '--project', 'demo-systemx', '--only', 'auth,firestore,storage', ...(emulatorImport ? ['--import', emulatorImport] : [])])
     start('lan', process.execPath, [join(repoRoot, '.SYSTEMX', 'LAN', 'server.mjs')])
     start('vite', process.execPath, [viteBin, '--host', options.host, '--port', String(ports.app), '--strictPort'])
