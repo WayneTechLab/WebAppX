@@ -6,7 +6,7 @@ import { resolveSessionPorts } from './session-supervisor.mjs'
 // The launcher must still acquire its claim and recheck ports. A read-only
 // preview observes the listener table without binding even a probe socket.
 export async function createSessionStartPreview({
-  repoRoot, options, inspectOwnership = readSessionClaim, inspectListeners = inspectSessionListeners,
+  repoRoot, options, inspectOwnership = readSessionClaim, inspectListeners = inspectSessionListeners, inspectProcess, inspectWorkspace, platform = process.platform,
 }) {
   const owner = inspectOwnership(repoRoot)
   const preview = {
@@ -42,7 +42,11 @@ export async function createSessionStartPreview({
     preview.origin = `http://${options.host}:${preview.ports.app}`
   } catch (error) {
     preview.reasons.push(error.code === 'EADDRINUSE' ? 'fixed-app-port-unavailable' : 'component-ports-unavailable')
-    if (owner.status === 'absent') preview.nextAction = 'Choose another port or release the listener through its owner, then preview again.'
+    if (error.code === 'EADDRINUSE') {
+      const { fixedOriginRecovery } = await import('./session-origin-recovery.mjs')
+      preview.recovery = await fixedOriginRecovery({ repoRoot, options, snapshot, inspectWorkspace, inspectProcess, platform, bindFailed: true })
+      preview.nextAction = preview.recovery.choices.map(choice => choice.guidance).join(' ')
+    }
   }
   preview.canStart = preview.reasons.length === 0
   if (preview.canStart) {

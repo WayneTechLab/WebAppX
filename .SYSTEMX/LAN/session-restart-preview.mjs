@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto'
 import { existsSync, realpathSync } from 'node:fs'
 import { basename, dirname, isAbsolute, relative, resolve, sep, win32 } from 'node:path'
 
+import { withMatchingSessionOwner } from './Builder/runtime/port-utils.mjs'
+
 const roles = ['session', 'firebase', 'lan', 'vite']
 const pidIsValid = (pid) => Number.isSafeInteger(pid) && pid > 0
 const portIsValid = (port) => Number.isInteger(port) && port >= 1024 && port <= 65535
@@ -162,17 +164,22 @@ function inspectSessionOwnership({ repoRoot, session, inspectProcess, platform, 
     if (!pidIsValid(pid) || seenPids.has(pid)) { entry.reasons.push('invalid-or-duplicate-recorded-pid'); continue }
     seenPids.add(pid)
     const observed = inspect(pid)
+    entry.alive = typeof observed.exists === 'boolean' ? observed.exists : null
     if (observed.exists === false) { entry.state = 'exited'; continue }
     if (observed.exists !== true) { entry.reasons.push('process-query-unavailable'); continue }
     entry.parentPid = pidIsValid(observed.parentPid) ? observed.parentPid : null
     const identity = session.processIdentities?.[role]
-    const fingerprintMatches = Boolean(identity && identity.pid === pid && identity.parentPid === observed.parentPid && identity.startedAt === observed.startedAt && identity.commandHash === hashCommand(observed.command ?? ''))
+    const fingerprintMatches = Boolean(identity && observed.pid === pid && identity.pid === pid && pidIsValid(observed.parentPid) &&
+      identity.parentPid === observed.parentPid && typeof observed.startedAt === 'string' && observed.startedAt.length > 0 &&
+      identity.startedAt === observed.startedAt && typeof observed.command === 'string' && observed.command.length > 0 &&
+      identity.commandHash === hashCommand(observed.command))
     entry.identity = identity ? (fingerprintMatches ? 'recorded-start-parent-and-command-match' : 'recorded-identity-mismatch') : 'legacy-no-start-fingerprint'
-    if (identity && !fingerprintMatches) entry.reasons.push('recorded-identity-mismatch')
+    if (!fingerprintMatches) entry.reasons.push(identity ? 'recorded-identity-mismatch' : 'process-start-fingerprint-missing')
     const cwdMatches = canonicalPath(observed.cwd, platform) === root
     const startupCwdVerified = platform === 'win32' && !observed.cwd && fingerprintMatches && canonicalPath(identity?.workingDirectory, platform) === root
     entry.workingDirectory = cwdMatches ? 'repository' : startupCwdVerified ? 'recorded-startup-repository' : observed.cwd ? 'different' : 'unavailable'
-    if (!cwdMatches && !(platform === 'win32' && fingerprintMatches)) entry.reasons.push('repository-working-directory-unverified')
+    if (!cwdMatches && !(platform === 'win32' && !observed.cwd && fingerprintMatches &&
+        (!identity.workingDirectory || startupCwdVerified))) entry.reasons.push('repository-working-directory-unverified')
     if (!expectedCommand(role, observed, root, session, platform, startupCwdVerified)) entry.reasons.push('expected-launcher-unverified')
     if (role === ownerRole ? pid !== ownerPid : standalone || observed.parentPid !== ownerPid) entry.reasons.push('supervisor-relationship-unverified')
     if (!entry.reasons.length) entry.state = 'owned'
@@ -191,17 +198,21 @@ function inspectSessionOwnership({ repoRoot, session, inspectProcess, platform, 
   return { ...result, inspect }
 }
 
+export function manualSessionTermination(platform, mode) {
+  if (platform === 'darwin' || platform === 'linux' || platform === 'win32' && mode === 'lan-only') return null
+  return {
+    reason: platform === 'win32' ? 'windows-combined-stop-requires-owning-terminal' : 'platform-termination-unverified',
+    guidance: 'Press Ctrl+C in the terminal that owns this session. Check each recorded process and listener after shutdown and close remaining components through their owning controls. Keep the session record and runtime configuration until local inspection verifies cleanup.',
+  }
+}
+
 export function createSessionStopPlan({ repoRoot, session, inspectProcess = inspectSessionProcess, platform = process.platform }) {
   const plan = { action: 'stop', canStop: false, processes: [], targets: [], cleanup: false, reasons: [] }
   if (!session || typeof session !== 'object' || Array.isArray(session)) return { ...plan, reasons: ['no-owned-session-record'] }
   const ownership = inspectSessionOwnership({ repoRoot, session, inspectProcess, platform, allowLanOnly: true })
   plan.processes = ownership.processes
-  if (platform === 'win32' && session.mode !== 'lan-only') {
-    return {
-      ...plan, reasons: ['windows-combined-stop-requires-owning-terminal'],
-      guidance: 'Press Ctrl+C in the terminal that owns this supervised session so its supervisor can close the child processes. Inspect child processes and listeners after shutdown. This command preserves the record and configuration because Windows forced termination cannot establish descendant cleanup; inspect any remaining state before operator recovery.',
-    }
-  }
+  const manual = manualSessionTermination(platform, session.mode)
+  if (manual) return { ...plan, termination: 'owning-terminal', reasons: [manual.reason], guidance: manual.guidance }
   const ownerRole = session.mode === 'lan-only' ? 'lan' : 'session'
   const owner = ownership.processes.find(({ role }) => role === ownerRole)
   const unverified = ownership.processes.some(({ state }) => state === 'unverified')
@@ -215,19 +226,34 @@ export function createSessionStopPlan({ repoRoot, session, inspectProcess = insp
   if (allExited) return { ...plan, canStop: true, cleanup: true }
   if (owner?.state !== 'owned') return { ...plan, reasons: ['supervisor-ownership-unverified'] }
   return {
-    ...plan, canStop: true, targets: [{ role: ownerRole, pid: owner.pid }],
+    ...plan, termination: 'signal-owner-only', canStop: true, targets: [{ role: ownerRole, pid: owner.pid }],
     ...(platform === 'win32' ? { guidance: 'Windows termination may bypass the standalone LAN cleanup handler. Wait for its process to exit, then rerun stop to clear the verified exited record.' } : {}),
   }
 }
 
-export function executeSessionStopPlan({ repoRoot, session, inspectProcess = inspectSessionProcess, platform = process.platform, signalProcess, cleanupSession }) {
+export function executeSessionStopPlan({ repoRoot, session, inspectProcess = inspectSessionProcess, platform = process.platform, signalProcess, cleanupSession, guardOwner = withMatchingSessionOwner }) {
   const plan = createSessionStopPlan({ repoRoot, session, inspectProcess, platform })
   if (!plan.canStop) return plan
   // Signal the verified supervisor once so its own lifecycle closes children.
   // Existing state is retained until the owner cleans up or a later read proves
   // that every recorded process has exited. A failed signal never clears state.
   try {
-    for (const target of plan.targets) signalProcess(target.pid, 'SIGTERM')
+    for (const target of plan.targets) {
+      let reason = 'session-generation-changed'
+      const sent = guardOwner(repoRoot, session, current => {
+        // The earlier plan inspected every recorded role. Resample the signal
+        // recipient last, under the generation guard, immediately before use.
+        const ownerOnly = { ...current, processes: { [target.role]: current.processes[target.role] } }
+        const check = inspectSessionOwnership({ repoRoot, session: ownerOnly, inspectProcess, platform, allowLanOnly: true })
+        if (check.reasons.length || check.processes[0]?.state !== 'owned' || check.processes[0].pid !== target.pid) {
+          reason = 'signal-target-identity-changed'
+          return false
+        }
+        signalProcess(target.pid, 'SIGTERM')
+        return true
+      })
+      if (!sent) return { ...plan, canStop: false, targets: [], status: 'refused', reasons: [reason] }
+    }
     if (plan.cleanup) cleanupSession()
     return { ...plan, status: plan.cleanup ? 'cleared-exited-session' : 'stop-requested' }
   } catch {
@@ -311,7 +337,7 @@ export function createSessionRestartPreview({ repoRoot, session, inspectProcess 
     result.replacementListeners.push({ component, host: bindHost, port: portIsValid(port) ? port : null, state, current })
     if (state === 'blocked') result.reasons.push(`${component}-listener-owned-by-unverified-process`)
   }
-  if (host && portIsValid(session.ports?.app)) {
+  if (!result.reasons.length && host && portIsValid(session.ports?.app)) {
     result.proposedLaunch = {
       executable: process.execPath,
       args: ['.SYSTEMX/LAN/dev-session.mjs', '--fixed-origin', '--host', host, '--port', String(session.ports.app)],
@@ -320,6 +346,13 @@ export function createSessionRestartPreview({ repoRoot, session, inspectProcess 
         ['SYSTEMX_FIREBASE_FIRESTORE_PORT', session.ports?.firebase?.firestore], ['SYSTEMX_FIREBASE_STORAGE_PORT', session.ports?.firebase?.storage],
       ].filter(([, port]) => portIsValid(port)).map(([key, port]) => [key, String(port)])),
     }
+  }
+  const manual = manualSessionTermination(platform, session.mode)
+  if (manual) {
+    result.reasons.push(manual.reason)
+    result.termination = 'owning-terminal'
+    result.guidance = manual.guidance
+    delete result.proposedLaunch
   }
   result.reasons = [...new Set(result.reasons)]
   result.canRestart = !result.reasons.length

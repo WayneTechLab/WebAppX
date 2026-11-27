@@ -16,6 +16,7 @@ not an authentication system or a provider permission grant. The reusable
 | Select task, acceptance and write scope | Owns under owner authority. | Observes decision. | Receives bounded packet. | Reviews clarity/scope. | Checks consistency with lease. |
 | Change canonical integration checkout/branch | Sole writer. | No. | No. | No. | No. |
 | Edit an assigned task worktree | Coordinates integration. | No. | Only its exact task/generation/allowed paths. | Review-only unless separately assigned a distinct implementation task. | Review-only. |
+| Launch a prepared group | Reviews the run digest and authorizes the exact prepared generations within budget. | Observes leases, process outcomes and interrupted generations. | Runs only its reserved generation. | Reviews resulting work. | Checks the candidate lease before integration. |
 | Launch a configured CLI | Dispatches under selected policy/budget. | Records actual launch/exit. | Executes its one authorized provider invocation. | No implied execution authority. | Can refuse gate; cannot self-grant launch authority. |
 | Set canonical task/catalog acceptance | Owns after original criteria and evidence pass. | No. | No. | Recommends; does not accept. | Reports gate; does not accept. |
 | Review own implementation for integration | Cannot replace required independent review. | No. | Cannot self-approve. | Reviewer must be independent of that implementation. | Cannot approve its own implementation. |

@@ -19,7 +19,7 @@ register('node scripts/lan-graph-contract-browser.mjs', temporary('Exercises all
 register('node --test .SYSTEMX/LAN/tests/request-*.test.mjs .SYSTEMX/LAN/tests/transport-*.test.mjs .SYSTEMX/LAN/tests/record-*.test.mjs .SYSTEMX/LAN/tests/representation-http.test.mjs .SYSTEMX/LAN/tests/inspection-windows.test.mjs tests/transport/*.test.mjs', temporary('Exercise the LAN request lifecycle with temporary workspace data and owned loopback servers.'))
 register('node scripts/lan-transport-browser.mjs', temporary('Verify request diagnostics, cancellation and draft preservation in an isolated Chromium workspace.'))
 
-register('node --test tests/inventory/*.test.mjs', temporary('Verify tracked entry points, route declarations, private exclusions and last-good recovery in disposable Git repositories.'))
+register('node --test .SYSTEMX/LAN/tests/inventory-*.test.mjs tests/inventory/*.test.mjs', temporary('Verify tracked entry points, route declarations, private exclusions and last-good recovery in disposable Git repositories.'))
 
 // These are reviewed command signatures, not a second gate list. Gate order
 // comes exclusively from check-template.sh. A changed command is unknown until

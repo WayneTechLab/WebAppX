@@ -33,7 +33,6 @@ const report = { schemaVersion: 1, kind: 'isolated-lan-responsive-layout-browser
   checks: [], geometry: [], requests: [], unexpectedRequests: [], pageErrors: [], assets: [] }
 let child, browserServer, browser, context, page, bridge, appPort, failure, fixtureBefore, implementationInputs
 let serverOutput = ''
-const assetPromises = []
 const port = await new Promise((resolvePort, reject) => { const probe = createPortProbe(); probe.once('error', reject); probe.listen(0, '127.0.0.1', () => { const value = probe.address().port; probe.close(error => error ? reject(error) : resolvePort(value)) }) })
 const viewportCases = [{ width: 1440, height: 1024 }, { width: 1163, height: 1024 }, { width: 900, height: 900 }, { width: 768, height: 1024 }, { width: 390, height: 844 }]
 const homePath = 'src/pages/HomePage.tsx'
@@ -102,13 +101,21 @@ try {
       report.requests.push({ viewport: viewport.width, method: request.method(), path: url.pathname })
       if (request.method() === 'GET' && url.hostname === 'fonts.googleapis.com' && url.pathname === '/css2') return route.fulfill({ status: 200, contentType: 'text/css', body: '/* Owned empty font fixture. */' })
       if (url.origin !== origin || !['GET', 'HEAD'].includes(request.method())) { report.unexpectedRequests.push({ viewport: viewport.width, method: request.method(), path: url.pathname }); return route.abort('blockedbyclient') }
+      if (request.method() === 'GET' && url.pathname.startsWith('/__systemx/Website/') && /\.(?:js|css)$/.test(url.pathname)) {
+        const path = `.SYSTEMX/LAN/${url.pathname.slice('/__systemx/'.length)}`
+        // Hash the server bytes forwarded to Chromium before navigation can release its response body.
+        const response = await route.fetch({ maxRedirects: 0 })
+        try {
+          const body = await response.body()
+          const digest = sha(body)
+          report.assets.push({ viewport: viewport.width, path, status: response.status(), sha256: digest, matchesInput: digest === report.inputManifest.files[path] })
+          await route.fulfill({ response, body })
+        } finally {
+          await response.dispose()
+        }
+        return
+      }
       await route.continue()
-    })
-    context.on('response', response => {
-      const url = new URL(response.url())
-      if (url.origin !== origin || !url.pathname.startsWith('/__systemx/Website/') || !/\.(?:js|css)$/.test(url.pathname)) return
-      const path = `.SYSTEMX/LAN/${url.pathname.slice('/__systemx/'.length)}`
-      assetPromises.push(response.body().then(bytes => report.assets.push({ viewport: viewport.width, path, status: response.status(), sha256: sha(bytes), matchesInput: sha(bytes) === report.inputManifest.files[path] })).catch(error => report.assets.push({ path, error: error.message })))
     })
     page = await context.newPage(); page.on('pageerror', error => report.pageErrors.push(error.message))
     await page.goto(`${origin}/__systemx/#components`, { waitUntil: 'domcontentloaded' })
@@ -408,7 +415,6 @@ try {
     })
     await context.tracing.stop({ path: join(evidence, `${viewport.width}-trace.zip`) }); await context.close(); context = null; page = null
   }
-  await Promise.all(assetPromises)
   assert.equal(report.checks.length, 25); assert.deepEqual(report.pageErrors, []); assert.deepEqual(report.unexpectedRequests, [])
   assert.ok(report.assets.length >= 20 && report.assets.every(asset => asset.status === 200 && asset.matchesInput))
   assert.deepEqual(snapshot(fixture), fixtureBefore)
@@ -421,7 +427,6 @@ try {
   if (browser) await browser.close().catch(() => {}); if (browserServer) await browserServer.close().catch(() => {})
   if (child && child.exitCode === null) { child.kill('SIGTERM'); await Promise.race([new Promise(resolveExit => child.once('exit', resolveExit)), delay(5000)]); if (child.exitCode === null) { child.kill('SIGKILL'); await new Promise(resolveExit => child.once('exit', resolveExit)) } }
   if (bridge) { bridge.closeAllConnections(); if (bridge.listening) await new Promise(resolveClose => bridge.close(resolveClose)) }
-  await Promise.allSettled(assetPromises)
   report.protectedFilesPreserved = protectedPaths.every(path => { try { return sha(readFileSync(join(root, path))) === protectedBefore[path] } catch { return false } })
   report.fixturePreserved = fixtureBefore ? JSON.stringify(snapshot(fixture)) === JSON.stringify(fixtureBefore) : null
   const finalFixture = snapshot(fixture)

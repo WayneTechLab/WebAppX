@@ -3,6 +3,7 @@ import { closeSync, existsSync, fstatSync, lstatSync, openSync, readdirSync, rea
 import { performance } from 'node:perf_hooks'
 import { dirname, join } from 'node:path'
 import net from 'node:net'
+import { isDeepStrictEqual } from 'node:util'
 
 export const LOOPBACK_HOST = '127.0.0.1'
 export const IPV6_LOOPBACK_HOST = '::1'
@@ -151,6 +152,21 @@ export function clearSession(repoRoot, sessionId) {
     unlinkSync(target)
     sessionOwners.delete(target)
     return true
+  })
+}
+
+// Keep a cooperating launcher from publishing another generation while a stop
+// request verifies and signals its target. Readiness and output may change
+// between checks without granting a different process authority.
+export function withMatchingSessionOwner(repoRoot, expected, act) {
+  if (!expected?.sessionId || !existsSync(sessionPath(repoRoot))) return false
+  return withRecordGuard(repoRoot, target => {
+    const entry = lstatSync(target, { throwIfNoEntry: false })
+    if (!entry?.isFile() || entry.size > 1_000_000) return false
+    const current = readSession(repoRoot)
+    const fields = ['sessionId', 'ownerPid', 'mode', 'processes', 'processIdentities', 'startingRole', 'runtime']
+    if (!current || !fields.every(field => isDeepStrictEqual(current[field], expected[field]))) return false
+    return act(current)
   })
 }
 

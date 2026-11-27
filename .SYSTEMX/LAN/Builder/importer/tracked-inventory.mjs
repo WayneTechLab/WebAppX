@@ -10,7 +10,7 @@ import { readViteInputs } from './inventory-vite.mjs'
 import { inspectDeclaredRoutes, publicPattern } from './declared-routes.mjs'
 import { inspectComponents, validComponentInventory } from './component-inventory.mjs'
 import { configurationInputPaths, inspectInventoryConfig, validInventoryConfig } from './inventory-config.mjs'
-import { inspectInventoryMetadata, inventoryResourceStatsMatch, isInventoryMetadataPath, validInventoryMetadata } from './inventory-metadata.mjs'
+import { effectivePublicDirectory, inspectInventoryMetadata, inventoryResourceStatsMatch, isInventoryMetadataPath, collectMissingCapabilities, potentialPublicAsset, privateInventoryName as privateName, validInventoryMetadata } from './inventory-metadata.mjs'
 import { compareInventories } from './inventory-comparison.mjs'
 import { prunedNames, stagedSources, untrackedSources, workBudget } from './inventory-working-state.mjs'
 
@@ -23,14 +23,13 @@ const cacheFile = 'last-good.json'
 const hash = bytes => createHash('sha256').update(bytes).digest('hex')
 const utf8 = new TextDecoder('utf-8', { fatal: true })
 const fail = code => { throw Object.assign(new Error(code), { inventoryCode: code }) }
-const privateName = /private|secret|credential|password|api[._-]?key|access[._-]?token|(?:^|[^a-z])(?:tokens?|keys?)(?:[^a-z]|$)|gh[pousr]_|github_pat_|sk_live_|AKIA[0-9A-Z]/i
 const safeModule = path => isCanonicalSourcePath(path) && path.startsWith('src/') && suffixes.some(ext => path.endsWith(ext)) && !privateName.test(path)
 const safeHtml = path => isCanonicalSourcePath(path) && (!path.includes('/') || path.startsWith('src/')) && path.endsWith('.html') && !privateName.test(path)
 const safeEvidence = path => safeModule(path) || safeHtml(path) || viteConfigs.includes(path) || ['package.json', 'tsconfig.json'].includes(path)
 const safeConfigEvidence = path => configurationInputPaths.includes(path)
 const eligible = path => (safeEvidence(path) || safeConfigEvidence(path)) && !path.split('/').some(part => prunedNames.test(part))
 
-function validSnapshot(value, checkoutId) {
+function validSnapshot(value, checkoutId, assetPolicy) {
   const keys = (record, names) => record && typeof record === 'object' && Object.keys(record).length === names.length && names.every(key => Object.hasOwn(record, key))
   const digest = value => typeof value === 'string' && value.length === 64 && /^[a-f0-9]{64}$/.test(value)
   const oid = value => typeof value === 'string' && /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(value)
@@ -51,7 +50,7 @@ function validSnapshot(value, checkoutId) {
   if (!rows(value.evidence, inventoryLimits.files, e => keys(e, ['path','sha256','indexOid','matchesIndex']) && (safeEvidence(e.path) || (value.schemaVersion >= 3 && safeConfigEvidence(e.path))) && digest(e.sha256) && oid(e.indexOid) && typeof e.matchesIndex === 'boolean')) return false
   if (value.schemaVersion >= 2 && !validComponentInventory(value.components, value.evidence, value.routes)) return false
   if (value.schemaVersion >= 3 && !validInventoryConfig(value.configuration, value.evidence)) return false
-  if (value.schemaVersion === 4 && !validInventoryMetadata(value.metadata,value)) return false
+  if (value.schemaVersion === 4 && !validInventoryMetadata(value.metadata,value,assetPolicy)) return false
   if (!keys(value.exclusions, ['outsideSourceScope','privateOrNoncanonical','nonregularIndex']) || Object.values(value.exclusions).some(n => !Number.isInteger(n) || n < 0 || n > inventoryLimits.records)) return false
   const { revision, ...report } = value
   return revision === hash(JSON.stringify(report))
@@ -125,26 +124,44 @@ function loadIndex(root, budget) {
   const exclusions = { outsideSourceScope: 0, privateOrNoncanonical: 0, nonregularIndex: 0 }
   const records = raw.split('\0')
   if (records.pop() !== '' || records.length > inventoryLimits.records) fail('index-budget')
+  const possibleAssets = []
+  function admit(path, mode, oid, stage) {
+    if (stage !== '0') fail('unmerged-source')
+    modes.set(path, mode)
+    if (!['100644','100755'].includes(mode)) { exclusions.nonregularIndex++; index.set(path, null); return }
+    index.set(path, oid)
+  }
   for (const record of records) {
     const match = /^(\d{6}) ([a-f0-9]{40}|[a-f0-9]{64}) ([0-3])\t([\s\S]+)$/.exec(record)
     if (!match) fail('invalid-index')
     const [,mode,oid,stage,path] = match
-    if ((!isInventoryMetadataPath(path) && !isCanonicalSourcePath(path) && !['.nvmrc', '.node-version'].includes(path)) || privateName.test(path)) { exclusions.privateOrNoncanonical++; continue }
-    if (!eligible(path) && !isInventoryMetadataPath(path)) { exclusions.outsideSourceScope++; continue }
-    if (stage !== '0') fail('unmerged-source')
-    modes.set(path, mode)
-    if (!['100644','100755'].includes(mode)) { exclusions.nonregularIndex++; index.set(path, null); continue }
-    index.set(path, oid)
+    const marker = isInventoryMetadataPath(path, null)
+    if ((!marker && !isCanonicalSourcePath(path) && !['.nvmrc', '.node-version'].includes(path)) || privateName.test(path)) { exclusions.privateOrNoncanonical++; continue }
+    if (marker || eligible(path)) admit(path, mode, oid, stage)
+    else {
+      exclusions.outsideSourceScope++
+      if (potentialPublicAsset(path)) possibleAssets.push({path,mode,oid,stage})
+    }
   }
-  return { head, index, modes, exclusions, indexRevision: hash(raw) }
+  // The Git index provides names alone. Only after interpreting tracked Vite
+  // settings may a locator stat regular assets under the resolved directory.
+  function includePublicAssets(directory) {
+    if (!directory) return
+    for (const {path, mode, oid, stage} of possibleAssets) {
+      if (!isInventoryMetadataPath(path, directory)) continue
+      exclusions.outsideSourceScope--
+      admit(path, mode, oid, stage)
+    }
+  }
+  return { head, index, modes, exclusions, indexRevision: hash(raw), includePublicAssets }
 }
 
 function inspect(repo, ts, budget, observation) {
   const { root, checkoutId } = repo
-  const { head, index, modes, exclusions, indexRevision } = loadIndex(root, budget)
+  const { head, index, modes, exclusions, indexRevision, includePublicAssets } = loadIndex(root, budget)
   observation.indexExclusions = exclusions
   const entries = [], routes = [], routeDeclarations = [], routeBindings = [], findings = [], evidence = new Map()
-  const names = new Map(), normalized = new Set()
+  const names = new Map(), normalized = new Set(), missingCapabilities = new Set()
   let totalBytes = 0, omittedFindings = 0
   function exactFile(path) {
     const candidate = confinedFile(root, join(root, path))
@@ -171,6 +188,9 @@ function inspect(repo, ts, budget, observation) {
     return candidate
   }
   function unresolved(code, path, line, occurrences = 1) {
+    // Codes are fixed by the adapters. Preserve capability coverage even when
+    // earlier findings use up the operator's per-location display budget.
+    collectMissingCapabilities(missingCapabilities,code,path)
     if (findings.length >= inventoryLimits.findings) { omittedFindings += occurrences; return }
     findings.push({ state: 'unresolved', code, ...(path ? { path } : {}), ...(line ? { line } : {}), ...(occurrences > 1 ? { occurrences } : {}) })
   }
@@ -207,7 +227,13 @@ function inspect(repo, ts, budget, observation) {
   let pkg
   if (index.has('package.json')) {
     const manifest = read('package.json')
-    try { pkg = JSON.parse(manifest) } catch { fail('invalid-package-manifest') }
+    try { pkg = JSON.parse(manifest) } catch {
+      collectMissingCapabilities(missingCapabilities,'invalid-package-manifest','package.json')
+      observation.capabilities = { stack:'unknown', commit:head, indexRevision, eligibleTrackedCount:index.size,
+        available:['tracked-index','package-manifest-digest','last-good-readback'],
+        missing:[...missingCapabilities].sort(), evidence:[...evidence.values()] }
+      fail('invalid-package-manifest')
+    }
   }
   if (!(pkg?.dependencies?.vite || pkg?.devDependencies?.vite)) {
     const declared = { ...pkg?.dependencies, ...pkg?.devDependencies }
@@ -410,33 +436,29 @@ function inspect(repo, ts, budget, observation) {
   const declaredRoutes = routes.filter(row => !duplicates.has(row.pattern))
   const proofs = [...evidence.values()].sort((a, b) => a.path.localeCompare(b.path))
   if (!validInventoryConfig(configuration, proofs) || !validComponentInventory(components, proofs, declaredRoutes)) fail('unverified-inventory-metadata')
+  if (viteConfigs.some(path => !index.has(path) && lstatSync(join(root, path), {throwIfNoEntry:false}))) unresolved('untracked-vite-public-directory')
+  const publicDirectory = effectivePublicDirectory(configuration, evidence, findings)
+  includePublicAssets(publicDirectory)
   function statFor(path) {
-    if (!isInventoryMetadataPath(path)) return null
+    if (!isInventoryMetadataPath(path, publicDirectory)) return null
     const target = exactFile(path)
     if (!target) return null
     const stat = lstatSync(target,{bigint:true})
     return stat.isFile() && stat.nlink === 1n ? stat : null
   }
   const metadata = inspectInventoryMetadata({index, statFor, evidence, entryPoints:entries,
-    routes:declaredRoutes, components, findings, routeDeclarations, componentDeclarations, issue:unresolved})
+    routes:declaredRoutes, components, findings, routeDeclarations, componentDeclarations, bridges:configuration.bridges, publicDirectory, issue:unresolved})
   if (findings.length) {
-    const missing = new Set()
-    for (const {code} of findings) {
-      if (/config|proxy|pin|dependency|manifest|firebase|emulator|build-target/.test(code)) missing.add('static-configuration-resolution')
-      if (/route|routing|entry|module-script|vite-input/.test(code)) missing.add('complete-entry-and-route-resolution')
-      if (/component|shell/.test(code)) missing.add('complete-component-attribution')
-      if (/working-source/.test(code)) missing.add('exact-working-source')
-    }
     observation.capabilities = { stack:'vite', commit:head, indexRevision, eligibleTrackedCount:index.size,
       available:['tracked-index','verified-source-digests','partial-declarations','last-good-readback'],
-      missing:[...missing].sort() }
+      missing:[...missingCapabilities].sort() }
   }
   names.clear()
   for (const item of evidence.values()) {
     const target = exactFile(item.path)
     if (!target || hash(fileBytes(target)) !== item.sha256) fail('file-changed')
   }
-  if (!inventoryResourceStatsMatch(metadata,index,statFor)) fail('file-changed')
+  if (!inventoryResourceStatsMatch(metadata,index,statFor,publicDirectory)) fail('file-changed')
   const finished = loadIndex(root,budget)
   if (finished.head !== head || finished.indexRevision !== indexRevision) fail('index-changed')
   const report = { schemaVersion: 4, checkoutId, commit: head, indexRevision, supportedStack: 'vite', complete: !findings.length && !omittedFindings,
@@ -468,8 +490,11 @@ export function trackedInventory(root, action = 'scan', options = {}) {
     const retained = readCache()
     if (retained) {
       const value = JSON.parse(utf8.decode(retained))
-      if (!validSnapshot(value, repo.checkoutId)) fail('invalid-retained-inventory')
-      lastGood = value
+      if (validSnapshot(value, repo.checkoutId)) lastGood = value
+      else if (value?.schemaVersion === 4 && validSnapshot(value, repo.checkoutId, { previousAssetPolicy: true })) {
+        if (action !== 'scan') fail('public-asset-policy-rescan-required')
+        observation.rescanReason = 'public-asset-policy-updated'
+      } else fail('invalid-retained-inventory')
       baselineDigest = hash(retained)
     }
     if (action === 'last-good') return { status: lastGood ? 'retained' : 'empty', checkoutId: repo.checkoutId, lastGood,

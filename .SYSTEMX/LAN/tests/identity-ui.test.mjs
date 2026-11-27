@@ -27,7 +27,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve))
 const path = 'src/pages/HomePage.tsx'
 const content = 'export default function HomePage() { return <main data-systemx-id="home"><h1 data-systemx-id="headline">Unique heading</h1><p data-systemx-id="intro">Unique introduction</p></main> }\n'
 
-function fixture(t) {
+function fixture(t, { onNavigatorOwnershipChange } = {}) {
   const root = mkdtempSync(join(tmpdir(), 'webappx-identity-ui-'))
   mkdirSync(join(root, 'src/pages'), { recursive: true })
   const file = join(root, path)
@@ -58,7 +58,7 @@ function fixture(t) {
     }
     return intercept ? intercept(request, execute) : execute()
   }
-  const handle = attachSourceIdentityInspector({ container, api, selectedPath: () => picker.value, onStageLiteral: proposal => { staged.push(proposal) } })
+  const handle = attachSourceIdentityInspector({ container, api, selectedPath: () => picker.value, onNavigatorOwnershipChange, onStageLiteral: proposal => { staged.push(proposal) } })
   const node = id => { const found = container.querySelector('#' + id); assert.ok(found, id); return found }
   const input = (id, value) => { const target = node(id); target.value = value; target.dispatchEvent(new Event('input')) }
   const click = async id => { node(id).click(); await tick() }
@@ -339,4 +339,116 @@ test('private or noncanonical retirement metadata refuses preview while preservi
   }
   assert.deepEqual(f.staged, [])
   assert.equal(readFileSync(f.file, 'utf8'), content)
+})
+
+test('Navigator projects exact accepted ownership without selecting a node, changing a draft or making a request', async t => {
+  let updates = 0
+  const f = fixture(t, { onNavigatorOwnershipChange: () => { updates++ } })
+  assert.equal(f.handle.navigatorOwnership(), null)
+  const map = await f.accept()
+  const lookup = f.handle.navigatorOwnership()
+  const calls = f.calls.length
+  const changes = updates
+  f.input('identity-operation-text', 'Retain this unsubmitted draft')
+  assert.equal(lookup(previewDetail(map)), 'mapped')
+  assert.equal(lookup(previewDetail(map, { anchor: 'home', tag: 'main' })), 'read-only')
+  for (const change of [{ anchor: '' }, { anchor: 'headline'.repeat(13) }, { workspaceId: 'b'.repeat(64) },
+    { sourcePath: 'src/pages/UnknownPage.tsx' }, { route: '/unknown' }, { tag: 'h2' }, { anchor: 'runtime-heading' }]) {
+    assert.equal(lookup(previewDetail(map, change)), 'unmapped')
+  }
+  assert.equal(f.node('identity-operation-text').value, 'Retain this unsubmitted draft')
+  assert.equal(f.node('identity-node-select').value, '')
+  assert.equal(f.calls.length, calls)
+  assert.equal(updates, changes)
+  assert.equal(f.handle.navigatorOwnership(), lookup)
+  await f.handle.refresh()
+  const refreshed = f.handle.navigatorOwnership()
+  const afterRead = updates
+  await f.handle.refresh()
+  assert.equal(f.handle.navigatorOwnership(), refreshed)
+  assert.equal(updates, afterRead, 'an identical repeated read preserves the projection')
+  writeFileSync(f.file, content + '// changed\n')
+  await f.handle.refresh()
+  assert.equal(refreshed(previewDetail(map)), 'unmapped', 'a retained old lookup has no current authority')
+  const stale = f.handle.navigatorOwnership()
+  assert.equal(stale(previewDetail(map)), 'stale')
+  assert.equal(stale(previewDetail(map, { tag: 'button' })), 'unmapped')
+  const picker = f.node('source-file-select')
+  picker.value = 'src/pages/AnotherPage.tsx'
+  picker.dispatchEvent(new Event('change'))
+  assert.equal(stale(previewDetail(map)), 'unmapped')
+  assert.equal(f.handle.navigatorOwnership(), null)
+  assert.equal(f.node('identity-operation-text').value, 'Retain this unsubmitted draft')
+  assert.deepEqual(f.staged, [])
+})
+
+test('Navigator filters reject ambiguous and incomplete ownership while recognizing an explicit source read policy', async t => {
+  const f = fixture(t)
+  const map = await f.accept()
+  let alter
+  f.intercept((request, execute) => {
+    const data = execute()
+    if (request.endpoint.startsWith('/api/identity/document?')) alter(data)
+    return data
+  })
+  const node = map.nodes.find(item => item.anchor === 'headline')
+  const change = async (edit, expected) => {
+    alter = data => edit(data, data.ownership.objects.find(item => item.nodeId === node.id))
+    await f.handle.refresh()
+    const project = f.handle.navigatorOwnership()
+    assert.equal(project ? project(previewDetail(map)) : 'unmapped', expected)
+  }
+  await change(data => data.map.nodes.push({ ...node, id: 'another-node', tag: 'p' }), 'unmapped')
+  await change((data, owner) => data.ownership.objects.push({ ...owner }), 'unmapped')
+  await change((_, owner) => { owner.status = 'conflict' }, 'unmapped')
+  await change((_, owner) => { owner.status = 'partial'; owner.reasons = ['OPAQUE_SOURCE_REGION'] }, 'unmapped')
+  await change((_, owner) => { delete owner.source.sourceRevision }, 'unmapped')
+  await change((data, owner) => {
+    data.ownership.sourcePolicy = { writable: false, reasonCode: 'SOURCE_READ_ONLY' }
+    owner.status = 'partial'; owner.reasons = ['SOURCE_READ_ONLY']; owner.supportedOperations = []
+  }, 'read-only')
+  await change((data, owner) => {
+    data.ownership.sourcePolicy = { writable: false, reasonCode: 'SOURCE_READ_ONLY' }
+    owner.status = 'partial'; owner.reasons = ['SOURCE_READ_ONLY', 'SOURCE_CLAIM_MISMATCH']; owner.supportedOperations = []
+  }, 'unmapped')
+  await change((data, owner) => {
+    owner.status = 'stale'; data.ownership.coverage.stale = 1
+  }, 'stale')
+  assert.equal(f.handle.navigatorOwnership()(previewDetail(map, { anchor: 'intro', tag: 'p' })), 'mapped')
+  await change(data => { data.stale = true; data.sourceErrorCode = 'SOURCE_MISSING'; data.currentRevision = null }, 'unmapped')
+  assert.equal(f.handle.navigatorOwnership(), null)
+})
+
+test('Navigator identities return immutable accepted node and definition metadata independent of write support', async t => {
+  const f = fixture(t)
+  const map = await f.accept()
+  const identify = f.handle.navigatorIdentity()
+  const target = previewDetail(map)
+  const branch = identify(previewDetail(map, { tag: 'main', anchor: 'home' }))
+  const heading = identify(target)
+  assert.equal(branch.nodeId, map.nodes.find(node => node.anchor === 'home').id)
+  assert.equal(heading.nodeId, map.nodes.find(node => node.anchor === 'headline').id)
+  assert.notEqual(branch.key, heading.key)
+  assert.deepEqual(heading.definition, { name: 'HomePage', sourcePath: path })
+  assert.ok(Object.isFrozen(heading) && Object.isFrozen(heading.definition))
+  assert.equal(identify({ ...target, workspaceId: 'b'.repeat(64) }), null)
+  assert.equal(identify({ ...target, route: '/other' }), null)
+  assert.equal(identify({ ...target, tag: 'h2' }), null)
+  f.intercept((request, execute) => {
+    const data = execute()
+    if (request.endpoint.startsWith('/api/identity/document?')) {
+      const owner = data.ownership.objects.find(item => item.nodeId === heading.nodeId)
+      owner.definition = { name: 'Unknown', sourcePath: path }
+    }
+    return data
+  })
+  await f.handle.refresh()
+  assert.equal(identify(target), null)
+  assert.equal(f.handle.navigatorIdentity()(target).definition, null)
+  f.intercept(null)
+  writeFileSync(f.file, content + '// updated revision\n')
+  await f.handle.refresh()
+  assert.equal(f.handle.navigatorOwnership()(target), 'stale')
+  assert.equal(f.handle.navigatorIdentity()(target), null)
+  assert.deepEqual(f.staged, [])
 })

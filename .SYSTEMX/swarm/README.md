@@ -43,6 +43,12 @@ so the summary spans at most the catalog's 100 families. Use `firstReadyId`
 to inspect a requirement with `node scripts/lan-backlog.mjs --item ID --json`.
 Add `--manifest "$SWARM_MANIFEST"` to inspect a run alongside the catalog.
 
+Use `node .SYSTEMX/swarm/cli.mjs goal --family F008 --limit 1` for a worker
+handoff. The family report includes the five original acceptance statements for
+its next capability, their definition hashes and the unmet prerequisites for
+each lane. A blocked family explains what must finish first. A complete family
+returns its accepted count and an empty capability.
+
 ## Preview a worker wave
 
 Preview the shipped synthetic manifest from the repository root.

@@ -99,7 +99,70 @@ node .SYSTEMX/swarm/cli.mjs prepare-wave --manifest "$SWARM_MANIFEST" --wave-dig
 A stale digest requires another preview. A partial result returns a nonzero
 exit, the prepared receipts, unprepared assignments and the failed slot.
 After inspecting the reported branch, worktree and private state, run `status`
-and `wave` again. Each worker needs a fresh slot `sync` before launch.
+and `wave` again. An individual `run` needs fresh slot `sync`; a batch binds
+those observations in its separate `run-wave` preview.
+
+### Preview and run prepared workers together
+
+After `prepare-wave`, preview execution using the same manifest, coordinator
+and private state:
+
+```sh
+node .SYSTEMX/swarm/cli.mjs run-wave --manifest "$SWARM_MANIFEST"
+```
+
+This writes no state and starts no provider. Review eligible `ready` workers,
+readiness codes in `skipped` and the full SHA-256 `runDigest`. It binds
+manifest/workspace/private state, task/generation, branch/HEAD, assignment,
+pinned provider and ordinary `syncDigest`, with `applied: false` and
+`executionAuthority: false`. Running, failed and review-stage slots are excluded.
+
+Copy that exact digest into `RUN_DIGEST`, then explicitly apply it:
+
+```sh
+node .SYSTEMX/swarm/cli.mjs run-wave --manifest "$SWARM_MANIFEST" --run-digest "$RUN_DIGEST" --apply
+```
+
+Keep the same `--repo`/`--state-dir`. Providers are already pinned; slot,
+executable and argument overrides are refused. Apply rechecks under the lock:
+worker HEAD/cleanliness, provider or state drift gives `RUN_WAVE_STALE` before
+any child starts; missing/invalid digest gives `RUN_DIGEST_INVALID`; no eligible
+workers gives `RUN_WAVE_EMPTY`. A digest without `--apply` is invalid. Skipped
+slots are not repaired/launched; a fresh eligible subset may run beside an
+existing worker within budget.
+
+All selected leases reach one atomic state checkpoint before any child starts;
+providers then execute concurrently and complete separately. This is atomic
+reservation, not atomic provider effects. The result reports per-generation
+`review`, `failed` or uncertain `inspect` outcomes. Batch `completed` means all
+selected workers reached review, never acceptance; `partial` exits nonzero.
+Checks, Z review, Alpha, PR/merge and Agent 0 acceptance remain separate. There
+is no task refill, failed-worker retry or background scheduling loop.
+
+### Recover from a partial run or controller loss
+
+Preserve the original manifest/state, worktrees, branches and terminal results.
+Read `status` before deciding another action. Private `state.json` records
+phases/leases; `execution-<lease>.json` records observed PID/group/controller and
+generation facts before packet delivery; `completion-<lease>.json` records a
+result before its slot transition. Restart does not reconcile these files or
+clear uncertain leases. A running record can outlive its process, and a lease
+can exist before launch. Neither a missing sidecar nor a completion file proves
+safe retry or acceptance.
+
+Audit live process identity/command/worktree, branch/head, generation and
+receipts before manual recovery. Historical PIDs grant no kill authority; do
+not delete leases/locks to force relaunch. There is no automatic recovery or
+exactly-once provider guarantee. Preserve readable evidence separately from
+controller output counts/hashes.
+
+Limits are ten slots including declared external workers, 500 manifest tasks,
+128,000-byte provider packets, 1,000,000 combined child output bytes, a
+900,000 ms child timeout and 2,000 private events. Apply checks event room
+for launches/completions. The local lock waits five seconds before
+`CONTROLLER_BUSY`; verify ownership before recovery. These are safety limits,
+not promised throughput. Windows and detached-descendant qualification remains
+[separate](#evidence-and-implementation-boundaries).
 
 ### Verify ten concurrent workers locally
 
@@ -127,6 +190,11 @@ eligible original IDs and their families for each gate. The limit controls the
 sample size per gate. Add `--manifest "$SWARM_MANIFEST"` to include run progress
 alongside those totals. Catalog reads validate the definitions, prerequisites
 and public receipt bindings before reporting acceptance.
+
+For a work assignment, add `--family F008` (or another original family ID) to
+the goal command. Copy its five lane criteria and definition hashes into the
+review packet. Each lane lists outstanding direct prerequisites. A blocked
+family has no ready ID, and a complete family has no next capability.
 
 In `progress`, `totalTasks` is the size of this manifest, `acceptedTasks`
 counts recorded delivery acceptances, and `remainingTasks` is their difference.
@@ -261,6 +329,8 @@ Do not activate project records or run example tasks in the blank reusable templ
 | `wave` | Preview one group of disjoint assignments and per-manifest progress from the current private state. Accepts the manifest, optional repository and optional state directory. |
 | `next --slot N` | Read the dependency-ready, nonoverlapping next-task proposal for a free slot. A new generation and reviewed provider choice are still required; it does not dispatch. |
 | `prepare --task ID --slot N --executable ABSOLUTE_PATH --arg VALUE` | With `--apply`, pin the reviewed executable and create the owned generation branch/worktree after repository/base, dependency, budget and scope checks. Repeat `--arg` for an argument array. |
+| `prepare-wave --wave-digest SHA256 --executable ABSOLUTE_PATH` | With `--apply`, prepare the reviewed assignments and checkpoint each generation; no provider starts. |
+| `run-wave` | Preview eligible prepared workers and `runDigest`. With `--run-digest SHA256 --apply`, recheck the group, reserve its leases, and run pinned providers concurrently; no acceptance or automatic retry. |
 | `sync --slot N` | Return a read-only revision/generation/state digest for a Mac IDE/Codex handoff. An optional `--sync-digest SHA256` verifies an earlier observation. |
 | `run --slot N --sync-digest SHA256` | With `--apply`, require a fresh handoff, recheck provider identity and start the bounded CLI in its task worktree. |
 | `verify --slot N` | With `--apply`, run the manifest's local checks and bind terminal results to the current head and assignment. |
@@ -353,6 +423,15 @@ raw stdout/stderr is not retained as a readable test transcript. Keep original
 review and verification artifacts separately and use their exact digest in the
 operator assertions. Role labels and evidence hashes are consistency records,
 not authenticated independent identities or proof that references were read.
+
+## Inventory and graph proposals before assignment
+
+[Inventory](../scripts/lan-repository-inventory.mjs) `compare` observes; only a
+complete `scan` updates the private accepted cache. `last-good`, `export` and
+`revalidate` retain revision/provenance boundaries. Static declarations are not
+live services. [Graph proposal](../scripts/lan-command-proposal.mjs)
+`create`/`inspect` reviews have no apply mode. Neither tool launches workers,
+accepts requirements or substitutes its revision for swarm digests/Agent 0 review.
 
 ## Evidence and implementation boundaries
 

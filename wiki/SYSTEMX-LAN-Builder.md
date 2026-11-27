@@ -1,5 +1,15 @@
 # SYSTEMX LAN Builder
 
+## Filtering the preview hierarchy
+
+In Navigator, filter mounted elements by semantic kind, visibility or source ownership. The hierarchy retains ancestors of matches. Unavailable frames carry an explicit boundary, and the filters preserve the current selection and unsaved Home draft. [Browser verification](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-NAVIGATOR-FILTER-ACCEPTANCE-2026-11-20.md)
+
+## Reviewing a proposed graph or repository change
+
+From the template root, run `node scripts/lan-command-proposal.mjs --help` to create or inspect a read-only proposal. Use the accepted graph revision and examine the zero-based insertion positions and affected source owners before editing. [Proposal verification](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-PROPOSAL-AND-CONFIGURATION-ACCEPTANCE-2026-11-20.md)
+
+Run `node scripts/lan-repository-inventory.mjs compare` to see how working, staged and untracked inputs differ from the retained inventory. Use `scan` to accept a complete result and `last-good` to read it back. Partial findings identify the resources that still need review. [Inventory verification](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-INVENTORY-COMPARISON-ACCEPTANCE-2026-11-20.md)
+
 ## Local request diagnostics
 
 In **Insights/Ops → Gates → Transport diagnostics**, request the recent activity
