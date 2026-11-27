@@ -53,6 +53,7 @@ register('node --test tests/browser/seed-pack.test.mjs tests/browser/preview-pro
 register('node --test tests/browser/keyboard-driver.test.mjs', temporary('Tests keyboard/focus guards using supplied browser observations.'))
 register('node scripts/webappx-backlog.mjs --check', source('Validates the original WebAppX catalog and compares its generated views without rewriting them.'))
 register('node scripts/lan-backlog.mjs --check', source('Validates separate LAN authored capability/progress records and compares all generated checklists/CSV/JSON/plan without rewriting them.'))
+register('python3 -B .SYSTEMX/LAN/Progress/check.py', source('Verifies the Excel tracker source hashes and every requirement ID and status against the LAN ledger.'))
 register('node --test tests/backlog/catalog.test.mjs tests/backlog/lan-catalog.test.mjs', temporary('Exercises original catalog validation plus LAN 10,000-item definitions, dependency closure, receipt binding and deterministic public views using temporary evidence fixtures.'))
 register('python3 -B scripts/validate-template.py', source('Reads reusable records, release/research/version integrity and finite grouped starter app/dependency/asset/configuration parity, without rewriting either distribution.', [SYSTEMX]))
 register('python3 -B .SYSTEMX/manager.py status --target .', source('Reads selected installation and managed-release status.', [SYSTEMX]))
