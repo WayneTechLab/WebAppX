@@ -2,7 +2,7 @@
 
 ## Current LAN checkpoint
 
-On November 20 the LAN ledger reached **910/10,000 accepted requirements and 182/2,000 complete capabilities**. Run `node .SYSTEMX/swarm/cli.mjs goal --limit 1` to find the next eligible requirement in each family. The [active plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) maps the accepted features and open work. The [swarm guide](SYSTEMX-Swarm.md) covers starting prepared workers and recovering after an interruption.
+On November 26 the LAN ledger reached **980/10,000 accepted requirements and 196/2,000 complete capabilities**. The [Excel workbook](https://github.com/WayneTechLab/WebAppX/raw/refs/heads/main/.SYSTEMX/LAN/Progress/LAN-10000-Progress.xlsx) lists all original requirements with their evidence, owners and next actions. The [active plan](https://github.com/WayneTechLab/WebAppX/blob/main/docs/LAN-ACTIVE-ITERATION.md) identifies the next work in graph commands, Navigator discovery and session ownership.
 
 ## Graph and versioned API workspace
 

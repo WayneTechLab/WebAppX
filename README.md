@@ -71,13 +71,9 @@ macOS checks do not establish Windows runtime or deployed Firebase acceptance.
 
 ## LAN program and current swarm
 
-Agent 0 has accepted **910 of 10,000 requirements (9.1%)** and **182 of
-2,000 capabilities**. F001–F007 and F011 are complete. In the latest reviews, graph
-proposals reported source owners and insertion positions, inventory compared
-working and staged inputs, and concurrent launchers identified the winning
-session. The separate WebAppX checklist is at 179 of 1,000. Read the
-[proposal verification](docs/LAN-PROPOSAL-AND-CONFIGURATION-ACCEPTANCE-2026-11-20.md), [inventory verification](docs/LAN-INVENTORY-PROVENANCE-ACCEPTANCE-2026-11-20.md) and
-[current plan](docs/LAN-ACTIVE-ITERATION.md).
+As of November 26, Agent 0 has accepted **980 of 10,000 LAN requirements (9.8%)** and **196 of 2,000 capabilities**. The 70 additions since November 20 cover graph batch preconditions, Navigator search and bookmarks, and session recovery, preferences and diagnostics. F001–F007 and F011 are complete. The separate WebAppX checklist tracks 1,000 product requirements.
+
+Open the [Excel progress tracker](.SYSTEMX/LAN/Progress/LAN-10000-Progress.xlsx) for the family totals, filterable requirements and original acceptance criteria. Each accepted row identifies its evidence and source revision. See the [active plan](docs/LAN-ACTIVE-ITERATION.md) for the remaining work and the [refresh instructions](.SYSTEMX/LAN/Progress/README.md) for maintaining the workbook.
 
 Run `node .SYSTEMX/swarm/cli.mjs goal --limit 1` for the counts and the next
 eligible requirement in each family. After preparing and syncing a group of

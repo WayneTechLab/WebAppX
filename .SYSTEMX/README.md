@@ -13,7 +13,7 @@ feature roadmap. The sections below describe retained webapp extensions.
 
 ## Current LAN checkpoint
 
-On November 20 Agent 0 had accepted **910/10,000 requirements and 182/2,000 capabilities**. Use the [active plan](../docs/LAN-ACTIVE-ITERATION.md) for the tested revisions and next eligible work. The [generated ledger](../docs/backlog/LAN-10000-TODO.md) carries the original criteria.
+As of November 26, the LAN ledger records **980/10,000 accepted requirements and 196/2,000 complete capabilities**. Open the [Excel tracker](LAN/Progress/LAN-10000-Progress.xlsx) for the complete status list and evidence. The [active plan](../docs/LAN-ACTIVE-ITERATION.md) lists the next eligible work.
 
 ## SYSTEMX host swarm — Agent 0, X/Y/Z and Alpha
 

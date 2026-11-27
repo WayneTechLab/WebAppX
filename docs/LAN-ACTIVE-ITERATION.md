@@ -1,19 +1,16 @@
 # LAN active iteration — command proposals, inventory, Navigator and session ownership
 
-The goal is **10,000 accepted original requirements and 2,000 complete capabilities**.
-On November 20 the ledger reached **910 requirements and 182 capabilities
-(9.1%)**. **9,090 requirements and 1,818 capabilities remain.**
+The program goal is **10,000 accepted original requirements and 2,000 complete capabilities**. On November 26, **980 requirements and 196 capabilities (9.8%)** have passed evidence review. **9,020 requirements and 1,804 capabilities remain.** F001–F007 and F011 are complete.
 
-| Family | Accepted requirements | Next work |
+| Active family | Accepted original requirements | Next eligible requirement |
 | --- | --- | --- |
-| F008 command proposals | LAN-00701–00730 | Next eligible LAN-00731. |
-| F011 repository inventory | LAN-01001–01100 | All 100 original requirements have verified evidence. |
-| F013 Navigator discovery | LAN-01201–01250 | Next eligible LAN-01251. |
-| F015 session ownership | LAN-01401–01430 | Next eligible LAN-01431. |
+| F008 command proposals | LAN-00701–00750 | LAN-00751 · Compute proposal fingerprints |
+| F013 Navigator discovery | LAN-01201–01270 | LAN-01271 · Filter hierarchy to a selected subtree |
+| F015 session ownership | LAN-01401–01450 and LAN-01481–01490 | LAN-01451 · Record session lifecycle outcomes |
 
-The [F007 receipt](LAN-F007-ACCEPTANCE-2026-11-20.md), [session and inventory follow-up](LAN-INVENTORY-AND-SESSION-FOLLOWUP-2026-11-20.md), [graph proposals](LAN-PROPOSAL-AND-CONFIGURATION-ACCEPTANCE-2026-11-20.md) and [repository comparisons](LAN-INVENTORY-COMPARISON-ACCEPTANCE-2026-11-20.md) bind original requirements to their tested revisions. The [final inventory review](LAN-INVENTORY-PROVENANCE-ACCEPTANCE-2026-11-20.md) completes F011. The [session ownership review](LAN-SESSION-CONTROL-ACCEPTANCE-2026-11-20.md) covers process and listener recovery. The [generated plan](LAN-10000-EXECUTION-PLAN.md) contains the complete catalog and its gates.
+The November 20 local checkpoint had 910 accepted requirements. The November 26 consolidation added 20 graph, 20 Navigator and 30 session requirements. The [graph and Navigator receipt](LAN-GRAPH-NAVIGATOR-ACCEPTANCE-2026-11-26.md) records the exact CLI and Chromium tests. The [session recovery receipt](LAN-SESSION-RECOVERY-ACCEPTANCE-2026-11-26.md) covers process identity, exact-origin storage, and sanitized exports. The [repository inventory receipt](LAN-INVENTORY-PROVENANCE-ACCEPTANCE-2026-11-20.md) documents the last completed family.
 
-Use `node .SYSTEMX/swarm/cli.mjs goal --limit 1` for the current queues. After preparing and syncing workers, use `run-wave` to preview the set and inspect its run digest before `--apply`. After an interruption, inspect each reserved generation with `status` before taking further action.
+The [Excel tracker](../.SYSTEMX/LAN/Progress/LAN-10000-Progress.xlsx) lists every original ID, its current status and its evidence. Add planning notes by ID. Run the [documented refresh](../.SYSTEMX/LAN/Progress/README.md) after an accepted ledger change. The [generated execution plan](LAN-10000-EXECUTION-PLAN.md) lists the 24 currently eligible local requirements. Use `node .SYSTEMX/swarm/cli.mjs goal --family F008 --limit 1` to inspect the five original lanes and direct prerequisites for the next capability.
 
 ## Using the current capabilities
 
