@@ -190,7 +190,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root adds provider, local inference and browser dependencies, and scripts for the full app, host tooling and release gates. Shared package identity, runtime and dependencies remain checked.",
-      "rootSha256": "c37e981d79ccb843f64642eda46b334326647171592e2b96a9c59140a33b1876",
+      "rootSha256": "e642320f3db873283b5e302c4a8d000f3ce98f205a881633ffc2b7f366f1f914",
       "starterSha256": "2c4dcbe51214ae866e8e3e8fa2264ec0a37ab3f3880fea0b3e0107f914500ce4"
     },
     {
