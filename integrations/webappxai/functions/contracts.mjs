@@ -1,12 +1,18 @@
 import { createHash } from 'node:crypto'
 import release from './release.json' with { type: 'json' }
 
-export const PILOT_REVISION = release.revision
+export const PILOT_REVISION = release.model.revision
 export const PILOT_ASSETS = release.assets
 
-const assetsByPath = new Map(Object.keys(PILOT_ASSETS).map(name => [
-  `/api/webappxai/${PILOT_REVISION}/${name}`, name,
-]))
+// The original clients addressed this specific Hub commit by its pilot name.
+export const legacyReleaseName = PILOT_REVISION === '13234ff5521012ddcfda6cda14eda3850d5448d4'
+  ? 'pilot-003-chat' : null
+
+const assetsByPath = new Map()
+for (const name of Object.keys(PILOT_ASSETS)) {
+  assetsByPath.set(`/api/webappxai/${PILOT_REVISION}/${name}`, name)
+  if (legacyReleaseName) assetsByPath.set(`/api/webappxai/${legacyReleaseName}/${name}`, name)
+}
 
 function fail(response, status, message) {
   response.writeHead(status, { 'Content-Type': 'text/plain; charset=utf-8' })

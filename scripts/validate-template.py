@@ -219,8 +219,7 @@ def _validate_parity_mapping(mapping):
                 for item in scope)):
         raise StarterParityError('Root-only features require explicit paths and concrete reasons.')
     if mapping['rootOnlyDependencies'] != {
-            'dependencies': ['@gusto/embedded-react-sdk', '@huggingface/tokenizers',
-                             '@tanstack/react-query', 'onnxruntime-web'],
+            'dependencies': ['@gusto/embedded-react-sdk', '@tanstack/react-query', '@waynetechlab/webappxai'],
             'devDependencies': ['@playwright/test']}:
         raise StarterParityError('Root-only dependencies must match the reviewed SDK, local inference and browser packages.')
     counts = dict.fromkeys(PARITY_GROUPS, 0)

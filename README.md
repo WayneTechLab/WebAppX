@@ -1868,7 +1868,13 @@ device**, enter a message and choose **Send locally**. The first load uses about
 36 MB. Closing Help clears the conversation. **Delete downloaded model**
 removes the saved model and tokenizer from this browser.
 
-The pilot matched 2 of 10 reference answers. For setup instructions, use the
-FAQ. To enable the optional pilot in a new checkout, an operator with access
-to the private model supplies the two verified files. See the
-[local setup, hosting requirements and model evaluation](docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md).
+WebAppX includes the **WebAppXai v0.1.0** browser runtime in
+`vendor/webappxai`. A public checkout can install and build with `npm ci` and
+`npm run build` using the public npm registry. To enable chat, an operator
+supplies the model and tokenizer from the private Hugging Face release
+`pilot-003-chat` at commit `13234ff5521012ddcfda6cda14eda3850d5448d4`.
+WebAppX verifies both files before use.
+
+The pilot matched **2 of 10** reference answers in its evaluation. Use the
+curated FAQ for setup guidance. See the [Help desk wiki](wiki/WebAppXai-Help-Desk.md)
+and the [operator setup and evaluation guide](docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md).

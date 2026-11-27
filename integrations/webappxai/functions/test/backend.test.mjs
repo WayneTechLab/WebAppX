@@ -7,14 +7,17 @@ import { PILOT_ASSETS, PILOT_REVISION } from '../contracts.mjs';
 const name = 'tokenizer.json';
 const bytes = PILOT_ASSETS[name].bytes;
 
-function bucketFixture({ prevention = 'enforced', metadata = {}, chunks = [Buffer.alloc(bytes)], readError } = {}) {
+function bucketFixture({ prevention = 'enforced', metadata = {}, chunks = [Buffer.alloc(bytes)], readError, pinnedMetadataError } = {}) {
   const requests = [];
   const bucket = {
     getMetadata: async () => [{ iamConfiguration: { publicAccessPrevention: prevention } }],
     file(path, options) {
       requests.push({ path, options });
       return {
-        getMetadata: async () => [{ size: String(bytes), generation: '40', ...metadata }],
+        getMetadata: async () => {
+          if (pinnedMetadataError && path === `webappxai/${PILOT_REVISION}/${name}`) throw pinnedMetadataError;
+          return [{ size: String(bytes), generation: '40', ...metadata }];
+        },
         createReadStream(range) {
           requests.at(-1).range = range;
           if (readError) throw readError;
@@ -56,6 +59,21 @@ test('uses the inspected object generation and reads a bounded range', async () 
     { path, options: undefined },
     { path, options: { generation: 40 }, range: { start: 0, end: bytes, decompress: false, validation: false } },
   ]);
+});
+
+test('only an absent pinned object permits reading the original pilot location', async () => {
+  const originalPath = `webappxai/pilot-003-chat/${name}`;
+  const { bucket, requests } = bucketFixture({ pinnedMetadataError: { code: 404 } });
+  assert.equal((await readPrivatePilotAsset(bucket, name)).length, bytes);
+  assert.deepEqual(requests.map(call => call.path), [
+    `webappxai/${PILOT_REVISION}/${name}`, originalPath, originalPath,
+  ]);
+  assert.deepEqual(requests.at(-1).options, { generation: 40 });
+  for (const code of [403, 503]) {
+    const blocked = bucketFixture({ pinnedMetadataError: { code } });
+    await assert.rejects(readPrivatePilotAsset(blocked.bucket, name), error => error.code === code);
+    assert.equal(blocked.requests.length, 1);
+  }
 });
 
 test('unlisted names and buckets without confirmed public access prevention are refused', async () => {

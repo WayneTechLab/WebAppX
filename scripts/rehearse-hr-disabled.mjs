@@ -31,7 +31,11 @@ function ownedCommand(command, args, options) {
 const hash = bytes => createHash('sha256').update(bytes).digest('hex')
 const allowed = path => path === 'index.html' || path === 'package.json' || path === 'tsconfig.json'
   || path.startsWith('src/') || path.startsWith('public/')
-const forbiddenModule = id => /(?:\/src\/hr\/|\/integrations\/gusto\/|\/@gusto\/)/i.test(id.replaceAll('\\', '/'))
+const excludedRuntime = ['src/hr', 'integrations/gusto', '@gusto', 'src/webappxai', 'vendor/webappxai', '@waynetechlab/webappxai']
+const forbiddenModule = id => {
+  const normalized = id.replaceAll('\\', '/').toLowerCase()
+  return excludedRuntime.some(path => normalized.includes('/' + path + '/'))
+}
 
 function gitEnvironment() {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith('GIT_')))
@@ -277,7 +281,10 @@ export async function main(args = process.argv.slice(2)) {
     await symlink(join(ROOT, 'node_modules'), join(fixture, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir')
     checkpoint()
     const pkg = JSON.parse(await readFile(join(fixture, 'package.json'), 'utf8'))
-    pkg.name = 'webappx-owned-cms-crm-adoption'; pkg.scripts = {}; delete pkg.dependencies['@gusto/embedded-react-sdk']
+    pkg.name = 'webappx-owned-cms-crm-adoption'
+    pkg.scripts = {}
+    delete pkg.dependencies['@gusto/embedded-react-sdk']
+    delete pkg.dependencies['@waynetechlab/webappxai']
     await writeFile(join(fixture, 'package.json'), JSON.stringify(pkg, null, 2) + '\n')
     const tsconfig = JSON.parse(await readFile(join(fixture, 'tsconfig.json'), 'utf8'))
     tsconfig.include = ['src/main.tsx']; await writeFile(join(fixture, 'tsconfig.json'), JSON.stringify(tsconfig))
@@ -292,7 +299,7 @@ export async function main(args = process.argv.slice(2)) {
     await build(configuration)
     checkpoint()
     assert.ok(emitted.size > 0)
-    assert.deepEqual([...emitted].filter(forbiddenModule), [], 'Emitted build must exclude HR and Gusto runtime modules')
+    assert.deepEqual([...emitted].filter(forbiddenModule), [], 'Emitted CMS/CRM build must exclude HR, Gusto and WebAppXai runtime modules')
     for (const required of ['/src/cms/CmsDemo.tsx', '/src/crm/CrmDemo.tsx', '/src/portals/backup.ts']) assert.ok([...emitted].some(id => id.endsWith(required)), `Missing retained module ${required}`)
     const port = await freePort()
     checkpoint()
@@ -307,7 +314,7 @@ export async function main(args = process.argv.slice(2)) {
     checkpoint()
     const checks = await exerciseAdoption(context, origin, fixture, JSON.parse(seedBytes).workspaces)
     checkpoint()
-    const report = { kind: 'webappx-owned-hr-disabled-rehearsal', schemaVersion: 1, status: 'passed', sourceRevision: revision, sourceCapture: 'committed-public-app-allowlist', copiedFiles: sourceFiles.length, sourceManifestSha256: hash(JSON.stringify(sourceFiles)), overrides, emittedModuleCount: emitted.size, excludedRuntime: ['src/hr', 'integrations/gusto', '@gusto'], backupFormat: 'webappx-adopted-cms-crm-workspaces', backupVersion: 1, recoveryHistory: 'not-adopted-old-slots-unread-and-preserved', checks, scope: 'Owned temporary CMS/CRM adoption only; no provider, deployment or native Windows acceptance.' }
+    const report = { kind: 'webappx-owned-hr-disabled-rehearsal', schemaVersion: 1, status: 'passed', sourceRevision: revision, sourceCapture: 'committed-public-app-allowlist', copiedFiles: sourceFiles.length, sourceManifestSha256: hash(JSON.stringify(sourceFiles)), overrides, emittedModuleCount: emitted.size, excludedRuntime, backupFormat: 'webappx-adopted-cms-crm-workspaces', backupVersion: 1, recoveryHistory: 'not-adopted-old-slots-unread-and-preserved', checks, scope: 'Owned temporary CMS/CRM adoption only; no provider, deployment or native Windows acceptance.' }
     console.log(JSON.stringify(report, null, 2))
     return report
   } finally {

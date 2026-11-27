@@ -1,6 +1,7 @@
 import type { User } from 'firebase/auth'
 import { auth, firebaseRuntime } from '@/config/firebase'
-import release from './release.json'
+import release from '@waynetechlab/webappxai/release'
+import modelPin from './model-pin.json'
 
 type PilotFile = keyof typeof release.assets
 type CachedPair = { model: ArrayBuffer; tokenizer: ArrayBuffer }
@@ -54,7 +55,7 @@ async function verify(name: PilotFile, value: unknown): Promise<ArrayBuffer> {
 }
 
 async function download(name: PilotFile, token: string, signal: AbortSignal): Promise<ArrayBuffer> {
-  const url = `/api/webappxai/${release.revision}/${name}`
+  const url = `/api/webappxai/${modelPin.revision}/${name}`
   const response = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store', credentials: 'omit', mode: 'same-origin', redirect: 'error', referrerPolicy: 'no-referrer', signal,
@@ -100,13 +101,32 @@ export async function loadPilotAssets(user: User, signal: AbortSignal): Promise<
     }
   }
   checkSession()
-  const key = JSON.stringify([firebaseRuntime.projectId, firebaseRuntime.environment, user.uid, release.revision])
-  // Only the two generic release files are cached, and a new local account fetches its own copy.
+  const account = [firebaseRuntime.projectId, firebaseRuntime.environment, user.uid]
+  const key = JSON.stringify([...account, modelPin.revision])
+  const legacyKey = JSON.stringify([...account, release.revision])
+  async function cacheVerifiedPair(pair: CachedPair) {
+    try {
+      await inCache('readwrite', store => {
+        checkSession()
+        // One verified pair per origin. Eviction and replacement commit together.
+        store.clear()
+        return store.put(pair, key)
+      }, signal)
+    } catch {
+      // If storage is disabled or full, the verified pair still works in memory.
+    }
+  }
   let cached: CachedPair | undefined
+  let legacy = false
   try {
     cached = await inCache('readonly', store => store.get(key), signal)
+    if (!cached) {
+      checkSession()
+      cached = await inCache('readonly', store => store.get(legacyKey), signal)
+      legacy = Boolean(cached)
+    }
   } catch {
-    // Private browsing or storage policy can disable IndexedDB. Inference still works in memory.
+    // Private browsing or storage policy can disable IndexedDB.
   }
   checkSession()
   if (cached) {
@@ -114,10 +134,12 @@ export async function loadPilotAssets(user: User, signal: AbortSignal): Promise<
       const model = await verify('model.onnx', cached.model)
       const tokenizer = parseTokenizer(await verify('tokenizer.json', cached.tokenizer))
       checkSession()
+      if (legacy) await cacheVerifiedPair(cached)
+      checkSession()
       return { model, tokenizer }
     } catch {
       checkSession()
-      // Re-fetch and replace a stale or damaged entry after this explicit Load model action.
+      // Re-fetch a damaged entry only after this explicit Load model action.
     }
   }
   const token = await user.getIdToken()
@@ -127,16 +149,7 @@ export async function loadPilotAssets(user: User, signal: AbortSignal): Promise<
   const tokenizerBytes = await download('tokenizer.json', token, signal)
   const tokenizer = parseTokenizer(tokenizerBytes)
   checkSession()
-  try {
-    await inCache('readwrite', store => {
-      checkSession()
-      // Keep one verified pair per browser origin. Replacement and eviction commit together.
-      store.clear()
-      return store.put({ model, tokenizer: tokenizerBytes } satisfies CachedPair, key)
-    }, signal)
-  } catch {
-    // Quota limits only affect offline reuse.
-  }
+  await cacheVerifiedPair({ model, tokenizer: tokenizerBytes })
   checkSession()
   return { model, tokenizer }
 }

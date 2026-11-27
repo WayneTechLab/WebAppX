@@ -7,6 +7,7 @@
 - [Managed SYSTEMX Integration](SYSTEMX-Standalone-Integration.md)
 - [WebAppX Roadmap — 1,000 TODOs](WebAppX-Roadmap.md)
 - [Quick Start](Quick-Start.md)
+- [WebAppXai Help desk](WebAppXai-Help-Desk.md)
 - [Developer Setup Contracts](Developer-Setup-Contracts.md)
 - [CRM Duplicates and Merges](CRM-Duplicates-and-Merges.md)
 - [Adoption Contracts](Adoption-Contracts.md)

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type RefObject } from 'react'
 import type { User } from 'firebase/auth'
+import { createPilotWorker } from '@waynetechlab/webappxai'
 import { useFirebaseAuth } from '@/auth/useFirebaseAuth'
 import { auth } from '@/config/firebase'
 import { AppLink } from '@/components/navigation/AppLink'
@@ -85,7 +86,7 @@ function PilotChat({ user }: { user: User }) {
         loadWasm(session.controller.signal),
       ])
       if (!isCurrent(session)) return
-      const worker = new Worker('/webappxai/worker.js', { type: 'module', name: 'WebAppXai' })
+      const worker = createPilotWorker()
       session.worker = worker
       const failed = () => {
         if (isCurrent(session)) unload('The local model stopped. Load it again or use the FAQ.')

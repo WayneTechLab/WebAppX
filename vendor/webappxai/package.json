@@ -1,0 +1,40 @@
+{
+  "name": "@waynetechlab/webappxai",
+  "version": "0.1.0",
+  "description": "On-device WebAppXai research pilot runtime and Vite integration",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "exports": {
+    ".": {
+      "types": "./runtime/index.d.ts",
+      "import": "./runtime/index.js"
+    },
+    "./vite": {
+      "types": "./runtime/vite.d.ts",
+      "import": "./runtime/vite.mjs"
+    },
+    "./release": "./runtime/release.json"
+  },
+  "files": [
+    "runtime/index.js",
+    "runtime/index.d.ts",
+    "runtime/vite.mjs",
+    "runtime/vite.d.ts",
+    "runtime/worker.js",
+    "runtime/release.json",
+    "runtime/licenses/*.txt"
+  ],
+  "dependencies": {
+    "@huggingface/tokenizers": "0.2.0",
+    "onnxruntime-web": "1.31.1"
+  },
+  "peerDependencies": {
+    "vite": "^8.1.3"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  }
+}

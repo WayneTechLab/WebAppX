@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path'
 import { gustoMockPlugin } from './integrations/gusto/mock-api.mjs'
 import { webappxaiModelPlugin } from './integrations/webappxai/dev-model.mjs'
-import { webappxaiRuntimePlugin } from './integrations/webappxai/runtime.mjs'
+import { webappxaiRuntimePlugin } from '@waynetechlab/webappxai/vite'
 
 const systemxLanPort = process.env.SYSTEMX_LAN_PORT ?? '7331'
 

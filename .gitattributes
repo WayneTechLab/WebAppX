@@ -25,3 +25,6 @@
 /.SYSTEMX/WORK/FOCUS.json text eol=lf
 /.SYSTEMX/config/project.example.json text eol=lf
 /.SYSTEMX/README.md text eol=lf
+
+# Keep tagged WebAppXai source and license files byte-identical on every OS.
+/vendor/webappxai/runtime/** -text

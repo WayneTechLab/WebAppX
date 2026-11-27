@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict'
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 import { chromium, expect } from '@playwright/test'
-import release from '../src/webappxai/release.json' with { type: 'json' }
+import release from '@waynetechlab/webappxai/release' with { type: 'json' }
+import modelPin from '../src/webappxai/model-pin.json' with { type: 'json' }
+import runtimeSource from '../vendor/webappxai/SOURCE.json' with { type: 'json' }
 
 // Opt-in integration test. Start the local demo stack with the private pilot files first.
 const { values } = parseArgs({ options: { origin: { type: 'string' }, 'output-dir': { type: 'string' } } })
@@ -29,9 +31,15 @@ assert.ok(config.mode === 'firebase-emulator' && config.environment === 'local-o
 const authOrigin = loopbackOrigin(config.emulatorUrl)
 const authIdentity = await fetch(authOrigin + '/', { redirect: 'error' }).then(r => r.json())
 assert.equal(authIdentity.authEmulator?.ready, true)
-const assetBase = '/api/webappxai/' + release.revision + '/'
+const apiBase = '/api/webappxai/'
+const assetBase = apiBase + modelPin.revision + '/'
+const workerUrl = origin + '/webappxai/worker.js'
 const files = Object.keys(release.assets)
-const report = { origin, project: config.projectId, checks: [] }
+const report = {
+  origin, project: config.projectId, model: modelPin,
+  runtime: { tag: runtimeSource.tag, commit: runtimeSource.commit }, checks: [],
+}
+assert.match(modelPin.revision, /^[a-f0-9]{40}$/)
 function passed(check) {
   report.checks.push(check)
   console.log('PASS ' + check)
@@ -55,7 +63,7 @@ try {
     await r.body?.cancel()
     assert.ok([401, 403].includes(r.status), 'Missing credentials should deny access to ' + file + ', got ' + r.status)
   }
-  passed('Both private asset routes deny signed-out downloads')
+  passed('Both revision-pinned private asset routes deny signed-out downloads')
   const context = await browser.newContext({ viewport: { width: 390, height: 650 }, serviceWorkers: 'block' })
   const allowed = new Set([origin, authOrigin])
   for (const port of [config.ports.firestore, config.ports.storage]) {
@@ -81,13 +89,13 @@ try {
       return route.abort()
     }
     if (decodeURI(url.href).includes(prompt) || request.postData()?.includes(prompt)) sentPrompt = true
-    if (url.pathname.startsWith(assetBase) || url.pathname.startsWith('/webappxai/')) downloads.push(url.pathname)
+    if (url.pathname.startsWith(apiBase) || url.pathname.startsWith('/webappxai/')) downloads.push(url.pathname)
     return route.continue()
   })
   const page = await context.newPage()
   page.on('requestfailed', req => {
     const pathname = new URL(req.url()).pathname
-    if (pathname.startsWith(assetBase) || pathname.startsWith('/webappxai/')) {
+    if (pathname.startsWith(apiBase) || pathname.startsWith('/webappxai/')) {
       console.error('Failed model resource: ' + pathname + ' (' + req.failure()?.errorText + ')')
     }
   })
@@ -138,7 +146,17 @@ try {
   passed('Email/password sign-in unlocks Load model on the homepage while FAQ still works with zero AI downloads')
 
   const responses = files.map(file => page.waitForResponse(r => new URL(r.url()).pathname === assetBase + file, { timeout: 45000 }))
-  const [, ...received] = await Promise.all([load.click(), ...responses])
+  const [, workerResponse, , ...received] = await Promise.all([
+    load.click(),
+    context.waitForEvent('response', r => r.url() === workerUrl),
+    page.waitForEvent('worker', worker => worker.url() === workerUrl),
+    ...responses,
+  ])
+  assert.equal(workerResponse.status(), 200)
+  assert.match(workerResponse.headers()['content-security-policy'] ?? '', /(?:^|;)\s*connect-src 'none'(?:;|$)/)
+  report.workerSha256 = createHash('sha256').update(await workerResponse.body()).digest('hex')
+  assert.equal(report.workerSha256, runtimeSource.files['runtime/worker.js'], 'Worker bytes must match the tagged runtime')
+  passed('Help launches the exact ' + runtimeSource.tag + ' worker with outbound connections blocked')
   report.privateBytes = {}
   for (const [index, r] of received.entries()) {
     assert.equal(r.status(), 200, 'Authenticated asset response for ' + files[index])
@@ -151,18 +169,45 @@ try {
   await waitForReady()
   passed('Explicit load downloads both private assets and initializes the on-device model')
   await context.setOffline(true)
+  report.generationRequests = 0
+  const countRequest = () => { report.generationRequests++ }
+  context.on('request', countRequest)
   try {
     await pilot.getByLabel('Message', { exact: true }).fill(prompt)
     await pilot.getByRole('button', { name: 'Send locally' }).click()
     await expect(pilot.getByText('Reply complete.', { exact: true })).toBeVisible({ timeout: 120000 })
     const reply = await log.locator('p').filter({ has: page.getByText('WebAppXai', { exact: true }) }).innerText()
     report.offlineReply = reply.replace(/^WebAppXai\s*·\s*/, '').trim()
-    assert.ok(report.offlineReply.length > 0 && report.offlineReply !== reply, 'Expected a completed assistant reply')
+    assert.equal(report.offlineReply, 'WebAppX is a React, TypeScript, Vite and Firebase webapp template with SYSTEMX guidance.')
     await page.screenshot({ path: path.join(output, 'mobile-offline-reply.png') })
+    assert.equal(report.generationRequests, 0, 'Generation must stay on this device')
   } finally {
+    context.off('request', countRequest)
     await context.setOffline(false)
   }
-  passed('The loaded model generates a nonempty assistant reply in a network-offline Chromium context')
+  passed('The pinned model generates its expected reply offline with zero network requests')
+
+  // Recreate the previous version's one-record cache in this disposable browser profile.
+  const accountCacheKey = revision => JSON.stringify([config.projectId, 'local-emulator', fixture.localId, revision])
+  const pinnedKey = accountCacheKey(modelPin.revision)
+  const oldKey = accountCacheKey(release.revision)
+  await page.evaluate(({ pinnedKey, oldKey }) => new Promise((resolve, reject) => {
+    const opening = indexedDB.open('webappxai-pilot-assets-v1', 1)
+    opening.onerror = () => reject(opening.error)
+    opening.onsuccess = () => {
+      const db = opening.result
+      const tx = db.transaction('releases', 'readwrite')
+      const store = tx.objectStore('releases')
+      const entry = store.get(pinnedKey)
+      entry.onsuccess = () => {
+        if (!entry.result) return tx.abort()
+        store.put(entry.result, oldKey)
+        store.delete(pinnedKey)
+      }
+      tx.oncomplete = () => { db.close(); resolve() }
+      tx.onabort = () => { db.close(); reject(new Error('Could not seed the legacy cache from the real model')) }
+    }
+  }), { pinnedKey, oldKey })
 
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.reload()
@@ -170,9 +215,20 @@ try {
   await expect(load).toBeVisible()
   await load.click()
   await waitForReady()
-  assert.deepEqual(downloads.filter(p => p.startsWith(assetBase)).sort(), files.map(f => assetBase + f).sort())
+  const cacheKeys = await page.evaluate(() => new Promise((resolve, reject) => {
+    const opening = indexedDB.open('webappxai-pilot-assets-v1', 1)
+    opening.onerror = () => reject(opening.error)
+    opening.onsuccess = () => {
+      const db = opening.result
+      const keys = db.transaction('releases').objectStore('releases').getAllKeys()
+      keys.onsuccess = () => { db.close(); resolve(keys.result) }
+      keys.onerror = () => { db.close(); reject(keys.error) }
+    }
+  }))
+  assert.deepEqual(cacheKeys, [pinnedKey], 'Legacy cached bytes should be promoted to the pinned revision')
+  assert.deepEqual(downloads.filter(p => p.startsWith(apiBase)).sort(), files.map(f => assetBase + f).sort())
   await expect(log.locator('p')).toHaveCount(0)
-  passed('Reload retains the signed-in model cache, starts a new conversation and reuses both files')
+  passed('Reload promotes the legacy signed-in cache to the exact model revision with no redownload and an empty conversation')
   const session = await context.newPage()
   await session.goto(origin + '/login')
   await session.getByRole('button', { name: 'Sign out', exact: true }).click()

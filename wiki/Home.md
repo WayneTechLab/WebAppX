@@ -495,6 +495,7 @@ checkout while keeping production Firebase Hosting clean.
 | If you want to... | Go to |
 | --- | --- |
 | Get a running app in minutes | **[Quick Start](Quick-Start.md)** |
+| Chat with the local model or enable it for a new app | **[WebAppXai Help desk](WebAppXai-Help-Desk.md)** |
 | Preview native HR portal workflows and selected genuine SDK flows | **[Gusto HR and Employee Management](Gusto-HR-and-Employee-Management.md)** |
 | Explore independent HR, CMS and CRM runtime demos | **[Template Portals](Template-Portals.md)** |
 | Delegate one adopted-app task to an installed CLI | **[Agent Y New App Setup](Agent-Y-New-App-Setup.md)** |

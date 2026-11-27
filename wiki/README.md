@@ -1,6 +1,3 @@
-> WebAppX ships these pages directly in the public repository. The separate
-> GitHub Wiki has not been initialized; use these repository pages now.
-
 # Wiki source
 
 These Markdown files are the source for the
@@ -23,6 +20,7 @@ template.
 | `Unified-Template-Guide.md` | Current release, adoption, commands and mirror workflow |
 | `SYSTEMX-Standalone-Integration.md` | Managed standalone imports and host extension ownership |
 | `Quick-Start.md` | Quick Start |
+| `WebAppXai-Help-Desk.md` | Load the local research model and verify its release |
 | `One-Line-Install.md` | One-line workstation start and current installer boundary |
 | `WTL-Standard-Setup-Guide.md` | Idea-to-production operator sequence |
 | `Windows-Setup.md` | Windows 11 setup and support truth |

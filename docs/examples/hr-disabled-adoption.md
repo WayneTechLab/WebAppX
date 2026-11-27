@@ -49,10 +49,9 @@ evaluation active and does not implement this adoption.
 
 CMS and CRM domain models, screens, persistence hooks and individual backup
 codecs are copied unchanged from the captured public revision. The temporary
-package manifest removes the Gusto dependency and template scripts. The installed
-dependency directory may still contain that package, but the build audits every
-emitted JavaScript module and fails if it includes `src/hr/`, `integrations/gusto/`
-or `@gusto/`. It also requires the CMS screen, CRM screen and individual codec
+package manifest omits the Gusto SDK, the Help desk's local WebAppXai package
+and template scripts. The build checks every emitted JavaScript module for HR,
+Gusto and WebAppXai imports. It also requires the CMS screen, CRM screen and individual codec
 to appear in the emitted graph. This is an actual build graph check, independent
 of whether a card is visible.
 

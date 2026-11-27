@@ -19,42 +19,84 @@ device. Conversation text lives in memory. The worker's network policy blocks
 outbound connections during inference. Treat the first load and sign-in as
 online operations.
 
-### Set up a local checkout
+## Releases used by this template
 
-Obtain `model.onnx` and `tokenizer.json` for `pilot-003-chat` from Wayne Tech
-Lab's private research package. Check their SHA-256 values against the table
-and digests below. Put the two files together outside the repository and all
-Vite-served directories. In the root checkout's ignored `.env.local`, set
-`WEBAPPXAI_MODEL_DIR` to that directory's absolute path. Keep the assets and
-the setting out of source control.
+| Owner | Responsibility | Selected release |
+| --- | --- | --- |
+| Wayne Tech Lab's private WebAppXai source repository | Training, evaluation, the browser worker and its Vite integration | `@waynetechlab/webappxai` **v0.1.0**, Git commit `0526db15ec9c3f824411131a67fc141f91c3d6aa` |
+| Private Hugging Face model repository | Versioned ONNX weights, tokenizer, model card and evaluation | `SatoshiUNO/WebAppXai` **pilot-003-chat**, Git commit `13234ff5521012ddcfda6cda14eda3850d5448d4` |
+| Public WebAppX template | Firebase sign-in, authenticated downloads, the cache, Help desk and FAQ | Ships the reviewed runtime under `vendor/webappxai` and selects the model in `src/webappxai/model-pin.json` |
 
-Install the app's locked npm dependencies and start its supervised local
-session with `npm run dev:systemx`. Use the Vite URL printed by the supervisor.
-Use a regular email/password account in the local `demo-systemx` Auth emulator.
-An existing production account is separate from accounts in this emulator.
-If model loading fails, check the private files, model directory and emulator
-session, then retry. The FAQ remains available.
+A clean public checkout uses `npm ci` and `npm run build`. npm resolves the
+runtime from the checkout and its dependencies from the public registry.
+The default build and FAQ work without access to either private repository.
+The runtime's release manifest contains the expected byte lengths and SHA-256
+digests. The model gateway and the browser verify the assets before use.
 
-To repeat the end-to-end test, run `node scripts/browser-webappxai.mjs --origin <local-app-origin>`
+### Enable chat locally
+
+From a machine with access to the private model repository, choose a directory
+outside the checkout and every Vite-served directory. Set `MODEL_DIR` to its
+absolute path and run the following command using your local Hugging Face
+session. Existing copies that match both digests below also work.
+
+```sh
+hf download SatoshiUNO/WebAppXai model.onnx tokenizer.json --revision 13234ff5521012ddcfda6cda14eda3850d5448d4 --local-dir "$MODEL_DIR"
+```
+
+In the root checkout's ignored `.env.local`, set `WEBAPPXAI_MODEL_DIR` to
+that directory's absolute path. This is a server setting. A browser signs in
+to WebAppX and retrieves the files from its own origin. Keep operator
+credentials out of browser configuration.
+
+Run `npm run dev:systemx` and open the printed Vite URL. On the login page,
+create or use an email/password account in the local `demo-systemx` Auth
+emulator. Reopen Help and load the model. If loading fails, check the release
+digests below, the model directory and the local Auth session. The FAQ remains
+available while you do this.
+
+To repeat the integrated browser check, run `node scripts/browser-webappxai.mjs --origin <local-app-origin>`
 from the checkout, replacing the placeholder with the loopback Vite origin.
 The test uses Chromium, the private pilot files and a disposable local account.
 The ordinary CI model tests run with fixtures.
 
 ### Configure a hosted installation
 
-The checked-in Firebase Hosting configuration routes the two versioned model
-URLs under `/api/webappxai/pilot-003-chat/` to the `webappxaiModel` HTTPS
-function in `us-central1`. Before deploying an authorized installation,
-install the locked Node 22 dependencies in `integrations/webappxai/functions`
-and configure `WEBAPPXAI_STORAGE_BUCKET` for the function. Place the two unchanged
-files in that private bucket under `webappxai/pilot-003-chat/`. Enforce public
-access prevention on the bucket, keep the objects free of Firebase download
-tokens, and grant the function's service account access to read bucket metadata
-and the two objects. The function checks the signed-in user's Firebase ID token
-and verifies each object's size and digest before delivery. The Git repository
-contains the integration code and asset digests. Model distribution remains
-private. See [Firebase ID token verification](https://firebase.google.com/docs/auth/admin/verify-id-tokens)
+Firebase Hosting routes the authenticated model requests to the
+`webappxaiModel` HTTPS function in `us-central1`. Before an authorized
+deployment, install the locked Node 22 dependencies in
+`integrations/webappxai/functions` and set the function's
+`WEBAPPXAI_STORAGE_BUCKET`. Place the two verified files in the following
+private bucket locations.
+
+```text
+webappxai/13234ff5521012ddcfda6cda14eda3850d5448d4/model.onnx
+webappxai/13234ff5521012ddcfda6cda14eda3850d5448d4/tokenizer.json
+```
+
+Enforce public access prevention on the bucket, keep Firebase download tokens
+off the objects, and grant the function's service account access to read
+bucket metadata and the two objects. The client requests
+`/api/webappxai/13234ff5521012ddcfda6cda14eda3850d5448d4/<filename>`.
+The function checks the Firebase ID token and both the size and digest of
+each requested object. See [Firebase ID token verification](https://firebase.google.com/docs/auth/admin/verify-id-tokens)
 and [Firebase Hosting integration](https://firebase.google.com/docs/hosting/functions).
+
+### Upgrade or roll back
+
+For this first pinned model, the gateway continues to recognize the existing
+authenticated URL under `/api/webappxai/pilot-003-chat/`. If the pinned object
+is absent, the hosted gateway can read the original object under
+`webappxai/pilot-003-chat/` after the same integrity checks. A previously
+downloaded pair for the same signed-in user can be reused once its hashes
+match the pinned release. Existing local model directories can keep their
+current names.
+
+For subsequent upgrades, select the runtime tag and model commit independently.
+Review the vendored runtime, update the model pin and function bundle, stage the
+exact private objects and test signed-in chat before release. Retain the last
+verified pair. To roll back, restore that app revision and its gateway configuration
+together, with the corresponding verified objects available.
 
 ## Original research requirements
 
@@ -124,10 +166,9 @@ quality result and a sanitized experiment receipt. The remote model SHA-256
 matches the local export. Eleven local evidence path keys in the uploaded receipt
 were converted to relative paths; the original receipt remains preserved.
 
-The private destination and upload revision belong to the operator handoff. The
-model is not a public release, no public distribution license was selected, and
-the November WebAppX integration uses an authenticated gateway for delivery. Raw corpus, checkpoints and training environments were not
-uploaded.
+The pinned revision is recorded above. Distribution of the weights remains private.
+WebAppX uses its authenticated gateway for delivery. The original research
+workspace retains the raw corpus, training checkpoints and training environment.
 
 ## Adoption checklist outside LAN acceptance
 

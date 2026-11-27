@@ -1,5 +1,9 @@
 {
   "revision": "pilot-003-chat",
+  "model": {
+    "repository": "SatoshiUNO/WebAppXai",
+    "revision": "13234ff5521012ddcfda6cda14eda3850d5448d4"
+  },
   "assets": {
     "model.onnx": {
       "bytes": 20845156,

@@ -5,7 +5,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 import { createLocalAuthorizer, createLocalReader } from '../dev-model.mjs'
-import { PILOT_ASSETS, PILOT_REVISION, servePilotAsset } from '../functions/contracts.mjs'
+import runtimeRelease from '@waynetechlab/webappxai/release' with { type: 'json' }
+import { legacyReleaseName, PILOT_ASSETS, PILOT_REVISION, servePilotAsset } from '../functions/contracts.mjs'
 
 const expectedRoute = `/api/webappxai/${PILOT_REVISION}/tokenizer.json`
 
@@ -17,16 +18,23 @@ async function localServer(t, handler) {
 }
 
 test('browser and server use the same immutable release checksums', async () => {
-  const browser = JSON.parse(await readFile(new URL('../../../src/webappxai/release.json', import.meta.url)))
-  assert.equal(browser.revision, PILOT_REVISION)
-  assert.deepEqual(browser.assets, PILOT_ASSETS)
+  const modelPin = JSON.parse(await readFile(new URL('../../../src/webappxai/model-pin.json', import.meta.url)))
+  const deployed = JSON.parse(await readFile(new URL('../functions/release.json', import.meta.url)))
+  assert.deepEqual(modelPin, {
+    repository: 'SatoshiUNO/WebAppXai',
+    revision: '13234ff5521012ddcfda6cda14eda3850d5448d4',
+  })
+  assert.deepEqual(deployed.model, modelPin)
+  assert.equal(PILOT_REVISION, modelPin.revision)
+  assert.equal(runtimeRelease.revision, deployed.revision)
+  assert.deepEqual(runtimeRelease.assets, PILOT_ASSETS)
   for (const asset of Object.values(PILOT_ASSETS)) {
     assert.match(asset.sha256, /^[a-f0-9]{64}$/)
     assert.ok(Number.isSafeInteger(asset.bytes) && asset.bytes > 0)
   }
 })
 
-test('only the two exact GET routes accept credentials, before reading any files', async t => {
+test('pinned and compatible GET routes require authorization and verify bytes before delivery', async t => {
   let reads = 0
   const port = await localServer(t, (request, response) => servePilotAsset(request, response, {
     authorize: async token => token === 'named-test-user',
@@ -39,11 +47,15 @@ test('only the two exact GET routes accept credentials, before reading any files
     assert.equal(response.headers.get('Cache-Control'), 'private, no-store')
     return { status: response.status, message: await response.text() }
   }
+  const legacyRoute = `/api/webappxai/${legacyReleaseName}/tokenizer.json`
   assert.equal((await probe(expectedRoute)).status, 401)
+  assert.equal((await probe(legacyRoute)).status, 401)
   assert.equal((await probe(expectedRoute, 'invalid')).status, 401)
   assert.equal((await probe(expectedRoute, 'named-test-user', 'POST')).status, 405)
   for (const path of [
     '/api/webappxai/pilot-002-chat/tokenizer.json',
+    '/api/webappxai/main/tokenizer.json',
+    '/api/webappxai/' + '1'.repeat(40) + '/tokenizer.json',
     expectedRoute + '?alt=media', expectedRoute + '%2Fother', expectedRoute.replace(/tokenizer\.json$/, 'manifest.json'),
   ]) {
     assert.equal((await probe(path, 'named-test-user')).status, 404)
@@ -52,7 +64,8 @@ test('only the two exact GET routes accept credentials, before reading any files
   const corrupt = await probe(expectedRoute, 'named-test-user')
   assert.equal(corrupt.status, 503)
   assert.equal(corrupt.message, 'The research pilot files are unavailable.')
-  assert.equal(reads, 1)
+  assert.equal((await probe(legacyRoute, 'named-test-user')).status, 503)
+  assert.equal(reads, 2)
 })
 
 function emulatorToken(sub, provider, overrides = {}) {

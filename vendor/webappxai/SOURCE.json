@@ -1,0 +1,16 @@
+{
+  "repository": "WayneTechLab/WebAppXai",
+  "tag": "v0.1.0",
+  "commit": "0526db15ec9c3f824411131a67fc141f91c3d6aa",
+  "files": {
+    "runtime/index.d.ts": "7191af0cd9f3659412799b5df7ef7fa007be05eacf20e4470cf23b94c340814b",
+    "runtime/index.js": "7cb996aac7cb7551ecea7834d908a4be2c7f983ae8f236f249813454241ebc5c",
+    "runtime/licenses/ONNX-Runtime-LICENSE.txt": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+    "runtime/licenses/ONNX-Runtime-ThirdPartyNotices.txt": "143764b952fdb1a7c69ce653bfba74a7744d6a8a573bfb73e235fba356c83de3",
+    "runtime/licenses/WebAppX-LICENSE.txt": "ed33088709b6fad2f81f53d8240674eba33e43bd7d958935b764fc0608d3e3b7",
+    "runtime/release.json": "a0d8b025bcd93229e915e13fd80930a9b3cb6bb68c4a18d9f55685fa8d4e30ba",
+    "runtime/vite.d.ts": "290b98afa4fae9b59b4f7abdf9dbd2382abe1941c8b53afbd4c027aef65fb28c",
+    "runtime/vite.mjs": "5dbaa306521fc5fda2fbe1c104b09b7999358ecc562ef37ef7749f33e1aaa5c3",
+    "runtime/worker.js": "ee6d2b6e8240cc2370c08995e106b1204e0df194a4b4362ce4cd011eb5417fc0"
+  }
+}

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "reviewed-starter-parity",
   "review": {
-    "sourceBase": "78bd8c3aa41674d3feb7aa2dbe9b096593e879de",
+    "sourceBase": "89d03b4353dd4f4f28709216e69c7823c7cebaf2",
     "reviewedOn": "2026-11-27"
   },
   "starterDirectory": ".SYSTEMX/Template/starter",
@@ -33,10 +33,10 @@
       "paths": [
         "integrations/webappxai",
         "src/components/shell/WebAppXaiPanel.tsx",
-        "public/webappxai",
+        "vendor/webappxai",
         "src/webappxai"
       ],
-      "reason": "The signed-in Help desk in the full app loads the WebAppXai research pilot with a private model endpoint and a browser inference worker."
+      "reason": "The full Help desk uses an authenticated model gateway and a reviewed local copy of the WebAppXai browser library."
     },
     {
       "paths": [
@@ -60,9 +60,8 @@
   "rootOnlyDependencies": {
     "dependencies": [
       "@gusto/embedded-react-sdk",
-      "@huggingface/tokenizers",
       "@tanstack/react-query",
-      "onnxruntime-web"
+      "@waynetechlab/webappxai"
     ],
     "devDependencies": [
       "@playwright/test"
@@ -127,7 +126,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root documents the complete template, native portals, source policy and host swarm operations; the starter retains its standalone scaffold introduction.",
-      "rootSha256": "e98fc5d3c699adb062961139109b4591349a1796b28c6ed91c8094e7beaeae1c",
+      "rootSha256": "0f5757037e98fe34d9edbd9578940018000fc17fe741d6f1e266c667f39d1076",
       "starterSha256": "baf20c16fecb6fd11e47a5d60a2d5f70b208f21db55e06ae8d9415e721ca5c21"
     },
     {
@@ -181,7 +180,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Separate reviewed lockfiles retain their own complete dependency trees; shared root metadata is checked without regenerating either lock.",
-      "rootSha256": "b91e4827f8082dae6e2c5475119a64c4eca82a2754ad891fb83c53e5b94c1a0c",
+      "rootSha256": "d1b6f5cd20fe67fd4dbf590717704e10f9937107c83e7209aaf211d908617315",
       "starterSha256": "84a7951f1ef31ce5c5f974cd8664005e27a96b43bbe9d91b24a7fcde1b6279bb"
     },
     {
@@ -191,7 +190,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root adds provider, local inference and browser dependencies, and scripts for the full app, host tooling and release gates. Shared package identity, runtime and dependencies remain checked.",
-      "rootSha256": "587b579f8bc494e441805345f0125acb242aad17dc402be8aba09f29ee4af175",
+      "rootSha256": "c37e981d79ccb843f64642eda46b334326647171592e2b96a9c59140a33b1876",
       "starterSha256": "2c4dcbe51214ae866e8e3e8fa2264ec0a37ab3f3880fea0b3e0107f914500ce4"
     },
     {
@@ -445,7 +444,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root Vite registers Gusto mock endpoints, the authenticated local model gateway and browser inference assets. The starter has a standalone Vite configuration.",
-      "rootSha256": "43630899d7e96b67000134e2b8c4869e6248ec6ac0bce609f24da8a04541ca3c",
+      "rootSha256": "d0347335fdb2fc0eb06f903d93a5bdc7652242616429a2fd7076466788c843df",
       "starterSha256": "a0222387726fb212a8e54a4206c8f9c2671372ef65b61493795ffc1096517c5d"
     }
   ]
