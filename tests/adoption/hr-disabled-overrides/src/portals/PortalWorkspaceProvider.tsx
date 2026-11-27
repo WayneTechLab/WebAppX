@@ -8,7 +8,8 @@ import { restoreAdoptedBundle } from './combined-backup'
 import type { DemoWorkspaces } from './workspaces'
 
 type Handles = { cms: ReturnType<typeof useDemoPersistence<DemoWorkspaces['cms']>>; crm: ReturnType<typeof useDemoPersistence<DemoWorkspaces['crm']>> }
-type Context = Handles & { bundle: { states: DemoWorkspaces; revision: number; restore: (states: DemoWorkspaces) => { ok: boolean; message: string } } }
+type BrowserHandles = { [K in keyof Handles]: Handles[K] & { readonly mode: 'browser' } }
+type Context = BrowserHandles & { bundle: { states: DemoWorkspaces; revision: number; restore: (states: DemoWorkspaces) => { ok: boolean; message: string } } }
 const WorkspaceContext = createContext<Context | null>(null)
 export function PortalWorkspaceProvider({ children }: { children: ReactNode }) {
   const cms = useDemoPersistence('cms', createCmsState, isCmsState)
@@ -26,10 +27,10 @@ export function PortalWorkspaceProvider({ children }: { children: ReactNode }) {
     }
     return result
   }
-  return <WorkspaceContext.Provider value={{ cms, crm, bundle: { states: { cms: cms.state, crm: crm.state }, revision, restore } }}>{children}</WorkspaceContext.Provider>
+  return <WorkspaceContext.Provider value={{ cms: { ...cms, mode: 'browser' }, crm: { ...crm, mode: 'browser' }, bundle: { states: { cms: cms.state, crm: crm.state }, revision, restore } }}>{children}</WorkspaceContext.Provider>
 }
 // eslint-disable-next-line react-refresh/only-export-components
-export function usePortalWorkspace<K extends keyof Handles>(module: K): Handles[K] {
+export function usePortalWorkspace<K extends keyof Handles>(module: K): BrowserHandles[K] {
   const value = useContext(WorkspaceContext)
   if (!value) throw new Error('A workspace provider is required.')
   return value[module]
