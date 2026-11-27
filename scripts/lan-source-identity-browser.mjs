@@ -670,7 +670,10 @@ try {
       if (result.status === 200) assert.equal(result.body.allowed, false)
       else await refused(Promise.resolve(result))
       await page.locator('#identity-operation-text').fill('Safe draft preserved')
-      await page.locator('#identity-node-select').selectOption(summaryNode.id)
+      const nodeSelect = page.locator('#identity-node-select')
+      await nodeSelect.selectOption(summaryNode.id)
+      // Inspection temporarily disables the controls while the selected node is being read.
+      await expect(nodeSelect).toBeEnabled()
       const action = page.locator('#identity-operation-preview')
       if (await action.isEnabled()) {
         const response = await clickIdentity('#identity-operation-preview', 'operation', null)
