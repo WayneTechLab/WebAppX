@@ -153,10 +153,11 @@ export function createGraphService({ workspaceId, readIdentityDocument, readIden
     }
     const snapshot = copy({ document: validated.graph, revision: validated.revision,
       stats: validated.stats, findings: validated.findings, omittedCount: validated.omittedCount })
-    if (!record) { record = { current: validated.revision, history: new Map() }; accepted.set(id, record) }
+    if (!record) { record = { current: null, generation: 0, history: new Map() }; accepted.set(id, record) }
     record.history.delete(validated.revision)
     record.history.set(validated.revision, snapshot)
     while (record.history.size > LIMITS.revisionsPerDocument) record.history.delete(record.history.keys().next().value)
+    if (record.current !== validated.revision) record.generation += 1
     record.current = validated.revision
     fencePreview(id)
     discardPending(id)
@@ -164,6 +165,9 @@ export function createGraphService({ workspaceId, readIdentityDocument, readIden
   }
 
   return {
+    // Local authority witness: invalidates a staged edit even if another client
+    // changes the head and later reopens the original content-addressed revision.
+    headGeneration(id) { return current(id).generation },
     status() {
       return { workspaceId, documents: [...accepted.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([id, record]) => {
         const snapshot = record.history.get(record.current)

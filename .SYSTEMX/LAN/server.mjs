@@ -1587,12 +1587,19 @@ async function handleRequest(request, response, recordRoute) {
       if (requestUrl.pathname === '/api/graph/commands') {
         const { createScopedGraphCommands, ScopedGraphCommandError } = await import('./Builder/scoped-graph-commands.mjs')
         const graph = await graphService()
-        scopedGraphCommands ??= createScopedGraphCommands(graph, { capabilitySetting: process.env.SYSTEMX_LAN_GRAPH_EDIT_CAPABILITIES })
+        scopedGraphCommands ??= createScopedGraphCommands(graph, {
+          capabilitySetting: process.env.SYSTEMX_LAN_GRAPH_EDIT_CAPABILITIES,
+          readSource(path) {
+            const source = inspectSourcePath(repoRoot, path, { read: true, revisionWitness: true })
+            return source.error ? null : { revision: hashSourceRevision(source.bytes), stamp: source.revisionWitness,
+              length: source.content.length, writable: source.metadata.writable }
+          },
+        })
         try {
           sendJson(response, 200, { ok: true, result: scopedGraphCommands.run(body) })
         } catch (error) {
           if (!(error instanceof ScopedGraphCommandError)) throw error
-          sendJson(response, error.status, { ok: false, error: { code: error.code, message: error.message } })
+          sendJson(response, error.status, { ok: false, error: { code: error.code, message: error.message, ...(error.details && { details: error.details }), ...(error.conflict && { conflict: error.conflict }), ...(error.reason && { reason: error.reason }) } })
         }
         return
       }
