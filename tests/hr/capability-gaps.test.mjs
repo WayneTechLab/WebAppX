@@ -172,9 +172,9 @@ test('required source bindings and explicit text/vendor hash modes cannot be omi
   assert.throws(() => sourceDigest(Buffer.from([255]), 'utf8-lf-sha256'), /encoded data was not valid/)
 })
 
-test('all 84 reviewed source members are required at the exact finite source bound', async () => {
-  assert.equal(data.sourceBindings.length, 84)
-  assert.deepEqual(data.sourceBindings.slice(-7).map(source => source.path), [
+test('all 93 reviewed source members are required at the exact finite source bound', async () => {
+  assert.equal(data.sourceBindings.length, 93)
+  assert.deepEqual(data.sourceBindings.slice(77, 84).map(source => source.path), [
     'src/hr/payroll-control-types.ts',
     'src/hr/payroll-control-value.ts',
     'src/hr/payroll-control.ts',
@@ -182,6 +182,17 @@ test('all 84 reviewed source members are required at the exact finite source bou
     'src/hr/payroll-control-host.ts',
     'src/hr/components/HrPayrollControl.tsx',
     'src/hr/components/HrPayrollControlHost.tsx',
+  ])
+  assert.deepEqual(data.sourceBindings.slice(84).map(source => source.path), [
+    'src/portals/portal-runtime.ts',
+    'src/portals/portal-runtime-context.tsx',
+    'src/portals/owned-mock-storage.ts',
+    'src/portals/storage-presentation.ts',
+    'src/lib/navigation-types.ts',
+    'src/lib/navigation-focus.ts',
+    'src/lib/navigation-focus-dom.ts',
+    'src/lib/useCommittedNavigationFocus.ts',
+    'src/components/navigation/AppLink.tsx',
   ])
   const replacement = { path: 'src/hr/catalog.ts', hashMode: 'utf8-lf-sha256', sha256: sourceDigest(await readFile(join(ROOT, 'src/hr/catalog.ts')), 'utf8-lf-sha256') }
   assert.equal(data.sourceBindings.some(binding => binding.path === replacement.path), false)
@@ -193,7 +204,7 @@ test('all 84 reviewed source members are required at the exact finite source bou
   }
   const tooMany = clone()
   tooMany.sourceBindings.push(replacement)
-  assert.equal(tooMany.sourceBindings.length, 85)
+  assert.equal(tooMany.sourceBindings.length, 94)
   await assert.rejects(validateGapData(tooMany), /Missing bounded reviewed source bindings/)
 })
 

@@ -1,3 +1,5 @@
+import { usePortalRuntime } from './portal-runtime-context'
+import { storagePresentationMessage } from './storage-presentation'
 import { useId, useState } from 'react'
 import { portalById, portalIds } from './registry'
 import type { DemoModule } from './persistence'
@@ -13,6 +15,7 @@ export function ManualRestorePoint({ states, history, onCreate, onResult }: {
   onCreate: (selected: readonly DemoModule[], label: string) => HistoryMutationResult
   onResult: (result: HistoryMutationResult) => void
 }) {
+  const { mode } = usePortalRuntime()
   const nameId = useId()
   const [label, setLabel] = useState('')
   const [selected, setSelected] = useState<DemoModule[]>([])
@@ -25,16 +28,16 @@ export function ManualRestorePoint({ states, history, onCreate, onResult }: {
     onResult(result)
   }}>
     <h3 className="text-base font-semibold text-neutral-950">Save a point without restoring</h3>
-    <p className="mt-2 text-sm leading-6 text-neutral-600">Name a snapshot of the selected portals’ current records. This saves only restore-point history. Your open workspaces, workspace saves and unsaved forms stay unchanged.</p>
+    <p className="mt-2 text-sm leading-6 text-neutral-600">{mode === 'browser' ? 'Name a snapshot of the selected portals’ current records. This saves only restore-point history. Your open workspaces, workspace saves and unsaved forms stay unchanged.' : 'Name a snapshot of the selected portals’ current records. This saves only walkthrough memory history. Open workspaces and unsaved forms stay unchanged; existing browser saves are untouched. Refresh starts fresh records and history while walkthrough mode stays on.'}</p>
     <label htmlFor={nameId} className="mt-3 block text-sm font-semibold text-neutral-900">Restore point name</label>
     <input id={nameId} value={label} maxLength={RESTORE_POINT_LABEL_MAX} onChange={event => setLabel(event.target.value)} className={`${control} mt-1 w-full max-w-lg`} aria-required="true" autoComplete="off" />
     <fieldset className="mt-3 flex flex-wrap gap-x-6 gap-y-2"><legend className="mb-1 text-sm font-semibold text-neutral-900">Portals to capture</legend>{portalIds.map(module => <label key={module} className="flex min-h-11 items-center gap-2 text-sm text-neutral-800"><input type="checkbox" checked={selected.includes(module)} onChange={event => setSelected(previous => event.target.checked ? portalIds.filter(id => previous.includes(id) || id === module) : previous.filter(id => id !== module))} className="h-4 w-4 accent-emerald-800" />Capture {portalById[module].label}</label>)}</fieldset>
     {preview?.ok && <div role="region" aria-label="Named restore point storage preview" className="mt-3 rounded-md border border-neutral-200 bg-white p-3 text-sm leading-6 text-neutral-700">
       <p>History after capture: <strong>{preview.retainedPoints} points</strong> · {preview.projectedHistoryCharacters.toLocaleString('en-US')} / {preview.historyLimit.toLocaleString('en-US')} serialized characters.</p>
-      <p>{preview.prunedPoints ? `${preview.prunedPoints} older point${preview.prunedPoints === 1 ? '' : 's'} will be removed to retain this capture.` : 'No older points will be removed.'} Browser storage availability is checked when saving.</p>
-      {!preview.canCreate && <p role="alert" className="mt-2 font-semibold text-red-900">{preview.reason}</p>}
+      <p>{preview.prunedPoints ? `${preview.prunedPoints} older point${preview.prunedPoints === 1 ? '' : 's'} will be removed to retain this capture.` : 'No older points will be removed.'} {mode === 'browser' ? 'Browser storage availability is checked when saving.' : 'Walkthrough memory storage is checked when saving.'}</p>
+      {!preview.canCreate && <p role="alert" className="mt-2 font-semibold text-red-900">{preview.reason && storagePresentationMessage(preview.reason, mode)}</p>}
     </div>}
-    {preview && !preview.ok && <p role="alert" className="mt-3 text-sm leading-6 text-red-900">{preview.message}</p>}
+    {preview && !preview.ok && <p role="alert" className="mt-3 text-sm leading-6 text-red-900">{storagePresentationMessage(preview.message, mode)}</p>}
     <button type="submit" className={`${button} mt-4`} disabled={!preview?.ok || !preview.canCreate}>Create named restore point</button>
   </form>
 }

@@ -194,7 +194,7 @@ test('malformed or permission-incomplete fixture data is refused before renderin
 })
 
 test('reviewed authority and transaction sources are required within a separate finite source bound', () => {
-  assert.equal(fixture.review.reviewedSources.length, 98)
+  assert.equal(fixture.review.reviewedSources.length, 107)
   assert.deepEqual(fixture.review.reviewedSources.slice(75, 83).map(source => source.path), [
     'src/hr/payroll-control-types.ts',
     'src/hr/payroll-control-value.ts',
@@ -205,18 +205,32 @@ test('reviewed authority and transaction sources are required within a separate 
     'src/hr/components/HrPayrollControlHost.tsx',
     'src/hr/components/HrInsights.tsx',
   ])
-  assert.deepEqual(fixture.review.reviewedSources.slice(83).map(source => source.path), crmImportClosure)
+  assert.deepEqual(fixture.review.reviewedSources.slice(83, 98).map(source => source.path), crmImportClosure)
+  assert.deepEqual(fixture.review.reviewedSources.slice(98).map(source => source.path), [
+    'src/portals/portal-runtime.ts',
+    'src/portals/portal-runtime-context.tsx',
+    'src/portals/owned-mock-storage.ts',
+    'src/portals/storage-presentation.ts',
+    'src/lib/navigation-types.ts',
+    'src/lib/navigation-focus.ts',
+    'src/lib/navigation-focus-dom.ts',
+    'src/lib/useCommittedNavigationFocus.ts',
+    'src/components/navigation/AppLink.tsx',
+  ])
   for (const source of fixture.review.reviewedSources) {
     const missing = clone(fixture)
     missing.review.reviewedSources = missing.review.reviewedSources.filter(item => item.path !== source.path)
     assert.throws(() => validateHrRoleExamples(missing), /required.*source boundary/, source.path)
+    const replaced = clone(fixture)
+    replaced.review.reviewedSources.find(item => item.path === source.path).path = 'src/other-reviewed-source.ts'
+    assert.throws(() => validateHrRoleExamples(replaced), /required.*source boundary/, source.path)
   }
   const atLimit = clone(fixture)
-  assert.equal(atLimit.review.reviewedSources.length, 98)
+  assert.equal(atLimit.review.reviewedSources.length, 107)
   assert.equal(validateHrRoleExamples(atLimit), atLimit)
   const tooMany = clone(atLimit)
   tooMany.review.reviewedSources.push({ path: 'src/reviewed-over-limit.ts', sha256: 'b'.repeat(64) })
-  assert.equal(tooMany.review.reviewedSources.length, 99)
+  assert.equal(tooMany.review.reviewedSources.length, 108)
   assert.throws(() => validateHrRoleExamples(tooMany), /Reviewed sources: use a bounded list/)
   const ordinaryList = clone(fixture)
   ordinaryList.roles[0].projection.employeeIds = Array.from({ length: 41 }, (_, index) => `employee-${index}`)

@@ -11,7 +11,7 @@ import { allocateSmokePort, withOwnedSmokeResources } from '../../scripts/browse
 
 const root = fileURLToPath(new URL('../../', import.meta.url))
 const options = { root, cacheDir: '/fictional-owned-cache', port: 45123 }
-function fake({ mismatch = false, fail = false, hang = false, noPid = false } = {}) {
+function fake({ mismatch = false, fail = false, hang = false, noPid = false, walkthrough = false } = {}) {
   const calls = []
   const child = new EventEmitter()
   child.pid = noPid ? undefined : 654321
@@ -27,7 +27,7 @@ function fake({ mismatch = false, fail = false, hang = false, noPid = false } = 
     queueMicrotask(() => {
       if (noPid) { child.emit('error', new Error('Could not spawn owned child')); child.emit('close', null, null) }
       else if (fail) { child.emit('message', { type: 'failed', message: 'Fictional startup rejection' }) }
-      else child.emit('message', { type: 'ready', pid: mismatch ? child.pid + 1 : child.pid, runnerPid: process.pid, address: '127.0.0.1', port: options.port })
+      else child.emit('message', { type: 'ready', pid: mismatch ? child.pid + 1 : child.pid, runnerPid: process.pid, address: '127.0.0.1', port: options.port, ...(walkthrough ? { walkthrough: true } : {}) })
     })
     return child
   }
@@ -143,5 +143,29 @@ test('actual preview worker has a distinct recorded PID and closes its loopback 
     await preview?.close()
     if (sentinel.listening) await new Promise((resolve, reject) => sentinel.close(error => error ? reject(error) : resolve()))
     await rm(cacheDir, { recursive: true, force: true })
+  }
+})
+
+
+test('walkthrough preview is explicit per owned worker and readiness binds that same mode', async () => {
+  const f = fake({ walkthrough: true })
+  const preview = ownedPreviewProcess({ ...options, walkthrough: true }, { spawnWorker: f.spawnWorker })
+  await preview.listen()
+  assert.deepEqual(f.calls[0][2], [root, options.cacheDir, String(options.port), '/__webappx_smoke_hmr', '--walkthrough'])
+  assert.equal(preview.processHandle.walkthrough, true)
+  await preview.close()
+  assert.equal(preview.processHandle.exited, true)
+  const mismatch = fake()
+  const other = ownedPreviewProcess({ ...options, walkthrough: true }, { spawnWorker: mismatch.spawnWorker })
+  await assert.rejects(other.listen(), /process handle and listener/)
+  await other.close()
+  assert.equal(other.processHandle.exited, true)
+})
+
+test('walkthrough preview rejects untyped options before spawning any process', () => {
+  for (const walkthrough of ['true', 1, null]) {
+    let spawned = false
+    assert.throws(() => ownedPreviewProcess({ ...options, walkthrough }, { spawnWorker: () => { spawned = true } }), /explicit owned preview/)
+    assert.equal(spawned, false)
   }
 })

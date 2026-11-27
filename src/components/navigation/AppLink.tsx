@@ -4,6 +4,7 @@ import { navigate } from '@/lib/navigation'
 type AppLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   children: ReactNode
   to: string
+  'data-nav-focus'?: string
 }
 
 export function AppLink({ children, onClick, to, ...props }: AppLinkProps) {
@@ -30,7 +31,7 @@ export function AppLink({ children, onClick, to, ...props }: AppLinkProps) {
   }
 
   return (
-    <a href={to} onClick={handleClick} {...props}>
+    <a href={to} onClick={handleClick} data-nav-focus={`link:${to}`} {...props}>
       {children}
     </a>
   )

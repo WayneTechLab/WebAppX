@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type ReactNode, type SetStateAction } from 'react'
+import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type KeyboardEvent, type ReactNode, type SetStateAction } from 'react'
 import { installNavigationGuard, NAVIGATION_EVENT } from '../lib/navigation'
 import { createUnsavedWorkController, isUnsavedPortalShell, unsavedPortalForPath, unsavedRouteTransition, type UnsavedPortal, type UnsavedTransitionOptions, type UnsavedWorkParticipant } from './unsaved-work-core'
 
@@ -6,6 +6,19 @@ type Controller = ReturnType<typeof createUnsavedWorkController>
 const Context = createContext<Controller | null>(null)
 
 export type { UnsavedPortal, UnsavedTransitionOptions, UnsavedWorkParticipant } from './unsaved-work-core'
+
+function cycleDialogActions(event: KeyboardEvent<HTMLDialogElement>) {
+  if (event.key !== 'Tab' || event.altKey || event.ctrlKey || event.metaKey) return
+  const actions = event.currentTarget.querySelectorAll<HTMLButtonElement>('button:enabled')
+  const first = actions[0], last = actions[actions.length - 1]
+  if (event.shiftKey && event.target === first) {
+    event.preventDefault()
+    last.focus()
+  } else if (!event.shiftKey && event.target === last) {
+    event.preventDefault()
+    first.focus()
+  }
+}
 
 export function UnsavedWorkProvider({ children }: { children: ReactNode }) {
   const [controller] = useState(createUnsavedWorkController)
@@ -51,7 +64,7 @@ export function UnsavedWorkProvider({ children }: { children: ReactNode }) {
 
   return <Context.Provider value={controller}>
     {children}
-    <dialog ref={dialog} aria-labelledby={headingId} aria-describedby={descriptionId} className="m-auto max-h-[90vh] w-[min(36rem,calc(100%_-_2rem))] overflow-y-auto rounded-xl border border-amber-300 bg-white p-6 text-neutral-950 shadow-xl backdrop:bg-neutral-950/40" onCancel={event => { event.preventDefault(); if (pending) controller.resolve(pending.id, 'keep-editing') }}>
+    <dialog ref={dialog} onKeyDown={cycleDialogActions} aria-labelledby={headingId} aria-describedby={descriptionId} className="m-auto max-h-[90vh] w-[min(36rem,calc(100%_-_2rem))] overflow-y-auto rounded-xl border border-amber-300 bg-white p-6 text-neutral-950 shadow-xl backdrop:bg-neutral-950/40" onCancel={event => { event.preventDefault(); if (pending) controller.resolve(pending.id, 'keep-editing') }}>
       {pending && <><h2 id={headingId} className="text-xl font-semibold">Leave with unsaved changes?</h2><p id={descriptionId} className="mt-3 text-sm leading-6">{pending.label}. These forms contain temporary changes that have not been accepted as workspace records.</p><ul className="mt-3 list-disc space-y-1 pl-5 text-sm">{pending.participants.map(participant => <li key={participant.id}>{participant.label}</li>)}</ul>
         {pending.error && <p role="alert" className="mt-4 text-sm text-red-900">{pending.error}</p>}
         {pending.historyNotice && <p className="mt-4 text-sm leading-6">{pending.historyNotice}</p>}

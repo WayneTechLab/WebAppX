@@ -69,3 +69,41 @@ html[data-wtl-motion='reduced'] *::after {
   scroll-behavior: auto !important;
   transition-duration: 0.01ms !important;
 }
+
+/* Finite native portal vocabulary. Keep domain status colors in their owners. */
+:root {
+  --portal-surface-base: #fafafa;
+  --portal-surface-raised: #ffffff;
+  --portal-surface-muted: #f5f5f5;
+  --portal-space-control: 0.75rem;
+  --portal-space-panel: 1.25rem;
+  --portal-space-section: 1.5rem;
+  --portal-emphasis-primary: #171717;
+  --portal-emphasis-secondary: #525252;
+  --portal-emphasis-quiet: #666666;
+  --portal-focus-ring-color: #171717;
+  --portal-focus-ring-width: 2px;
+  --portal-focus-ring-offset: 3px;
+}
+
+@media (min-width: 40rem) {
+  :root { --portal-space-panel: 1.5rem; }
+}
+
+.portal-workspace-hr { --portal-focus-ring-color: #047857; }
+.portal-workspace-cms { --portal-focus-ring-color: #4338ca; }
+.portal-workspace-crm { --portal-focus-ring-color: #0369a1; }
+.portal-surface-base { background-color: var(--portal-surface-base); }
+.portal-surface-raised { background-color: var(--portal-surface-raised); }
+.portal-surface-muted { background-color: var(--portal-surface-muted); }
+.portal-space-control { gap: var(--portal-space-control); }
+.portal-space-panel { padding: var(--portal-space-panel); }
+.portal-space-section { gap: var(--portal-space-section); }
+.portal-section-stack > :not([hidden]) ~ :not([hidden]) { margin-block-start: var(--portal-space-section); }
+.portal-emphasis-primary { color: var(--portal-emphasis-primary); }
+.portal-emphasis-secondary { color: var(--portal-emphasis-secondary); }
+.portal-emphasis-quiet { color: var(--portal-emphasis-quiet); }
+.portal-focus:focus-visible {
+  outline: var(--portal-focus-ring-width) solid var(--portal-focus-ring-color);
+  outline-offset: var(--portal-focus-ring-offset);
+}

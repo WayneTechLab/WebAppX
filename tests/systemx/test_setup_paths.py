@@ -32,7 +32,8 @@ PUBLIC_FILES = (
     'src/hr/recruiting.ts', 'src/hr/performance.ts', 'src/hr/surveys.ts',
     'src/cms/model.ts', 'src/crm/model.ts', 'src/crm/kernel.ts', 'src/crm/types.ts',
     'src/portals/workspaces.ts',
-    'src/portals/PortalWorkspaceProvider.tsx', 'src/portals/DemoWorkspaceReset.tsx',
+    'src/portals/PortalWorkspaceProvider.tsx', 'src/portals/portal-runtime-context.tsx',
+    'src/portals/portal-runtime.ts', 'src/portals/owned-mock-storage.ts', 'src/portals/DemoWorkspaceReset.tsx',
     'src/portals/registry.ts', 'src/portals/useDemoPersistence.ts',
     'src/portals/replacement-recovery.ts', 'integrations/gusto/sdk-employees.fixture.json',
     'integrations/gusto/sdk-onboarding.mjs', 'integrations/gusto/sdk-payroll.fixture.json',
@@ -264,7 +265,7 @@ class SetupPathSmoke(unittest.TestCase):
             self.assertEqual(npm_discovery, discovery)
             fixtures = json.loads(run([str(node), str(copied / 'scripts/fixture-inventory.mjs'), '--check', '--json'], 'fixture inventory'))
             self.assertEqual(fixtures['schemaVersion'], 1); self.assertEqual(fixtures['intent'], 'fictional-fixture-source-inventory')
-            self.assertEqual(fixtures['counts'], {'groups': 8, 'sourceFiles': 32})
+            self.assertEqual(fixtures['counts'], {'groups': 8, 'sourceFiles': 35})
             self.assertEqual({group['id'] for group in fixtures['groups']}, {'native-hr', 'native-cms', 'native-crm', 'sdk-onboarding', 'sdk-payroll', 'browser-baseline', 'role-examples', 'sdk-reference'})
             status = json.loads(run([sys.executable, '-I', '-B', manager, 'status', '--target', str(copied)], 'managed status'))
             self.assertEqual(status['target'], str(copied)); self.assertEqual(status['defaults'], str(copied / '.SYSTEMX/.systemx/releases/1.9.0-alpha.6'))

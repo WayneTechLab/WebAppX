@@ -8,13 +8,18 @@ import { siteControls } from '@/config/siteControls'
 import { FirebaseSetupNotice } from './FirebaseSetupNotice'
 import { AppLink } from '@/components/navigation/AppLink'
 import { useScopedPortalChrome } from '@/portals/ScopedPortalChrome'
+import { WalkthroughNotice } from '@/portals/WalkthroughNotice'
+import { useCommittedNavigationFocus } from '@/lib/useCommittedNavigationFocus'
+import type { NavigationCommit } from '@/lib/navigation'
 
 type LayoutProps = {
   children: ReactNode
   currentPath: string
+  navigationCommit?: NavigationCommit | null
 }
 
-export function Layout({ children, currentPath }: LayoutProps) {
+export function Layout({ children, currentPath, navigationCommit = null }: LayoutProps) {
+  useCommittedNavigationFocus(navigationCommit)
   const scopedPortalChrome = useScopedPortalChrome()
   if (scopedPortalChrome) {
     return (
@@ -26,7 +31,7 @@ export function Layout({ children, currentPath }: LayoutProps) {
             <AppLink to="/portals" className="inline-flex min-h-11 items-center rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-semibold">Portal directory</AppLink>
           </div>
         </header>
-        <main id="content" tabIndex={-1} className="min-w-0 flex-1 focus:outline-none">{children}</main>
+        <main id="content" data-nav-main="true" tabIndex={-1} className="min-w-0 flex-1 focus:outline-none"><WalkthroughNotice />{children}</main>
         {siteControls.accessibility && <AccessibilityPageControl showPageTravel={siteControls.showPageTravel} />}
       </div>
     )
@@ -40,11 +45,12 @@ export function Layout({ children, currentPath }: LayoutProps) {
       <FirebaseSetupNotice />
       <main
         id="content"
+        data-nav-main="true"
         tabIndex={-1}
         className="flex-1 focus:outline-none"
         {...(import.meta.env.DEV ? { 'data-systemx-region': 'page-content' } : {})}
       >
-        {children}
+        <WalkthroughNotice />{children}
       </main>
       <Footer />
       {siteControls.pageSnap && <PageSnapMenu key={`page-snap:${currentPath}`} pathname={currentPath} />}

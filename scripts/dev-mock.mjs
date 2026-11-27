@@ -11,15 +11,18 @@ const repository = fileURLToPath(new URL('../', import.meta.url))
 const requireFromApp = createRequire(new URL('../package.json', import.meta.url))
 
 export function parseMockArguments(args) {
-  const options = { port: 0, help: false }
+  const options = { port: 0, help: false, walkthrough: false }
   for (let index = 0; index < args.length; index += 1) {
     const argument = args[index]
     if (argument === '--help' || argument === '-h') options.help = true
-    else if (argument === '--port') {
+    else if (argument === '--walkthrough') {
+      if (options.walkthrough) throw new Error('Use --walkthrough at most once, without a value.')
+      options.walkthrough = true
+    } else if (argument === '--port') {
       const value = args[++index]
       if (!value || !/^\d+$/.test(value) || Number(value) > 65535) throw new Error('Use --port followed by an integer from 0 to 65535. Zero selects a free loopback port.')
       options.port = Number(value)
-    } else throw new Error(`Unknown mock option: ${argument}. Supported options: --port <0-65535>, --help.`)
+    } else throw new Error(`Unknown mock option: ${argument}. Supported options: --port <0-65535>, --walkthrough, --help.`)
   }
   return options
 }
@@ -32,8 +35,13 @@ export function createMockEnvironment(environment) {
   return clean
 }
 
+function selectedWalkthrough(value = false) {
+  if (typeof value !== 'boolean') throw new TypeError('The walkthrough option must be an explicit boolean when supplied.')
+  return value
+}
+
 export function mockWorkerArguments(options) {
-  return ['--serve', '--port', String(options.port)]
+  return ['--serve', '--port', String(options.port), ...(selectedWalkthrough(options.walkthrough) ? ['--walkthrough'] : [])]
 }
 
 export function allocateMockPort() {
@@ -51,7 +59,7 @@ export function allocateMockPort() {
   })
 }
 
-export function mockViteOptions({ port, cacheDir, plugins, root = repository }) {
+export function mockViteOptions({ port, cacheDir, plugins, root = repository, walkthrough = false }) {
   return {
     root,
     configFile: false,
@@ -60,6 +68,7 @@ export function mockViteOptions({ port, cacheDir, plugins, root = repository }) 
     clearScreen: false,
     logLevel: 'warn',
     plugins,
+    define: { __WEBAPPX_WALKTHROUGH__: selectedWalkthrough(walkthrough) },
     resolve: { alias: { '@': join(root, 'src') } },
     server: { host: '127.0.0.1', port, strictPort: true, open: false, proxy: {} },
   }
@@ -77,6 +86,7 @@ async function loadAppRuntime() {
 }
 
 export async function startMockServer(options, { runtime = loadAppRuntime } = {}) {
+  const walkthrough = selectedWalkthrough(options.walkthrough)
   const { createServer, plugins } = await runtime()
   const cacheDir = await mkdtemp(join(tmpdir(), 'webappx-native-mock-'))
   let server
@@ -95,12 +105,12 @@ export async function startMockServer(options, { runtime = loadAppRuntime } = {}
   })()
   try {
     const port = options.port || await allocateMockPort()
-    server = await createServer(mockViteOptions({ port, cacheDir, plugins }))
+    server = await createServer(mockViteOptions({ port, cacheDir, plugins, walkthrough }))
     await server.listen()
     listening = true
     const address = server.httpServer?.address()
     if (!address || typeof address === 'string' || address.address !== '127.0.0.1') throw new Error('The mock portal server did not bind its owned loopback listener.')
-    return { server, close, url: `http://127.0.0.1:${address.port}/portals` }
+    return { server, close, url: `http://127.0.0.1:${address.port}/portals`, walkthrough }
   } catch (error) {
     await close()
     throw error
@@ -125,8 +135,12 @@ async function serve(options) {
     owned = await startMockServer(options)
     if (stopping) { await owned.close(); return }
     console.log(`Account-free HR, CMS and CRM: ${owned.url}`)
+    console.log(`Persistence mode: ${owned.walkthrough ? 'walkthrough (memory only)' : 'browser saves'}.`)
+    console.log(owned.walkthrough
+      ? 'Walkthrough — mock data stays in memory. Refresh starts fresh fictional records and keeps walkthrough mode on. Existing browser saves are untouched.'
+      : 'Browser-save mode — refresh can restore saved fictional records in this browser profile.')
     console.log('Firebase, emulators, provider connections and LAN integrations are disabled. Use fictional data only. Press Ctrl+C to stop this server.')
-    process.send?.({ type: 'ready', url: owned.url })
+    process.send?.({ type: 'ready', url: owned.url, walkthrough: owned.walkthrough })
   } catch (error) {
     console.error(error.message)
     process.exitCode = 1
@@ -172,7 +186,7 @@ export async function main(args = process.argv.slice(2)) {
   const worker = args[0] === '--serve'
   const options = parseMockArguments(worker ? args.slice(1) : args)
   if (options.help) {
-    console.log('Usage: npm run dev:mock -- [--port <0-65535>]\nStarts native account-free HR/CMS/CRM portals on 127.0.0.1. The default port 0 selects a free port. An explicit busy port fails without stopping another listener. Run npm ci once for app dependencies; no Firebase/Gusto account or emulator setup is needed.')
+    console.log('Usage: npm run dev:mock -- [--port <0-65535>] [--walkthrough]\nStarts native account-free HR/CMS/CRM portals on 127.0.0.1. The default port 0 selects a free port. An explicit busy port fails without stopping another listener. Browser saves are the default. --walkthrough keeps mock data in memory: refresh starts fresh fictional records and keeps walkthrough mode on; existing browser saves are untouched. Run npm ci once for app dependencies; no Firebase/Gusto account or emulator setup is needed.')
     return 0
   }
   if (worker) { await serve(options); return process.exitCode ?? 0 }

@@ -697,6 +697,11 @@
       "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
     },
     {
+      "name": "template:adopt:preview",
+      "purpose": "setup",
+      "description": "Preview bounded public identity substitutions in an owned temporary committed-source copy; preserve the original template and ignored files."
+    },
+    {
       "name": "template:check",
       "purpose": "release",
       "description": "Review template integrity, source evidence, release gates or an explicitly selected publication action."

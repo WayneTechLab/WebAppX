@@ -39,7 +39,7 @@ test('exact eight maintained groups separate native, SDK, reviewed fixture and r
     ['Reset CMS workspace?', 'Confirm Reset CMS', 'Keep CMS workspace'],
     ['Reset CRM workspace?', 'Confirm Reset CRM', 'Keep CRM workspace'],
   ])
-  assert.deepEqual(report.counts, { groups: 8, sourceFiles: 32 })
+  assert.deepEqual(report.counts, { groups: 8, sourceFiles: 35 })
   assert.equal(report.schemaVersion, 1)
   assert.equal(report.intent, 'fictional-fixture-source-inventory')
   assert.match(report.groups[0].reset.effect, /absence of optional employment\/recruiting lifecycle/)
@@ -56,8 +56,13 @@ test('complete HR composition and actual shared reset/control links are reported
     ['src/hr/people-operations.ts', ['createPeopleOperations']], ['src/hr/service-desk.ts', ['createHrServiceDesk']],
     ['src/hr/recruiting.ts', ['createRecruitingState']], ['src/hr/performance.ts', ['createPerformanceState']],
     ['src/hr/surveys.ts', ['createSurveysState']], ['src/portals/workspaces.ts', ['createDemoWorkspaces']],
+    ['src/portals/portal-runtime.ts', ['createPortalRuntime', 'createMemoryDemoStorage']],
   ])
-  assert.deepEqual(hr.sources.slice(-5).map(source => source.path), ['src/portals/PortalWorkspaceProvider.tsx', 'src/portals/DemoWorkspaceReset.tsx', 'src/portals/registry.ts', 'src/portals/useDemoPersistence.ts', 'src/portals/replacement-recovery.ts'])
+  assert.deepEqual(hr.sources.slice(-8).map(source => source.path), [
+    'src/portals/PortalWorkspaceProvider.tsx', 'src/portals/portal-runtime-context.tsx',
+    'src/portals/portal-runtime.ts', 'src/portals/owned-mock-storage.ts', 'src/portals/DemoWorkspaceReset.tsx',
+    'src/portals/registry.ts', 'src/portals/useDemoPersistence.ts', 'src/portals/replacement-recovery.ts',
+  ])
   assert.match(hr.reset.boundaries.join(' '), /checkpoint.*stale confirmation.*refuse/)
   const text = formatFixtureInventory(buildFixtureInventory(descriptors, sourceTexts))
   assert.match(text, /src\/cms\/model.ts -> createCmsState, cmsCollections, cmsActors/)
@@ -96,6 +101,9 @@ test('missing, duplicate, unknown IDs/kinds/bindings and native-SDK reset crossc
 
 test('each required builder, reset label and session/seed source link disappearance refuses instead of omitting a group', () => {
   for (const [path, before, after] of [
+    ['src/portals/useDemoPersistence.ts', 'clearDemoState(module, storage)', 'clearDemoState(module)'],
+    ['src/portals/portal-runtime.ts', "mode === 'walkthrough' ? createMemoryDemoStorage() : undefined", 'undefined'],
+    ['src/portals/owned-mock-storage.ts', 'descriptor.key === key', 'true'],
     ['src/hr/persistence.ts', 'surveys: createSurveysState(fixture)', 'surveys: undefined'],
     ['src/hr/mock-workflows.ts', 'export function createMockHrState(', 'export function removedBuilder('],
     ['src/crm/model.ts', "export * from './types'", "export * from './other-types'"],

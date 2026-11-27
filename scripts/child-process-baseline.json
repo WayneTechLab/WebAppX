@@ -6,7 +6,7 @@
     {
       "path": "scripts/browser-preview-process.mjs",
       "kind": "javascript:fork",
-      "fingerprint": "11042b01d316cf0c7fe31330912ebf011e40e5e4dc233684ccfef9197f5c34c5",
+      "fingerprint": "06657f57abf136d920304bcb1f9ac2555a308cc0801a56f2d91b9137626d50f1",
       "count": 1,
       "reason": "Reviewed owned fork uses the fixed module-relative preview worker and a literal argv array; this parser does not infer URL-to-path values."
     },

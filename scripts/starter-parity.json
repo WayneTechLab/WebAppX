@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "kind": "reviewed-starter-parity",
   "review": {
-    "sourceBase": "49a9efe345c815c2bead1cbbeb83204d31e64290",
-    "reviewedOn": "2026-10-15"
+    "sourceBase": "9b7555671289d1af7d54dfcb6e533dbb7d990148",
+    "reviewedOn": "2026-11-26"
   },
   "starterDirectory": ".SYSTEMX/Template/starter",
   "publicRoots": [
@@ -177,7 +177,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root adds native SDK/query/browser dependencies and host setup, source policy, identity/ownership, canonical graph/API, swarm, test, CI and release scripts; shared package identity/runtime/dependencies remain checked.",
-      "rootSha256": "6a0bbf1ddcd66b76d3d9e658f64cc5388bf1d9f2116765c33e268946c7f827a4",
+      "rootSha256": "be382fcfab59f23e8176effcafb41d99e53cd92c997cece454ff7231dfbf1c6c",
       "starterSha256": "2c4dcbe51214ae866e8e3e8fa2264ec0a37ab3f3880fea0b3e0107f914500ce4"
     },
     {
@@ -242,7 +242,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root layout integrates unsaved-work, preview privacy and shared portal notices; the starter layout remains a standalone scaffold.",
-      "rootSha256": "41937e488db1f41614d39d68fef41b80683ac57925bee092b4aadbb139b909a6",
+      "rootSha256": "79fce2aa3d9e53eead6ea3b7026a853e3cc9ecd31172ee70dc0adc31d99cb422",
       "starterSha256": "a91eb9cc5ec500d92fc1d3da3e7ab1ef35209ce7c85a18b4556ebf2099bba0c3"
     },
     {
@@ -262,7 +262,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root links coordinate native unsaved-work transitions; the starter link performs its standalone navigation contract.",
-      "rootSha256": "21490f19bf6c7d432399297686f514eea9fc53159e55bd49c947c4bc64453e74",
+      "rootSha256": "a8bd199938ecd4f29fcbe80174fa5d629c91dac3d20d5a37cd2cfdd25494d3a2",
       "starterSha256": "df79acb7c77b70bba0de3f181e1611b8a1ec8781e873c323f4781abba006c1b7"
     },
     {
@@ -312,7 +312,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root styling includes native workspace/accessibility surfaces; the starter stylesheet remains the smaller standalone scaffold.",
-      "rootSha256": "2b0aab90708e30a50254b60fbf27c55108ff91e660d1f01c1e2727ee72600457",
+      "rootSha256": "4c226b651f10a8187827f174e7af308338028f59bd2a7c4a368f4724b76155c5",
       "starterSha256": "8977350cb6cef892bfeb9d921f9c036eb283fc1c3132572f2a375dd3d9c7a865"
     },
     {
@@ -322,7 +322,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root navigation coordinates portal transitions and motion preferences; the starter preserves the simpler standalone route event contract.",
-      "rootSha256": "d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24",
+      "rootSha256": "484de4b24bb55a2c310f1e2654477922ce9be5bf232d8aa604a5beb4d15a8da4",
       "starterSha256": "cbd97f26c2a045e6cabaea12df9919964448a260de35b6791a3a6407343fb92b"
     },
     {
@@ -350,8 +350,11 @@
       "group": "app",
       "starter": "src/pages/DocsPage.tsx",
       "root": "src/pages/DocsPage.tsx",
-      "relation": "equal",
-      "hashMode": "utf8-lf-sha256"
+      "relation": "intentional",
+      "hashMode": "utf8-lf-sha256",
+      "reason": "The full template links to foundation walkthrough and portal setup guides. The starter keeps its standalone onboarding examples.",
+      "starterSha256": "e0ebc8421fcfb9780640327cd982e61f4a3050ba04f8f16b4dc09d283fad09ce",
+      "rootSha256": "cfdf920c387c59535d5eef541aec1f6d31d7ac1e2e9c0c255d0cf0133e589dee"
     },
     {
       "group": "app",
@@ -394,7 +397,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root routes mount native HR/CMS/CRM and retained workspace providers; starter router includes only its finite scaffold routes.",
-      "rootSha256": "ec93762a8acbb9bbfdf43ceab5858a55243491b8ca5e7404419d71df4ab359c7",
+      "rootSha256": "c7d7458003ed602b8796577e8e8749885153e0c71eab3a844373c91f0d7949b4",
       "starterSha256": "93007f3aa051fe08b9e63dfa5c1fbb2b6e6a175501e324532115fc552362b180"
     },
     {
@@ -403,8 +406,8 @@
       "root": "src/vite-env.d.ts",
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
-      "reason": "Root declares reviewed native SDK and supervised-session environment options; starter declarations cover its standalone client configuration.",
-      "rootSha256": "b60e6d4700a0e4a3cac56401c14ac211920fc3098b19cd08cf5e44fb1fdbc653",
+      "reason": "The full template declares its native SDK, supervised session and account-free walkthrough flags. The starter uses its standalone client configuration.",
+      "rootSha256": "b32442b700a09136e9a37663fc72fc493fe4fbcffd7260b4c5090fe81b4ef4eb",
       "starterSha256": "cc9f39506b263f3743b4d256dacfbc41735a9de59c764c5b0c674f7aec78426b"
     },
     {
