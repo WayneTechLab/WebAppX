@@ -5,12 +5,12 @@ This matrix addresses WX-0909 and maps every capability in the
 [portable catalog](../.SYSTEMX/GUSTO/CAPABILITIES.json) to current native mock
 behavior, selected SDK coverage, specific adopter-owned work and evidence scope.
 
-Source review: **2026-10-15**. Integration baseline supplied by Agent 0:
-**`317f47806b7f86dce00f15ee5ced7c0e0bae6116`**. This revision names the supplied published baseline.
-The explicit fingerprints below bind the reviewed shared persistence/inspection changes in the CRM merge working tree.
-Agent 0 froze 145 application source files by exact bytes in the [runtime source manifest](evidence/crm-merge-runtime-2026-10-15.json); its SHA-256 is `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`.
-Only three shared source fingerprints were rebound here. The finite 84-member HR/current-SDK roster, capability definitions, selected exports and provider boundaries are unchanged; CRM-specific closure is reviewed separately in the [role examples](HR-ROLE-EXAMPLES.md).
-This source-only review establishes no new commit, browser observation, provider operation or production acceptance.
+Source review: **2026-11-26**. Integration baseline supplied by Agent 0:
+**`9b7555671289d1af7d54dfcb6e533dbb7d990148`**. This revision identifies the integration base.
+The fingerprints below identify the reviewed runtime and SDK source files.
+The October 15 CRM review recorded 145 application files in the [runtime source manifest](evidence/crm-merge-runtime-2026-10-15.json); its SHA-256 is `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`.
+The current 93-file inventory includes nine storage and navigation dependencies reviewed for the foundation walkthrough. The matrix covers the same 33 capabilities and selected SDK exports. The [role examples](HR-ROLE-EXAMPLES.md) include CRM-specific sources.
+This review covers the listed source files. Browser, provider and production observations have separate evidence.
 
 The pinned SDK is **@gusto/embedded-react-sdk 0.56.6**, API alias
 **2026-06-15**. The app declaration and lockfile must retain that SDK version.
@@ -101,7 +101,7 @@ the checker never refreshes fingerprints or accepts capability work.
 | [integrations/gusto/schema.json](../integrations/gusto/schema.json) | utf8-lf-sha256 | `71ea8baf9933cf0db8532b81a8313ef1766cf948005c20db1eddbcf148115079` |
 | [integrations/gusto/sdk-onboarding.mjs](../integrations/gusto/sdk-onboarding.mjs) | utf8-lf-sha256 | `f5c811c92da4b264a561eea980a3dce87c936377c4cb5dbbd5379cae41733ca9` |
 | [integrations/gusto/sdk-payroll.mjs](../integrations/gusto/sdk-payroll.mjs) | utf8-lf-sha256 | `135258d7805b981c4539c31aa80f4013611713fd8da8506d3bf72d1b8b0b41ae` |
-| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | utf8-lf-sha256 | `f09c81627ae7767a4b2e8aa9587dcf00cb55ae9da9870e4c01438ae28b3db13a` |
+| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | utf8-lf-sha256 | `fefca0ec535d5096a68795f921498877248d8e0c72010b250ddbd34dafc2ed35` |
 | [src/hr/components/HrInsights.tsx](../src/hr/components/HrInsights.tsx) | utf8-lf-sha256 | `923fd14fbee0f903b547f0e5a036166dad705aa5363e6b951e05e87c84c5b876` |
 | [src/hr/gusto/GustoSdkPreview.tsx](../src/hr/gusto/GustoSdkPreview.tsx) | utf8-lf-sha256 | `2997c3af94e9d89225ee670c439241de5b65adf68c75cc5cf198c16f495978cd` |
 | [src/hr/insights.ts](../src/hr/insights.ts) | utf8-lf-sha256 | `2ce6ac351fdc5c8a9447e05ef485650a945bcb7bcf88be2ab8a33d5819f957c3` |
@@ -116,21 +116,21 @@ the checker never refreshes fingerprints or accepts capability work.
 | [src/pages/HrPage.tsx](../src/pages/HrPage.tsx) | utf8-lf-sha256 | `daf6bf5bbc0325c253ea6d9802e76ee867b60a3ff608312c67911a18453b4292` |
 | [src/portals/unsaved-work-core.ts](../src/portals/unsaved-work-core.ts) | utf8-lf-sha256 | `f5f7db3ae4ff9c70edb4c3dfd7052075c0b5f3fe3e7c36333ebf311ff0623e14` |
 | [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | utf8-lf-sha256 | `5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316` |
-| [src/lib/navigation.ts](../src/lib/navigation.ts) | utf8-lf-sha256 | `d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24` |
-| [src/router.tsx](../src/router.tsx) | utf8-lf-sha256 | `ec93762a8acbb9bbfdf43ceab5858a55243491b8ca5e7404419d71df4ab359c7` |
+| [src/lib/navigation.ts](../src/lib/navigation.ts) | utf8-lf-sha256 | `484de4b24bb55a2c310f1e2654477922ce9be5bf232d8aa604a5beb4d15a8da4` |
+| [src/router.tsx](../src/router.tsx) | utf8-lf-sha256 | `c7d7458003ed602b8796577e8e8749885153e0c71eab3a844373c91f0d7949b4` |
 | [src/hr/components/useHrFormDraft.ts](../src/hr/components/useHrFormDraft.ts) | utf8-lf-sha256 | `d93f943cad287eb323ea80799d9f807d1e537aaf1dd9032b51a6e6c50c9265e7` |
 | [src/hr/components/PeopleOperations.tsx](../src/hr/components/PeopleOperations.tsx) | utf8-lf-sha256 | `a6f6ade235d7c4ce8dec497cbc5a4c6fbf9fe6553efb71f5e30f6b99683e3d0b` |
 | [src/hr/components/HrServiceDesk.tsx](../src/hr/components/HrServiceDesk.tsx) | utf8-lf-sha256 | `584ce87da135d5bdc04c56fd9c4789d5e8269c42e7a9f8308ef42adaf8ba1267` |
 | [src/hr/components/HrRecruiting.tsx](../src/hr/components/HrRecruiting.tsx) | utf8-lf-sha256 | `f2f4b25642cecddd1433d23c6a3fb2f4c1fb109b890ed5763169aec5457e7857` |
 | [src/hr/components/HrPerformance.tsx](../src/hr/components/HrPerformance.tsx) | utf8-lf-sha256 | `7c27e5b9a36dc02f69725c101e21568661b9820b613bca0fe44e781f81090357` |
 | [src/hr/components/HrSurveys.tsx](../src/hr/components/HrSurveys.tsx) | utf8-lf-sha256 | `ba28cb8d4bdc1d5a3e313be89f4272bbd340dedbb3d1d9008609a48b71a794ef` |
-| [src/portals/PortalWorkspaceProvider.tsx](../src/portals/PortalWorkspaceProvider.tsx) | utf8-lf-sha256 | `186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa` |
-| [src/portals/useDemoPersistence.ts](../src/portals/useDemoPersistence.ts) | utf8-lf-sha256 | `e138711b841a0b63abe34d2d4ca0b485a90d1280f06f9b36655a64e9453c649b` |
+| [src/portals/PortalWorkspaceProvider.tsx](../src/portals/PortalWorkspaceProvider.tsx) | utf8-lf-sha256 | `c9d6f8edfa7fb39034b50d6c6cafbdfcbef193a9ca975716702554a731a15408` |
+| [src/portals/useDemoPersistence.ts](../src/portals/useDemoPersistence.ts) | utf8-lf-sha256 | `bb2a2a6d5a61e323477013d41690e72e2f1d13ff61bc41e6ea4d77cfd49050e8` |
 | [src/portals/recovery-preferences.ts](../src/portals/recovery-preferences.ts) | utf8-lf-sha256 | `0104715273131dfc397c991b3fe201d525e32903b21b265ddc17bd5fe3391859` |
 | [src/portals/replacement-recovery.ts](../src/portals/replacement-recovery.ts) | utf8-lf-sha256 | `4d80db30057b7ddd1974400e0a8555b33158ec7b8ce55633726b2f8de839dc2c` |
-| [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | utf8-lf-sha256 | `850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809` |
-| [src/portals/DemoWorkspaceReset.tsx](../src/portals/DemoWorkspaceReset.tsx) | utf8-lf-sha256 | `907be2ce4b8182c8207383136b327948b8fb5f9bf879e6080ebeb537c43b6d81` |
-| [src/portals/RecoveryCheckpointPreview.tsx](../src/portals/RecoveryCheckpointPreview.tsx) | utf8-lf-sha256 | `537ac122bab47679253afe068c4af1aa3c158903bc13c7a9a501a7b3a9b7c71d` |
+| [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | utf8-lf-sha256 | `637945c53e417984eb56a8589bff16523ce9c13dec9d0feda25b12d1dca8b02e` |
+| [src/portals/DemoWorkspaceReset.tsx](../src/portals/DemoWorkspaceReset.tsx) | utf8-lf-sha256 | `26524f2302ea4abe3ae132687613f556a43c19ecbd25133654cb907489c5d6d8` |
+| [src/portals/RecoveryCheckpointPreview.tsx](../src/portals/RecoveryCheckpointPreview.tsx) | utf8-lf-sha256 | `d72197540693245a14bc215bef24f0cd0e00fafe73349ab51d9e4c4957ba0a3e` |
 | [src/hr/lifecycle-types.ts](../src/hr/lifecycle-types.ts) | utf8-lf-sha256 | `3d4330aa6bea5a438ba55c6e3d7ee8dab4332d538793adad81e0fe6bb955de27` |
 | [src/hr/lifecycle.ts](../src/hr/lifecycle.ts) | utf8-lf-sha256 | `db1c8cd09a3145d6c0e4dfc48215d961127bb33be0306e7fcec7994ea838fb68` |
 | [src/hr/components/HrDirectoryCorrections.tsx](../src/hr/components/HrDirectoryCorrections.tsx) | utf8-lf-sha256 | `84b456d3d44cf83b2cedbf2d253a932a11522beb29e31e71510572d8779e953c` |
@@ -161,10 +161,10 @@ the checker never refreshes fingerprints or accepts capability work.
 | [src/hr/components/HrRecruitingInterviews.tsx](../src/hr/components/HrRecruitingInterviews.tsx) | utf8-lf-sha256 | `a7204ee9baaf233100b9eb2e8e7c9edef7de68e0f08254b0ef3280623503aada` |
 | [src/hr/components/HrRecruitingOwnScorecards.tsx](../src/hr/components/HrRecruitingOwnScorecards.tsx) | utf8-lf-sha256 | `89d0637278604a9e54ab0d2cf0aff5d49393b3238c8e6d490da475bb9adbfabe` |
 | [src/portals/ScopedPortalChrome.tsx](../src/portals/ScopedPortalChrome.tsx) | utf8-lf-sha256 | `4d068981ecff1b5e92b6b3b86fc0fb6729031ae065c2941763b75bce1c7c0ee8` |
-| [src/components/layout/Layout.tsx](../src/components/layout/Layout.tsx) | utf8-lf-sha256 | `41937e488db1f41614d39d68fef41b80683ac57925bee092b4aadbb139b909a6` |
-| [src/pages/TemplatePortalsPage.tsx](../src/pages/TemplatePortalsPage.tsx) | utf8-lf-sha256 | `0d76bcf1c6a32001c7efb66f3c8e95290427363ee7907c0c2575d38b9e7402da` |
+| [src/components/layout/Layout.tsx](../src/components/layout/Layout.tsx) | utf8-lf-sha256 | `79fce2aa3d9e53eead6ea3b7026a853e3cc9ecd31172ee70dc0adc31d99cb422` |
+| [src/pages/TemplatePortalsPage.tsx](../src/pages/TemplatePortalsPage.tsx) | utf8-lf-sha256 | `b752c0c1a0005b0fb8ed7d2ff10b90fc817335a4e70270abc66906847876a4e2` |
 | [src/portals/RetainedPortalSurface.tsx](../src/portals/RetainedPortalSurface.tsx) | utf8-lf-sha256 | `31bf40cda4f2bddc6bfb1eb68113ebf59374ea291284161df0473c85009bb82a` |
-| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | utf8-lf-sha256 | `cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51` |
+| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | utf8-lf-sha256 | `33aa5df00df9374666d4401eacc130f66ba0a9ea4abcd994b21a276bb297a55e` |
 | [src/hr/payroll-control-types.ts](../src/hr/payroll-control-types.ts) | utf8-lf-sha256 | `8f6867ae6723d5929e0d85ab4cbedda8d7b89dd247fc662782a1e1acada3c68d` |
 | [src/hr/payroll-control-value.ts](../src/hr/payroll-control-value.ts) | utf8-lf-sha256 | `a470bbee2013a153f9d2f208fada3b6bb4e3519341555d286a6c1cd9872b014a` |
 | [src/hr/payroll-control.ts](../src/hr/payroll-control.ts) | utf8-lf-sha256 | `d754c27c69a5050cad26a952666b38fb08efd86409fa8feed8ef7750b0b25059` |
@@ -172,6 +172,15 @@ the checker never refreshes fingerprints or accepts capability work.
 | [src/hr/payroll-control-host.ts](../src/hr/payroll-control-host.ts) | utf8-lf-sha256 | `13771680bcb323fc58a9ffa20fd3b159d79cd305316bbce1108fd5bf387e97e6` |
 | [src/hr/components/HrPayrollControl.tsx](../src/hr/components/HrPayrollControl.tsx) | utf8-lf-sha256 | `cc089b5d3a77db56d9697da8c3c33d97696dc0a65cb6663669bb7a5303238a4d` |
 | [src/hr/components/HrPayrollControlHost.tsx](../src/hr/components/HrPayrollControlHost.tsx) | utf8-lf-sha256 | `57e81d72dc665fa24fcb9893c19c755f1634e61e5320f9fa559a9591ce0dde3b` |
+| [src/portals/portal-runtime.ts](../src/portals/portal-runtime.ts) | utf8-lf-sha256 | `e8b206e158ffc35feb77f975953eaa179f1ee566cc5fddb17844f3466d5cb147` |
+| [src/portals/portal-runtime-context.tsx](../src/portals/portal-runtime-context.tsx) | utf8-lf-sha256 | `e6fb22b0e5446598e25f5dd8b96f8ac2eff8a95e9d6717444c2d0b4acc3aa3bf` |
+| [src/portals/owned-mock-storage.ts](../src/portals/owned-mock-storage.ts) | utf8-lf-sha256 | `1b8316ea5e52833722a1dec8c5a83ad0ea3886fa203ff23caed650f20378be0f` |
+| [src/portals/storage-presentation.ts](../src/portals/storage-presentation.ts) | utf8-lf-sha256 | `81ac083221d84305d08991195f5dfd88413e867fe3b4469761f73bcb4921b119` |
+| [src/lib/navigation-types.ts](../src/lib/navigation-types.ts) | utf8-lf-sha256 | `44bdbe9cae0c2c312cc9fcc3ab17bdc6131d3b5b3cee64193cd58701a1e17694` |
+| [src/lib/navigation-focus.ts](../src/lib/navigation-focus.ts) | utf8-lf-sha256 | `4f9480604dfe55aeee6c829a6f1fd0cac459819dd903482744146c45fd46024c` |
+| [src/lib/navigation-focus-dom.ts](../src/lib/navigation-focus-dom.ts) | utf8-lf-sha256 | `366afc0cdf672aeebd6b30e87fecde7d9d44c135f88949b2f5f4cb5f6f229e53` |
+| [src/lib/useCommittedNavigationFocus.ts](../src/lib/useCommittedNavigationFocus.ts) | utf8-lf-sha256 | `bbaa9adaa6492be04d2cc883c6ac7af0bdb7e2710ce912f9bba21e5c7f63e254` |
+| [src/components/navigation/AppLink.tsx](../src/components/navigation/AppLink.tsx) | utf8-lf-sha256 | `a8bd199938ecd4f29fcbe80174fa5d629c91dac3d20d5a37cd2cfdd25494d3a2` |
 
 ## Maintain this matrix
 

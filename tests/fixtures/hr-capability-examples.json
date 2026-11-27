@@ -4,7 +4,7 @@
   "review": {
     "proposalId": "WX-0908",
     "criterion": "A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.",
-    "sourceRevision": "317f47806b7f86dce00f15ee5ced7c0e0bae6116",
+    "sourceRevision": "9b7555671289d1af7d54dfcb6e533dbb7d990148",
     "canonicalDocument": "docs/PORTAL-CAPABILITIES.md",
     "reviewedSources": [
       {
@@ -41,15 +41,15 @@
       },
       {
         "path": "src/portals/DemoWorkspaceBackup.tsx",
-        "sha256": "850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809"
+        "sha256": "637945c53e417984eb56a8589bff16523ce9c13dec9d0feda25b12d1dca8b02e"
       },
       {
         "path": "src/portals/CombinedWorkspaceBackup.tsx",
-        "sha256": "cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51"
+        "sha256": "33aa5df00df9374666d4401eacc130f66ba0a9ea4abcd994b21a276bb297a55e"
       },
       {
         "path": "src/hr/components/HrWorkspace.tsx",
-        "sha256": "f09c81627ae7767a4b2e8aa9587dcf00cb55ae9da9870e4c01438ae28b3db13a"
+        "sha256": "fefca0ec535d5096a68795f921498877248d8e0c72010b250ddbd34dafc2ed35"
       },
       {
         "path": ".SYSTEMX/GUSTO/mock/fixtures/demo-company.json",
@@ -65,11 +65,11 @@
       },
       {
         "path": "src/lib/navigation.ts",
-        "sha256": "d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24"
+        "sha256": "484de4b24bb55a2c310f1e2654477922ce9be5bf232d8aa604a5beb4d15a8da4"
       },
       {
         "path": "src/router.tsx",
-        "sha256": "ec93762a8acbb9bbfdf43ceab5858a55243491b8ca5e7404419d71df4ab359c7"
+        "sha256": "c7d7458003ed602b8796577e8e8749885153e0c71eab3a844373c91f0d7949b4"
       },
       {
         "path": "src/hr/components/useHrFormDraft.ts",
@@ -101,7 +101,7 @@
       },
       {
         "path": "src/cms/CmsDemo.tsx",
-        "sha256": "c44c65a9250f5263eb5c671418794225a0c10b446597dce15c5f72669b32a10d"
+        "sha256": "fdbb13c0325f90a76cb49b11009fa30955c80b04870fdb25fac44476fbbf17e2"
       },
       {
         "path": "src/cms/editor-recovery.ts",
@@ -109,11 +109,11 @@
       },
       {
         "path": "src/portals/PortalWorkspaceProvider.tsx",
-        "sha256": "186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa"
+        "sha256": "c9d6f8edfa7fb39034b50d6c6cafbdfcbef193a9ca975716702554a731a15408"
       },
       {
         "path": "src/portals/useDemoPersistence.ts",
-        "sha256": "e138711b841a0b63abe34d2d4ca0b485a90d1280f06f9b36655a64e9453c649b"
+        "sha256": "bb2a2a6d5a61e323477013d41690e72e2f1d13ff61bc41e6ea4d77cfd49050e8"
       },
       {
         "path": "src/portals/recovery-preferences.ts",
@@ -125,11 +125,11 @@
       },
       {
         "path": "src/portals/DemoWorkspaceReset.tsx",
-        "sha256": "907be2ce4b8182c8207383136b327948b8fb5f9bf879e6080ebeb537c43b6d81"
+        "sha256": "26524f2302ea4abe3ae132687613f556a43c19ecbd25133654cb907489c5d6d8"
       },
       {
         "path": "src/portals/RecoveryCheckpointPreview.tsx",
-        "sha256": "537ac122bab47679253afe068c4af1aa3c158903bc13c7a9a501a7b3a9b7c71d"
+        "sha256": "d72197540693245a14bc215bef24f0cd0e00fafe73349ab51d9e4c4957ba0a3e"
       },
       {
         "path": "src/portals/restore-points.ts",
@@ -137,7 +137,7 @@
       },
       {
         "path": "src/portals/RestorePointHistory.tsx",
-        "sha256": "883a619f1e6f78db5ffee7302b48b36b6f88823ddfe706699a0395ee6505183d"
+        "sha256": "a664941a1d65fb248e98764c9e26b1d3f53296ee844950fad9e927afca473eca"
       },
       {
         "path": "src/portals/restore-workspaces.ts",
@@ -153,7 +153,7 @@
       },
       {
         "path": "src/crm/CrmDemo.tsx",
-        "sha256": "2b0931d03c9c21683cc33c3272f4b86e895bf3c6f9994b771521d556422dee1d"
+        "sha256": "760cba846954766b0d7f980c507ea47ee76a1cdfaa0fba915efdae220a5e0d21"
       },
       {
         "path": "src/hr/lifecycle-types.ts",
@@ -297,11 +297,11 @@
       },
       {
         "path": "src/components/layout/Layout.tsx",
-        "sha256": "41937e488db1f41614d39d68fef41b80683ac57925bee092b4aadbb139b909a6"
+        "sha256": "79fce2aa3d9e53eead6ea3b7026a853e3cc9ecd31172ee70dc0adc31d99cb422"
       },
       {
         "path": "src/pages/TemplatePortalsPage.tsx",
-        "sha256": "0d76bcf1c6a32001c7efb66f3c8e95290427363ee7907c0c2575d38b9e7402da"
+        "sha256": "b752c0c1a0005b0fb8ed7d2ff10b90fc817335a4e70270abc66906847876a4e2"
       },
       {
         "path": "src/portals/RetainedPortalSurface.tsx",
@@ -398,6 +398,42 @@
       {
         "path": "src/crm/CrmMerges.tsx",
         "sha256": "be7bb9232fb9bee64e1f5d7d526781f28d76e0dedb0ef5cec44a080e0ef61270"
+      },
+      {
+        "path": "src/portals/portal-runtime.ts",
+        "sha256": "e8b206e158ffc35feb77f975953eaa179f1ee566cc5fddb17844f3466d5cb147"
+      },
+      {
+        "path": "src/portals/portal-runtime-context.tsx",
+        "sha256": "e6fb22b0e5446598e25f5dd8b96f8ac2eff8a95e9d6717444c2d0b4acc3aa3bf"
+      },
+      {
+        "path": "src/portals/owned-mock-storage.ts",
+        "sha256": "1b8316ea5e52833722a1dec8c5a83ad0ea3886fa203ff23caed650f20378be0f"
+      },
+      {
+        "path": "src/portals/storage-presentation.ts",
+        "sha256": "81ac083221d84305d08991195f5dfd88413e867fe3b4469761f73bcb4921b119"
+      },
+      {
+        "path": "src/lib/navigation-types.ts",
+        "sha256": "44bdbe9cae0c2c312cc9fcc3ab17bdc6131d3b5b3cee64193cd58701a1e17694"
+      },
+      {
+        "path": "src/lib/navigation-focus.ts",
+        "sha256": "4f9480604dfe55aeee6c829a6f1fd0cac459819dd903482744146c45fd46024c"
+      },
+      {
+        "path": "src/lib/navigation-focus-dom.ts",
+        "sha256": "366afc0cdf672aeebd6b30e87fecde7d9d44c135f88949b2f5f4cb5f6f229e53"
+      },
+      {
+        "path": "src/lib/useCommittedNavigationFocus.ts",
+        "sha256": "bbaa9adaa6492be04d2cc883c6ac7af0bdb7e2710ce912f9bba21e5c7f63e254"
+      },
+      {
+        "path": "src/components/navigation/AppLink.tsx",
+        "sha256": "a8bd199938ecd4f29fcbe80174fa5d629c91dac3d20d5a37cd2cfdd25494d3a2"
       }
     ],
     "hashMode": "utf8-lf-sha256"
@@ -475,7 +511,7 @@
         "role": "manager",
         "employeeId": "employee-001"
       },
-      "context": "The actor is employee-001; approval or reasoned return requires submitted unpaid direct-report time and excludes the manager\u2019s own entries. Own unpaid draft time can be corrected or explicitly deleted before resubmission.",
+      "context": "The actor is employee-001; approval or reasoned return requires submitted unpaid direct-report time and excludes the manager’s own entries. Own unpaid draft time can be corrected or explicitly deleted before resubmission.",
       "projection": {
         "employeeIds": [
           "employee-001",
@@ -585,7 +621,7 @@
         "role": "employer-owner"
       },
       "domain": "performance",
-      "actionDescription": "Attempt to save another person\u2019s self-review.",
+      "actionDescription": "Attempt to save another person’s self-review.",
       "resource": "review-seed-employee-002",
       "statePrerequisites": [
         "The review exists in draft; its subject is employee-002."
@@ -658,7 +694,7 @@
         "role": "hr-admin"
       },
       "domain": "workflow",
-      "actionDescription": "Approve a known employee\u2019s submitted time entry.",
+      "actionDescription": "Approve a known employee’s submitted time entry.",
       "resource": "time-001",
       "statePrerequisites": [
         "Entry belongs to employee-002 and is submitted."
@@ -685,7 +721,7 @@
         "role": "hr-admin"
       },
       "domain": "performance",
-      "actionDescription": "Attempt to write the assigned manager\u2019s review.",
+      "actionDescription": "Attempt to write the assigned manager’s review.",
       "resource": "review-seed-employee-002",
       "statePrerequisites": [
         "Review records employee-001 as the assigned manager."
@@ -728,7 +764,7 @@
           "status"
         ],
         "value": "approved",
-        "description": "The direct report\u2019s submitted entry becomes approved."
+        "description": "The direct report’s submitted entry becomes approved."
       }
     },
     {
@@ -738,7 +774,7 @@
         "employeeId": "employee-001"
       },
       "domain": "workflow",
-      "actionDescription": "Attempt to approve a direct report\u2019s draft entry.",
+      "actionDescription": "Attempt to approve a direct report’s draft entry.",
       "resource": "time-002",
       "statePrerequisites": [
         "Actor employee-001 manages employee-003.",
@@ -762,7 +798,7 @@
         "employeeId": "employee-003"
       },
       "domain": "workflow",
-      "actionDescription": "Attempt to approve submitted time outside the actor\u2019s reporting line.",
+      "actionDescription": "Attempt to approve submitted time outside the actor’s reporting line.",
       "resource": "time-001",
       "statePrerequisites": [
         "Actor employee-003 is a known employee using the manager preview.",
@@ -776,7 +812,7 @@
       "expected": {
         "outcome": "deny",
         "error": "Approval requires a submitted entry within this role and team scope; self-approval is unavailable.",
-        "description": "The manager role alone cannot approve another manager\u2019s report."
+        "description": "The manager role alone cannot approve another manager’s report."
       }
     },
     {
@@ -786,7 +822,7 @@
         "employeeId": "employee-001"
       },
       "domain": "workflow",
-      "actionDescription": "Attempt to approve the manager\u2019s own submitted time.",
+      "actionDescription": "Attempt to approve the manager’s own submitted time.",
       "resource": "MOCK-TIME-0001",
       "statePrerequisites": [
         "Actor employee-001 creates and submits their own draft in the setup steps.",
@@ -949,7 +985,7 @@
         "employeeId": "employee-002"
       },
       "domain": "workflow",
-      "actionDescription": "Attempt to edit another employee\u2019s profile using its known ID.",
+      "actionDescription": "Attempt to edit another employee’s profile using its known ID.",
       "resource": "employee-003",
       "statePrerequisites": [
         "Actor remains employee-002; the target is employee-003."
@@ -1098,7 +1134,7 @@
       "expected": {
         "outcome": "deny",
         "error": "Approval requires a submitted entry within this role and team scope; self-approval is unavailable.",
-        "description": "The auditor\u2019s readable metadata does not permit domain mutation."
+        "description": "The auditor’s readable metadata does not permit domain mutation."
       }
     }
   ],

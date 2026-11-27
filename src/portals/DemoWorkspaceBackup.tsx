@@ -1,3 +1,5 @@
+import { usePortalRuntime } from './portal-runtime-context'
+import { storagePresentationMessage } from './storage-presentation'
 import { useRef, useState, type ChangeEvent } from 'react'
 import { createDemoBackup, parseDemoBackup, DEMO_BACKUP_FILE_LIMIT, type DemoBackup } from './backup'
 import type { DemoModule, DemoStorageStatus } from './persistence'
@@ -13,6 +15,7 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
   onImport: (value: T, confirmation?: string) => { ok: boolean; status: DemoStorageStatus };
   recovery?: WorkspaceRecoveryControls;
 }) {
+  const { mode } = usePortalRuntime()
   const input = useRef<HTMLInputElement>(null)
   const selection = useRef(0)
   const [pending, setPending] = useState<{ backup: DemoBackup<T>; filename: string } | null>(null)
@@ -62,7 +65,7 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
     if (!pending) return
     const result = onImport(pending.backup.state, checkpoint?.confirmation)
     if (result.ok) setPending(null)
-    setFeedback({ message: result.status.message, error: !result.ok })
+    setFeedback({ message: storagePresentationMessage(result.status.message, mode), error: !result.ok })
   }
 
   return <section aria-label={`${title} workspace backup`} className="mt-5 rounded-xl border border-neutral-200 bg-white p-5">
@@ -71,11 +74,11 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
     <p className="mt-2 text-xs leading-5 text-neutral-500">Backups are readable text, including saved private review drafts, recruiting scorecards and survey answers where present. Use fictional data only. Unsaved fields and running timers are excluded. Export your current workspace before replacing it if you want to keep both versions.</p>
     {recovery && <fieldset className="mt-4 rounded-lg border border-neutral-200 p-3">
       <legend className="px-1 text-sm font-semibold text-neutral-900">Optional required checkpoints</legend>
-      <p className="mb-3 text-xs leading-5 text-neutral-500">Both settings start off. Each applies to all native portals at this browser origin, survives refresh and stays outside workspace exports and restore-point history. When enabled, replacement refuses if its checkpoint cannot be saved.</p>
-      {recovery.settings.error && <p role="alert" className="mb-3 text-sm leading-6 text-red-900">{recovery.settings.error} Choose the settings below explicitly; a successful setting change saves both choices shown.</p>}
+      <p className="mb-3 text-xs leading-5 text-neutral-500">{mode === 'browser' ? 'Both settings start off. Each applies to all native portals at this browser origin, survives refresh and stays outside workspace exports and restore-point history. When enabled, replacement refuses if its checkpoint cannot be saved.' : 'Both settings start off and apply to this walkthrough only. Refresh starts fresh records and settings while walkthrough mode stays on; existing browser saves are untouched. Settings stay outside exports and restore-point history. When enabled, replacement refuses if its memory checkpoint cannot be saved.'}</p>
+      {recovery.settings.error && <p role="alert" className="mb-3 text-sm leading-6 text-red-900">{storagePresentationMessage(recovery.settings.error, mode)} Choose the settings below explicitly; a successful setting change saves both choices shown.</p>}
       {(['beforeImport', 'beforeReset'] as const).map(preference => <label key={preference} className="mt-2 flex min-h-11 items-center gap-3 text-sm text-neutral-800"><input type="checkbox" checked={recovery.settings.preferences[preference]} onChange={event => {
         const result = recovery.setPreference(preference, event.currentTarget.checked)
-        setFeedback({ message: result.status.message, error: !result.ok })
+        setFeedback({ message: storagePresentationMessage(result.status.message, mode), error: !result.ok })
       }} />{preference === 'beforeImport' ? 'Require checkpoint before individual imports' : 'Require checkpoint before Reset'}</label>)}
     </fieldset>}
     <div className="mt-4 flex flex-wrap gap-3">
@@ -87,7 +90,7 @@ export function DemoWorkspaceBackup<T>({ module, state, validate, summarize, onI
     {pending && <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4">
       <h3 className="font-semibold text-amber-950">Ready to replace {title} workspace</h3>
       <dl className="mt-3 grid gap-x-5 gap-y-2 break-words text-sm text-amber-950 sm:grid-cols-[auto_1fr]"><dt className="font-medium">File</dt><dd>{pending.filename}</dd><dt className="font-medium">Exported at (UTC)</dt><dd>{pending.backup.exportedAt}</dd><dt className="font-medium">Backup records</dt><dd>{summarize(pending.backup.state)}</dd></dl>
-      <p className="mt-3 text-sm leading-6 text-amber-950">This replaces the current {title} mock workspace and its browser save. It does not merge records. Continue only if this is the backup you want to use.</p>
+      <p className="mt-3 text-sm leading-6 text-amber-950">{mode === 'browser' ? <>This replaces the current {title} mock workspace and its browser save. It does not merge records. Continue only if this is the backup you want to use.</> : <>This replaces the current {title} walkthrough workspace and its memory save. It does not merge records or change existing browser saves. Refresh starts fresh fictional records and keeps walkthrough mode on. Continue only if this is the backup you want to use.</>}</p>
       {checkpoint && <RecoveryCheckpointPreview preview={checkpoint} />}
       <div className="mt-4 flex flex-wrap gap-3"><button type="button" className="inline-flex min-h-11 items-center rounded-md bg-neutral-950 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50" disabled={checkpoint !== undefined && (!checkpoint.ok || !checkpoint.canReplace)} onClick={replace}>Replace {title} workspace</button><button type="button" className={secondary} onClick={cancel}>Cancel import</button></div>
     </div>}

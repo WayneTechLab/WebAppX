@@ -18,6 +18,9 @@
         "hr-surveys",
         "workspace-defaults",
         "workspace-provider",
+        "portal-runtime-context",
+        "portal-runtime",
+        "owned-storage-keys",
         "native-reset-controls",
         "portal-labels",
         "native-reset-state",
@@ -27,7 +30,7 @@
         "action": "Reset HR demo",
         "effect": "Recreates complete original HR defaults through createDemoWorkspaces().hr, including absence of optional employment/recruiting lifecycle extensions.",
         "boundaries": [
-          "Only the selected native workspace is replaced and its browser save removal is attempted; other workspaces remain.",
+          "Only the selected workspace is replaced. Browser mode attempts to remove its browser save. Walkthrough mode clears its document-local memory save and preserves the browser save.",
           "Accepted replacement clears that module's temporary forms and timers. Optional required recovery captures a module-only checkpoint first; unreadable preferences, stale confirmation or checkpoint failure refuse replacement.",
           "Source fixtures, downloads, other history/preferences, Firebase and SDK session memory are not reset."
         ],
@@ -47,6 +50,9 @@
         "cms-model",
         "workspace-defaults",
         "workspace-provider",
+        "portal-runtime-context",
+        "portal-runtime",
+        "owned-storage-keys",
         "native-reset-controls",
         "portal-labels",
         "native-reset-state",
@@ -56,7 +62,7 @@
         "action": "Reset CMS demo",
         "effect": "Recreates complete original CMS defaults through createDemoWorkspaces().cms; optional release bundles are absent.",
         "boundaries": [
-          "Only the selected native workspace is replaced and its browser save removal is attempted; other workspaces remain.",
+          "Only the selected workspace is replaced. Browser mode attempts to remove its browser save. Walkthrough mode clears its document-local memory save and preserves the browser save.",
           "Accepted replacement clears that module's temporary forms and timers. Optional required recovery captures a module-only checkpoint first; unreadable preferences, stale confirmation or checkpoint failure refuse replacement.",
           "Source fixtures, downloads, other history/preferences, Firebase and SDK session memory are not reset."
         ],
@@ -78,6 +84,9 @@
         "crm-types",
         "workspace-defaults",
         "workspace-provider",
+        "portal-runtime-context",
+        "portal-runtime",
+        "owned-storage-keys",
         "native-reset-controls",
         "portal-labels",
         "native-reset-state",
@@ -87,7 +96,7 @@
         "action": "Reset CRM demo",
         "effect": "Recreates complete original CRM defaults through createDemoWorkspaces().crm, including original activity and counters.",
         "boundaries": [
-          "Only the selected native workspace is replaced and its browser save removal is attempted; other workspaces remain.",
+          "Only the selected workspace is replaced. Browser mode attempts to remove its browser save. Walkthrough mode clears its document-local memory save and preserves the browser save.",
           "Accepted replacement clears that module's temporary forms and timers. Optional required recovery captures a module-only checkpoint first; unreadable preferences, stale confirmation or checkpoint failure refuse replacement.",
           "Source fixtures, downloads, other history/preferences, Firebase and SDK session memory are not reset."
         ],

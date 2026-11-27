@@ -1,3 +1,5 @@
+import { usePortalRuntime } from './portal-runtime-context'
+import { storagePresentationMessage } from './storage-presentation'
 import { useEffect, useRef, useState } from 'react'
 import { usePortalWorkspaceBundle } from './PortalWorkspaceProvider'
 import { RESTORE_POINTS_MAX, RESTORE_POINTS_LIMIT, type RestorePoint } from './restore-points'
@@ -14,6 +16,7 @@ const scope = (point: RestorePoint) => point.modules.map(module => portalById[mo
 const captureKind = (point: RestorePoint) => point.kind === 'manual' ? 'manual capture' : point.kind === 'undo' ? 'Undo' : point.kind === 'import' ? 'individual import' : point.kind === 'reset' ? 'portal Reset' : 'selective restore'
 
 export function RestorePointHistory() {
+  const { mode } = usePortalRuntime()
   const { states, history, undo, clearHistory, createPoint, renamePoint, refreshHistory } = usePortalWorkspaceBundle()
   const [pendingId, setPendingId] = useState<string | null>(null)
   const pending = history.points.find(point => point.id === pendingId)
@@ -51,12 +54,12 @@ export function RestorePointHistory() {
     if (!pending || !budget?.ok || !budget.canRestore) return
     const result = undo(pending.id, pending)
     if (result.ok) { returnFocus.current = true; setPendingId(null) }
-    setFeedback({ message: result.status.message, error: !result.ok, recoveryRequired: !result.ok && result.recoveryRequired })
+    setFeedback({ message: storagePresentationMessage(result.status.message, mode), error: !result.ok, recoveryRequired: !result.ok && result.recoveryRequired })
   }
   function clear() {
     const result = clearHistory()
     if (result.ok) { returnFocus.current = true; setPendingId(null); setClearing(false) }
-    setFeedback({ message: result.error || result.status, error: !result.ok })
+    setFeedback({ message: storagePresentationMessage(result.error || result.status, mode), error: !result.ok })
   }
   function refresh() {
     setPendingId(null); setClearing(false); setFeedback(null)
@@ -73,18 +76,18 @@ export function RestorePointHistory() {
       <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-neutral-600">{history.points.length} / {RESTORE_POINTS_MAX} points</span>
     </div>
     <p className="mt-3 max-w-4xl text-sm leading-6 text-neutral-600">Before each combined selective restore or Undo, the selected portals’ current mock records are captured here. Choose a point to recover those portals. Undo also saves a point, so you can reverse it again.</p>
-    <p className="mt-2 max-w-4xl text-xs leading-5 text-neutral-500">Restore points survive refresh at this browser address. Up to {RESTORE_POINTS_MAX} points are kept within {RESTORE_POINTS_LIMIT.toLocaleString('en-US')} serialized characters; oldest points are removed as needed. A restore stops if its new point cannot be saved. Points contain readable fictional records and are excluded from exports. Unsaved forms and live timers are outside this history. Individual imports and Reset create a point only when their separate checkpoint preference is enabled. Use fictional information only.</p>
-    <ManualRestorePoint states={states} history={history} onCreate={createPoint} onResult={result => setFeedback({ message: result.status.message, error: !result.ok, recoveryRequired: !result.ok && result.recoveryRequired })} />
+    <p className="mt-2 max-w-4xl text-xs leading-5 text-neutral-500">{mode === 'browser' ? 'Restore points survive refresh at this browser address.' : 'Restore points stay only in walkthrough memory. Refresh starts fresh records, settings and history while walkthrough mode stays on. Existing browser saves are untouched.'} Up to {RESTORE_POINTS_MAX} points are kept within {RESTORE_POINTS_LIMIT.toLocaleString('en-US')} serialized characters; oldest points are removed as needed. A restore stops if its new point cannot be saved. Points contain readable fictional records and are excluded from exports. Unsaved forms and live timers are outside this history. Individual imports and Reset create a point only when their separate checkpoint preference is enabled. Use fictional information only.</p>
+    <ManualRestorePoint states={states} history={history} onCreate={createPoint} onResult={result => setFeedback({ message: storagePresentationMessage(result.status.message, mode), error: !result.ok, recoveryRequired: !result.ok && result.recoveryRequired })} />
     <div className="mt-4 flex flex-wrap gap-3">
       <button type="button" className={button} onClick={refresh}>Refresh restore points</button>
       <button type="button" className={button} disabled={!history.points.length && !history.error} aria-expanded={clearing} aria-controls={clearing ? 'clear-restore-points-preview' : undefined} onClick={event => { opener.current = event.currentTarget; setPendingId(null); setFeedback(null); setClearing(true) }}>Clear restore points</button>
     </div>
-    {history.error && <p role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-900">{history.error}</p>}
+    {history.error && <p role="alert" className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-900">{storagePresentationMessage(history.error, mode)}</p>}
     {!history.error && !history.points.length && <p className="mt-4 rounded-lg bg-neutral-50 p-4 text-sm leading-6 text-neutral-600">No restore points yet. Create a named point above, or your next combined selective restore will create one automatically.</p>}
     {!!history.points.length && <ol aria-label="Saved restore points" className="mt-5 space-y-3">{history.points.map(point => <li key={point.id} className="flex flex-wrap items-start justify-between gap-4 rounded-lg border border-neutral-200 p-4">
       <div className="min-w-0 flex-1"><p className="break-words text-sm font-semibold text-neutral-950">{point.label ?? `${point.kind === 'manual' ? 'Saved' : 'Before'} ${captureKind(point)}`} · {scope(point)}</p><p className="mt-1 text-xs leading-5 text-neutral-600">{point.label && `${captureKind(point)} · `}Captured records only; labels do not change the capture.</p><p className="mt-1 break-words text-xs leading-5 text-neutral-500">Created at (UTC): <time dateTime={point.createdAt}>{point.createdAt}</time></p><p className="mt-2 text-xs leading-5 text-neutral-600">{point.modules.map(module => `${portalById[module].label}: ${summarizeWorkspaces(point.states)[module]}`).join(' / ')}</p><RestorePointLabel key={`${point.id}:${point.label ?? ''}`} point={point} disabled={!!history.error} onSave={label => {
         const result = renamePoint(point.id, label)
-        setFeedback({ message: result.status.message, error: !result.ok, recoveryRequired: !result.ok && result.recoveryRequired })
+        setFeedback({ message: storagePresentationMessage(result.status.message, mode), error: !result.ok, recoveryRequired: !result.ok && result.recoveryRequired })
       }} /></div>
       <button type="button" className={button} aria-expanded={inspected?.id === point.id} aria-controls={inspected?.id === point.id ? 'restore-point-details' : undefined} onClick={() => setInspectedId(previous => previous === point.id ? null : point.id)}>Inspect captured records</button>
       <button type="button" className={button} disabled={!!history.error} aria-expanded={pending?.id === point.id} aria-controls={pending?.id === point.id ? 'restore-point-undo-preview' : undefined} onClick={event => preview(point, event.currentTarget)} aria-label={`Undo restore point ${point.createdAt} ${scope(point)}`}>Undo…</button>
@@ -100,7 +103,7 @@ export function RestorePointHistory() {
       <WorkspaceDifferencePreview current={states} target={{ ...states, ...pending.states }} modules={pending.modules} title="Undo workspace differences" />
       <div className="mt-4 flex flex-wrap gap-3"><button type="button" className={`${primary} disabled:cursor-not-allowed disabled:bg-neutral-300`} disabled={!budget?.ok || !budget.canRestore} onClick={applyUndo}>Confirm undo</button><button type="button" className={button} onClick={cancel}>Cancel undo</button></div>
     </div>}
-    {clearing && <div id="clear-restore-points-preview" role="region" aria-label="Clear restore points confirmation" className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4"><h3 ref={clearHeading} tabIndex={-1} className="text-lg font-semibold text-amber-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700">Clear all restore points?</h3><p className="mt-2 text-sm leading-6 text-amber-950">This removes only the restore history at this browser address. HR, CMS and CRM workspaces and downloaded backups are preserved. Cleared restore points cannot be recovered here.</p><div className="mt-4 flex flex-wrap gap-3"><button type="button" className={primary} onClick={clear}>Confirm clear restore points</button><button type="button" className={button} onClick={cancel}>Keep restore points</button></div></div>}
-    {feedback && <div role={feedback.error ? 'alert' : 'status'} className={`mt-4 rounded-lg border p-3 text-sm leading-6 ${feedback.error ? 'border-red-200 bg-red-50 text-red-900' : 'border-emerald-200 bg-emerald-50 text-emerald-950'}`}><p>{feedback.message}</p>{feedback.recoveryRequired && <p className="mt-2 font-semibold">Keep this page open and export all workspaces before refreshing. Browser saves or restore history may need recovery.</p>}</div>}
+    {clearing && <div id="clear-restore-points-preview" role="region" aria-label="Clear restore points confirmation" className="mt-5 rounded-lg border border-amber-300 bg-amber-50 p-4"><h3 ref={clearHeading} tabIndex={-1} className="text-lg font-semibold text-amber-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700">Clear all restore points?</h3><p className="mt-2 text-sm leading-6 text-amber-950">{mode === 'browser' ? 'This removes only the restore history at this browser address. HR, CMS and CRM workspaces and downloaded backups are preserved. Cleared restore points cannot be recovered here.' : 'This removes only this walkthrough’s memory history. Open HR, CMS and CRM workspaces, existing browser saves and downloaded backups are preserved. Cleared points cannot be recovered here; refresh starts fresh history while walkthrough mode stays on.'}</p><div className="mt-4 flex flex-wrap gap-3"><button type="button" className={primary} onClick={clear}>Confirm clear restore points</button><button type="button" className={button} onClick={cancel}>Keep restore points</button></div></div>}
+    {feedback && <div role={feedback.error ? 'alert' : 'status'} className={`mt-4 rounded-lg border p-3 text-sm leading-6 ${feedback.error ? 'border-red-200 bg-red-50 text-red-900' : 'border-emerald-200 bg-emerald-50 text-emerald-950'}`}><p>{feedback.message}</p>{feedback.recoveryRequired && <p className="mt-2 font-semibold">{mode === 'browser' ? 'Keep this page open and export all workspaces before refreshing. Browser saves or restore history may need recovery.' : 'Keep this page open and export all current workspaces before refreshing. Walkthrough memory saves or history may need recovery. Refresh discards this session’s records and history; existing browser saves are untouched.'}</p>}</div>}
   </section>
 }

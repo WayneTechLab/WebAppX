@@ -2,6 +2,7 @@ import { AppLink } from '@/components/navigation/AppLink'
 import { portalBreadcrumbs, type PortalRoute } from './routes'
 import type { DemoStorageStatus } from './persistence'
 import { workspaceSaveSummary } from './save-summary'
+import { usePortalRuntime } from './portal-runtime-context'
 
 const linkClass = 'inline-flex min-h-11 items-center rounded-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-800'
 
@@ -12,13 +13,15 @@ export function PortalBreadcrumbs({ route }: { route: PortalRoute }) {
 }
 
 export function PortalMockBanner() {
-  return <aside aria-label="Account-free mock mode" className="mx-auto mt-4 max-w-7xl px-4"><div className="rounded-xl border border-amber-300 bg-amber-50 px-5 py-3 text-sm leading-6 text-amber-950"><strong>Account-free mock workspace.</strong> Every record and action here is fictional. Browser saves are local to this address and browser profile; preview roles grant no account or provider access. <AppLink to="/portals#mock-data-handling" className={linkClass}>How mock data is handled</AppLink></div></aside>
+  const { mode } = usePortalRuntime()
+  return <aside aria-label="Account-free mock mode" className="mx-auto mt-4 max-w-7xl px-4"><div className="rounded-xl border border-amber-300 bg-amber-50 px-5 py-3 text-sm leading-6 text-amber-950"><strong>Account-free mock workspace.</strong> Every record and action here is fictional. {mode === 'walkthrough' ? 'This walkthrough keeps mock records in memory until refresh; existing browser saves are untouched.' : 'Browser saves are local to this address and browser profile;'} preview roles grant no account or provider access. <AppLink to="/portals#mock-data-handling" className={linkClass}>How mock data is handled</AppLink></div></aside>
 }
 
 export function WorkspaceSaveSummary({ label, status }: { label: string; status: DemoStorageStatus }) {
-  const summary = workspaceSaveSummary(status)
+  const { mode } = usePortalRuntime()
+  const summary = workspaceSaveSummary(status, mode)
   const warning = summary.kind === 'recovered' || summary.kind === 'unavailable'
-  return <div role="status" aria-label={`${label} save status`} className={`mt-4 rounded-lg border px-3 py-2 text-xs leading-5 ${warning ? 'border-amber-300 bg-amber-50 text-amber-950' : 'border-neutral-200 bg-white/70 text-neutral-700'}`}><p className="font-semibold">Browser save: {summary.label}</p><p className="mt-1">{summary.message}</p></div>
+  return <div role="status" aria-label={`${label} save status`} className={`mt-4 rounded-lg border px-3 py-2 text-xs leading-5 ${warning ? 'border-amber-300 bg-amber-50 text-amber-950' : 'border-neutral-200 bg-white/70 text-neutral-700'}`}><p className="font-semibold">{mode === 'walkthrough' ? 'Walkthrough memory' : 'Browser save'}: {summary.label}</p><p className="mt-1">{summary.message}</p></div>
 }
 
 export function UnsupportedPortalRoute({ route }: { route: Extract<PortalRoute, { kind: 'unsupported' }> }) {

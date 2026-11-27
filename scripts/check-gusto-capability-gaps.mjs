@@ -51,6 +51,11 @@ const requiredBindings = [CAPABILITIES_PATH, INVENTORY_PATH, PIN_PATH, SDK_PATH,
   'src/hr/payroll-control.ts', 'src/hr/payroll-control-controller.ts',
   'src/hr/payroll-control-host.ts', 'src/hr/components/HrPayrollControl.tsx',
   'src/hr/components/HrPayrollControlHost.tsx',
+  'src/portals/portal-runtime.ts', 'src/portals/portal-runtime-context.tsx',
+  'src/portals/owned-mock-storage.ts', 'src/portals/storage-presentation.ts',
+  'src/lib/navigation-types.ts', 'src/lib/navigation-focus.ts',
+  'src/lib/navigation-focus-dom.ts', 'src/lib/useCommittedNavigationFocus.ts',
+  'src/components/navigation/AppLink.tsx',
 ]
 const shaPattern = /^[0-9a-f]{64}$/
 const nativeCoverage = ['interactive-mock', 'read-only-mock', 'partial-mock', 'not-implemented']
@@ -153,7 +158,7 @@ export async function validateGapData(data, { root = ROOT } = {}) {
     throw new Error('Declared or locked SDK dependency differs from the reviewed pinned version')
   }
   if (sha(await bytes(INVENTORY_PATH)) !== pin.sdk.inventorySha256) throw new Error('Pinned vendor inventory bytes differ from their exact fingerprint')
-  if (!Array.isArray(data.sourceBindings) || data.sourceBindings.length < requiredBindings.length || data.sourceBindings.length > 84) throw new Error('Missing bounded reviewed source bindings')
+  if (!Array.isArray(data.sourceBindings) || data.sourceBindings.length !== requiredBindings.length) throw new Error('Missing bounded reviewed source bindings')
   const bound = new Map()
   for (const binding of data.sourceBindings) {
     if (!exact(binding, ['path', 'hashMode', 'sha256']) || !shaPattern.test(binding.sha256) || bound.has(binding.path)) throw new Error('Invalid or duplicate source binding')
@@ -217,11 +222,11 @@ export function renderGapGuide(data) {
     '[portable catalog](../.SYSTEMX/GUSTO/CAPABILITIES.json) to current native mock',
     'behavior, selected SDK coverage, specific adopter-owned work and evidence scope.', '',
     `Source review: **${data.reviewedOn}**. Integration baseline supplied by Agent 0:`,
-    `**\`${data.reviewBase.revision}\`**. This revision names the supplied published baseline.`,
-    'The explicit fingerprints below bind the reviewed shared persistence/inspection changes in the CRM merge working tree.',
-    'Agent 0 froze 145 application source files by exact bytes in the [runtime source manifest](evidence/crm-merge-runtime-2026-10-15.json); its SHA-256 is `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`.',
-    'Only three shared source fingerprints were rebound here. The finite 84-member HR/current-SDK roster, capability definitions, selected exports and provider boundaries are unchanged; CRM-specific closure is reviewed separately in the [role examples](HR-ROLE-EXAMPLES.md).',
-    'This source-only review establishes no new commit, browser observation, provider operation or production acceptance.', '',
+    `**\`${data.reviewBase.revision}\`**. This revision identifies the integration base.`,
+    'The fingerprints below identify the reviewed runtime and SDK source files.',
+    'The October 15 CRM review recorded 145 application files in the [runtime source manifest](evidence/crm-merge-runtime-2026-10-15.json); its SHA-256 is `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`.',
+    'The current 93-file inventory includes nine storage and navigation dependencies reviewed for the foundation walkthrough. The matrix covers the same 33 capabilities and selected SDK exports. The [role examples](HR-ROLE-EXAMPLES.md) include CRM-specific sources.',
+    'This review covers the listed source files. Browser, provider and production observations have separate evidence.', '',
     `The pinned SDK is **${data.sdk.package} ${data.sdk.version}**, API alias`,
     `**${data.sdk.apiVersion}**. The app declaration and lockfile must retain that SDK version.`,
     `Current selection: **${counts['selected-mock']} capabilities with`,

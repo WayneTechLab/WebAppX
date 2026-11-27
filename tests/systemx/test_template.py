@@ -198,8 +198,9 @@ class StarterParity(unittest.TestCase):
         self.assertEqual({item['id']: len(item['entries']) for item in report['groups']},
                          {'app': 22, 'dependency': 2, 'asset': 2, 'configuration': 17})
         self.assertEqual(report['counts'], {'mapped': 43, 'inventoried': 43,
-                         'matched': 19, 'intentional': 22, 'starterOnly': 2, 'differences': 0})
+                         'matched': 18, 'intentional': 23, 'starterOnly': 2, 'differences': 0})
         self.assertEqual(self.row(report, 'app', 'src/main.tsx')['status'], 'matched')
+        self.assertEqual(self.row(report, 'app', 'src/pages/DocsPage.tsx')['status'], 'intentional')
         self.assertEqual(self.row(report, 'dependency', 'package.json')['status'], 'intentional')
         self.assertEqual(self.row(report, 'configuration', '.github/workflows/ci.yml')['status'], 'starter-only')
         self.assertEqual(self.row(report, 'app', 'src/components/shell/SiteControls.tsx')['status'], 'starter-only')

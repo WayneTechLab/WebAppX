@@ -56,6 +56,11 @@ const requiredSources = [
   'src/crm/merge-report.ts', 'src/crm/merge-projection.ts',
   'src/crm/merge-controller.ts', 'src/crm/merge-host.ts',
   'src/crm/draft-tabs.ts', 'src/crm/CrmMergeHost.tsx', 'src/crm/CrmMerges.tsx',
+  'src/portals/portal-runtime.ts', 'src/portals/portal-runtime-context.tsx',
+  'src/portals/owned-mock-storage.ts', 'src/portals/storage-presentation.ts',
+  'src/lib/navigation-types.ts', 'src/lib/navigation-focus.ts',
+  'src/lib/navigation-focus-dom.ts', 'src/lib/useCommittedNavigationFocus.ts',
+  'src/components/navigation/AppLink.tsx',
 ]
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value)
 function fields(value, expected, label) {
@@ -98,7 +103,7 @@ export function validateHrRoleExamples(fixture) {
   fields(review, ['proposalId', 'criterion', 'sourceRevision', 'canonicalDocument', 'hashMode', 'reviewedSources'], 'Review basis')
   if (review.proposalId !== 'WX-0908' || review.canonicalDocument !== 'docs/PORTAL-CAPABILITIES.md' || review.hashMode !== 'utf8-lf-sha256' || typeof review.sourceRevision !== 'string' || !/^[0-9a-f]{40}$/.test(review.sourceRevision)) throw new Error('Use the reviewed WX-0908 source and canonical capability document')
   text(review.criterion, 'Acceptance criterion')
-  list(review.reviewedSources, 'Reviewed sources', { maximum: 98 })
+  list(review.reviewedSources, 'Reviewed sources', { maximum: requiredSources.length })
   const sources = new Set()
   for (const source of review.reviewedSources) {
     fields(source, ['path', 'sha256'], 'Reviewed source')
@@ -172,11 +177,11 @@ export function renderHrRoleExamples(input) {
     'A role example is an actor, resource, action and current state; opening a route does not establish permission for its domain transitions.', '',
     `Review basis: ${code(fixture.review.sourceRevision)} and proposal ${code(fixture.review.proposalId)}.`,
     `Original criterion: ${escaped(fixture.review.criterion)}`, '',
-    'The revision above names the supplied published baseline. The fingerprints below bind the explicitly reviewed CRM merge working tree.',
-    'Agent 0 froze 145 application source files by exact bytes in the [runtime source manifest](evidence/crm-merge-runtime-2026-10-15.json); its SHA-256 is `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`.',
-    'The fifteen added CRM sources cover the transitive import, replay, private preview and historical-projection boundary. The original seven HR roles and eighteen literal HR cases are unchanged.',
+    'The revision above identifies the integration base. The source fingerprints include the foundation walkthrough, storage and navigation changes reviewed on November 26, 2026.',
+    'The October 15 CRM review recorded 145 application files in the [runtime source manifest](evidence/crm-merge-runtime-2026-10-15.json); its SHA-256 is `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`.',
+    'The current roster includes 107 files. Nine storage and navigation dependencies cover adapter selection, owned keys, durability messages and focus restoration. Fifteen CRM files cover imports, replay, private preview and historical projections. The fixture specifies seven HR roles and eighteen cases.',
     'Complete CRM backups may include retired/retained merge captures and the first-merge baseline/ordered journal; role-scoped screens remain narrower. This source review adds no provider scope.',
-    'This source-only review establishes no new commit, browser observation, provider operation or production acceptance.', '',
+    'This review covers the listed source files. Browser, provider and production observations have separate evidence.', '',
     'The [reviewed fixture](../tests/fixtures/hr-capability-examples.json) supplies each action, prerequisite and literal expected result.',
     'The independent [domain tests](../tests/hr/role-examples.test.mjs) exercise the actual HR transitions, ownership checks, projections and complete backup codecs.',
     'Synthetic preview choices and local MOCK receipts do not authenticate people, assign account grants, establish tenant membership or enable provider operations.', '',

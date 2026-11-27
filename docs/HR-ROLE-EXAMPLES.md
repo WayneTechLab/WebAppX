@@ -4,14 +4,14 @@ These are concrete synthetic examples from the reviewed fixture. Use the
 [canonical cross-portal capability matrix](PORTAL-CAPABILITIES.md) for the complete vocabulary, role scopes and provider boundary.
 A role example is an actor, resource, action and current state; opening a route does not establish permission for its domain transitions.
 
-Review basis: ` 317f47806b7f86dce00f15ee5ced7c0e0bae6116 ` and proposal ` WX-0908 `.
+Review basis: ` 9b7555671289d1af7d54dfcb6e533dbb7d990148 ` and proposal ` WX-0908 `.
 Original criterion: A documentation generator derives the HR role examples from reviewed capability fixtures, links the canonical cross-portal matrix and fails its consistency check when documented actions drift from the fixture definitions.
 
-The revision above names the supplied published baseline. The fingerprints below bind the explicitly reviewed CRM merge working tree.
-Agent 0 froze 145 application source files by exact bytes in the [runtime source manifest](evidence/crm-merge-runtime-2026-10-15.json); its SHA-256 is `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`.
-The fifteen added CRM sources cover the transitive import, replay, private preview and historical-projection boundary. The original seven HR roles and eighteen literal HR cases are unchanged.
+The revision above identifies the integration base. The source fingerprints include the foundation walkthrough, storage and navigation changes reviewed on November 26, 2026.
+The October 15 CRM review recorded 145 application files in the [runtime source manifest](evidence/crm-merge-runtime-2026-10-15.json); its SHA-256 is `f1588c3ed32d5c198aa74f7a673ebdd32422eacc659d754e73fac03bc68e4d7e`.
+The current roster includes 107 files. Nine storage and navigation dependencies cover adapter selection, owned keys, durability messages and focus restoration. Fifteen CRM files cover imports, replay, private preview and historical projections. The fixture specifies seven HR roles and eighteen cases.
 Complete CRM backups may include retired/retained merge captures and the first-merge baseline/ordered journal; role-scoped screens remain narrower. This source review adds no provider scope.
-This source-only review establishes no new commit, browser observation, provider operation or production acceptance.
+This review covers the listed source files. Browser, provider and production observations have separate evidence.
 
 The [reviewed fixture](../tests/fixtures/hr-capability-examples.json) supplies each action, prerequisite and literal expected result.
 The independent [domain tests](../tests/hr/role-examples.test.mjs) exercise the actual HR transitions, ownership checks, projections and complete backup codecs.
@@ -364,14 +364,14 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/hr/persistence.ts](../src/hr/persistence.ts) | ` 1c313c6ebd78b7eccec8cb6373e1b2e510f12a744883b6f8054fe0c112e6a8e0 ` |
 | [src/portals/backup.ts](../src/portals/backup.ts) | ` b65026ffc361a10b03a9585ae720d54f9c14f53f0ea5c9bf2b3c6dad53a26a1a ` |
 | [src/portals/combined-backup.ts](../src/portals/combined-backup.ts) | ` 186c9b29a0ce2d74b81bacba0713675ea85713bc452d1ee6a5dc26927b96a726 ` |
-| [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | ` 850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809 ` |
-| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51 ` |
-| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` f09c81627ae7767a4b2e8aa9587dcf00cb55ae9da9870e4c01438ae28b3db13a ` |
+| [src/portals/DemoWorkspaceBackup.tsx](../src/portals/DemoWorkspaceBackup.tsx) | ` 637945c53e417984eb56a8589bff16523ce9c13dec9d0feda25b12d1dca8b02e ` |
+| [src/portals/CombinedWorkspaceBackup.tsx](../src/portals/CombinedWorkspaceBackup.tsx) | ` 33aa5df00df9374666d4401eacc130f66ba0a9ea4abcd994b21a276bb297a55e ` |
+| [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` fefca0ec535d5096a68795f921498877248d8e0c72010b250ddbd34dafc2ed35 ` |
 | [.SYSTEMX/GUSTO/mock/fixtures/demo-company.json](../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json) | ` 14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3 ` |
 | [src/portals/unsaved-work-core.ts](../src/portals/unsaved-work-core.ts) | ` f5f7db3ae4ff9c70edb4c3dfd7052075c0b5f3fe3e7c36333ebf311ff0623e14 ` |
 | [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | ` 5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316 ` |
-| [src/lib/navigation.ts](../src/lib/navigation.ts) | ` d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24 ` |
-| [src/router.tsx](../src/router.tsx) | ` ec93762a8acbb9bbfdf43ceab5858a55243491b8ca5e7404419d71df4ab359c7 ` |
+| [src/lib/navigation.ts](../src/lib/navigation.ts) | ` 484de4b24bb55a2c310f1e2654477922ce9be5bf232d8aa604a5beb4d15a8da4 ` |
+| [src/router.tsx](../src/router.tsx) | ` c7d7458003ed602b8796577e8e8749885153e0c71eab3a844373c91f0d7949b4 ` |
 | [src/hr/components/useHrFormDraft.ts](../src/hr/components/useHrFormDraft.ts) | ` d93f943cad287eb323ea80799d9f807d1e537aaf1dd9032b51a6e6c50c9265e7 ` |
 | [src/hr/components/PeopleOperations.tsx](../src/hr/components/PeopleOperations.tsx) | ` a6f6ade235d7c4ce8dec497cbc5a4c6fbf9fe6553efb71f5e30f6b99683e3d0b ` |
 | [src/hr/components/HrServiceDesk.tsx](../src/hr/components/HrServiceDesk.tsx) | ` 584ce87da135d5bdc04c56fd9c4789d5e8269c42e7a9f8308ef42adaf8ba1267 ` |
@@ -379,20 +379,20 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/hr/components/HrPerformance.tsx](../src/hr/components/HrPerformance.tsx) | ` 7c27e5b9a36dc02f69725c101e21568661b9820b613bca0fe44e781f81090357 ` |
 | [src/hr/components/HrSurveys.tsx](../src/hr/components/HrSurveys.tsx) | ` ba28cb8d4bdc1d5a3e313be89f4272bbd340dedbb3d1d9008609a48b71a794ef ` |
 | [src/cms/model.ts](../src/cms/model.ts) | ` 2bd7580d3fd0e42a27810fe65ccf04aae0e3a2a69ac01df05a7acc9c7cf28bbf ` |
-| [src/cms/CmsDemo.tsx](../src/cms/CmsDemo.tsx) | ` c44c65a9250f5263eb5c671418794225a0c10b446597dce15c5f72669b32a10d ` |
+| [src/cms/CmsDemo.tsx](../src/cms/CmsDemo.tsx) | ` fdbb13c0325f90a76cb49b11009fa30955c80b04870fdb25fac44476fbbf17e2 ` |
 | [src/cms/editor-recovery.ts](../src/cms/editor-recovery.ts) | ` 0806b91c571018ebb5735130a670a5cf0fcd9d5d00227e9b6f425a49a982ac27 ` |
-| [src/portals/PortalWorkspaceProvider.tsx](../src/portals/PortalWorkspaceProvider.tsx) | ` 186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa ` |
-| [src/portals/useDemoPersistence.ts](../src/portals/useDemoPersistence.ts) | ` e138711b841a0b63abe34d2d4ca0b485a90d1280f06f9b36655a64e9453c649b ` |
+| [src/portals/PortalWorkspaceProvider.tsx](../src/portals/PortalWorkspaceProvider.tsx) | ` c9d6f8edfa7fb39034b50d6c6cafbdfcbef193a9ca975716702554a731a15408 ` |
+| [src/portals/useDemoPersistence.ts](../src/portals/useDemoPersistence.ts) | ` bb2a2a6d5a61e323477013d41690e72e2f1d13ff61bc41e6ea4d77cfd49050e8 ` |
 | [src/portals/recovery-preferences.ts](../src/portals/recovery-preferences.ts) | ` 0104715273131dfc397c991b3fe201d525e32903b21b265ddc17bd5fe3391859 ` |
 | [src/portals/replacement-recovery.ts](../src/portals/replacement-recovery.ts) | ` 4d80db30057b7ddd1974400e0a8555b33158ec7b8ce55633726b2f8de839dc2c ` |
-| [src/portals/DemoWorkspaceReset.tsx](../src/portals/DemoWorkspaceReset.tsx) | ` 907be2ce4b8182c8207383136b327948b8fb5f9bf879e6080ebeb537c43b6d81 ` |
-| [src/portals/RecoveryCheckpointPreview.tsx](../src/portals/RecoveryCheckpointPreview.tsx) | ` 537ac122bab47679253afe068c4af1aa3c158903bc13c7a9a501a7b3a9b7c71d ` |
+| [src/portals/DemoWorkspaceReset.tsx](../src/portals/DemoWorkspaceReset.tsx) | ` 26524f2302ea4abe3ae132687613f556a43c19ecbd25133654cb907489c5d6d8 ` |
+| [src/portals/RecoveryCheckpointPreview.tsx](../src/portals/RecoveryCheckpointPreview.tsx) | ` d72197540693245a14bc215bef24f0cd0e00fafe73349ab51d9e4c4957ba0a3e ` |
 | [src/portals/restore-points.ts](../src/portals/restore-points.ts) | ` d80d770440de2db847fd5cd933a960fbe2cc88adb4f80d9bd9ae13e97ce89e1b ` |
-| [src/portals/RestorePointHistory.tsx](../src/portals/RestorePointHistory.tsx) | ` 883a619f1e6f78db5ffee7302b48b36b6f88823ddfe706699a0395ee6505183d ` |
+| [src/portals/RestorePointHistory.tsx](../src/portals/RestorePointHistory.tsx) | ` a664941a1d65fb248e98764c9e26b1d3f53296ee844950fad9e927afca473eca ` |
 | [src/portals/restore-workspaces.ts](../src/portals/restore-workspaces.ts) | ` 1e84b45222b119e9d02e75efa1ba251584353ef0ff2142db5350f009e2797cce ` |
 | [src/portals/workspace-inspection.ts](../src/portals/workspace-inspection.ts) | ` 727428394a48cc9d03d232da15d7b9f72535746ffa88f0bf6f7229294ca1616e ` |
 | [src/portals/WorkspaceInspection.tsx](../src/portals/WorkspaceInspection.tsx) | ` 6a6e47b6ca0ded2c518866944f21d9b72630b85bf0bac7261313e3ed095e0dbc ` |
-| [src/crm/CrmDemo.tsx](../src/crm/CrmDemo.tsx) | ` 2b0931d03c9c21683cc33c3272f4b86e895bf3c6f9994b771521d556422dee1d ` |
+| [src/crm/CrmDemo.tsx](../src/crm/CrmDemo.tsx) | ` 760cba846954766b0d7f980c507ea47ee76a1cdfaa0fba915efdae220a5e0d21 ` |
 | [src/hr/lifecycle-types.ts](../src/hr/lifecycle-types.ts) | ` 3d4330aa6bea5a438ba55c6e3d7ee8dab4332d538793adad81e0fe6bb955de27 ` |
 | [src/hr/lifecycle.ts](../src/hr/lifecycle.ts) | ` db1c8cd09a3145d6c0e4dfc48215d961127bb33be0306e7fcec7994ea838fb68 ` |
 | [src/hr/components/HrDirectoryCorrections.tsx](../src/hr/components/HrDirectoryCorrections.tsx) | ` 84b456d3d44cf83b2cedbf2d253a932a11522beb29e31e71510572d8779e953c ` |
@@ -428,8 +428,8 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/hr/components/HrRecruitingInterviews.tsx](../src/hr/components/HrRecruitingInterviews.tsx) | ` a7204ee9baaf233100b9eb2e8e7c9edef7de68e0f08254b0ef3280623503aada ` |
 | [src/hr/components/HrRecruitingOwnScorecards.tsx](../src/hr/components/HrRecruitingOwnScorecards.tsx) | ` 89d0637278604a9e54ab0d2cf0aff5d49393b3238c8e6d490da475bb9adbfabe ` |
 | [src/portals/ScopedPortalChrome.tsx](../src/portals/ScopedPortalChrome.tsx) | ` 4d068981ecff1b5e92b6b3b86fc0fb6729031ae065c2941763b75bce1c7c0ee8 ` |
-| [src/components/layout/Layout.tsx](../src/components/layout/Layout.tsx) | ` 41937e488db1f41614d39d68fef41b80683ac57925bee092b4aadbb139b909a6 ` |
-| [src/pages/TemplatePortalsPage.tsx](../src/pages/TemplatePortalsPage.tsx) | ` 0d76bcf1c6a32001c7efb66f3c8e95290427363ee7907c0c2575d38b9e7402da ` |
+| [src/components/layout/Layout.tsx](../src/components/layout/Layout.tsx) | ` 79fce2aa3d9e53eead6ea3b7026a853e3cc9ecd31172ee70dc0adc31d99cb422 ` |
+| [src/pages/TemplatePortalsPage.tsx](../src/pages/TemplatePortalsPage.tsx) | ` b752c0c1a0005b0fb8ed7d2ff10b90fc817335a4e70270abc66906847876a4e2 ` |
 | [src/portals/RetainedPortalSurface.tsx](../src/portals/RetainedPortalSurface.tsx) | ` 31bf40cda4f2bddc6bfb1eb68113ebf59374ea291284161df0473c85009bb82a ` |
 | [src/hr/payroll-control-types.ts](../src/hr/payroll-control-types.ts) | ` 8f6867ae6723d5929e0d85ab4cbedda8d7b89dd247fc662782a1e1acada3c68d ` |
 | [src/hr/payroll-control-value.ts](../src/hr/payroll-control-value.ts) | ` a470bbee2013a153f9d2f208fada3b6bb4e3519341555d286a6c1cd9872b014a ` |
@@ -454,3 +454,12 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/crm/draft-tabs.ts](../src/crm/draft-tabs.ts) | ` 80522aa0c263a658ab5054d22db29d81ba4261c260dcb1b495b5649cf666021d ` |
 | [src/crm/CrmMergeHost.tsx](../src/crm/CrmMergeHost.tsx) | ` a4ff5b6acb79786d339d5cc6ab2ba17127232f5cdee24a2dfdfe126736364a00 ` |
 | [src/crm/CrmMerges.tsx](../src/crm/CrmMerges.tsx) | ` be7bb9232fb9bee64e1f5d7d526781f28d76e0dedb0ef5cec44a080e0ef61270 ` |
+| [src/portals/portal-runtime.ts](../src/portals/portal-runtime.ts) | ` e8b206e158ffc35feb77f975953eaa179f1ee566cc5fddb17844f3466d5cb147 ` |
+| [src/portals/portal-runtime-context.tsx](../src/portals/portal-runtime-context.tsx) | ` e6fb22b0e5446598e25f5dd8b96f8ac2eff8a95e9d6717444c2d0b4acc3aa3bf ` |
+| [src/portals/owned-mock-storage.ts](../src/portals/owned-mock-storage.ts) | ` 1b8316ea5e52833722a1dec8c5a83ad0ea3886fa203ff23caed650f20378be0f ` |
+| [src/portals/storage-presentation.ts](../src/portals/storage-presentation.ts) | ` 81ac083221d84305d08991195f5dfd88413e867fe3b4469761f73bcb4921b119 ` |
+| [src/lib/navigation-types.ts](../src/lib/navigation-types.ts) | ` 44bdbe9cae0c2c312cc9fcc3ab17bdc6131d3b5b3cee64193cd58701a1e17694 ` |
+| [src/lib/navigation-focus.ts](../src/lib/navigation-focus.ts) | ` 4f9480604dfe55aeee6c829a6f1fd0cac459819dd903482744146c45fd46024c ` |
+| [src/lib/navigation-focus-dom.ts](../src/lib/navigation-focus-dom.ts) | ` 366afc0cdf672aeebd6b30e87fecde7d9d44c135f88949b2f5f4cb5f6f229e53 ` |
+| [src/lib/useCommittedNavigationFocus.ts](../src/lib/useCommittedNavigationFocus.ts) | ` bbaa9adaa6492be04d2cc883c6ac7af0bdb7e2710ce912f9bba21e5c7f63e254 ` |
+| [src/components/navigation/AppLink.tsx](../src/components/navigation/AppLink.tsx) | ` a8bd199938ecd4f29fcbe80174fa5d629c91dac3d20d5a37cd2cfdd25494d3a2 ` |

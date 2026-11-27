@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "kind": "webappx-gusto-capability-gaps",
-  "reviewedOn": "2026-10-15",
+  "reviewedOn": "2026-11-26",
   "reviewBase": {
-    "revision": "317f47806b7f86dce00f15ee5ced7c0e0bae6116",
+    "revision": "9b7555671289d1af7d54dfcb6e533dbb7d990148",
     "provenance": "integration-baseline-supplied-by-agent-0"
   },
   "evidenceScope": "source-review",
@@ -86,7 +86,7 @@
     {
       "path": "src/hr/components/HrWorkspace.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "f09c81627ae7767a4b2e8aa9587dcf00cb55ae9da9870e4c01438ae28b3db13a"
+      "sha256": "fefca0ec535d5096a68795f921498877248d8e0c72010b250ddbd34dafc2ed35"
     },
     {
       "path": "src/hr/components/HrInsights.tsx",
@@ -161,12 +161,12 @@
     {
       "path": "src/lib/navigation.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "d759cb1b692746264a9846905d280deece2fef9cfcb793b378290fb09e0f2a24"
+      "sha256": "484de4b24bb55a2c310f1e2654477922ce9be5bf232d8aa604a5beb4d15a8da4"
     },
     {
       "path": "src/router.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "ec93762a8acbb9bbfdf43ceab5858a55243491b8ca5e7404419d71df4ab359c7"
+      "sha256": "c7d7458003ed602b8796577e8e8749885153e0c71eab3a844373c91f0d7949b4"
     },
     {
       "path": "src/hr/components/useHrFormDraft.ts",
@@ -201,12 +201,12 @@
     {
       "path": "src/portals/PortalWorkspaceProvider.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "186e0a0d6c4c20166e0879af7890b576c2552520a2cc2457edb010a5382408fa"
+      "sha256": "c9d6f8edfa7fb39034b50d6c6cafbdfcbef193a9ca975716702554a731a15408"
     },
     {
       "path": "src/portals/useDemoPersistence.ts",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "e138711b841a0b63abe34d2d4ca0b485a90d1280f06f9b36655a64e9453c649b"
+      "sha256": "bb2a2a6d5a61e323477013d41690e72e2f1d13ff61bc41e6ea4d77cfd49050e8"
     },
     {
       "path": "src/portals/recovery-preferences.ts",
@@ -221,17 +221,17 @@
     {
       "path": "src/portals/DemoWorkspaceBackup.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "850d431bb60e39cb37577b078e6493ba2da7b2b262c4fbbf7df9f217f34f1809"
+      "sha256": "637945c53e417984eb56a8589bff16523ce9c13dec9d0feda25b12d1dca8b02e"
     },
     {
       "path": "src/portals/DemoWorkspaceReset.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "907be2ce4b8182c8207383136b327948b8fb5f9bf879e6080ebeb537c43b6d81"
+      "sha256": "26524f2302ea4abe3ae132687613f556a43c19ecbd25133654cb907489c5d6d8"
     },
     {
       "path": "src/portals/RecoveryCheckpointPreview.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "537ac122bab47679253afe068c4af1aa3c158903bc13c7a9a501a7b3a9b7c71d"
+      "sha256": "d72197540693245a14bc215bef24f0cd0e00fafe73349ab51d9e4c4957ba0a3e"
     },
     {
       "path": "src/hr/lifecycle-types.ts",
@@ -386,12 +386,12 @@
     {
       "path": "src/components/layout/Layout.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "41937e488db1f41614d39d68fef41b80683ac57925bee092b4aadbb139b909a6"
+      "sha256": "79fce2aa3d9e53eead6ea3b7026a853e3cc9ecd31172ee70dc0adc31d99cb422"
     },
     {
       "path": "src/pages/TemplatePortalsPage.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "0d76bcf1c6a32001c7efb66f3c8e95290427363ee7907c0c2575d38b9e7402da"
+      "sha256": "b752c0c1a0005b0fb8ed7d2ff10b90fc817335a4e70270abc66906847876a4e2"
     },
     {
       "path": "src/portals/RetainedPortalSurface.tsx",
@@ -401,7 +401,7 @@
     {
       "path": "src/portals/CombinedWorkspaceBackup.tsx",
       "hashMode": "utf8-lf-sha256",
-      "sha256": "cee65258b2e8644af2f4b477b27b26602b2226ccfff815d6d9460c0aca3e7f51"
+      "sha256": "33aa5df00df9374666d4401eacc130f66ba0a9ea4abcd994b21a276bb297a55e"
     },
     {
       "path": "src/hr/payroll-control-types.ts",
@@ -437,6 +437,51 @@
       "path": "src/hr/components/HrPayrollControlHost.tsx",
       "hashMode": "utf8-lf-sha256",
       "sha256": "57e81d72dc665fa24fcb9893c19c755f1634e61e5320f9fa559a9591ce0dde3b"
+    },
+    {
+      "path": "src/portals/portal-runtime.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "e8b206e158ffc35feb77f975953eaa179f1ee566cc5fddb17844f3466d5cb147"
+    },
+    {
+      "path": "src/portals/portal-runtime-context.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "e6fb22b0e5446598e25f5dd8b96f8ac2eff8a95e9d6717444c2d0b4acc3aa3bf"
+    },
+    {
+      "path": "src/portals/owned-mock-storage.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "1b8316ea5e52833722a1dec8c5a83ad0ea3886fa203ff23caed650f20378be0f"
+    },
+    {
+      "path": "src/portals/storage-presentation.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "81ac083221d84305d08991195f5dfd88413e867fe3b4469761f73bcb4921b119"
+    },
+    {
+      "path": "src/lib/navigation-types.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "44bdbe9cae0c2c312cc9fcc3ab17bdc6131d3b5b3cee64193cd58701a1e17694"
+    },
+    {
+      "path": "src/lib/navigation-focus.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "4f9480604dfe55aeee6c829a6f1fd0cac459819dd903482744146c45fd46024c"
+    },
+    {
+      "path": "src/lib/navigation-focus-dom.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "366afc0cdf672aeebd6b30e87fecde7d9d44c135f88949b2f5f4cb5f6f229e53"
+    },
+    {
+      "path": "src/lib/useCommittedNavigationFocus.ts",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "bbaa9adaa6492be04d2cc883c6ac7af0bdb7e2710ce912f9bba21e5c7f63e254"
+    },
+    {
+      "path": "src/components/navigation/AppLink.tsx",
+      "hashMode": "utf8-lf-sha256",
+      "sha256": "a8bd199938ecd4f29fcbe80174fa5d629c91dac3d20d5a37cd2cfdd25494d3a2"
     }
   ],
   "capabilities": [
@@ -1012,7 +1057,7 @@
       "capabilitySha256": "f53e17ed9033aaf0ee4d9509b712e4f827cf834b7f466217c0f39c9b626eb217",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/payroll previews choose a 1\u2013366-day sample period and configure explicit fictional rates for all otherwise eligible employee/work dates. Independent rate/period form groups track unsaved inputs. Preparation freezes approved unpaid hours, dated rates and confirmed benefit choices; the table explains exclusions. Changed inputs, current lifecycle eligibility or selected period block calculation, review and submission until intentional repreparation. Rehire retains rate timelines and balances without inferring compensation; submitted inputs, totals and receipts remain frozen.",
+        "behavior": "Owner/payroll previews choose a 1–366-day sample period and configure explicit fictional rates for all otherwise eligible employee/work dates. Independent rate/period form groups track unsaved inputs. Preparation freezes approved unpaid hours, dated rates and confirmed benefit choices; the table explains exclusions. Changed inputs, current lifecycle eligibility or selected period block calculation, review and submission until intentional repreparation. Rehire retains rate timelines and balances without inferring compensation; submitted inputs, totals and receipts remain frozen.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/mock-workflows.ts",
@@ -1064,7 +1109,7 @@
       "capabilitySha256": "b72eb12e78aa7be722ee8c203d26e1325661d681779df468ad10faebac29c25a",
       "native": {
         "coverage": "read-only-mock",
-        "behavior": "Employee pay history shows only the bound employee\u2019s submitted native payroll statements, with the receipt\u2019s saved period, work dates, hours, fictional rates and totals. Later rate changes leave those statements unchanged. Legacy receipts without a period keep the historical fixed sample period; a separate fixture statement remains read-only.",
+        "behavior": "Employee pay history shows only the bound employee’s submitted native payroll statements, with the receipt’s saved period, work dates, hours, fictional rates and totals. Later rate changes leave those statements unchanged. Legacy receipts without a period keep the historical fixed sample period; a separate fixture statement remains read-only.",
         "refs": [
           "src/hr/components/HrWorkspace.tsx",
           "src/hr/components/HrInsights.tsx",
@@ -1367,7 +1412,7 @@
       "capabilitySha256": "1d8cfa9a6e375dbfaa1869edf4b1fa2d385a2d7d0c985f13bbb00f15e1806b30",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/HR create, edit, publish and close fictional jobs; candidates move through screening/interview/offer/hire or rejection. An accepted hire atomically initializes its directory, workflow and balances, capturing the selected onboarding version when the lifecycle extension is present; old calls retain their legacy checklist. Current manager relationships supply action checks. Job/candidate forms have independent dirty groups, and closing the candidate form\u2019s selected published job is guarded first.",
+        "behavior": "Owner/HR create, edit, publish and close fictional jobs; candidates move through screening/interview/offer/hire or rejection. An accepted hire atomically initializes its directory, workflow and balances, capturing the selected onboarding version when the lifecycle extension is present; old calls retain their legacy checklist. Current manager relationships supply action checks. Job/candidate forms have independent dirty groups, and closing the candidate form’s selected published job is guarded first.",
         "refs": [
           "src/hr/recruiting.ts",
           "src/hr/recruiting-link.ts",
@@ -1647,7 +1692,7 @@
       "capabilitySha256": "12729b8d6bbb8863f7ffebf063fe6a4c898ec883150a12b1f08143b8fbd6aee0",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Goals and private self-review drafts progress through self submission, assigned manager publication and employee acknowledgment under current native relationship checks. Independent goal/cycle/progress/self/manager form groups require current text to be saved before submission/publication. A transfer or rehire that changes an unfinished review\u2019s direct manager is refused until that review is acknowledged; captured comments, manager identity and published content are not rewritten.",
+        "behavior": "Goals and private self-review drafts progress through self submission, assigned manager publication and employee acknowledgment under current native relationship checks. Independent goal/cycle/progress/self/manager form groups require current text to be saved before submission/publication. A transfer or rehire that changes an unfinished review’s direct manager is refused until that review is acknowledged; captured comments, manager identity and published content are not rewritten.",
         "refs": [
           "src/hr/performance.ts",
           "src/hr/model.ts",
@@ -1728,7 +1773,7 @@
       "capabilitySha256": "b43b91222d06511c5717e50836ea48421d7ea8b611ff80bfbed583e54f4cb328",
       "native": {
         "coverage": "interactive-mock",
-        "behavior": "Owner/HR draft, publish and close sample surveys; identified assigned employees save drafts and submit own answers. Questions/audience and response inputs have separate normalized dirty groups. Publication/submission requires the current draft or answers to be saved first; accepted Save clears that form\u2019s baseline. Saved private answers remain domain records, and responses are not anonymous.",
+        "behavior": "Owner/HR draft, publish and close sample surveys; identified assigned employees save drafts and submit own answers. Questions/audience and response inputs have separate normalized dirty groups. Publication/submission requires the current draft or answers to be saved first; accepted Save clears that form’s baseline. Saved private answers remain domain records, and responses are not anonymous.",
         "refs": [
           "src/hr/surveys.ts",
           "src/hr/components/HrSurveys.tsx",

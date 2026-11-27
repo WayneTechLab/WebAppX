@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+declare const __WEBAPPX_WALKTHROUGH__: boolean
+
 interface ImportMetaEnv {
   readonly VITE_FIREBASE_USE_EMULATORS?: string
   readonly VITE_FIREBASE_EMULATOR_HOST?: string
