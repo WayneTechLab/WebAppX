@@ -312,7 +312,7 @@
       "relation": "intentional",
       "hashMode": "utf8-lf-sha256",
       "reason": "Root styling includes native workspace/accessibility surfaces; the starter stylesheet remains the smaller standalone scaffold.",
-      "rootSha256": "4c226b651f10a8187827f174e7af308338028f59bd2a7c4a368f4724b76155c5",
+      "rootSha256": "0f0f9ad6a7f8e91699dfdb0216528023f8ca322205893369aa39415a59896b20",
       "starterSha256": "8977350cb6cef892bfeb9d921f9c036eb283fc1c3132572f2a375dd3d9c7a865"
     },
     {

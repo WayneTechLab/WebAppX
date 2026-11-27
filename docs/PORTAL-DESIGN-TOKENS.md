@@ -4,7 +4,7 @@ This source contract documents the bounded shared vocabulary for original WX-070
 
 ## One finite vocabulary
 
-[`src/index.css`](../src/index.css) defines twelve properties. They apply through explicit portal classes; domain status colors, brand accents, existing grids, saved records and role behavior remain with their current owners. There is no theme selector or new persistence key. Spacing uses rem units so the existing large/x-large text preference scales it.
+The application stylesheet imports twelve shared properties from [the portal stylesheet](../src/portals/foundation.css). They apply through explicit portal classes; domain status colors, brand accents, existing grids, saved records and role behavior remain with their current owners. There is no theme selector or new persistence key. Spacing uses rem units so the existing large/x-large text preference scales it.
 
 | Token | Value | Meaning and consuming class |
 | --- | --- | --- |
