@@ -1,0 +1,17 @@
+export const previewPresets = Object.freeze({
+  'desktop-1920': { label: 'Large desktop', platform: 'Desktop', width: 1920 },
+  'desktop-1440': { label: 'Desktop', platform: 'Desktop', width: 1440 },
+  'laptop-1280': { label: 'Laptop', platform: 'Desktop', width: 1280 },
+  'desktop-1024': { label: 'Small desktop', platform: 'Desktop', width: 1024 },
+  'ipad-landscape-1180': { label: 'iPad landscape', platform: 'iPadOS', width: 1180 },
+  'tablet-820': { label: 'iPad portrait', platform: 'iPadOS', width: 820 },
+  'ios-landscape-667': { label: 'iPhone landscape', platform: 'iOS', width: 667 },
+  'mobile-landscape-667': { label: 'Mobile landscape', platform: 'Responsive', width: 667 },
+  'ios-440': { label: 'iPhone large portrait', platform: 'iOS', width: 440 },
+  'ios-393': { label: 'iPhone portrait', platform: 'iOS', width: 393 },
+  'android-tablet-landscape-1280': { label: 'Android tablet landscape', platform: 'Android', width: 1280 },
+  'android-tablet-834': { label: 'Android tablet portrait', platform: 'Android', width: 834 },
+  'android-landscape-780': { label: 'Android landscape', platform: 'Android', width: 780 },
+  'android-412': { label: 'Android phone portrait', platform: 'Android', width: 412 },
+  'android-360': { label: 'Android compact portrait', platform: 'Android', width: 360 },
+})

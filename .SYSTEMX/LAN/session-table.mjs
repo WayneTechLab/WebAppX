@@ -68,7 +68,7 @@ function listenerAt(snapshot, origin, processEntry) {
   return { state: 'owned', pid: processEntry.pid }
 }
 
-function observe(root, { platform, inspectProcess, inspectListeners }) {
+function observe(root, { platform, inspectProcess, inspectListeners, summarizeRecord }) {
   const row = emptyRow(root)
   try {
     const snapshot = readSessionRecordSnapshot(root)
@@ -114,14 +114,17 @@ function observe(root, { platform, inspectProcess, inspectListeners }) {
       else row.reasons.push('origin-listener-' + row.listener.state)
     }
     if (!snapshot.current()) return { ...emptyRow(root), reasons: ['session-record-changed'] }
+    // A local exporter can project fixed diagnostic fields from this same verified
+    // observation. Ordinary table rows retain their original public shape.
+    if (summarizeRecord) row.details = summarizeRecord(record, plan)
     return row
   } catch { return { ...emptyRow(root), reasons: ['session-observation-unavailable'] } }
 }
 
 export function inspectWorkspaceSession(repoRoot, {
-  inspectProcess = inspectSessionProcess, inspectListeners = inspectSessionListeners, platform = process.platform,
+  inspectProcess = inspectSessionProcess, inspectListeners = inspectSessionListeners, platform = process.platform, summarizeRecord,
 } = {}) {
-  return observe(selectedRoot(repoRoot), { platform, inspectProcess, inspectListeners: () => inspectListeners({ platform }) })
+  return observe(selectedRoot(repoRoot), { platform, inspectProcess, summarizeRecord, inspectListeners: () => inspectListeners({ platform }) })
 }
 
 /** Inspect only the selected roots. A listener observation is shared for
