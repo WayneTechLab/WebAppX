@@ -14,7 +14,6 @@
 
 # Generated evaluator PDFs retain exact bytes, including on CRLF checkouts.
 /output/pdf/*.pdf binary
-/.SYSTEMX/LAN/Progress/*.xlsx binary
 
 # Seed fingerprints and the governance-generated README use LF on every host.
 /.SYSTEMX/GLOBAL/CONTEXT.md text eol=lf
