@@ -722,6 +722,16 @@
       "description": "Develop, inspect or verify the application and its optional local runtime."
     },
     {
+      "name": "webappxai:audit",
+      "purpose": "release",
+      "description": "Audit the WebAppXai model-serving Functions package dependencies."
+    },
+    {
+      "name": "webappxai:test",
+      "purpose": "release",
+      "description": "Test the local and hosted research pilot asset gates with fixtures."
+    },
+    {
       "name": "wiki:check",
       "purpose": "wiki",
       "description": "Review or publish the separately maintained wiki documentation."

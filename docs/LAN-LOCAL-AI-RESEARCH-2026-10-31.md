@@ -1,19 +1,62 @@
 # WebAppXai scratch AI research and adoption plan
 
-Updated 2026-10-31. **WebAppXai**, originally trained as WebAppX Scratch AI Pilot, is a separate research
-checkpoint trained from random weights and a newly trained tokenizer using
-selected WebAppX source and documentation. Its model is below the requested
-160 MB limit and its isolated desktop offline pipeline works. Answer quality is
-not accepted: the disclosed exploratory check produced **2/10 exact matches**
-and several answers confused unrelated facts. It is not the production help
-assistant.
+Updated November 27, 2026. **WebAppXai** is a scratch-trained research model
+available in the WebAppX Help desk. Its October exploratory check produced **2
+exact matches in 10 prompts**. Several answers mixed up unrelated facts. Use
+the curated FAQ for setup guidance. The model has no independent quality
+qualification.
 
-This research does not complete requirements in the
-[F005/F006 LAN wave](LAN-GRAPH-API-PLAN-2026-10-31.md), change either fixed
-backlog or install a model into the template. The existing bottom-left help
-widget remains the intended future entry point.
+## Load the pilot in WebAppX
 
-## Requested app behavior
+1. Open **Help** in the lower-left corner. The three FAQ questions and **Contact support** work before sign-in.
+2. Choose **Sign in to load model** and complete the app's normal Firebase sign-in. Reopen **Help** and choose **Load model**.
+3. Wait for **Ready on this device**, enter a question and choose **Send locally**. For a short test, try “What is WebAppX?”.
+4. Use **Stop** to interrupt a reply or **Clear chat** to start a new conversation. Closing Help, unloading the model or signing out clears the conversation. **Delete downloaded model** removes the browser's saved model and tokenizer.
+
+The first load transfers approximately 20.85 MB of weights, 0.27 MB of tokenizer
+data and 15 MB of browser runtime. A dedicated worker generates replies on the
+device. Conversation text lives in memory. The worker's network policy blocks
+outbound connections during inference. Treat the first load and sign-in as
+online operations.
+
+### Set up a local checkout
+
+Obtain `model.onnx` and `tokenizer.json` for `pilot-003-chat` from Wayne Tech
+Lab's private research package. Check their SHA-256 values against the table
+and digests below. Put the two files together outside the repository and all
+Vite-served directories. In the root checkout's ignored `.env.local`, set
+`WEBAPPXAI_MODEL_DIR` to that directory's absolute path. Keep the assets and
+the setting out of source control.
+
+Install the app's locked npm dependencies and start its supervised local
+session with `npm run dev:systemx`. Use the Vite URL printed by the supervisor.
+Use a regular email/password account in the local `demo-systemx` Auth emulator.
+An existing production account is separate from accounts in this emulator.
+If model loading fails, check the private files, model directory and emulator
+session, then retry. The FAQ remains available.
+
+To repeat the end-to-end test, run `node scripts/browser-webappxai.mjs --origin <local-app-origin>`
+from the checkout, replacing the placeholder with the loopback Vite origin.
+The test uses Chromium, the private pilot files and a disposable local account.
+The ordinary CI model tests run with fixtures.
+
+### Configure a hosted installation
+
+The checked-in Firebase Hosting configuration routes the two versioned model
+URLs under `/api/webappxai/pilot-003-chat/` to the `webappxaiModel` HTTPS
+function in `us-central1`. Before deploying an authorized installation,
+install the locked Node 22 dependencies in `integrations/webappxai/functions`
+and configure `WEBAPPXAI_STORAGE_BUCKET` for the function. Place the two unchanged
+files in that private bucket under `webappxai/pilot-003-chat/`. Enforce public
+access prevention on the bucket, keep the objects free of Firebase download
+tokens, and grant the function's service account access to read bucket metadata
+and the two objects. The function checks the signed-in user's Firebase ID token
+and verifies each object's size and digest before delivery. The Git repository
+contains the integration code and asset digests. Model distribution remains
+private. See [Firebase ID token verification](https://firebase.google.com/docs/auth/admin/verify-id-tokens)
+and [Firebase Hosting integration](https://firebase.google.com/docs/hosting/functions).
+
+## Original research requirements
 
 Opening help should offer immediate, clearly labeled preloaded help. A separate
 explicit installation action should name the AI model and disclose measured
@@ -63,9 +106,8 @@ Experiment-receipt SHA-256:
 Eleven pipeline checks passed, including split/resumed training state equivalence
 and ONNX numerical parity. Ten browser groups passed independently in isolated
 Chromium and installed Chrome using CPU/WASM. The checks covered preloaded help,
-model loading, tokenizer/logit parity, local generation without HTTP requests,+cached offline cold reload, session clearing, model deletion and absence of
-external-origin requests/page errors. Those results belong to the separate
-prototype, not the actual WebAppX widget.
+model loading, tokenizer/logit parity, local generation without HTTP requests, cached offline cold reload, session clearing, model deletion and absence of
+external-origin requests/page errors. Those October results cover the stand-alone prototype.
 
 The chat annotations contain twenty source-derived training examples and ten
 validation phrasings of the same facts. Validation loss was observed during
@@ -84,18 +126,17 @@ were converted to relative paths; the original receipt remains preserved.
 
 The private destination and upload revision belong to the operator handoff. The
 model is not a public release, no public distribution license was selected, and
-this publication does not integrate inference into WebAppX or satisfy an app
-installation gate. Raw corpus, checkpoints and training environments were not
+the November WebAppX integration uses an authenticated gateway for delivery. Raw corpus, checkpoints and training environments were not
 uploaded.
 
 ## Adoption checklist outside LAN acceptance
 
 - [ ] Review annotations, source inventory, dependency licensing, checkpoint lineage and a deliberate model distribution license.
-- [ ] Establish an independent held-out answer-quality gate and retain all failures before app adoption.
+- [ ] Establish an independent held-out answer-quality gate and retain all failures before relying on the pilot for support.
 - [ ] Improve and evaluate only through a separately selected, provenance-preserving scratch-training run.
-- [ ] Define the installation/update authentication gate and the policy for installed offline access.
+- [x] Gate model loading on app sign-in and allow local generation after loading. Full offline application startup remains a separate qualification.
 - [ ] Choose a model distribution destination and verify asset manifests, hashes, updates and recovery without adding binaries to ordinary source commits.
-- [ ] Integrate the named optional download into the existing help widget while preserving instant preloaded help.
+- [x] Integrate the named optional download into the existing Help desk while preserving instant preloaded help.
 - [ ] Keep complete model weights and shards below 160,000,000 bytes; disclose tokenizer/runtime/knowledge downloads and memory needs separately.
 - [ ] Package and test the complete offline shell, tokenizer, runtime, model and knowledge assets, including cache eviction and origin/profile changes.
 - [ ] Review worker message interfaces, local asset restrictions, renderer and telemetry exclusions; test session-private behavior end to end.
@@ -105,6 +146,4 @@ uploaded.
 
 Model files, checkpoints, raw corpus, training environment and portable archives
 remain in the separate local research workspace. The private handoff retains
-their exact locations, hashes, retraining commands and original reports. No
-authenticated download gate, actual widget inference, mobile/WebView/IoT/GPU
-qualification or production AI release is established by this pilot.
+their exact locations, hashes, retraining commands and original reports. The November integration targets desktop CPU/WASM. Mobile, embedded and GPU qualification, independent answer-quality acceptance and production deployment remain open.

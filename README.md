@@ -1858,3 +1858,17 @@ downloads and read-only source history. These preserve original baselines and
 keep source, browser-local records, portal simulations and production delivery
 separate. Follow the [GUI walkthrough](docs/LAN-TEMPLATE-GUI-WORKFLOW.md) and
 [previous F001 QA receipt](docs/LAN-RECOVERY-HISTORY-QA-2026-10-29.md).
+
+## Use WebAppXai in the Help desk
+
+Open **Help** in the lower-left corner of the app. The FAQ works immediately.
+Under **WebAppXai · Research pilot**, choose **Sign in to load model**. After
+sign-in, reopen **Help**, select **Load model**, wait for **Ready on this
+device**, enter a message and choose **Send locally**. The first load uses about
+36 MB. Closing Help clears the conversation. **Delete downloaded model**
+removes the saved model and tokenizer from this browser.
+
+The pilot matched 2 of 10 reference answers. For setup instructions, use the
+FAQ. To enable the optional pilot in a new checkout, an operator with access
+to the private model supplies the two verified files. See the
+[local setup, hosting requirements and model evaluation](docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md).

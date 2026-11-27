@@ -7,6 +7,7 @@ const repository = fileURLToPath(new URL('../', import.meta.url))
 const ROOT = 'webappx'
 const SYSTEMX = 'systemx-managed'
 const GUSTO = 'gusto-functions'
+const WEBAPPXAI = 'webappxai-functions'
 const reviewed = new Map()
 const behavior = (mutation, workspaces, note) => ({ mutation, workspaces: [ROOT, ...workspaces], note })
 const source = (note, workspaces = []) => behavior('source-read-only', workspaces, note)
@@ -86,6 +87,8 @@ register('node .SYSTEMX/scripts/account-level-check.mjs', source('Reads account-
 register('node .SYSTEMX/scripts/auth-mfa-readiness-check.mjs', source('Reads auth/MFA readiness configuration.', [SYSTEMX]))
 register('node .SYSTEMX/scripts/agent-standard-check.mjs', source('Reads agent standards and coordination records.', [SYSTEMX]))
 register('node .SYSTEMX/scripts/assert-lan-isolation.mjs', source('Reads production output to reject local LAN tooling.', [SYSTEMX]))
+register('node --test integrations/webappxai/test/*.test.mjs integrations/webappxai/functions/test/*.test.mjs', temporary('Tests the private model gateway, Firebase authorization and asset identity using local fixtures.', [WEBAPPXAI]))
+register('npm --prefix integrations/webappxai/functions audit --audit-level=high', behavior('registry-network-and-npm-cache', [WEBAPPXAI], 'Audits the private model-serving Functions dependencies through the configured npm registry.'))
 register('npm audit --audit-level=high', behavior('registry-network-and-npm-cache', [], 'Contacts the configured package registry for an audit; npm may write cache/log files. Does not install or fix packages.'))
 register('npm --prefix integrations/gusto/functions audit --audit-level=high', behavior('registry-network-and-npm-cache', [GUSTO], 'Audits the Gusto Functions package through the configured registry; npm may write cache/log files. Does not install or fix packages.'))
 register('tsc -b --noCheck', behavior('local-build-output', [], 'May emit TypeScript build output and incremental build metadata.'))
@@ -148,7 +151,7 @@ function describeScript(name, scripts, stack = []) {
 
 /** Pure report construction: caller supplies source data. No command execution,
  * network calls, environment reads, filesystem writes or provider probes. */
-export function buildCiPlan({ shellSource, packageJson, gustoPackageJson = {}, installation = {} }) {
+export function buildCiPlan({ shellSource, packageJson, gustoPackageJson = {}, webappxaiPackageJson = {}, installation = {} }) {
   if (packageJson?.scripts?.['ci:all'] !== 'bash scripts/check-template.sh') throw new Error('Unsupported ci:all entry point; expected the maintained gate runner.')
   const scripts = packageJson.scripts
   const gateNames = parseGateOrder(shellSource)
@@ -166,6 +169,7 @@ export function buildCiPlan({ shellSource, packageJson, gustoPackageJson = {}, i
     workspaces: [
       { id: ROOT, path: '.', description: 'Root React/Vite/Firebase application and host tooling', node: safeEngine(packageJson.engines?.node) },
       { id: GUSTO, path: 'integrations/gusto/functions', description: 'Gusto Functions dependency audit and account-free backend source tests', node: safeEngine(gustoPackageJson.engines?.node) },
+      { id: WEBAPPXAI, path: 'integrations/webappxai/functions', description: 'Private model-serving Functions, asset verification and dependency audit', node: safeEngine(webappxaiPackageJson.engines?.node) },
       { id: SYSTEMX, path: `.SYSTEMX/.systemx/releases/${version}`, description: 'Selected immutable shared release; outer .SYSTEMX records remain the host project scope', version },
     ],
     lifecycle: {
@@ -200,13 +204,14 @@ export function renderCiPlan(report) {
 
 export async function main(args = process.argv.slice(2)) {
   if (args.some(arg => arg !== '--json') || args.length > 1) throw new Error('Usage: npm run ci:plan -- [--json]')
-  const [shellSource, packageText, gustoText, installationText] = await Promise.all([
+  const [shellSource, packageText, gustoText, webappxaiText, installationText] = await Promise.all([
     readFile(resolve(repository, 'scripts/check-template.sh'), 'utf8'),
     readFile(resolve(repository, 'package.json'), 'utf8'),
     readFile(resolve(repository, 'integrations/gusto/functions/package.json'), 'utf8'),
+    readFile(resolve(repository, 'integrations/webappxai/functions/package.json'), 'utf8'),
     readFile(resolve(repository, '.SYSTEMX/INSTALLATION.json'), 'utf8'),
   ])
-  const report = buildCiPlan({ shellSource, packageJson: JSON.parse(packageText), gustoPackageJson: JSON.parse(gustoText), installation: JSON.parse(installationText) })
+  const report = buildCiPlan({ shellSource, packageJson: JSON.parse(packageText), gustoPackageJson: JSON.parse(gustoText), webappxaiPackageJson: JSON.parse(webappxaiText), installation: JSON.parse(installationText) })
   process.stdout.write(args.includes('--json') ? `${JSON.stringify(report, null, 2)}\n` : renderCiPlan(report))
   return report
 }

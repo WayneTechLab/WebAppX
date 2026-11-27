@@ -3,12 +3,14 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { resolve } from 'path'
 import { gustoMockPlugin } from './integrations/gusto/mock-api.mjs'
+import { webappxaiModelPlugin } from './integrations/webappxai/dev-model.mjs'
+import { webappxaiRuntimePlugin } from './integrations/webappxai/runtime.mjs'
 
 const systemxLanPort = process.env.SYSTEMX_LAN_PORT ?? '7331'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), gustoMockPlugin()],
+  plugins: [react(), tailwindcss(), gustoMockPlugin(), webappxaiModelPlugin(), webappxaiRuntimePlugin()],
   server: {
     host: '127.0.0.1',
     port: 5173,

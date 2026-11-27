@@ -386,6 +386,8 @@ dependencies as well as evidence.
 | `npm run ci:plan:test` | Source parsing, delegation and unknown-behavior report regressions |
 | `npm test` | Local LAN characterization and managed-status contract |
 | `npm run ci:audit` | Strict dependency audit |
+| `npm run webappxai:test` | Exercise local and hosted model access with test fixtures. No model files or cloud account are required. |
+| `npm run webappxai:audit` | Audit the WebAppXai Functions lockfile with a high-severity failure threshold. |
 | `npm run docs:links` | Local Markdown/wiki links, including managed distribution docs |
 | `npm run research:validate` | Adapted LAN-Builder package integrity |
 | `npm run sync:system:check` | Host versions, generated metadata and menu drift |

@@ -219,9 +219,10 @@ def _validate_parity_mapping(mapping):
                 for item in scope)):
         raise StarterParityError('Root-only features require explicit paths and concrete reasons.')
     if mapping['rootOnlyDependencies'] != {
-            'dependencies': ['@gusto/embedded-react-sdk', '@tanstack/react-query'],
+            'dependencies': ['@gusto/embedded-react-sdk', '@huggingface/tokenizers',
+                             '@tanstack/react-query', 'onnxruntime-web'],
             'devDependencies': ['@playwright/test']}:
-        raise StarterParityError('Root-only dependencies require the finite reviewed SDK/query/browser set.')
+        raise StarterParityError('Root-only dependencies must match the reviewed SDK, local inference and browser packages.')
     counts = dict.fromkeys(PARITY_GROUPS, 0)
     seen = {}; leaves = set()
     for entry in mapping['files']:

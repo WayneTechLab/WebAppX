@@ -12,7 +12,7 @@ function plan(scripts, names = Object.keys(scripts).filter(name => name !== 'ci:
 }
 
 // Literal published 63-stage order protects every prior stage during setup insertion.
-const addedSetupGates = ['kit:inc:check', 'lan:inventory:test', 'lan:transport:test', 'browser:transport', 'lan:graph:test', 'browser:graph-contracts', 'browser:lan-layout', 'lan:identity:test', 'browser:source-identity', 'swarm:test', 'browser:source-policy', 'scripts:check', 'docs:commands:check', 'fixtures:check', 'source:shell:check', 'setup:contracts:test']
+const addedSetupGates = ['webappxai:test', 'webappxai:audit', 'kit:inc:check', 'lan:inventory:test', 'lan:transport:test', 'browser:transport', 'lan:graph:test', 'browser:graph-contracts', 'browser:lan-layout', 'lan:identity:test', 'browser:source-identity', 'swarm:test', 'browser:source-policy', 'scripts:check', 'docs:commands:check', 'fixtures:check', 'source:shell:check', 'setup:contracts:test']
 const previousGateOrder = [
   'development:check',
   'development:test',
@@ -80,18 +80,25 @@ const previousGateOrder = [
 ]
 
 test('reads all current required gates in the existing shell order', async () => {
-  const [shellSource, packageText, gustoText, installationText] = await Promise.all([
+  const [shellSource, packageText, gustoText, webappxaiText, installationText] = await Promise.all([
     readFile(new URL('../../scripts/check-template.sh', import.meta.url), 'utf8'),
     readFile(new URL('../../package.json', import.meta.url), 'utf8'),
     readFile(new URL('../../integrations/gusto/functions/package.json', import.meta.url), 'utf8'),
+    readFile(new URL('../../integrations/webappxai/functions/package.json', import.meta.url), 'utf8'),
     readFile(new URL('../../.SYSTEMX/INSTALLATION.json', import.meta.url), 'utf8'),
   ])
-  const report = buildCiPlan({ shellSource, packageJson: JSON.parse(packageText), gustoPackageJson: JSON.parse(gustoText), installation: JSON.parse(installationText) })
+  const report = buildCiPlan({ shellSource, packageJson: JSON.parse(packageText), gustoPackageJson: JSON.parse(gustoText), webappxaiPackageJson: JSON.parse(webappxaiText), installation: JSON.parse(installationText) })
   assert.deepEqual(report.stages.map(stage => stage.name), parseGateOrder(shellSource))
-  assert.equal(report.stages.length, 79)
+  assert.equal(report.stages.length, 81)
   assert.deepEqual(report.stages.filter(stage => !addedSetupGates.includes(stage.name)).map(stage => stage.name), previousGateOrder, 'all prior 63 stages retain their exact relative order')
   for (const name of addedSetupGates) assert.equal(report.stages.filter(stage => stage.name === name).length, 1, name)
   assert.deepEqual(report.stages.map(stage => stage.number), Array.from({ length: report.stages.length }, (_, index) => index + 1))
+  for (const name of ['webappxai:test', 'webappxai:audit']) {
+    const stage = report.stages.find(stage => stage.name === name)
+    assert.ok(stage.workspaces.includes('webappxai-functions'))
+    assert.ok(!stage.mutations.includes('unknown'))
+  }
+  assert.equal(report.workspaces.find(workspace => workspace.id === 'webappxai-functions').node, '22')
   assert.ok(report.stages.find(stage => stage.name === 'hr:backend:audit').workspaces.includes('gusto-functions'))
   assert.ok(report.stages.find(stage => stage.name === 'systemx:tools:test').workspaces.includes('systemx-managed'))
   assert.ok(report.stages.find(stage => stage.name === 'build').mutations.includes('local-build-output'))
@@ -225,7 +232,7 @@ test('does not echo unreviewed command bodies or machine paths into the report',
   const report = buildCiPlan({ shellSource: runner(['custom']), packageJson: { scripts: { 'ci:all': 'bash scripts/check-template.sh', custom: `node ${marker}` }, engines: { node: marker } }, installation: { activeVersion: marker }, gustoPackageJson: { engines: { node: marker } } })
   assert.equal(JSON.stringify(report).includes(marker), false)
   assert.equal(renderCiPlan(report).includes(marker), false)
-  assert.equal(report.workspaces[2].version, 'unknown')
+  assert.equal(report.workspaces.find(workspace => workspace.id === 'systemx-managed').version, 'unknown')
 })
 
 test('report source exposes no process execution, environment probing or filesystem writes', async () => {

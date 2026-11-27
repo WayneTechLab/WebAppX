@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { CircleHelp, ExternalLink, MessageCircle, ShieldCheck, X } from 'lucide-react'
 import { AppLink } from '@/components/navigation/AppLink'
 import type { HelpDeskMode } from '@/config/siteControls'
+import { WebAppXaiPanel } from './WebAppXaiPanel'
 
 const quickAnswers = [
   {
@@ -22,14 +23,22 @@ export function HelpDeskChat({ mode }: { mode: HelpDeskMode }) {
   const [open, setOpen] = useState(false)
   const [answer, setAnswer] = useState(quickAnswers[0])
   const panelRef = useRef<HTMLDivElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
+
+  function dismiss() {
+    setOpen(false)
+    toggleRef.current?.focus({ preventScroll: true })
+  }
 
   useEffect(() => {
     if (!open) return
+    closeRef.current?.focus({ preventScroll: true })
     const closeOnOutsideClick = (event: MouseEvent) => {
       if (panelRef.current && !panelRef.current.contains(event.target as Node)) setOpen(false)
     }
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false)
+      if (event.key === 'Escape') dismiss()
     }
     document.addEventListener('mousedown', closeOnOutsideClick)
     document.addEventListener('keydown', closeOnEscape)
@@ -58,7 +67,7 @@ export function HelpDeskChat({ mode }: { mode: HelpDeskMode }) {
         <section
           id="wtl-help-desk-panel"
           aria-label="Self-service help desk"
-          className="mb-2 w-[min(25rem,calc(100vw-1.5rem))] rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl"
+          className="mb-2 max-h-[calc(100dvh-5rem)] w-[min(25rem,calc(100vw-1.5rem))] overflow-y-auto overscroll-contain rounded-2xl border border-neutral-200 bg-white p-4 shadow-xl"
         >
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3">
@@ -72,7 +81,8 @@ export function HelpDeskChat({ mode }: { mode: HelpDeskMode }) {
             </div>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              ref={closeRef}
+              onClick={dismiss}
               aria-label="Close help desk"
               className="grid min-h-10 min-w-10 place-items-center rounded-full text-neutral-700 hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-950"
             >
@@ -80,7 +90,10 @@ export function HelpDeskChat({ mode }: { mode: HelpDeskMode }) {
             </button>
           </div>
 
-          <div className="mt-4 rounded-xl bg-neutral-50 p-3">
+          <WebAppXaiPanel closeHelp={() => setOpen(false)} />
+
+          <h3 className="mt-4 text-sm font-semibold text-neutral-950">FAQ</h3>
+          <div className="mt-2 rounded-xl bg-neutral-50 p-3">
             <p className="text-sm font-semibold text-neutral-900">{answer.question}</p>
             <p className="mt-1 text-sm leading-6 text-neutral-700">{answer.answer}</p>
           </div>
@@ -108,7 +121,7 @@ export function HelpDeskChat({ mode }: { mode: HelpDeskMode }) {
             </AppLink>
             <span className="inline-flex items-center gap-1 text-xs leading-5 text-neutral-500">
               <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-              Approved help content only
+              Approved FAQ answers
             </span>
           </div>
         </section>
@@ -116,6 +129,7 @@ export function HelpDeskChat({ mode }: { mode: HelpDeskMode }) {
 
       <button
         type="button"
+        ref={toggleRef}
         aria-controls="wtl-help-desk-panel"
         aria-expanded={open}
         aria-label={open ? 'Close help desk' : 'Open help desk'}
