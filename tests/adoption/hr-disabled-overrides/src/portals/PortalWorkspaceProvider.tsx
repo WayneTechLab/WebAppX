@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
+import type { DemoPersistenceMode } from './portal-runtime'
 import { useDemoPersistence } from './useDemoPersistence'
 import { createCmsState } from '../cms/model'
 import { createCrmState } from '../crm/model'
@@ -8,7 +9,7 @@ import { restoreAdoptedBundle } from './combined-backup'
 import type { DemoWorkspaces } from './workspaces'
 
 type Handles = { cms: ReturnType<typeof useDemoPersistence<DemoWorkspaces['cms']>>; crm: ReturnType<typeof useDemoPersistence<DemoWorkspaces['crm']>> }
-type BrowserHandles = { [K in keyof Handles]: Handles[K] & { readonly mode: 'browser' } }
+type BrowserHandles = { [K in keyof Handles]: Handles[K] & { readonly mode: DemoPersistenceMode } }
 type Context = BrowserHandles & { bundle: { states: DemoWorkspaces; revision: number; restore: (states: DemoWorkspaces) => { ok: boolean; message: string } } }
 const WorkspaceContext = createContext<Context | null>(null)
 export function PortalWorkspaceProvider({ children }: { children: ReactNode }) {
