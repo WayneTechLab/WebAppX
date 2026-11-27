@@ -369,7 +369,7 @@ These fingerprints bind the examples to reviewed local source bytes. They are re
 | [src/hr/components/HrWorkspace.tsx](../src/hr/components/HrWorkspace.tsx) | ` fefca0ec535d5096a68795f921498877248d8e0c72010b250ddbd34dafc2ed35 ` |
 | [.SYSTEMX/GUSTO/mock/fixtures/demo-company.json](../.SYSTEMX/GUSTO/mock/fixtures/demo-company.json) | ` 14cd9ed231dedfaca1fd9c10395c652d469fb89beae6ed7850994bda93acb1c3 ` |
 | [src/portals/unsaved-work-core.ts](../src/portals/unsaved-work-core.ts) | ` f5f7db3ae4ff9c70edb4c3dfd7052075c0b5f3fe3e7c36333ebf311ff0623e14 ` |
-| [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | ` 5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316 ` |
+| [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | ` e61a71817437fc8cc8712006ae0b27196427969fc2c2ee3c6380a17d621a652a ` |
 | [src/lib/navigation.ts](../src/lib/navigation.ts) | ` 484de4b24bb55a2c310f1e2654477922ce9be5bf232d8aa604a5beb4d15a8da4 ` |
 | [src/router.tsx](../src/router.tsx) | ` c7d7458003ed602b8796577e8e8749885153e0c71eab3a844373c91f0d7949b4 ` |
 | [src/hr/components/useHrFormDraft.ts](../src/hr/components/useHrFormDraft.ts) | ` d93f943cad287eb323ea80799d9f807d1e537aaf1dd9032b51a6e6c50c9265e7 ` |

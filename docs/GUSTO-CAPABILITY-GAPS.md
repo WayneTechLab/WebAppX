@@ -115,7 +115,7 @@ the checker never refreshes fingerprints or accepts capability work.
 | [src/hr/surveys.ts](../src/hr/surveys.ts) | utf8-lf-sha256 | `5bc231e4a19c62c3a2b7520e93026f885d1f0f636e89306ccfa76d0a7f0a2b85` |
 | [src/pages/HrPage.tsx](../src/pages/HrPage.tsx) | utf8-lf-sha256 | `daf6bf5bbc0325c253ea6d9802e76ee867b60a3ff608312c67911a18453b4292` |
 | [src/portals/unsaved-work-core.ts](../src/portals/unsaved-work-core.ts) | utf8-lf-sha256 | `f5f7db3ae4ff9c70edb4c3dfd7052075c0b5f3fe3e7c36333ebf311ff0623e14` |
-| [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | utf8-lf-sha256 | `5cd946782d51eb160c014b8e5b6bc1e7cc5dd9d22c99812e2c9f2f3b76004316` |
+| [src/portals/unsaved-work.tsx](../src/portals/unsaved-work.tsx) | utf8-lf-sha256 | `e61a71817437fc8cc8712006ae0b27196427969fc2c2ee3c6380a17d621a652a` |
 | [src/lib/navigation.ts](../src/lib/navigation.ts) | utf8-lf-sha256 | `484de4b24bb55a2c310f1e2654477922ce9be5bf232d8aa604a5beb4d15a8da4` |
 | [src/router.tsx](../src/router.tsx) | utf8-lf-sha256 | `c7d7458003ed602b8796577e8e8749885153e0c71eab3a844373c91f0d7949b4` |
 | [src/hr/components/useHrFormDraft.ts](../src/hr/components/useHrFormDraft.ts) | utf8-lf-sha256 | `d93f943cad287eb323ea80799d9f807d1e537aaf1dd9032b51a6e6c50c9265e7` |
