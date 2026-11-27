@@ -167,7 +167,7 @@ def sync(target, source, apply=False, expected_commit=None, *, review=None):
     if apply and review is not None:
         raise ValueError('A review must not apply an import')
     source = source.resolve()
-    if git(source, 'rev-parse', '--show-toplevel') != str(source):
+    if Path(git(source, 'rev-parse', '--show-toplevel')).resolve() != source:
         raise ValueError('Source must be the standalone dotSYSTEMX repository root')
     remote = git(source, 'remote', 'get-url', 'origin')
     if remote.rstrip('/').removesuffix('.git') not in {

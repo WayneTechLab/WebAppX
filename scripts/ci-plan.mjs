@@ -13,6 +13,9 @@ const source = (note, workspaces = []) => behavior('source-read-only', workspace
 const temporary = (note, workspaces = []) => behavior('temporary-files-or-processes', workspaces, note)
 const register = (command, description) => reviewed.set(command, description)
 
+register('node .SYSTEMX/KIT/Standard-INC/05_SCRIPTS/validate.mjs .SYSTEMX/KIT/Standard-INC/03_CONFIG/portfolio.blank.json --blank', source('Validate the blank Standard INC portfolio configuration.'))
+register('node --test .SYSTEMX/KIT/Standard-INC/05_SCRIPTS/validate.test.mjs', temporary('Exercise the Standard INC validator on fictional business and registry fixtures.'))
+
 register('node --test .SYSTEMX/LAN/tests/graph-*.test.mjs .SYSTEMX/LAN/tests/api-*.test.mjs tests/graph-api/*.test.mjs', temporary('Tests bounded graph normalization, qualified references, accepted history and isolated migrations, plus exact versioned request/response schemas and negative state-preservation behavior in owned fixtures.'))
 register('node scripts/lan-graph-contract-browser.mjs', temporary('Exercises all forty canonical graph and versioned API capabilities using copied LAN code, synthetic fixtures, isolated browser storage and owned local processes; creates candidate-bound local evidence without provider or production writes.'))
 

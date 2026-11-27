@@ -199,6 +199,21 @@ not been verified. Other Agent Y previews and inspections remain available.
 Local macOS source/tool checks do not prove Windows x64/ARM64 runtime behavior
 or a deployed Firebase environment; test those acceptance boundaries separately.
 
+## Windows validation
+
+Use Python 3.9+ and a working Bash installation (such as Git Bash) for the host
+checks. Import and mirror checks compare resolved filesystem paths, so Git's
+forward slashes and native Windows separators refer to the same repository.
+Seed files and the generated governance README check out with LF endings to
+preserve their fingerprints and avoid false sync drift.
+
+On Windows without symlink creation privileges, fixture tests that require
+actual symlinks report explicit skips. Regular-file boundary tests still run.
+The host tools runner annotates five known upstream fixture tests in memory;
+the selected release's files and manifests remain immutable. Supported
+platforms with symlink capability execute all link assertions. A passing run
+with skips does not claim those link assertions were executed.
+
 ## Adoption and optional template mirrors
 
 Use [the adoption example](examples/private-template-adoption.md) for a new app.

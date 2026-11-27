@@ -437,6 +437,11 @@
       "description": "Exercise or review fictional native portals, SDK mocks or their local evidence."
     },
     {
+      "name": "kit:inc:check",
+      "purpose": "SYSTEMX",
+      "description": "Validate the blank Standard INC portfolio and test its fictional setup examples."
+    },
+    {
       "name": "lan",
       "purpose": "SYSTEMX",
       "description": "Inspect or maintain SYSTEMX, local coordination, research or canonical work records."
