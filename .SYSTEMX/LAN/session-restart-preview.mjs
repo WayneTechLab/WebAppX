@@ -1,8 +1,10 @@
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { existsSync, realpathSync } from 'node:fs'
-import { basename, dirname, isAbsolute, relative, resolve, sep, win32 } from 'node:path'
+import { realpathSync } from 'node:fs'
+import { basename, isAbsolute, relative, resolve, win32 } from 'node:path'
 
+import { inspectSessionArtifacts } from './Builder/runtime/session-artifacts.mjs'
+import { reviewRestartOrigin } from './Builder/runtime/session-transition-plan.mjs'
 import { withMatchingSessionOwner } from './Builder/runtime/port-utils.mjs'
 
 const roles = ['session', 'firebase', 'lan', 'vite']
@@ -165,6 +167,7 @@ function inspectSessionOwnership({ repoRoot, session, inspectProcess, platform, 
     seenPids.add(pid)
     const observed = inspect(pid)
     entry.alive = typeof observed.exists === 'boolean' ? observed.exists : null
+    if (observed.pid !== pid) { entry.reasons.push('observed-pid-unverified'); continue }
     if (observed.exists === false) { entry.state = 'exited'; continue }
     if (observed.exists !== true) { entry.reasons.push('process-query-unavailable'); continue }
     entry.parentPid = pidIsValid(observed.parentPid) ? observed.parentPid : null
@@ -185,6 +188,25 @@ function inspectSessionOwnership({ repoRoot, session, inspectProcess, platform, 
     if (!entry.reasons.length) entry.state = 'owned'
   }
   const owner = result.processes.find((entry) => entry.role === ownerRole)
+  if (!standalone && owner?.state === 'exited' && recorded.session === ownerPid) {
+    // Reparenting after an observed supervisor exit changes only the current
+    // parent relationship. Keep recognition separate from signal authority.
+    for (const entry of result.processes) {
+      if (entry.role === ownerRole || entry.alive !== true) continue
+      const observed = inspect(entry.pid)
+      const birth = session.processIdentities?.[entry.role]
+      if (!birth || birth.pid !== entry.pid || observed.pid !== entry.pid || birth.parentPid !== ownerPid ||
+          !pidIsValid(observed.parentPid) || observed.parentPid === ownerPid || !observed.startedAt ||
+          birth.startedAt !== observed.startedAt || !observed.command || birth.commandHash !== hashCommand(observed.command)) continue
+      const cwd = canonicalPath(observed.cwd, platform)
+      const startupCwd = platform === 'win32' && !observed.cwd && canonicalPath(birth.workingDirectory, platform) === root
+      if (cwd !== root && !startupCwd || !expectedCommand(entry.role, observed, root, session, platform, startupCwd)) continue
+      entry.state = 'orphaned'
+      entry.identity = 'recorded-birth-command-workspace-and-original-parent-match'
+      entry.reasons = ['original-supervisor-exited']
+      result.reasons.push('orphaned-descendant-still-running')
+    }
+  }
   if (owner?.state !== 'owned') result.reasons.push('supervisor-ownership-unverified')
   for (const entry of result.processes) {
     if (entry.state === 'unverified') result.reasons.push(`${entry.role}-ownership-unverified`)
@@ -224,7 +246,7 @@ export function createSessionStopPlan({ repoRoot, session, inspectProcess = insp
   }
   if (allExited && session.startingRole) return { ...plan, reasons: ['child-launch-outcome-unverified'] }
   if (allExited) return { ...plan, canStop: true, cleanup: true }
-  if (owner?.state !== 'owned') return { ...plan, reasons: ['supervisor-ownership-unverified'] }
+  if (owner?.state !== 'owned') return { ...plan, reasons: [...new Set(ownership.reasons)] }
   return {
     ...plan, termination: 'signal-owner-only', canStop: true, targets: [{ role: ownerRole, pid: owner.pid }],
     ...(platform === 'win32' ? { guidance: 'Windows termination may bypass the standalone LAN cleanup handler. Wait for its process to exit, then rerun stop to clear the verified exited record.' } : {}),
@@ -264,22 +286,9 @@ export function executeSessionStopPlan({ repoRoot, session, inspectProcess = ins
 export function sessionRuntimeCleanupTarget(repoRoot, session) {
   const config = session.runtime?.firebaseConfig
   if (config == null) return { allowed: true, path: null }
-  if (typeof config !== 'string' || !isAbsolute(config)) return { allowed: false, reason: 'runtime-config-path-invalid' }
-  try {
-    const root = realpathSync(repoRoot)
-    const runtimeRoot = resolve(root, '.SYSTEMX', 'state')
-    // Resolve both the state directory and the config's parent before deleting
-    // anything. A lexical path inside state can traverse a symlink elsewhere.
-    if (realpathSync(runtimeRoot) !== runtimeRoot) return { allowed: false, reason: 'runtime-state-directory-escaped' }
-    const configParent = realpathSync(dirname(config))
-    const withinRuntime = (path) => path === runtimeRoot || path.startsWith(`${runtimeRoot}${sep}`)
-    if (!withinRuntime(configParent) || !basename(config).startsWith('firebase-')) return { allowed: false, reason: 'runtime-config-path-escaped' }
-    if (!existsSync(config)) return { allowed: true, path: null }
-    if (!withinRuntime(realpathSync(config))) return { allowed: false, reason: 'runtime-config-target-escaped' }
-    return { allowed: true, path: resolve(config) }
-  } catch {
-    return { allowed: false, reason: 'runtime-config-path-unverified' }
-  }
+  const item = inspectSessionArtifacts(repoRoot, session).find(row => row.kind === 'firebaseConfig')
+  return item?.state === 'verified' ? { allowed: true, path: resolve(config) }
+    : item?.state === 'absent' ? { allowed: true, path: null } : { allowed: false, reason: 'runtime-config-generation-or-identity-unverified' }
 }
 
 export function createSessionRestartPreview({ repoRoot, session, inspectProcess = inspectSessionProcess, inspectListeners = inspectSessionListeners, platform = process.platform }) {
@@ -297,8 +306,9 @@ export function createSessionRestartPreview({ repoRoot, session, inspectProcess 
   result.reasons = ownership.reasons
   const inspect = ownership.inspect
 
-  const originHost = session.origin?.host ?? session.host ?? (() => { try { return new URL(session.urls?.app).hostname } catch { return null } })()
-  const host = ['127.0.0.1', 'localhost'].includes(originHost) ? originHost : null
+  const storage = reviewRestartOrigin(session)
+  const host = storage.host
+  if (!storage.valid) result.reasons.push(storage.reason)
   const portEntries = [
     ['app', host, session.ports?.app], ['lan', '127.0.0.1', session.ports?.lan],
     ['auth', '127.0.0.1', session.ports?.firebase?.auth], ['firestore', '127.0.0.1', session.ports?.firebase?.firestore], ['storage', '127.0.0.1', session.ports?.firebase?.storage],
@@ -308,8 +318,11 @@ export function createSessionRestartPreview({ repoRoot, session, inspectProcess 
   if (ports.some((port) => !portIsValid(port)) || new Set(ports).size !== ports.length) result.reasons.push('recorded-ports-invalid-or-overlapping')
   let snapshot
   try { snapshot = inspectListeners() } catch { snapshot = { complete: false, listeners: [] } }
-  if (!snapshot?.complete || !Array.isArray(snapshot.listeners)) result.reasons.push('listener-snapshot-unavailable')
-  if (!snapshot || !Array.isArray(snapshot.listeners)) snapshot = { complete: false, listeners: [] }
+  if (snapshot?.complete !== true || !Array.isArray(snapshot.listeners) || snapshot.listeners.length > 8192 ||
+      !snapshot.listeners.every(entry => pidIsValid(entry?.pid) && Number.isInteger(entry.port) && entry.port >= 1 && entry.port <= 65535)) {
+    result.reasons.push('listener-snapshot-unavailable')
+    snapshot = { complete: false, listeners: [] }
+  }
 
   function listenerOwner(pid) {
     let current = pid
@@ -337,6 +350,7 @@ export function createSessionRestartPreview({ repoRoot, session, inspectProcess 
     result.replacementListeners.push({ component, host: bindHost, port: portIsValid(port) ? port : null, state, current })
     if (state === 'blocked') result.reasons.push(`${component}-listener-owned-by-unverified-process`)
   }
+  result.browserStorage = { ...storage, listenerState: result.replacementListeners[0]?.state ?? 'unverified' }
   if (!result.reasons.length && host && portIsValid(session.ports?.app)) {
     result.proposedLaunch = {
       executable: process.execPath,

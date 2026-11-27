@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { closeSync, existsSync, fstatSync, lstatSync, openSync, readdirSync, readFileSync, realpathSync, renameSync, unlinkSync, writeFileSync } from 'node:fs'
+import { closeSync, constants, existsSync, fstatSync, lstatSync, openSync, readdirSync, readFileSync, readSync, realpathSync, renameSync, unlinkSync, writeFileSync } from 'node:fs'
 import { performance } from 'node:perf_hooks'
 import { dirname, join } from 'node:path'
 import net from 'node:net'
@@ -134,6 +134,40 @@ export function writeSession(repoRoot, session) {
   })
 }
 
+function sameFile(left, right) {
+  return right?.isFile() && left.dev === right.dev && left.ino === right.ino &&
+    left.size === right.size && left.ctimeNs === right.ctimeNs && left.mtimeNs === right.mtimeNs
+}
+
+// Read a single bounded record in the selected workspace. An atomic replacement
+// during process/listener inspection invalidates this observation.
+export function readSessionRecordSnapshot(repoRoot) {
+  const target = sessionPath(realpathSync(repoRoot))
+  const dir = dirname(target)
+  const state = lstatSync(dir, { throwIfNoEntry: false })
+  if (!state) return { absent: true }
+  if (!state.isDirectory() || realpathSync(dir) !== dir) throw new Error()
+  if (lstatSync(target + '.lock', { throwIfNoEntry: false })) throw new Error()
+  const identity = lstatSync(target, { bigint: true, throwIfNoEntry: false })
+  if (!identity) return { absent: true }
+  if (!identity.isFile() || identity.nlink !== 1n || identity.size < 1n || identity.size > BigInt(1_000_000)) throw new Error()
+  const fd = openSync(target, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0) | (constants.O_NONBLOCK ?? 0))
+  try {
+    if (!sameFile(identity, fstatSync(fd, { bigint: true }))) throw new Error()
+    const bytes = Buffer.alloc(Number(identity.size))
+    let offset = 0
+    while (offset < bytes.length) {
+      const count = readSync(fd, bytes, offset, bytes.length - offset, offset)
+      if (!count) throw new Error()
+      offset += count
+    }
+    if (!sameFile(identity, fstatSync(fd, { bigint: true }))) throw new Error()
+    const record = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes))
+    return { record, current: () => realpathSync(dir) === dir && !lstatSync(target + '.lock', { throwIfNoEntry: false }) &&
+      sameFile(identity, lstatSync(target, { bigint: true, throwIfNoEntry: false })) }
+  } finally { closeSync(fd) }
+}
+
 export function readSession(repoRoot) {
   const target = sessionPath(repoRoot)
   if (!existsSync(target)) return null
@@ -164,7 +198,7 @@ export function withMatchingSessionOwner(repoRoot, expected, act) {
     const entry = lstatSync(target, { throwIfNoEntry: false })
     if (!entry?.isFile() || entry.size > 1_000_000) return false
     const current = readSession(repoRoot)
-    const fields = ['sessionId', 'ownerPid', 'mode', 'processes', 'processIdentities', 'startingRole', 'runtime']
+    const fields = ['sessionId', 'ownerPid', 'mode', 'processes', 'processIdentities', 'startingRole', 'runtime', 'artifactReceipts', 'preservedPidMarkers']
     if (!current || !fields.every(field => isDeepStrictEqual(current[field], expected[field]))) return false
     return act(current)
   })
@@ -176,10 +210,14 @@ export function clearExitedSession(repoRoot, expectedRecord, beforeClear = () =>
   if (!expectedRecord?.sessionId || !existsSync(sessionPath(repoRoot))) return false
   if (beforeClear.constructor.name === 'AsyncFunction') throw new TypeError('Session cleanup must finish synchronously.')
   return withRecordGuard(repoRoot, target => {
-    if (!lstatSync(target, { throwIfNoEntry: false })?.isFile()) return false
+    const file = lstatSync(target, { bigint: true, throwIfNoEntry: false })
+    if (!file?.isFile() || file.nlink !== 1n || file.size > 1_000_000n) return false
     const current = readSession(repoRoot)
     if (!current || JSON.stringify(current) !== JSON.stringify(expectedRecord)) return false
-    if (beforeClear()?.then) throw new TypeError('Session cleanup must finish synchronously.')
+    const stillCurrent = () => sameFile(file, lstatSync(target, { bigint: true, throwIfNoEntry: false }))
+    if (!stillCurrent()) return false
+    if (beforeClear(stillCurrent)?.then) throw new TypeError('Session cleanup must finish synchronously.')
+    if (!stillCurrent()) return false
     unlinkSync(target)
     sessionOwners.delete(target)
     return true

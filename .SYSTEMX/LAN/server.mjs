@@ -1805,7 +1805,7 @@ try {
     const lanOrigin = `http://${host}:${port}`, appOrigin = `http://${host}:${appPort}`
     try {
       claimSession(repoRoot, {
-        schemaVersion: 1, sessionId, ownerPid: process.pid, mode: 'lan-only', host,
+        schemaVersion: 1, workspaceId, sessionId, ownerPid: process.pid, mode: 'lan-only', host,
         processes: { lan: process.pid },
         processIdentities: { lan: captureSessionProcessIdentity(process.pid, { workingDirectory: process.cwd() }) },
         ports: { lan: port, app: appPort },

@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { test } from 'node:test'
+import { createSessionArtifact } from '../Builder/runtime/session-artifacts.mjs'
 import { captureSessionProcessIdentity, createSessionRestartPreview, createSessionStopPlan, executeSessionStopPlan, inspectSessionListeners, inspectSessionProcess, sessionRuntimeCleanupTarget } from '../session-restart-preview.mjs'
 
 const repoRoot = resolve(fileURLToPath(new URL('../../..', import.meta.url)))
@@ -17,7 +18,7 @@ function fixture() {
   const session = {
     ownerPid: 100, sessionId: 'PRIVATE_SESSION_TOKEN', token: 'PRIVATE_TOKEN',
     ports: { app: 5173, lan: 7331, firebase: { auth: 9099, firestore: 8080, storage: 9199 } },
-    urls: { app: 'http://127.0.0.1:5173/?token=PRIVATE_URL_TOKEN' },
+    urls: { app: 'http://127.0.0.1:5173/' },
     runtime: { firebaseConfig: join(fixtureRoot, '.SYSTEMX/state/firebase-private.json'), token: 'PRIVATE_RUNTIME_TOKEN' },
     processes: { session: 100, firebase: 101, lan: 102, vite: 103 },
   }
@@ -342,8 +343,9 @@ test('runtime cleanup refuses symlink escapes before changing the config or sess
     assert.equal(readFileSync(externalConfig, 'utf8'), 'PRIVATE_EXTERNAL_CONFIG')
     assert.equal(readFileSync(record, 'utf8'), 'PRIVATE_SESSION_RECORD')
     const ownedConfig = join(state, 'firebase-owned.json')
-    writeFileSync(ownedConfig, '{}')
-    assert.deepEqual(sessionRuntimeCleanupTarget(root, { runtime: { firebaseConfig: ownedConfig } }), { allowed: true, path: ownedConfig })
+    const receipt = createSessionArtifact(ownedConfig, '{}')
+    assert.equal(sessionRuntimeCleanupTarget(root, { sessionId: 'owned', runtime: { firebaseConfig: ownedConfig } }).allowed, false)
+    assert.deepEqual(sessionRuntimeCleanupTarget(root, { sessionId: 'owned', runtime: { firebaseConfig: ownedConfig }, artifactReceipts: { firebaseConfig: receipt } }), { allowed: true, path: ownedConfig })
     // Directory junctions need no Windows developer-mode privileges; the
     // additional file-symlink case runs on platforms that allow ordinary links.
     if (process.platform !== 'win32') {
@@ -359,7 +361,7 @@ test('CLI preview preserves a live fixture process, bound listener, session, tok
   const stateRoot = join(root, '.SYSTEMX/state')
   mkdirSync(join(lanRoot, 'Builder/runtime'), { recursive: true })
   mkdirSync(stateRoot, { recursive: true })
-  for (const name of ['session-control.mjs', 'session-restart-preview.mjs', 'Builder/runtime/port-utils.mjs']) copyFileSync(join(repoRoot, '.SYSTEMX/LAN', name), join(lanRoot, name))
+  for (const name of ['session-control.mjs', 'session-restart-preview.mjs', 'Builder/runtime/port-utils.mjs', 'Builder/runtime/session-transition-plan.mjs', 'Builder/runtime/session-artifacts.mjs']) copyFileSync(join(repoRoot, '.SYSTEMX/LAN', name), join(lanRoot, name))
   writeFileSync(join(lanRoot, 'dev-session.mjs'), "import net from 'node:net'; const server=net.createServer(); server.listen(0,'127.0.0.1',()=>console.log(JSON.stringify({port:server.address().port})));\n")
   const child = spawn(process.execPath, [join(lanRoot, 'dev-session.mjs')], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] })
   const closed = once(child, 'close')

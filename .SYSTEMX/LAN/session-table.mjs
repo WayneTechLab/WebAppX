@@ -1,12 +1,11 @@
 import { createHash } from 'node:crypto'
-import { closeSync, constants, fstatSync, lstatSync, openSync, readSync, realpathSync, statSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { sessionPath } from './Builder/runtime/port-utils.mjs'
+import { lstatSync, realpathSync, statSync } from 'node:fs'
+import { join } from 'node:path'
+import { readSessionRecordSnapshot } from './Builder/runtime/port-utils.mjs'
 import { createSessionStopPlan, inspectSessionListeners, inspectSessionProcess } from './session-restart-preview.mjs'
 import { validSessionGeneration } from './session-supervisor.mjs'
 
 const maxWorkspaces = 12
-const maxRecordBytes = 1_000_000
 const maxListeners = 8192
 const usage = 'Usage: node .SYSTEMX/LAN/session-control.mjs sessions [--workspace DIRECTORY ...] (up to 12 distinct workspaces including the current workspace).'
 const validSelector = value => typeof value === 'string' && value.length > 0 && value.length <= 4096 && !value.startsWith('--') && !value.includes('\0')
@@ -35,40 +34,6 @@ function emptyRow(root) {
   return { workspaceId: createHash('sha256').update('systemx-workspace\0' + root).digest('hex'),
     generation: null, ownership: 'unverified', ownerPid: null, recordedOrigin: null, activeOrigin: null,
     listener: { state: 'unverified', pid: null }, reasons: [] }
-}
-
-function sameFile(left, right) {
-  return right?.isFile() && left.dev === right.dev && left.ino === right.ino &&
-    left.size === right.size && left.ctimeNs === right.ctimeNs && left.mtimeNs === right.mtimeNs
-}
-
-// Read a single bounded record in the selected workspace. An atomic replacement
-// during process/listener inspection invalidates this observation.
-function snapshotRecord(root) {
-  const target = sessionPath(root)
-  const dir = dirname(target)
-  const state = lstatSync(dir, { throwIfNoEntry: false })
-  if (!state) return { absent: true }
-  if (!state.isDirectory() || realpathSync(dir) !== dir) throw new Error()
-  if (lstatSync(target + '.lock', { throwIfNoEntry: false })) throw new Error()
-  const identity = lstatSync(target, { bigint: true, throwIfNoEntry: false })
-  if (!identity) return { absent: true }
-  if (!identity.isFile() || identity.size < 1n || identity.size > BigInt(maxRecordBytes)) throw new Error()
-  const fd = openSync(target, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0) | (constants.O_NONBLOCK ?? 0))
-  try {
-    if (!sameFile(identity, fstatSync(fd, { bigint: true }))) throw new Error()
-    const bytes = Buffer.alloc(Number(identity.size))
-    let offset = 0
-    while (offset < bytes.length) {
-      const count = readSync(fd, bytes, offset, bytes.length - offset, offset)
-      if (!count) throw new Error()
-      offset += count
-    }
-    if (!sameFile(identity, fstatSync(fd, { bigint: true }))) throw new Error()
-    const record = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes))
-    return { record, current: () => realpathSync(dir) === dir && !lstatSync(target + '.lock', { throwIfNoEntry: false }) &&
-      sameFile(identity, lstatSync(target, { bigint: true, throwIfNoEntry: false })) }
-  } finally { closeSync(fd) }
 }
 
 function loopbackOrigin(record, portRole) {
@@ -103,10 +68,10 @@ function listenerAt(snapshot, origin, processEntry) {
   return { state: 'owned', pid: processEntry.pid }
 }
 
-function observe(root, { platform, inspectProcess, inspectListeners }) {
+function observe(root, { platform, inspectProcess, inspectListeners, summarizeRecord }) {
   const row = emptyRow(root)
   try {
-    const snapshot = snapshotRecord(root)
+    const snapshot = readSessionRecordSnapshot(root)
     if (snapshot.absent) return { ...row, ownership: 'absent', reasons: ['no-session-record'] }
     const record = snapshot.record
     if (!record || !['combined', 'lan-only'].includes(record.mode)) return { ...row, reasons: ['session-identity-unverified'] }
@@ -149,14 +114,17 @@ function observe(root, { platform, inspectProcess, inspectListeners }) {
       else row.reasons.push('origin-listener-' + row.listener.state)
     }
     if (!snapshot.current()) return { ...emptyRow(root), reasons: ['session-record-changed'] }
+    // A local exporter can project fixed diagnostic fields from this same verified
+    // observation. Ordinary table rows retain their original public shape.
+    if (summarizeRecord) row.details = summarizeRecord(record, plan)
     return row
   } catch { return { ...emptyRow(root), reasons: ['session-observation-unavailable'] } }
 }
 
 export function inspectWorkspaceSession(repoRoot, {
-  inspectProcess = inspectSessionProcess, inspectListeners = inspectSessionListeners, platform = process.platform,
+  inspectProcess = inspectSessionProcess, inspectListeners = inspectSessionListeners, platform = process.platform, summarizeRecord,
 } = {}) {
-  return observe(selectedRoot(repoRoot), { platform, inspectProcess, inspectListeners: () => inspectListeners({ platform }) })
+  return observe(selectedRoot(repoRoot), { platform, inspectProcess, summarizeRecord, inspectListeners: () => inspectListeners({ platform }) })
 }
 
 /** Inspect only the selected roots. A listener observation is shared for
