@@ -230,7 +230,7 @@ export function WebAppXaiPanel({ closeHelp }: { closeHelp: () => void }) {
         <h3 className="font-semibold">WebAppXai</h3>
         <span className="text-xs font-semibold text-neutral-600">Research pilot</span>
       </div>
-      <p className="text-sm text-neutral-700">This local model matched 2 of 10 reference answers in testing. Replies can be incorrect.</p>
+      <p className="text-sm text-neutral-700">This pilot answered 3 of 32 Help desk questions correctly. Use the curated FAQ or contact support for guidance.</p>
       {loading
         ? <p role="status" className="text-sm">Checking sign-in…</p>
         : user && !user.isAnonymous

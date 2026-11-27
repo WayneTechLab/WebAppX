@@ -2,7 +2,7 @@ import { constants } from 'node:fs'
 import { open, realpath } from 'node:fs/promises'
 import { isAbsolute, join, relative, sep } from 'node:path'
 import { loadEnv } from 'vite'
-import { PILOT_ASSETS, servePilotAsset } from './functions/contracts.mjs'
+import { PILOT_REVISION, releaseForRevision, servePilotAsset } from './functions/contracts.mjs'
 
 const project = 'demo-systemx'
 const loopbackAddresses = new Set(['127.0.0.1', '::ffff:127.0.0.1', '::1'])
@@ -53,9 +53,11 @@ function within(root, child) {
   return !rel || (rel !== '..' && !rel.startsWith('..' + sep) && !isAbsolute(rel))
 }
 
-export function createLocalReader(directory, servedDirectories) {
-  return async name => {
-    if (!Object.hasOwn(PILOT_ASSETS, name) || !directory || !isAbsolute(directory)) {
+export function createLocalReader(activeDirectory, servedDirectories, previousDirectory) {
+  return async (name, revision = PILOT_REVISION) => {
+    const { assets } = releaseForRevision(revision)
+    const directory = revision === PILOT_REVISION ? activeDirectory : previousDirectory
+    if (!Object.hasOwn(assets, name) || !directory || !isAbsolute(directory)) {
       throw new Error('Missing private release')
     }
     const location = await realpath(directory)
@@ -66,7 +68,7 @@ export function createLocalReader(directory, servedDirectories) {
     if (await realpath(file) !== file) throw new Error('Private release must use regular files')
     const handle = await open(file, constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0))
     try {
-      const size = PILOT_ASSETS[name].bytes
+      const size = assets[name].bytes
       const stat = await handle.stat()
       if (!stat.isFile() || stat.size !== size) throw new Error('Wrong release size')
       const bytes = Buffer.alloc(size)
@@ -94,7 +96,7 @@ export function webappxaiModelPlugin() {
       const authorize = createLocalAuthorizer(config.env)
       const served = [config.root, ...config.server.fs.allow]
       if (config.publicDir) served.push(config.publicDir)
-      const read = createLocalReader(settings.WEBAPPXAI_MODEL_DIR, served)
+      const read = createLocalReader(settings.WEBAPPXAI_MODEL_DIR, served, settings.WEBAPPXAI_PREVIOUS_MODEL_DIR)
       server.middlewares.use((request, response, next) => {
         if (!/^\/api\/webappxai(?:[/?]|$)/.test(request.url ?? '')) return next()
         return servePilotAsset(request, response, {

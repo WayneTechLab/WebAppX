@@ -1,9 +1,8 @@
 import type { User } from 'firebase/auth'
 import { auth, firebaseRuntime } from '@/config/firebase'
-import release from '@waynetechlab/webappxai/release'
 import modelPin from './model-pin.json'
 
-type PilotFile = keyof typeof release.assets
+type PilotFile = keyof typeof modelPin.assets
 type CachedPair = { model: ArrayBuffer; tokenizer: ArrayBuffer }
 const cacheName = 'webappxai-pilot-assets-v1'
 const storeName = 'releases'
@@ -44,7 +43,7 @@ async function inCache<T>(
 }
 
 async function verify(name: PilotFile, value: unknown): Promise<ArrayBuffer> {
-  const asset = release.assets[name]
+  const asset = modelPin.assets[name]
   if (!(value instanceof ArrayBuffer) || value.byteLength !== asset.bytes) {
     throw new Error('The research pilot file has an unexpected size.')
   }
@@ -65,7 +64,7 @@ async function download(name: PilotFile, token: string, signal: AbortSignal): Pr
     throw new Error('The research pilot files are unavailable. Ask the site owner to configure model access.')
   }
   if (!response.body) throw new Error('The research pilot download was empty.')
-  const bytes = new Uint8Array(release.assets[name].bytes)
+  const bytes = new Uint8Array(modelPin.assets[name].bytes)
   const reader = response.body.getReader()
   let length = 0
   let complete = false
@@ -101,9 +100,10 @@ export async function loadPilotAssets(user: User, signal: AbortSignal): Promise<
     }
   }
   checkSession()
-  const account = [firebaseRuntime.projectId, firebaseRuntime.environment, user.uid]
-  const key = JSON.stringify([...account, modelPin.revision])
-  const legacyKey = JSON.stringify([...account, release.revision])
+  const key = JSON.stringify([
+    firebaseRuntime.projectId, firebaseRuntime.environment, user.uid, modelPin.revision,
+    modelPin.assets['model.onnx'].sha256, modelPin.assets['tokenizer.json'].sha256,
+  ])
   async function cacheVerifiedPair(pair: CachedPair) {
     try {
       await inCache('readwrite', store => {
@@ -117,14 +117,8 @@ export async function loadPilotAssets(user: User, signal: AbortSignal): Promise<
     }
   }
   let cached: CachedPair | undefined
-  let legacy = false
   try {
     cached = await inCache('readonly', store => store.get(key), signal)
-    if (!cached) {
-      checkSession()
-      cached = await inCache('readonly', store => store.get(legacyKey), signal)
-      legacy = Boolean(cached)
-    }
   } catch {
     // Private browsing or storage policy can disable IndexedDB.
   }
@@ -133,8 +127,6 @@ export async function loadPilotAssets(user: User, signal: AbortSignal): Promise<
     try {
       const model = await verify('model.onnx', cached.model)
       const tokenizer = parseTokenizer(await verify('tokenizer.json', cached.tokenizer))
-      checkSession()
-      if (legacy) await cacheVerifiedPair(cached)
       checkSession()
       return { model, tokenizer }
     } catch {

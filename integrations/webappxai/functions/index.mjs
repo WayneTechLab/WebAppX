@@ -14,13 +14,13 @@ const dependencies = {
     if (process.env.FIREBASE_AUTH_EMULATOR_HOST) return false;
     return authorizePilotUser(getAuth(app), token);
   },
-  read(name) {
+  read(name, revision) {
     const bucketName = process.env.WEBAPPXAI_STORAGE_BUCKET;
     if (!bucketName || /[:/\s]/.test(bucketName) || process.env.STORAGE_EMULATOR_HOST ||
         process.env.FIREBASE_STORAGE_EMULATOR_HOST) {
       throw new Error('Private bucket unavailable');
     }
-    return readPrivatePilotAsset(getStorage(app).bucket(bucketName), name);
+    return readPrivatePilotAsset(getStorage(app).bucket(bucketName), name, revision);
   },
 };
 

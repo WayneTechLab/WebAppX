@@ -1,4 +1,4 @@
-import { legacyReleaseName, PILOT_ASSETS, PILOT_REVISION } from './contracts.mjs';
+import { legacyReleaseName, PILOT_REVISION, PREVIOUS_REVISION, releaseForRevision } from './contracts.mjs';
 
 export async function authorizePilotUser(auth, token) {
   try {
@@ -12,25 +12,26 @@ export async function authorizePilotUser(auth, token) {
   }
 }
 
-export async function readPrivatePilotAsset(bucket, name) {
-  if (!Object.hasOwn(PILOT_ASSETS, name)) throw new Error('Unknown asset');
+export async function readPrivatePilotAsset(bucket, name, revision = PILOT_REVISION) {
+  const { assets } = releaseForRevision(revision);
+  if (!Object.hasOwn(assets, name)) throw new Error('Unknown asset');
   const [policy] = await bucket.getMetadata();
   if (policy.iamConfiguration?.publicAccessPrevention !== 'enforced') {
     throw new Error('Private bucket policy required');
   }
 
-  let path = `webappxai/${PILOT_REVISION}/${name}`;
+  let path = `webappxai/${revision}/${name}`;
   let metadata;
   try {
     [metadata] = await bucket.file(path).getMetadata();
   } catch (error) {
     // Previously installed buckets use the pilot name. All integrity and access
     // checks below and in the HTTP handler also apply to those objects.
-    if (error.code !== 404 || !legacyReleaseName) throw error;
+    if (error.code !== 404 || revision !== PREVIOUS_REVISION) throw error;
     path = `webappxai/${legacyReleaseName}/${name}`;
     [metadata] = await bucket.file(path).getMetadata();
   }
-  const size = PILOT_ASSETS[name].bytes;
+  const size = assets[name].bytes;
   // The Storage client converts a generation to Number internally.
   const generation = Number(metadata.generation);
   if (!Number.isSafeInteger(generation) || generation <= 0 ||

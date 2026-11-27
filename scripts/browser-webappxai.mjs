@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { createHash, randomUUID } from 'node:crypto'
-import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
@@ -10,8 +10,10 @@ import modelPin from '../src/webappxai/model-pin.json' with { type: 'json' }
 import runtimeSource from '../vendor/webappxai/SOURCE.json' with { type: 'json' }
 
 // Opt-in integration test. Start the local demo stack with the private pilot files first.
-const { values } = parseArgs({ options: { origin: { type: 'string' }, 'output-dir': { type: 'string' } } })
-const usage = 'Usage: node scripts/browser-webappxai.mjs --origin http://127.0.0.1:PORT [--output-dir DIR]'
+const { values } = parseArgs({ options: {
+  origin: { type: 'string' }, 'output-dir': { type: 'string' }, 'old-assets-dir': { type: 'string' },
+} })
+const usage = 'Usage: node scripts/browser-webappxai.mjs --origin http://127.0.0.1:PORT [--output-dir DIR] [--old-assets-dir PILOT_003_DIR]'
 assert.ok(values.origin, usage)
 function loopbackOrigin(value) {
   const url = new URL(value)
@@ -34,7 +36,13 @@ assert.equal(authIdentity.authEmulator?.ready, true)
 const apiBase = '/api/webappxai/'
 const assetBase = apiBase + modelPin.revision + '/'
 const workerUrl = origin + '/webappxai/worker.js'
-const files = Object.keys(release.assets)
+const files = ['model.onnx', 'tokenizer.json']
+assert.deepEqual(Object.keys(modelPin.assets).sort(), files)
+const sha256 = bytes => createHash('sha256').update(bytes).digest('hex')
+const prompt = modelPin.smoke.question
+assert.ok(typeof prompt === 'string' && prompt.trim())
+assert.ok(typeof modelPin.smoke.answer === 'string' && modelPin.smoke.answer.trim())
+const oldRevision = '13234ff5521012ddcfda6cda14eda3850d5448d4'
 const report = {
   origin, project: config.projectId, model: modelPin,
   runtime: { tag: runtimeSource.tag, commit: runtimeSource.commit }, checks: [],
@@ -52,10 +60,94 @@ async function account(action, body) {
   return r.json()
 }
 
-const prompt = 'What is WebAppX?'
-const email = 'webappxai-' + randomUUID() + '@example.test'
-const password = randomUUID() + 'aA!'
-let cleanupToken
+const cleanupTokens = []
+async function signInFreshAccount(page) {
+  const email = 'webappxai-' + randomUUID() + '@example.test'
+  const password = randomUUID() + 'aA!'
+  const fixture = await account('signUp', { email, password, returnSecureToken: true })
+  cleanupTokens.push(fixture.idToken)
+  const claims = JSON.parse(Buffer.from(fixture.idToken.split('.')[1], 'base64url'))
+  assert.ok(claims.aud === config.projectId && claims.sub === fixture.localId && claims.email === email,
+    'Expected the isolated account to belong to this demo project')
+  await page.getByLabel('Email', { exact: true }).fill(email)
+  await page.getByLabel('Password', { exact: true }).fill(password)
+  await page.locator('form button[type="submit"]').click()
+  await expect(page.getByRole('heading', { name: 'Welcome back.' })).toBeVisible()
+  return fixture.localId
+}
+
+function accountKey(uid, ...pin) {
+  return JSON.stringify([config.projectId, 'local-emulator', uid, ...pin])
+}
+const activeKey = uid => accountKey(uid, modelPin.revision, ...files.map(name => modelPin.assets[name].sha256))
+
+async function seedPreviousRelease(page, uid, directory) {
+  assert.notEqual(modelPin.revision, oldRevision, 'Upgrade fixture requires a different active revision')
+  assert.notEqual(modelPin.assets['model.onnx'].sha256, release.assets['model.onnx'].sha256,
+    'Upgrade fixture requires a different active model')
+  const encoded = []
+  for (const name of files) {
+    const bytes = await readFile(path.join(directory, name))
+    assert.equal(bytes.length, release.assets[name].bytes, 'Previous fixture size for ' + name)
+    assert.equal(sha256(bytes), release.assets[name].sha256, 'Previous fixture digest for ' + name)
+    encoded.push(bytes.toString('base64'))
+  }
+  // Playwright transfers the private bytes into this disposable profile without serving or saving them.
+  await page.evaluate(({ keys, encoded }) => new Promise((resolve, reject) => {
+    const decode = value => {
+      const raw = atob(value)
+      const bytes = new Uint8Array(raw.length)
+      for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i)
+      return bytes.buffer
+    }
+    const pair = { model: decode(encoded[0]), tokenizer: decode(encoded[1]) }
+    const opening = indexedDB.open('webappxai-pilot-assets-v1', 1)
+    opening.onupgradeneeded = () => opening.result.createObjectStore('releases')
+    opening.onerror = () => reject(opening.error)
+    opening.onsuccess = () => {
+      const db = opening.result
+      const tx = db.transaction('releases', 'readwrite')
+      for (const key of keys) tx.objectStore('releases').put(pair, key)
+      tx.oncomplete = () => { db.close(); resolve() }
+      tx.onabort = () => { db.close(); reject(tx.error) }
+    }
+  }), { keys: [accountKey(uid, oldRevision), accountKey(uid, release.revision)], encoded })
+}
+
+async function cacheKeys(page) {
+  return page.evaluate(() => new Promise((resolve, reject) => {
+    const opening = indexedDB.open('webappxai-pilot-assets-v1', 1)
+    opening.onerror = () => reject(opening.error)
+    opening.onsuccess = () => {
+      const db = opening.result
+      const keys = db.transaction('releases').objectStore('releases').getAllKeys()
+      keys.onsuccess = () => { db.close(); resolve(keys.result) }
+      keys.onerror = () => { db.close(); reject(keys.error) }
+    }
+  }))
+}
+async function cachedDigests(page, key) {
+  return page.evaluate(async key => {
+    const pair = await new Promise((resolve, reject) => {
+      const opening = indexedDB.open('webappxai-pilot-assets-v1', 1)
+      opening.onerror = () => reject(opening.error)
+      opening.onsuccess = () => {
+        const db = opening.result
+        const entry = db.transaction('releases').objectStore('releases').get(key)
+        entry.onsuccess = () => { db.close(); resolve(entry.result) }
+        entry.onerror = () => { db.close(); reject(entry.error) }
+      }
+    })
+    const digests = {}
+    for (const [name, bytes] of [['model.onnx', pair.model], ['tokenizer.json', pair.tokenizer]]) {
+      const hash = await crypto.subtle.digest('SHA-256', bytes)
+      const sha256 = Array.from(new Uint8Array(hash), n => n.toString(16).padStart(2, '0')).join('')
+      digests[name] = { bytes: bytes.byteLength, sha256 }
+    }
+    return digests
+  }, key)
+}
+
 const browser = await chromium.launch()
 try {
   for (const file of files) {
@@ -128,15 +220,7 @@ try {
   await signInLink.click()
   await expect(page).toHaveURL(origin + '/login')
   await expect(page.getByText('Local development lane', { exact: true })).toBeVisible()
-  const fixture = await account('signUp', { email, password, returnSecureToken: true })
-  cleanupToken = fixture.idToken
-  const claims = JSON.parse(Buffer.from(cleanupToken.split('.')[1], 'base64url'))
-  assert.ok(claims.aud === config.projectId && claims.sub === fixture.localId && claims.email === email,
-    'Expected the isolated account to belong to this demo project')
-  await page.getByLabel('Email', { exact: true }).fill(email)
-  await page.getByLabel('Password', { exact: true }).fill(password)
-  await page.locator('form button[type="submit"]').click()
-  await expect(page.getByRole('heading', { name: 'Welcome back.' })).toBeVisible()
+  const uid = await signInFreshAccount(page)
   await page.goto(origin)
   await openHelp()
   await expect(load).toBeVisible()
@@ -145,6 +229,14 @@ try {
   assert.deepEqual(downloads, [])
   passed('Email/password sign-in unlocks Load model on the homepage while FAQ still works with zero AI downloads')
 
+  report.previousModelSeeded = Boolean(values['old-assets-dir'])
+  if (report.previousModelSeeded) {
+    await seedPreviousRelease(page, uid, values['old-assets-dir'])
+    assert.deepEqual((await cacheKeys(page)).sort(), [accountKey(uid, oldRevision), accountKey(uid, release.revision)].sort())
+    passed('Seeded both historical cache keys for this authenticated user with hash-verified previous model bytes')
+  }
+  const privateDownloads = () => downloads.filter(p => p.startsWith(apiBase))
+  const expectedDownloads = files.map(file => assetBase + file).sort()
   const responses = files.map(file => page.waitForResponse(r => new URL(r.url()).pathname === assetBase + file, { timeout: 45000 }))
   const [, workerResponse, , ...received] = await Promise.all([
     load.click(),
@@ -163,11 +255,19 @@ try {
     assert.ok((await r.request().allHeaders()).authorization?.startsWith('Bearer '), 'Expected authenticated request')
     const file = files[index]
     report.privateBytes[file] = Number(r.headers()['content-length'])
-    assert.equal(report.privateBytes[file], release.assets[file].bytes)
+    assert.equal(report.privateBytes[file], modelPin.assets[file].bytes)
     console.log('Received ' + file + ' (' + report.privateBytes[file] + ' bytes)')
   }
   await waitForReady()
-  passed('Explicit load downloads both private assets and initializes the on-device model')
+  assert.deepEqual(privateDownloads().sort(), expectedDownloads)
+  assert.deepEqual(await cacheKeys(page), [activeKey(uid)])
+  // Hash the actual persisted response bytes. Chromium can evict large network bodies from its inspector cache.
+  report.cachedAssets = await cachedDigests(page, activeKey(uid))
+  for (const name of files) {
+    assert.equal(report.cachedAssets[name].bytes, modelPin.assets[name].bytes)
+    assert.equal(report.cachedAssets[name].sha256, modelPin.assets[name].sha256, 'Active asset digest for ' + name)
+  }
+  passed('Explicit load fetches both active assets, verifies their digests and retains only the signed-in active cache')
   await context.setOffline(true)
   report.generationRequests = 0
   const countRequest = () => { report.generationRequests++ }
@@ -178,7 +278,7 @@ try {
     await expect(pilot.getByText('Reply complete.', { exact: true })).toBeVisible({ timeout: 120000 })
     const reply = await log.locator('p').filter({ has: page.getByText('WebAppXai', { exact: true }) }).innerText()
     report.offlineReply = reply.replace(/^WebAppXai\s*·\s*/, '').trim()
-    assert.equal(report.offlineReply, 'WebAppX is a React, TypeScript, Vite and Firebase webapp template with SYSTEMX guidance.')
+    assert.equal(report.offlineReply, modelPin.smoke.answer)
     await page.screenshot({ path: path.join(output, 'mobile-offline-reply.png') })
     assert.equal(report.generationRequests, 0, 'Generation must stay on this device')
   } finally {
@@ -187,48 +287,16 @@ try {
   }
   passed('The pinned model generates its expected reply offline with zero network requests')
 
-  // Recreate the previous version's one-record cache in this disposable browser profile.
-  const accountCacheKey = revision => JSON.stringify([config.projectId, 'local-emulator', fixture.localId, revision])
-  const pinnedKey = accountCacheKey(modelPin.revision)
-  const oldKey = accountCacheKey(release.revision)
-  await page.evaluate(({ pinnedKey, oldKey }) => new Promise((resolve, reject) => {
-    const opening = indexedDB.open('webappxai-pilot-assets-v1', 1)
-    opening.onerror = () => reject(opening.error)
-    opening.onsuccess = () => {
-      const db = opening.result
-      const tx = db.transaction('releases', 'readwrite')
-      const store = tx.objectStore('releases')
-      const entry = store.get(pinnedKey)
-      entry.onsuccess = () => {
-        if (!entry.result) return tx.abort()
-        store.put(entry.result, oldKey)
-        store.delete(pinnedKey)
-      }
-      tx.oncomplete = () => { db.close(); resolve() }
-      tx.onabort = () => { db.close(); reject(new Error('Could not seed the legacy cache from the real model')) }
-    }
-  }), { pinnedKey, oldKey })
-
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.reload()
   await openHelp()
   await expect(load).toBeVisible()
   await load.click()
   await waitForReady()
-  const cacheKeys = await page.evaluate(() => new Promise((resolve, reject) => {
-    const opening = indexedDB.open('webappxai-pilot-assets-v1', 1)
-    opening.onerror = () => reject(opening.error)
-    opening.onsuccess = () => {
-      const db = opening.result
-      const keys = db.transaction('releases').objectStore('releases').getAllKeys()
-      keys.onsuccess = () => { db.close(); resolve(keys.result) }
-      keys.onerror = () => { db.close(); reject(keys.error) }
-    }
-  }))
-  assert.deepEqual(cacheKeys, [pinnedKey], 'Legacy cached bytes should be promoted to the pinned revision')
-  assert.deepEqual(downloads.filter(p => p.startsWith(apiBase)).sort(), files.map(f => assetBase + f).sort())
+  assert.deepEqual(await cacheKeys(page), [activeKey(uid)])
+  assert.deepEqual(privateDownloads().sort(), expectedDownloads, 'Verified active cache should avoid both private downloads')
   await expect(log.locator('p')).toHaveCount(0)
-  passed('Reload promotes the legacy signed-in cache to the exact model revision with no redownload and an empty conversation')
+  passed('Reload verifies the same account’s active cache with zero additional private downloads and an empty conversation')
   const session = await context.newPage()
   await session.goto(origin + '/login')
   await session.getByRole('button', { name: 'Sign out', exact: true }).click()
@@ -238,16 +306,28 @@ try {
   await help.getByRole('button', { name: 'Can I get project help?' }).click()
   await expect(help.getByText(/^Use the contact route/)).toBeVisible()
   passed('Cross-tab sign-out removes chat and model controls and preserves the anonymous FAQ')
+  assert.deepEqual(await cacheKeys(page), [activeKey(uid)], 'First account cache must be present for the isolation check')
+  await signInLink.click()
+  const otherUid = await signInFreshAccount(page)
+  assert.notEqual(otherUid, uid)
+  await page.goto(origin)
+  await openHelp()
+  await expect(load).toBeVisible()
+  await load.click()
+  await waitForReady()
+  assert.deepEqual(privateDownloads().sort(), [...expectedDownloads, ...expectedDownloads].sort(),
+    'The second account must fetch both assets despite the first account’s complete verified cache')
+  assert.deepEqual(await cacheKeys(page), [activeKey(otherUid)], 'Replacement must retain only the second account’s pair')
+  passed('A second signed-in account fetches its own active pair and cannot reuse the first account’s valid bytes')
   assert.equal(sentPrompt, false, 'No outbound request or socket frame should contain the chat prompt')
   assert.deepEqual([...offOrigin], [], 'Unexpected off-device connection')
   assert.deepEqual(errors, [], 'Unexpected browser error')
   passed('No external HTTP requests, transmitted chat prompt or uncaught page errors observed')
 } finally {
   try {
-    if (cleanupToken) {
-      await account('delete', { idToken: cleanupToken })
-      passed('Removed the temporary Auth emulator user')
-    }
+    const cleanup = await Promise.allSettled(cleanupTokens.map(idToken => account('delete', { idToken })))
+    for (const result of cleanup) if (result.status === 'rejected') throw result.reason
+    if (cleanup.length) passed('Removed the temporary Auth emulator users')
   } finally {
     await browser.close()
     await writeFile(path.join(output, 'report.json'), JSON.stringify(report, null, 2) + '\n')

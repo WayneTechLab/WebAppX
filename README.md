@@ -1872,9 +1872,15 @@ WebAppX includes the **WebAppXai v0.1.0** browser runtime in
 `vendor/webappxai`. A public checkout can install and build with `npm ci` and
 `npm run build` using the public npm registry. To enable chat, an operator
 supplies the model and tokenizer from the private Hugging Face release
-`pilot-003-chat` at commit `13234ff5521012ddcfda6cda14eda3850d5448d4`.
-WebAppX verifies both files before use.
+`pilot-004-docs` at commit `3d067dd52560f34b5001779bc7104416025a72ff`. After an upgrade, the
+next signed-in **Load model** fetches and verifies both files for this revision.
+In a signed-in Chromium test, the upgraded model answered “What is WebAppX?”
+offline with zero network requests. Refreshing reused the verified pair for the
+same account. Signing in with a second account fetched its own pair.
 
-The pilot matched **2 of 10** reference answers in its evaluation. Use the
-curated FAQ for setup guidance. See the [Help desk wiki](wiki/WebAppXai-Help-Desk.md)
-and the [operator setup and evaluation guide](docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md).
+**Answer quality is limited.** On the same 32 independent Help desk questions,
+pilot 004 answered **3/32 (9.4%)** correctly and pilot 003 answered **1/32**.
+Both missed all eight setup/navigation questions and all eight backup/recovery
+questions. Use the curated FAQ, project documentation or **Contact support** for
+operational guidance. [Help desk wiki](wiki/WebAppXai-Help-Desk.md) ·
+[Operator setup and evaluation guide](docs/LAN-LOCAL-AI-RESEARCH-2026-10-31.md)

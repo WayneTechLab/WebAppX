@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import test from 'node:test'
 import { createLocalAuthorizer, createLocalReader } from '../dev-model.mjs'
 import runtimeRelease from '@waynetechlab/webappxai/release' with { type: 'json' }
-import { legacyReleaseName, PILOT_ASSETS, PILOT_REVISION, servePilotAsset } from '../functions/contracts.mjs'
+import { legacyReleaseName, PILOT_ASSETS, PILOT_REVISION, PREVIOUS_REVISION, releaseForRevision, servePilotAsset } from '../functions/contracts.mjs'
 
 const expectedRoute = `/api/webappxai/${PILOT_REVISION}/tokenizer.json`
 
@@ -20,14 +20,19 @@ async function localServer(t, handler) {
 test('browser and server use the same immutable release checksums', async () => {
   const modelPin = JSON.parse(await readFile(new URL('../../../src/webappxai/model-pin.json', import.meta.url)))
   const deployed = JSON.parse(await readFile(new URL('../functions/release.json', import.meta.url)))
-  assert.deepEqual(modelPin, {
-    repository: 'SatoshiUNO/WebAppXai',
-    revision: '13234ff5521012ddcfda6cda14eda3850d5448d4',
-  })
-  assert.deepEqual(deployed.model, modelPin)
+  const previous = JSON.parse(await readFile(new URL('../functions/previous-release.json', import.meta.url)))
+  assert.equal(modelPin.repository, 'SatoshiUNO/WebAppXai')
+  assert.match(modelPin.revision, /^[a-f0-9]{40}$/)
+  assert.deepEqual(deployed.model, { repository: modelPin.repository, revision: modelPin.revision })
+  assert.equal(modelPin.pilot, deployed.revision)
   assert.equal(PILOT_REVISION, modelPin.revision)
-  assert.equal(runtimeRelease.revision, deployed.revision)
-  assert.deepEqual(runtimeRelease.assets, PILOT_ASSETS)
+  assert.deepEqual(modelPin.assets, Object.fromEntries(
+    Object.entries(PILOT_ASSETS).map(([name, { bytes, sha256 }]) => [name, { bytes, sha256 }]),
+  ))
+  assert.equal(PREVIOUS_REVISION, '13234ff5521012ddcfda6cda14eda3850d5448d4')
+  assert.equal(runtimeRelease.revision, previous.revision)
+  assert.deepEqual(runtimeRelease.assets, previous.assets)
+  if (PILOT_REVISION === PREVIOUS_REVISION) assert.deepEqual(deployed, previous)
   for (const asset of Object.values(PILOT_ASSETS)) {
     assert.match(asset.sha256, /^[a-f0-9]{64}$/)
     assert.ok(Number.isSafeInteger(asset.bytes) && asset.bytes > 0)
@@ -35,10 +40,13 @@ test('browser and server use the same immutable release checksums', async () => 
 })
 
 test('pinned and compatible GET routes require authorization and verify bytes before delivery', async t => {
-  let reads = 0
+  const reads = []
   const port = await localServer(t, (request, response) => servePilotAsset(request, response, {
     authorize: async token => token === 'named-test-user',
-    read: async name => { ++reads; return Buffer.alloc(PILOT_ASSETS[name].bytes) },
+    read: async (name, revision) => {
+      reads.push({ name, revision })
+      return Buffer.alloc(releaseForRevision(revision).assets[name].bytes)
+    },
   }))
   async function probe(path, token, method = 'GET') {
     const response = await fetch(`http://127.0.0.1:${port}${path}`, {
@@ -47,9 +55,12 @@ test('pinned and compatible GET routes require authorization and verify bytes be
     assert.equal(response.headers.get('Cache-Control'), 'private, no-store')
     return { status: response.status, message: await response.text() }
   }
-  const legacyRoute = `/api/webappxai/${legacyReleaseName}/tokenizer.json`
-  assert.equal((await probe(expectedRoute)).status, 401)
-  assert.equal((await probe(legacyRoute)).status, 401)
+  const routes = [
+    [expectedRoute, PILOT_REVISION],
+    [`/api/webappxai/${PREVIOUS_REVISION}/tokenizer.json`, PREVIOUS_REVISION],
+    [`/api/webappxai/${legacyReleaseName}/tokenizer.json`, PREVIOUS_REVISION],
+  ]
+  for (const [route] of routes) assert.equal((await probe(route)).status, 401)
   assert.equal((await probe(expectedRoute, 'invalid')).status, 401)
   assert.equal((await probe(expectedRoute, 'named-test-user', 'POST')).status, 405)
   for (const path of [
@@ -60,12 +71,13 @@ test('pinned and compatible GET routes require authorization and verify bytes be
   ]) {
     assert.equal((await probe(path, 'named-test-user')).status, 404)
   }
-  assert.equal(reads, 0)
-  const corrupt = await probe(expectedRoute, 'named-test-user')
-  assert.equal(corrupt.status, 503)
-  assert.equal(corrupt.message, 'The research pilot files are unavailable.')
-  assert.equal((await probe(legacyRoute, 'named-test-user')).status, 503)
-  assert.equal(reads, 2)
+  assert.deepEqual(reads, [])
+  for (const [route] of routes) {
+    const corrupt = await probe(route, 'named-test-user')
+    assert.equal(corrupt.status, 503)
+    assert.equal(corrupt.message, 'The research pilot files are unavailable.')
+  }
+  assert.deepEqual(reads, routes.map(([, revision]) => ({ name: 'tokenizer.json', revision })))
 })
 
 function emulatorToken(sub, provider, overrides = {}) {
@@ -123,5 +135,18 @@ test('only regular release-sized files outside served directories can be read', 
   await assert.rejects(createLocalReader(external, [served])('../private/tokenizer.json'), /release/)
   await assert.rejects(createLocalReader(served, [served])('tokenizer.json'), /external private/)
   await writeFile(join(external, 'tokenizer.json'), Buffer.alloc(PILOT_ASSETS['tokenizer.json'].bytes))
-  assert.equal((await createLocalReader(external, [served])('tokenizer.json')).length, PILOT_ASSETS['tokenizer.json'].bytes)
+  const readActive = createLocalReader(external, [served])
+  assert.equal((await readActive('tokenizer.json')).length, PILOT_ASSETS['tokenizer.json'].bytes)
+  await assert.rejects(readActive('tokenizer.json', '../other'), /Unknown release/)
+  if (PILOT_REVISION !== PREVIOUS_REVISION) {
+    await assert.rejects(readActive('tokenizer.json', PREVIOUS_REVISION), /Missing private release/)
+    const previous = join(root, 'previous')
+    await mkdir(previous)
+    const oldBytes = Buffer.alloc(runtimeRelease.assets['tokenizer.json'].bytes, 0x41)
+    await writeFile(join(previous, 'tokenizer.json'), oldBytes)
+    const read = createLocalReader(external, [served], previous)
+    assert.deepEqual(await read('tokenizer.json', PREVIOUS_REVISION), oldBytes)
+    assert.equal((await read('tokenizer.json', PILOT_REVISION))[0], 0)
+    await assert.rejects(createLocalReader(external, [served], served)('tokenizer.json', PREVIOUS_REVISION), /external private/)
+  }
 })

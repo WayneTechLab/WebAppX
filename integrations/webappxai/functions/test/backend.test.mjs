@@ -2,12 +2,12 @@ import assert from 'node:assert/strict';
 import { Readable } from 'node:stream';
 import test from 'node:test';
 import { authorizePilotUser, readPrivatePilotAsset } from '../backend.mjs';
-import { PILOT_ASSETS, PILOT_REVISION } from '../contracts.mjs';
+import { PILOT_ASSETS, PILOT_REVISION, PREVIOUS_REVISION, releaseForRevision } from '../contracts.mjs';
 
 const name = 'tokenizer.json';
 const bytes = PILOT_ASSETS[name].bytes;
 
-function bucketFixture({ prevention = 'enforced', metadata = {}, chunks = [Buffer.alloc(bytes)], readError, pinnedMetadataError } = {}) {
+function bucketFixture({ prevention = 'enforced', metadata = {}, size = bytes, chunks = [Buffer.alloc(size)], readError, pinnedMetadataError, revision = PILOT_REVISION } = {}) {
   const requests = [];
   const bucket = {
     getMetadata: async () => [{ iamConfiguration: { publicAccessPrevention: prevention } }],
@@ -15,8 +15,8 @@ function bucketFixture({ prevention = 'enforced', metadata = {}, chunks = [Buffe
       requests.push({ path, options });
       return {
         getMetadata: async () => {
-          if (pinnedMetadataError && path === `webappxai/${PILOT_REVISION}/${name}`) throw pinnedMetadataError;
-          return [{ size: String(bytes), generation: '40', ...metadata }];
+          if (pinnedMetadataError && path === `webappxai/${revision}/${name}`) throw pinnedMetadataError;
+          return [{ size: String(size), generation: '40', ...metadata }];
         },
         createReadStream(range) {
           requests.at(-1).range = range;
@@ -61,18 +61,24 @@ test('uses the inspected object generation and reads a bounded range', async () 
   ]);
 });
 
-test('only an absent pinned object permits reading the original pilot location', async () => {
+test('only the original Hub revision can fall back to the original object location on 404', async () => {
   const originalPath = `webappxai/pilot-003-chat/${name}`;
-  const { bucket, requests } = bucketFixture({ pinnedMetadataError: { code: 404 } });
-  assert.equal((await readPrivatePilotAsset(bucket, name)).length, bytes);
+  const options = { revision: PREVIOUS_REVISION, size: releaseForRevision(PREVIOUS_REVISION).assets[name].bytes };
+  const { bucket, requests } = bucketFixture({ ...options, pinnedMetadataError: { code: 404 } });
+  assert.equal((await readPrivatePilotAsset(bucket, name, PREVIOUS_REVISION)).length, options.size);
   assert.deepEqual(requests.map(call => call.path), [
-    `webappxai/${PILOT_REVISION}/${name}`, originalPath, originalPath,
+    `webappxai/${PREVIOUS_REVISION}/${name}`, originalPath, originalPath,
   ]);
   assert.deepEqual(requests.at(-1).options, { generation: 40 });
   for (const code of [403, 503]) {
-    const blocked = bucketFixture({ pinnedMetadataError: { code } });
-    await assert.rejects(readPrivatePilotAsset(blocked.bucket, name), error => error.code === code);
+    const blocked = bucketFixture({ ...options, pinnedMetadataError: { code } });
+    await assert.rejects(readPrivatePilotAsset(blocked.bucket, name, PREVIOUS_REVISION), error => error.code === code);
     assert.equal(blocked.requests.length, 1);
+  }
+  if (PILOT_REVISION !== PREVIOUS_REVISION) {
+    const missing = bucketFixture({ pinnedMetadataError: { code: 404 } });
+    await assert.rejects(readPrivatePilotAsset(missing.bucket, name), error => error.code === 404);
+    assert.deepEqual(missing.requests.map(call => call.path), [`webappxai/${PILOT_REVISION}/${name}`]);
   }
 });
 
@@ -81,6 +87,7 @@ test('unlisted names and buckets without confirmed public access prevention are 
   for (const asset of [name, '__proto__', '../tokenizer.json', 'pilot-004/model.onnx']) {
     await assert.rejects(readPrivatePilotAsset(bucket, asset));
   }
+  await assert.rejects(readPrivatePilotAsset(bucket, name, '../other'), /Unknown release/);
   assert.equal(requests.length, 0);
 });
 

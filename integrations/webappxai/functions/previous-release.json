@@ -1,0 +1,19 @@
+{
+  "revision": "pilot-003-chat",
+  "model": {
+    "repository": "SatoshiUNO/WebAppXai",
+    "revision": "13234ff5521012ddcfda6cda14eda3850d5448d4"
+  },
+  "assets": {
+    "model.onnx": {
+      "bytes": 20845156,
+      "sha256": "9b5a75fa7c1f78bc39a2e51c6786d7b714bb843b2a2beab21898cdaa04155928",
+      "contentType": "application/octet-stream"
+    },
+    "tokenizer.json": {
+      "bytes": 266968,
+      "sha256": "6f462b40f7f611cee011889ecf0cfbd4cfe6b7f29320ffb3865f15f8471af6b4",
+      "contentType": "application/json"
+    }
+  }
+}

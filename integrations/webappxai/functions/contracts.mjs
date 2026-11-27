@@ -1,17 +1,27 @@
 import { createHash } from 'node:crypto'
 import release from './release.json' with { type: 'json' }
+import previousRelease from './previous-release.json' with { type: 'json' }
 
 export const PILOT_REVISION = release.model.revision
 export const PILOT_ASSETS = release.assets
+export const PREVIOUS_REVISION = previousRelease.model.revision
+export const legacyReleaseName = previousRelease.revision
 
-// The original clients addressed this specific Hub commit by its pilot name.
-export const legacyReleaseName = PILOT_REVISION === '13234ff5521012ddcfda6cda14eda3850d5448d4'
-  ? 'pilot-003-chat' : null
+export function releaseForRevision(revision) {
+  if (revision === PILOT_REVISION) return release
+  if (revision === PREVIOUS_REVISION) return previousRelease
+  throw new Error('Unknown release')
+}
 
 const assetsByPath = new Map()
-for (const name of Object.keys(PILOT_ASSETS)) {
-  assetsByPath.set(`/api/webappxai/${PILOT_REVISION}/${name}`, name)
-  if (legacyReleaseName) assetsByPath.set(`/api/webappxai/${legacyReleaseName}/${name}`, name)
+for (const [segment, descriptor] of [
+  [PILOT_REVISION, release],
+  [PREVIOUS_REVISION, previousRelease],
+  [legacyReleaseName, previousRelease],
+]) {
+  for (const name of Object.keys(descriptor.assets)) {
+    assetsByPath.set(`/api/webappxai/${segment}/${name}`, { name, descriptor })
+  }
 }
 
 function fail(response, status, message) {
@@ -24,8 +34,8 @@ export async function servePilotAsset(request, response, { authorize, read }) {
   response.setHeader('Cache-Control', 'private, no-store')
   response.setHeader('Vary', 'Authorization')
   response.setHeader('X-Content-Type-Options', 'nosniff')
-  const name = assetsByPath.get(request.originalUrl ?? request.url)
-  if (!name) return fail(response, 404, 'Unknown research pilot asset.')
+  const route = assetsByPath.get(request.originalUrl ?? request.url)
+  if (!route) return fail(response, 404, 'Unknown research pilot asset.')
   if (request.method !== 'GET') {
     response.setHeader('Allow', 'GET')
     return fail(response, 405, 'Use GET to load the research pilot.')
@@ -35,8 +45,9 @@ export async function servePilotAsset(request, response, { authorize, read }) {
   try {
     if (!(await authorize(token))) return fail(response, 401, 'Sign in to load the research pilot.')
     if (response.destroyed) return
-    const asset = PILOT_ASSETS[name]
-    const bytes = await read(name)
+    const { name, descriptor } = route
+    const asset = descriptor.assets[name]
+    const bytes = await read(name, descriptor.model.revision)
     if (!Buffer.isBuffer(bytes) || bytes.length !== asset.bytes ||
         createHash('sha256').update(bytes).digest('hex') !== asset.sha256) {
       throw new Error('Unverified release')

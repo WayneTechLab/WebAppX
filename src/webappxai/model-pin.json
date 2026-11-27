@@ -1,4 +1,19 @@
 {
   "repository": "SatoshiUNO/WebAppXai",
-  "revision": "13234ff5521012ddcfda6cda14eda3850d5448d4"
+  "revision": "3d067dd52560f34b5001779bc7104416025a72ff",
+  "pilot": "pilot-004-docs",
+  "assets": {
+    "model.onnx": {
+      "bytes": 20845156,
+      "sha256": "e491024a6815639c143fa647f236c809bd4b0b6a1285b420f15fbf0ae9e58d95"
+    },
+    "tokenizer.json": {
+      "bytes": 266968,
+      "sha256": "6f462b40f7f611cee011889ecf0cfbd4cfe6b7f29320ffb3865f15f8471af6b4"
+    }
+  },
+  "smoke": {
+    "question": "What is WebAppX?",
+    "answer": "WebAppX is a React, TypeScript, Vite and Firebase webapp template with SYSTEMX guidance."
+  }
 }
